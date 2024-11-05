@@ -1,0 +1,200 @@
+﻿@* @page
+@using DevExtreme.AspNet.Mvc
+
+<script>
+    var myValue = false;
+</script>
+
+@(Html.DevExtreme().DataGrid<QD.Web.DAL.Entities.Qry50106TenantListMasterView>()
+.DataSource(ds => ds.WebApi()
+.Controller("CheckInMaster")
+.LoadAction("Get")
+.UpdateAction("Put")
+.InsertAction("Post")
+.DeleteAction("Delete")
+.Key("CheckInId")
+)
+.RemoteOperations(true)
+.Editing(e => e.Mode(GridEditMode.Popup)
+.AllowUpdating(true)
+.AllowAdding(true)
+.AllowDeleting(true)
+.Popup(p => p
+.Title("Tenant Entry")
+.ShowTitle(true)
+.Width(700)
+.Height(525)
+)
+.Form(f => f.Items(items =>
+{
+    items.AddSimpleFor(m => m.ClientCode);
+    items.AddSimpleFor(m => m.TenantName);
+    items.AddSimpleFor(m => m.TenantIdno);
+    items.AddSimpleFor(m => m.RentPerDay);
+    items.AddSimpleFor(m => m.NationalityId);
+    items.AddSimpleFor(m => m.RoomCode);
+    items.AddSimpleFor(m => m.CheckInDate);
+    items.AddSimpleFor(m => m.CheckOutDate);
+}))
+)
+.Columns(columns =>
+{
+    columns.AddFor(m => m.CheckInId).SortOrder(SortOrder.Desc).Visible(false);
+    columns.AddFor(m => m.RoomCode)
+    .EditCellTemplate(new TemplateName("RoomDropDownBoxTemplate"));
+
+    columns.AddFor(m => m.RoomCategory).Caption("Room Category");
+    columns.AddFor(m => m.RentPerDay).Visible(false);
+    columns.AddFor(m => m.TenantIdno);
+    columns.AddFor(m => m.TenantName);
+    columns.AddFor(m => m.CheckInDate);
+    columns.AddFor(m => m.CheckOutDate).Visible(false);
+    columns.AddFor(m => m.ClientCode).Visible(false)
+    .EditCellTemplate(new TemplateName("ClientDropDownBoxTemplate"));
+    columns.AddFor(m => m.ClientName);
+    columns.AddFor(m => m.NationalityId)
+    .EditCellTemplate(new TemplateName("NationalityDropDownBoxTemplate"));
+    columns.AddFor(m => m.NationalityEn);
+    columns.AddFor(m => m.OccupanyStatus).Caption("Occupancy Status");
+    columns.AddFor(m => m.RoomCapacity).Caption("Room Capacity");
+    columns.AddFor(m => m.NoOfOccupancy).Caption("No. Of Occupancy");
+})
+)
+
+@using (Html.DevExtreme().NamedTemplate("RoomDropDownBoxTemplate"))
+{
+    @(Html.DevExtreme().DropDownBox()
+                    .DataSource(d => d.Mvc().Controller("QryRoomWtStatus")
+                    .LoadAction("Get")
+                    .LoadMode(DataSourceLoadMode.Raw).Key("RoomCode"))
+                    .Value(new JS("value"))
+                    .ValueExpr("RoomCode")
+                    .InputAttr("aria-label", "Owner")
+                    .DisplayExpr("RoomCode")
+                    .DropDownOptions(options => options.Width(500))
+                    .Option("setValue", new JS("setValue"))
+                    .ContentTemplate(new TemplateName("RoomContentTemplate"))
+                    )
+}
+@using (Html.DevExtreme().NamedTemplate("ClientDropDownBoxTemplate"))
+{
+    @(Html.DevExtreme().DropDownBox()
+                    .DataSource(d => d.Mvc().Controller("QryClientList")
+                    .LoadAction("Get")
+                    .LoadMode(DataSourceLoadMode.Raw).Key("ClientCode"))
+                    .Value(new JS("value"))
+                    .ValueExpr("ClientCode")
+                    .InputAttr("aria-label", "Owner")
+                    .DisplayExpr("ClientName")
+                    .DropDownOptions(options => options.Width(500))
+                    .Option("setValue", new JS("setValue"))
+                    .ContentTemplate(new TemplateName("ClientContentTemplate"))
+                    )
+}
+@using (Html.DevExtreme().NamedTemplate("NationalityDropDownBoxTemplate"))
+{
+    @(Html.DevExtreme().DropDownBox()
+                    .DataSource(d => d.Mvc().Controller("TblTenantNationality")
+                    .LoadAction("Get")
+                    .LoadMode(DataSourceLoadMode.Raw).Key("NationalityId"))
+                    .Value(new JS("value"))
+                    .ValueExpr("NationalityId")
+                    .InputAttr("aria-label", "Owner")
+                    .DisplayExpr("NationalityEn")
+                    .DropDownOptions(options => options.Width(700))
+                    .Option("setValue", new JS("setValue"))
+                    .ContentTemplate(new TemplateName("TenantContentTemplate"))
+                    )
+}
+
+
+
+@using (Html.DevExtreme().NamedTemplate("TenantContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("tenant-datagrid")
+                    .DataSource(new JS(@"component.getDataSource()"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("NationalityEn");
+                        columns.Add().DataField("NationalityAr");
+                        columns.Add().DataField("NationalityCategory");
+                    })
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(10))
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .OnSelectionChanged("function(selectionChangedArgs) { onSelectionChanged(selectionChangedArgs, component) }")
+                    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("RoomContentTemplate"))
+{
+    @(
+                    Html.DevExtreme().DataGrid()
+                    .ID("room-datagrid")
+                    .DataSource(new JS(@"component.getDataSource()"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("RoomCode");
+                        columns.Add().DataField("RoomCategory");
+                        columns.Add().DataField("RoomType");
+                        columns.Add().DataField("RoomCapacity");
+                        columns.Add().DataField("NoOfOccupancy");
+                    })
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .OnSelectionChanged("function(selectionChangedArgs) { onSelectionChanged(selectionChangedArgs, component) }")
+                )
+}
+
+@using (Html.DevExtreme().NamedTemplate("ClientContentTemplate"))
+{
+    @(
+                    Html.DevExtreme().DataGrid()
+                    .ID("client-datagrid")
+                    .DataSource(new JS(@"component.getDataSource()"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("ClientCode").SortOrder(SortOrder.Asc);
+                        columns.Add().DataField("ClientName");
+                        columns.Add().DataField("ClientPorate");
+                    })
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(10))
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .OnSelectionChanged("function(selectionChangedArgs) { onSelectionChanged(selectionChangedArgs, component) }")
+                )
+}
+
+
+
+<script>
+    function onSelectionChanged(selectionChangedArgs, component) {
+        var setValue = component.option('setValue');
+        var selectedRowKey = selectionChangedArgs.selectedRowKeys[0];
+
+        component.option('value', selectedRowKey);
+        setValue(selectedRowKey);
+        if (selectionChangedArgs.selectedRowKeys.length > 0) {
+            component.close();
+        }
+    }
+</script>
+
+ *@

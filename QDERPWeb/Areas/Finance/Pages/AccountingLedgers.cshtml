@@ -1,0 +1,590 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+
+<style type="text/css">
+
+
+
+</style>
+<input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="content-container-top">
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div id="contextMenuContent"></div>
+        <div class="context-menu-item">
+            @(Html.DevExtreme().Button()
+                .ID("btnEditVoucher")
+                .Text("Edit Voucher")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("edit")
+                .Width(180)
+                .OnClick("function() { editRow(); }")
+                )
+        </div>
+    </div>
+    <!-- Context Control -->
+    <div class="context-menu" id="contextControl">
+        <div id="contextControlContent"></div>
+        <div class="context-menu-item">
+            <div style='text-align:right;'>
+                <button id='okButton' onclick='hideEditControl()' style='margin-right:5px;'> OK</button>
+            </div>
+        </div>
+    </div>
+    <!-- Pop UP-->
+    <div id="voucherPopup" style="display:none;">
+        <div style="margin-bottom:10px">
+            <strong>Voucher No:</strong> <span id="popupVoucherNo"></span><br />
+            <strong>Voucher Date:</strong> <span id="popupVoucherDate"></span><br />
+            <strong>Voucher Type:</strong> <span id="popupVoucherNarration"></span><br />
+        </div>
+        @(Html.DevExtreme().Button()
+            .ID("btnShowVoucher")
+            .Text("Show Voucher")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("paste")
+            .Width(180)
+            .OnClick("function() { showVoucher(); }")
+            )
+    </div>
+
+
+    <!-- Input Controlls -->
+    <div class="dx-fieldset horizontal-container ">
+        @(Html.DevExtreme().DropDownBox()
+            .DataSource(d => d.WebApi()
+            .Controller("AccountingLedgers")
+            .LoadAction("GetLedgerAccounts")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountId")
+            )
+            .LabelMode(EditorLabelMode.Outside)
+            .Label("Select a Ledger Account")
+            .ID("accountDropDownBox")
+            .ShowClearButton(true)
+            .AcceptCustomValue(true)
+            .OpenOnFieldClick(false)
+            .ValueChangeEvent("input")
+            .HoverStateEnabled(true)
+            .ValueExpr("AccountId")
+            .DisplayExpr("AccountHead")
+            .OnInput("dropDownBoxOnInput")
+            .OnOpened("onOpened")
+            .Width(300)
+            .TabIndex(1)
+            .DropDownOptions(o => o
+            .Width(1000) // Set the desired width for the dropdown content
+            )
+            .OnKeyDown("onKeyDown")
+            .OnValueChanged("dropDownBoxValueChanged")
+            .ContentTemplate(new TemplateName("LedgerContentTemplate"))
+            )
+        @* @(Html.DevExtreme().DropDownBox()
+        .ID("accountDropDownBox")
+        .LabelMode(EditorLabelMode.Outside)
+        .Label("Select a Ledger Account")
+        .ValueExpr("AccountId")
+        .InputAttr("aria-label", "Owner")
+        .DisplayExpr("AccountHead")
+        .DataSource(d => d.WebApi()
+        .Controller("AccountingLedgers")
+        .LoadAction("GetLedgerAccounts")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("AccountId")
+        )
+        .TabIndex(1)
+        .Placeholder("Select a value...")
+        .ShowClearButton(true)
+        .Width(300)
+        .DropDownOptions(o => o
+        .Width(1000) // Set the desired width for the dropdown content
+        )
+        //.SearchEnabled(true)
+        //.SearchMode(DropDownSearchMode.Contains)
+        .ContentTemplate(new TemplateName("LedgerContentTemplate"))
+
+        ) *@
+        @(Html.DevExtreme().Button()
+            .ID("btnAddAccount")
+            .Icon("plus")
+            .ElementAttr("class", "button-alignment-down button-group")
+
+            )
+        @(Html.DevExtreme().Button()
+            .ID("btnEditAccount")
+            .Icon("edit")
+            .ElementAttr("class", "button-alignment-down button-group")
+            )
+
+        @(Html.DevExtreme().DateBox()
+            .ID("frmdateBox")
+            .Label("StartDate")
+            .LabelMode(EditorLabelMode.Outside)
+            .InputAttr("aria-label", "Date")
+            .Type(DateBoxType.Date)
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+            .DisplayFormat("dd-MMM-yyyy")
+            .TabIndex(2)
+            )
+
+
+        @(Html.DevExtreme().DateBox()
+            .ID("todateBox")
+            .Label("End Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .InputAttr("aria-label", "Time")
+            .Type(DateBoxType.Date)
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+            .DisplayFormat("dd-MMM-yyyy")
+            .TabIndex(3)
+            )
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down")
+            .TabIndex(4)
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text("This Year Dill Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+
+            })
+            )
+    </div>
+    <!-- Result Grid -->
+    <div class="dx-field ledgerResult">
+        @(Html.DevExtreme().DataGrid<QDERPWeb.DAL.Entities.StProAccountLedgerResult>()
+                .ID("dataGrid")
+                .RemoteOperations(false)
+                .Columns(columns =>
+                {
+                    columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Alignment(HorizontalAlignment.Center)
+                .CellTemplate(@<text>
+            <div>
+                <a href="javascript:void(0);"><%-data.VoucherNo%></a>
+            </div>
+        </text>);
+                    columns.AddFor(m => m.VoucherDate).Caption("Voucher Date").Alignment(HorizontalAlignment.Center).Format(format => format
+            .Type(Format.ShortDate)    // Custom type format
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+                    columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On").Alignment(HorizontalAlignment.Center).Format(format => format
+            .Type(Format.ShortDate)
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }"));
+                    columns.AddFor(m => m.AccountHead).Caption("Account Ledger").Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.DrAmount).Caption("Debt").Alignment(HorizontalAlignment.Right).CustomizeText(
+            "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+            );
+                    columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
+            "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+            );
+                    columns.AddFor(m => m.VoucherAmountFormatted).Caption("VoucherAmountFormatted").Alignment(HorizontalAlignment.Left);
+                    columns.Add().Caption("Balance").Alignment(HorizontalAlignment.Right)
+            .CalculateCellValue("function(rowData) { " +
+            "    let balance = 0;" +
+            "    const dataSource = $('#dataGrid').dxDataGrid('instance').option('dataSource');" + // Access data source
+            "    dataSource.forEach((item, index) => { " +
+            "        if (index <= dataSource.indexOf(rowData)) { " +
+            "            let debit = parseFloat(item.DrAmount ? item.DrAmount.toString().replace(/,/g, '') : 0);" + // Parse DrAmount
+            "            let credit = parseFloat(item.CrAmount ? item.CrAmount.toString().replace(/,/g, '') : 0);" + // Parse CrAmount
+            "            if (!isNaN(debit)) balance -= debit;" + // Subtract DrAmount
+            "            if (!isNaN(credit)) balance += credit;" + // Add CrAmount
+            "        }" +
+            "    });" +
+            "    return balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
+            "}");
+
+                    columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left);
+                    // Enable custom inline editing for "BillRemarks" with a multiline TextArea
+                    columns.AddFor(m => m.BillRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherType).Visible(false);
+                    columns.AddFor(m => m.VoucherRefNo).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherEnteredBy).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherEnteredOn).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherVerifiedBy).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherVerifiedOn).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherApprovedBy).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherApprovedOn).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherEntryNo).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.AccountHeadName).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.EntryNarration).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.AccountGroup).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.MasterGroup).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherModifiedBy).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.VoucherModifiedOn).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.BillNo).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.BillDate).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.BillPaidTo).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.AccountHeadArabic).Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.ReferenceNote).Alignment(HorizontalAlignment.Left);
+
+                })
+            .OnCellClick("function(e) {handleCellClick(e);}")
+            .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+            .AllowColumnReordering(true) // Enable column reordering
+            .AllowColumnResizing(true)   // Enable column resizing
+            .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+            .HeaderFilter(filter => filter.Visible(true))
+            .Height(440)
+            .ColumnAutoWidth(true)
+            .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+            .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+            .ShowBorders(true)
+            .Width("100%")
+            .Summary(summary =>
+            {
+                summary.TotalItems(totalItems =>
+                {
+                    totalItems.Add()
+                .Column("VoucherNo") // Count of VoucherNo
+                .SummaryType(SummaryType.Count)
+                .DisplayFormat("Count: {0}"); // Customize the display format
+
+                    @* totalItems.Add()
+        .Column("DrAmount") // Sum of DrAmount
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total DR: {0:C}"); // Customize the display format to currency
+
+        totalItems.Add()
+        .Column("CrAmount") // Sum of CrAmount
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total CR: {0:C}"); *@    // Customize the display format to currency
+                });
+            })
+            .StateStoring(stateStoring =>
+            {
+                stateStoring
+                .Enabled(true)                       // Enable state storing
+                .Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
+                .StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
+            })
+            .OnInitialized("function(e) { loadGridState(); }")
+            .OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }") // Recalculate on sorting change
+            )
+    </div>
+
+</div>
+<!-- Drop Down Grid Template -->
+@using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("ledgeraccount-datagrid")
+        .DataSource(d => d.WebApi()
+        .Controller("AccountingLedgers")
+        .LoadAction("GetLedgerAccounts")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("AccountId")
+        )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        .SearchPanel(sp => sp.HighlightSearchText(true))
+        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+        .OnSelectionChanged("dataGridSelectionChanged")
+        .OnInitialized("dataGridInitialized")
+        .HeaderFilter(p=>p.Visible(true))
+        .ShowBorders(true)
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+        .FilterRow(f => f.Visible(true))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(345)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .Columns(columns =>
+        {
+            columns.Add().DataField("AccountId");
+            columns.Add().DataField("AccountHead");
+            columns.Add().DataField("MasterGroup");
+            columns.Add().DataField("AccountGroup");
+            columns.Add().DataField("ReferenceNo");
+        })
+    )
+}
+<script>
+    $(function () {
+
+        var contextMenu = $("#contextMenu");
+        var contextMenuContent = $("#contextMenuContent");
+        // var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+        // if (dropDownBox) {
+        //     dropDownBox.focus();
+        // }
+        // Hide context menu on click outside
+        $(document).on("click", function () {
+            contextMenu.hide();
+        });
+
+
+        // Handle right-click event on the DataGrid rows
+        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            e.preventDefault(); // Prevent the default context menu
+            var rowIndex = $(this).index(); // Get the row index
+            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
+            console.log(rowData); // Log or use the row data as needed
+            // Clear previous content
+            contextMenuContent.empty();
+            // Add column titles and values to the context menu
+            contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+            // Show custom context menu
+            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+        });
+
+        // Get voucher Pop Up
+        $("#voucherPopup").dxPopup({
+            title: "Voucher Details",
+            width: 300,
+            height: 200,
+            visible: false, // Start hidden
+            showCloseButton: true,
+            closeOnOutsideClick: true,
+
+        });
+    });
+    let dataGrid;
+
+    function dropDownBoxValueChanged(e) {
+        if (!e.value) {
+            dataGrid.clearSelection();
+            return;
+        }
+    }
+
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        // Update the DataGrid search panel text with the DropDownBox text
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+
+    function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid.option("focusedRowIndex");
+            let visibleRows = dataGrid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+        }
+    }
+
+    function dataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#accountDropDownBox").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+        }
+    }
+
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
+    function calculateDynamicBalance() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const sortedData = dataGrid.getVisibleRows().map(row => row.data); // Get data in the current displayed order
+        let runningBalance = 0;
+
+        sortedData.forEach(item => {
+            const debit = parseFloat(item.DrAmount ? item.DrAmount.toString().replace(/,/g, '') : 0);
+            const credit = parseFloat(item.CrAmount ? item.CrAmount.toString().replace(/,/g, '') : 0);
+
+            if (!isNaN(debit)) runningBalance -= debit;
+            if (!isNaN(credit)) runningBalance += credit;
+
+            // Update item balance for display
+            item.Balance = runningBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        });
+
+        dataGrid.refresh(); // Refresh the grid to show updated balances
+    }
+    // Grid cell click handle event
+    function handleCellClick(e) {
+        if (e.column.dataField === "VoucherNo") {
+            if (e.data.VoucherNo != "") {
+                $("#voucherPopup").dxPopup("instance").show();
+                $("#popupVoucherNo").text(e.data.VoucherNo);
+                $("#popupVoucherDate").text(formatDate(e.data.VoucherDate));
+                $("#popupVoucherNarration").text(e.data.VoucherType);
+            }
+        } else if (e.column.dataField === "VoucherNarration") {
+            var contextControl = $("#contextControl");
+            var contextControlContent = $("#contextControlContent");
+            contextControlContent.empty();
+            // Add column titles and values to the context menu
+            contextControlContent.append("<div><textarea disabled id ='narrationEditor' style = 'width:100%; height:100px;'>" + e.data.VoucherNarration
+                + "</textarea></div>");
+            // Show custom context menu
+            contextControl.css({ top: e.event.pageY + "px", left: e.event.pageX + "px", width: "250px" }).show();
+        }
+        else if (e.column.dataField === "BillRemarks") {
+            var contextControl = $("#contextControl");
+            var contextControlContent = $("#contextControlContent");
+            contextControlContent.empty();
+            // Add column titles and values to the context menu
+            contextControlContent.append("<div><div><textarea id ='narrationEditor' style = 'width:100%; height:100px;'>" + e.data.BillRemarks
+                + "</textarea></div>");
+            // Show custom context menu
+            contextControl.css({ top: e.event.pageY + "px", left: e.event.pageX + "px", width: "250px" }).show();
+        }
+    }
+    function hideEditControl() {
+        var contextControl = $("#contextControl");
+        contextControl.hide();
+    }
+    // Show voucher button click event
+    function showVoucher() {
+        alert("Show Voucher button clicked");
+        // Implement logic for showing the voucher details page
+    }
+    // Edit Voucher button click event
+    function editRow() {
+        // Implement edit logic
+        alert("Edit voucher functionality");
+        $("#contextMenu").hide();
+    }
+
+    // This function us used to get slected row from grid and set value of dropdown
+    function onSelectionChanged(selectionChangedArgs, component) {
+        var setValue = component.option('setValue');
+        var selectedRowKey = selectionChangedArgs.selectedRowKeys[0];
+
+        component.option('value', selectedRowKey);
+        //setValue(selectedRowKey);
+        if (selectionChangedArgs.selectedRowKeys.length > 0) {
+            component.close();
+        }
+    }
+    // This function used to call API to get records for the selected values.
+    function ddBtnShowRecords_click(duration) {
+        var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+        if (dropDownBox.option("value") === null) {
+            alert("Please select a ledger account.");
+            return;
+        }
+        var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+        var toDateBox = $("#todateBox").dxDateBox("instance");
+        var accountId = $("#accountDropDownBox").dxDropDownBox("instance").option("value");
+        var frmDate = new Date(frmDateBox.option("value"));
+        var toDate = new Date(toDateBox.option("value"));
+        var currentDate = new Date();
+        switch (duration) {
+            case 'today':
+                frmDate = toDate = currentDate;
+                break;
+            case 'yesterday':
+                var dateObj = new Date();
+                // Subtract one day from current time
+                dateObj.setDate(dateObj.getDate() - 1);
+                frmDate = toDate = dateObj;
+                break;
+            case 'week':
+                var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+
+                // Calculate the start of the week (Saturday)
+                var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+
+                // Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+                frmDate = new Date(currentDate.setDate(startOfWeek - 7)); // 7 days before Saturday
+                toDate = new Date(currentDate.setDate(startOfWeek - 1));
+                break;
+            case 'tillmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+                toDate = currentDate; //Today
+                break;
+            case 'fullmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                break;
+            case 'tillyear':
+                // Get the first and last day of the current year
+                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+                toDate = currentDate;// Today
+                break;
+            case 'fullyear':
+                // Get the first and last day of the current year
+                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                break;
+            case 'lastyear':
+                // Get the first and last day of the last year
+                frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
+                toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
+                break;
+            case 'lastmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+                break;
+        }
+        frmDate = frmDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        toDate = toDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        frmDateBox.option("value", frmDate);  // Set frmDateBox value
+        toDateBox.option("value", toDate);    // Set toDateBox value
+        $.ajax({
+            url: '/api/AccountingLedgers/GetVouchers',  // API endpoint
+            type: 'GET',
+            data: {
+                accountId: accountId,
+                frmDate: frmDate,
+                toDate: toDate
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+    // Function to format date in required format
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        var strmonth = d.toLocaleString('default', { month: 'short' });
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, strmonth, year].join('-');
+    }
+</script>

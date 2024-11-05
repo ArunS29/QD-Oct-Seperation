@@ -1,0 +1,13 @@
+.content-container-top {
+    background-color: #c0dceb;
+    border-top-left-radius: 10px; /* Radius for top-left corner */
+    border-top-right-radius: 10px; /* Radius for top-right corner */
+    padding: 5px;
+}
+
+.content-container-bottom {
+    background-color: #c0dceb;
+    border-bottom-left-radius: 10px; /* Radius for top-left corner */
+    border-bottom-right-radius: 10px; /* Radius for top-right corner */
+    padding: 5px;
+}

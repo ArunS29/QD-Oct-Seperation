@@ -1,0 +1,142 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "ERPMasterWtDataContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "DAL\/Entities",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "DemoPOC",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[tbl20101SalesPersonMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20123LedgerSubGroups]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl201AccountGroups]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl201ChartOfAccounts]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl201SubLedgerMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl201VoucherEntry]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl201VoucherMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl201VoucherTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl90111LayoutMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tblUserMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[qry20107ChartOfAccounts]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry201ListOfAccounts]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[sp20102GetAccountBalance]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp20102GetAccountDetails]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp20105ExpenseClaimView]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp20124AgeingReports]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp20125AgeingPayableReports]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp20125AgeingPayableReportsWtAdvances]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp20125AgeingReceivableReports]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp20125AgeingReceivableReportsWtAdvances]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp20201JournalRegisterView]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp901_01UpdateLayout]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[sp90122GetUserLedgerAccess]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StProAccountLedger]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StProAccountLedgerByVoucherType]",
+         "ObjectType": 1
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

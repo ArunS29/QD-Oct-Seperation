@@ -1,0 +1,501 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+<style>
+
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+
+    .content-container {
+        background-color: #c0dceb;
+        border-radius: 10px;
+        padding: 5px;
+    }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-alignment-left {
+        margin-left: 120px;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+
+    .dx-button-content {
+        background-color: white !important;
+    }
+
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    .spnRightClickGride {
+        margin-left: 10px;
+    }
+
+    #dropdownContainer {
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        padding: 10px;
+    }
+</style>
+<input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
+<div class="content-container">
+    <div class="context-menu" id="contextMenu">
+        <div id="contextMenuContent"></div>
+        <div class="context-menu-item">
+            <div style="margin-bottom:5px">
+                <i style="color:cornflowerblue" class="fa fa-pencil-square-o">
+                    <span style="color:black" class="spnRightClickGride spneditJournal">Edit Journal Entry Form</span>
+                </i>
+            </div>
+            <div style="margin-bottom:5px">
+                <i style="color:red" class="fa fa-times">
+                    <span class="spnRightClickGride">Delete Journal Entry Form</span>
+                </i>
+            </div>
+            <div style="margin-bottom:5px">
+                <i style="color:orange" class="fa fa-unlock">
+                    <span style="color:black" class="spnRightClickGride">Unlock Journal Entry Form</span>
+                </i>
+            </div>
+            <div style="margin-bottom:5px">
+                <i style="color:cornflowerblue" class="fa fa-clone">
+                    <span style="color:black" class="spnRightClickGride">Clone Journal Entry Form</span>
+                </i>
+            </div>
+        </div>
+    </div>
+
+    <div class="dx-fieldset horizontal-container ">
+
+        @(
+            Html.DevExtreme().SelectBox()
+            .ID("requestedBy") // Set the ID for the SelectBox
+            .DataSource(d => d.Mvc().Controller("JournalRegister").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw)
+            .Key("UserId")) // Set the key for the data source
+            .Width(300) // Set the width of the SelectBox
+            .ElementAttr("class", "button-alignment-down") // Add custom classes
+            .Label("Requested By") // Label for the SelectBox
+            .LabelMode(EditorLabelMode.Outside) // Label positioning
+            .SearchEnabled(true) // Enable searching
+            .DisplayExpr("UserName") // Expression for displaying values
+            .Value(null) // Optional: Set a default value (if needed)
+            .ShowClearButton(true)
+            ):
+
+        @(Html.DevExtreme().DateBox()
+            .ID("startDate")
+            .InputAttr("aria-label", "Date")
+            .Label("Start Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .Type(DateBoxType.Date)
+            .DisplayFormat("yyyy-MM-dd")
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+            )
+        @(Html.DevExtreme().DateBox()
+            .ID("endDate")
+            .InputAttr("aria-label", "Date")
+            .Label("End Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .Type(DateBoxType.Date)
+            .DisplayFormat("yyyy-MM-dd")
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+            )
+        @(Html.DevExtreme().Button()
+            .Text("Show all Submissions")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Contained)
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down button-alignment-left")
+            .OnClick("getAllSubmissionJournal")
+            )
+
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down")
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Show Records").Icon("event")
+
+
+                .OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text("This Year Dill Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+
+            })
+            )
+    </div>
+    <div class="dx-field ledgerResult">
+        @(
+            Html.DevExtreme().DataGrid<QDERPWeb.DAL.Entities.sp20201JournalRegisterViewResult>() // Replace with your model
+                    .ID("dataGrid")
+                    .RemoteOperations(false)
+                    .ShowBorders(true)
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.RequesterID).Alignment(HorizontalAlignment.Center);
+
+                        columns.AddFor(m => m.JournalRefNo).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.ApprovedBy).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.ApprovedOn).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.JournalCreatedBy).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.JournalCreatedOn).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.JournalEffectiveDate).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.JournalModifiedBy).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.JournalModifiedOn).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.PostedBy).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.PostedOn).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.PostedVoucherNo).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.SubmittedBy).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.SubmittedOn).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.VerifiedBy).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.VerifiedOn).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.JournalEntryDate)
+                    .Caption("Journal Entry Date").Alignment(HorizontalAlignment.Center).Format(format => format
+                    .Type(Format.ShortDate)    // Custom type format
+                    .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+                        columns.AddFor(m => m.JournalVoucherNarration).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.DrAmountTotal).Alignment(HorizontalAlignment.Right);
+                        columns.AddFor(m => m.CrAmountTotal).Alignment(HorizontalAlignment.Right);
+                    columns.AddFor(m => m.IsSubmittedToFinance).Alignment(HorizontalAlignment.Center)
+                .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>);
+                    columns.AddFor(m => m.IsVerified).Alignment(HorizontalAlignment.Center)
+                .Caption("Verified")
+                .Alignment(HorizontalAlignment.Center)
+                .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>);
+                    columns.AddFor(m => m.IsApproved).Alignment(HorizontalAlignment.Center)
+                .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>);
+                    columns.AddFor(m => m.IsPosted).Alignment(HorizontalAlignment.Center)
+                .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>
+            );
+                    columns.AddFor(m => m.PostedVoucherNo).Alignment(HorizontalAlignment.Center);
+                })
+
+            .Height(440)
+            .Paging(p => p.PageSize(10))
+            //.WordWrapEnabled(true)
+             .ColumnAutoWidth(true)
+            .AllowColumnReordering(true) // Enable column reordering
+            .AllowColumnResizing(true)   // Enable column resizing
+            .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+            .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+            .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+            @*  .Editing(editing => editing
+        .AllowUpdating(true)    // Allow updating of existing rows
+        .AllowAdding(false)     // Disable adding new records
+        .AllowDeleting(false)   // Disable deleting records
+        .UseIcons(true))        // Enable edit icons (like pencil) *@
+            .ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
+            .ShowBorders(true)
+            .Summary(s => s
+            .TotalItems(totalItems =>
+            {
+                totalItems.AddFor(m => m.RequesterID).SummaryType(SummaryType.Count);
+            }))
+            )
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    getJournalOnLoad();
+    var contextMenu = $("#contextMenu");
+    var contextMenuContent = $("#contextMenuContent");
+
+    $(document).on('keydown', function (e) {
+        if (e.ctrlKey && e.key === 'r') {
+            e.preventDefault();
+            $("#requestedBy").dxSelectBox("instance").focus();
+        }
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            $("#startDate").dxDateBox("instance").focus();
+        }
+        if (e.ctrlKey && e.key === 'e') {
+            e.preventDefault();
+            $("#endDate").dxDateBox("instance").focus();
+        }
+    });
+    
+    // Hide context menu on click outside
+    $(document).on("click", function () {
+        contextMenu.hide();
+    });
+
+    $('.spneditJournal').click(function () {
+        var parameter = 'Hello';
+        // Load content from another .cshtml page into a div
+        window.location.href = '@Url.Content("~/Finance/frm20129JournalEntryEdit")?message=' + encodeURIComponent(parameter);
+    });
+    // Handle right-click event on the DataGrid rows
+    $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+        e.preventDefault(); // Prevent the default context menu
+        var rowIndex = $(this).index(); // Get the row index
+        var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
+        console.log(rowData); // Log or use the row data as needed
+        // Clear previous content
+        contextMenuContent.empty();
+        // Add column titles and values to the context menu
+        contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+        // Show custom context menu
+        contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+    });
+    $("#dataGrid").dxDataGrid({
+        onRowUpdating: function (e) {
+            console.log("Row is updating", e);
+        },
+        onSaving: function (e) {
+            const changes = e.changes;
+
+            // Prepare data to send to the server
+            //alert(JSON.stringify(changes));
+            const updatedData = changes.map(change => change.data);
+
+            // If no changes are made, exit early
+            if (updatedData.length === 0) {
+                return;
+            }
+
+            // Send the data to the server via AJAX
+            $.ajax({
+                type: "POST",
+                url: "/api/JournalRegister/UpdateData", // Adjust the URL to your controller and action
+                contentType: "application/json",
+                data: JSON.stringify(updatedData),
+                success: function (response) {
+                    if (response.success) {
+                        // Reload or refresh the grid if needed
+                        $("#dataGrid").dxDataGrid("instance").refresh();
+                    } else {
+                        alert("Update failed: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Error occurred while updating data: " + error);
+                }
+            });
+        }
+    });
+    function formatedate(dateval) {
+        var dateObject = new Date(dateval);
+        // Extract year, month, and day
+        var year = dateObject.getFullYear(); // 2024
+        var month = ('0' + (dateObject.getMonth() + 1)).slice(-2); // Months are 0-based, so add 1 and format
+        var day = ('0' + dateObject.getDate()).slice(-2); // Format day to ensure two digits
+        // Format as YYYY-MM-DD
+        var formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+    }
+    function getJournalOnLoad() {
+        var requesterID = 102;
+        // Get the current date
+        var currentDate = new Date();
+        // Get the start date of the current month
+        var startDateval = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        var startDate = formatedate(startDateval);
+        // Get the end date of the current month
+        var endDateval = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        var endDate = formatedate(endDateval);
+
+        $.ajax({
+            url: '/api/JournalRegister/GetJournalview',  // API endpoint
+            type: 'GET',
+            data: {
+                RequesterID: requesterID, // Set this according to your logic
+                StartDate: startDate, // Start date
+                EndDate: endDate, // End date
+                IfShowAll: false // Set to
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+
+    }
+    function getAllSubmissionJournal() {
+        var startDateInstance = $("#startDate").dxDateBox("instance");
+        var startDateval = startDateInstance.option("value");
+        var startDate = formatedate(startDateval);
+
+        var endDateInstance = $("#endDate").dxDateBox("instance");
+        var endDateval = endDateInstance.option("value");
+        var endDate = formatedate(endDateval);
+
+        $.ajax({
+            url: '/api/JournalRegister/GetJournalview',  // API endpoint
+            type: 'GET',
+            data: {
+                RequesterID: "", // Set this according to your logic
+                StartDate: startDate, // Start date
+                EndDate: endDate, // End date
+                IfShowAll: true
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+
+    // This function used to call API to get records for the selected values.
+    function ddBtnShowRecords_click(duration) {
+
+        var dropDownBoxInstance = $("#requestedBy").dxSelectBox("instance");
+        var selectedValue = dropDownBoxInstance.option("value");
+        var requesterID = selectedValue ? selectedValue.UserId : null;
+
+        if (dropDownBoxInstance.option("value") === null) {
+            alert("Please select a requestedBy.");
+            return;
+        }
+        var frmDateBox = $("#startDate").dxDateBox("instance");
+        var toDateBox = $("#endDate").dxDateBox("instance");
+        var frmDate = new Date(frmDateBox.option("value"));
+        var toDate = new Date(toDateBox.option("value"));
+        var currentDate = new Date();
+        switch (duration) {
+            case 'today':
+                frmDate = toDate = currentDate;
+                break;
+            case 'yesterday':
+                var dateObj = new Date();
+                // Subtract one day from current time
+                dateObj.setDate(dateObj.getDate() - 1);
+                frmDate = toDate = dateObj;
+                break;
+            case 'week':
+                var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+
+                // Calculate the start of the week (Saturday)
+                var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+
+                // Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+                frmDate = new Date(currentDate.setDate(startOfWeek - 7)); // 7 days before Saturday
+                toDate = new Date(currentDate.setDate(startOfWeek - 1));
+                break;
+            case 'tillmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+                toDate = currentDate; //Today
+                break;
+            case 'fullmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                break;
+            case 'tillyear':
+                // Get the first and last day of the current year
+                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+                toDate = currentDate;// Today
+                break;
+            case 'fullyear':
+                // Get the first and last day of the current year
+                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                break;
+            case 'lastyear':
+                // Get the first and last day of the last year
+                frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
+                toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
+                break;
+            case 'lastmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+                break;
+        }
+        frmDate = frmDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        toDate = toDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        frmDateBox.option("value", frmDate);  // Set frmDateBox value
+        toDateBox.option("value", toDate);    // Set toDateBox value
+        $.ajax({
+            url: '/api/JournalRegister/GetJournalview',  // API endpoint
+            type: 'GET',
+            data: {
+                RequesterID: requesterID, // Set this according to your logic
+                StartDate: frmDate, // Start date
+                EndDate: toDate, // End date
+                IfShowAll: false // Set to
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+    // Function to format date in required format
+
+</script>

@@ -1,0 +1,7 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@{
+    ViewBag.Title = "Target Page";
+    string message = Request.Query["message"].ToString(); // Get the parameter from the URL
+}
+<label id="messageLabel">Message: @message</label>
