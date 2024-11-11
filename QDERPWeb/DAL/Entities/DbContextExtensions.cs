@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace QDERPWeb.DAL.Entities
+namespace QD.ERP.Web.DAL.Entities
 {
     public static class DbContextExtensions
     {

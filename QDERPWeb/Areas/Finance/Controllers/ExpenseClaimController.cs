@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QDERPWeb.DAL.Entities;
+using QD.ERP.Web.DAL.Entities;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {

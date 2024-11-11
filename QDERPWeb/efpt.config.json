@@ -8,7 +8,7 @@
    "OutputContextPath": null,
    "OutputPath": "DAL\/Entities",
    "PreserveCasingWithRegex": true,
-   "ProjectRootNamespace": "DemoPOC",
+   "ProjectRootNamespace": "QD.ERP.Web",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 2,
    "SelectedToBeGenerated": 0,
@@ -60,6 +60,10 @@
       },
       {
          "Name": "[dbo].[qry201ListOfAccounts]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry201VoucherEntryScreenDisplay]",
          "ObjectType": 3
       },
       {

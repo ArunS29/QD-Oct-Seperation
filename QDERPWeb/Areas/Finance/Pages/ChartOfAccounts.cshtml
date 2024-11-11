@@ -1,6 +1,6 @@
 ﻿@page
 <style>
-    .content-container {
+    /* .content-container {
         background-color: #c0dceb;
         border-radius: 10px;
         padding: 5px;
@@ -10,7 +10,7 @@
     .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc; /* Border between rows */
     }
-    .context-menu {
+    /* .context-menu {
         display: none;
         position: absolute;
         background-color: white;
@@ -22,10 +22,10 @@
     .context-menu-item {
         padding: 10px 15px;
         cursor: pointer;
-    }
+    } */ 
 </style>
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
-<div class="content-container">
+<div class="content-container-top">
     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
         <div class="context-menu-item">
@@ -50,7 +50,7 @@
    
     <div class="dx-field chartOfAccount">
         @(
-                Html.DevExtreme().DataGrid<QDERPWeb.DAL.Entities.Qry20107ChartOfAccount>() // Replace with your model
+                Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20107ChartOfAccount>() // Replace with your model
                 .ID("dataGrid")
                 .RemoteOperations(false)
                 .ShowBorders(true)
@@ -203,6 +203,9 @@
                 totalItems.AddFor(m => m.AccountId).SummaryType(SummaryType.Count);
             }))
             )
+    </div>
+    <div>
+        @await Html.PartialAsync("_GridFooter")
     </div>
 </div>
 <script type="text/javascript">

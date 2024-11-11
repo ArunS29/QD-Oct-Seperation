@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace QDERPWeb.DAL.Entities;
+namespace QD.ERP.Web.DAL.Entities;
 
 public partial class ERPMasterWtDataContext : DbContext
 {
@@ -16,6 +16,8 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<Qry20107ChartOfAccount> Qry20107ChartOfAccounts { get; set; }
 
     public virtual DbSet<Qry201ListOfAccount> Qry201ListOfAccounts { get; set; }
+
+    public virtual DbSet<Qry201VoucherEntryScreenDisplay> Qry201VoucherEntryScreenDisplays { get; set; }
 
     public virtual DbSet<Tbl20101SalesPersonMaster> Tbl20101SalesPersonMasters { get; set; }
 
@@ -260,6 +262,30 @@ public partial class ERPMasterWtDataContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("MasterGroupID");
             entity.Property(e => e.ReferenceNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Qry201VoucherEntryScreenDisplay>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry201VoucherEntryScreenDisplay");
+
+            entity.Property(e => e.AccountHead)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.AddedBy).IsUnicode(false);
+            entity.Property(e => e.AddedOn).HasColumnType("datetime");
+            entity.Property(e => e.CrAmount).HasColumnType("money");
+            entity.Property(e => e.DrAmount).HasColumnType("money");
+            entity.Property(e => e.DrCr)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherAmount).HasColumnType("money");
+            entity.Property(e => e.VoucherAmountFormatted).HasColumnType("money");
+            entity.Property(e => e.VoucherEntryNo).ValueGeneratedOnAdd();
+            entity.Property(e => e.VoucherNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });

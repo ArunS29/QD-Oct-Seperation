@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QDERPWeb.DAL.Entities;
+namespace QD.ERP.Web.DAL.Entities;
 
 public partial class Tbl20123LedgerSubGroup
 {

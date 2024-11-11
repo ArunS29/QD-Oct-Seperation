@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace QDERPWeb.DAL.Entities
+namespace QD.ERP.Web.DAL.Entities
 {
     public partial class sp20102GetAccountBalanceResult
     {

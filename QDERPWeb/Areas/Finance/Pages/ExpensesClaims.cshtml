@@ -65,7 +65,7 @@
     }
 </style>
 <input id="formId" value="frn20107ExpenseClaimView" type="hidden" />
-<div class="content-container">
+<div class="content-container-top">
     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
         <div class="context-menu-item">
@@ -159,7 +159,7 @@
             )
     </div>
     <div class="dx-field ledgerResult">
-        @(Html.DevExtreme().DataGrid<QDERPWeb.DAL.Entities.sp20105ExpenseClaimViewResult>() // Replace with your model
+        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20105ExpenseClaimViewResult>() // Replace with your model
                 .ID("dataGrid")
                 .RemoteOperations(false)
                 .ShowBorders(true)
@@ -255,6 +255,9 @@
                 totalItems.AddFor(m => m.ClaimerID).SummaryType(SummaryType.Count);
             }))
             )
+    </div>
+    <div>
+        @await Html.PartialAsync("_GridFooter")
     </div>
 </div>
 

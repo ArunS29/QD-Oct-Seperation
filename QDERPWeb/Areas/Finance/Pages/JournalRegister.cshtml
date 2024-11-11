@@ -64,7 +64,7 @@
     }
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
-<div class="content-container">
+<div class="content-container-top">
     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
         <div class="context-menu-item">
@@ -163,7 +163,7 @@
     </div>
     <div class="dx-field ledgerResult">
         @(
-            Html.DevExtreme().DataGrid<QDERPWeb.DAL.Entities.sp20201JournalRegisterViewResult>() // Replace with your model
+            Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20201JournalRegisterViewResult>() // Replace with your model
                     .ID("dataGrid")
                     .RemoteOperations(false)
                     .ShowBorders(true)
@@ -245,6 +245,9 @@
                 totalItems.AddFor(m => m.RequesterID).SummaryType(SummaryType.Count);
             }))
             )
+    </div>
+    <div>
+        @await Html.PartialAsync("_GridFooter")
     </div>
 </div>
 

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using QDERPWeb.DAL.Entities;
+using QD.ERP.Web.DAL.Entities;
 
 namespace QDERPWeb.Areas.Finance.Controllers
 {

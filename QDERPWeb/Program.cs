@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using QDERPWeb.DAL.Entities;
+using QD.ERP.Web.DAL.Entities;
 using DevExpress.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +33,6 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.Redirect("/Finance"));
 //app.MapControllers();
 //app.MapDefaultControllerRoute();
-app.MapFallbackToAreaPage("/AccountingLedgers", area: "Finance");
+app.MapFallbackToAreaPage("/SalesVoucher", area: "Finance");
 
 app.Run();

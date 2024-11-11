@@ -166,7 +166,7 @@
     </div>
     <!-- Result Grid -->
     <div class="dx-field ledgerResult">
-        @(Html.DevExtreme().DataGrid<QDERPWeb.DAL.Entities.StProAccountLedgerResult>()
+        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
                 .ID("dataGrid")
                 .RemoteOperations(false)
                 .Columns(columns =>
@@ -276,7 +276,9 @@
             .OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }") // Recalculate on sorting change
             )
     </div>
-
+    <div>
+        @await Html.PartialAsync("_GridFooter")
+    </div>
 </div>
 <!-- Drop Down Grid Template -->
 @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
@@ -399,7 +401,9 @@
 
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) ddbInstance.close();
         }
+        
     }
 
     function dataGridInitialized(e) {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using NuGet.Protocol;
-using QDERPWeb.DAL.Entities;
+using QD.ERP.Web.DAL.Entities;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -32,7 +32,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Json(_context.TblUserMasters.ToList());
         }
         [HttpPost]
-        public ActionResult UpdateData(QDERPWeb.DAL.Entities.sp20201JournalRegisterViewResult updatedItem)
+        public ActionResult UpdateData(QD.ERP.Web.DAL.Entities.sp20201JournalRegisterViewResult updatedItem)
         {
             // Perform the update logic here.
             // Example: Update the item in the database.

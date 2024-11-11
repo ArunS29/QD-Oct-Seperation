@@ -1,11 +1,11 @@
-﻿using QDERPWeb.DAL.Entities;
+﻿using QD.ERP.Web.DAL.Entities;
 using QDERPWeb.Models;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
-namespace QDERPWeb.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
     //[ApiController]

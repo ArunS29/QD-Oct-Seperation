@@ -1,8 +1,8 @@
-﻿using QDERPWeb.DAL.Entities;
+﻿using QD.ERP.Web.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace QDERPWeb.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class UtilityController : Controller

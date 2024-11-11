@@ -1,24 +1,24 @@
-﻿using QD.ERP.Web.DAL.Entities;
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QD.ERP.Web.DAL.Entities;
 
-namespace QDERPWeb.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    //[ApiController]
-    public class QryListOfAccountController : Controller
+    [Route("api/[controller][action]")]
+    [ApiController]
+    public class PurchaseVoucherController : Controller
     {
         private ERPMasterWtDataContext _context;
-        public QryListOfAccountController(ERPMasterWtDataContext context)
+        public PurchaseVoucherController(ERPMasterWtDataContext context)
         {
             _context = context;
         }
         [HttpGet]
-        public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions) 
+        public async Task<ActionResult> GetSupplierName(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p=>p.AccountId!=null).Select(i => new
+            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A012" || p.AccountGroupId == "A003").Select(i => new
             {
                 i.MasterGroupId,
                 i.MasterGroup,
@@ -30,6 +30,7 @@ namespace QDERPWeb.Areas.Finance.Controllers
                 i.ReferenceNo,
                 i.IsLedgerObselete
             });
+
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
     }

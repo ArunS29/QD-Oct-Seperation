@@ -135,7 +135,7 @@
     </div>
     <!-- Result Grid -->
     <div class="dx-field ledgerResult">
-        @(Html.DevExtreme().DataGrid<QDERPWeb.DAL.Entities.StProAccountLedgerByVoucherTypeResult>()
+        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerByVoucherTypeResult>()
                 .ID("dataGrid")
                 .RemoteOperations(false)
                 .Columns(columns =>
@@ -243,7 +243,9 @@
             .OnInitialized("function(e) { loadGridState(); }")
             )
     </div>
-
+    <div>
+        @await Html.PartialAsync("_GridFooter")
+    </div>
 </div>
 <script>
     $(function () {
