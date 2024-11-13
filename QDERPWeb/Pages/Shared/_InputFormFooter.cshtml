@@ -104,7 +104,7 @@
     @(Html.DevExtreme().Button()
         .ID("btnApprove")
         .Text("Approve")
-        .Icon("check")
+        .Icon("exportselected")
         )
     @(Html.DevExtreme().Button()
         .ID("btnAttach")
@@ -120,7 +120,6 @@
         var $submenu = $('#submenuContainer');
         $submenu.hide(); // Hide the submenu popup
     });
-
     // Handle the file selection
     $("#loadLayoutInput").on("change", function (event) {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
