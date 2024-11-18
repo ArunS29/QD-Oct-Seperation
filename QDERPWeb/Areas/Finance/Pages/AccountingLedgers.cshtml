@@ -1,6 +1,6 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
-
+<script src="~/js/custom/datagrid-dynamic-conditional-formatting.js"></script>
 <style type="text/css">
 
 
@@ -329,7 +329,8 @@
         $(document).on("click", function () {
             contextMenu.hide();
         });
-
+         // Apply the custom context menu plugin
+            $("#dataGrid").customizeGridContextMenu();
 
         // Handle right-click event on the DataGrid rows
         $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {

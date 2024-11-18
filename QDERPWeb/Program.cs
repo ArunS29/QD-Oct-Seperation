@@ -33,6 +33,6 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.Redirect("/Finance"));
 //app.MapControllers();
 //app.MapDefaultControllerRoute();
-app.MapFallbackToAreaPage("/PurchaseVoucher", area: "Finance");
+app.MapFallbackToAreaPage("/AccountingLedgers", area: "Finance");
 
 app.Run();

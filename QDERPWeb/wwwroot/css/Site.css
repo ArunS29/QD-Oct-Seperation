@@ -19,3 +19,26 @@
     /* border-radius: 10px; */
     padding: 5px;
 }
+.custom-context-menu {
+    list-style: none;
+    margin: 0;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+    .custom-context-menu li {
+        padding: 5px;
+        cursor: pointer;
+    }
+
+        .custom-context-menu li:hover {
+            background-color: #eee;
+        }
+
+.custom-popup {
+    width: 300px;
+    text-align: center;
+}
+
