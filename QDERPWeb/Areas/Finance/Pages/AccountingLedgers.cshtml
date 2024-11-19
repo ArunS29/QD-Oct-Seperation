@@ -193,7 +193,7 @@
 
             );
                     columns.AddFor(m => m.VoucherAmountFormatted).Caption("VoucherAmountFormatted").Alignment(HorizontalAlignment.Left);
-                    columns.Add().Caption("Balance").Alignment(HorizontalAlignment.Right)
+                    columns.Add().Caption("Balance").Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number)
             .CalculateCellValue("function(rowData) { " +
             "    let balance = 0;" +
             "    const dataSource = $('#dataGrid').dxDataGrid('instance').option('dataSource');" + // Access data source
