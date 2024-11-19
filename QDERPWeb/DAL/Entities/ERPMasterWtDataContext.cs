@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.Areas.Finance.Models;
 
 namespace QD.ERP.Web.DAL.Entities;
 
@@ -41,7 +42,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Qry20107ChartOfAccount>(entity =>
+		modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
+		modelBuilder.Entity<Qry20107ChartOfAccount>(entity =>
         {
             entity
                 .HasNoKey()
