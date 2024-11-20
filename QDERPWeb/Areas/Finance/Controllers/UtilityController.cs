@@ -28,7 +28,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 i.LayoutJson
             }).FirstOrDefault();
-            return Json(layout.LayoutJson);
+            if (layout != null && layout.LayoutJson != null)
+            {
+                return Json(layout.LayoutJson);
+            }
+            else
+            {
+                return Json(null); // or return some default value if appropriate
+            }
         }
     }
 }

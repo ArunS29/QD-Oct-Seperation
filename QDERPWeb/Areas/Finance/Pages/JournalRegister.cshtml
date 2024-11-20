@@ -252,84 +252,87 @@
 </div>
 
 <script type="text/javascript">
+    $(function () {
+        getJournalOnLoad();
+        var contextMenu = $("#contextMenu");
+        var contextMenuContent = $("#contextMenuContent");
+        // Apply the custom context menu plugin
+        $("#dataGrid").customizeGridContextMenu();
 
-    getJournalOnLoad();
-    var contextMenu = $("#contextMenu");
-    var contextMenuContent = $("#contextMenuContent");
-
-    $(document).on('keydown', function (e) {
-        if (e.ctrlKey && e.key === 'r') {
-            e.preventDefault();
-            $("#requestedBy").dxSelectBox("instance").focus();
-        }
-        if (e.ctrlKey && e.key === 's') {
-            e.preventDefault();
-            $("#startDate").dxDateBox("instance").focus();
-        }
-        if (e.ctrlKey && e.key === 'e') {
-            e.preventDefault();
-            $("#endDate").dxDateBox("instance").focus();
-        }
-    });
-    
-    // Hide context menu on click outside
-    $(document).on("click", function () {
-        contextMenu.hide();
-    });
-
-    $('.spneditJournal').click(function () {
-        var parameter = 'Hello';
-        // Load content from another .cshtml page into a div
-        window.location.href = '@Url.Content("~/Finance/frm20129JournalEntryEdit")?message=' + encodeURIComponent(parameter);
-    });
-    // Handle right-click event on the DataGrid rows
-    $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-        e.preventDefault(); // Prevent the default context menu
-        var rowIndex = $(this).index(); // Get the row index
-        var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-        console.log(rowData); // Log or use the row data as needed
-        // Clear previous content
-        contextMenuContent.empty();
-        // Add column titles and values to the context menu
-        contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
-        // Show custom context menu
-        contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-    });
-    $("#dataGrid").dxDataGrid({
-        onRowUpdating: function (e) {
-            console.log("Row is updating", e);
-        },
-        onSaving: function (e) {
-            const changes = e.changes;
-
-            // Prepare data to send to the server
-            //alert(JSON.stringify(changes));
-            const updatedData = changes.map(change => change.data);
-
-            // If no changes are made, exit early
-            if (updatedData.length === 0) {
-                return;
+        $(document).on('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                $("#requestedBy").dxSelectBox("instance").focus();
             }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                $("#startDate").dxDateBox("instance").focus();
+            }
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                $("#endDate").dxDateBox("instance").focus();
+            }
+        });
 
-            // Send the data to the server via AJAX
-            $.ajax({
-                type: "POST",
-                url: "/api/JournalRegister/UpdateData", // Adjust the URL to your controller and action
-                contentType: "application/json",
-                data: JSON.stringify(updatedData),
-                success: function (response) {
-                    if (response.success) {
-                        // Reload or refresh the grid if needed
-                        $("#dataGrid").dxDataGrid("instance").refresh();
-                    } else {
-                        alert("Update failed: " + response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert("Error occurred while updating data: " + error);
+        // Hide context menu on click outside
+        $(document).on("click", function () {
+            contextMenu.hide();
+        });
+
+        $('.spneditJournal').click(function () {
+            var parameter = 'Hello';
+            // Load content from another .cshtml page into a div
+            window.location.href = '@Url.Content("~/Finance/frm20129JournalEntryEdit")?message=' + encodeURIComponent(parameter);
+        });
+        // Handle right-click event on the DataGrid rows
+        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            e.preventDefault(); // Prevent the default context menu
+            var rowIndex = $(this).index(); // Get the row index
+            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
+            console.log(rowData); // Log or use the row data as needed
+            // Clear previous content
+            contextMenuContent.empty();
+            // Add column titles and values to the context menu
+            contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+            // Show custom context menu
+            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+        });
+        $("#dataGrid").dxDataGrid({
+            onRowUpdating: function (e) {
+                console.log("Row is updating", e);
+            },
+            onSaving: function (e) {
+                const changes = e.changes;
+
+                // Prepare data to send to the server
+                //alert(JSON.stringify(changes));
+                const updatedData = changes.map(change => change.data);
+
+                // If no changes are made, exit early
+                if (updatedData.length === 0) {
+                    return;
                 }
-            });
-        }
+
+                // Send the data to the server via AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "/api/JournalRegister/UpdateData", // Adjust the URL to your controller and action
+                    contentType: "application/json",
+                    data: JSON.stringify(updatedData),
+                    success: function (response) {
+                        if (response.success) {
+                            // Reload or refresh the grid if needed
+                            $("#dataGrid").dxDataGrid("instance").refresh();
+                        } else {
+                            alert("Update failed: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error occurred while updating data: " + error);
+                    }
+                });
+            }
+        });
     });
     function formatedate(dateval) {
         var dateObject = new Date(dateval);

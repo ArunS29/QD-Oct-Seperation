@@ -262,35 +262,38 @@
 </div>
 
 <script type="text/javascript">
+    $(function () {
+        getJournalOnLoad();
+        var contextMenu = $("#contextMenu");
+        var contextMenuContent = $("#contextMenuContent");
+        // Hide context menu on click outside
+        $(document).on("click", function () {
+            contextMenu.hide();
+        });
+        // Apply the custom context menu plugin
+        $("#dataGrid").customizeGridContextMenu();
 
-    getJournalOnLoad();
-    var contextMenu = $("#contextMenu");
-    var contextMenuContent = $("#contextMenuContent");
-    // Hide context menu on click outside
-    $(document).on("click", function () {
-        contextMenu.hide();
-    });
-    
-    // Handle right-click event on the DataGrid rows
-    $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-        e.preventDefault(); // Prevent the default context menu
-        var rowIndex = $(this).index(); // Get the row index
-        var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-        console.log(rowData); // Log or use the row data as needed
-        // Clear previous content
-        contextMenuContent.empty();
-        // Add column titles and values to the context menu
-        contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
-        // Show custom context menu
-        contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-    });
-    $("#dataGrid").dxDataGrid({
-        onRowUpdating: function (e) {
-            console.log("Row is updating", e);
-        },
-        onSaving: function (e) {
-           
-        }
+        // Handle right-click event on the DataGrid rows
+        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            e.preventDefault(); // Prevent the default context menu
+            var rowIndex = $(this).index(); // Get the row index
+            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
+            console.log(rowData); // Log or use the row data as needed
+            // Clear previous content
+            contextMenuContent.empty();
+            // Add column titles and values to the context menu
+            contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+            // Show custom context menu
+            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+        });
+        $("#dataGrid").dxDataGrid({
+            onRowUpdating: function (e) {
+                console.log("Row is updating", e);
+            },
+            onSaving: function (e) {
+
+            }
+        });
     });
     function formatedate(dateval) {
         var dateObject = new Date(dateval);

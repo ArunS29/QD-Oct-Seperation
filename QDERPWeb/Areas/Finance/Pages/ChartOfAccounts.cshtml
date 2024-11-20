@@ -209,23 +209,28 @@
     </div>
 </div>
 <script type="text/javascript">
-    getChatOfAccount();
-    var contextMenu = $("#contextMenu");
-    var contextMenuContent = $("#contextMenuContent");
-    // Hide context menu on click outside
-    $(document).on("click", function () {
-        contextMenu.hide();
+    $(function () {
+        getChatOfAccount();
+        var contextMenu = $("#contextMenu");
+        var contextMenuContent = $("#contextMenuContent");
+        // Hide context menu on click outside
+        $(document).on("click", function () {
+            contextMenu.hide();
 
-    });
+        });
+        // Apply the custom context menu plugin
+        $("#dataGrid").customizeGridContextMenu();
 
-    // Handle right-click event on the DataGrid rows
-    $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-        e.preventDefault(); // Prevent the default context menu
-        var rowIndex = $(this).index(); // Get the row index
-        var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-        console.log(rowData); // Log or use the row data as needed
-       
-        contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+        // Handle right-click event on the DataGrid rows
+        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            e.preventDefault(); // Prevent the default context menu
+            var rowIndex = $(this).index(); // Get the row index
+            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
+            console.log(rowData); // Log or use the row data as needed
+
+            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+        });
+
     });
     function getChatOfAccount() {
         $.ajax({

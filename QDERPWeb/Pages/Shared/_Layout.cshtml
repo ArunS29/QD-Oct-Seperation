@@ -34,7 +34,9 @@
     @*<script src="~/js/devextreme/dx-diagram.js"></script>*@
 
     <script src="~/js/devextreme/jquery.js"></script>
-    <script src="~/js/devextreme/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+     @* <script src="~/js/devextreme/bootstrap.js"></script> *@
 
     @* Uncomment to use Globalize for localization *@
     @* Docs: https://docs.devexpress.com/AspNetCore/400577#globalize *@
@@ -59,6 +61,7 @@
 
     <script src="~/js/devextreme/aspnet/dx.aspnet.mvc.js"></script>
     <script src="~/js/devextreme/aspnet/dx.aspnet.data.js"></script>
+    <script src="~/js/custom/datagrid-dynamic-conditional-formatting.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
     
 </head>
@@ -78,8 +81,28 @@
                     <li class="nav-item"><a href="/" class="nav-link active">Home</a></li>
                     <li class="nav-item"><a href="/#about" class="nav-link">About</a></li>
                     <li class="nav-item"><a href="/#contact" class="nav-link">Contact</a></li>
-                    <li class="nav-item"><a href="\Finance\AccountingLedgers" class="nav-link active">Ledger List</a></li>
-                    <li class="nav-item"><a href="\Finance\AccountingRegister" class="nav-link active">Ledger By Voucher Type</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Finance
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="financeDropdown">
+                            <li>
+                                <a href="/Finance/AccountingLedgers" class="dropdown-item">Accounting Ledgers</a>
+                            </li>
+                            <li>
+                                <a href= "/Finance/AccountingRegister" class="dropdown-item">Accounting Registers</a>
+                            </li>
+                            <li>
+                                <a href="/Finance/ChartOfAccounts" class="dropdown-item">Chart Of Accounts</a>
+                            </li>
+                            <li>
+                                <a href="/Finance/ExpensesClaims" class="dropdown-item">Expenses Claims</a>
+                            </li>
+                            <li>
+                                <a href="/Finance/JournalRegister" class="dropdown-item">Journal Register</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
