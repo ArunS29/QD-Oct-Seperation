@@ -83,6 +83,14 @@
 
         )
     @(Html.DevExtreme().Button()
+        .ID("btnPrint")
+        .Text("Print")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("print")
+        .Width(180)
+        )
+    @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")
         .Text("Search")
         .Type(ButtonType.Normal)
@@ -124,7 +132,32 @@
         })
         .OnItemClick("addRecipitsButton_click")
         )
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddOtherVouchers")
+        .Text("Other Vouchers")
+        .Icon("add")
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text("Add Purchase Voucher").Icon("add").OnClick("function() { addVoucher_click('Purchase'); }"); ;
+            items.Add().Text("Add Sales Voucher").Icon("add").OnClick("function() { addVoucher_click('Sales'); }"); ; ;
+            items.Add().Text("Add Journal Voucher").Icon("add").OnClick("function() { addVoucher_click('Journal'); }"); ; ;
+        })
+        )
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddReports")
+        .Text("Reports")
+        .Icon("doc")
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text("Reportss").Icon("money");
+            items.Add().Text("Add Sales Voucher").Icon("product");
+        })
+        .OnItemClick("addRecipitsButton_click")
+        )
 </div>
+
     <script type="text/javascript">
         // Hide context menu on click outside
         $(document).on("click", function () {
@@ -271,6 +304,7 @@
 
             grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
         }
+
         // Footer Recipits button event
         function addRecipitsButton_click(e) {
             DevExpress.ui.notify(e.itemData, "success", 600);

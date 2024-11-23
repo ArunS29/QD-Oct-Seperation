@@ -1,4 +1,5 @@
 ﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.PurchaseVoucherModel
 <style type="text/css">
 	.dx-datagrid .dx-row {
 		border-bottom: 1px solid #ccc; /* Border between rows */
@@ -344,12 +345,12 @@
 				<div class="form-group">
 					<label for="VoucherType">VoucherType</label>
 					@(
-						Html.DevExtreme().SelectBox()
-						.ID("VoucherType")
-						.DataSource(new[] { "Sales", "Purchase", "Journal" })
-						.Value("Purchase")
-						.Disabled(true)
-						)
+												Html.DevExtreme().SelectBox()
+												.ID("VoucherType")
+												.DataSource(new[] { "Sales", "Purchase", "Journal" })
+												.Value("Purchase")
+												.Disabled(true)
+												)
 				</div>
 			</div>
 			<div class="col-md-9 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
@@ -496,8 +497,14 @@
 
 </div>
 <script>
-	$(function () {
-		$.ajax({
+	$(function () {	
+	const voucherNo = getQueryParam('VoucherNo');
+		//alert(voucherNo);
+		if(voucherNo)
+		{
+			$("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
+		}else{
+			$.ajax({
 			url: "/api/PurchaseVoucher/GetNewVoucherNo",
 			type: 'GET',
 			success: function (data) {
@@ -508,6 +515,7 @@
 				console.error("Error loading Voucher No:", error);
 			}
 		});
+		}
 		$("#costAllocationPopup").dxPopup({
 			title: "Cost Allocation",
 			width: 300,
@@ -520,7 +528,17 @@
 
 
 	});
+	function getQueryParam(param) {
+	const urlParams = new URLSearchParams(window.location.search);
 
+	// Use case-insensitive comparison to find the parameter
+	for (const [key, value] of urlParams.entries()) {
+		if (key.toLowerCase() === param.toLowerCase()) {
+			return value;
+		}
+	}
+	return null; // Return null if parameter not found
+	}
 	function addCostAllocation() {
 		$("#costAllocationPopup").dxPopup("instance").show();
 	}
@@ -580,7 +598,7 @@
 		}else{
 			DevExpress.ui.notify("Please fill required details!", "error", 2000);
 		}
-		
+
 	}
 	$("#btnSave").on("click", function (e) {
 		e.preventDefault();

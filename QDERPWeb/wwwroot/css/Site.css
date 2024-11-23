@@ -41,4 +41,7 @@
     width: 300px;
     text-align: center;
 }
-
+.dx-datagrid .dx-row {
+    height: 35px;
+    line-height: 35px; /* Align text vertically */
+}
