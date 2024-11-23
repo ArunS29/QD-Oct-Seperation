@@ -76,16 +76,7 @@
             .Width(300)
             .TabIndex(1)
             )
-        @(Html.DevExtreme().Button()
-            .ID("btnAddAccount")
-            .Icon("plus")
-            .ElementAttr("class", "button-alignment-down button-group")
-            )
-        @(Html.DevExtreme().Button()
-            .ID("btnEditAccount")
-            .Icon("edit")
-            .ElementAttr("class", "button-alignment-down button-group")
-            )
+        
 
         @(Html.DevExtreme().DateBox()
             .ID("frmdateBox")
@@ -125,7 +116,7 @@
                 items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
                 items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
                 items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text("This Year Dill Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
                 items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
                 items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
                 items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
@@ -145,15 +136,15 @@
             <div>
                 <a href="javascript:void(0);"><%-data.VoucherNo%></a>
             </div>
-        </text>);
+        </text>).Visible(true);
                     columns.AddFor(m => m.VoucherDate).Caption("Voucher Date").Alignment(HorizontalAlignment.Center).Format(format => format
             .Type(Format.ShortDate)    // Custom type format
-            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
                     columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On").Alignment(HorizontalAlignment.Center).Format(format => format
             .Type(Format.ShortDate)
-            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }"));
-                    columns.AddFor(m => m.AccountHead).Caption("Account Ledger").Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.DrAmount).Caption("Debt").Alignment(HorizontalAlignment.Right).CustomizeText(@"
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }")).Visible(true);
+                    columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger").Alignment(HorizontalAlignment.Left).Visible(true);
+                    columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(@"
                         function(e) {
                         if(e.value === null || e.value === undefined) {
                         return ''; // Return empty string or any placeholder for null values
@@ -163,7 +154,7 @@
                         maximumFractionDigits: 2
                         });
                         }
-                        ");
+        ").Visible(true);
                     columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(@"
                         function(e) {
                         if(e.value === null || e.value === undefined) {
@@ -174,26 +165,26 @@
                         maximumFractionDigits: 2
                         });
                         }
-                        ");
-                    columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherRefNo).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherVerifiedOn).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.VoucherVerifiedBy).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.AccountGroup).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.AccountHeadName).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.EntryNarration).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.MasterGroup).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.SubGroupName).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherAmountFormatted).Alignment(HorizontalAlignment.Right);
-                    columns.AddFor(m => m.VoucherApprovedBy).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherApprovedOn).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherEnteredBy).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherEnteredOn).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherEntryNo).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherModifiedBy).Alignment(HorizontalAlignment.Left);
-                    columns.AddFor(m => m.VoucherNarration).Alignment(HorizontalAlignment.Left);
+        ").Visible(true);
+                    columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left).Visible(true);
+                    columns.AddFor(m => m.VoucherRefNo).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.VoucherVerifiedOn).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.VoucherVerifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.AccountGroup).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.AccountHead).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.EntryNarration).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.MasterGroup).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.SubGroupName).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.VoucherAmountFormatted).Alignment(HorizontalAlignment.Right).Visible(false);
+                    columns.AddFor(m => m.VoucherApprovedBy).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.VoucherApprovedOn).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.VoucherEnteredBy).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.VoucherEnteredOn).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.VoucherEntryNo).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.VoucherModifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
+                    columns.AddFor(m => m.VoucherNarration).Alignment(HorizontalAlignment.Left).Visible(false);
                     // Enable custom inline editing for "SysRemarks" with a multiline TextArea
-                    columns.AddFor(m => m.SysRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left);
+                    columns.AddFor(m => m.SysRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
                     columns.AddFor(m => m.VoucherType).Visible(false);
                 })
             .OnCellClick("function(e) {handleCellClick(e);}")
@@ -219,15 +210,21 @@
                 .SummaryType(SummaryType.Count)
                 .DisplayFormat("Count: {0}"); // Customize the display format
 
-                    @* totalItems.Add()
+                     totalItems.Add()
         .Column("DrAmount") // Sum of DrAmount
         .SummaryType(SummaryType.Sum)
-        .DisplayFormat("Total DR: {0:C}"); // Customize the display format to currency
+                .CustomizeText(
+                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                );
 
         totalItems.Add()
         .Column("CrAmount") // Sum of CrAmount
         .SummaryType(SummaryType.Sum)
-        .DisplayFormat("Total CR: {0:C}"); *@    // Customize the display format to currency
+                .CustomizeText(
+                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                );      // Customize the display format to currency
                 });
             })
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
@@ -260,19 +257,19 @@
             $("#dataGrid").customizeGridContextMenu();
 
 
-        // Handle right-click event on the DataGrid rows
-        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-            e.preventDefault(); // Prevent the default context menu
-            var rowIndex = $(this).index(); // Get the row index
-            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-            console.log(rowData); // Log or use the row data as needed
-            // Clear previous content
-            contextMenuContent.empty();
-            // Add column titles and values to the context menu
-            contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
-            // Show custom context menu
-            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-        });
+        // // Handle right-click event on the DataGrid rows
+        // $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+        //     e.preventDefault(); // Prevent the default context menu
+        //     var rowIndex = $(this).index(); // Get the row index
+        //     var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
+        //     console.log(rowData); // Log or use the row data as needed
+        //     // Clear previous content
+        //     contextMenuContent.empty();
+        //     // Add column titles and values to the context menu
+        //     contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+        //     // Show custom context menu
+        //     contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+        // });
         // Get voucher Pop Up
         $("#voucherPopup").dxPopup({
             title: "Voucher Details",
@@ -377,8 +374,8 @@
                 var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
 
                 // Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
-                frmDate = new Date(currentDate.setDate(startOfWeek - 7)); // 7 days before Saturday
-                toDate = new Date(currentDate.setDate(startOfWeek - 1));
+                frmDate = new Date(currentDate.setDate(startOfWeek)); // 7 days before Saturday
+                toDate = new Date(currentDate.setDate(startOfWeek+6));
                 break;
             case 'tillmonth':
                 // Get the first and last day of the current month
@@ -398,7 +395,7 @@
             case 'fullyear':
                 // Get the first and last day of the current year
                 frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
-                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                toDate = new Date(currentDate.getFullYear(),11,31); // Last day of month
                 break;
             case 'lastyear':
                 // Get the first and last day of the last year
