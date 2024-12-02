@@ -1,5 +1,5 @@
 ﻿{
-   "CodeGenerationMode": 3,
+   "CodeGenerationMode": 4,
    "ContextClassName": "ERPMasterWtDataContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
@@ -19,6 +19,34 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl20106AssetCategories]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20107AssetLocations]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20108AssetDocuments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20109AssetsDocTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20112AssetMaintenanceTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20113ChequeMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20115CompanyBranch]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl20123LedgerSubGroups]",
          "ObjectType": 0
       },
@@ -31,6 +59,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl201MasterGroup]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl201SubLedgerMaster]",
          "ObjectType": 0
       },
@@ -39,7 +71,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl201VoucherEntryTemp]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl201VoucherMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl201VoucherMasterTemp]",
          "ObjectType": 0
       },
       {
@@ -55,11 +95,35 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[qry201_206DepreciationChild]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry20105BillsReceivableAgeingView]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry20107ChartOfAccounts]",
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[qry20121ExpenseClaimForm]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry20136VoucherMasterList]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry20164SalaryPayableLedgerMaster]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry201ListOfAccounts]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry201SubLedgerPayablesMaster]",
          "ObjectType": 3
       },
       {
@@ -99,6 +163,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[sp20157AssetRegisterView]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[sp20201JournalRegisterView]",
          "ObjectType": 1
       },
@@ -124,6 +192,7 @@
    "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
@@ -142,5 +211,6 @@
    "UseSchemaFolders": false,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
-   "UseT4": false
+   "UseT4": false,
+   "UseT4Split": false
 }

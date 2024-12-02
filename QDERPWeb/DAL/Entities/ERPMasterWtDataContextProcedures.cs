@@ -32,7 +32,6 @@ namespace QD.ERP.Web.DAL.Entities
         {
             return Procedures;
         }
-
         protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<sp20102GetAccountBalanceResult>().HasNoKey().ToView(null);
@@ -282,6 +281,26 @@ namespace QD.ERP.Web.DAL.Entities
                 parameterreturnValue,
             };
             var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20125AgeingReceivableReportsWtAdvances] @EndDate = @EndDate", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<sp20157AssetRegisterViewResult>> sp20157AssetRegisterViewAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<sp20157AssetRegisterViewResult>("EXEC @returnValue = [dbo].[sp20157AssetRegisterView]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
