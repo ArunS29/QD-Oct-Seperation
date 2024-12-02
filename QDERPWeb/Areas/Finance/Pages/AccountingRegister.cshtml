@@ -347,7 +347,7 @@
     function ddBtnShowRecords_click(duration) {
         var selectBox = $("#voucherTypeSelect").dxSelectBox("instance");
         var selectedValue = selectBox.option("value");
-        var VoucherType = selectedValue ? selectedValue.VoucherType : null;
+        var VoucherType = selectedValue ? selectedValue : null;
         // if (VoucherId === null) {
         //     alert("Please select a register.");
         //     return;

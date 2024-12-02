@@ -113,6 +113,11 @@
 												.LoadMode(DataSourceLoadMode.Raw)
 												.Key("AccountId")
 												)
+												.ValidationRules(rules =>
+												{
+													rules.AddRequired()
+													.Message("Supplier Name is required");
+												})
 												.LabelMode(EditorLabelMode.Outside)
 												.ID("SupplierNameDropDown")
 												.ShowClearButton(true)
@@ -202,7 +207,7 @@
 			@(Html.DevExtreme().DropDownBox()
 						.DataSource(d => d.WebApi()
 						.Controller("PurchaseVoucher")
-						.LoadAction("GetSupplierName")
+						.LoadAction("GetAccountHead")
 						.LoadMode(DataSourceLoadMode.Raw)
 						.Key("AccountId")
 						)
@@ -459,7 +464,7 @@
 				.ID("accounthead-datagrid")
 				.DataSource(d => d.WebApi()
 				.Controller("PurchaseVoucher")
-				.LoadAction("GetSupplierName")
+				.LoadAction("GetAccountHead")
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("AccountId")
 				)
@@ -497,7 +502,7 @@
 
 </div>
 <script>
-	$(function () {	
+	$(function () {
 	const voucherNo = getQueryParam('VoucherNo');
 		//alert(voucherNo);
 		if(voucherNo)
@@ -546,7 +551,43 @@
 		$("#costAllocationPopup").dxPopup("instance").close();
 	}
 	function onVoucherNoChanged(e) {
-		$.ajax({
+		const paramVoucherNo = getQueryParam('VoucherNo');
+	$.ajax({
+				type: "GET",
+				url: "/api/PurchaseVoucher/GetVoucherDetails",
+				contentType: "application/json",
+				data: {
+					voucherNo: e.value
+				},
+				success: function (response) {
+					if (response.success === false && paramVoucherNo) {
+						DevExpress.ui.notify(response.message, "error", 2000); // Notify if voucher not found
+						return;
+					}
+					console.log(response);
+					// Populate fields with the response data
+		$("#VoucherDate").dxDateBox("instance").option("value", response.data[0].VoucherDate);
+		$("#VoucherEffectiveDate").dxDateBox("instance").option("value", response.data[0].VoucherEffectiveDate);
+		$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", response.data[0].InvoiceSubmittedDate);
+		$("#InvoiceDueDate").dxDateBox("instance").option("value", response.data[0].InvoiceDueDate);
+		$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", response.data[0].InvoiceNoOfDays || null);
+		$("#VoucherRefNo").dxTextBox("instance").option("value", response.data[0].VoucherRefNo || "");
+		$("#ReferenceNote").dxTextBox("instance").option("value", response.data[0].ReferenceNote || "");
+		$("#VoucharNarration").dxTextBox("instance").option("value", response.data[0].VoucharNarration || "");
+		$("#VoucherType").dxSelectBox("instance").option("value", response.data[0].VoucherType || null);
+		$("#BillRemarks").dxTextBox("instance").option("value", response.data[0].BillRemarks || "");
+		$("#IsVerified").dxCheckBox("instance").option("value", response.data[0].IsVerified || false);
+		$("#IsApproved").dxCheckBox("instance").option("value", response.data[0].IsApproved || false);
+		$("#UseSubmittedDate").dxCheckBox("instance").option("value", response.data[0].UseSubmittedDate || false);
+				},
+				error: function (xhr, status, error) {
+					if (paramVoucherNo) {
+						DevExpress.ui.notify(response.message, "error", 2000); // Notify if voucher not found
+						return;
+					}
+				}
+			});
+	$.ajax({
 			type: "GET",
 			url: "/api/PurchaseVoucher/GetVoucherEntries",
 			contentType: "application/json",
@@ -560,21 +601,34 @@
 				alert("Error occurred while updating data: " + error);
 			}
 		});
+
 	}
 	function addVoucherEntry() {
 		var accountHead = $("#ddAccountHead").dxDropDownBox("instance");
+		var SupplierName = $("#SupplierNameDropDown").dxDropDownBox("instance");
 		var txtVoucherAmt = $("#txtVoucherAmount").dxNumberBox("instance");
 		var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+		var SupplierNameValidator = $("#SupplierNameDropDown").dxValidator("instance");
 		var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
 		// Validate controls explicitly
 		var accountHeadValidation = accountHeadValidator.validate();
 		var voucherAmtValidation = voucherAmtValidator.validate();
-		if (accountHeadValidation.isValid && voucherAmtValidation.isValid) {
-			var VE = {
+		var SupplierNameValidation = SupplierNameValidator.validate();
+		if (accountHeadValidation.isValid && voucherAmtValidation.isValid && SupplierNameValidation.isValid ){
+			var VE1 = {
 				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 				"AccountHead": $("#ddAccountHead").dxDropDownBox("instance").option("value"),
 				"VoucherAmount": $("#txtVoucherAmount").dxNumberBox("instance").option("value"),
 				"DrCr": $("#sbDrCr").dxSelectBox("instance").option("value"),
+				"AddedBy": "102",
+				"AddedOn": new Date(),
+				"EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value")
+			};
+			var VE2 = {
+				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
+				"AccountHead": $("#SupplierNameDropDown").dxDropDownBox("instance").option("value"),
+				"VoucherAmount": $("#txtVoucherAmount").dxNumberBox("instance").option("value"),
+				"DrCr": ($("#sbDrCr").dxSelectBox("instance").option("value")==="Dr"?"Cr":"Dr"),
 				"AddedBy": "102",
 				"AddedOn": new Date(),
 				"EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value")
@@ -584,11 +638,27 @@
 				type: "POST",
 				url: "/api/PurchaseVoucher/AddVoucherEntry",
 				contentType: "application/json",
-				data: JSON.stringify(VE),
+				data: JSON.stringify(VE1),
+				dataType: "json",
+				success: function (response) {
+					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+				},
+				error: function (xhr, status, error) {
+					alert("Error occurred while updating data: " + error);
+				}
+			});
+			$.ajax({
+				type: "POST",
+				url: "/api/PurchaseVoucher/AddVoucherEntry",
+				contentType: "application/json",
+				data: JSON.stringify(VE2),
 				dataType: "json",
 				success: function (response) {
 					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 					DevExpress.ui.notify("Voucher entry saved succfully!", "success", 2000);
+					accountHead.option("value", null);
+					txtVoucherAmt.option("value", null);
+					$("#txtEntryNarration").dxTextArea("instance").option("value", "");
 				},
 				error: function (xhr, status, error) {
 					alert("Error occurred while updating data: " + error);
@@ -615,6 +685,7 @@
 			"VoucharNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
 			"VoucherType": $("#VoucherType").dxSelectBox("instance").option("value"),
 			"BillRemarks": $("#BillRemarks").dxTextBox("instance").option("value"),
+			"UseSubmittedDate":$("#UseSubmittedDate").dxCheckBox("instance").option("value"),
 			"IsVerified": $("#IsVerified").dxCheckBox("instance").option("value"),
 			"IsApproved": $("#IsApproved").dxCheckBox("instance").option("value"),
 			"VoucherVerifiedOn": new Date(),

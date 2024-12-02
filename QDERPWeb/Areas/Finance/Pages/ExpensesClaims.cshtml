@@ -165,53 +165,52 @@
                 .ShowBorders(true)
                 .Columns(columns =>
                 {
-                    columns.AddFor(m => m.ClaimerID).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ClaimRefNo).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.PaymentVoucherNo).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ApprovedBy).Alignment(HorizontalAlignment.Center);
+                    columns.AddFor(m => m.ClaimerID).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.ClaimRefNo).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.PaymentVoucherNo).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.ApprovedBy).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ApprovedOn).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                    columns.AddFor(m => m.ClaimCreatedBy).Alignment(HorizontalAlignment.Center);
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
+                    columns.AddFor(m => m.ClaimCreatedBy).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ClaimCreatedOn).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                    columns.AddFor(m => m.ClaimerName).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ClaimModifiedBy).Alignment(HorizontalAlignment.Center);
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
+                    columns.AddFor(m => m.ClaimerName).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.ClaimModifiedBy).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ClaimModifiedOn).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                    columns.AddFor(m => m.ClaimRemarks).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.PaidBy).Alignment(HorizontalAlignment.Center);
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
+                    columns.AddFor(m => m.ClaimRemarks).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PaidBy).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.PaidOn).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                    columns.AddFor(m => m.PaymentAccount).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.PaymentType).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.PaymentVoucherNo).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ProjectClaimedFor).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.SubmittedBy).Alignment(HorizontalAlignment.Center);
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
+                    columns.AddFor(m => m.PaymentAccount).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PaymentType).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PaymentVoucherNo).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.ProjectClaimedFor).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.SubmittedBy).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.SubmittedOn).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                    columns.AddFor(m => m.VerifiedBy).Alignment(HorizontalAlignment.Center);
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
+                    columns.AddFor(m => m.VerifiedBy).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.VerifiedOn).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
                     columns.AddFor(m => m.ClaimDate)
                 .Caption("Claim Date").Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                    columns.AddFor(m => m.ProjectClaimedFor).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ClaimRemarks).Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.ClaimedAmountTotal).Alignment(HorizontalAlignment.Right);
-                    columns.AddFor(m => m.ApprovedAmountTotal).Alignment(HorizontalAlignment.Right);
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
+                    columns.AddFor(m => m.ClaimRemarks).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.ClaimedAmountTotal).Alignment(HorizontalAlignment.Right).Visible(true);
+                    columns.AddFor(m => m.ApprovedAmountTotal).Alignment(HorizontalAlignment.Right).Visible(true);
                     columns.AddFor(m => m.IsSubmittedToFinance).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>);
+        </text>).Visible(true);
                     columns.AddFor(m => m.IsVerified).Alignment(HorizontalAlignment.Center)
                 .Caption("Verified")
                 .Alignment(HorizontalAlignment.Center)
@@ -219,19 +218,19 @@
             <div class="dx-icon">
                 <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>);
+        </text>).Visible(true);
                     columns.AddFor(m => m.IsApproved).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>);
+        </text>).Visible(true);
                     columns.AddFor(m => m.IsPaid).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>);
+        </text>).Visible(true);
                     
                 })
             .Height(440)
@@ -252,7 +251,20 @@
             .Summary(s => s
             .TotalItems(totalItems =>
             {
-                totalItems.AddFor(m => m.ClaimerID).SummaryType(SummaryType.Count);
+                totalItems.Add()
+                .Column("ClaimedAmountTotal") // Sum of CrAmount
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(
+                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                );
+                totalItems.Add()
+                .Column("ApprovedAmountTotal") // Sum of CrAmount
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(
+                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                );
             }))
             )
     </div>

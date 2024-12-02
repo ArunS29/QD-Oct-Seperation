@@ -21,7 +21,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
         [HttpGet]
         public async Task<ActionResult> Get(DataSourceLoadOptions loadOptions)
-        {             
+        {
             var qryListOfAccountlists = _context.Qry201ListOfAccounts.Select(i => new
             {
                 i.MasterGroupId,
@@ -34,7 +34,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 i.ReferenceNo,
                 i.IsLedgerObselete
             });
-           
+
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
             //var stProAccountLedgerList = await _contextProcedure.StProAccountLedgerAsync("L00567", from,to);
             //return Json(stProAccountLedgerList);
@@ -42,7 +42,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetLedgerAccounts(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p=>p.AccountId!=null).Select(i => new
+            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountId != null).Select(i => new
             {
                 i.MasterGroupId,
                 i.MasterGroup,
@@ -63,16 +63,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             var from = DateTime.Parse(frmDate);
             var to = DateTime.Parse(toDate);
             ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(_context);
-            var ledgerData =  await _procedures.StProAccountLedgerAsync(accountId, from, to);
-            
+            var ledgerData = await _procedures.StProAccountLedgerAsync(accountId, from, to);
+
 
             // Return the data in a format suitable for DevExtreme DataGrid
-           // return Json(DataSourceLoader.Load(ledgerData));
+            // return Json(DataSourceLoader.Load(ledgerData));
 
 
             //var stProAccountLedgerList = await _contextProcedure.StProAccountLedgerAsync("L00567", from,to);
             return Json(ledgerData);
         }
-        
+
     }
 }

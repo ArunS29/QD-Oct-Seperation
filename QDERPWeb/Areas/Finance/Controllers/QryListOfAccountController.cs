@@ -16,9 +16,9 @@ namespace QDERPWeb.Areas.Finance.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions) 
+        public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p=>p.AccountId!=null).Select(i => new
+            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountId != null).Select(i => new
             {
                 i.MasterGroupId,
                 i.MasterGroup,

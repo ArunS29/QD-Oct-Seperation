@@ -169,36 +169,36 @@
                     .ShowBorders(true)
                     .Columns(columns =>
                     {
-                        columns.AddFor(m => m.RequesterID).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.RequesterID).Alignment(HorizontalAlignment.Center).Visible(true);
 
-                        columns.AddFor(m => m.JournalRefNo).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.ApprovedBy).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.ApprovedOn).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.JournalCreatedBy).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.JournalCreatedOn).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.JournalEffectiveDate).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.JournalModifiedBy).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.JournalModifiedOn).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.PostedBy).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.PostedOn).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.PostedVoucherNo).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.SubmittedBy).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.SubmittedOn).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.VerifiedBy).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.VerifiedOn).Alignment(HorizontalAlignment.Center);
+                    columns.AddFor(m => m.JournalRefNo).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.ApprovedBy).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.ApprovedOn).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalCreatedBy).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalCreatedOn).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalEffectiveDate).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalModifiedBy).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalModifiedOn).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PostedBy).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PostedOn).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PostedVoucherNo).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.SubmittedBy).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.SubmittedOn).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.VerifiedBy).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.VerifiedOn).Alignment(HorizontalAlignment.Center).Visible(false);
                         columns.AddFor(m => m.JournalEntryDate)
                     .Caption("Journal Entry Date").Alignment(HorizontalAlignment.Center).Format(format => format
                     .Type(Format.ShortDate)    // Custom type format
-                    .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                        columns.AddFor(m => m.JournalVoucherNarration).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.DrAmountTotal).Alignment(HorizontalAlignment.Right);
-                        columns.AddFor(m => m.CrAmountTotal).Alignment(HorizontalAlignment.Right);
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
+                    columns.AddFor(m => m.JournalVoucherNarration).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.DrAmountTotal).Alignment(HorizontalAlignment.Right).Visible(true);
+                    columns.AddFor(m => m.CrAmountTotal).Alignment(HorizontalAlignment.Right).Visible(true);
                     columns.AddFor(m => m.IsSubmittedToFinance).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>);
+        </text>).Visible(true);
                     columns.AddFor(m => m.IsVerified).Alignment(HorizontalAlignment.Center)
                 .Caption("Verified")
                 .Alignment(HorizontalAlignment.Center)
@@ -206,21 +206,21 @@
             <div class="dx-icon">
                 <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>);
+        </text>).Visible(true);
                     columns.AddFor(m => m.IsApproved).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>);
+        </text>).Visible(true);
                     columns.AddFor(m => m.IsPosted).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>
-            );
-                    columns.AddFor(m => m.PostedVoucherNo).Alignment(HorizontalAlignment.Center);
+            ).Visible(true);
+                    columns.AddFor(m => m.PostedVoucherNo).Alignment(HorizontalAlignment.Center).Visible(true);
                 })
 
             .Height(440)
@@ -239,11 +239,11 @@
         .UseIcons(true))        // Enable edit icons (like pencil) *@
             .ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
             .ShowBorders(true)
-            .Summary(s => s
+           @*  .Summary(s => s
             .TotalItems(totalItems =>
             {
                 totalItems.AddFor(m => m.RequesterID).SummaryType(SummaryType.Count);
-            }))
+            })) *@
             )
     </div>
     <div>

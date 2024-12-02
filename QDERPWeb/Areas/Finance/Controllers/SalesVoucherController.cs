@@ -22,7 +22,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetClientName(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountGroupId== "A011" || p.AccountGroupId == "A012").Select(i => new
+            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A011" || p.AccountGroupId == "A012").Select(i => new
             {
                 i.MasterGroupId,
                 i.MasterGroup,
@@ -38,7 +38,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
         [HttpPost]
-        public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions,[FromBody] Tbl201VoucherEntry VE)
+        public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl201VoucherEntry VE)
         {
             if (VE == null)
             {
@@ -64,11 +64,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             catch (Exception ex)
             {
-               
+
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
 
-            
+
         }
         public async Task<ActionResult> GetVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
         {
