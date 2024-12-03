@@ -1,0 +1,302 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.AssetMaintanenceMasterModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Add SweetAlert CSS and JS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<style type="text/css">
+    /* Card container styling */
+    .card-container {
+        background-color: #cfddee; /* Set background color for the card */
+        padding: 20px; /* Add some padding inside the card */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+    }
+
+        /* Label text color blue */
+        .card-container label {
+            color: blue; /* Set label text color to blue */
+        }
+
+    /* Style for the textboxes */
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+
+    /* Grid Column Header Text Color */
+    .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
+        color: #2d5799; /* Set header text color */
+    }
+
+    /* Grid Column Header Background Color */
+    .dx-datagrid-headers .dx-header-row {
+        background-color: #e7f2fe; /* Set background color for column headers */
+    }
+
+    /* Button customization */
+    .dx-button-add {
+        background-color: #f5f8fb !important; /* Set background color to #cfddee */
+        color: red !important; /* Set text color to red */
+        border: 1px solid #b0c4de; /* Light border around the button */
+    }
+
+        .dx-button-add .dx-icon {
+            color: green !important; /* Set icon color to green */
+        }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center; /* Centers the text inside the input */
+    }
+
+    .backgroundcolor {
+        background-color: #89f0b5;
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px;
+    }
+
+    /* Style for the Save and Refresh buttons */
+    .action-buttons-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+        .action-buttons-container .dx-button {
+            margin-right: 10px; /* Space between buttons */
+        }
+</style>
+
+<div class="content-container-top">
+    <div class="container">
+        <h2>Asset Maintenance Master</h2>
+        <div class="row g-6">
+            <div class="card-container">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Maintenance Type & Add to the Existing List</label>
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .ID("txtmaintanence")
+                        .Value(null)
+                        )
+                </div>
+            </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnadd")
+                            .Text("ADD")
+                            .Height(70)
+                            .Width(178)
+                            .Icon("plus")
+                            .OnClick("function() { addVoucherEntry(); }")
+                            .ElementAttr(new { @class = "dx-button-add" })
+                            )
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <br />
+        <div id="gridContainer"></div>
+    </div> <!-- End of card-container -->
+  
+
+
+
+<script type="text/javascript">
+    $(function () {
+        // Initialize DevExtreme DataGrid with CustomStore for Asset Maintenance Type
+        $("#gridContainer").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "AssetMaintenanceTypeId",
+                load: function () {
+                    return $.getJSON('/api/Master/GetAssetMaintanencetype'); // Fetch data from the API
+                },
+                update: function (key, values) {
+                    // Create an object that contains the fields to be updated
+                    var updatedAssetMaintenanceType = {
+                        AssetMaintenanceTypeId: key, // The ID of the asset maintenance type to update
+                        AssetMaintenanceType: values.AssetMaintenanceType // Make sure the correct field is updated
+                    };
+
+                    // Send the updated data to the backend via AJAX
+                    return $.ajax({
+                        type: "POST",
+                        url: "/api/Master/UpdateAssetMaintanencetype",
+                        data: JSON.stringify(updatedAssetMaintenanceType), // Send updated data in JSON format
+                        contentType: "application/json",
+                        success: function (response) {
+                            // Show success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Asset maintenance type updated successfully.',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function (xhr) {
+                            var errorMessage = xhr.status === 500
+                                ? "Server error: Please try again later."
+                                : "Validation error: " + xhr.responseText;
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            }),
+            editing: {
+                mode: "batch", // Enable batch edit mode for multiple row editing
+                allowUpdating: true,  // Allow cell updates
+                allowAdding: false,   // No new rows
+                allowDeleting: false, // Prevent row deletion
+                useIcons: true, // Use icons for save/cancel
+                texts: {
+                    saveAll: "Update", // Custom text for save button
+                    cancelAll: "Cancel All Changes" // Custom text for cancel button
+                }
+            },
+            columns: [
+                { dataField: "AssetMaintenanceTypeId", caption: "Maintenance Type ID", width: 100, editorOptions: { readOnly: true } },
+                { dataField: "AssetMaintenanceType", caption: "Maintenance Type" }
+            ],
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            filterRow: {
+                visible: true,
+                applyFilter: "auto"
+            },
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: "save",  // Icon for the Save button
+                            text: "Update",  // Text alongside the icon
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
+                            }
+                        },
+                        location: "after"
+                    },
+                    {
+                        widget: "dxButton",  // Adding Cancel button
+                        options: {
+                            icon: "close",  // Icon for Cancel button
+                            text: "Cancel",  // Text for Cancel button
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
+                            }
+                        },
+                        location: "after"
+                    },
+                          {
+                        widget: "dxButton", // Add the Back button
+                        options: {
+                            icon: "arrowleft", // You can choose another icon if you'd like
+                            text: "Back",
+                            onClick: function () {
+                                window.close(); // This closes the current window/tab
+                            }
+                        },
+                        location: "after"
+                    }
+                ]
+            },
+            onRowUpdated: function (e) {
+                console.log("Row updated:", e); // Log the updated row to check the data
+            },
+            onRowInserted: function (e) {
+                console.log("Row inserted", e.data);
+            },
+            onRowRemoved: function (e) {
+                console.log("Row removed", e.data);
+            },
+            scrolling: {
+                mode: "virtual", // This makes the scrolling virtual, loading rows as you scroll
+                rowRenderingMode: "virtual", // Optimizes row rendering
+                useNative: true // Use native scrolling for better performance
+            },
+            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
+            width: "100%" // Make grid responsive and take full width of the container
+        });
+
+    });
+
+    // Function to add a new Asset Maintenance Type
+    function addVoucherEntry() {
+        var AssetMaintenanceType = $("#txtmaintanence").dxTextBox("instance").option("value");
+
+        if (AssetMaintenanceType) {
+            var AssetmaintenanceData = {
+                AssetMaintenanceType: AssetMaintenanceType
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/Master/AddAssetMaintanencetype",  // Ensure the URL matches exactly
+                data: JSON.stringify(AssetmaintenanceData),
+                contentType: "application/json",
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Asset maintenance type added successfully',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Refresh the grid to show the updated data
+                            $("#gridContainer").dxDataGrid("instance").refresh();
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    var errorMessage = xhr.status === 500
+                        ? "Server error: Please try again later."
+                        : "Validation error: " + xhr.responseText;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Input Missing',
+                text: 'Please enter a maintenance type before adding.',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+
+</script>

@@ -1,0 +1,253 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.AssetsDocTypeMasterModel
+@{
+    ViewData["Title"] = "Assets Document Types";
+}
+
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Add SweetAlert CSS and JS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<style type="text/css">
+    .card-container {
+        background-color: #cfddee;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .dx-button-add {
+        background-color: #f5f8fb !important;
+        color: red !important;
+        border: 1px solid #b0c4de;
+    }
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+</style>
+
+<div class="content-container-top">
+    <div class="container">
+        <h2>@ViewData["Title"]</h2>
+
+        <div class="card-container">
+            <div class="row g-6">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="DocumentType">Document Type</label>
+                        @(Html.DevExtreme().TextBox()
+                            .ID("txtDocumentType")
+                            .Value(null)
+                        )
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="ReminderDays">Reminder Days</label>
+                        @(Html.DevExtreme().TextBox()
+                            .ID("txtReminderDays")
+                            .Value(null)
+                        )
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-6">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnAdd")
+                            .Text("ADD")
+                            .Height(70)
+                            .Width(178)
+                            .Icon("plus")
+                            .OnClick("function() { addAssetType(); }")
+                            .ElementAttr(new { @class = "dx-button-add" })
+                        )
+                    </div>
+                </div>
+            </div>
+
+            <div id="gridContainer"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var updatedRows = [];
+
+        // Initialize DataGrid with custom store
+        $("#gridContainer").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "DocumentTypeId",
+                load: function () {
+                    return $.getJSON('/api/Master/GetAssetTypes'); // Fetch data from the API
+                },
+                update: function (key, values) {
+                    var updatedAssetType = {
+                        DocumentTypeId: key,
+                        DocumentType: values.DocumentType,
+                        ReminderDays: values.ReminderDays
+                    };
+
+                    updatedRows.push(updatedAssetType);
+
+                    return $.ajax({
+                        type: "POST",
+                        url: "/api/Master/UpdateAssetType",
+                        data: JSON.stringify(updatedAssetType),
+                        contentType: "application/json",
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Asset Type Updated',
+                                text: 'The asset type has been successfully updated.',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function (xhr) {
+                            var errorMessage = xhr.status === 500
+                                ? "Server error: Please try again later."
+                                : "Validation error: " + xhr.responseText;
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            }),
+            editing: {
+                mode: "batch",
+                allowUpdating: true,
+                allowAdding: false,
+                allowDeleting: false,
+                useIcons: true,
+                texts: {
+                    saveAll: "Update",
+                    cancelAll: "Cancel All Changes"
+                }
+            },
+            columns: [
+                { dataField: "DocumentTypeId", caption: "Document Type ID", width: 100, editorOptions: { readOnly: true } },
+                { dataField: "DocumentType", caption: "Document Type" },
+                { dataField: "ReminderDays", caption: "Reminder Days" }
+            ],
+            showBorders: true,
+            paging: { pageSize: 10 },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            filterRow: { visible: true, applyFilter: "auto" },
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: "save",
+                            text: "Update",
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").saveEditData();
+                            }
+                        },
+                        location: "after"
+                    },
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: "close",
+                            text: "Cancel",
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").cancelEditData();
+                            }
+                        },
+                        location: "after"
+                    },
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: "arrowleft",
+                            text: "Back",
+                            onClick: function () {
+                                window.close();
+                            }
+                        },
+                        location: "after"
+                    }
+                ]
+            },
+            onRowUpdated: function (e) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Row Updated',
+                    text: 'The row data was successfully updated.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+
+    // Function to add a new Asset Type
+    function addAssetType() {
+        var documentType = $("#txtDocumentType").dxTextBox("instance").option("value");
+        var reminderDays = $("#txtReminderDays").dxTextBox("instance").option("value");
+
+        if (documentType && reminderDays) {
+            var assetTypeData = {
+                DocumentType: documentType,
+                ReminderDays: reminderDays
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/Master/AddAssetType",
+                data: JSON.stringify(assetTypeData),
+                contentType: "application/json",
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Asset Type Added',
+                        text: 'A new asset type has been successfully added.',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    var errorMessage = xhr.status === 500
+                        ? "Server error: Please try again later."
+                        : "Validation error: " + xhr.responseText;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Incomplete Form',
+                text: 'Please fill in all fields before submitting.',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+</script>
+

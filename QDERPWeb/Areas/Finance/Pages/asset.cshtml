@@ -1,0 +1,848 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.assetModel
+@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Asset View";
+}
+
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/21.2.3/css/dx.common.css">
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/21.2.3/css/dx.light.css">
+
+<style>
+
+    /* Ensure tab text is styled properly */
+    .dx-tabpanel .dx-tab {
+        color: black !important; /* Set the tab text color to black */
+        font-weight: bold; /* Optionally make the text bold */
+        font-size: 14px; /* Adjust font size for better visibility */
+        padding: 10px 15px; /* Increase padding for better appearance */
+    }
+
+        /* Optional: Adjust the selected tab styling */
+        .dx-tabpanel .dx-tab.dx-selection {
+            background-color: lightblue; /* Highlight selected tab with a background */
+            color: white !important; /* Set selected tab text color */
+        }
+
+    /* Add a gray border around the tab panel */
+    .dx-tabpanel {
+        /*  border: 2px solid gray;  Set the border color to gray */
+        /* border-radius: 5px;  Optionally, add rounded corners to the border */
+    }
+
+
+
+
+    .form-container {
+        margin: 15px;
+        background-color: #cfddee;
+        border: 1px solid black; /* Add a black border */
+        padding: 5px; /* Optional: Add some padding inside the border */
+        border-radius: 1px; /* Optional: Rounded corners */
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1px;
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        color: blue;
+        padding: 5px;
+        font-weight: bold;
+        width: 180px;
+        text-align: right;
+        display: flex;
+        align-items: center;
+    }
+
+    .dx-textbox .dx-texteditor-input,
+    .dx-numberbox .dx-texteditor-input,
+    .dx-selectbox .dx-texteditor-input {
+        /*  background-color: white; */
+    }
+
+    .dx-selectbox {
+        width: 100%;
+    }
+
+    .footer-buttons .row {
+        margin-top: 20px; /* Add some space between the form and footer */
+    }
+
+    .footer-buttons .col-md-1 {
+        /*  padding-left: 10px;
+                padding-right: 10px; */
+    }
+
+    /* Adds border to form control elements */
+    .form-control-with-border {
+        border: 1px solid gray;
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
+    }
+
+    /* Optional: Adds a border to the form-row as a whole */
+    .form-row.border-outline {
+        border: 1px solid gray;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+
+</style>
+
+<div class="form-container">
+    <h2>Asset Register </h2>
+
+    <div class="col-md-12">
+        <div class="outline-container p-3" style="outline: 2px solid gray; border-radius: 8px;">
+
+            <div class="row">
+
+                <!-- Asset Ledger No Field -->
+                <div class="col-md-2">
+                    <div class="form-label">
+                        <label for="AssetLedgerNo">Asset Ledger No</label>
+                    </div>
+                    @(Html.DevExtreme().TextBox().ID("AssetLedgerNo").Value(""))
+                </div>
+
+
+
+                <!-- Asset Category Dropdown -->
+                <div class="col-md-2">
+                    <div class="form-label">
+                        <label for="AssetCategory">Asset Category</label>
+                    </div>
+                    <div class="form-group-row">
+                        @(Html.DevExtreme().SelectBox().ID("AssetCategoryselect")
+                            .LabelMode(EditorLabelMode.Outside).ValueExpr("AssetCategory").InputAttr("aria-label", "Owner").DisplayExpr("AssetCategory").DataSource(d => d.WebApi().Controller("Asset").LoadAction("GetAssetCategoriesByCode").LoadMode(DataSourceLoadMode.Raw).Key("AssetCategory")).SearchEnabled(true).ShowClearButton(true).TabIndex(1))
+                        @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToAssetCategoryView"))
+                    </div>
+                </div>
+
+                <!-- Add this CSS to ensure the button and dropdown are on the same row -->
+                <style>
+                    .form-group-row {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
+
+                        .form-group-row .dx-selectbox, .form-group-row .dx-button {
+                            margin-right: 10px; /* Space between dropdown and button */
+                        }
+                </style>
+
+
+                <!-- Purchased Asset Value Field -->
+                <div class="col-md-2">
+                    <div class="form-label">
+                        <label for="PurchasedAssetValue">Purchased Asset Value</label>
+                    </div>
+                    @(
+                        Html.DevExtreme().NumberBox()
+                        .ID("PurchasedAssetValue")
+                        .Value(0)
+                        .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                </div>
+
+
+
+                <!-- Plate No Field -->
+                <div class="col-md-2">
+                    <div class="form-label">
+                        <label for="PlateNo">Plate No</label>
+                    </div>
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .ID("PlateNo")
+                        .Value("")
+                        )
+                </div>
+
+                <!-- Property No (Property Modules) Dropdown -->
+                <div class="col-md-4">
+                    <div class="form-label">
+                        <label for="PropertyNo">Property No(Modules)</label>
+                    </div>
+                    @(
+                        Html.DevExtreme().SelectBox()
+                        .ID("PropertyNo")
+                        .Items(new List<string> { "Property 1", "Property 2", "Property 3" }) // Add your property numbers here
+                        .Value("Property 1")
+                        )
+                </div>
+            </div>
+
+
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <!-- Asset Description Field -->
+                            <div class="col-md-12">
+                                <div class="form-label">
+                                    <label for="AssetDescription">Asset Description</label>
+                                </div>
+                                @(
+                                    Html.DevExtreme().TextBox()
+                                    .ID("AssetDescription")
+                                    .Value("")
+                                    )
+                            </div>
+
+
+                            <div class="col-md-12">
+                                <div class="form-label">
+                                    <label for="Assetlocation">Asset Location</label>
+                                </div>
+                                <div class="row align-items-center">
+                                    <div class="col-md-11" style="padding-right:0px">
+                                        @(Html.DevExtreme().SelectBox()
+                                            .ID("Assetlocationselect")
+                                            .LabelMode(EditorLabelMode.Outside)
+                                            .ValueExpr("AssetLocation")
+                                            .InputAttr("aria-label", "Owner")
+                                            .DisplayExpr("AssetLocation")
+                                            .DataSource(d => d.WebApi()
+                                            .Controller("Asset")
+                                            .LoadAction("GetAssetlocation")
+                                            .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("AssetLocation")
+                                            )
+                                            .SearchEnabled(true)
+                                            .ShowClearButton(true)
+                                            .TabIndex(1)
+                                            )
+                                    </div>
+                                    <div class="col-md-1">
+                                        @(Html.DevExtreme().Button()
+                                            .ID("btnAddAccount1")
+                                            .Icon("plus")
+                                            .ElementAttr("class", "button-alignment-down button-group")
+                                            .OnClick("redirectToAssetLocationMaster") // Corrected JavaScript function for Asset Location
+                                            )
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <!-- Asset Specification Field -->
+                        <div class="col-md-12">
+                            <div class="form-label">
+                                <label for="AssetSpecification">Asset Specification</label>
+                            </div>
+                            @(
+                                Html.DevExtreme().TextArea().Height(120)
+                                .ID("AssetSpecification")
+                                .Value("")
+                                .InputAttr("style", "overflow-y: auto; resize: none;")
+                                )
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+            <div class="row">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-container">
+        <h2>Asset Details</h2>
+
+        <!-- Tab Menu -->
+        @(
+                Html.DevExtreme().TabPanel()
+                .ID("AssetTabs")
+                .Items(item =>
+                {
+                    item.Add()
+                .Title("Asset Details")
+                .Text("Asset Details")
+                .Template(@<text>
+
+
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="PurchasedDate">Purchased Date</label>
+                        </div>
+                        @Html.DevExtreme().DateBox().ID("PurchasedDate").Value(DateTime.Now)
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="PurchasedFrom">Purchased From</label>
+                        </div>
+                        @Html.DevExtreme().TextBox().ID("PurchasedFrom").Value("")
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="PurchasedAs">Purchased As</label>
+                        </div>
+                        @Html.DevExtreme().SelectBox().ID("PurchasedAs").Items(new List<string> { "New", "Used" }).Value("New")
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="CurrentCondition">Current Condition</label>
+                        </div>
+                        @Html.DevExtreme().SelectBox().ID("CurrentCondition").Items(new List<string> { "Good", "Average", "Poor" }).Value("Good")
+                    </div>
+                </div>
+
+                <!-- Second Row -->
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="Brand">Brand</label>
+                        </div>
+                        @Html.DevExtreme().TextBox().ID("Brand").Value("")
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="Model">Model</label>
+                        </div>
+                        @Html.DevExtreme().TextBox().ID("Model").Value("")
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="Year">Year</label>
+                        </div>
+                        @Html.DevExtreme().TextBox().ID("Year").Value("")
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="Type">Type</label>
+                        </div>
+                        @Html.DevExtreme().TextBox().ID("Type").Value("")
+                    </div>
+                </div>
+
+                <!-- Third Row -->
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="FMV">FMV (Fair Market Value)</label>
+                        </div>
+                        @Html.DevExtreme().NumberBox().ID("FMV").Value(0)
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="BMW">BMW Numbers</label>
+                        </div>
+                        @Html.DevExtreme().NumberBox().ID("BMW").Value(0)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-label">
+                    @Html.DevExtreme().CheckBox() <label for="IsPropertyFinanced"> Is Property Financed?</label>
+                </div>
+
+
+
+            </div>
+
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-label">
+                            <label for="FinanceBy">Finance By</label>
+                        </div>
+                        @Html.DevExtreme().TextBox().ID("FinanceBy").Value("")
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="StartDate">Start Date</label>
+                        </div>
+                        @Html.DevExtreme().DateBox().ID("StartDate").Value(DateTime.Now)
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="EndDate">End Date</label>
+                        </div>
+                        @Html.DevExtreme().DateBox().ID("EndDate").Value(DateTime.Now)
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-label">
+                            <label for="NoOfInstallments">No of Installments</label>
+                        </div>
+                        @(
+                        Html.DevExtreme().NumberBox()
+                        .ID("NoOfInstallments")
+                        .Value(0)
+                        .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-label">
+                            <label for="Downpayment">Downpayment</label>
+                        </div>
+                        @(
+                        Html.DevExtreme().NumberBox()
+                        .ID("Downpayment")
+                        .Value(0)
+                        .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-label">
+                            <label for="MonthlyInstallment">Monthly Installment</label>
+                        </div>
+                        @(
+                        Html.DevExtreme().NumberBox()
+                        .ID("MonthlyInstallment")
+                        .Value(0)
+                        .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-label">
+                            <label for="FinalPayment">Final Payment</label>
+                        </div>
+                        @(
+                        Html.DevExtreme().NumberBox()
+                        .ID("FinalPayment")
+                        .Value(0)
+                        .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @(Html.DevExtreme().Button()
+                            .ID("btnpaymentshedule")
+                            .Text("Payment Shedule")
+                            .Height(70)
+                            .Width(178)
+                            .Icon("plus")
+                            .OnClick("function() {  }")
+                            )
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </text>);
+
+
+
+
+                    item.Add().Title("Depreciation").Text("Depreciation").Template(@<text>
+
+
+            <div class="cards-container">
+                @*    <h2>@ViewData["Title"]</h2> *@
+
+                <!-- Card 1: General Account Group Information -->
+                <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
+
+
+                    <div class="form-group">
+                        <label for="VoucherType">Depreciation Method:</label>
+                        @(
+                        Html.DevExtreme().SelectBox()
+                        .ID("DepreciationMethod")
+                        .DataSource(new[] { "Straight Line Method" })
+                        .Value("Straight Line Method")
+                        .Width(520)
+                        .Disabled(false)
+
+                        )
+                    </div>
+
+                    <!-- Scarp Value -->
+                    <div class="form-group">
+                        <label for="AmountinSAR" class="button-alignment-down">Scarp Value</label>
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("ScarpValue")
+                        .Width(150)
+                        .Value(0)
+                        .ShowSpinButtons(true)
+                        .Min(0)
+                        .Max(1000)
+                        .Step(1))
+                    </div>
+
+                    <!-- Life in years -->
+                    <div class="form-group">
+                        <label for="AmountinSAR" class="button-alignment-down">Life in years</label>
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("Lifeinyears")
+                        .Width(100)
+                        .Value(0)
+                        .ShowSpinButtons(true)
+                        .Min(0)
+                        .Max(1000)
+                        .Step(1))
+                    </div>
+
+                    <!-- Dep.Percentage -->
+                    <div class="form-group">
+                        <label for="AmountinSAR" class="button-alignment-down">Dep.Percentage(%)</label>
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("DepPercentage")
+                        .Width(100)
+                        .Value(0)
+                        .ShowSpinButtons(true)
+                        .Min(0)
+                        .Max(1000)
+                        .Step(1))
+                    </div>
+
+                    <!-- Schedule Button -->
+                    <div class="form-group" style="margin-left: auto;">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnAttach")
+                        .Text("Schedule")
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("save")
+                        )
+                    </div>
+                </div>
+
+
+
+                <!-- Card 2 -->
+                <div class="card">
+                    <div class="dx-field ledgerResult">
+
+                        @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201206depreciationChild>()
+                        .ID("dataGrid")
+                        .RemoteOperations(false)
+                        .Columns(columns =>
+                        {
+
+                        columns.AddFor(m => m.DepreciationDocNo).Caption("Depreciation Doc No");
+
+
+                        columns.AddFor(m => m.DeprStartDate).Caption("Depr Start Date");
+                        columns.AddFor(m => m.DeprEndDate).Caption("Depr End Date");
+                        columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance");
+                        columns.AddFor(m => m.DebitTransaction).Caption("Debit Transaction");
+                        columns.AddFor(m => m.CreditTransaction).Caption("Credit Transaction");
+                        columns.AddFor(m => m.ClosingBalance).Caption("Closing Balance");
+                        columns.AddFor(m => m.DepreciatedPercentage).Caption("Depreciated Percentage");
+                        columns.AddFor(m => m.DepreciationAmount).Caption("Depreciation Amount");
+                        columns.AddFor(m => m.AccumulatedAdjusted).Caption("Accumulated Adjusted");
+                        columns.AddFor(m => m.BookValueAsOnDate).Caption("Book Value As On Date");
+                        })
+                        //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                        .AllowColumnReordering(true) // Enable column reordering
+                        .AllowColumnResizing(true)   // Enable column resizing
+                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                        .HeaderFilter(filter => filter.Visible(true))
+                        .Height(250)
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                        .ShowBorders(true)
+                        .Width("100%")
+                        )
+                    </div>
+                </div>
+
+                @* </div> *@
+
+
+            </div>
+
+
+        </text>);
+
+
+                    item.Add().Text("Documents").Title("Documents").Template(@<text>
+            <div class="cards-container">
+
+                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                    @(Html.DevExtreme().Button()
+                    .ID("docbtnAttach")
+                    .Text("Add & Attach Files")
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("save")
+                    )
+
+                </div>
+
+                <div class="card">
+                    <div class="dx-field ledgerResult">
+
+                        @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20108AssetDocument>()
+
+                        .ID("Documents-dataGrid")
+                        .RemoteOperations(false)
+                        .Columns(columns =>
+                        {
+                        @*   columns.AddFor(m => m.).Caption(""); *@
+                        columns.AddFor(m => m.DocumentNo).Caption("Doc No");
+
+
+                        columns.AddFor(m => m.DocumentType).Caption("DocumentType");
+                        columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref.No");
+                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks");
+                        columns.AddFor(m => m.DocumentExpDate).Caption("Expiry On");
+                        columns.AddFor(m => m.DocumentExpDateAr).Caption("Expiry Arabic");
+                        columns.AddFor(m => m).Caption("Notify On");
+                        })
+                        //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                        .AllowColumnReordering(true) // Enable column reordering
+                        .AllowColumnResizing(true)   // Enable column resizing
+                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                        .HeaderFilter(filter => filter.Visible(true))
+                        .Height(250)
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                        .ShowBorders(true)
+                        .Width("100%")
+                        )
+                    </div>
+                </div>
+
+
+            </div>
+        </text>);
+
+
+
+                    item.Add().Text("Maintenance").Title("Maintenance").Template(@<text>
+
+            <div class="cards-container">
+
+                <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
+                    <!-- Depreciation Method -->
+                    <div class="form-group">
+
+                        <label for="" class="button-alignment-down">Latest Meter Reading:</label>
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("MaintenanceScarpValue")
+                        .Width(350)
+                        .Value(0)
+                        .ShowSpinButtons(true)
+                        .Min(0)
+                        .Max(1000)
+                        .Step(1))
+                    </div>
+
+
+                    <div class="form-group" style="display: flex; justify-content: flex-end; width: 350%;">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnMaintenance")
+                        .Text("Add Maintenance Types")
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("save")
+                        )
+                    </div>
+
+
+                    <!-- Schedule Button -->
+
+                    <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnMaintenanceScheduled")
+                        .Text("Add Scheduled Types")
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("save")
+                        )
+                    </div>
+                </div>
+
+
+
+                <!-- Card 2 -->
+                <div class="card">
+                    <div class="dx-field ledgerResult">
+
+                        @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+                        .ID("Maintenance-dataGrid")
+                        .RemoteOperations(false)
+                        .Columns(columns =>
+                        {
+
+                        columns.AddFor(m => m.AccountHead).Caption("Maintenance Type ID");
+                        columns.AddFor(m => m.EntryNarration).Caption("Maintenance Reading");
+                        columns.AddFor(m => m.SysRemarks).Caption("Maintenance Scheduled On");
+                        @*  columns.AddFor(m => m.SysRemarks).Caption("Reminder Date");
+                        columns.AddFor(m => m.SysRemarks).Caption("Maintenance Done?");
+                        columns.AddFor(m => m.SysRemarks).Caption("Maintenance Done On");
+                        columns.AddFor(m => m.SysRemarks).Caption("Remarks"); *@
+
+                        })
+                        //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                        .AllowColumnReordering(true) // Enable column reordering
+                        .AllowColumnResizing(true)   // Enable column resizing
+                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                        .HeaderFilter(filter => filter.Visible(true))
+                        .Height(250)
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                        .ShowBorders(true)
+                        .Width("100%")
+                        )
+                    </div>
+                </div>
+
+                @* </div> *@
+
+
+
+
+            </div>
+
+
+        </text>);
+                })
+            )
+
+    </div>
+
+    <div class="form-container">
+        <div class="footer-buttons">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").OnClick("function() { alert('Update clicked!'); }"))
+                    </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
+                    </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").OnClick("function() { alert('Delete clicked!'); }"))
+                    </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("function() { alert('Back clicked!'); }"))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script>
+
+    function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid.option("focusedRowIndex");
+            let visibleRows = dataGrid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+        }
+    }
+
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+    $(document).ready(function () {
+
+    });
+
+    // Function for redirecting to Asset Category View
+    function redirectToAssetCategoryView() {
+        window.open('/Finance/AssetCategoryView', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+    }
+
+    // Function for redirecting to Asset Location
+    function redirectToAssetLocationMaster() {
+        window.open('/Finance/AssetLocation', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+    }
+
+
+
+</script>
+
+<script src="https://cdn3.devexpress.com/jslib/21.2.3/js/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/21.2.3/js/jszip.min.js"></script>
+

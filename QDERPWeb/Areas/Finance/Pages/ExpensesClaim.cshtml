@@ -1,0 +1,214 @@
+﻿@page
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; 
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; 
+        justify-content: start; 
+        align-items: center; 
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+
+
+
+    .button-alignment-down {
+        margin-bottom: 10px
+    }
+
+    #Narration {
+        overflow-y: auto; 
+        resize: none; 
+    }
+</style>
+<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+     ExpenseClaimWithDetails
+    </div>
+    <div class="card-body" style="padding: 20px; background-color:  #c0dceb; border-radius: 5px;">
+     <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
+           
+   
+               
+                @(Html.DevExtreme().DateBox()
+                    .ID("VoucherDate")
+                    .InputAttr("aria-label", "Date")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("yyyy-MM-dd")
+                    .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                    )
+     
+              
+                @(Html.DevExtreme().DateBox()
+                    .ID("EffectiveDate")
+                    .InputAttr("aria-label", "Date")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("yyyy-MM-dd")
+                    .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                    )
+            
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ddBtnShowRecords")
+                .Text("Show Records")
+                .Icon("smalliconslayout")
+                .Width(180)
+            
+                .TabIndex(4)
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                    items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                    items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                    items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                })
+                )
+        </div>
+
+
+     
+        <div class="dx-field ledgerResult">
+            @(Html.DevExtreme().DataGrid < QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay > ()
+                .ID("dataGrid")
+                .KeyExpr("ClaimRefNo") 
+                .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("ExpensesClaim")
+                .LoadAction("GetExpenseClaims")) 
+                .Columns(columns =>
+                {
+
+                    columns.Add().DataField("ClaimRefNo").Caption("ClaimRefNo");
+                    columns.Add().DataField("ClaimDate").Caption("ClaimDate");
+                    columns.Add().DataField("ClaimerName").Caption("ClaimerName");
+                    columns.Add().DataField("PaymentVoucherNo").Caption("PaymentVoucherNo");
+                    columns.Add().DataField("BillDate").Caption("BillDate");
+                    columns.Add().DataField("BillRefNo").Caption("BillRefNo");
+                    columns.Add().DataField("ExpenseDescription").Caption("ExpenseDescription");
+                    columns.Add().DataField("ClaimedAmount").Caption("ClaimedAmount");
+                    columns.Add().DataField("ApprovedAmount").Caption("ApprovedAmount");
+                    columns.Add().DataField("CostCenterCode").Caption("CostCenterCode");
+                    columns.Add().DataField("AccountHead").Caption("AccountHead");
+                    columns.Add().DataField("IsTaxIncluded").Caption("IsTaxIncluded");
+                    columns.Add().DataField("Discount").Caption("Discount");
+                    columns.Add().DataField("TaxAmount").Caption("TaxAmount");
+                    columns.Add().DataField("RoundOff").Caption("RoundOff");
+                    columns.Add().DataField("SupplierName").Caption("SupplierName");
+                    columns.Add().DataField("SupplierVatno").Caption("SupplierVatno");
+                    columns.Add().DataField("EmployeeNo").Caption("EmployeeNo");
+                    columns.Add().DataField("EmployeeName").Caption("EmployeeName");
+                    columns.Add().DataField("PropertyNo").Caption("PropertyNo");
+                    columns.Add().DataField("PropertyDescription").Caption("PropertyDescription");
+                    columns.Add().DataField("CostAllocationUnit").Caption("CostAllocationUnit");
+                    columns.Add().DataField("PurchaserName").Caption("PurchaserName");
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(300)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%")
+                )
+        </div>
+
+
+        <div>
+            @await Html.PartialAsync("GridFooterExpenses")
+        </div>
+</div>
+
+    <script>
+        function ddBtnShowRecords_click(filterType) {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+          
+            let today = new Date();
+            let startDate = null, endDate = null;
+
+            switch (filterType) {
+                case 'today':
+                    startDate = new Date(today.setHours(0, 0, 0, 0));
+                    endDate = new Date(today.setHours(23, 59, 59, 999));
+                    break;
+                case 'yesterday':
+                    startDate = new Date(today.setDate(today.getDate() - 1));
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate = new Date(today.setHours(23, 59, 59, 999));
+                    break;
+                case 'week':
+                    startDate = new Date(today.setDate(today.getDate() - today.getDay()));
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate = new Date(today.setDate(startDate.getDate() + 6));
+                    endDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'tillmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    endDate = new Date();
+                    break;
+                case 'fullmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    break;
+                case 'tillyear':
+                    startDate = new Date(today.getFullYear(), 0, 1);
+                    endDate = new Date();
+                    break;
+                case 'fullyear':
+                    startDate = new Date(today.getFullYear(), 0, 1);
+                    endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+                    break;
+                case 'lastmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                    break;
+                case 'lastyear':
+                    startDate = new Date(today.getFullYear() - 1, 0, 1);
+                    endDate = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+                    break;
+                default:
+                   
+                    dataGrid.clearFilter();
+                    return;
+            }
+
+            if (startDate && endDate) {
+                dataGrid.option("dataSource", {
+                    load: function () {
+                        return $.ajax({
+                            url: "/api/ExpensesClaim/GetExpenseClaim",
+                            data: {
+                                startDate: startDate.toISOString(),
+                                endDate: endDate.toISOString()
+                            },
+                            type: "GET"
+                        });
+                    }
+                });
+
+                
+                dataGrid.refresh();
+            }
+        }
+    </script>

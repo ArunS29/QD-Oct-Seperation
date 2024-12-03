@@ -64,7 +64,14 @@
     <script src="~/js/custom/datagrid-dynamic-conditional-formatting.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
     
+    <style>
+        .nav-item .dropdown-menu {
+            max-height: 650px; /* Adjust the height */
+            overflow-y: auto; /* Enable scrolling */
+        }
+    </style>
 </head>
+
 
 <body style="padding-top: 3.5rem;">
 
@@ -86,29 +93,52 @@
                             Finance
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="financeDropdown">
-                            <li>
-                                <a href="/Finance/AccountingLedgers" class="dropdown-item">Accounting Ledgers</a>
-                            </li>
-                            <li>
-                                <a href= "/Finance/AccountingRegister" class="dropdown-item">Accounting Registers</a>
-                            </li>
-                            <li>
-                                <a href="/Finance/ChartOfAccounts" class="dropdown-item">Chart Of Accounts</a>
-                            </li>
-                            <li>
-                                <a href="/Finance/ExpensesClaims" class="dropdown-item">Expenses Claims</a>
-                            </li>
-                            <li>
-                                <a href="/Finance/JournalRegister" class="dropdown-item">Journal Register</a>
-                            </li>
-                            <li>
-                                <a href="/Finance/PurchaseVoucher" class="dropdown-item">Purchase Voucher</a>
-                            </li>
-                            <li>
-                                <a href="/Finance/SalesVoucher" class="dropdown-item">Sales Voucher</a>
-                            </li>
+                            <!-- Your dropdown items go here -->
+                            <li><a href="/Finance/AccountingLedgers" class="dropdown-item">Accounting Ledgers</a></li>
+                            <li><a href="/Finance/AccountingRegister" class="dropdown-item">Accounting Registers</a></li>
+                            <li><a href="/Finance/Assetview" class="dropdown-item">Asset View</a></li>
+                            <li><a href="/Finance/Voucherjournal" class="dropdown-item">Voucher journal</a></li>
+                            <li><a href="/Finance/VoucherApproval" class="dropdown-item">Voucher Approval</a></li>
+                            <li><a href="/Finance/ChartOfAccounts" class="dropdown-item">Chart Of Accounts</a></li>
+                            <li><a href="/Finance/ExpensesClaims" class="dropdown-item">Expenses Claims</a></li>
+                            <li><a href="/Finance/ExpensesClaim" class="dropdown-item">Expenses Claim</a></li>
+                            <li><a href="/Finance/JournalRegister" class="dropdown-item">Journal Register</a></li>
+                            <li><a href="/Finance/PurchaseVoucher" class="dropdown-item">Purchase Voucher</a></li>
+                            <li><a href="/Finance/SalesVoucher" class="dropdown-item">Sales Voucher</a></li>
+                            <li><a href="/Finance/VoucherEntryCashReceipts" class="dropdown-item">CashReceipts</a></li>
+                            <li><a href="/Finance/VoucherEntryReceipts" class="dropdown-item">Bank Receipts</a></li>
+                            <li><a href="/Finance/VoucherCashPayment" class="dropdown-item">Voucher Cash Payment</a></li>
+                            <li><a href="/Finance/VoucherBankPayment" class="dropdown-item">Voucher Bank Payment</a></li>
+                            <li><a href="/Finance/LedgerAccountMaster" class="dropdown-item">LedgerAccountMaster</a></li>
+                            <li><a href="/Finance/divmaster" class="dropdown-item">Branch Master</a></li>
+                            <li><a href="/Finance/AssetCategoryView" class="dropdown-item">Asset Category Master</a></li>
+                            <li><a href="/Finance/AssetLocation" class="dropdown-item">Salary Payable Details</a></li>
+                            <li><a href="/Finance/AssetMaintanenceMaster" class="dropdown-item">Asset Maintanence Master</a></li>
+                            <li><a href="/Finance/Salespersonmaster" class="dropdown-item">Sales Person Master</a></li>
+                            <li><a href="/Finance/LedgerSubGroupMaster" class="dropdown-item">Ledger Sub Group Master</a></li>
+                            <li><a href="/Finance/AssetsDocTypeMaster" class="dropdown-item">Assets DocType Master</a></li>
+                            <li><a href="/Finance/Asset" class="dropdown-item">Asset</a></li>
+                            <li><a href="/Finance/BillsPayable" class="dropdown-item">Bills Payable</a></li>
+                            <li><a href="/Finance/BillsReceivable" class="dropdown-item">Bills Receiveable</a></li>
+                            <li><a href="/Finance/SalaryPayableDetails" class="dropdown-item">Salary Payable Details</a></li>
                         </ul>
                     </li>
+                   @*  <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Master
+                        </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="\Finance\divmaster">Division</a></li>
+                        <li><a class="dropdown-item" href="\Finance\AssetCategoryView">AssetCategory</a></li>
+                        <li><a class="dropdown-item" href="\Finance\AssetLocation">AssetLocation</a></li>
+                        <li><a class="dropdown-item" href="\Finance\AssetMaintanenceMaster">AssetMaintanence</a></li>
+                        <li><a class="dropdown-item" href="\Finance\Salespersonmaster">Salespersonmaster</a></li>
+                        <li><a class="dropdown-item" href="\Finance\LedgerSubGroupMaster">Subgroup</a></li>
+                        <li><a class="dropdown-item" href="\Finance\AssetsDocTypeMaster">AssetsDocType</a></li>
+                        <li><a class="dropdown-item" href="\Finance\Asset">Asset Entry</a></li>
+
+                    </ul>
+                    </li> *@
                 </ul>
             </div>
         </div>

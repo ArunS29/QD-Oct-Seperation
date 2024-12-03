@@ -1,0 +1,252 @@
+﻿@page
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+
+
+
+    .button-alignment-down {
+        margin-bottom: 10px
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    .dx-datagrid {
+        color: #000000;
+    }
+
+    .center-checkbox {
+        display: block;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .dx-datagrid .dx-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+        AssetView
+    </div>
+    <div class="card-body" style="padding: 20px; background-color:  #c0dceb; border-radius: 5px;">
+        <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <div style="flex: 1; margin: 10px; padding: 50px; background-color: #629e63; color: white; text-align: center;  font-weight: bold; font-size: 12px;">
+                 QuickDiceERPSolutions<br>
+                 AssetsRegister
+                </div>
+                <div style="flex: 1; margin: 10px; padding: 50px; background-color: #5a85b0; color: white; text-align: center;  font-weight: bold; font-size: 12px;">
+                  No of voucher verified
+                </div>
+                <div style="flex: 1; margin: 10px; padding: 25px; background-color: #c94d44; color: white; text-align: center; font-weight: bold; font-size: 12px; display: flex; justify-content: center; align-items: center;">
+                    No of Assets
+                </div>
+
+                <div style="flex: 1; margin: 10px; padding: 50px; background-color: #0b6e25; color:  white; text-align: center;  font-weight: bold; font-size: 12px;">
+                   CurrentAssetsValue
+                </div>
+            </div>
+        </div>
+
+
+        <div class="dx-field ledgerResult">
+           
+            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20157AssetRegisterViewResult>()
+                .ID("dataGrid")
+                .KeyExpr("AccountID")
+                .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("AssetView")
+                .LoadAction("GetAssetView"))
+                .Columns(columns =>
+                {
+                    
+                    columns.Add()
+                    .Caption("AssetDetails")
+                    .Columns(group =>
+                    {
+                        group.Add().DataField("AssetLedgerNo").Caption("Asset Ledger");
+                        group.Add().DataField("AccountHead").Caption("Asset Ledger Name");
+                        group.Add().DataField("AssetDescription").Caption("Asset Description");
+                        group.Add().DataField("Specifications").Caption("Specifications");
+                        group.Add().DataField("AccountGroup").Caption("Account Group");
+                        group.Add().DataField("PropertyNo").Caption("Property No");
+                    });
+
+                   
+                    columns.Add()
+                    .Caption("Depriciation Details")
+                    .Columns(group =>
+                    {
+                        group.Add().DataField("DepreciationMethod").Caption("Depreciation Method");
+                        group.Add().DataField("ScrapValueOfProperty").Caption("Scrap Value");
+                        group.Add().DataField("LifeSpanOfProperty").Caption("Life Span of Property");
+                        group.Add().DataField("DepreciationPercentage").Caption("Depreciation");
+                        group.Add().DataField("OpeningTotal").Caption("Opening Total");
+                        group.Add().DataField("TotalDebit").Caption("Total Debit");
+                        group.Add().DataField("TotalCredit").Caption("Total Credit");
+                        group.Add().DataField("ClosingBalance").Caption("Closing Balance");
+                        group.Add().DataField("TotalDepreciatedAmount").Caption("Total Depreciated");
+                        group.Add().DataField("NetBookValue").Caption("Net Book Value");
+         
+                
+                    });
+
+                  
+                    columns.Add()
+                    .Caption("Specifications")
+                    .Columns(group =>
+                    {
+                        group.Add().DataField("AssetCategory").Caption("Asset Category");
+                        group.Add().DataField("AssetLocation").Caption("Asset Location");
+                        group.Add().DataField("Brand").Caption("Brand");
+                        group.Add().DataField("PlateNo").Caption("Plate No");
+                        group.Add().DataField("Model").Caption("Model");
+                        group.Add().DataField("Year").Caption("Year");
+                        group.Add().DataField("Ownership").Caption("Ownership");
+                        group.Add().DataField("PurchaseDate").Caption("Purchase Date");
+                        group.Add().DataField("ValueOfProperty").Caption("Purchased Value");
+                        group.Add().DataField("PurchasedAs").Caption("Purchased As");
+                      
+                    });
+                    columns.Add()
+                    .Caption("Installment Details")
+                    .Columns(group =>
+                    {
+                        group.Add().DataField("IsFinanced").Caption("Is Financed");
+                        group.Add().DataField("FinancedFrom").Caption("Financed From");
+                        group.Add().DataField("NoOfInstallments").Caption("No of Installments");
+                        group.Add().DataField("InitialDownPayment").Caption("Initial Down Payment");
+                        group.Add().DataField("InitialDocCharges").Caption("Initial Doc Charges");
+                        group.Add().DataField("MonthlyInstallment").Caption("Monthly Installment");
+                        group.Add().DataField("FinalInstallment").Caption("Final Installment");
+                        group.Add().DataField("InstallmentStartDate").Caption("Installment Start Date");
+                        group.Add().DataField("InstallmentEndDate").Caption("Installment End Date");
+                    });
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(500)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(true))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%")
+                )
+        </div>
+
+
+
+
+
+        <div>
+            @await Html.PartialAsync("GridFooterApproval")
+        </div>
+    </div>
+
+    <script>
+        function ddBtnShowRecords_click(filterType) {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            let today = new Date();
+            let startDate = null, endDate = null;
+
+            switch (filterType) {
+                case 'today':
+                    startDate = new Date(today.setHours(0, 0, 0, 0));
+                    endDate = new Date(today.setHours(23, 59, 59, 999));
+                    break;
+                case 'yesterday':
+                    startDate = new Date(today.setDate(today.getDate() - 1));
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate = new Date(today.setHours(23, 59, 59, 999));
+                    break;
+                case 'week':
+                    startDate = new Date(today.setDate(today.getDate() - today.getDay()));
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate = new Date(today.setDate(startDate.getDate() + 6));
+                    endDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'tillmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    endDate = new Date();
+                    break;
+                case 'fullmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    break;
+                case 'tillyear':
+                    startDate = new Date(today.getFullYear(), 0, 1);
+                    endDate = new Date();
+                    break;
+                case 'fullyear':
+                    startDate = new Date(today.getFullYear(), 0, 1);
+                    endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+                    break;
+                case 'lastmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                    break;
+                case 'lastyear':
+                    startDate = new Date(today.getFullYear() - 1, 0, 1);
+                    endDate = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+                    break;
+                default:
+
+                    dataGrid.option("dataSource", {
+                        load: function () {
+                            return $.ajax({
+                                url: "/api/AssetView/GetAssetView",
+                                type: "GET"
+                            });
+                        }
+                    });
+
+                    dataGrid.refresh();
+                    return;
+            }
+
+            if (startDate && endDate) {
+                dataGrid.option("dataSource", {
+                    load: function () {
+                        return $.ajax({
+                            url: "/api/AssetView/GetAssetView",
+                            data: {
+                                startDate: startDate.toISOString(),
+                                endDate: endDate.toISOString()
+                            },
+                            type: "GET"
+                        });
+                    }
+                });
+
+                dataGrid.refresh();
+            }
+        }
+
+    </script>

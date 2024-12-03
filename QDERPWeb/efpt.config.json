@@ -115,6 +115,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[qry20149AssetsRegisterView]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry20164SalaryPayableLedgerMaster]",
          "ObjectType": 3
       },

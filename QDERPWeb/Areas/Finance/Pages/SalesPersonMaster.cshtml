@@ -1,0 +1,356 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.SalesPersonMasterModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Add SweetAlert CSS and JS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<style type="text/css">
+    /* Card container styling */
+    .card-container {
+        background-color: #cfddee; /* Set background color for the card */
+        padding: 20px; /* Add some padding inside the card */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+    }
+
+        /* Label text color blue */
+        .card-container label {
+            color: blue; /* Set label text color to blue */
+        }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center; /* Centers the text inside the input */
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px;
+    }
+
+    /* Centering the Action Buttons (Save and Refresh) */
+    .action-buttons-container {
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Ensures button is vertically centered */
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    /* Center the Add Button in its container */
+    .add-button-container {
+        display: flex;
+        justify-content: center; /* Center the button horizontally */
+        align-items: center; /* Center the button vertically */
+        margin-top: 20px;
+    }
+</style>
+
+<div class="content-container-top">
+    <div class="container">
+        <h2>Sales Person Master</h2>
+
+        <!-- Card Container for the form -->
+        <div class="card-container">
+            <div class="row g-6">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="SalesPersonName" class="button-alignment-down">Type a new SalesPerson/ Project Manager & Add to the Existing List</label>
+                        @(
+                            Html.DevExtreme().TextBox()
+                            .ID("txtSalesPersonName")
+                            .Value(null)
+                            )
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="UserCode" class="button-alignment-down">User Code</label>
+                        @(
+                            Html.DevExtreme().TextBox()
+                            .ID("txtUserCode")
+                            .Value(null)
+                            )
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-6">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="EmailAddress" class="button-alignment-down">Email Address</label>
+                        @(
+                            Html.DevExtreme().TextBox()
+                            .ID("txtEmailAddress")
+                            .Value(null)
+                            )
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SalesPersonContactNo" class="button-alignment-down">Contact Number</label>
+                        @(
+                            Html.DevExtreme().TextBox()
+                            .ID("txtSalesPersonContactNo")
+                            .Value(null)
+                            )
+                    </div>
+                </div>
+                <!-- Add SalesPerson Code input field -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SalesPersonCode" class="button-alignment-down">SalesPerson/ Project Manager Code</label>
+                        @(
+                            Html.DevExtreme().TextBox()
+                            .ID("txtSalesPersonCode")
+                            .Value(null)
+                            )
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Button Container -->
+            <div class="add-button-container">
+                <div class="form-group">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnAddSalesPerson")
+                        .Text("ADD")
+                        .Height(70)
+                        .Width(178)
+                        .Icon("plus")
+                        .OnClick("function() { addSalesPerson(); }")
+                        .ElementAttr(new { @class = "dx-button-add" })
+                        )
+                </div>
+            </div>
+
+            <div class="clear"></div>
+            <br />
+            <div id="gridContainer"></div>
+        </div> <!-- End of card-container -->
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var updatedRows = []; // To store the updated rows
+
+        // Initialize DevExtreme DataGrid with CustomStore
+        $("#gridContainer").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "SalesPersonCode",
+                load: function () {
+                    return $.getJSON('/api/Master/GetSalesPersons'); // Fetch data from the API
+                },
+                update: function (key, values) {
+                    var updatedSalesPerson = {
+                        SalesPersonCode: key,
+                        SalesPersonName: values.SalesPersonName,
+                        UserCode: values.UserCode,
+                        EmailAddress: values.EmailAddress,
+                        SalesPersonContactNo: values.SalesPersonContactNo
+                    };
+
+                    updatedRows.push(updatedSalesPerson);
+
+                    // Send the updated data to the backend via AJAX
+                    return $.ajax({
+                        type: "POST",
+                        url: "/api/Master/UpdateSalesPerson",
+                        data: JSON.stringify(updatedSalesPerson),
+                        contentType: "application/json",
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sales Person Updated',
+                                text: 'The sales person has been successfully updated.',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function (xhr) {
+                            var errorMessage = xhr.status === 500
+                                ? "Server error: Please try again later."
+                                : "Validation error: " + xhr.responseText;
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            }),
+            editing: {
+                mode: "batch", // Enable batch edit mode for multiple row editing
+                allowUpdating: true, // Allow cell updates
+                allowAdding: false,  // No new rows
+                allowDeleting: false, // Prevent row deletion
+                useIcons: true, // Use icons for save/cancel
+                texts: {
+                    saveAll: "Update", // Custom text for save button
+                    cancelAll: "Cancel All Changes" // Custom text for cancel button
+                }
+            },
+            columns: [
+                { dataField: "SalesPersonCode", caption: "Sales Person Code", width: 100, editorOptions: { readOnly: true } },
+                { dataField: "SalesPersonName", caption: "Sales Person Name" },
+                { dataField: "UserCode", caption: "User Code" },
+                { dataField: "EmailAddress", caption: "Email Address" },
+                { dataField: "SalesPersonContactNo", caption: "Contact Number" }
+            ],
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            filterRow: {
+                visible: true,
+                applyFilter: "auto"
+            },
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: "save",  // Icon for the Save button
+                            text: "Update",  // Text alongside the icon
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
+                            }
+                        },
+                        location: "after"
+                    },
+                    {
+                        widget: "dxButton",  // Adding Cancel button
+                        options: {
+                            icon: "close",  // Icon for Cancel button
+                            text: "Cancel",  // Text for Cancel button
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
+                            }
+                        },
+                        location: "after"
+                    },
+                              {
+                        widget: "dxButton", // Add the Back button
+                        options: {
+                            icon: "arrowleft", // You can choose another icon if you'd like
+                            text: "Back",
+                            onClick: function () {
+                                window.close(); // This closes the current window/tab
+                            }
+                        },
+                        location: "after"
+                    }
+                ]
+            },
+            onRowUpdated: function (e) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Row Updated',
+                    text: 'The row data was successfully updated.',
+                    confirmButtonText: 'OK'
+                });
+            },
+            onRowInserted: function (e) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Row Inserted',
+                    text: 'A new row was added successfully.',
+                    confirmButtonText: 'OK'
+                });
+            },
+            onRowRemoved: function (e) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Row Removed',
+                    text: 'The row has been removed from the grid.',
+                    confirmButtonText: 'OK'
+                });
+            },
+            height: 400,
+            width: "100%"
+        });
+    });
+
+    // Function to add a new salesperson
+    function addSalesPerson() {
+        var salesPersonName = $("#txtSalesPersonName").dxTextBox("instance").option("value");
+        var userCode = $("#txtUserCode").dxTextBox("instance").option("value");
+        var emailAddress = $("#txtEmailAddress").dxTextBox("instance").option("value");
+        var salesPersonContactNo = $("#txtSalesPersonContactNo").dxTextBox("instance").option("value");
+
+        // Handle UserCode as a nullable byte (check if it's empty or invalid)
+        if (userCode !== "" && userCode !== null) {
+            userCode = parseInt(userCode, 10); // Try to convert to a number (byte)
+            if (isNaN(userCode)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid UserCode',
+                    text: 'The UserCode must be a valid number.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+        } else {
+            userCode = null; // Set UserCode to null if it's empty
+        }
+
+        if (salesPersonName && userCode !== undefined && emailAddress && salesPersonContactNo) {
+            var salesPersonData = {
+                SalesPersonName: salesPersonName,
+                UserCode: userCode,  // Ensure it's a valid byte or null
+                EmailAddress: emailAddress,
+                SalesPersonContactNo: salesPersonContactNo
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/Master/AddSalesPerson",
+                data: JSON.stringify(salesPersonData),
+                contentType: "application/json",
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sales Person Added Successfully',
+                        text: 'The new sales person has been added to the list.',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    var errorMessage = xhr.status === 500
+                        ? "Server error: Please try again later."
+                        : "Validation error: " + xhr.responseText;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Incomplete Form',
+                text: 'Please fill in all fields before submitting.',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+</script>

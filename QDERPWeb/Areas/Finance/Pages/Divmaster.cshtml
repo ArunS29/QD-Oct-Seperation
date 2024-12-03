@@ -1,0 +1,365 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.DivmasterModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Add SweetAlert CSS and JS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+
+<style type="text/css">
+    /* Card container styling */
+    .card-container {
+        background-color: #cfddee; /* Set background color for the card */
+        padding: 20px; /* Add some padding inside the card */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+    }
+
+        /* Label text color blue */
+        .card-container label {
+            color: blue; /* Set label text color to blue */
+        }
+
+    /* Style for the textboxes */
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+
+    /* Grid Column Header Text Color */
+    .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
+        color: #2d5799; /* Set header text color */
+    }
+
+    /* Grid Column Header Background Color */
+    .dx-datagrid-headers .dx-header-row {
+        background-color: #e7f2fe; /* Set background color for column headers */
+    }
+
+    /* Button customization */
+    .dx-button-add {
+        background-color: #f5f8fb !important; /* Set background color to #cfddee */
+        color: red !important; /* Set text color to red */
+        border: 1px solid #b0c4de; /* Light border around the button */
+    }
+
+        .dx-button-add .dx-icon {
+            color: green !important; /* Set icon color to green */
+        }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center; /* Centers the text inside the input */
+    }
+
+    .backgroundcolor {
+        background-color: #89f0b5;
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px;
+    }
+
+    /* Style for the Save and Refresh buttons */
+    .action-buttons-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+        .action-buttons-container .dx-button {
+            margin-right: 10px; /* Space between buttons */
+        }
+</style>
+
+
+<div class="content-container-top">
+    <div class="container">
+        <h2>Branch Master</h2>
+
+        <!-- Card Container for the form -->
+        <div class="card-container">
+            <div class="row g-6">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Branch & Add to the Existing List</label>
+                        @(
+                            Html.DevExtreme().TextBox()
+                            .ID("txtbranchName")
+                            .Value(null)
+                            )
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-6">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="SalesInvoiceNo" class="button-alignment-down">Branch In Arabic</label>
+                        @(
+                            Html.DevExtreme().TextBox()
+                            .ID("txtarabName")
+                            .Value(null)
+                            )
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnadd")
+                            .Text("ADD")
+                            .Height(70)
+                            .Width(178)
+                            .Icon("plus")
+                            .OnClick("function() { adddivmaster(); }")
+                            .ElementAttr(new { @class = "dx-button-add" }) 
+                                    )
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="clear"></div>
+            <br />
+            <div id="gridContainer"></div>
+        </div> <!-- End of card-container -->
+    </div>
+   
+</div>
+
+
+
+<script type="text/javascript">
+    $(function () {
+        var updatedRows = []; // To store the updated rows
+
+        // Initialize DevExtreme DataGrid with CustomStore
+        $("#gridContainer").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "BranchCode",
+                load: function () {
+                    return $.getJSON('/api/Master/GetBranches'); // Fetch data from the API
+                },
+                update: function (key, values) {
+                    var updatedBranch = {
+                        BranchCode: key, // Use the key for the branch to identify it
+                        BranchName: values.BranchName,
+                        BranchNameAr: values.BranchNameAr
+                    };
+
+                    // Add the updated branch to the updatedRows array
+                    updatedRows.push(updatedBranch);
+
+                    // Send the updated data to the backend via AJAX
+                    return $.ajax({
+                        type: "POST",
+                        url: "/api/Master/UpdateBranch",
+                        data: JSON.stringify(updatedBranch),
+                        contentType: "application/json",
+                        success: function (response) {
+                            // SweetAlert on success
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Branch Updated',
+                                text: 'The branch has been successfully updated.',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function (xhr) {
+                            // SweetAlert on error
+                            var errorMessage = xhr.status === 500
+                                ? "Server error: Please try again later."
+                                : "Validation error: " + xhr.responseText;
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            }),
+            editing: {
+                mode: "batch", // Enable batch edit mode for multiple row editing
+                allowUpdating: true,  // Allow cell updates
+                allowAdding: false,   // No new rows
+                allowDeleting: false, // Prevent row deletion
+                useIcons: true, // Use icons for save/cancel
+                texts: {
+                    saveAll: "Update", // Custom text for save button
+                    cancelAll: "Cancel All Changes" // Custom text for cancel button
+                }
+            },
+            columns: [
+                { dataField: "BranchCode", caption: "Branch Code", width: 100, editorOptions: { readOnly: true } },
+                { dataField: "BranchName", caption: "Branch Name" },
+                { dataField: "BranchNameAr", caption: "Branch Name (Arabic)" }
+            ],
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            filterRow: {
+                visible: true,
+                applyFilter: "auto"
+            },
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: "save",  // Icon for the Save button
+                            text: "Update",  // Text alongside the icon
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
+                            }
+                        },
+                        location: "after"
+                    },
+                    {
+                        widget: "dxButton",  // Adding Cancel button
+                        options: {
+                            icon: "close",  // Icon for Cancel button
+                            text: "Cancel",  // Text for Cancel button
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
+                            }
+                        },
+                        location: "after"
+                    },
+                    {
+                        widget: "dxButton", // Add the Back button
+                        options: {
+                            icon: "arrowleft", // You can choose another icon if you'd like
+                            text: "Back",
+                            onClick: function () {
+                                window.close(); // This closes the current window/tab
+                            }
+                        },
+                        location: "after"
+                    }
+                ]
+            },
+
+            onRowUpdated: function (e) {
+                // SweetAlert when a row is updated
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Row Updated',
+                    text: 'The row data was successfully updated.',
+                    confirmButtonText: 'OK'
+                });
+            },
+            onRowInserted: function (e) {
+                // SweetAlert when a new row is inserted
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Row Inserted',
+                    text: 'A new row was added successfully.',
+                    confirmButtonText: 'OK'
+                });
+            },
+            onRowRemoved: function (e) {
+                // SweetAlert when a row is removed
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Row Removed',
+                    text: 'The row has been removed from the grid.',
+                    confirmButtonText: 'OK'
+                });
+            },
+
+            // Enable vertical and horizontal scrolling
+            scrolling: {
+                mode: "virtual", // This makes the scrolling virtual, loading rows as you scroll
+                rowRenderingMode: "virtual", // Optimizes row rendering
+                useNative: true // Use native scrolling for better performance
+            },
+            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
+            width: "100%" // Make grid responsive and take full width of the container
+        });
+    });
+
+
+ function adddivmaster() {
+    // Get the values from the text boxes
+    var branchName = $("#txtbranchName").dxTextBox("instance").option("value");
+    var arabicBranchName = $("#txtarabName").dxTextBox("instance").option("value");
+
+    // Check if both fields are filled
+    if (!branchName || !arabicBranchName) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: 'Please provide both the Branch Name and Branch Name in Arabic.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    // Create the data object to send to the API
+    var branchData = {
+        BranchName: branchName,
+        BranchNameAr: arabicBranchName
+    };
+
+    // Send the data to the AddBranch API using AJAX
+    $.ajax({
+        url: '/api/Master/AddBranch',  // The API endpoint for adding a branch
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(branchData),  // Convert the data object to JSON string
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Branch Added',
+                    text: response.message,
+                    confirmButtonText: 'OK'
+                });
+                    // Clear the text inputs
+                    $("#txtbranchName").dxTextBox("instance").option("value", "");
+                    $("#txtarabName").dxTextBox("instance").option("value", "");
+
+                // Optionally, you can reload the data grid to reflect the newly added branch
+                $("#gridContainer").dxDataGrid("instance").refresh();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message,
+                    confirmButtonText: 'OK'
+                });
+            }
+        },
+        error: function(xhr) {
+            var errorMessage = xhr.status === 500
+                ? "Server error: Please try again later."
+                : "Validation error: " + xhr.responseText;
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage,
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+}
+
+
+</script>

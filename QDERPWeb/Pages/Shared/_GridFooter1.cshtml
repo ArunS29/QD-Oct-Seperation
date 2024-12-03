@@ -1,0 +1,393 @@
+﻿
+<style type="text/css">
+    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
+        text-align: center !important;
+    }
+
+    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+        text-align: center !important;
+    }
+
+    .dx-button {
+        background-color: whitesmoke;
+    }
+
+   
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+        margin-top: 0px;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+        
+    }
+
+    .button-group {
+        margin-left: -10px !important;
+    }
+
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+    /* Custom styles for context menu */
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 0px, 15px,10px 15px;
+        cursor: pointer;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+    #rowHeightMenu {
+        position: absolute;
+        top: 100px; /* Adjust positioning as per your design */
+        left: 300px; /* Adjust positioning as per your design */
+        display: none; /* Keep it hidden until needed */
+    }
+
+
+</style>
+<div class="dx-fieldset horizontal-container">
+
+    @* <div id="ddButtonLayout"></div> *@
+
+    @(Html.DevExtreme().Button()
+    .ID("btnRefresh")
+    .Text("Refresh")
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+    .Icon("refresh")
+    .Width(180)
+    .OnClick("function() { refreshPage(); }")
+)
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddButtonLayout")
+        .Text("Layout")
+        .Icon("smalliconslayout")
+        .Width(180)
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu"); ;
+            items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
+            items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
+            items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
+            items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
+        })
+        .ShowArrowIcon(true)
+
+        @* .OnItemClick("addRecipitsButton_click") *@
+
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnPrint")
+        .Text("Print")
+        .Icon("print")
+        .Type(ButtonType.Normal)
+          .StylingMode(ButtonStylingMode.Outlined)
+           .Width(180)
+        //.OnClick("function() { printData(); }")
+        )
+  
+    @(Html.DevExtreme().Button()
+        .ID("btnToggleSearch")
+        .Text("Search")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("search")
+        .Width(180)
+        .OnClick("function() { toggleFilterRow(); }")
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btntoggleGroupPanel")
+        .Text("Group")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("hierarchy")
+        .Width(180)
+        .OnClick("toggleGroupPanel")
+        )
+   @(Html.DevExtreme().DropDownButton()
+        .ID("btntoggleReport")
+        .Text("Report Receipts")
+        .Icon("textdocument")
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text("Print Salary Payable Report").Icon("search");
+        
+        })
+        .OnItemClick("addRecipitsButton_click")
+        )
+  
+   @* @(Html.DevExtreme().DropDownButton()
+        .ID("ddButtonPayment")
+        .Text("Add Payment")
+        .Icon("add")
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text("Add Cash Payment").Icon("money");
+            items.Add().Text("Add Bank Payment").Icon("product");
+        })
+        .OnItemClick("addRecipitsButton_click")
+    )*@
+</div>
+<script type="text/javascript">
+
+   
+    // Hide context menu on click outside
+    $(document).on("click", function () {
+        var contextMenu = $("#contextMenu");
+        contextMenu.hide();
+        var $submenu = $('#submenuContainer');
+        $submenu.hide(); // Hide the submenu popup
+    });
+
+
+        // Handle the file selection
+        $("#loadLayoutInput").on("change", function (event) {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    try {
+                        // Parse the JSON string from the file
+                        const layout = JSON.parse(e.target.result);
+
+                        // Restore the grid state
+                        dataGrid.state(layout);
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        alert("Failed to load layout. Please ensure the file is valid JSON.");
+                    }
+                };
+
+                // Read the file as text
+                reader.readAsText(file);
+            }
+        });
+        function saveLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var layout = grid.state();
+            const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+            //console.log(layoutJson);
+            // Create a Blob from the JSON string
+            const blob = new Blob([layoutJson], { type: "application/json" });
+            // Create a URL for the Blob
+            const url = URL.createObjectURL(blob);
+            // Create a link element
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "grid-layout.json"; // Set the file name for download
+            // Append the link to the body (needed for Firefox)
+            document.body.appendChild(a);
+            // Programmatically click the link to trigger the download
+            a.click();
+            // Clean up by removing the link and revoking the Object URL
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            //DevExpress.ui.notify("Layout", "success", 600);
+        }
+        function openLayoutClick(e) {
+            $("#loadLayoutInput").click();
+        }
+
+        function loadGridState() {
+            var form = $('#formId').val();
+            // Call the API to get the grid state
+            $.ajax({
+                url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+                method: 'GET',
+                data:{
+                    form: form
+                },
+                success: function (response) {
+                    // Get the DataGrid instance
+                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                    // Load the state into the DataGrid
+                    if (response) {
+                        try {
+                            // Parse the JSON string from the file
+                            const layout = JSON.parse(response);
+
+                            // Restore the grid state
+                            dataGrid.state(layout);
+                        } catch (error) {
+                            console.error("Error parsing JSON:", error);
+                            alert("Failed to load layout. Please ensure the JSON is valid.");
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading grid state:", error);
+                }
+            });
+        }
+        function setDefaultLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var form = $('#formId').val();
+            var layout = grid.state();
+            const layoutJson = JSON.stringify(layout, null, 2);
+            console.log(layoutJson);
+
+            $.ajax({
+                url: '/api/Utility/SaveLayout',  // API endpoint
+                type: 'POST',
+                data: {
+                    layout: layoutJson,
+                    form: form
+                },
+                success: function (data) {
+                    DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving data", "error", 2000);
+                }
+            });
+        }
+        function resetLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var form = $('#formId').val();
+            $.ajax({
+                url: '/api/Utility/SaveLayout',  // API endpoint
+                type: 'POST',
+                data: {
+                    layout: null,
+                    form:form
+                },
+                success: function (data) {
+                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                    grid.state({});
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving data", "error", 2000);
+                }
+            });
+        }
+    // Footer Group Pannel button click event
+    function toggleGroupPanel() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var isVisible = dataGrid.option("groupPanel.visible");
+        dataGrid.option("groupPanel.visible", !isVisible);
+    }
+    // Footer Filter row button click event
+    function toggleFilterRow() {
+        var grid = $("#dataGrid").dxDataGrid("instance");
+        var currentVisibility = grid.option("filterRow.visible");
+
+        grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
+    }
+    // Footer Recipits button event
+    function addRecipitsButton_click(e) {
+        DevExpress.ui.notify(e.itemData, "success", 600);
+    }
+    function addReportsButton_click(e) {
+        DevExpress.ui.notify(e.itemData, "success", 600);
+    }
+    function ChangeRowHeight(newHeight) {
+        // Update the row height
+        $("#dataGrid .dx-data-row").css("height", newHeight + "px");
+        closeSubmenu();
+    }
+    function showSubmenu(e) {
+        e.event.stopPropagation();
+        var $submenu = $('#submenuContainer');
+        var $target = $(e.event.target).closest('.dx-item-content'); // Target the content of the item
+        var offset = $target.offset();
+        var elementWidth = $target.outerWidth();
+        var elementHeight = $target.outerHeight();
+
+        // Position the submenu to the right of the dropdown item
+        $submenu.css({
+            'width': 180,
+            'position': 'absolute',
+            'top': offset.top,
+            'left': offset.left + elementWidth, // Position to the right of the item
+            'display': 'block' // Show the submenu
+        });
+    }
+    function closeSubmenu() {
+        var $submenu = $('#submenuContainer');
+        $submenu.hide(); // Hide the submenu popup
+    }
+    // Handle the file selection
+    $("#loadLayoutInput").on("change", function (event) {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+                    // Parse the JSON string from the file
+                    const layout = JSON.parse(e.target.result);
+
+                    // Restore the grid state
+                    dataGrid.state(layout);
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    alert("Failed to load layout. Please ensure the file is valid JSON.");
+                }
+            };
+
+            // Read the file as text
+            reader.readAsText(file);
+        }
+    });
+
+
+    
+//     //Print Button function
+//  $(document).ready(function () {
+//     function printData() {
+//         var printContents = document.getElementById("printSection");
+        
+//         // Check if printSection exists and is loaded
+//         if (printContents) {
+//             var originalContents = document.body.innerHTML;
+//             document.body.innerHTML = printContents.innerHTML;
+
+//             window.print();
+
+
+
+//             document.body.innerHTML = originalContents;
+//         } else {
+//             console.error("Element with id 'printSection' not found.");
+//         }
+//     }
+    
+//     // Attach the function to the DevExtreme button click event
+//     $("#btnPrint").dxButton({
+//         onClick: function() {
+//             printData();
+//         }
+//     });
+// });
+ //Refresh button function
+        function refreshPage() {
+    location.reload();  // This reloads the current page
+}
+
+</script>
