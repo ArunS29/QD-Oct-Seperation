@@ -85,6 +85,37 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
+        [HttpGet]
+        public async Task<ActionResult> GetVoucherDetails(DataSourceLoadOptions loadOptions, string voucherNo)
+        {
+            if (string.IsNullOrEmpty(voucherNo))
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+            try
+            {
+                // Fetch the voucher details
+                var voucherDetails = _context.Tbl201VoucherMasters
+                    .Where(p => p.VoucherNo.ToLower() == voucherNo.ToLower());
+
+                // If no voucher details are found, return an appropriate response
+                if (!voucherDetails.Any())
+                {
+                    return NotFound(new { success = false, message = "Voucher not found." });
+                }
+
+                // Use DataSourceLoader to process the data
+                var result = await DataSourceLoader.LoadAsync(voucherDetails, loadOptions);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+
+
+        }
         [HttpPost]
         public async Task<ActionResult> SaveVoucher([FromBody] Tbl201VoucherMaster VM)
         {

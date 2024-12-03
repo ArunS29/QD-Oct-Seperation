@@ -114,6 +114,11 @@
 												.LoadMode(DataSourceLoadMode.Raw)
 												.Key("AccountId")
 												)
+												.ValidationRules(rules =>
+												{
+													rules.AddRequired()
+													.Message("Client Name is required");
+												})
 												.LabelMode(EditorLabelMode.Outside)
 												.ID("ClientNameDropDown")
 												.ShowClearButton(true)
@@ -205,6 +210,11 @@
 								.LoadMode(DataSourceLoadMode.Raw)
 								.Key("AccountId")
 								)
+								.ValidationRules(rules =>
+								{
+									rules.AddRequired()
+									.Message("Account Head is required");
+								})
 								.LabelMode(EditorLabelMode.Outside)
 								.ID("ddAccountHead")
 								.ShowClearButton(true)
@@ -242,7 +252,13 @@
 				<label for="Amount" class="button-alignment-down">Amount</label>
 				@(Html.DevExtreme().NumberBox()
 								.ID("txtVoucherAmount")
-								.Value(0.00)
+								.Value(null)
+								.ValidationRules(rules =>
+								{
+									rules.AddRequired()
+									.Message("Voucher Amount is required");
+								})
+								.Placeholder("0.000")
 								.Format("#,##0.00")  // Specify the format for two decimal places
 								.InputAttr(new { type = "number", step = "0.01" }) // HTML attribute to allow decimal input
 								)
@@ -475,6 +491,12 @@
 	</div>
 	<script>
 		$(function () {
+			const voucherNo = getQueryParam('VoucherNo');
+		//alert(voucherNo);
+		if(voucherNo)
+		{
+			$("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
+		}
 			$("#costAllocationPopup").dxPopup({
 				title: "Cost Allocation",
 				width: 300,
@@ -487,6 +509,17 @@
 
 
 		});
+			function getQueryParam(param) {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		// Use case-insensitive comparison to find the parameter
+		for (const [key, value] of urlParams.entries()) {
+			if (key.toLowerCase() === param.toLowerCase()) {
+				return value;
+			}
+		}
+		return null; // Return null if parameter not found
+		}
 		$("#btnSave").on("click", function (e) {
 			e.preventDefault();
 
@@ -527,6 +560,41 @@
 			});
 		});
 		function onVoucherNoChanged(e) {
+				const paramVoucherNo = getQueryParam('VoucherNo');
+		$.ajax({
+					type: "GET",
+					url: "/api/SalesVoucher/GetVoucherDetails",
+					contentType: "application/json",
+					data: {
+						voucherNo: e.value
+					},
+					success: function (response) {
+						if (response.success === false && paramVoucherNo) {
+							DevExpress.ui.notify(response.message, "error", 2000); // Notify if voucher not found
+							return;
+						}
+						console.log(response);
+						// Populate fields with the response data
+			$("#VoucherDate").dxDateBox("instance").option("value", response.data[0].VoucherDate);
+			$("#VoucherEffectiveDate").dxDateBox("instance").option("value", response.data[0].VoucherEffectiveDate);
+			$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", response.data[0].InvoiceSubmittedDate);
+			$("#InvoiceDueDate").dxDateBox("instance").option("value", response.data[0].InvoiceDueDate);
+			$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", response.data[0].InvoiceNoOfDays || null);
+			$("#VoucherRefNo").dxTextBox("instance").option("value", response.data[0].VoucherRefNo || "");
+			$("#VoucharNarration").dxTextBox("instance").option("value", response.data[0].VoucharNarration || "");
+			$("#VoucherType").dxSelectBox("instance").option("value", response.data[0].VoucherType || null);
+			$("#BillRemarks").dxTextBox("instance").option("value", response.data[0].BillRemarks || "");
+			$("#IsVerified").dxCheckBox("instance").option("value", response.data[0].IsVerified || false);
+			$("#IsApproved").dxCheckBox("instance").option("value", response.data[0].IsApproved || false);
+			$("#UseSubmittedDate").dxCheckBox("instance").option("value", response.data[0].UseSubmittedDate || false);
+					},
+					error: function (xhr, status, error) {
+						if (paramVoucherNo) {
+							DevExpress.ui.notify(response.message, "error", 2000); // Notify if voucher not found
+							return;
+						}
+					}
+				});
 			$.ajax({
 				type: "GET",
 				url: "/api/SalesVoucher/GetVoucherEntries",
@@ -543,11 +611,31 @@
 			});
 		}
 		function addVoucherEntry() {
-			var VE = {
+			var accountHead = $("#ddAccountHead").dxDropDownBox("instance");
+		var ClientName = $("#ClientNameDropDown").dxDropDownBox("instance");
+		var txtVoucherAmt = $("#txtVoucherAmount").dxNumberBox("instance");
+		var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+		var ClientNameValidator = $("#ClientNameDropDown").dxValidator("instance");
+		var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
+		// Validate controls explicitly
+		var accountHeadValidation = accountHeadValidator.validate();
+		var voucherAmtValidation = voucherAmtValidator.validate();
+		var ClientNameValidation = ClientNameValidator.validate();
+		if (accountHeadValidation.isValid && voucherAmtValidation.isValid && ClientNameValidation.isValid ){
+			var VE1 = {
 				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 				"AccountHead": $("#ddAccountHead").dxDropDownBox("instance").option("value"),
 				"VoucherAmount": $("#txtVoucherAmount").dxNumberBox("instance").option("value"),
 				"DrCr": $("#sbDrCr").dxSelectBox("instance").option("value"),
+				"AddedBy": "102",
+				"AddedOn": new Date(),
+				"EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value")
+			};
+			var VE2 = {
+				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
+				"AccountHead": $("#ddAccountHead").dxDropDownBox("instance").option("value"),
+				"VoucherAmount": $("#txtVoucherAmount").dxNumberBox("instance").option("value"),
+				"DrCr": ($("#sbDrCr").dxSelectBox("instance").option("value")==="Dr"?"Cr":"Dr"),
 				"AddedBy": "102",
 				"AddedOn": new Date(),
 				"EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value")
@@ -557,7 +645,20 @@
 				type: "POST",
 				url: "/api/SalesVoucher/AddVoucherEntry",
 				contentType: "application/json",
-				data: JSON.stringify(VE),
+				data: JSON.stringify(VE1),
+				dataType: "json",
+				success: function (response) {
+					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+				},
+				error: function (xhr, status, error) {
+					alert("Error occurred while updating data: " + error);
+				}
+			});
+			$.ajax({
+				type: "POST",
+				url: "/api/SalesVoucher/AddVoucherEntry",
+				contentType: "application/json",
+				data: JSON.stringify(VE2),
 				dataType: "json",
 				success: function (response) {
 					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
@@ -567,6 +668,7 @@
 				}
 			});
 			//$("#costAllocationPopup").dxPopup("instance").show();
+			}
 		}
 		function saveCostAllocation() {
 			$("#costAllocationPopup").dxPopup("instance").close();
