@@ -41,6 +41,7 @@ namespace QD.ERP.Web.DAL.Entities
             modelBuilder.Entity<sp90122GetUserLedgerAccessResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<StProAccountLedgerResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<StProAccountLedgerByVoucherTypeResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<sp20157AssetRegisterViewResult>().HasNoKey().ToView(null);
         }
     }
 
