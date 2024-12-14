@@ -132,18 +132,17 @@
                     .ID("AccountGroup")
                     .Value(null)
                     .Width(530)
+                         .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                    
+                                    .Message("Account Group is required");
+                                })
+                                    .OnInput("allowOnlyText")
                     )
                
             </div>
-           @*  <div class="form-group">
-                <label>Account Master</label>
-                @(
-                    Html.DevExtreme().TextBox()
-                    .ID("AccountMaster")
-                    .Value(null)
-                    
-                    )
-            </div> *@
+           
             <div class="form-group">
                 <label for="" class="button-alignment-down">Account Master</label>
                 @(Html.DevExtreme().DropDownBox()
@@ -153,11 +152,16 @@
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("MasterGroupId")
                     )
+                        .ValidationRules(rules =>
+                                    {
+                                        rules.AddRequired()
+                                                .Message("Account Master is required");
+                                    })
                     .LabelMode(EditorLabelMode.Outside)
                     .ID("accountMasterDropDownBox")
                     .ShowClearButton(true)
-                    .AcceptCustomValue(true)
-                    .OpenOnFieldClick(false)
+                    .AcceptCustomValue(false)
+                        .OpenOnFieldClick(true)
                     .ValueChangeEvent("input")
                     .HoverStateEnabled(true)
                     .ValueExpr("MasterGroupId")
@@ -202,11 +206,12 @@
                     <span class="input-group-prepend" style="margin-right: 10px;">
                         @(
                             Html.DevExtreme().Button()
-                            .ID("convertToArabic")
+                            .ID("convertToArabic1")
                             .Width(39)
                             .Height(35)
                                 .Icon("fas fa-language") // Ensure Font Awesome class is correct
                             .ElementAttr(new { @class = "input-button" })
+                                    .OnClick("function() { convertToArabic(); }")
                             )
                     </span>
                     @(
@@ -624,8 +629,11 @@
             url: "/api/LedgerAccountMaster/GetAccountGroupId",
             type: 'GET',
             success: function (data) {
+
+                  let replacedData = data.replace(/A/, 'أ');
                 // Set the value in the VoucherNo TextBox
                 $("#AccountGroupID").dxTextBox("instance").option("value", data);
+                 $("#AccountGroupID1").dxTextBox("instance").option("value", replacedData);
               
             },
             error: function (xhr, status, error) {
@@ -639,7 +647,14 @@
     $("#AMbtnSave").on("click", function (e) {
         e.preventDefault();
 
+           var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
+            var AccountGroupValidator = $("#AccountGroup").dxValidator("instance");
+
+                        var aAccountMasterDropDownBoxValidator = accountMasterDropDownBoxValidator.validate();
+            var aAccountGroupValidator = AccountGroupValidator.validate();
         // debugger;
+        if(aAccountMasterDropDownBoxValidator.isValid && aAccountGroupValidator.isValid)
+        {
         var VM = {
             // alert($("#VoucherNo").dxTextBox("instance").option("value"));
             "AccountGroupId": $("#AccountGroupID").dxTextBox("instance").option("value"),
@@ -663,7 +678,8 @@
             dataType: "json",
             success: function (response) {
                 if (response.success) {
-                    alert("Data saved successfully..");
+                     DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+                 
                  //   window.location.href = "http://localhost:5000/";
 
                 } else {
@@ -674,6 +690,28 @@
                 alert("Error occurred while updating data: " + error);
             }
         });
+        } else {
+          //  alert("Cannot save while the entry have errors,Please clear the errors to continue.");
+           DevExpress.ui.dialog.custom({
+    title: "Validation Errors", // Title of the popup
+    messageHtml: `
+        <div style="display: flex; align-items: center;">
+            <i class="dx-icon-warning" style="font-size: 24px; margin-right: 10px; color: #e74c3c;"></i>
+            <span>Cannot save while the entry has errors. Please clear the errors to continue.</span>
+        </div>
+    `, // Content with an icon and message
+    buttons: [
+        {
+            text: "OK",
+            onClick: () => {
+                return true; // Close the dialog
+            },
+        },
+    ],
+}).show();
+
+               // DevExpress.ui.notify("Ca", "error", 2000);
+            }
     });
 
     $("#btnBack").on("click", function (e) {
@@ -776,8 +814,6 @@
                 if (response) {
 
                     mARresponse = response;
-                    
-                     
                     // Update the second dropdown's DataGrid instance with the data
                    // $("#accountDropDownBoxArabic").dxDataGrid("instance").option("dataSource", [response]); // Ensure response is array
                     //const responseKey = response[0]?.key || response.key; // Adjust based on response structure
@@ -825,53 +861,124 @@
     }
 
 
+    //english text convert to arabic
 
+async function translateToArabic(text) {
 
-    async function translateToArabic(text) {
-        // try {
-        //     const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`);
-        //     const data = await response.json();
-        //     return data.responseData.translatedText;
-        // } catch (error) {
-        //     console.error("Translation failed:", error);
-        //     return "Translation Error";
-        // }
-        const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar&mt=1`;
+    try {
 
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
+        const response = await fetch(
 
-            if (data && data.responseData) {
-                return data.responseData.translatedText || "No translation found";
-            } else if (data.matches && data.matches.length > 0) {
-                // Fallback: Check for alternative matches if responseData is empty
-                return data.matches[0].translation || "No match found";
-            } else {
-                return "Translation Error";
-            }
-        } catch (error) {
-            console.error("Translation failed:", error);
-            return "Translation Error";
-        }
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+        );
+
+        const data = await response.json();
+
+        return data.responseData.translatedText;
+
+    } catch (error) {
+
+        console.error("Translation failed:", error);
+
+        return "Translation Error";
+
+    }
+
+}
+
+async function convertToArabic() {
+
+    // Get the TextBox1 (input) instance
+
+    const textBox1Instance = $("#AccountGroup").dxTextBox("instance");
+
+    // Get the TextBox2 (output) instance
+
+    const textBox2Instance = $("#AccountGroup1").dxTextBox("instance");
+
+    // Ensure both instances are initialized
+
+    if (!textBox1Instance || !textBox2Instance) {
+
+        console.error("TextBox instances are not properly initialized.");
+
+        return;
+
     }
 
 
-    document.getElementById("convertToArabic").addEventListener("click", async () => {
-        const englishText = document.getElementById("AccountGroup").value;
+    // Get the value from TextBox1
 
-        // if (englishText.trim() === "") {
-        //     alert("Please enter text to translate.");
-        //     return;
-        // }
+    const englishText = textBox1Instance.option("value");
 
-        // Await the result of the asynchronous translation function
-        const arabicTranslation = await translateToArabic(englishText);
+    // Validate input
 
-        // Update the Arabic text field with the resolved value
-        const accountGroup1Instance = $("#AccountGroup1").dxTextBox("instance");
-        accountGroup1Instance.option("value", arabicTranslation);
-    });
+    if (!englishText || englishText.trim() === "") {
+
+        alert("Please enter text to translate.");
+
+        return;
+
+    }
+
+    // Perform translation
+
+    const arabicTranslation = await translateToArabic(englishText);
+
+    // Update TextBox2 with the Arabic translation
+
+    textBox2Instance.option("value", arabicTranslation);
+
+}
+
+
+    // async function translateToArabic(text) {
+    //     // try {
+    //     //     const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`);
+    //     //     const data = await response.json();
+    //     //     return data.responseData.translatedText;
+    //     // } catch (error) {
+    //     //     console.error("Translation failed:", error);
+    //     //     return "Translation Error";
+    //     // }
+    //     const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`;
+         
+
+    //     try {
+    //         const response = await fetch(apiUrl);
+    //         const data = await response.json();
+
+    //         if (data && data.responseData) {
+    //             return data.responseData.translatedText || "No translation found";
+    //         } else if (data.matches && data.matches.length > 0) {
+    //             // Fallback: Check for alternative matches if responseData is empty
+    //             return data.matches[0].translation || "No match found";
+    //         } else {
+    //             return "Translation Error";
+    //         }
+    //     } catch (error) {
+    //         console.error("Translation failed:", error);
+    //         return "Translation Error";
+    //     }
+    // }
+
+
+    // document.getElementById("convertToArabic").addEventListener("click", async () => {
+    //     const englishText = document.getElementById("AccountGroup").value;
+
+    //     // if (englishText.trim() === "") {
+    //     //     alert("Please enter text to translate.");
+    //     //     return;
+    //     // }
+
+    //     // Await the result of the asynchronous translation function
+    //     const arabicTranslation = await translateToArabic(englishText);
+
+    //     // Update the Arabic text field with the resolved value
+    //     const accountGroup1Instance = $("#AccountGroup1").dxTextBox("instance");
+    //     accountGroup1Instance.option("value", arabicTranslation);
+    // });
 
     function onCheckboxInit(e) {
         $(e.element).attr("data-id", e.component.option("id"));
@@ -898,6 +1005,15 @@
         targetCheckbox4.option("value", sourceCheckbox4.option("value"));
 
     }
+
+    function allowOnlyText(e) {
+    const input = e.event.target.value;
+    const regex = /^[A-Za-z\s]*$/; // Allows only letters and spaces
+    if (!regex.test(input)) {
+        e.event.target.value = input.replace(/[^A-Za-z\s]/g, ''); // Remove invalid characters
+    }
+}
+
 
 
 

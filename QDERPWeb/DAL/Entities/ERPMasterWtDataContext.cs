@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.Areas.Finance.Models;
 
 namespace QD.ERP.Web.DAL.Entities;
 
@@ -72,9 +73,15 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<Tbl90111LayoutMaster> Tbl90111LayoutMasters { get; set; }
 
     public virtual DbSet<TblUserMaster> TblUserMasters { get; set; }
+    public virtual DbSet<VoucherResult> VoucherResults { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
+        modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
+        modelBuilder.Entity<AccountMasterAR>().HasNoKey(); // Mark as keyless
+
         modelBuilder.Entity<Qry20105BillsReceivableAgeingView>(entity =>
         {
             entity

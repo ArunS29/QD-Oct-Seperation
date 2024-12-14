@@ -45,16 +45,24 @@
                         <label for="DocumentType">Document Type</label>
                         @(Html.DevExtreme().TextBox()
                             .ID("txtDocumentType")
-                            .Value(null)
-                        )
+                            . Value(null)
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired()
+                                .Message("Branch Name is required");
+                            })
+                            )
+                        
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="ReminderDays">Reminder Days</label>
-                        @(Html.DevExtreme().TextBox()
+                        @(Html.DevExtreme().NumberBox()
                             .ID("txtReminderDays")
                             .Value(null)
+                            .Min(0)
+                            .ShowSpinButtons(true)
                         )
                     </div>
                 </div>
@@ -115,15 +123,40 @@
                             });
                         },
                         error: function (xhr) {
-                            var errorMessage = xhr.status === 500
-                                ? "Server error: Please try again later."
-                                : "Validation error: " + xhr.responseText;
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: errorMessage,
-                                confirmButtonText: 'OK'
-                            });
+                              if (xhr.status === 409) { // If duplicate asset location is found
+                                Swal.fire({
+                                    icon: 'warning', // Show a warning instead of an error
+                                    title: 'Duplicate Asset Doctype',
+                                    text: 'This Asset Doctype already exists. Please choose a different name.',
+                                    confirmButtonText: 'OK'
+                                
+                                   }).then(() => {
+                                    // Trigger the cancel action on the DataGrid after alert is closed
+                                    var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                    dataGrid.cancelEditData();  // Cancel the current edit
+                                });
+                            }
+                            else if (xhr.status === 500) {
+                                // Show error alert using SweetAlert
+                                var errorMessage = xhr.status === 500
+                                    ? "Server error: Please try again later."
+                                    : "Validation error: " + xhr.responseText;
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorMessage,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'There was an error updating the asset Doctype.',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+
                         }
                     });
                 }
@@ -151,7 +184,7 @@
                 allowedPageSizes: [5, 10, 20],
                 showInfo: true
             },
-            filterRow: { visible: true, applyFilter: "auto" },
+            filterRow: { visible: false, applyFilter: "auto" },
             toolbar: {
                 items: [
                     {
@@ -203,9 +236,34 @@
     // Function to add a new Asset Type
     function addAssetType() {
         var documentType = $("#txtDocumentType").dxTextBox("instance").option("value");
-        var reminderDays = $("#txtReminderDays").dxTextBox("instance").option("value");
+        var reminderDays = $("#txtReminderDays").dxNumberBox("instance").option("value");
+   // Get the branch name validator instance
+        var doctypevalidator = $("#txtDocumentType").dxValidator("instance");
 
-        if (documentType && reminderDays) {
+        // Validate the branch name input
+        var existingdocumentTypevalidation = doctypevalidator.validate();
+
+        // If the branch name is valid, proceed with the AJAX request
+        if (existingdocumentTypevalidation.isValid) {
+
+            // Get the data array from the grid's data source
+            var existingdocumentType = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
+
+            // Check if the branch name already exists in the grid data
+            var duplicate = existingdocumentType.some(function (item) {
+                return item.DocumentType.toLowerCase() === documentType.toLowerCase();
+            });
+
+            if (duplicate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Duplicate Document Type',
+                    text: 'This Document Type already exists!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
             var assetTypeData = {
                 DocumentType: documentType,
                 ReminderDays: reminderDays
@@ -241,12 +299,7 @@
                 }
             });
         } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Incomplete Form',
-                text: 'Please fill in all fields before submitting.',
-                confirmButtonText: 'OK'
-            });
+            DevExpress.ui.notify("Please fill required details!", "error", 2000);
         }
     }
 </script>

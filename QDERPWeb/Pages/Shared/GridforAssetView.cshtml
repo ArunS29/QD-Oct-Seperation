@@ -1,4 +1,8 @@
-﻿
+﻿@page
+@model QDWEB.Pages.Shared.GridforAssetViewModel
+@{
+}
+
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -59,10 +63,24 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
+
+    .custom-button-icon .dx-icon {
+        color: #ff5733; /* Set the color of the icon (you can use any color) */
+    }
+
 </style>
 <div class="dx-fieldset horizontal-container">
 
     @* <div id="ddButtonLayout"></div> *@
+    @(Html.DevExtreme().Button()
+        .ID("btnRefresh")
+        .Text("Refresh")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("refresh") // Use the "refresh" icon
+        .Width(180)
+        .OnClick("function() { refreshPage(); }") // Define a JavaScript function for the click event
+        )
 
 
     @(Html.DevExtreme().DropDownButton()
@@ -110,15 +128,25 @@
         .Width(180)
         .OnClick("toggleGroupPanel")
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnCreatePaymentRequest")
-        .Text("Create Payment Request")
+@*     @(Html.DevExtreme().Button()
+        .ID("btnChooseVoucher")
+        .Text("Choose Voucher")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("money") 
-        .Width(220) 
-        .OnClick("createPaymentRequest") 
+        .Icon("fa fa-clipboard") // You can use FontAwesome icons here too
+        .Width(180)
+        .OnClick("function() { chooseVoucher(); }")
+        ) *@
+    @(Html.DevExtreme().Button()
+        .ID("btnDepreciationSchedule") // Unique ID for the new button
+        .Text("Depreciation Schedule") // Text for the button
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("fa fa-calendar-alt") // You can choose any relevant FontAwesome icon
+        .Width(200) // Adjust width as needed
+        .OnClick("function() { showDepreciationSchedule(); }") // New function to handle click
         )
+
     @*    @(Html.DevExtreme().DropDownButton()
     .ID("ddButtonReceipts")
     .Text("Add Receipts")
@@ -379,4 +407,3 @@
     }
 
 </script>
-

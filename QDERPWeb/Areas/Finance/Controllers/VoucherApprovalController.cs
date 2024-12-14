@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QD.ERP.Web.DAL.Entities;
-namespace QD.ERP.Web.Areas.Finance.Controllers
+namespace QDWEB.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class VoucherApprovalController : Controller
@@ -21,7 +21,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 var data = _context.Qry20136VoucherMasterLists.Select(v => new
                 {
                     v.VoucherNo,
-                    v.VoucherDate,
+                    VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
                     v.VoucherRefNo,
                     v.VoucherNarration,
                     v.VoucherEnteredBy,
@@ -33,7 +33,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     v.VoucherApprovedBy,
                     v.VoucherApprovedOn,
                     v.VoucherType,
-                    v.VoucherEffectiveDate,
+                    VoucherEffectiveDate = v.VoucherEffectiveDate.HasValue
+                    ? v.VoucherEffectiveDate.Value.ToString("dd-MMM-yyyy")
+                    : string.Empty,
                     v.VoucherModifiedBy,
                     v.VoucherModifiedOn,
                     v.DebitAmount,
@@ -41,6 +43,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     v.AuditVerifiedBy,
                     v.AuditVerifiedOn,
                     v.IsAuditVerified
+
                 }).ToList();
 
                 return Json(data);
@@ -58,11 +61,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             if (startDate.HasValue && endDate.HasValue)
             {
+                // Ensure the DateTime is inclusive of the full day
                 vouchers = vouchers.Where(v => v.VoucherDate >= startDate && v.VoucherDate <= endDate);
             }
 
             return Ok(vouchers.ToList());
         }
+
         [HttpGet]
         public IActionResult GetAssetsSummary()
         {

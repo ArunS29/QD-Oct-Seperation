@@ -1,4 +1,6 @@
 ﻿using DevExpress.PivotGrid.PivotTable;
+using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +25,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _context = context;
         }
 
+        [HttpGet]
+     
+        public async Task<ActionResult> GetUserddl(DataSourceLoadOptions loadOptions)
+        {
+            var users = _context.TblUserMasters.Select(u => new { u.UserId, u.UserName });
+        
+
+
+            return Json(await DataSourceLoader.LoadAsync(users, loadOptions));
+        }
+    
         // GET: api/Master/GetBranches
         [HttpGet("GetBranches")]
         public async Task<IActionResult> GetBranches()
@@ -52,6 +65,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+
+                // Check if the maintenance type already exists
+                var exists = await _context.Tbl20115CompanyBranches
+                    .AnyAsync(x => x.BranchName == branch.BranchName);
+                if (exists)
+                {
+                    return BadRequest(new { success = false, message = "Branch Name English already exists." });
+                }
+
                 // Get the max BranchCode and increment
                 var maxBranchCode = _context.Tbl20115CompanyBranches
                     .OrderByDescending(b => b.BranchCode)
@@ -93,6 +115,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return NotFound(new { success = false, message = $"Branch with code {branch.BranchCode} not found." });
                 }
 
+                // Check if the branch name already exists, excluding the current branch being updated
+                var exists = await _context.Tbl20115CompanyBranches
+                    .AnyAsync(b => b.BranchName == branch.BranchName && b.BranchCode != branch.BranchCode);
+                if (exists)
+                {
+                    return BadRequest(new { success = false, message = "Branch Name already exists." });
+                }
+
                 // Update only the fields that are provided
                 if (!string.IsNullOrEmpty(branch.BranchName))
                 {
@@ -117,6 +147,22 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
+        [HttpPost("DeleteBranchMaster")]
+        public async Task<IActionResult> DeleteBranchMaster([FromBody] Tbl20115CompanyBranch branch)
+        {
+            var BranchToDelete = await _context.Tbl20115CompanyBranches.FindAsync(branch.BranchCode);
+            if (BranchToDelete == null)
+            {
+                return NotFound();
+            }
+
+            // Perform delete operation
+            _context.Tbl20115CompanyBranches.Remove(BranchToDelete);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Asset maintenance type deleted successfully." });
+        }
+
 
         // GET: api/Master/GetAssetMaintanencetype
         [HttpGet("GetAssetMaintanencetype")]
@@ -136,7 +182,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
-        // POST: api/Master/AddAssetMaintanencetype
+
         [HttpPost("AddAssetMaintanencetype")]
         public async Task<IActionResult> AddAssetMaintanencetype([FromBody] Tbl20112AssetMaintenanceType AssetmaintenanceData)
         {
@@ -145,70 +191,75 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
+            // Check if the maintenance type already exists
+            var exists = await _context.Tbl20112AssetMaintenanceTypes
+                .AnyAsync(x => x.AssetMaintenanceType == AssetmaintenanceData.AssetMaintenanceType);
+            if (exists)
             {
-                // Retrieve the maximum AssetMaintenanceTypeId from the database
-                var maxId = await _context.Tbl20112AssetMaintenanceTypes
-                    .OrderByDescending(a => a.AssetMaintenanceTypeId)
-                    .Select(a => a.AssetMaintenanceTypeId)
-                    .FirstOrDefaultAsync();
-
-                // If maxId is 0 (or no data), start with 1
-                // Explicitly cast the integer to byte, but ensure the range is within byte limits (0 to 255)
-                AssetmaintenanceData.AssetMaintenanceTypeId = (byte)(maxId == 0 ? 1 : maxId + 1);
-
-                // Add the new asset maintenance type to the database
-                _context.Tbl20112AssetMaintenanceTypes.Add(AssetmaintenanceData);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Asset maintenance type added successfully." });
+                return BadRequest(new { success = false, message = "Asset maintenance type already exists." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            // Get the maximum AssetMaintenanceTypeId and increment it
+            var maxId = await _context.Tbl20112AssetMaintenanceTypes
+                .OrderByDescending(x => x.AssetMaintenanceTypeId)
+                .Select(x => x.AssetMaintenanceTypeId)
+                .FirstOrDefaultAsync();
+
+            // If the table is empty, start with 1. Otherwise, increment the max value.
+            int newAssetMaintenanceTypeId = maxId + 1;
+
+            // Set the new AssetMaintenanceTypeId (if not auto-generated by the DB)
+            AssetmaintenanceData.AssetMaintenanceTypeId = (byte)newAssetMaintenanceTypeId;
+
+            // Add the new Asset Maintenance Type to the database
+            _context.Tbl20112AssetMaintenanceTypes.Add(AssetmaintenanceData);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Asset maintenance type added successfully." });
         }
 
-
-        // POST: api/Master/UpdateAssetMaintanencetype
         [HttpPost("UpdateAssetMaintanencetype")]
-        public async Task<IActionResult> UpdateAssetMaintanencetype([FromBody] Tbl20112AssetMaintenanceType assetMaintenanceType)
+        public async Task<IActionResult> UpdateAssetMaintanencetype([FromBody] Tbl20112AssetMaintenanceType AssetmaintenanceData)
         {
-            if (assetMaintenanceType == null || string.IsNullOrEmpty(assetMaintenanceType.AssetMaintenanceTypeId.ToString()))
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid asset maintenance type data.");
+                return BadRequest(ModelState);
             }
 
-            try
+            // Check if the maintenance type exists
+            var exists = await _context.Tbl20112AssetMaintenanceTypes
+                .AnyAsync(x => x.AssetMaintenanceType == AssetmaintenanceData.AssetMaintenanceType
+                               && x.AssetMaintenanceTypeId != AssetmaintenanceData.AssetMaintenanceTypeId); // Exclude the current record
+            if (exists)
             {
-                // Retrieve the existing asset maintenance type by ID
-                var existingAssetMaintenanceType = await _context.Tbl20112AssetMaintenanceTypes
-                    .FirstOrDefaultAsync(a => a.AssetMaintenanceTypeId == assetMaintenanceType.AssetMaintenanceTypeId);
-
-                if (existingAssetMaintenanceType == null)
-                {
-                    return NotFound(new { success = false, message = "Asset maintenance type not found." });
-                }
-
-                // Update only the provided fields
-                existingAssetMaintenanceType.AssetMaintenanceType = assetMaintenanceType.AssetMaintenanceType;
-
-                // Save the changes to the database
-                _context.Entry(existingAssetMaintenanceType).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Asset maintenance type updated successfully." });
+                return BadRequest(new { success = false, message = "Asset maintenance type already exists." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            _context.Tbl20112AssetMaintenanceTypes.Update(AssetmaintenanceData);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Asset maintenance type updated successfully." });
         }
 
+        [HttpPost("DeleteAssetMaintanencetype")]
+        public async Task<IActionResult> DeleteAssetMaintanencetype([FromBody] Tbl20112AssetMaintenanceType AssetmaintenanceData)
+        {
+            var assetToDelete = await _context.Tbl20112AssetMaintenanceTypes.FindAsync(AssetmaintenanceData.AssetMaintenanceTypeId);
+            if (assetToDelete == null)
+            {
+                return NotFound();
+            }
+
+            // Perform delete operation
+            _context.Tbl20112AssetMaintenanceTypes.Remove(assetToDelete);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Asset maintenance type deleted successfully." });
+        }
 
         // GET: api/Master/GetAssetCategory
         [HttpGet("GetAssetCategory")]
-        public async Task<IActionResult> GetAssetCategory()
+        public async Task<IActionResult>GetAssetCategory()
         {
             var assetCategories = await _context.Tbl20106AssetCategories
                 .Select(x => new
@@ -220,7 +271,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Ok(assetCategories);
         }
 
-        // POST: api/Master/AddAssetCategory
         [HttpPost("AddAssetCategory")]
         public async Task<IActionResult> AddAssetCategory([FromBody] Tbl20106AssetCategory assetCategory)
         {
@@ -231,6 +281,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                // Normalize the asset category for case-insensitive comparison
+                var normalizedAssetCategory = assetCategory.AssetCategory.Trim().ToLower();
+
+                // Check if the asset category already exists (case-insensitive comparison)
+                var exists = await _context.Tbl20106AssetCategories
+                    .AnyAsync(x => x.AssetCategory.Trim().ToLower() == normalizedAssetCategory);
+
+                if (exists)
+                {
+                    return BadRequest(new { success = false, message = "Asset Category already exists." });
+                }
 
                 // Retrieve the maximum AssetMaintenanceTypeId from the database
                 var maxId = await _context.Tbl20106AssetCategories
@@ -239,7 +300,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     .FirstOrDefaultAsync();
 
                 // If maxId is 0 (or no data), start with 1
-                // Explicitly cast the integer to byte, but ensure the range is within byte limits (0 to 255)
                 assetCategory.AssetCategoryCode = (byte)(maxId == 0 ? 1 : maxId + 1);
 
                 _context.Tbl20106AssetCategories.Add(assetCategory);
@@ -264,6 +324,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                var normalizedAssetCategory = assetCategory.AssetCategory.Trim().ToLower();
+
+                // Check if the asset category already exists, excluding the current one being updated
+                var exists = await _context.Tbl20106AssetCategories
+                    .AnyAsync(x => x.AssetCategory.Trim().ToLower() == normalizedAssetCategory && x.AssetCategoryCode != assetCategory.AssetCategoryCode);
+
+                if (exists)
+                {
+                    return BadRequest(new { success = false, message = "Asset Category already exists." });
+                }
+
                 var existingAssetCategory = await _context.Tbl20106AssetCategories
                     .FirstOrDefaultAsync(a => a.AssetCategoryCode == assetCategory.AssetCategoryCode);
 
@@ -272,6 +343,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return NotFound(new { success = false, message = "Asset category not found." });
                 }
 
+                // Update the asset category fields
                 existingAssetCategory.AssetCategory = assetCategory.AssetCategory;
                 existingAssetCategory.DepreciationLedgerNo = assetCategory.DepreciationLedgerNo;
                 existingAssetCategory.AccumDepLedgerNo = assetCategory.AccumDepLedgerNo;
@@ -286,6 +358,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         // GET: api/Master/Getassetlocation
         [HttpGet("Getassetlocation")]
         public IActionResult Getassetlocation()
@@ -303,24 +376,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Asset Location is required.");
             }
 
-            // Get the maximum AssetLocationCode from the database
-            var maxAssetLocationCode = _context.Tbl20107AssetLocations
-                .OrderByDescending(x => x.AssetLocationCode)
-                .FirstOrDefault()?.AssetLocationCode ?? 0; // Default to 0 if no records are found.
+            try
+            {
+                // Check if the AssetLocation already exists
+                var existingAssetLocation = _context.Tbl20107AssetLocations
+                    .FirstOrDefault(x => x.AssetLocation == assetLocation.AssetLocation);
 
-            // Set the new AssetLocationCode to be max + 1
-            assetLocation.AssetLocationCode = (short)(maxAssetLocationCode + 1);
+                if (existingAssetLocation != null)
+                {
+                    // Return conflict status if duplicate is found
+                    return Conflict("Asset Location already exists.");
+                }
 
-            // Add the new Asset Location to the database
-            _context.Tbl20107AssetLocations.Add(assetLocation);
-            _context.SaveChanges();
+                // Get the maximum AssetLocationCode from the database
+                var maxAssetLocationCode = _context.Tbl20107AssetLocations
+                    .OrderByDescending(x => x.AssetLocationCode)
+                    .FirstOrDefault()?.AssetLocationCode ?? 0;  // Default to 0 if no records are found.
 
-            return Ok(new { message = "Asset Location added successfully." });
+                // Set the new AssetLocationCode to be max + 1
+                assetLocation.AssetLocationCode = (short)(maxAssetLocationCode + 1);
+
+                // Add the new Asset Location to the database
+                _context.Tbl20107AssetLocations.Add(assetLocation);
+                _context.SaveChanges();
+
+                return Ok(new { message = "Asset Location added successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Handle any other errors that may occur
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-
-        // POST: api/AssetLocation/Updateassetlocation
-        [HttpPost("Updateassetlocation")]
+        // POST: api/AssetLocation/UpdateAssetLocation
+        [HttpPost("UpdateAssetLocation")]
         public IActionResult Update([FromBody] Tbl20107AssetLocation assetLocation)
         {
             if (assetLocation == null || string.IsNullOrWhiteSpace(assetLocation.AssetLocation))
@@ -328,19 +418,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Asset Location is required.");
             }
 
+            // Check if the AssetLocation already exists with a different AssetLocationCode
             var existingAssetLocation = _context.Tbl20107AssetLocations
+                .FirstOrDefault(x => x.AssetLocation == assetLocation.AssetLocation && x.AssetLocationCode != assetLocation.AssetLocationCode);
+
+            if (existingAssetLocation != null)
+            {
+                // Return conflict status (409) with a message indicating the asset location already exists
+                return BadRequest("Asset Location already exists.");  // Return conflict status if duplicate is found
+            }
+
+            var assetLocationToUpdate = _context.Tbl20107AssetLocations
                 .FirstOrDefault(x => x.AssetLocationCode == assetLocation.AssetLocationCode);
 
-            if (existingAssetLocation == null)
+            if (assetLocationToUpdate == null)
             {
                 return NotFound("Asset Location not found.");
             }
 
-            existingAssetLocation.AssetLocation = assetLocation.AssetLocation;
+            // Update the Asset Location
+            assetLocationToUpdate.AssetLocation = assetLocation.AssetLocation;
             _context.SaveChanges();
 
             return Ok(new { message = "Asset Location updated successfully." });
         }
+
         // GET: api/Master/GetSalesPersons
         [HttpGet("GetSalesPersons")]
         public async Task<IActionResult> GetSalesPersons()
@@ -374,6 +476,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+
+                var existingAssetLocation = _context.Tbl20101SalesPersonMasters
+                  .FirstOrDefault(x => x.SalesPersonCode == salesPerson.SalesPersonCode);
+
+                if (existingAssetLocation != null)
+                {
+                    return Conflict("SalesPerson/ Project Manager Code already exists.");  // Return conflict status if duplicate is found
+                }
                 // Log the received data (optional)
                 Console.WriteLine($"Received SalesPerson Data: {JsonConvert.SerializeObject(salesPerson)}");
 
@@ -417,11 +527,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return NotFound(new { success = false, message = $"Salesperson with code {salesPerson.SalesPersonCode} not found." });
                 }
 
-                // Update only the fields that are provided
-                existingSalesPerson.SalesPersonName = salesPerson.SalesPersonName;
-                existingSalesPerson.UserCode = salesPerson.UserCode;
-                existingSalesPerson.EmailAddress = salesPerson.EmailAddress;
-                existingSalesPerson.SalesPersonContactNo = salesPerson.SalesPersonContactNo;
+                // Check if the UserCode exists in the database (excluding the current salesperson being updated)
+                if (salesPerson.UserCode.HasValue)
+                {
+                    var userCodeExists = await _context.Tbl20101SalesPersonMasters
+                        .AnyAsync(s => s.UserCode == salesPerson.UserCode && s.SalesPersonCode != salesPerson.SalesPersonCode);
+
+                    if (!userCodeExists)
+                    {
+                        return BadRequest(new { success = false, message = $"The provided UserCode {salesPerson.UserCode} does not exist for any other salesperson." });
+                    }
+                    // Validate UserCode range (0 to 255)
+                    if (salesPerson.UserCode.HasValue && (salesPerson.UserCode < 0 || salesPerson.UserCode > 255))
+                    {
+                        return BadRequest(new { success = false, message = "UserCode must be between 0 and 255." });
+                    }
+                }
+
+                // Update only the fields that are provided (check for null or empty)
+                if (!string.IsNullOrEmpty(salesPerson.SalesPersonName))
+                    existingSalesPerson.SalesPersonName = salesPerson.SalesPersonName;
+                if (salesPerson.UserCode.HasValue)
+                    existingSalesPerson.UserCode = salesPerson.UserCode.Value;  // Make sure it's a valid byte
+                if (!string.IsNullOrEmpty(salesPerson.EmailAddress))
+                    existingSalesPerson.EmailAddress = salesPerson.EmailAddress;
+                if (!string.IsNullOrEmpty(salesPerson.SalesPersonContactNo))
+                    existingSalesPerson.SalesPersonContactNo = salesPerson.SalesPersonContactNo;
 
                 // Mark the entity as modified
                 _context.Entry(existingSalesPerson).State = EntityState.Modified;
@@ -434,6 +565,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
 
 
@@ -605,6 +737,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                // Check if the AssetLocation already exists
+                var existingAssetLocation = _context.Tbl20109AssetsDocTypes
+                    .FirstOrDefault(x => x.DocumentType == assetType.DocumentType);
+
+                if (existingAssetLocation != null)
+                {
+                    return Conflict("Asset DocumentType already exists.");  // Return conflict status if duplicate is found
+                }
                 // Get the max DocumentTypeId and increment
                 var maxDocumentTypeId = _context.Tbl20109AssetsDocTypes
                     .OrderByDescending(a => a.DocumentTypeId)
@@ -638,6 +778,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                // Check if the AssetLocation already exists
+                var existingAssetLocation = _context.Tbl20109AssetsDocTypes
+                    .FirstOrDefault(x => x.DocumentType == assetType.DocumentType);
+
+                if (existingAssetLocation != null)
+                {
+                    return Conflict("Asset DocumentType already exists.");  // Return conflict status if duplicate is found
+                }
+
                 // Retrieve the existing asset type using DocumentTypeId
                 var existingAssetType = await _context.Tbl20109AssetsDocTypes
                     .FirstOrDefaultAsync(a => a.DocumentTypeId == assetType.DocumentTypeId);

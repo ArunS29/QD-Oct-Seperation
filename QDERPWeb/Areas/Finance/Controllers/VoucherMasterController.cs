@@ -5,8 +5,11 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.DAL.Entities;
+
 
 namespace PaymentForm.Areas.Finance.Controllers
 {
@@ -140,7 +143,7 @@ namespace PaymentForm.Areas.Finance.Controllers
             //    i.VoucherNo //not available table in accountid
 
             //});
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A012" || p.AccountGroupId == "A003").Select(i => new
+            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Select(i => new
             {
                 //i.MasterGroupId,
                 //i.MasterGroup,
@@ -202,8 +205,6 @@ namespace PaymentForm.Areas.Finance.Controllers
 
             try
             {
-               
-
                 //var PaymentAccount = "Select AccountHead From tbl201ChartOfAccounts where AccountGroupID = 'A012'and AccountHead = ''";
 
                 // Add entries to the database
@@ -259,61 +260,29 @@ namespace PaymentForm.Areas.Finance.Controllers
 
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult> GetNewTemporaryVoucherNo(string VoucherString,string AccountType)
-        //{
-           
-
-        //    try
-        //    {
-        //        string prefix = "";
-        //        DateTime CurrentDate = DateTime.Now;
-        //        string sMonth = DateTime.Now.ToString("MM");
-        //        if (AccountType=="Cash Payment")
-        //        {
-        //            prefix = "CP";
-        //        }
-        //        else if(AccountType == "Bank Payment")
-        //        {
-        //            prefix = "BP";
-        //        }
-        //        SqlConnection con = new SqlConnection();
-        //        con.Open(); 
-        //        SqlCommand cmd = new SqlCommand(prefix, con);   
-             
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //    }
-
-
-        //}
-
         [HttpGet]
         public async Task<ActionResult> GetNewCPVoucherNo(DataSourceLoadOptions loadOptions)
         {
-            // Get the voucher No. string and Get the next serial of the voucher No.
             DateTime currentDate = DateTime.Now;
             string currentYear = currentDate.Year.ToString();
             string currentMonth = currentDate.Month.ToString("00");
-            string voucherString = "CP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth.Substring(currentMonth.Length - 2, 2) + "-";
+            string voucherString = "CP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
             string strNewReceiptNo;
 
-            // SQL query to get the max voucher number
-
-
-            string sql = "SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo " +
-                          "FROM tbl201VoucherMaster " +
-                          "WHERE VoucherNo LIKE {0}";
+            // SQL query with interpolated string
+            string likePattern = voucherString + "%";
 
             try
             {
-                var result = await _context.SqlQueryAsync<VoucherResult>(sql, new object[] { voucherString + "%" });
+                // Use raw SQL query to fetch the maximum voucher number
+                var result = await _context.VoucherResults
+                    .FromSqlInterpolated($@"
+                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+                FROM tbl201VoucherMaster
+                WHERE VoucherNo LIKE {likePattern}")
+                    .ToListAsync();
 
-                int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
-
+                int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
 
                 int newVoucherNo = maxVoucherNo + 1;
 
@@ -333,29 +302,72 @@ namespace PaymentForm.Areas.Finance.Controllers
             return Json(strNewReceiptNo);
         }
 
+
+        //[HttpGet]
+        //public async Task<ActionResult> GetNewCPVoucherNo(DataSourceLoadOptions loadOptions)
+        //{
+        //    // Get the voucher No. string and Get the next serial of the voucher No.
+        //    DateTime currentDate = DateTime.Now;
+        //    string currentYear = currentDate.Year.ToString();
+        //    string currentMonth = currentDate.Month.ToString("00");
+        //    string voucherString = "CP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth.Substring(currentMonth.Length - 2, 2) + "-";
+        //    string strNewReceiptNo;
+
+        //    // SQL query to get the max voucher number
+
+
+        //    string sql = "SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo " +
+        //                  "FROM tbl201VoucherMaster " +
+        //                  "WHERE VoucherNo LIKE {0}";
+
+        //    try
+        //    {
+        //        var result = await _context.SqlQueryAsync<VoucherResult>(sql, new object[] { voucherString + "%" });
+
+        //        int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
+
+
+        //        int newVoucherNo = maxVoucherNo + 1;
+
+        //        // Format the new voucher number with leading zeros
+        //        strNewReceiptNo = "000" + newVoucherNo.ToString();
+        //        strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
+
+        //        // Concatenate with the voucher string
+        //        strNewReceiptNo = voucherString + strNewReceiptNo;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        // Handle cases where there's no existing voucher number
+        //        strNewReceiptNo = voucherString + "001";
+        //    }
+
+        //    return Json(strNewReceiptNo);
+        //}
+
         [HttpGet]
         public async Task<ActionResult> GetNewBPVoucherNo(DataSourceLoadOptions loadOptions)
         {
-            // Get the voucher No. string and Get the next serial of the voucher No.
             DateTime currentDate = DateTime.Now;
             string currentYear = currentDate.Year.ToString();
             string currentMonth = currentDate.Month.ToString("00");
-            string voucherString = "BP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth.Substring(currentMonth.Length - 2, 2) + "-";
+            string voucherString = "BP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
             string strNewReceiptNo;
 
-            // SQL query to get the max voucher number
-
-
-            string sql = "SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo " +
-                          "FROM tbl201VoucherMaster " +
-                          "WHERE VoucherNo LIKE {0}";
+            // SQL query with interpolated string
+            string likePattern = voucherString + "%";
 
             try
             {
-                var result = await _context.SqlQueryAsync<VoucherResult>(sql, new object[] { voucherString + "%" });
+                // Use raw SQL query to fetch the maximum voucher number
+                var result = await _context.VoucherResults
+                    .FromSqlInterpolated($@"
+                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+                FROM tbl201VoucherMaster
+                WHERE VoucherNo LIKE {likePattern}")
+                    .ToListAsync();
 
-                int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
-
+                int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
 
                 int newVoucherNo = maxVoucherNo + 1;
 

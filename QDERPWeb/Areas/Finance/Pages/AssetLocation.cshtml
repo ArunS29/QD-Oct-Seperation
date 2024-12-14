@@ -51,6 +51,11 @@
                             Html.DevExtreme().TextBox()
                             .ID("txtAssetLocation")
                             .Value(null)
+                             .ValidationRules(rules =>
+                             {
+                             rules.AddRequired()
+                             .Message("Email is required");
+                             })
                             )
                     </div>
                 </div>
@@ -113,16 +118,39 @@
                             });
                         },
                         error: function (xhr) {
-                            // Show error alert using SweetAlert
-                            var errorMessage = xhr.status === 500
-                                ? "Server error: Please try again later."
-                                : "Validation error: " + xhr.responseText;
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: errorMessage,
-                                confirmButtonText: 'OK'
-                            });
+                            if (xhr.status === 400) { // If duplicate asset location is found
+                                Swal.fire({
+                                    icon: 'warning', // Show a warning instead of an error
+                                    title: 'Duplicate Asset Location',
+                                    text: 'This Asset Location already exists. Please choose a different name.',
+                                    confirmButtonText: 'OK'
+                                  }).then(() => {
+             // Trigger the cancel action on the DataGrid after alert is closed
+             var dataGrid = $("#gridContainer").dxDataGrid("instance");
+             dataGrid.cancelEditData();  // Cancel the current edit
+         });
+                            }
+                            else if (xhr.status === 500) {
+                                // Show error alert using SweetAlert
+                                var errorMessage = xhr.status === 500
+                                    ? "Server error: Please try again later."
+                                    : "Validation error: " + xhr.responseText;
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: errorMessage,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'There was an error updating the asset location.',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+
                         }
                     });
                 }
@@ -152,7 +180,7 @@
                 showInfo: true
             },
             filterRow: {
-                visible: true,
+                visible: false,
                 applyFilter: "auto"
             },
             toolbar: {
@@ -175,6 +203,11 @@
                             text: "Cancel",  // Text for Cancel button
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
+                            },
+                            visible: function () {
+                                // Make Cancel button visible only when editing mode is active
+                                var grid = $("#gridContainer").dxDataGrid("instance");
+                                return grid.option("editing.mode") === "batch" && grid.isEditing();
                             }
                         },
                         location: "after"
@@ -239,6 +272,7 @@
         if (assetLocation) {
             var assetLocationData = { AssetLocation: assetLocation };
 
+            // In the addAssetLocation function:
             $.ajax({
                 type: "POST",
                 url: "/api/Master/Addassetlocation",
@@ -256,22 +290,28 @@
                         }
                     });
                 },
-                error: function () {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'There was an error adding the asset location.',
-                        confirmButtonText: 'OK'
-                    });
+                error: function (xhr) {
+                        if (xhr.status === 400 && errorMessage.includes("Asset Location already exists")) {
+                               
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Duplicate Asset Location',
+                            text: 'This Asset Location already exists.',
+                            confirmButtonText: 'OK'
+                         })
+                            } else {
+                               Swal.fire({
+                            icon: 'error',
+                            title: 'Duplicate Asset Location',
+                            text: 'This Asset Location already exists.',
+                            confirmButtonText: 'OK'
+                         })
+                            }
                 }
             });
+
         } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Incomplete Form',
-                text: 'Please enter the asset location.',
-                confirmButtonText: 'OK'
-            });
+                    DevExpress.ui.notify("Please fill required details!", "error", 2000);
         }
     }
 </script>

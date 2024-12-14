@@ -85,16 +85,22 @@
         <h2>Asset Maintenance Master</h2>
         <div class="row g-6">
             <div class="card-container">
-            <div class="col-md-8">
-                <div class="form-group">
-                    <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Maintenance Type & Add to the Existing List</label>
-                    @(
-                        Html.DevExtreme().TextBox()
-                        .ID("txtmaintanence")
-                        .Value(null)
-                        )
+
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Maintenance Type & Add to the Existing List</label>
+                        @(
+                            Html.DevExtreme().TextBox()
+                            .ID("txtmaintanence")
+                            .Value(null)
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired()
+                                .Message("Maintanence Type is required");
+                            })
+                            )
+                    </div>
                 </div>
-            </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
@@ -108,17 +114,13 @@
                             )
                     </div>
                 </div>
-                </div>
             </div>
         </div>
         <div class="clear"></div>
         <br />
         <div id="gridContainer"></div>
     </div> <!-- End of card-container -->
-  
-
-
-
+</div>
 <script type="text/javascript">
     $(function () {
         // Initialize DevExtreme DataGrid with CustomStore for Asset Maintenance Type
@@ -129,20 +131,36 @@
                     return $.getJSON('/api/Master/GetAssetMaintanencetype'); // Fetch data from the API
                 },
                 update: function (key, values) {
-                    // Create an object that contains the fields to be updated
                     var updatedAssetMaintenanceType = {
-                        AssetMaintenanceTypeId: key, // The ID of the asset maintenance type to update
-                        AssetMaintenanceType: values.AssetMaintenanceType // Make sure the correct field is updated
+                        AssetMaintenanceTypeId: key,
+                        AssetMaintenanceType: values.AssetMaintenanceType
                     };
 
-                    // Send the updated data to the backend via AJAX
+                    // Get existing asset maintenance types from the grid
+                    var existingTypes = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
+
+                    // Check if the updated maintenance type already exists in the grid (excluding the current row)
+                    var duplicate = existingTypes.some(function (item) {
+                        return item.AssetMaintenanceType.toLowerCase() === updatedAssetMaintenanceType.AssetMaintenanceType.toLowerCase() && item.AssetMaintenanceTypeId !== key;
+                    });
+
+                    if (duplicate) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Duplicate Type',
+                            text: 'This maintenance type already exists!',
+                            confirmButtonText: 'OK'
+                        });
+                        return; // Prevent the update if a duplicate exists
+                    }
+
+                    // If no duplicate, proceed with the update
                     return $.ajax({
                         type: "POST",
                         url: "/api/Master/UpdateAssetMaintanencetype",
-                        data: JSON.stringify(updatedAssetMaintenanceType), // Send updated data in JSON format
+                        data: JSON.stringify(updatedAssetMaintenanceType),
                         contentType: "application/json",
-                        success: function (response) {
-                            // Show success message
+                        success: function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success',
@@ -165,19 +183,68 @@
                 }
             }),
             editing: {
-                mode: "batch", // Enable batch edit mode for multiple row editing
-                allowUpdating: true,  // Allow cell updates
-                allowAdding: false,   // No new rows
-                allowDeleting: false, // Prevent row deletion
-                useIcons: true, // Use icons for save/cancel
+                mode: "batch",
+                allowUpdating: true,
+                allowAdding: true,  // Allow adding records
+                allowDeleting: true,  // Allow deleting records
+                useIcons: true,
                 texts: {
-                    saveAll: "Update", // Custom text for save button
-                    cancelAll: "Cancel All Changes" // Custom text for cancel button
+                    saveAll: "Update",
+                    cancelAll: "Cancel All Changes"
                 }
             },
             columns: [
-                { dataField: "AssetMaintenanceTypeId", caption: "Maintenance Type ID", width: 100, editorOptions: { readOnly: true } },
-                { dataField: "AssetMaintenanceType", caption: "Maintenance Type" }
+                { dataField: "AssetMaintenanceTypeId", caption: "Maintenance Type ID", width: 100, allowFiltering: false, editorOptions: { readOnly: true } },
+                { dataField: "AssetMaintenanceType", caption: "Maintenance Type", allowFiltering: false },
+                {
+                    type: "buttons",
+                    width: 100,
+                    buttons: [
+                        {
+                            icon: "trash",
+                            hint: "Delete",
+                            onClick: function (e) {
+                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                var selectedData = e.row.data;
+                                var assetMaintenanceTypeId = selectedData.AssetMaintenanceTypeId;
+
+                                // Send delete request to the API
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/api/Master/DeleteAssetMaintanencetype",
+                                    data: JSON.stringify({ AssetMaintenanceTypeId: assetMaintenanceTypeId }),
+                                    contentType: "application/json",
+                                    success: function (response) {
+                                        if (response.success) {
+                                            dataGrid.refresh(); // Refresh the grid
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Success',
+                                                text: 'Asset maintenance type deleted successfully.',
+                                                confirmButtonText: 'OK'
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: response.message,
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    },
+                                    error: function (xhr) {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: xhr.responseText,
+                                            confirmButtonText: 'OK'
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                }
             ],
             showBorders: true,
             paging: {
@@ -189,7 +256,7 @@
                 showInfo: true
             },
             filterRow: {
-                visible: true,
+                visible: false,
                 applyFilter: "auto"
             },
             toolbar: {
@@ -197,8 +264,8 @@
                     {
                         widget: "dxButton",
                         options: {
-                            icon: "save",  // Icon for the Save button
-                            text: "Update",  // Text alongside the icon
+                            icon: "save",
+                            text: "Update",
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
                             }
@@ -206,97 +273,100 @@
                         location: "after"
                     },
                     {
-                        widget: "dxButton",  // Adding Cancel button
+                        widget: "dxButton",
                         options: {
-                            icon: "close",  // Icon for Cancel button
-                            text: "Cancel",  // Text for Cancel button
+                            icon: "close",
+                            text: "Cancel",
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
                             }
                         },
                         location: "after"
                     },
-                          {
-                        widget: "dxButton", // Add the Back button
+                    {
+                        widget: "dxButton",
                         options: {
-                            icon: "arrowleft", // You can choose another icon if you'd like
+                            icon: "arrowleft",
                             text: "Back",
                             onClick: function () {
-                                window.close(); // This closes the current window/tab
+                                window.close(); // Close the current window/tab
                             }
                         },
                         location: "after"
                     }
                 ]
             },
-            onRowUpdated: function (e) {
-                console.log("Row updated:", e); // Log the updated row to check the data
-            },
-            onRowInserted: function (e) {
-                console.log("Row inserted", e.data);
-            },
-            onRowRemoved: function (e) {
-                console.log("Row removed", e.data);
-            },
             scrolling: {
-                mode: "virtual", // This makes the scrolling virtual, loading rows as you scroll
-                rowRenderingMode: "virtual", // Optimizes row rendering
-                useNative: true // Use native scrolling for better performance
+                mode: "virtual",
+                rowRenderingMode: "virtual",
+                useNative: true
             },
-            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
-            width: "100%" // Make grid responsive and take full width of the container
+            height: 400,
+            width: "100%"
         });
-
     });
 
     // Function to add a new Asset Maintenance Type
     function addVoucherEntry() {
         var AssetMaintenanceType = $("#txtmaintanence").dxTextBox("instance").option("value");
 
-        if (AssetMaintenanceType) {
-            var AssetmaintenanceData = {
-                AssetMaintenanceType: AssetMaintenanceType
-            };
+        var AssetMaintenanceTypeValidator = $("#txtmaintanence").dxValidator("instance");
+        var AssetMaintenanceTypeValidation = AssetMaintenanceTypeValidator.validate();
 
+        if (AssetMaintenanceTypeValidation.isValid) {
+            // Get the data array from the grid's data source
+            var existingTypes = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
+
+            // Check if the maintenance type already exists in the grid data
+            var duplicate = existingTypes.some(function (item) {
+                return item.AssetMaintenanceType.toLowerCase() === AssetMaintenanceType.toLowerCase();
+            });
+
+            if (duplicate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Duplicate Type',
+                    text: 'This maintenance type already exists!',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            // Add the new maintenance type to the grid
             $.ajax({
                 type: "POST",
-                url: "/api/Master/AddAssetMaintanencetype",  // Ensure the URL matches exactly
-                data: JSON.stringify(AssetmaintenanceData),
+                url: "/api/Master/AddAssetMaintanencetype",
+                data: JSON.stringify({ AssetMaintenanceType: AssetMaintenanceType }),
                 contentType: "application/json",
-                success: function (response) {
+                success: function () {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
-                        text: 'Asset maintenance type added successfully',
+                        text: 'Asset maintenance type added successfully.',
                         confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Refresh the grid to show the updated data
-                            $("#gridContainer").dxDataGrid("instance").refresh();
-                        }
+                    }).then(() => {
+                        // Refresh the grid after successful addition
+                        $("#gridContainer").dxDataGrid("instance").refresh();
                     });
                 },
                 error: function (xhr) {
-                    var errorMessage = xhr.status === 500
-                        ? "Server error: Please try again later."
-                        : "Validation error: " + xhr.responseText;
-
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: errorMessage,
+                        text: xhr.responseText,
                         confirmButtonText: 'OK'
                     });
                 }
             });
         } else {
             Swal.fire({
-                icon: 'warning',
-                title: 'Input Missing',
-                text: 'Please enter a maintenance type before adding.',
+                icon: 'error',
+                title: 'Invalid Input',
+                text: 'Please provide a valid maintenance type.',
                 confirmButtonText: 'OK'
             });
         }
     }
 
 </script>
+

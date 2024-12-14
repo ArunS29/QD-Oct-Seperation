@@ -15,59 +15,91 @@
         margin: 15px;
     }
 
-    .dx-selectbox .dx-texteditor-input {
-        text-align: center; 
+    
+    #voucherPopup {
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-
-
-
-    .button-alignment-down {
-        margin-bottom: 10px
-    }
-
-    #Narration {
-        overflow-y: auto;
-        resize: none; 
-    }
-     .dx-datagrid {
-        color: #000000; 
-    }
-
-    .center-checkbox {
-        display: block;
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    .dx-datagrid .dx-cell {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
+   
     .voucher-actions {
         list-style-type: none;
         padding: 0;
         margin: 0;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .menu-item {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
-        cursor: pointer;
-    }
-
-        .menu-item:hover {
-            background-color: #f0f0f0;
+        .voucher-actions .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
         }
 
+            .voucher-actions .menu-item:hover {
+                background-color: #f0f0f0;
+            }
+
+            .voucher-actions .menu-item:last-child {
+                border-bottom: none; 
+            }
+
+   
     .dx-icon {
         font-size: 16px;
         margin-right: 10px;
     }
+
+  
+    .dx-checkbox {
+        margin: 10px;
+    }
+
+    .menu-item i {
+        color: #555; 
+        font-size: 20px; 
+        margin-right: 10px; 
+    }
+
+   
+    .menu-item .dx-icon-edit {
+        color: #007bff; 
+    }
+
+    .menu-item .dx-icon-find {
+        color: #28a745; 
+    }
+
+    .menu-item .dx-icon-check {
+        color: #ffc107; 
+    }
+
+    .menu-item .dx-icon-trash {
+        color: #dc3545; 
+    }
+
+    .menu-item .dx-icon-selectall {
+        color: #17a2b8; 
+    }
+
+    .menu-item .dx-icon-todo {
+        color: #6c757d; 
+    }
+
+    .menu-item .dx-icon-unlock {
+        color: #6610f2; 
+    }
+
+   
+    .menu-item:hover i {
+        opacity: 0.8;
+    }
+
 </style>
 <div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
     <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
@@ -94,7 +126,7 @@
     
 
 
-        <!-- Second Row -->
+        
         <div class="dx-fieldset" style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
             <div>
                 @(Html.DevExtreme().DateBox()
@@ -102,7 +134,7 @@
                     .InputAttr("aria-label", "Date")
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)
-                    .DisplayFormat("yyyy-MM-dd")
+                    .DisplayFormat("dd-MMM-yyyy")
                     .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)))
             </div>
             <div>
@@ -111,7 +143,7 @@
                     .InputAttr("aria-label", "Date")
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)
-                    .DisplayFormat("yyyy-MM-dd")
+                    .DisplayFormat("dd-MMM-yyyy")
                     .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)))
             </div>
             <div>
@@ -135,47 +167,54 @@
                         items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
                     }))
             </div>
+
         </div>
 
-        <!-- Data Grid -->
+       
         <div class="dx-field ledgerResult">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-                .ID("dataGrid")
-                .KeyExpr("VoucherNo")
-                .RemoteOperations(false)
-                .DataSource(ds => ds.Mvc()
+                    .ID("dataGrid")
+                    .KeyExpr("VoucherNo")
+                    .RemoteOperations(false)
+                    .DataSource(ds => ds.Mvc()
                     .Controller("VoucherApproval")
                     .LoadAction("GetVoucherApproval"))
-                .Columns(columns =>
-                {
+                    .Columns(columns =>
+                    {
                         columns.Add()
                     .DataField("select")
                     .Caption("Select")
                     .CellTemplate(@<text>
                 <input type="checkbox" class="dx-checkbox" />
             </text>);
-                    columns.Add().DataField("VoucherNo").Caption("Voucher No");
-                    columns.Add().DataField("VoucherDate").Caption("Voucher Date");
-                    columns.Add().DataField("VoucherRefNo").Caption("Voucher Ref No");
-                    columns.Add().DataField("VoucherNarration").Caption("Voucher Narration");
-                    columns.Add().DataField("VoucherEnteredBy").Caption("Entered By");
-                    columns.Add().DataField("VoucherEnteredOn").Caption("Entered On");
-                    columns.Add().DataField("IsVerified").Caption("Is Verified");
-                    columns.Add().DataField("VoucherVerifiedBy").Caption("Verified By");
-                    columns.Add().DataField("VoucherVerifiedOn").Caption("Verified On");
-                    columns.Add().DataField("IsApproved").Caption("Is Approved");
-                    columns.Add().DataField("VoucherApprovedBy").Caption("Approved By");
-                    columns.Add().DataField("VoucherApprovedOn").Caption("Approved On");
-                    columns.Add().DataField("VoucherType").Caption("Voucher Type");
-                    columns.Add().DataField("VoucherEffectiveDate").Caption("Effective Date");
-                    columns.Add().DataField("VoucherModifiedBy").Caption("Modified By");
-                    columns.Add().DataField("VoucherModifiedOn").Caption("Modified On");
-                    columns.Add().DataField("DebitAmount").Caption("Debit Amount");
-                    columns.Add().DataField("CreditAmount").Caption("Credit Amount");
-                    columns.Add().DataField("AuditVerifiedBy").Caption("Audit Verified By");
-                    columns.Add().DataField("AuditVerifiedOn").Caption("Audit Verified On");
-                    columns.Add().DataField("IsAuditVerified").Caption("Is Audit Verified");
+                        columns.Add().DataField("VoucherNo").Caption("Voucher No").Width(80);
+                        columns.Add().DataField("VoucherDate").Caption("Voucher Date").Width(100);
+                        columns.Add().DataField("VoucherEffectiveDate").Caption("Effective On").Width(100);
+                        columns.Add().DataField("VoucherNarration").Caption("Voucher Narration").Width(150);
+                        columns.Add().DataField("DebitAmount").Caption("Debit").Width(100);
+                        columns.Add().DataField("CreditAmount").Caption("Credit").Width(100);
+                        columns.Add().DataField("VoucherEnteredBy").Caption("Entered By").Width(120);
+                        columns.Add().DataField("VoucherVerifiedBy").Caption("Verified By").Width(120);
+                        columns.Add().DataField("VoucherApprovedBy").Caption("Approved").Width(120);
+                        columns.Add().DataField("VoucherType").Caption("Voucher").Width(100);
+                        columns.Add().DataField("AuditVerifiedBy").Caption("Audit").Width(120);
+                    })
+                .Summary(summary =>
+                {
+                    summary.TotalItems(items =>
+                    {
+                        items.Add().Column("VoucherNo").SummaryType(SummaryType.Count).DisplayFormat("{0}");
+                        items.Add().Column("DebitAmount").SummaryType(SummaryType.Sum).CustomizeText(
+                @"function(e) {
+            return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }");
+                        items.Add().Column("CreditAmount").SummaryType(SummaryType.Sum).CustomizeText(
+                @"function(e) {
+            return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }");
+                    });
                 })
+
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
@@ -185,7 +224,9 @@
                 .FilterRow(filterRow => filterRow.Visible(false))
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
                 .ShowBorders(true)
-                .Width("100%"))
+                .Width("100%")
+                .Paging(paging => paging.Enabled(false))
+                )
         </div>
 
         <div>
@@ -208,48 +249,62 @@
                     startDate = new Date(today.setHours(0, 0, 0, 0));
                     endDate = new Date(today.setHours(23, 59, 59, 999));
                     break;
+
                 case 'yesterday':
-                    startDate = new Date(today.setDate(today.getDate() - 1));
+                    startDate = new Date(today);
+                    startDate.setDate(today.getDate() - 1);
                     startDate.setHours(0, 0, 0, 0);
-                    endDate = new Date(today.setHours(23, 59, 59, 999));
-                    break;
-                case 'week':
-                    startDate = new Date(today.setDate(today.getDate() - today.getDay()));
-                    startDate.setHours(0, 0, 0, 0);
-                    endDate = new Date(today.setDate(startDate.getDate() + 6));
+                    endDate = new Date(startDate);
                     endDate.setHours(23, 59, 59, 999);
                     break;
+
+                case 'week':
+                    startDate = new Date(today);
+                    startDate.setDate(today.getDate() - today.getDay());
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate = new Date(startDate);
+                    endDate.setDate(startDate.getDate() + 6);
+                    endDate.setHours(23, 59, 59, 999);
+                    break;
+
                 case 'tillmonth':
                     startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                    endDate = new Date();
+                    endDate = new Date(today);
+                    endDate.setHours(23, 59, 59, 999);
                     break;
+
                 case 'fullmonth':
                     startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
                     break;
+
                 case 'tillyear':
                     startDate = new Date(today.getFullYear(), 0, 1);
-                    endDate = new Date();
+                    endDate = new Date(today);
+                    endDate.setHours(23, 59, 59, 999);
                     break;
+
                 case 'fullyear':
                     startDate = new Date(today.getFullYear(), 0, 1);
                     endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
                     break;
+
                 case 'lastmonth':
                     startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                    endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999);
                     break;
+
                 case 'lastyear':
                     startDate = new Date(today.getFullYear() - 1, 0, 1);
                     endDate = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
                     break;
+
                 default:
-                   
                     dataGrid.option("dataSource", {
                         load: function () {
                             return $.ajax({
                                 url: "/api/VoucherApproval/GetVoucherApprovals",
-                                type: "GET" 
+                                type: "GET"
                             });
                         }
                     });
@@ -258,6 +313,7 @@
                     return;
             }
 
+            // Ensure both startDate and endDate are set before making the AJAX request
             if (startDate && endDate) {
                 dataGrid.option("dataSource", {
                     load: function () {
@@ -276,13 +332,13 @@
             }
         }
         $(function () {
-            // Initialize the popup
+           
             $("#voucherPopup").dxPopup({
                 width: 300,
                 height: 400,
                 showTitle: true,
                 title: "Voucher Options",
-                visible: false, // Start hidden
+                visible: false,
                 dragEnabled: true,
                 closeOnOutsideClick: true,
                 contentTemplate: function () {
@@ -300,7 +356,6 @@
                 }
             });
 
-            // Helper to create menu items with icons
             function createMenuItem(text, icon, clickHandler) {
                 return $("<li>")
                     .addClass("menu-item")
@@ -311,7 +366,7 @@
                     .on("click", clickHandler);
             }
 
-            // Define functions for each action
+          
             function editVoucher() { console.log("Edit Voucher Clicked"); }
             function viewVoucher() { console.log("View Voucher Clicked"); }
             function verifyVoucher() { console.log("Verify Voucher Clicked"); }
@@ -320,11 +375,30 @@
             function approveAll() { console.log("Approve All Selected Vouchers Clicked"); }
             function unlockVoucher() { console.log("Unlock Voucher Clicked"); }
 
-            // Attach click event to the checkbox
-            $(document).on("click", ".dx-checkbox", function () {
-                $("#voucherPopup").dxPopup("instance").show(); // Show the popup
+        
+            $(document).on("click", ".dx-row", function () {
+            
+                $("#voucherPopup").dxPopup("instance").show();
+            });
+
+          
+            $(document).on("change", ".dx-checkbox", function () {
+            
+                if (!$(this).prop("checked")) {
+                    $("#voucherPopup").dxPopup("instance").hide();
+                }
+            });
+
+           
+            $(document).on("click", function (e) {
+                if (!$(e.target).closest("#voucherPopup").length && !$(e.target).closest(".dx-row").length) {
+                    $("#voucherPopup").dxPopup("instance").hide();
+                }
             });
         });
+
+
+
 
 
     </script>

@@ -92,6 +92,12 @@
                             Html.DevExtreme().TextBox()
                             .ID("txtAssetCategory")
                             .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                    .Message("Sales Person Name is required");
+                                })
+                                
                             )
                     </div>
                 </div>
@@ -134,7 +140,27 @@
                         AssetCategory: values.AssetCategory
                     };
 
-                    updatedRows.push(updatedAssetCategory);
+                    // Fetch the current data from the grid for duplicate check
+                    var existingCategories = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
+
+                    // Normalize the updated category name for comparison
+                    var normalizedAssetCategory = updatedAssetCategory.AssetCategory.trim().toLowerCase();
+
+                    // Check for duplicates excluding the current item being updated
+                    var duplicate = existingCategories.some(function (item) {
+                        return item.AssetCategory.trim().toLowerCase() === normalizedAssetCategory && item.AssetCategoryCode !== updatedAssetCategory.AssetCategoryCode;
+                    });
+
+                    // If a duplicate is found, show an error and prevent the update
+                    if (duplicate) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Duplicate Asset Category',
+                            text: 'This Asset Category already exists!',
+                            confirmButtonText: 'OK'
+                        });
+                        return $.Deferred().reject(); // Prevent AJAX from being called
+                    }
 
                     return $.ajax({
                         type: "POST",
@@ -147,6 +173,10 @@
                                 title: 'Asset Category Updated',
                                 text: 'The asset category has been successfully updated.',
                                 confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Trigger the cancel action on the DataGrid after alert is closed
+                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                dataGrid.cancelEditData();  // Cancel the current edit
                             });
                         },
                         error: function (xhr) {
@@ -186,7 +216,7 @@
                 showInfo: true
             },
             filterRow: {
-                visible: true,
+                visible: false,
                 applyFilter: "auto"
             },
             toolbar: {
@@ -258,56 +288,81 @@
             height: 400,
             width: "100%" // Full width
         });
+
     });
 
-    // Function to add a new asset category
-    function addAssetCategory() {
-        var assetCategory = $("#txtAssetCategory").dxTextBox("instance").option("value");
+// Function to add a new asset category
+function addAssetCategory() {
+    var assetCategory = $("#txtAssetCategory").dxTextBox("instance").option("value");
 
-        // Check if assetCategory is provided
-        if (assetCategory) {
-            var assetCategoryData = {
-                AssetCategory: assetCategory
-            };
+    // Get the asset category validator instance
+    var assetcategoryvalidator = $("#txtAssetCategory").dxValidator("instance");
 
-            // Send AJAX request to the backend
-            $.ajax({
-                type: "POST",
-                url: "/api/Master/AddAssetCategory",  // The API endpoint to add the asset category
-                data: JSON.stringify(assetCategoryData),  // Send the asset category data as JSON
-                contentType: "application/json",  // Specify that the request body is JSON
-                success: function (response) {
-                    // Show success message and reload the page
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Saved',
-                        text: response.message,
-                        confirmButtonText: 'OK'
-                    }).then(() => location.reload());
-                },
-                error: function (xhr) {
-                    // Handle errors (either validation or server error)
-                    var errorMessage = xhr.status === 500
-                        ? "Server error: Please try again later."
-                        : "Validation error: " + xhr.responseText;
+    // Validate the asset category input
+    var assetcategoryvalidation = assetcategoryvalidator.validate();
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: errorMessage,
-                        confirmButtonText: 'OK'
-                    });
-                }
-            });
-        } else {
-            // Show warning if form is incomplete
+    // If the asset category is valid, proceed with the AJAX request
+    if (assetcategoryvalidation.isValid) {
+
+        // Get the data array from the grid's data source
+        var exists = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
+
+        // Normalize the entered asset category for comparison
+        var normalizedAssetCategory = assetCategory.trim().toLowerCase();
+
+        // Check if the asset category already exists in the grid data
+        var duplicate = exists.some(function (item) {
+            return item.AssetCategory.trim().toLowerCase() === normalizedAssetCategory;
+        });
+
+        if (duplicate) {
             Swal.fire({
-                icon: 'warning',
-                title: 'Incomplete Form',
-                text: 'Please fill in the asset category before submitting.',
+                icon: 'error',
+                title: 'Duplicate Asset Category',
+                text: 'This Asset Category already exists!',
                 confirmButtonText: 'OK'
             });
+            return;
         }
-    }
+
+        var assetCategoryData = {
+            AssetCategory: assetCategory
+        };
+
+        // Send AJAX request to the backend
+        $.ajax({
+            type: "POST",
+            url: "/api/Master/AddAssetCategory",  // The API endpoint to add the asset category
+            data: JSON.stringify(assetCategoryData),  // Send the asset category data as JSON
+            contentType: "application/json",  // Specify that the request body is JSON
+            success: function (response) {
+                // Show success message and reload the page
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Saved',
+                    text: response.message,
+                    confirmButtonText: 'OK'
+                }).then(() => location.reload());
+            },
+            error: function (xhr) {
+                // Handle errors (either validation or server error)
+                var errorMessage = xhr.status === 500
+                    ? "Server error: Please try again later."
+                    : "Validation error: " + xhr.responseText;
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage,
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+        } else {
+            // If validation fails, show a notification
+            DevExpress.ui.notify("Please fill required details!", "error", 2000);
+        }
+}
+
 
 </script>
