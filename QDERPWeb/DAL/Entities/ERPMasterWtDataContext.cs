@@ -28,6 +28,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Qry20164SalaryPayableLedgerMaster> Qry20164SalaryPayableLedgerMasters { get; set; }
 
+    public virtual DbSet<Qry20196SalaryPayableByDateReport> Qry20196SalaryPayableByDateReports { get; set; }
+
     public virtual DbSet<Qry201ListOfAccount> Qry201ListOfAccounts { get; set; }
 
     public virtual DbSet<Qry201SubLedgerPayablesMaster> Qry201SubLedgerPayablesMasters { get; set; }
@@ -709,6 +711,50 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VoucherNoFromVoucherMaster)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Qry20196SalaryPayableByDateReport>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry20196SalaryPayableByDateReport");
+
+            entity.Property(e => e.AgencyName).IsUnicode(false);
+            entity.Property(e => e.Balance).HasColumnType("money");
+            entity.Property(e => e.BankAccountNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BankName).IsUnicode(false);
+            entity.Property(e => e.CategoryTitle).IsUnicode(false);
+            entity.Property(e => e.ContactMobile).IsUnicode(false);
+            entity.Property(e => e.CordinatorName).IsUnicode(false);
+            entity.Property(e => e.CostCentreTitle).IsUnicode(false);
+            entity.Property(e => e.Department).IsUnicode(false);
+            entity.Property(e => e.EmployeeGroup)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeName).IsUnicode(false);
+            entity.Property(e => e.EmployeeNo)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeReferenceId)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("EmployeeReferenceID");
+            entity.Property(e => e.GosiSalary).HasColumnType("money");
+            entity.Property(e => e.JobTitle).IsUnicode(false);
+            entity.Property(e => e.MonthOf).HasMaxLength(61);
+            entity.Property(e => e.NationalId)
+                .IsUnicode(false)
+                .HasColumnName("NationalID");
+            entity.Property(e => e.Paid).HasColumnType("money");
+            entity.Property(e => e.PayableAmount).HasColumnType("money");
+            entity.Property(e => e.ReferenceNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherDate).HasColumnType("datetime");
+            entity.Property(e => e.VoucherEffectiveDate).HasColumnType("datetime");
+            entity.Property(e => e.WorkSite).IsUnicode(false);
         });
 
         modelBuilder.Entity<Qry201ListOfAccount>(entity =>
@@ -1448,6 +1494,7 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.UserPicture).HasColumnType("image");
         });
         OnModelCreatingGeneratedProcedures(modelBuilder);
+
         OnModelCreatingPartial(modelBuilder);
     }
 

@@ -123,6 +123,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[qry20196SalaryPayableByDateReport]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry201ListOfAccounts]",
          "ObjectType": 3
       },
@@ -133,6 +137,10 @@
       {
          "Name": "[dbo].[qry201VoucherEntryScreenDisplay]",
          "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[sp20101TrialBalanceReport]",
+         "ObjectType": 1
       },
       {
          "Name": "[dbo].[sp20102GetAccountBalance]",

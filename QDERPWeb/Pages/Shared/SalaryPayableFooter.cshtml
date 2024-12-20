@@ -16,8 +16,8 @@
 
     .horizontal-container {
         display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
+        gap: 10px; 
+        justify-content: start; 
         align-items: center; /* Vertically centers the buttons */
         margin: 15px;
         margin-top: 0px;
@@ -64,11 +64,34 @@
         color: #ff5733; /* Set the color of the icon (you can use any color) */
     }
 
+
+
+
+
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        width: 200px;
+    }
+
+    .context-menu-item {
+        padding: 10px;
+        cursor: pointer;
+        text-align: left;
+    }
+
+        .context-menu-item:hover {
+            background-color: #f0f0f0;
+        }
 </style>
 <div class="dx-fieldset horizontal-container">
 
     @* <div id="ddButtonLayout"></div> *@
-    @(Html.DevExtreme().Button()
+ @*    @(Html.DevExtreme().Button()
         .ID("btnRefresh")
         .Text("Refresh")
         .Type(ButtonType.Normal)
@@ -78,7 +101,7 @@
         .OnClick("function() { refreshPage(); }") // Define a JavaScript function for the click event
         )
 
-
+ *@
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
         .Text("Layout")
@@ -124,65 +147,72 @@
         .Width(180)
         .OnClick("toggleGroupPanel")
         )
+    <!-- Show Only with Balance Button -->
     @(Html.DevExtreme().Button()
-        .ID("btnChooseVoucher")
-        .Text("Choose Voucher")
+        .ID("btnShowBalance")
+        .Text("Show Only with Balance")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("fa fa-clipboard") // You can use FontAwesome icons here too
+        .Icon("filter")
         .Width(180)
-        .OnClick("function() { chooseVoucher(); }")
+        .OnClick("function() { toggleBalancePopup(); }")
         )
-    
 
- @*    @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonReceipts")
-        .Text("Add Receipts")
-        .Icon("add")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Cash Receipts").Icon("money");
-            items.Add().Text("Add Bank Receipts").Icon("product");
-        })
-        .OnItemClick("addRecipitsButton_click")
-        )
+    <div id="balancePopupMenu" class="context-menu" style="display:none;">
+        <div class="context-menu-item">View Ledger Transactions</div>
+        <div class="context-menu-item">Export to PDF</div>
+        <div class="context-menu-item">Export to Excel</div>
+        <div class="context-menu-item">Export Account Confirmation Letter</div>
+    </div>
+
+    @*    @(Html.DevExtreme().DropDownButton()
+    .ID("ddButtonReceipts")
+    .Text("Add Receipts")
+    .Icon("add")
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+    items.Add().Text("Add Cash Receipts").Icon("money");
+    items.Add().Text("Add Bank Receipts").Icon("product");
+    })
+    .OnItemClick("addRecipitsButton_click")
+    )
     @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonPayment")
-        .Text("Add Payment")
-        .Icon("add")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Cash Payment").Icon("money");
-            items.Add().Text("Add Bank Payment").Icon("product");
-        })
-        .OnItemClick("addRecipitsButton_click")
-        )
+    .ID("ddButtonPayment")
+    .Text("Add Payment")
+    .Icon("add")
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+    items.Add().Text("Add Cash Payment").Icon("money");
+    items.Add().Text("Add Bank Payment").Icon("product");
+    })
+    .OnItemClick("addRecipitsButton_click")
+    )
     @(Html.DevExtreme().DropDownButton()
-        .ID("ddOtherVouchers")
-        .Text("Other Vouchers")
-        .Icon("add")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Purchase Voucher").Icon("add").OnClick("function() { addVoucher_click('Purchase'); }"); ;
-            items.Add().Text("Add Sales Voucher").Icon("add").OnClick("function() { addVoucher_click('Sales'); }"); ; ;
-            items.Add().Text("Add Journal Voucher").Icon("add").OnClick("function() { addVoucher_click('Journal'); }"); ; ;
-        })
-        )
+    .ID("ddOtherVouchers")
+    .Text("Other Vouchers")
+    .Icon("add")
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+    items.Add().Text("Add Purchase Voucher").Icon("add").OnClick("function() { addVoucher_click('Purchase'); }"); ;
+    items.Add().Text("Add Sales Voucher").Icon("add").OnClick("function() { addVoucher_click('Sales'); }"); ; ;
+    items.Add().Text("Add Journal Voucher").Icon("add").OnClick("function() { addVoucher_click('Journal'); }"); ; ;
+    })
+    )
     @(Html.DevExtreme().DropDownButton()
-        .ID("ddReports")
-        .Text("Reports")
-        .Icon("doc")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Reportss").Icon("money");
-            items.Add().Text("Add Sales Voucher").Icon("product");
-        })
-        .OnItemClick("addRecipitsButton_click")
-        ) *@
+    .ID("ddReports")
+    .Text("Reports")
+    .Icon("doc")
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+    items.Add().Text("Reportss").Icon("money");
+    items.Add().Text("Add Sales Voucher").Icon("product");
+    })
+    .OnItemClick("addRecipitsButton_click")
+    ) *@
 </div>
 
 <script type="text/javascript">
@@ -392,6 +422,15 @@
         location.reload(); // Reloads the entire page
         // Or refresh a specific grid, for example:
         // $("#YourGridID").dxDataGrid("instance").refresh();
+    }
+    function toggleBalancePopup() {
+        var popupMenu = document.getElementById('balancePopupMenu');
+        // Toggle the display of the balance popup menu
+        if (popupMenu.style.display === 'none' || popupMenu.style.display === '') {
+            popupMenu.style.display = 'block';
+        } else {
+            popupMenu.style.display = 'none';
+        }
     }
 
 </script>

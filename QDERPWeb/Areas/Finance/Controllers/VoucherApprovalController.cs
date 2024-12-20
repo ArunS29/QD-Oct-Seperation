@@ -61,7 +61,7 @@ namespace QDWEB.Areas.Finance.Controllers
 
             if (startDate.HasValue && endDate.HasValue)
             {
-                // Ensure the DateTime is inclusive of the full day
+               
                 vouchers = vouchers.Where(v => v.VoucherDate >= startDate && v.VoucherDate <= endDate);
             }
 
@@ -74,19 +74,19 @@ namespace QDWEB.Areas.Finance.Controllers
             try
             {
                 var assetSummary = _context.Qry20149AssetsRegisterViews
-                    .GroupBy(a => 1) // Group by a constant to aggregate the entire table
+                    .GroupBy(a => 1) 
                     .Select(g => new
                     {
                         NoOfAssets = g.Count(),
-                        CurrentAssetValue = g.Sum(a => a.NetBookValue) ?? 0 // Handle null values
+                        CurrentAssetValue = g.Sum(a => a.NetBookValue) ?? 0 
                     })
                     .FirstOrDefault();
 
-                return Ok(assetSummary); // Return default if null
+                return Ok(assetSummary); 
             }
             catch (Exception ex)
             {
-                // Log the exception if necessary
+                
                 return StatusCode(500, new { Error = "Failed to fetch asset summary.", Details = ex.Message });
             }
         }

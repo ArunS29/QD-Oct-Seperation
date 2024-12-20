@@ -40,6 +40,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     x.OpeningTotal,
                     x.TotalDebit,
                     x.TotalCredit,
+                    //TotalCredit = x.TotalCredit.HasValue ? (x.TotalCredit < 0 ? $"{Math.Abs(x.TotalCredit.Value):N2}Cr" 
+                    //: $"{x.TotalCredit.Value:N2}") 
+                    //: "0.00",
                     x.ClosingBalance,
                     x.TotalDepreciatedAmount,
                     x.NetBookValue,
@@ -50,7 +53,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     x.Model,
                     x.Year,
                     x.Ownership,
-                    x.PurchaseDate,
+                     PurchaseDate = x.PurchaseDate.HasValue
+                    ? x.PurchaseDate.Value.ToString("dd-MMM-yyyy")
+                    : string.Empty,
                     x.ValueOfProperty,
                     x.PurchasedAs,
                     x.IsFinanced,
@@ -68,10 +73,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     : string.Empty,
                 }).ToList();
 
+
                
                 return Json(result);
             }
             catch (Exception ex)
+
             {
                
                 return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
@@ -82,19 +89,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             try
             {
-                // Call the stored procedure to delete the record by ID
+              
                 var result = _context.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @Id = {0}", id);
 
-                // Check the result, if no rows are affected, return NotFound
+                
                 if (result == 0)
                     return NotFound(new { message = "Asset not found or could not be deleted." });
 
-                // Return a success message
+               
                 return Ok(new { message = "Asset deleted successfully." });
             }
             catch (Exception ex)
             {
-                // Handle any exceptions
+     
                 return StatusCode(500, new { message = "An error occurred while deleting the asset.", error = ex.Message });
             }
         }

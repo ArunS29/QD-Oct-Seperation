@@ -1,0 +1,288 @@
+﻿@page
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+
+
+
+    .button-alignment-down {
+        margin-bottom: 10px
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    .dx-datagrid {
+        color: #000000;
+    }
+
+    .center-checkbox {
+        display: block;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .dx-datagrid .dx-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+</style>
+<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+      FinancesModules-Trial Balance customaizable Formate
+    </div>
+    <div class="card-body" style="padding: 20px; background-color: #c0dceb; border-radius: 5px;">
+        <div class="dx-field ledgerResult">
+            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20101TrialBalanceReportResult>()
+                    .ID("dataGrid")
+                    .KeyExpr("AccountID")
+                    .RemoteOperations(false)
+                    .DataSource(ds => ds.Mvc()
+                    .Controller("TrialBalanceCustom")
+                    .LoadAction("GetAssetView"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().Caption("TrailBalance").Columns(group =>
+                    {
+                        // Adding select checkbox column
+                        group.Add().DataField("Select").Caption("Select").CellTemplate(@<text>
+                <input type="checkbox" class="select-checkbox" data-bind="checked: Select" />
+            </text>).AllowSorting(true).AllowEditing(true);
+
+                        group.Add().DataField("AccountHead").Caption("LedgerNo");
+                        group.Add().DataField("AccountName").Caption("LedgerName");
+                        group.Add().DataField("Op_Bal").Caption("Opening Balance").Format("fixedPoint");
+                        group.Add().DataField("TransDebit").Caption("Debit Transaction").Format("fixedPoint");
+                      @*   group.Add().DataField("TransCredit").Caption("Credit Transaction").Format("fixedPoint"); *@
+                        group.Add()
+                    .DataField("TransCredit")
+                    .Caption("Credit Transaction")
+                    .Alignment(HorizontalAlignment.Right)
+                    .Format("fixedPoint")// Ensure right alignment
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0; // Get the value
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            // Append 'Cr' only for negative values
+            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            }");
+                        group.Add().DataField("MasterGroup").Caption("Master Group").GroupIndex(0);
+                        group.Add().DataField("AccountGroup").Caption("Account Group").GroupIndex(1);
+
+                        // Add a calculated column for Closing Balance
+                        group.Add().CalculateCellValue("ClosingBalance").Caption("Closing Balance").Format("fixedPoint")
+                    .CalculateCellValue(@"function(data) {
+            return (data.Op_Bal || 0) + (data.TransDebit || 0) - (data.TransCredit || 0);
+            }");
+                    });
+                    })
+                .Summary(summary =>
+                {
+                    summary.GroupItems(groupItems =>
+                    {
+                        groupItems.Add().Column("Op_Bal").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { return ' ' + e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                        groupItems.Add().Column("TransDebit").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { return ' ' + e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                      @*   groupItems.Add().Column("TransCredit").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { return ' ' + e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
+                        groupItems.Add()
+                    .Column("TransCredit")
+                    .SummaryType(SummaryType.Sum)
+                    .ShowInGroupFooter(true)
+                    .CustomizeText(@"
+            function(e) {
+            let total = Math.abs(e.value || 0); 
+            return total.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            }) + 'Cr';
+            }");
+
+                        
+                        groupItems.Add().Column("ClosingBalance").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { return ' ' + e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                    });
+
+                    summary.TotalItems(items =>
+                    {
+                        items.Add().Column("Op_Bal").SummaryType(SummaryType.Sum)
+                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                        items.Add().Column("TransDebit").SummaryType(SummaryType.Sum)
+                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                       
+                        items.Add()
+                    .Column("TransCredit")
+                    .SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let total = Math.abs(e.value || 0);
+            return total.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            }) + 'Cr'; 
+            }");
+
+                      
+                        items.Add().Column("ClosingBalance").SummaryType(SummaryType.Sum)
+                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                    });
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(500)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .Grouping(grouping => grouping.AutoExpandAll(true))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%"))
+        </div>
+
+
+
+   <div>
+            @await Html.PartialAsync("GridFooterExpenses")
+        </div>
+        <div id="voucherPopup"></div>
+    </div>
+    <script>
+        $(function () {
+            $("#voucherPopup").dxPopup({
+                width: 350, // Adjusted width to fit all items
+                height: "auto", // Automatically adjusts height to fit content
+                showTitle: false, // Hides the title bar
+                showCloseButton: false, // Removes the "x" button
+                visible: false, // Popup is initially hidden
+                dragEnabled: false, // Optional: Prevents dragging of the popup
+                closeOnOutsideClick: true, // Closes the popup when clicking outside
+                contentTemplate: function () {
+                    return $("<div>")
+                        .css({
+                            "padding": "10px",
+                            "display": "flex",
+                            "flex-direction": "column",
+                            "gap": "10px" // Space between menu items
+                        })
+                        .append(
+                            createMenuItem("View Ledger Transactions", "find", "#4caf50", viewLedgerTransactions),
+                            createMenuItem("Export to PDF", "exportpdf", "#f44336", exportToPDF),
+                            createMenuItem("Export to Excel", "exportxlsx", "#2196f3", exportToExcel),
+                            createMenuItem("Export Account Confirmation Letter", "email", "#ff9800", exportAccountConfirmation),
+                            createMenuItem("Preview All Selected Ledger", "preview", "#9c27b0", previewAllSelectedLedger)
+                        );
+                }
+            });
+
+            function createMenuItem(text, icon, iconColor, clickHandler) {
+                return $("<div>")
+                    .addClass("menu-item")
+                    .css({
+                        "display": "flex",
+                        "align-items": "center",
+                        "padding": "10px",
+                        "border-radius": "5px",
+                        "background-color": "#f9f9f9",
+                        "box-shadow": "0 1px 3px rgba(0, 0, 0, 0.1)",
+                        "cursor": "pointer",
+                        "transition": "background-color 0.3s ease"
+                    })
+                    .hover(
+                        function () {
+                            $(this).css("background-color", "#e8e8e8");
+                        },
+                        function () {
+                            $(this).css("background-color", "#f9f9f9");
+                        }
+                    )
+                    .append(
+                        $("<i>")
+                            .addClass("dx-icon dx-icon-" + icon)
+                            .css({
+                                "font-size": "18px",
+                                "color": iconColor, // Apply specific color for the icon
+                                "margin-right": "10px"
+                            }),
+                        $("<span>").text(text).css({
+                            "font-size": "14px",
+                            "font-weight": "bold",
+                            "color": "#333"
+                        })
+                    )
+                    .on("click", clickHandler);
+            }
+
+            // Define the action handlers
+            function viewLedgerTransactions() {
+                console.log("View Ledger Transactions Clicked");
+            }
+
+            function exportToPDF() {
+                console.log("Export to PDF Clicked");
+            }
+
+            function exportToExcel() {
+                console.log("Export to Excel Clicked");
+            }
+
+            function exportAccountConfirmation() {
+                console.log("Export Account Confirmation Letter Clicked");
+            }
+
+            function previewAllSelectedLedger() {
+                console.log("Preview All Selected Ledger Clicked");
+            }
+
+            // Show popup only on checkbox click
+            $(document).on("click", ".dx-row input[type='checkbox']", function (e) {
+                e.stopPropagation(); // Prevent click from propagating to parent elements
+                $("#voucherPopup").dxPopup("instance").show();
+            });
+
+            // Hide popup when clicking outside
+            $(document).on("click", function (e) {
+                if (
+                    !$(e.target).closest("#voucherPopup").length &&
+                    !$(e.target).is(".dx-row input[type='checkbox']")
+                ) {
+                    $("#voucherPopup").dxPopup("instance").hide();
+                }
+            });
+        });
+    </script>
+
+

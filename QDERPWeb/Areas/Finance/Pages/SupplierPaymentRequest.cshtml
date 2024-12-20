@@ -1,0 +1,203 @@
+﻿@page
+@model QDWEB.Pages.Shared.SupplierPaymentfooterModel
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+    #SupplierName .dx-placeholder {
+        color: white;
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px;
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+</style>
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white font-weight-bold">
+            Supplier Payment Requests
+        </div>
+        <div class="card-body bg-secondary">
+            <div class="mb-4">
+                <label for="SupplierName" style="color: white;">Select Supplier</label>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("SupplierName")
+                    .Width("300px")
+                    .LabelMode(EditorLabelMode.Outside))
+            </div>
+
+
+            <div class="mb-4">
+                @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201SubLedgerPayablesMaster>()
+                        .ID("dataGrid")
+                        .KeyExpr("AccountHeadNo")
+                        .RemoteOperations(true)
+                        .DataSource(ds => ds.Mvc()
+                        .Controller("SupplierPaymentRequest")
+                        .LoadAction("GetSupplierPaymentRequest"))
+                        .Columns(columns =>
+                        {
+                            columns.Add()
+                        .DataField("select")
+                        .Caption("Select")
+                        .CellTemplate(@<text>
+                    <input type="checkbox" class="dx-checkbox" />
+                </text>);
+                            columns.Add().DataField("ReferenceNo").Caption("Reference No");
+                            columns.Add().DataField("PurchaseOrderNo").Caption("SupplierBill No");
+                            columns.Add().DataField("PurchaseOrderNo").Caption("Purchase Order No");
+                            columns.Add().DataField("VoucherDate").Caption("Voucher Date");
+                            columns.Add().DataField("Paid").Caption("Paid");
+                          
+                            columns.Add().DataField("VoucherEffectiveDate").Caption("EffectiveMonth ");
+                            columns.Add().DataField("InvoiceDueDate").Caption("Invoice Due Date");
+
+                            columns.Add().DataField("VoucherNarration").Caption("Voucher Narration");
+                            columns.Add() .DataField("PayableAmount").Caption("Payable Amount") .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+                function(e) {
+                let value = e.value || 0;
+                let formattedValue = Math.abs(value).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                return value < 0 ? formattedValue + 'Cr' : formattedValue;
+                }");
+                            columns.Add().DataField("Paid").Caption("Paid");
+                            columns.Add()
+                            .DataField("Balance")
+                            .Caption("Balance")
+                            .Alignment(HorizontalAlignment.Right) 
+                            .CustomizeText(@"
+                function(e) {
+                let value = e.value || 0;
+                let formattedValue = Math.abs(value).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                return value < 0 ? formattedValue + 'Cr' : formattedValue;
+                }");
+                         
+                            columns.Add().DataField("OverdueDays").Caption("Overdue Days");
+                        })
+                    .Summary(summary =>
+                    {
+                        summary.TotalItems(items =>
+                        {
+                            items.Add()
+                        .Column("ReferenceNo")
+                        .SummaryType(SummaryType.Count)
+                        .DisplayFormat("{0}");
+                            items.Add()
+                        .Column("PayableAmount")
+                        .SummaryType(SummaryType.Sum)
+                        .CustomizeText(@"
+                function(e) {
+                return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }");
+                            items.Add()
+                        .Column("Paid")
+                        .SummaryType(SummaryType.Sum)
+                        .CustomizeText(@"
+                function(e) {
+                return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }");
+                            items.Add()
+                        .Column("Balance")
+                        .SummaryType(SummaryType.Sum)
+                        .CustomizeText(@"
+                function(e) {
+                return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }");
+                        });
+                    })
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnFixing(fixing => fixing.Enabled(true))
+                    .HeaderFilter(filter => filter.Visible(true))
+                    .Paging(paging => paging.PageSize(10))
+                    .Pager(pager => pager.ShowPageSizeSelector(true).AllowedPageSizes(new[] { 10, 20, 50 }))
+                    .Height(300)
+                    .ColumnAutoWidth(true)
+                    .ShowBorders(true)
+                    .Width("100%")
+                    )
+
+            </div>
+
+            <div>
+                @await Html.PartialAsync("SupplierPaymentFooter")
+            </div>
+        </div>
+    
+
+    <script>
+        $(function () {
+           
+            $("#SupplierName").dxSelectBox({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "AccountHeadNo",
+                    loadUrl: "/api/SupplierPaymentRequest/GetSuppliers"
+                }),
+                displayExpr: "AccountHead",
+                valueExpr: "AccountHeadNo",
+                placeholder: "Select a Supplier",
+                onValueChanged: function (e) {
+                    const supplierId = e.value; 
+                    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                  
+                    if (supplierId) {
+                        dataGrid.option("dataSource", {
+                            load: function () {
+                                return $.ajax({
+                                    url: `/api/SupplierPaymentRequest/GetSupplierPaymentRequest?supplierId=${supplierId}`,
+                                    type: "GET"
+                                });
+                            }
+                        });
+                        dataGrid.refresh(); 
+                    } else {
+                        dataGrid.clearFilter(); 
+                    }
+                }
+            });
+        });
+                 function onSupplierChanged(e) {
+                    var selectedSupplier = e.value; // Get the selected supplier value
+                    var dataGrid = $('#dataGrid').dxDataGrid('instance'); // Get the DataGrid instance
+                    dataGrid.clearFilter(); // Clear any existing filters
+
+                    // Apply a filter on the Supplier column (adjust the field name as necessary)
+                    dataGrid.filter(["SupplierId", "=", selectedSupplier]);
+
+                    // Optionally, reload the data to reflect changes
+                    dataGrid.refresh();
+                }
+    </script>
+

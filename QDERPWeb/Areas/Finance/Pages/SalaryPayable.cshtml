@@ -1,0 +1,323 @@
+﻿@page
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+
+    #voucherPopup {
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+
+    .voucher-actions {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .voucher-actions .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+            .voucher-actions .menu-item:hover {
+                background-color: #f0f0f0;
+            }
+
+            .voucher-actions .menu-item:last-child {
+                border-bottom: none;
+            }
+
+
+    .dx-icon {
+        font-size: 16px;
+        margin-right: 10px;
+    }
+
+
+    .dx-checkbox {
+        margin: 10px;
+    }
+
+    .menu-item i {
+        color: #555;
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+
+    .menu-item .dx-icon-edit {
+        color: #007bff;
+    }
+
+    .menu-item .dx-icon-find {
+        color: #28a745;
+    }
+
+    .menu-item .dx-icon-check {
+        color: #ffc107;
+    }
+
+    .menu-item .dx-icon-trash {
+        color: #dc3545;
+    }
+
+    .menu-item .dx-icon-selectall {
+        color: #17a2b8;
+    }
+
+    .menu-item .dx-icon-todo {
+        color: #6c757d;
+    }
+
+    .menu-item .dx-icon-unlock {
+        color: #6610f2;
+    }
+
+
+    .menu-item:hover i {
+        opacity: 0.8;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+</style>
+<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+        SalaryPayableByDate
+    </div>
+    <div class="card-body" style="padding: 20px; background-color: #c0dceb; border-radius: 5px;">
+        <div class="d-flex align-items-center mb-3">
+            <!-- DateBox -->
+            <div class="me-3">
+                @(Html.DevExtreme().DateBox()
+                    .ID("EffectiveDate")
+                    .InputAttr("aria-label", "Salary Payable Report End Date")
+                    .Label("Salary Payable Report End Date")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("dd-MMM-yyyy")
+                    .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)))
+            </div>
+
+            <div>
+                <button id="btnShowRecords"
+                        style="width: 250px; height: 60px; background-color: #f5e086; color: #333; border: 1px solid #e2c035; border-radius: 5px; cursor: pointer; font-size: 16px; display: flex; align-items: center; padding: 0 10px;">
+                    <i class="dx-icon dx-icon-smalliconslayout" style="font-size: 20px; margin-right: 10px;"></i> Show Records
+                </button>
+            </div>
+
+
+        </div>
+
+
+        <div class="table-responsive">
+            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+                .ID("dataGrid")
+                .KeyExpr("VoucherNo")
+                .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("SalaryPayable")
+                .LoadAction("GetSalarybydate"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("EmployeeName").Caption("EmployeeName").GroupIndex(0);
+                    columns.Add().DataField("EmployeeNo").Caption("Employee No").Width(120);
+                    columns.Add().DataField("EmployeeName").Caption("Employee Name").Width(150);
+                    columns.Add().DataField("NationalId").Caption("National ID").Width(120);
+                    columns.Add()
+                    .DataField("ReferenceNo")
+                    .Caption("Reference No")
+                    .Width(120)
+                    .CellTemplate(@"
+            <a href='/Finance/SalesVoucher?VoucherNo=<%- data.ReferenceNo %>' target='_blank'>
+            <%- data.ReferenceNo %>
+            </a>
+            ");
+
+                    columns.Add().DataField("MonthOf").Caption("Month Of").Width(120);
+                    columns.Add()
+                    .DataField("PayableAmount")
+                    .Caption("Payable Amount")
+                    .Alignment(HorizontalAlignment.Right) // Ensure right alignment
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0; // Get the value
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            // Append 'Cr' only for negative values
+            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            }");
+
+                    columns.Add().DataField("Paid").Caption("Paid").Width(100).Alignment(HorizontalAlignment.Right);
+
+                    columns.Add()
+                    .DataField("Balance")
+                    .Caption("Balance")
+                    .Alignment(HorizontalAlignment.Right) // Ensure right alignment
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0; // Get the value
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            // Append 'Cr' only for negative values
+            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            }");
+
+
+                })
+                .Summary(summary =>
+                {
+
+                    summary.TotalItems(items =>
+                    {
+
+                        items.Add()
+                    .Column("PayableAmount")
+                    .SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let total = e.value || 0; // Get the total value
+            let formattedValue = Math.abs(total).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            // Append 'Cr' only for negative totals
+            return total < 0 ? formattedValue + 'Cr' : formattedValue;
+            }");
+
+                        items.Add().Column("Paid").SummaryType(SummaryType.Sum).DisplayFormat("{0}").Alignment(HorizontalAlignment.Right);
+
+                        items.Add()
+                    .Column("Balance")
+                    .SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let total = e.value || 0; // Get the total value
+            let formattedValue = Math.abs(total).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            // Append 'Cr' only for negative totals
+            return total < 0 ? formattedValue + 'Cr' : formattedValue;
+            }");
+
+                    });
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(300)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%"))
+        </div>
+
+
+        <div class="mt-4">
+            @await Html.PartialAsync("SalaryPayableFooter")
+        </div>
+        <div id="voucherPopup"></div>
+    </div>
+
+
+
+    <script>
+        function showRecords() {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+           
+            dataGrid.option("dataSource", {
+                load: function () {
+                    return $.ajax({
+                        url: "/api/SalaryPayable/GetSalarybydate",
+                        type: "GET"
+                    });
+                }
+            });
+
+            dataGrid.refresh();
+        }
+
+        $(function () {
+
+            $("#voucherPopup").dxPopup({
+                width: 300,
+                height: 400,
+                showTitle: true,
+                title: "Voucher Options",
+                visible: false,
+                dragEnabled: true,
+                closeOnOutsideClick: true,
+                contentTemplate: function () {
+                    return $("<div>").append(
+                        $("<ul>").addClass("voucher-actions").append(
+                            createMenuItem("Edit Voucher", "edit", editVoucher),
+                            createMenuItem("View Voucher", "find", viewVoucher),
+                            createMenuItem("Verify Voucher", "check", verifyVoucher),
+                            createMenuItem("Delete Voucher", "trash", deleteVoucher),
+                            createMenuItem("Verify All Selected Vouchers", "selectall", verifyAll),
+                            createMenuItem("Approve All Selected Vouchers", "todo", approveAll),
+                            createMenuItem("Unlock the Voucher", "unlock", unlockVoucher)
+                        )
+                    );
+                }
+            });
+
+            function createMenuItem(text, icon, clickHandler) {
+                return $("<li>")
+                    .addClass("menu-item")
+                    .append(
+                        $("<i>").addClass("dx-icon dx-icon-" + icon),
+                        $("<span>").text(" " + text)
+                    )
+                    .on("click", clickHandler);
+            }
+
+            function editVoucher() { console.log("Edit Voucher Clicked"); }
+            function viewVoucher() { console.log("View Voucher Clicked"); }
+            function verifyVoucher() { console.log("Verify Voucher Clicked"); }
+            function deleteVoucher() { console.log("Delete Voucher Clicked"); }
+            function verifyAll() { console.log("Verify All Selected Vouchers Clicked"); }
+            function approveAll() { console.log("Approve All Selected Vouchers Clicked"); }
+            function unlockVoucher() { console.log("Unlock Voucher Clicked"); }
+
+            $(document).on("change", ".dx-checkbox", function () {
+               
+                if ($(this).prop("checked")) {
+                    $("#voucherPopup").dxPopup("instance").show();
+                }
+            });
+        });
+ </script>

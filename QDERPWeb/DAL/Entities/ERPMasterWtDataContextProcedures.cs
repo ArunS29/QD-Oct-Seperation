@@ -45,6 +45,7 @@ namespace QD.ERP.Web.DAL.Entities
         }
     }
 
+
     public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextProcedures
     {
         private readonly ERPMasterWtDataContext _context;
@@ -52,6 +53,44 @@ namespace QD.ERP.Web.DAL.Entities
         public ERPMasterWtDataContextProcedures(ERPMasterWtDataContext context)
         {
             _context = context;
+        }
+
+        public virtual async Task<List<sp20101TrialBalanceReportResult>> sp20101TrialBalanceReportAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "StartDate",
+                    Value = StartDate ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.DateTime,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "EndDate",
+                    Value = EndDate ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.DateTime,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "IsUseEffectiveDate",
+                    Value = IsUseEffectiveDate ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Bit,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<sp20101TrialBalanceReportResult>("EXEC @returnValue = [dbo].[sp20101TrialBalanceReport] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
         }
 
         public virtual async Task<List<sp20102GetAccountBalanceResult>> sp20102GetAccountBalanceAsync(string ParamAccountNo, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)

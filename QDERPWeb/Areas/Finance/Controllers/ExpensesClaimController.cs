@@ -272,7 +272,7 @@ namespace QDWEB.Areas.Finance.Controllers
                 claims = claims.Where(c => c.ClaimDate >= startDate && c.ClaimDate <= endDate);
             }
 
-            // Project to an object with all required fields
+          
             var result = claims.Select(e => new
             {
                 e.ClaimRefNo,
