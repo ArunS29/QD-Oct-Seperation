@@ -92,7 +92,7 @@
                             .LabelMode(EditorLabelMode.Outside)
                             .Type(DateBoxType.Date)
                             .DisplayFormat("dd-MMM-yyyy")
-                            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                                .Value(DateTime.Now)
                             )
             </div>
             <div class="form-group">
@@ -103,7 +103,7 @@
                             .LabelMode(EditorLabelMode.Outside)
                             .Type(DateBoxType.Date)
                             .DisplayFormat("dd-MMM-yyyy")
-                            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                                .Value(DateTime.Now)
                             )
             </div>
             <div class="form-group">
@@ -115,19 +115,15 @@
                             .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("AccountHead")
                             )
-                                 .ValidationRules(rules =>
-                                    {
-                                        rules.AddRequired()
-                                        .Message("Payment Account is required");
-                                    })
                             .LabelMode(EditorLabelMode.Outside)
                             .ID("accountDropDownBox")
-                                 .Placeholder("Select Payment Account...")
+                                 
                             .ShowClearButton(true)
                             .AcceptCustomValue(true)
                             .OpenOnFieldClick(false)
                             .ValueChangeEvent("input")
                             .HoverStateEnabled(true)
+                                .Value("Petty Cash - Shabbir")
                             .ValueExpr("AccountId")
                             .DisplayExpr("AccountHead")
                             .OnInput("dropDownBoxOnInput")
@@ -346,27 +342,44 @@
                                             )
 
         </div> *@
-            <div class="form-group" style="max-width:2000px;position:relative;top:20px;">
+         @*    <div class="form-group" style="max-width:2000px;position:relative;top:20px;">
                 <label for="Amount" class="button-alignment-down;">Amount</label>
                 @(
                         Html.DevExtreme().NumberBox()
                         .ID("txtVoucherAmount")
                         .Value(0.00) // Default value set to 0.00
+                             .ValidationRules(rules =>
+                                        {
+                                            rules.AddRequired().Message("Voucher Amount is required");
+                                            // rules.AddRange().Min(0).Message("Voucher Amount cannot be negative");
+                                        })
                         .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
                             .InputAttr(new { type = "number", step = "0.01", style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;", maxLength = 16 })
-
-                                .ValidationRules(rules =>
-                                    {
-                                        rules.AddRequired().Message("Voucher Amount is required");
-                                        rules.AddRange().Min(0).Message("Voucher Amount cannot be negative");
-                                    })
+                               
                         .Width(180)
-                      
-                        
-                        // Optional: Show spin buttons for increase/decrease
                         )
                
-            </div>
+            </div> *@
+            <div class="form-group">
+            <label for="Amount" class="button-alignment-down">Amount</label>
+                @(
+                                        Html.DevExtreme().NumberBox()
+                                        .ID("txtVoucherAmount")
+                                        .Value(null)
+                                        .ValidationRules(rules =>
+                                        {
+                                            rules.AddRequired()
+                                            .Message("Voucher Amount is required");
+                                            rules.AddRange().Min(0).Message("Voucher Amount cannot be negative");
+                                        })
+                                        .Placeholder("0.000")
+                                             .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
+                                    .InputAttr(new { type = "number", step = "0.01", style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;", maxLength = 16, autocomplete = "off" })
+                                             .Width(180)// HTML attribute to allow decimal input
+                                        )
+
+        </div>
+
 
         </div>
 
@@ -383,11 +396,7 @@
                             .Width(720)
                             .Placeholder("Enter your comments here...")
                             .MaxLength(111500)
-                                .ValidationRules(rules =>
-                                {
-                                    rules.AddRequired()
-                                        .Message("Narration is required");
-                                })
+                               
                             )
             </div>
             <div class="form-group" style="">
@@ -445,8 +454,8 @@
                         .Columns(columns =>
                         {
                             columns.AddFor(m => m.DrCr)
-                                .Caption("Dr/Cr")
-                                .EditCellTemplate(@<input dx-text-box data-bind="value: $data.DrCr" />);
+                                .Caption("Dr/Cr");
+                                @* .EditCellTemplate(@<input dx-text-box data-bind="value: $data.DrCr" />); *@
 
                    @*          columns.AddFor(m => m.AccountHead)
                                 .Caption("Account Head"); *@
@@ -475,21 +484,23 @@
                             columns.AddFor(m => m.DrAmount)
                                 .Caption("Debit")
                                 .Alignment(HorizontalAlignment.Right)
-                              //  .EditCellTemplate(@<input dx-number-box data-bind="value: $data.DrAmount" />)
+                                @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.DrAmount" />) *@
                                 .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
                             columns.AddFor(m => m.CrAmount)
                                 .Caption("Credit")
                                 .Alignment(HorizontalAlignment.Right)
-                               // .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />)
+                                @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
                                 .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
                             columns.AddFor(m => m.EntryNarration)
                                 .Caption("Entry Narration");
-                              //  .EditCellTemplate(@<textarea dx-text-area data-bind="value: $data.EntryNarration"></textarea>);
+                                @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.EntryNarration" />); *@
+                              
 
                             columns.AddFor(m => m.SysRemarks)
                                 .Caption("Remarks");
+                                 @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.SysRemarks" />); *@
                         })
                        
                            .Editing(editing => editing
@@ -509,8 +520,6 @@
                         .ShowBorders(true)
                         .Width("100%")
                 )
-
-         
 
 </div>
   <!-- Footer with TextBoxes Aligned Directly Under Debit and Credit -->
@@ -558,10 +567,13 @@
         <div class="container">
             <div class="row g-3">
                 <!-- First Row for Cheque No/Reference No and Voucher Narration with Button -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:10px; padding-bottom:10px;">
-                    <div class="row align-items-center">
+                @* <div class="col-md-12 backgroundcolor" style="padding-top:10px; padding-bottom:10px;"> *@
+                    <div class="container-fluid backgroundcolor py-3">
+                    @* <div class="row align-items-center"> *@
+                            <div class="row align-items-start">
                         <!-- Cheque No/Reference No with Popup Button -->
-                        <div class="col-md-4">
+                      @*   <div class="col-md-4"> *@
+                           <div class="col-12 col-md-6 col-lg-4 mb-3">
                             <div class="form-group">
                                 <label for="ChequeNo">Cheque No/Reference No</label>
                                 <div class="input-group">
@@ -569,11 +581,7 @@
                                                 Html.DevExtreme().TextBox()
                                                 .ID("ChequeNoReferenceNo")
                                                 .Value(null)
-                                                     .ValidationRules(rules =>
-                                    {
-                                        rules.AddRequired()
-                                                .Message("Cheque No/Reference No is required");
-                                    })
+                                                  
                                                 .Width(257)
                                                 )
                                     <span class="input-group-append">
@@ -590,7 +598,7 @@
                                 </div>
                                 @* Cheque Edit *@
                                 @*  <div class="popup"> *@
-                               @*  @(
+                                 @(
                                             Html.DevExtreme().Popup()
                                             .ID("chequePopup")
                                             .Title("Bank Cheque Printing")
@@ -598,9 +606,9 @@
                                             .HideOnOutsideClick(false)
                                             .ShowCloseButton(true) // Display close button
                                             .Width(1000)
-                                            .Height(400)
+                                            .Height(450)
 
-                                            .ContentTemplate(@<div>
+                                                      .ContentTemplate(@<div style="background-color: #B4E1F5; padding: 10px;">
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -608,6 +616,11 @@
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("ChequeNo")
                                                 .Value(null)
+                                                 .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                    .Message("ChequeNo is required");
+                                })
                                                 .ElementAttr(new { style = "background-color: lightGrey; color: darkgrey;" })
                                                 )
 
@@ -644,6 +657,11 @@
                                                 <label for="PlaceofIssue" class="button-alignment-down">Place of Issue</label>
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("PlaceofIssue")
+                                                 .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                    .Message("PlaceofIssue is required");
+                                })
                                                 .Value(null)
                                                 )
                                             </div>
@@ -656,6 +674,11 @@
                                                 <label for="ChequeIssuedinfavourof" class="button-alignment-down">Cheque Issued in favour of</label>
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("ChequeIssuedinfavourof")
+                                                     .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                    .Message("Cheque Issued in favour of is required");
+                                })
                                                 .Value(null) )
                                             </div>
                                         </div>
@@ -667,7 +690,13 @@
                                                 <label for="AmountinWords" class="button-alignment-down">AmountinWords</label>
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("AmountinWords")
-                                                .Value(null))
+                                                .Value(null)
+                                                    .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                    .Message("Amount in Words is required");
+                                })
+                                                )
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -687,12 +716,53 @@
 
                                     </div>
 
-                                    <div class="ChequeFooter">
+                                   @*  <div>
                                         @await Html.PartialAsync("_ChequeFooter")
-                                    </div>
+                                    </div> *@
+
+         <div class="dx-fieldset horizontal-container mt-2">
+
+           @(Html.DevExtreme().Button()
+        .ID("PopSave")
+        .Text("Save")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("save")
+        .OnClick("function() { SavePopVoucherEntry(); }")
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnSaveAndClose")
+        .Text("Save and Close")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("save")
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnPreview")
+        .Text("Preview")
+        .Icon("fullscreen")
+
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnPrint")
+        .Text("Print")
+        .Icon("print")
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnDelete")
+        .Text("Delete")
+        .Icon("close")
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnBack")
+        .Text("Back")
+        .Icon("arrowleft")
+        )
+
+</div>
                                 </div>)
                                             )
- *@
+
                             </div>
                         </div>
                      
@@ -705,11 +775,7 @@
                                             Html.DevExtreme().TextBox()
                                             .ID("VoucherNarration")
                                             .Value(null)
-                                                     .ValidationRules(rules =>
-                                        {
-                                            rules.AddRequired()
-                                                        .Message("Voucher Narration is required");
-                                        })
+                                  
                                             )
                             </div>
                         </div>
@@ -741,11 +807,7 @@
                                             Html.DevExtreme().TextBox()
                                             .ID("BillNo")
                                             .Value(null)
-                                                   .ValidationRules(rules =>
-                                            {
-                                                rules.AddRequired()
-                                                                .Message("Bill No is required");
-                                            })
+                                       
                                             )
                             </div>
                         </div>
@@ -762,12 +824,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value("")
-                          .ValidationRules(rules =>
-                                                {
-                                                    rules.AddRequired()
-                                                                    .Message("Bill Date is required");
-                                                })
-                                    @* .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) *@
+                      
                                     
                                 )
                             </div>
@@ -781,11 +838,7 @@
                                         Html.DevExtreme().TextBox()
                                         .ID("BillPaidTo")
                                         .Value(null)
-                                            .ValidationRules(rules =>
-                                                    {
-                                                        rules.AddRequired()
-                                                                        .Message("Bill Paid To is required");
-                                                    })
+                                   
                                         )
                             </div>
                         </div>
@@ -798,11 +851,7 @@
                                         Html.DevExtreme().TextBox()
                                         .ID("Remarks")
                                         .Value(null)
-                                            .ValidationRules(rules =>
-                                                        {
-                                                            rules.AddRequired()
-                                                                                .Message("Remarks is required");
-                                                        })
+                                       
                                         )
                             </div>
                         </div>
@@ -849,8 +898,6 @@
                                     <div>
                                         @(Html.DevExtreme().CheckBox()
                                                 .ID("VerifiedBy")
-                                                .Value(true)
-                                                .Disabled(true)
                                                 )<span style="margin-left:5px">Verified By:</span>
                                     </div>
                                     <div style="margin-left:25px">Verified On:</div>
@@ -859,8 +906,6 @@
                                     <div>
                                         @(Html.DevExtreme().CheckBox()
                                                 .ID("ApprovedBy")
-                                                      .Value(true)
-                                                    .Disabled(true)
                                                 )<span style="margin-left:5px">Approved By:</span>
                                     </div>
                                     <div style="margin-left:25px">Approved On:</div>
@@ -950,6 +995,7 @@
                     )
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
+                    
                     .SearchPanel(sp => sp.HighlightSearchText(true))
                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                     .OnSelectionChanged("dataGridSelectionChanged")
@@ -961,8 +1007,10 @@
                     .FilterRow(f => f.Visible(true))
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                     .Height(345)
+
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                  
                      .Columns(columns =>
         {
         columns.Add().DataField("AccountId");
@@ -1035,6 +1083,8 @@
         let accheadid;
         let accheadname;
         let vno;
+        let paymentaccheadname;
+        let paymentaccheadId;
        
 
  $("#btnAttach").on("click", function (e) {
@@ -1135,7 +1185,7 @@ function attachMultipleFiles(aVoucherNo) {
                 var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
 
                 // Set the value in the PopVoucherNo TextBox
-                // $("#PopVoucherNo").dxTextBox("instance").option("value", popvno);
+                 $("#PopVoucherNo").dxTextBox("instance").option("value", popvno);
 
                 // Show the alert with the value
 
@@ -1156,34 +1206,20 @@ function attachMultipleFiles(aVoucherNo) {
         $("#btnSave").on("click", function (e) {
             e.preventDefault();
 
-            var VoucherNoValidator = $("#VoucherNo").dxValidator("instance");
-            var AccountHeadValidator = $("#ddAccountHead").dxValidator("instance");
-            var AccountDropDownValidator = $("#accountDropDownBox").dxValidator("instance");
-            var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
-            var txtNarrationValidator = $("#txtEntryNarration").dxValidator("instance");
-            var ChequeNoReferenceNoValidator = $("#ChequeNoReferenceNo").dxValidator("instance");
-             var BillNoValidator = $("#BillNo").dxValidator("instance");
-              var VoucherNarrationValidator = $("#VoucherNarration").dxValidator("instance");
-              var BillDateValidator = $("#BillDate").dxValidator("instance");
-              var BillPaidToValidator = $("#BillPaidTo").dxValidator("instance");
-               var RemarksValidator = $("#Remarks").dxValidator("instance");
+     
+       
+              var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+              var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
 
-            var aVoucherNoValidator = VoucherNoValidator.validate();
-            var aAccountHeadValidator = AccountHeadValidator.validate();
-             var aAccountDropDownValidator = AccountDropDownValidator.validate();
-              var avoucherAmtValidator = voucherAmtValidator.validate();
-               var atxtNarrationValidator = txtNarrationValidator.validate();
-                var aBillNoValidator = BillNoValidator.validate();
-                 var aVoucherNarrationValidator = VoucherNarrationValidator.validate();
-                  var aBillDateValidator = BillDateValidator.validate();
-                   var aBillPaidToValidator = BillPaidToValidator.validate();
-                    var aRemarksValidator = RemarksValidator.validate();
+           // if (rowCount !== 0) {
+           //  DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.", "error", 3000);
+           //  return; // Stop further processing if no rows exist
+           //     }
+             
             // debugger;
-            if(aVoucherNoValidator.isValid && aAccountHeadValidator.isValid && aAccountDropDownValidator.isValid
-            && avoucherAmtValidator.isValid && atxtNarrationValidator.isValid && aBillNoValidator.isValid && aVoucherNarrationValidator.isValid
-            &&aBillDateValidator.isValid && aBillPaidToValidator.isValid && aRemarksValidator.isValid)
-            {
             
+          if (rowCount !== 0) {
+         
             var VM = {
                 // alert($("#VoucherNo").dxTextBox("instance").option("value"));
                 "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
@@ -1194,17 +1230,17 @@ function attachMultipleFiles(aVoucherNo) {
 
                 // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
 
-                "ChequeNoReferenceNo": $("#ChequeNoReferenceNo").dxTextBox("instance").option("value"),
+                "ChequeNoReferenceNo": $("#ChequeNoReferenceNo").dxTextBox("instance").option("value")|| null,
 
-                "VoucherNarration": $("#VoucherNarration").dxTextBox("instance").option("value"),
+                "VoucherNarration": $("#VoucherNarration").dxTextBox("instance").option("value")|| null,
 
-                "BillNo": $("#BillNo").dxTextBox("instance").option("value"),
+                "BillNo": $("#BillNo").dxTextBox("instance").option("value")|| null,
 
-                "BillDate": $("#BillDate").dxDateBox("instance").option("value"),
+                "BillDate": $("#BillDate").dxDateBox("instance").option("value")|| null,
 
-                "BillPaidTo": $("#BillPaidTo").dxTextBox("instance").option("value"),
+                "BillPaidTo": $("#BillPaidTo").dxTextBox("instance").option("value")|| null,
 
-                "Remarks": $("#Remarks").dxTextBox("instance").option("value"),
+                "Remarks": $("#Remarks").dxTextBox("instance").option("value")|| null,
 
                 // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
                 "IsVerified": $("#VerifiedBy").dxCheckBox("instance").option("value"),
@@ -1232,46 +1268,34 @@ function attachMultipleFiles(aVoucherNo) {
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert("Error occurred while updating data: " + error);
+                    DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
                 }
         
             });
          } else {
-                DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction!", "error", 2000);
+             
+                DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
             }
+
+      
          
         });
 
     $("#btnSaveAndClose").on("click", function (e) {
         e.preventDefault();
 
-         var VoucherNoValidator = $("#VoucherNo").dxValidator("instance");
-            var AccountHeadValidator = $("#ddAccountHead").dxValidator("instance");
-            var AccountDropDownValidator = $("#accountDropDownBox").dxValidator("instance");
-            var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
-            var txtNarrationValidator = $("#txtEntryNarration").dxValidator("instance");
-            var ChequeNoReferenceNoValidator = $("#ChequeNoReferenceNo").dxValidator("instance");
-             var BillNoValidator = $("#BillNo").dxValidator("instance");
-              var VoucherNarrationValidator = $("#VoucherNarration").dxValidator("instance");
-              var BillDateValidator = $("#BillDate").dxValidator("instance");
-              var BillPaidToValidator = $("#BillPaidTo").dxValidator("instance");
-               var RemarksValidator = $("#Remarks").dxValidator("instance");
 
-            var aVoucherNoValidator = VoucherNoValidator.validate();
-            var aAccountHeadValidator = AccountHeadValidator.validate();
-             var aAccountDropDownValidator = AccountDropDownValidator.validate();
-              var avoucherAmtValidator = voucherAmtValidator.validate();
-               var atxtNarrationValidator = txtNarrationValidator.validate();
-                var aBillNoValidator = BillNoValidator.validate();
-                 var aVoucherNarrationValidator = VoucherNarrationValidator.validate();
-                  var aBillDateValidator = BillDateValidator.validate();
-                   var aBillPaidToValidator = BillPaidToValidator.validate();
-                    var aRemarksValidator = RemarksValidator.validate();
+             var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+              var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
+
+           // if (rowCount !== 0) {
+           //  DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.", "error", 3000);
+           //  return; // Stop further processing if no rows exist
+           //     }
+
             // debugger;
-            if(aVoucherNoValidator.isValid && aAccountHeadValidator.isValid && aAccountDropDownValidator.isValid
-            && avoucherAmtValidator.isValid && atxtNarrationValidator.isValid && aBillNoValidator.isValid && aVoucherNarrationValidator.isValid
-            &&aBillDateValidator.isValid && aBillPaidToValidator.isValid && aRemarksValidator.isValid)
-            {
+
+          if (rowCount !== 0) {
 
 
         // debugger;
@@ -1322,11 +1346,11 @@ function attachMultipleFiles(aVoucherNo) {
                 }
             },
             error: function (xhr, status, error) {
-                alert("Error occurred while updating data: " + error);
+              DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
             }
         });
           } else {
-                DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction!", "error", 2000);
+                DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
             }
     });
 
@@ -1385,6 +1409,13 @@ function attachMultipleFiles(aVoucherNo) {
                 if (ddbInstance.option("opened")) {
                     ddbInstance.close();
                 }
+                var selectedRowData = $("#accountpaymentamount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+            // Get ReferenceNo from selected row
+            if (selectedRowData.length > 0) {
+                paymentaccheadId=selectedRowData[0].AccountId;
+                paymentaccheadname=selectedRowData[0].AccountHead;
+
+            }
             }
 
         }   
@@ -1434,19 +1465,33 @@ function attachMultipleFiles(aVoucherNo) {
         //Add
 
 
-        $("#btnSave1").on("click", function (e) {
-            e.preventDefault();
-      
-            debugger;
+    function SavePopVoucherEntry() {
+
+            var ChequeNoValidator = $("#ChequeNo").dxValidator("instance");
+            var PlaceofIssueValidator = $("#PlaceofIssue").dxValidator("instance");
+            var ChequeIssuedinfavourofValidator = $("#ChequeIssuedinfavourof").dxValidator("instance");
+           var AmountinWordsValidator = $("#AmountinWords").dxValidator("instance");
+
+
+            var aChequeNoValidator = ChequeNoValidator.validate();
+            var aPlaceofIssueValidator = PlaceofIssueValidator.validate();
+              var aChequeIssuedinfavourofValidator = ChequeIssuedinfavourofValidator.validate();
+            var aAmountinWordsValidator =AmountinWordsValidator.validate();
+
+            // debugger;
+            if(aChequeNoValidator.isValid && aPlaceofIssueValidator.isValid 
+            && aChequeIssuedinfavourofValidator.isValid && aAmountinWordsValidator.isValid
+            )
+            {
+            
             var CM = {
-                // alert($("#VoucherNo").dxTextBox("instance").option("value"));
+               
                 "ChequeNo": $("#ChequeNo").dxTextBox("instance").option("value"),
-                "VoucherNo": $("#VoucherNo1").dxTextBox("instance").option("value"),
+                "VoucherNo": $("#PopVoucherNo").dxTextBox("instance").option("value"),
 
                 "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
 
-                // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
-
+            
                 "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
 
                 "CheckIssuedinFlavorOf": $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value"),
@@ -1456,6 +1501,7 @@ function attachMultipleFiles(aVoucherNo) {
 
             };
 
+
             $.ajax({
                 type: "POST",
                 url: "/api/VoucherMaster/SaveChequeDetails",
@@ -1464,7 +1510,7 @@ function attachMultipleFiles(aVoucherNo) {
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                        alert("Data saved successfully..");
+                         DevExpress.ui.notify("Data Saved Sucessfully..!", "Success", 2000);
 
                     } else {
                         alert("Update failed: " + response.message);
@@ -1474,7 +1520,10 @@ function attachMultipleFiles(aVoucherNo) {
                     alert("Error occurred while updating data: " + error);
                 }
             });
-        });
+             } else {
+                DevExpress.ui.notify("Please fill the required details!", "error", 2000);
+            }
+        }
 
        
 
@@ -1492,7 +1541,15 @@ function attachMultipleFiles(aVoucherNo) {
             // Validate controls explicitly
             var accountHeadValidation = accountHeadValidator.validate();
             var voucherAmtValidation = voucherAmtValidator.validate();
+            if(paymentaccheadname==null)
+            {
+                paymentaccheadname="Petty Cash - Shabbir";
+                 paymentaccheadId="L00811";
+            }
             if (accountHeadValidation.isValid && voucherAmtValidation.isValid) {
+                var sysRemarks1 = accheadname ? `Paid thru: ${accheadname}` : "";
+                var sysRemarks2 = accheadname ? accheadname : "";
+               
                 var VE = [{
                     "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
                     // "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
@@ -1504,48 +1561,63 @@ function attachMultipleFiles(aVoucherNo) {
                     "AddedBy": "102",
                     "AddedOn": new Date(),
                     "EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
-                    "SysRemarks": "Paid thru:" + $("#ddAccountHead").dxDropDownBox("instance").option("value")
+               
+                    "SysRemarks": sysRemarks1
+                      
                 },
                 {
                     "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
                     // "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
                     // "EffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
-                    "AccountHead": $("#accountDropDownBox").dxDropDownBox("instance").option("value"),
+                    "AccountHead": paymentaccheadId,
                     "VoucherAmount": $("#txtVoucherAmount").dxNumberBox("instance").option("value"),
                     "DrCr": sbDrCr === "Cr" ? "Dr" : "Cr",
                     "AddedBy": "102",
                     "AddedOn": new Date(),
                     "EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
-                    "SysRemarks": $("#accountDropDownBox").dxDropDownBox("instance").option("value")
+                 
+                    "SysRemarks": sysRemarks2
+                     
                 }];
+
+
 
                 $.ajax({
                     type: "POST",
-                    url: "/api/VoucherMaster/AddVoucherEntry",
+                  // url: "/api/VoucherMaster/AddVoucherEntry",
+                    url: `/api/VoucherMaster/AddVoucherEntry?AccountHead=${encodeURIComponent(sysRemarks2)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadname)}`,
                     contentType: "application/json",
                     data: JSON.stringify(VE),
                     dataType: "json",
                     success: function (response) {
                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
                          DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+
                     },
                     error: function (xhr, status, error) {
                         alert("Error occurred while updating data: " + error);
                     }
                 });
                 //$("#costAllocationPopup").dxPopup("instance").show();
-            } else {
+            }
+              
+            else {
                 DevExpress.ui.notify("Please fill required details!", "error", 2000);
             }
              if(accheadname!=null){
+                  const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+                          ddbInstance.option("value", "-");
+                          $("#txtEntryNarration").dxTextArea("instance").option("value", "");
+                          $("#txtVoucherAmount").dxNumberBox("instance").option("value","0.00")
               if (accheadname.startsWith("Salary Payable")) {
             // Show the button
              // window.location.href = '/Finance/SalaryPaidEntry';
-              window.location.href = `/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(acchead)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
+              window.location.href = `/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
         return;
 
         }
         }
+                     
         }
 
     $(function () {
@@ -1760,64 +1832,20 @@ function attachMultipleFiles(aVoucherNo) {
 });
 
 
+//   function checkAndClearGrid() {
+//     // Get the grid instance
+//     const grid = $("#dataGrid").dxDataGrid("instance");
 
-
-  // $(function () {
-  //      var aVoucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-
-  //       $("#attachOptionsPopup").dxPopup({
-  //           visible: false,
-  //           width: 300,
-  //           height: 200,
-  //           showTitle: true,
-  //           title: "Attach Options",
-  //           dragEnabled: true,
-  //           closeOnOutsideClick: true,
-  //           contentTemplate: function (contentElement) {
-  //               contentElement.append(
-  //                   `<div>
-  //                       <button id="singleFileBtn" class="dx-button">Attach Single File</button>
-  //                       <button id="multipleFileBtn" class="dx-button">Attach Multiple Files</button>
-  //                    </div>`
-  //               );
-
-  //               // Single file button click
-  //               $("#singleFileBtn").dxButton({
-  //                   text: "Attach Single File",
-  //                   onClick: function () {
-  //                       attachSingleFile();
-  //                       $("#attachOptionsPopup").dxPopup("instance").hide();
-  //                   }
-  //               });
-            
-  //               // Multiple files button click
-  //               $("#multipleFileBtn").dxButton({
-  //                   text: "Attach Multiple Files",
-  //                   onClick: function () {
-  //                       attachMultipleFiles();
-  //                       $("#attachOptionsPopup").dxPopup("instance").hide();
-  //                     //  window.location.href = `/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
-
-  //                   }
-  //               });
-  //           }
-  //       });
-  //   });
-
-  //   function onAttachButtonClick() {
-  //       $("#attachOptionsPopup").dxPopup("instance").show();
-  //   }
-
-  //   function attachSingleFile() {
-  //       // Logic for attaching a single file
-  //       DevExpress.ui.notify("Single file attach initiated.", "info", 2000);
-  //   }
-
-  //   function attachMultipleFiles(aVoucherNo) {
-  //       // Logic for attaching multiple files
-  //       DevExpress.ui.notify("Multiple file attach initiated.", "info", 2000);
-  //       window.location.href = `/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
-  //   }
+//     // Check if there are any rows in the grid
+//     const rows = grid.getVisibleRows();
+//     if (rows.length > 0) {
+//         // Clear the data source
+//         grid.option("dataSource", []);
+//         console.log("Grid cleared. All rows removed.");
+//     } else {
+//         console.log("No rows to clear.");
+//     }
+// }
 
 
     </script>

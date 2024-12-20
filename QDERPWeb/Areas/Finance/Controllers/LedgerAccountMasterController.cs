@@ -181,7 +181,21 @@ namespace PaymentForm.Areas.Finance.Controllers
             return Json(val);
         }
 
-        
+        [HttpGet]
+        public async Task<ActionResult> GetDocumentType(DataSourceLoadOptions loadOptions)
+        {
+
+            var qryListOfAccountlists = _context.Tbl101DocumentTypes.Select(i => new
+
+            {
+                i.DocumentTypeId,
+                i.DocumentType
+                //i.ReminderDays,
+                //i.IsEmployeeDocument
+            });
+
+            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+        }
 
 
         [HttpGet]
@@ -205,7 +219,28 @@ namespace PaymentForm.Areas.Finance.Controllers
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
 
-       
+        [HttpGet]
+        public async Task<ActionResult> GetEmployeeDetails(DataSourceLoadOptions loadOptions)
+        {
+
+            //var qryListOfAccountlists = _context.QryCashAndBankAccounts.Where(p => p.AccountGroupId != null).Select(i => new
+            var result = (from balance in _context.Qry20167SalaryLedgerPayableBalances
+                          join employee in _context.Tbl101Employees
+                          on balance.EmployeeNo equals employee.EmployeeId into empGroup
+                          from emp in empGroup.DefaultIfEmpty() // LEFT OUTER JOIN
+                          group new { balance, emp } by new { balance.EmployeeNo, balance.EmployeeName, emp.NationalId } into grouped
+                          where grouped.Sum(x => x.balance.Balance) < 0
+                          select new
+                          {
+                              EmployeeNo = grouped.Key.EmployeeNo,
+                              EmployeeName = grouped.Key.EmployeeName,
+                              NationalID = grouped.Key.NationalId
+                          });
+
+
+            return Json(await DataSourceLoader.LoadAsync(result, loadOptions));
+        
+        }
 
         [HttpGet]
         public async Task<ActionResult> GetDocumentNo(DataSourceLoadOptions loadOptions)
@@ -244,7 +279,160 @@ namespace PaymentForm.Areas.Finance.Controllers
             return Json(DocumentNo);
         }
 
-       
+        [HttpPost]
+        public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument documentdetails,string DocumentType)
+        {
+            if (documentdetails == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                //var PaymentAccount = "Select AccountHead From tbl201ChartOfAccounts where AccountGroupID = 'A012'and AccountHead = ''";
+
+                // Add entries to the database
+                _context.Tbl20116LedgerDocuments.Add(documentdetails);
+              
+
+                await _context.SaveChangesAsync();
+                var qryListOfAccountlists = _context.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == documentdetails.DocumentNo).Select(i => new
+                {
+                    i.DocumentNo,
+                    //i.DocumentType,
+                    i.DocumentRefNo,
+                    DocumentType,
+                    i.DocumentRemarks,
+                    i.DocumentExpDate,
+                    i.DocumentExpDateAr,
+                    i.NotifiedOn,
+                });
+
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDocument(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument updatedDocument)
+        {
+            try
+            {
+
+
+                if (updatedDocument == null)
+                {
+                    return BadRequest("Invalid document data.");
+                }
+
+
+                // Find the existing document by DocumentNo
+                var document = await _context.Tbl20116LedgerDocuments
+                    .FirstOrDefaultAsync(d => d.DocumentNo == updatedDocument.DocumentNo);
+
+                if (document == null)
+                {
+                    return NotFound("Document not found.");
+                }
+
+                // Update the fields
+                document.DocumentType = updatedDocument.DocumentType;
+                document.DocumentRefNo = updatedDocument.DocumentRefNo;
+                document.DocumentRemarks = updatedDocument.DocumentRemarks;
+                document.DocumentExpDate = updatedDocument.DocumentExpDate;
+                document.DocumentExpDateAr = updatedDocument.DocumentExpDateAr;
+                document.NotifiedOn = updatedDocument.NotifiedOn;
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                var qryListOfAccountlists = _context.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == document.DocumentNo).Select(i => new
+                {
+                    i.DocumentNo,
+                    i.DocumentType,
+                    i.DocumentRefNo,
+                    i.DocumentRemarks,
+                    i.DocumentExpDate,
+                    i.DocumentExpDateAr,
+                    i.NotifiedOn,
+                });
+
+
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
+
+         
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddEmployeeEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20114SalaryPayableMaster salarydetails, string EmployeeName)
+        {
+            if (salarydetails == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                // Add entries to the database
+                _context.Tbl20114SalaryPayableMasters.Add(salarydetails);
+
+                await _context.SaveChangesAsync();
+
+                // Add the WHERE condition for ReferenceNo
+                var qryListOfAccountlists = _context.Tbl20114SalaryPayableMasters
+                    .Where(p => p.EmployeeNo == salarydetails.EmployeeNo && p.ReferenceNo == salarydetails.ReferenceNo && p.ReferenceType == salarydetails.ReferenceType && p.Amount == salarydetails.Amount && p.DrCr == salarydetails.DrCr)
+                    .Select(i => new
+                    {
+                        i.SalaryPayableLedgerNo,
+                        i.ReferenceType,
+                        i.ReferenceNo,
+                        i.EmployeeNo,
+                        EmployeeName,
+                        i.Amount,
+                        i.DrCr
+                    });
+
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAgainstPayable([FromQuery] string inputParameter)
+        {
+            if (string.IsNullOrEmpty(inputParameter))
+            {
+                Console.WriteLine("Error: inputParameter is null or empty.");
+                return BadRequest("inputParameter cannot be null or empty");
+            }
+
+            var result = _context.Qry20167SalaryLedgerPayableBalances
+                .Where(s => s.EmployeeNo == inputParameter)
+                .Select(s => new
+                {
+                    s.EmployeeNo,
+                    s.EmployeeName,
+                    s.ReferenceNo,
+                    s.PayableAmount,
+                    s.Paid,
+                    s.Balance
+                });
+
+            return Json(result);
+        }
 
 
         //[HttpGet]

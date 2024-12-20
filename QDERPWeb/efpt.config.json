@@ -15,6 +15,14 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[tbl101DocumentType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl101Employees]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl20101SalesPersonMaster]",
          "ObjectType": 0
       },
@@ -43,7 +51,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl20114SalaryPayableMaster]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl20115CompanyBranch]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20116LedgerDocuments]",
          "ObjectType": 0
       },
       {
@@ -120,6 +136,10 @@
       },
       {
          "Name": "[dbo].[qry20164SalaryPayableLedgerMaster]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry20167SalaryLedgerPayableBalance]",
          "ObjectType": 3
       },
       {

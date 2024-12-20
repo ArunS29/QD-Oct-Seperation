@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
-using QD.ERP.Web.DAL.Entities;
+
 using QD.ERP.Web.DAL.Entities;
 
 
@@ -195,8 +195,58 @@ namespace PaymentForm.Areas.Finance.Controllers
 
         //}
 
+        //[HttpPost]
+        //public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName)
+        //{
+        //    if (voucherEntries == null || !voucherEntries.Any())
+        //    {
+        //        return BadRequest(new { success = false, message = "Invalid data received." });
+        //    }
+
+        //    try
+        //    {
+        //        // Add entries to the database
+        //        _context.Tbl201VoucherEntries.AddRange(voucherEntries);
+        //        await _context.SaveChangesAsync();
+
+        //        // Retrieve updated data for the submitted vouchers
+        //        var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+        //        var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+        //            .Where(p => voucherNos.Contains(p.VoucherNo))
+        //            .Select(i => new
+        //            {
+        //                i.VoucherNo,
+        //                i.DrCr,
+        //                i.DrAmount,
+        //                i.CrAmount,
+        //                i.EntryNarration,
+        //                AccountHead,
+        //                i.SysRemarks,
+        //            });
+
+        //        // Materialize the query into a list *only for the second element check*
+        //        var listForProcessing = await qryListOfAccountlists.Take(2).ToListAsync(); // Fetch only the first 2 records asynchronously
+        //        if (listForProcessing.Count >= 2)
+        //        {
+        //            var secondAccountHead = listForProcessing[1].AccountHead; // Get the 2nd AccountHead
+        //            if (!string.IsNullOrEmpty(secondAccountHead))
+        //            {
+        //                secondAccountHead = PaymentAccoutHeadName;
+        //                listForProcessing[1].AccountHead = secondAccountHead;// Update PaymentAccoutHeadName with the 2nd AccountHead value
+        //            }
+        //        }
+
+        //        // Pass the original IQueryable to DataSourceLoader for proper async processing
+        //        return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+        //}
+
         [HttpPost]
-        public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries)
+        public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName)
         {
             if (voucherEntries == null || !voucherEntries.Any())
             {
@@ -205,8 +255,6 @@ namespace PaymentForm.Areas.Finance.Controllers
 
             try
             {
-                //var PaymentAccount = "Select AccountHead From tbl201ChartOfAccounts where AccountGroupID = 'A012'and AccountHead = ''";
-
                 // Add entries to the database
                 _context.Tbl201VoucherEntries.AddRange(voucherEntries);
                 await _context.SaveChangesAsync();
@@ -215,25 +263,43 @@ namespace PaymentForm.Areas.Finance.Controllers
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
                 var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
                     .Where(p => voucherNos.Contains(p.VoucherNo))
-                    .Select(i => new
+                    .Select(i => new VoucherEntryDisplayDTO
                     {
-                        i.VoucherNo,
-                        i.DrCr,
-                        i.DrAmount,
-                        i.CrAmount,
-                        i.EntryNarration,
-                        i.AccountHead,
-                        i.SysRemarks,
+                        VoucherNo = i.VoucherNo,
+                        DrCr = i.DrCr,
+                        DrAmount = i.DrAmount,
+                        CrAmount = i.CrAmount,
+                        EntryNarration = i.EntryNarration,
+                        AccountHead = AccountHead,
+                        SysRemarks = i.SysRemarks
                     });
 
-                // Return the updated data as a JSON response
-                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+                // Convert the query to a list for modification
+                var resultList = await qryListOfAccountlists.ToListAsync();
+
+                // Modify the AccountHead of the second item if necessary
+                if (resultList.Count >= 2)
+                {
+                    var secondEntry = resultList[1];
+                    if (!string.IsNullOrEmpty(secondEntry.AccountHead))
+                    {
+                        secondEntry.AccountHead = PaymentAccoutHeadName; // Replace with the new value
+                        secondEntry.SysRemarks = PaymentAccoutHeadName;
+                    }
+                }
+
+                // Return the modified list for DataSourceLoader
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
+
+
+
+
 
 
         [HttpPost]
@@ -278,7 +344,7 @@ namespace PaymentForm.Areas.Finance.Controllers
                 var result = await _context.VoucherResults
                     .FromSqlInterpolated($@"
                 SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                FROM tbl201VoucherMaster
+                FROM Tbl201VoucherEntry
                 WHERE VoucherNo LIKE {likePattern}")
                     .ToListAsync();
 
@@ -363,7 +429,7 @@ namespace PaymentForm.Areas.Finance.Controllers
                 var result = await _context.VoucherResults
                     .FromSqlInterpolated($@"
                 SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                FROM tbl201VoucherMaster
+                FROM Tbl201VoucherEntry
                 WHERE VoucherNo LIKE {likePattern}")
                     .ToListAsync();
 

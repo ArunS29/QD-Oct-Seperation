@@ -28,7 +28,7 @@ namespace QD.ERP.Web.DAL.Entities
                 //    .ToListAsync(cancellationToken);
                 return await db.Set<T>() // Use DbSet for the type
                        .FromSqlRaw(sql, parameters)
-                       .ToListAsync(cancellationToken);
+                    .ToListAsync(cancellationToken);
             }
             else
             {

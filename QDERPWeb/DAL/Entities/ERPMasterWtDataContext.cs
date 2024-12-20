@@ -28,6 +28,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Qry20164SalaryPayableLedgerMaster> Qry20164SalaryPayableLedgerMasters { get; set; }
 
+    public virtual DbSet<Qry20167SalaryLedgerPayableBalance> Qry20167SalaryLedgerPayableBalances { get; set; }
+
     public virtual DbSet<Qry20196SalaryPayableByDateReport> Qry20196SalaryPayableByDateReports { get; set; }
 
     public virtual DbSet<Qry201ListOfAccount> Qry201ListOfAccounts { get; set; }
@@ -35,6 +37,10 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<Qry201SubLedgerPayablesMaster> Qry201SubLedgerPayablesMasters { get; set; }
 
     public virtual DbSet<Qry201VoucherEntryScreenDisplay> Qry201VoucherEntryScreenDisplays { get; set; }
+
+    public virtual DbSet<Tbl101DocumentType> Tbl101DocumentTypes { get; set; }
+
+    public virtual DbSet<Tbl101Employee> Tbl101Employees { get; set; }
 
     public virtual DbSet<Tbl20101SalesPersonMaster> Tbl20101SalesPersonMasters { get; set; }
 
@@ -50,7 +56,11 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl20113ChequeMaster> Tbl20113ChequeMasters { get; set; }
 
+    public virtual DbSet<Tbl20114SalaryPayableMaster> Tbl20114SalaryPayableMasters { get; set; }
+
     public virtual DbSet<Tbl20115CompanyBranch> Tbl20115CompanyBranches { get; set; }
+
+    public virtual DbSet<Tbl20116LedgerDocument> Tbl20116LedgerDocuments { get; set; }
 
     public virtual DbSet<Tbl20123LedgerSubGroup> Tbl20123LedgerSubGroups { get; set; }
 
@@ -80,10 +90,10 @@ public partial class ERPMasterWtDataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
+        modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
+         modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterAR>().HasNoKey(); // Mark as keyless
-
         modelBuilder.Entity<Qry20105BillsReceivableAgeingView>(entity =>
         {
             entity
@@ -713,6 +723,24 @@ public partial class ERPMasterWtDataContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Qry20167SalaryLedgerPayableBalance>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry20167SalaryLedgerPayableBalance");
+
+            entity.Property(e => e.Balance).HasColumnType("money");
+            entity.Property(e => e.EmployeeName).IsUnicode(false);
+            entity.Property(e => e.EmployeeNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Paid).HasColumnType("money");
+            entity.Property(e => e.PayableAmount).HasColumnType("money");
+            entity.Property(e => e.ReferenceNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Qry20196SalaryPayableByDateReport>(entity =>
         {
             entity
@@ -895,6 +923,121 @@ public partial class ERPMasterWtDataContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Tbl101DocumentType>(entity =>
+        {
+            entity.HasKey(e => e.DocumentTypeId);
+
+            entity.ToTable("tbl101DocumentType");
+
+            entity.Property(e => e.DocumentTypeId)
+                .ValueGeneratedNever()
+                .HasColumnName("DocumentTypeID");
+            entity.Property(e => e.DocumentType).IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl101Employee>(entity =>
+        {
+            entity.HasKey(e => e.EmployeeId);
+
+            entity.ToTable("tbl101Employees");
+
+            entity.Property(e => e.EmployeeId)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasColumnName("EmployeeID");
+            entity.Property(e => e.BankAccountNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BankCode).IsUnicode(false);
+            entity.Property(e => e.BankName).IsUnicode(false);
+            entity.Property(e => e.BloodGroup)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.Competencies).IsUnicode(false);
+            entity.Property(e => e.ContactMobile).IsUnicode(false);
+            entity.Property(e => e.ContactMobile2).IsUnicode(false);
+            entity.Property(e => e.ContactPerson).IsUnicode(false);
+            entity.Property(e => e.ContactPersonKsa)
+                .IsUnicode(false)
+                .HasColumnName("ContactPersonKSA");
+            entity.Property(e => e.ContactPersonKsamobile)
+                .IsUnicode(false)
+                .HasColumnName("ContactPersonKSAmobile");
+            entity.Property(e => e.ContactPersonMobile).IsUnicode(false);
+            entity.Property(e => e.ContactPhone).IsUnicode(false);
+            entity.Property(e => e.DateOfBirth).HasColumnType("smalldatetime");
+            entity.Property(e => e.DiscountinuedOn).HasColumnType("datetime");
+            entity.Property(e => e.DrivingLicenceExpDate).HasColumnType("datetime");
+            entity.Property(e => e.DrivingLicenceNo).IsUnicode(false);
+            entity.Property(e => e.EmpGroupId).HasColumnName("EmpGroupID");
+            entity.Property(e => e.EmployeeEmail).IsUnicode(false);
+            entity.Property(e => e.EmployeeEntryDate).HasColumnType("date");
+            entity.Property(e => e.EmployeeEntryNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeEntryPlace)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeName).IsUnicode(false);
+            entity.Property(e => e.EmployeePicture).HasColumnType("image");
+            entity.Property(e => e.EmployeeReferenceId)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("EmployeeReferenceID");
+            entity.Property(e => e.EmployeeVisaNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EmploymentDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.GosiSalary).HasColumnType("money");
+            entity.Property(e => e.Gosino)
+                .HasMaxLength(50)
+                .HasColumnName("GOSINo");
+            entity.Property(e => e.HoldDate).HasColumnType("date");
+            entity.Property(e => e.HomeAddress).IsUnicode(false);
+            entity.Property(e => e.HomeCity).IsUnicode(false);
+            entity.Property(e => e.HomeCountry)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.HrlevelCode).HasColumnName("HRLevelCode");
+            entity.Property(e => e.MedInsuranceExpDate).HasColumnType("datetime");
+            entity.Property(e => e.NationalId)
+                .IsUnicode(false)
+                .HasColumnName("NationalID");
+            entity.Property(e => e.NationalIdexpiryDate)
+                .HasColumnType("datetime")
+                .HasColumnName("NationalIDExpiryDate");
+            entity.Property(e => e.NationalIdexpiryDateAr)
+                .IsUnicode(false)
+                .HasColumnName("NationalIDExpiryDateAr");
+            entity.Property(e => e.NationalIdissuedAt)
+                .IsUnicode(false)
+                .HasColumnName("NationalIDIssuedAt");
+            entity.Property(e => e.NationalIdissuedOn)
+                .HasColumnType("datetime")
+                .HasColumnName("NationalIDIssuedOn");
+            entity.Property(e => e.NationalIdissuedOnAr)
+                .IsUnicode(false)
+                .HasColumnName("NationalIDIssuedOnAr");
+            entity.Property(e => e.PassportExpiryDate).HasColumnType("datetime");
+            entity.Property(e => e.PassportIssuedAt).IsUnicode(false);
+            entity.Property(e => e.PassportIssuedOn).HasColumnType("datetime");
+            entity.Property(e => e.PassportNo).IsUnicode(false);
+            entity.Property(e => e.ProfessionalLicenceExpDat).HasColumnType("datetime");
+            entity.Property(e => e.ProfessionalLicenceNo).IsUnicode(false);
+            entity.Property(e => e.ReasonForDiscontinued).IsUnicode(false);
+            entity.Property(e => e.RecordAddedOn).HasColumnType("datetime");
+            entity.Property(e => e.RecordModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.SiteAllocated)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.Sponsor)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.SupervisorContactNo).IsUnicode(false);
+            entity.Property(e => e.SupervisorMobileNo).IsUnicode(false);
+            entity.Property(e => e.SupervisorName).IsUnicode(false);
+        });
+
         modelBuilder.Entity<Tbl20101SalesPersonMaster>(entity =>
         {
             entity.HasKey(e => e.SalesPersonCode);
@@ -1012,6 +1155,42 @@ public partial class ERPMasterWtDataContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Tbl20114SalaryPayableMaster>(entity =>
+        {
+            entity.HasKey(e => e.SalaryPayableId).HasName("PK_tbl20114SalaryPayableMaster2");
+
+            entity.ToTable("tbl20114SalaryPayableMaster");
+
+            entity.HasIndex(e => e.EmployeeNo, "IX_tbl20114SalaryPayableMaster");
+
+            entity.HasIndex(e => e.VoucherEntryNo, "IX_tbl20114SalaryPayableMaster_1");
+
+            entity.Property(e => e.SalaryPayableId).HasColumnName("SalaryPayableID");
+            entity.Property(e => e.AddedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.AddedOn).HasColumnType("datetime");
+            entity.Property(e => e.Amount).HasColumnType("money");
+            entity.Property(e => e.DrCr)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ReferenceNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ReferenceType)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.SalaryPayableLedgerNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Tbl20115CompanyBranch>(entity =>
         {
             entity.HasKey(e => e.BranchCode);
@@ -1022,6 +1201,39 @@ public partial class ERPMasterWtDataContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.BranchName).IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl20116LedgerDocument>(entity =>
+        {
+            entity.HasKey(e => e.DocumentNo).HasName("PK_tbl20120LedgerDocuments");
+
+            entity.ToTable("tbl20116LedgerDocuments");
+
+            entity.Property(e => e.DocumentNo)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.AddedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.AddedOn).HasColumnType("datetime");
+            entity.Property(e => e.DocumentExpDate).HasColumnType("date");
+            entity.Property(e => e.DocumentExpDateAr)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.DocumentNotificationDate).HasColumnType("date");
+            entity.Property(e => e.DocumentRefNo).IsUnicode(false);
+            entity.Property(e => e.DocumentRemarks).IsUnicode(false);
+            entity.Property(e => e.DocumentStatusRemarks).IsUnicode(false);
+            entity.Property(e => e.LedgerNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.NotificationRemarks).IsUnicode(false);
+            entity.Property(e => e.NotifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.NotifiedTo).IsUnicode(false);
         });
 
         modelBuilder.Entity<Tbl20123LedgerSubGroup>(entity =>
@@ -1494,7 +1706,6 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.UserPicture).HasColumnType("image");
         });
         OnModelCreatingGeneratedProcedures(modelBuilder);
-
         OnModelCreatingPartial(modelBuilder);
     }
 
