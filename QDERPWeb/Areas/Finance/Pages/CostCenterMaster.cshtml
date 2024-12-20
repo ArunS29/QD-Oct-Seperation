@@ -1,0 +1,756 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@using QD.ERP.Web.DAL.Entities
+@model Form.Areas.Finance.Pages.CostCenterMasterModel
+@{
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center; /* Centers the text inside the input */
+    }
+
+
+
+    .card {
+        background-color: #c0dceb;
+
+    }
+
+    .dx-datagrid-pager .dx-page.dx-selection,
+    .pagination .active a {
+        color: black !important; /* Set the active page number to yellow */
+        font-weight: bold; /* Optional: Make the active page bold */
+    }
+    .button-alignment-down {
+
+      margin-bottom: 10px
+    }
+
+    .dx-field{
+        background-color:whitesmoke;
+    }
+
+    .card-footer {
+        background-color: #c0dceb;
+    }
+
+    .card-header {
+        background-color: #124eb0; /* Blue background */
+        color: white; /* White text */
+        padding: 20px; /* Padding around the header */
+        font-weight: bold;
+        display: flex; /* Flex container for alignment */
+        align-items: center; /* Vertically align icon and text */
+    }
+
+    .header-icon {
+        font-size: 40px; /* Icon size */
+        margin-right: 15px; /* Space between icon and text */
+        color: goldenrod; /* Golden color for the icon */
+        text-shadow: 2px 2px 4px black; /* Black shadow around the icon for contrast */
+    }
+
+
+    .header-text {
+        font-size: 25px; /* Font size for text */
+    }
+
+
+
+
+
+
+    .left-text {
+        color: blue; /* Sets the text color to blue */
+        text-decoration: underline; /* Underlines the text */
+        margin-right:20px;
+    }
+
+    .row {
+        margin-top: 20px;
+        margin-left: 20px;
+     }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: -10px !important;
+    }
+
+
+    .dx-button {
+        background-color: whitesmoke;
+    }
+
+    .right-text {
+        color: blue; /* Sets the text color to blue */
+        text-decoration: underline; /* Underlines the text */
+     
+    }
+</style>
+<div id="costAllocationPopup" style="display:none;">
+    <div style="margin-bottom:10px">
+        @(Html.DevExtreme().Button()
+            .ID("btnSaveCostAllocation")
+            .Icon("save")
+            .Text("Save")
+            .OnClick("function() { saveCostAllocation(); }")
+            )
+    </div>
+</div>
+
+<div class="card">
+  <div class="content-container-top">
+        <div class="card-header">
+            <i class="fas fa-pen-nib header-icon"></i> <!-- Font Awesome pen nib icon -->
+            <span class="header-text">Cost Center's</span>
+        </div>
+
+        <br />
+        <div class="container">
+            <div class="card">
+                <h5 style="margin-left:10px">Cost Center Details</h5>
+            </div>
+        </div>
+
+
+   <div class="container">
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label for="CostAllocationUnitID" style="color: #124eb0;">
+                            Cost Center Code:
+                        </label>
+                    </div>
+
+                    <div class="col-md-6">
+                        @(Html.DevExtreme()
+                            .TextBox()
+                            .ID("CostAllocationUnitID")
+                            .Value(null)
+                            .Width("100%")
+                            .MaxLength(50)
+                            )
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label for="CostAllocationUnit" style="color: #124eb0;">
+                            Cost Center Unit:
+                        </label>
+                    </div>
+                    <div class="col-md-10">
+                        @(Html.DevExtreme()
+                            .TextBox()
+                            .ID("CostAllocationUnit")
+                            .Value(null)
+                            .Width("100%")
+                            )
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label for="CostCenterGroup" style="color: #124eb0; ">
+                            Cost Center Group:
+                        </label>
+                    </div>
+                    <div class="col-md-10">
+
+                        @(Html.DevExtreme().DropDownBox()
+                            .DataSource(d => d.WebApi()
+                            .Controller("CostCenterMaster")
+                            .LoadAction("GetCostAllocationGroup")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CAGroup")
+                            )
+
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ID("GetCostAllocationGroupDropDown")
+                          @*   .ShowClearButton(true)
+                            .AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(true)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("CostAllocationUnitId")
+                            .DisplayExpr("CostAllocationGroup")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .OnKeyDown("onKeyDown")
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetCostAllocationGroupContentTemplate"))
+                            )
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-2">
+
+                        <label for="CostAllocationMasterGroup" style="color: #124eb0">
+                            Cost Center Master
+                            :
+                        </label>
+                    </div>
+                    <div class="col-md-10">
+                        @(Html.DevExtreme().DropDownBox()
+                            .DataSource(d => d.WebApi()
+                            .Controller("CostCenterMaster")
+                            .LoadAction("GetCostAllocationMasterGroup")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CAGroupMaster")
+                            )
+
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ID("GetCostAllocationMasterGroupDropDown")
+                          @*   .ShowClearButton(true)
+                            .AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(true)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("CostAllocationUnitId")
+                            .DisplayExpr("CostAllocationMasterGroup")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .OnKeyDown("onKeyDown")
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetCostAllocationMasterGroupContentTemplate"))
+                            )
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label for="CostUnitRemarks" style="color: #124eb0;">
+                            Cost Center Remarks:
+                        </label>
+                    </div>
+                    <div class="col-md-10">
+                        @(Html.DevExtreme()
+                            .TextBox()
+                            .ID("CostUnitRemarks")
+                            .Value(null)
+                            .Width("100%")
+                            .MaxLength(250)
+                            )
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+
+                        <label for="CostCenterIncharge" style="color: #124eb0">
+                            Cost Center Incharge:
+                        </label>
+                        @(Html.DevExtreme().TextBox().ID("CostCenterIncharge").Value(null).Width("100%"))
+                    </div>
+                </div>
+               @*  <div class="button-alignment-down">
+                    <label for="UseSubmittedDate">Received Date</label>
+                    @(Html.DevExtreme().CheckBox()
+                        .ID("UseSubmittedDate")
+                        )
+                </div> *@
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="Branch" style="color: #124eb0; display: flex; justify-content: space-between; align-items: center;">
+                            <span>Project:</span>
+                            <span class="right-text">Add from the Project</span>
+                        </label>
+                          
+                       
+                        @(Html.DevExtreme().DropDownBox()
+                            .DataSource(d => d.WebApi()
+                            .Controller("CostCenterMaster")
+                            .LoadAction("GetProject")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("ProjectId")
+                            )
+
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ID("GetProjectDropDown")
+                           @*  .ShowClearButton(true)
+                            .AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(false)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("ProjectId")
+                            .DisplayExpr("ProjectDescription")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .OnKeyDown("onKeyDown")
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
+                            )
+
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <!-- Dropdown Section -->
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="Branch" style="color: #124eb0;">Division/Branch:</label>
+                        @(Html.DevExtreme().DropDownBox()
+                            .DataSource(d => d.WebApi()
+                            .Controller("CostCenterMaster")
+                            .LoadAction("GetBranchCode")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("Branch")
+                            )
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ID("GetBranchCodeDropDown")
+                          @*   .ShowClearButton(true)
+                            .AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(true)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("BranchCode")
+                            .DisplayExpr("BranchName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .OnKeyDown("onKeyDown")
+                            .ContentTemplate(new TemplateName("GetBranchCodeContentTemplate"))
+                            )
+                    </div>
+                </div>
+
+                <!-- Checkbox Section -->
+                <div class="col-md-6" style="margin-top:25px;">
+                    <div class="form-group">
+                        <label style="margin-right: 10px;color:crimson">Discontinued:</label>
+                        @(Html.DevExtreme().CheckBox()
+                            .ID("Discontinued")
+                            )
+                    </div>
+                </div>
+            </div>
+
+
+
+</div>
+
+ </div>
+       <br/>
+        <hr/>
+           <div class="container">
+             <div class="row">
+                <div class="col-md-3"><span>Created By:</span></div>
+                <div class="col-md-3"><span>Created On:</span></div>
+                <div class="col-md-3"><span>Modified By:</span></div>
+                <div class="col-md-3"><span>Modified On:</span></div>
+                
+             </div>
+           </div>
+
+       <br/>
+      <div class="container">
+           <div class="card-footer">
+                <div class="dx-fieldset horizontal-container mt-2">
+
+                    @(Html.DevExtreme().Button()
+                        .ID("btnSave")
+                        .Text("Save")
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("save")
+                        )
+                    @(Html.DevExtreme().Button()
+                        .ID("btnBack")
+                        .Text("Back")
+                        .Icon("arrowleft")
+                        .OnClick("navigateToHome")
+                        )
+                </div>
+           </div>
+
+      </div>
+
+    <!-- Drop Down Grid Template -->
+    @using (Html.DevExtreme().NamedTemplate("GetCostAllocationGroupContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetCAGroup-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("CostCenterMaster")
+            .LoadAction("GetCostAllocationGroup")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CostAllocationUnitId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChangedccg")
+            .OnInitialized("dataGridInitializedccg")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                @* columns.Add().DataField("CostAllocationUnitId"); *@
+                columns.Add().DataField("CostAllocationGroup");
+
+
+            })
+            )
+    }
+
+
+    <!-- Drop Down Grid Template -->
+    @using (Html.DevExtreme().NamedTemplate("GetCostAllocationMasterGroupContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetCostAllocationMaster-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("CostCenterMaster")
+            .LoadAction("GetCostAllocationMasterGroup")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CostAllocationUnitId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChangedccm")
+            .OnInitialized("dataGridInitializedccm")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                @* columns.Add().DataField("CostAllocationUnitId"); *@
+                columns.Add().DataField("CostAllocationMasterGroup");
+
+
+            })
+            )
+    }
+    <!-- Drop Down Grid Template -->
+    @using (Html.DevExtreme().NamedTemplate("GetBranchCodeContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetBranchCode-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("CostCenterMaster")
+            .LoadAction("GetBranchCode")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("BranchCode")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChangedbranch")
+            .OnInitialized("dataGridInitializedbranch")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                @* columns.Add().DataField("CostAllocationUnitId"); *@
+                columns.Add().DataField("BranchCode");
+                columns.Add().DataField("BranchName");
+
+
+            })
+            )
+    }
+    <!-- Drop Down Grid Template -->
+    @using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetProject-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("CostCenterMaster")
+            .LoadAction("GetProject")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("ProjectId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged")
+            .OnInitialized("dataGridInitialized")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("ProjectId");
+                columns.Add().DataField("ProjectDescription");
+
+
+            })
+            )
+    }
+
+
+</div>
+
+
+
+
+
+<script>
+    let dataGrid;
+    //GetBranchDropDown
+    function dataGridSelectionChangedccg(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#GetCostAllocationGroupDropDown").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+    function dataGridInitializedccg(e) {
+        dataGrid = e.component;
+    }
+
+    //GetBranchDropDown
+    function dataGridSelectionChangedccm(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#GetCostAllocationMasterGroupDropDown").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+    function dataGridInitializedccm(e) {
+        dataGrid = e.component;
+    }
+
+    //GetBranchDropDown
+    function dataGridSelectionChangedbranch(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#GetBranchCodeDropDown").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+    function dataGridInitializedbranch(e) {
+        dataGrid = e.component;
+    }
+
+    function dataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#GetProjectDropDown").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
+
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+
+    function onOpened() {
+        console.log("DropDownBox opened");
+    }
+
+    function onKeyDown(event) {
+        console.log("Key pressed:", event.key);
+    }
+
+    $(document).ready(function () {
+        // Define the fields array for validation
+        const fields = [
+            { id: "#CostAllocationUnitID", message: "Cost Allocation Unit ID is required." },
+            { id: "#CostAllocationUnit", message: "Cost Allocation Unit is required." },
+            { id: "#GetCostAllocationGroupDropDown", message: "Cost Allocation Group is required." },
+            { id: "#GetCostAllocationMasterGroupDropDown", message: "Cost Allocation Master Group is required." },
+            { id: "#CostUnitRemarks", message: "Remarks are required." },
+            { id: "#CostCenterIncharge", message: "Cost Center Incharge is required." },
+            { id: "#GetProjectDropDown", message: "Project Code is required." },
+            { id: "#GetBranchCodeDropDown", message: "Branch Code is required." }
+        ];
+
+        // Initialize DevExtreme Widgets and Validators
+        $("#CostAllocationUnitID").dxTextBox();
+        $("#CostAllocationUnit").dxTextBox();
+        $("#GetCostAllocationGroupDropDown").dxDropDownBox();
+        $("#GetCostAllocationMasterGroupDropDown").dxDropDownBox();
+        $("#CostUnitRemarks").dxTextBox();
+        $("#CostCenterIncharge").dxTextBox();
+        $("#GetProjectDropDown").dxDropDownBox();
+        $("#GetBranchCodeDropDown").dxDropDownBox();
+        $("#Discontinued").dxCheckBox();
+
+        // Add Validators
+        fields.forEach((field) => {
+            $(field.id).dxValidator({
+                validationRules: [{ type: "required", message: field.message }]
+            });
+        });
+
+        $("#Discontinued").dxValidator({
+            validationRules: [{ type: "required", message: "Please confirm if discontinued." }]
+        });
+
+        // Function to check if the CostAllocationUnitId exists
+        function checkIfCostAllocationUnitIdExists(costAllocationUnitId) {
+            return $.ajax({
+                url: "/api/CostCenterMaster/CheckCostAllocationUnitId", // Create a new API endpoint
+                type: "GET",
+                data: { costAllocationUnitId: costAllocationUnitId },
+                dataType: "json"
+            });
+        }
+
+        function saveCostCenterMaster() {
+            const costAllocationUnitId = $("#CostAllocationUnitID").dxTextBox("instance").option("value");
+            const costAllocationUnit = $("#CostAllocationUnit").dxTextBox("instance").option("value");
+            const costAllocationGroup = $("#GetCostAllocationGroupDropDown").dxDropDownBox("instance").option("value");
+            const costAllocationMasterGroup = $("#GetCostAllocationMasterGroupDropDown").dxDropDownBox("instance").option("value");
+            const costUnitRemarks = $("#CostUnitRemarks").dxTextBox("instance").option("value");
+            const costCenterIncharge = $("#CostCenterIncharge").dxTextBox("instance").option("value");
+            const projectMasterCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
+            const branchCode = $("#GetBranchCodeDropDown").dxDropDownBox("instance").option("value");
+            const isDisabled = $("#Discontinued").dxCheckBox("instance").option("value");
+
+            // Check if all required fields are filled
+            if (!costAllocationUnitId || !costAllocationUnit || !costAllocationGroup || !costAllocationMasterGroup || !costUnitRemarks || !costCenterIncharge || !projectMasterCode || !branchCode) {
+                DevExpress.ui.notify("Please fill in all required fields.", "error", 3000);
+                return; // Stop execution if validation fails
+            }
+
+            // First, check if the CostAllocationUnitId already exists
+            checkIfCostAllocationUnitIdExists(costAllocationUnitId).done(function (response) {
+                if (response.exists) {
+                    // If it exists, show an alert and prevent saving
+                    DevExpress.ui.notify("Cost Allocation Unit ID already exists!", "error", 3000);
+                } else {
+                    // Proceed to save data if the ID is unique
+                    const data = {
+                        CostAllocationUnitId: costAllocationUnitId,
+                        CostAllocationUnit: costAllocationUnit,
+                        CostAllocationGroup: costAllocationGroup,
+                        CostAllocationMasterGroup: costAllocationMasterGroup,
+                        CostUnitRemarks: costUnitRemarks,
+                        CostCenterIncharge: costCenterIncharge,
+                        ProjectMasterCode: projectMasterCode,
+                        BranchCode: branchCode,
+                        IsDisabled: isDisabled
+                    };
+
+                    $.ajax({
+                        url: "/api/CostCenterMaster/SaveCostCenterMaster",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function (response) {
+                            if (response.success) {
+                                DevExpress.ui.notify(response.message, "success", 3000);
+                            } else {
+                                DevExpress.ui.notify(response.message, "error", 3000);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            DevExpress.ui.notify("An error occurred while saving the data.", "error", 3000);
+                        }
+                    });
+                }
+            }).fail(function () {
+                DevExpress.ui.notify("Failed to check for duplicate ID.", "error", 3000);
+            });
+        }
+
+        // Save Button Click Event
+        $("#btnSave").on("click", function () {
+            saveCostCenterMaster();
+        });
+
+    });
+
+    function navigateToHome() {
+        window.location.href = '/';
+    }
+</script>
+

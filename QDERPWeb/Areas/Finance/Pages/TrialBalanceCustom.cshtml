@@ -76,7 +76,22 @@
 
                         group.Add().DataField("AccountHead").Caption("LedgerNo");
                         group.Add().DataField("AccountName").Caption("LedgerName");
-                        group.Add().DataField("Op_Bal").Caption("Opening Balance").Format("fixedPoint");
+                      
+                        group.Add()
+                    .DataField("Op_Bal")
+                    .Caption("Opening Balance")
+                    .Alignment(HorizontalAlignment.Right)
+                    .Format("fixedPoint")// Ensure right alignment
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0; // Get the value
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            // Append 'Cr' only for negative values
+            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            }");
                         group.Add().DataField("TransDebit").Caption("Debit Transaction").Format("fixedPoint");
                       @*   group.Add().DataField("TransCredit").Caption("Credit Transaction").Format("fixedPoint"); *@
                         group.Add()
@@ -98,10 +113,24 @@
                         group.Add().DataField("AccountGroup").Caption("Account Group").GroupIndex(1);
 
                         // Add a calculated column for Closing Balance
-                        group.Add().CalculateCellValue("ClosingBalance").Caption("Closing Balance").Format("fixedPoint")
+                        group.Add()
+                    .CalculateCellValue("ClosingBalance")
+                    .Caption("Closing Balance")
+                    .Format("fixedPoint")
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0; // Get the value
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            // Append 'Cr' only for negative values
+            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            }")
                     .CalculateCellValue(@"function(data) {
             return (data.Op_Bal || 0) + (data.TransDebit || 0) - (data.TransCredit || 0);
             }");
+
                     });
                     })
                 .Summary(summary =>
@@ -183,20 +212,20 @@
     <script>
         $(function () {
             $("#voucherPopup").dxPopup({
-                width: 350, // Adjusted width to fit all items
-                height: "auto", // Automatically adjusts height to fit content
-                showTitle: false, // Hides the title bar
-                showCloseButton: false, // Removes the "x" button
-                visible: false, // Popup is initially hidden
-                dragEnabled: false, // Optional: Prevents dragging of the popup
-                closeOnOutsideClick: true, // Closes the popup when clicking outside
+                width: 350, 
+                height: "auto", 
+                showTitle: false, 
+                showCloseButton: false, 
+                visible: false,
+                dragEnabled: false, 
+                closeOnOutsideClick: true, 
                 contentTemplate: function () {
                     return $("<div>")
                         .css({
                             "padding": "10px",
                             "display": "flex",
                             "flex-direction": "column",
-                            "gap": "10px" // Space between menu items
+                            "gap": "10px" 
                         })
                         .append(
                             createMenuItem("View Ledger Transactions", "find", "#4caf50", viewLedgerTransactions),
@@ -234,7 +263,7 @@
                             .addClass("dx-icon dx-icon-" + icon)
                             .css({
                                 "font-size": "18px",
-                                "color": iconColor, // Apply specific color for the icon
+                                "color": iconColor,
                                 "margin-right": "10px"
                             }),
                         $("<span>").text(text).css({
@@ -246,7 +275,7 @@
                     .on("click", clickHandler);
             }
 
-            // Define the action handlers
+         
             function viewLedgerTransactions() {
                 console.log("View Ledger Transactions Clicked");
             }
@@ -267,13 +296,20 @@
                 console.log("Preview All Selected Ledger Clicked");
             }
 
-            // Show popup only on checkbox click
+           
             $(document).on("click", ".dx-row input[type='checkbox']", function (e) {
-                e.stopPropagation(); // Prevent click from propagating to parent elements
-                $("#voucherPopup").dxPopup("instance").show();
+                e.stopPropagation(); 
+
+                if (this.checked) {
+                    
+                    $("#voucherPopup").dxPopup("instance").show();
+                } else {
+                  
+                    $("#voucherPopup").dxPopup("instance").hide();
+                }
             });
 
-            // Hide popup when clicking outside
+           
             $(document).on("click", function (e) {
                 if (
                     !$(e.target).closest("#voucherPopup").length &&
@@ -284,5 +320,6 @@
             });
         });
     </script>
+
 
 

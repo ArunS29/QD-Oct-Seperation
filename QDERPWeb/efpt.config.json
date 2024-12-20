@@ -75,6 +75,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl201CostAllocationUnits]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl201MasterGroup]",
          "ObjectType": 0
       },
@@ -156,6 +160,10 @@
       },
       {
          "Name": "[dbo].[qry201VoucherEntryScreenDisplay]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry700_02ProjectsViewMaster]",
          "ObjectType": 3
       },
       {

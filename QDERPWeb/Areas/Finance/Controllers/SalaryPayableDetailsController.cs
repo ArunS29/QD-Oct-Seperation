@@ -6,7 +6,7 @@ using QD.ERP.Web.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Form.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     //[Area("Finance")]
     [Route("Finance/api/[controller]/[action]")]

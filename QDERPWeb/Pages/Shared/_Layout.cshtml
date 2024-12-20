@@ -121,6 +121,10 @@
                             <li><a href="/Finance/BillsPayable" class="dropdown-item">Bills Payable</a></li>
                             <li><a href="/Finance/BillsReceivable" class="dropdown-item">Bills Receiveable</a></li>
                             <li><a href="/Finance/SalaryPayableDetails" class="dropdown-item">Salary Payable Details</a></li>
+                            <li><a href="/Finance/CostCenterMaster" class="dropdown-item">Cost Center Master</a></li>
+                             <li><a href="/Finance/SupplierPaymentRequest" class="dropdown-item">Supplier Payment Request</a></li>
+                              <li><a href="/Finance/TrialBalanceCustom" class="dropdown-item">Trial Balance Custom</a></li>
+
                         </ul>
                     </li>
                    @*  <li class="nav-item dropdown">
@@ -172,6 +176,32 @@
                 </div>
             </div>
         </div>
+
+          <!-- Submenu-->
+<div id="submenuContainer1" class="context-menu" style="display:none;">
+<div class="context-menu-item1">
+<div onclick="ChangeRowHeight(70)">
+<i class="fa fa-th-list"></i>
+<span>Receivables Ageing Report</span>
+</div>
+<div onclick="ChangeRowHeight(70)">
+<i class="fa fa-th-list"></i>
+<span>Receivables Ageing Report (By Sales Person)</span>
+</div>
+<div onclick="ChangeRowHeight(70)">
+<i class="fa fa-th-list"></i>
+<span>Receivables Ageing Report (Customizable)</span>
+</div>
+<div onclick="ChangeRowHeight(70)">
+<i class="fa fa-th-list"></i>
+<span>Receivables Ageing Summary</span>
+</div>
+<div onclick="ChangeRowHeight(70)">
+<i class="fa fa-th-list"></i>
+<span>Receivables Ageing Summary (Customizable)</span>
+</div>
+</div>
+</div>
 
         @RenderBody()
         <footer class="footer mt-auto content-container-bottom">

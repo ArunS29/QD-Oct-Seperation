@@ -26,7 +26,7 @@
 
 
     .card {
-        background-color: #c0dceb;
+        background-color: #a5c0d9;
     }
 
     .dx-datagrid-pager .dx-page.dx-selection,
@@ -44,26 +44,45 @@
     }
 
     .card-footer {
-        background-color: #c0dceb;
+        background-color: #a5c0d9;
     }
 
     .card-header {
         background-color: #124eb0; /* Sets the background color to blue */
         color: white; /* Changes the text color to white for contrast */
-        text-align: right; /* Aligns the text to the right */
         padding: 20px; /* Adds some padding around the text */
         font-weight: bold;
-        padding-right: 20px;
+        display: flex; /* Makes the header a flex container */
+        justify-content: space-between; /* Aligns icon and text on opposite sides */
+        align-items: center; /* Vertically aligns content */
     }
+
+    .header-icon {
+        font-size: 40px; /* Adjust size of the icon */
+        margin-right: 15px; /* Space between icon and text */
+    }
+
+    .header-text {
+        margin-left: auto; /* Pushes the text to the right */
+        font-size: 25px;
+    }
+
 
     .left-text {
         color: blue; /* Sets the text color to blue */
         text-decoration: underline; /* Underlines the text */
         margin-right: 20px;
+        margin-left: 7px;
     }
 
     .col-md-6 {
         margin-top: 20px; /* Adjust this value to control the space */
+    }
+
+
+    .dx-field.ledgerResult {
+        width: 100%;
+        max-width: 100%;
     }
 
 </style>
@@ -74,16 +93,29 @@
         <div class="container-fluid"></div>
 
 
-        <div class="card-header">Finance Management : Dashboard</div>
+        <div class="card-header">
+            <i class="fas fa-chart-bar header-icon"></i> <!-- Font Awesome icon -->
+            <span class="header-text">Finance Management : Dashboard</span>
+        </div>
+        <br />
         <div class="container">
+            <div class="card">
+                <h5 style="margin-left:10px">Accounts Receivable</h5>
+            </div>
+        </div>
+        <div class="container">
+
             <div class="row">
                 <!-- Left Text Section -->
-                <div class="col-md-6" style="padding-top: 10px; padding-bottom: 10px;">
+                <div class="col-md-6" style="padding-top: 10px; padding-bottom: 10px; display: flex; align-items: center;">
+                    <!-- Icon -->
+                    <i class="fas fa-clone" style="font-size: 20px; margin-right: 10px; color: #ffcc00;"></i>
+                    <!-- Text styled with .left-text -->
                     <h5 class="left-text">Bills Receivable</h5>
                 </div>
 
                 <!-- Right Button Section -->
-                <div class="form-group col-md-6" style="padding-top: 10px; padding-bottom: 10px; text-align: right;">
+                <div class="form-group col-md-6" id="Btnchange" style="padding-top: 10px; padding-bottom: 10px;  text-align: right;">
                     <div>
                         @(Html.DevExtreme().Button()
                             .ID("btnBillsWithBalance")
@@ -111,81 +143,243 @@
         </div>
     </div>
 
-    <div class="dx-field ledgerResult">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8"> <h5 style="margin: 10px; text-align: center; ">Bills Receivable</h5></div>
-                <div class="col-md-4"><h5 style="margin: 10px; text-align: center; ">Amount</h5></div>
-            </div>
-        </div>
+    <div class="dx-field ledgerResult" style="width: 98%; overflow: hidden;">
+
         @(Html.DevExtreme().DataGrid<Qry20105BillsReceivableAgeingView>()
 
-            .ID("dataGrid")
+                .ID("dataGrid")
 
-            .DataSource(ds => ds.Mvc()
+                .DataSource(ds => ds.Mvc()
 
-            .Controller("BillsReceivable") // Specify the controller name
+                .Controller("BillsReceivable") // Specify the controller name
 
-            .LoadAction("Get")) // Specify the action that returns data
+                .LoadAction("Get")) // Specify the action that returns data
 
-
-
-            .RemoteOperations(true) // Enable remote data operations
+                .RemoteOperations(false) // Enable remote data operations
 
 
-            .Columns(columns =>
+                .Columns(columns =>
+                {
+                    // Grid Band: Bills Receivable
+                    columns.Add().Caption("Bills Receivable").Columns(band =>
+                {
+                    // Account Head column
+                    band.AddFor(m => m.AccountHead)
+                .Caption("Ledger Account")
+                .Alignment(HorizontalAlignment.Left)
+                .Width(200)
+                .GroupIndex(0); // Group by this column
 
-            {
-
-                // columns.AddFor(m => m.AccountHead); // Add label for the column header .Caption("Account Head Number")
-
-
-                columns.AddFor(m => m.AccountHead).Caption("Ledger Account");
-
-
-                columns.AddFor(m => m.ReferenceNo).CellTemplate(@<text>
+                    // Reference No column with hyperlink
+                    band.AddFor(m => m.ReferenceNo)
+                .Caption("Reference No")
+                .CellTemplate(@<text>
             <a href="/Finance/SalesVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
-        </text>);
+        </text>)
+            .Width(140);
 
-                columns.AddFor(m => m.VoucherRefNo);
+                    // Voucher Reference No column
+                    band.AddFor(m => m.VoucherRefNo)
+            .Caption("Voucher Ref No")
+            .Alignment(HorizontalAlignment.Center)
+            .Width(140);
 
-                columns.AddFor(m => m.VoucherDate);
+                    band.AddFor(m => m.VoucherDate).Alignment(HorizontalAlignment.Center).Width(140).Format(format => format
+            .Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+                    // Invoice Due Date column
+                    band.AddFor(m => m.InvoiceDueDate)
+            .Caption("Invoice Due Date")
+            .Alignment(HorizontalAlignment.Center)
+            .Format(format => format
+            .Type(Format.ShortDate)
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
+            .Width(140);
+                });
 
-                columns.AddFor(m => m.InvoiceDueDate);
-                columns.AddFor(m => m.ReceivableAmount).Caption("Invoice Amount");
-                columns.AddFor(m => m.Received);
-                columns.AddFor(m => m.Balance);
-                columns.AddFor(m => m.OverdueDays);
+                    // Grid Band: Amount
+                    columns.Add().Caption("Amount").Columns(band =>
+            {
+                // Receivable Amount column
+                    band.AddFor(m => m.ReceivableAmount)
+                .Caption("Invoice Amount")
+                .Alignment(HorizontalAlignment.Center)
+                .CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Ensure positive values
+        return positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }")
+                .Width(140);
 
+                // Paid Amount column
+                    band.AddFor(m => m.Received)
+                .Caption("Received")
+                .Alignment(HorizontalAlignment.Center)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Convert to positive
+        return positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        }) + ' CR'; // Append 'CR' after the value
+        }
+        ")
+                .Width(140);
 
-            })
+                // Balance Amount column
+                    band.AddFor(m => m.Balance)
+                .Caption("Balance")
+                .Alignment(HorizontalAlignment.Center)
+                .CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Ensure positive values
+        return positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }")
+                .Width(140);
+                    band.AddFor(m => m.OverdueDays).Alignment(HorizontalAlignment.Center).Alignment(HorizontalAlignment.Center).Width(100);
+                });
+                })
 
 
             .Paging(p => p.PageSize(10))
-
-            .AllowColumnReordering(true) // Enable column reordering
-
-            .AllowColumnResizing(true)   // Enable column resizing
-
-            .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .ColumnFixing(fixing => fixing.Enabled(true))
             .HeaderFilter(filter => filter.Visible(true))
-
-            .Height(450)
-
+            .Height(600)
             .ColumnAutoWidth(true)
-
-            .FilterRow(filterRow => filterRow.Visible(true)) // Initially hide the FilterRow
-
-            .GroupPanel(groupPanel => groupPanel.Visible(true)) // Hide group panel
-
+            .WordWrapEnabled(true)
+            .FilterRow(filterRow => filterRow.Visible(false))
+            .GroupPanel(groupPanel => groupPanel.Visible(true))
             .ShowBorders(true)
-
             .Width("100%")
+            .Summary(summary =>
+            {
+                // Group-level summaries (for each group footer)
+                summary.GroupItems(items =>
+                {
+                    items.Add().Column("VoucherRefNo")
+                .SummaryType(SummaryType.Count)
+                .ShowInGroupFooter(true)
+                .DisplayFormat("{0}");
+
+                    items.Add().Column("ReceivableAmount")
+                .SummaryType(SummaryType.Sum)
+                .ShowInGroupFooter(true)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        return e.value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+
+                    items.Add().Column("Received")
+                .SummaryType(SummaryType.Sum)
+                .ShowInGroupFooter(true)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Convert to positive
+        return positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        }) + ' CR'; // Append 'CR' after the value
+        }
+        ");
+
+                    items.Add().Column("Balance")
+                .SummaryType(SummaryType.Sum)
+                .ShowInGroupFooter(true)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        return e.value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+                });
+
+                // Total summary (for grid-wide totals)
+                summary.TotalItems(items =>
+                {
+                    items.Add().Column("VoucherRefNo")
+                .SummaryType(SummaryType.Count)
+                .DisplayFormat("{0}");
+
+                    items.Add().Column("ReceivableAmount")
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        return e.value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+
+                    items.Add().Column("Received")
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Convert to positive
+        return positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        }) + ' CR'; // Append 'CR' after the value
+        }
+        ");
+
+                    items.Add().Column("Balance")
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        return e.value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+
+                });
+            })
+
             // Store the DataGrid instance
             .OnInitialized("dataGridInitialized")
             .OnContextMenuPreparing("onContextMenuPreparing") // Bind the context menu event
-
             )
     </div>
 
@@ -196,44 +390,45 @@
 </div>
 
 <script>
-           let dataGrid; // Global reference to the DataGrid instance
+    let dataGrid; // Global reference to the DataGrid instance
 
-           // Initialize the DataGrid and store its instance
-           function dataGridInitialized(e) {
-               dataGrid = e.component;
-           }
+    // Initialize the DataGrid and store its instance
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
 
-          function switchButtons(buttonId) {
-           let hideBtn, showBtn, filterType;
+    function switchButtons(buttonId) {
+        let hideBtn, showBtn, filterType;
 
-           // Determine which buttons to toggle and set the filter type
-           if (buttonId === "btnBillsWithBalance") {
-               showBtn = "btnBillsFullyReceived";
-               hideBtn = "btnBillsWithBalance";
-               filterType = "WithBalance"; // Filter: Balance > 0
-           } else if (buttonId === "btnBillsFullyReceived") {
-               showBtn = "btnBillsWithBalance";
-               hideBtn = "btnBillsFullyReceived";
-               filterType = "FullyReceived"; // Filter: Balance = 0
-           }
+        // Determine which buttons to toggle and set the filter type
+        if (buttonId === "btnBillsWithBalance") {
+            showBtn = "btnBillsFullyReceived";
+            hideBtn = "btnBillsWithBalance";
+            filterType = "WithBalance"; // Filter: Balance > 0
+        } else if (buttonId === "btnBillsFullyReceived") {
+            showBtn = "btnBillsWithBalance";
+            hideBtn = "btnBillsFullyReceived";
+            filterType = "FullyReceived"; // Filter: Balance = 0
+        }
 
-           // Use DevExtreme APIs to toggle button visibility
-           const hideButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(hideBtn));
-           const showButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(showBtn));
+        // Use DevExtreme APIs to toggle button visibility
+        const hideButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(hideBtn));
+        const showButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(showBtn));
 
-           hideButtonInstance.option("visible", false);
-           showButtonInstance.option("visible", true);
+        hideButtonInstance.option("visible", false);
+        showButtonInstance.option("visible", true);
 
-           // Reload the DataGrid with the appropriate filter based on the button clicked
-           if (dataGrid) {
-               dataGrid.option("dataSource", {
-                   load: function () {
-                       return $.getJSON("/Finance/api/BillsReceivable/Get", { filterType: filterType });
-                   }
-               });
-               dataGrid.refresh();
-           }
-       }
+        // Reload the DataGrid with the appropriate filter based on the button clicked
+        if (dataGrid) {
+            dataGrid.option("dataSource", {
+                load: function () {
+                    return $.getJSON("/Finance/api/BillsReceivable/Get", { filterType: filterType });
+
+                }
+            });
+            dataGrid.refresh();
+        }
+    }
     function onContextMenuPreparing(e) {
         if (e.row && e.row.rowType === "data") { // Only for data rows
             e.items = [
@@ -241,12 +436,14 @@
                     text: "View Ledger Transactions",
                     onItemClick: function () {
                         // Navigate to frm201LedgerView with the selected client details
-                        const clientID = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
-                        const url = `/Finance/frm201LedgerView?clientID=${clientID}`;
+                        const AccountHeadNo = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
+                        const url = `/Finance/frm201LedgerView?AccountHeadNo=${AccountHeadNo}`;
                         window.open(url, '_blank'); // Opens in a new tab
                     }
                 }
             ];
         }
     }
+
 </script>
+

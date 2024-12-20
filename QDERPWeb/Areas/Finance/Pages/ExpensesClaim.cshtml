@@ -1,25 +1,23 @@
 ﻿@page
 
 <style type="text/css">
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; 
+
+
+    .dx-datagrid .dx-row > td {
+        padding: 4px 8px; 
+        line-height: 20px; 
     }
 
-
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px; 
-        justify-content: start; 
-        align-items: center; 
-        margin: 15px;
+   
+    .dx-datagrid .dx-header-row > td {
+        padding: 6px 10px;
+        line-height: 20px; 
     }
 
-    .dx-selectbox .dx-texteditor-input {
-        text-align: center;
+   
+    .dx-datagrid {
+        font-size: 13px; 
     }
-
-
 
 
     .button-alignment-down {
@@ -94,7 +92,7 @@
                 .RemoteOperations(false)
                 .DataSource(ds => ds.Mvc()
                 .Controller("ExpensesClaim")
-                .LoadAction("GetExpenseClaims"))
+                .LoadAction("GetExpenseClaim"))
                 .Columns(columns =>
                 {
                    

@@ -36,14 +36,13 @@ namespace QDWEB.Areas.Finance.Controllers
                     cancellationToken
                 );
 
-               
-                if (ledgerData == null || !ledgerData.Any())
-                {
-                    return NotFound(new { message = "No data found." });
-                }
 
-               
-                var result = ledgerData.Select(x => new
+				if (ledgerData == null || !ledgerData.Any())
+				{
+					return NotFound(new { message = "No data found." });
+				}
+
+				var result = ledgerData.Select(x => new
                 {
                     x.AccountHead,
                     x.AccountName,

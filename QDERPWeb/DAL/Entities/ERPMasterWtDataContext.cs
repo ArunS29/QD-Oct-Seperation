@@ -38,6 +38,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Qry201VoucherEntryScreenDisplay> Qry201VoucherEntryScreenDisplays { get; set; }
 
+    public virtual DbSet<Qry70002projectsViewMaster> Qry70002projectsViewMasters { get; set; }
+
     public virtual DbSet<Tbl101DocumentType> Tbl101DocumentTypes { get; set; }
 
     public virtual DbSet<Tbl101Employee> Tbl101Employees { get; set; }
@@ -68,6 +70,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl201ChartOfAccount> Tbl201ChartOfAccounts { get; set; }
 
+    public virtual DbSet<Tbl201CostAllocationUnit> Tbl201CostAllocationUnits { get; set; }
+
     public virtual DbSet<Tbl201MasterGroup> Tbl201MasterGroups { get; set; }
 
     public virtual DbSet<Tbl201SubLedgerMaster> Tbl201SubLedgerMasters { get; set; }
@@ -87,13 +91,14 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<TblUserMaster> TblUserMasters { get; set; }
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
-         modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
+        modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterAR>().HasNoKey(); // Mark as keyless
+
         modelBuilder.Entity<Qry20105BillsReceivableAgeingView>(entity =>
         {
             entity
@@ -923,6 +928,67 @@ public partial class ERPMasterWtDataContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Qry70002projectsViewMaster>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry700_02ProjectsViewMaster");
+
+            entity.Property(e => e.AcceptedOn).HasColumnType("date");
+            entity.Property(e => e.AddedBy).IsUnicode(false);
+            entity.Property(e => e.AddedOn).HasColumnType("datetime");
+            entity.Property(e => e.ApprovedBy).IsUnicode(false);
+            entity.Property(e => e.ApprovedOn).HasColumnType("datetime");
+            entity.Property(e => e.ClientCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.ClientContactEmail).IsUnicode(false);
+            entity.Property(e => e.ClientContactNo).IsUnicode(false);
+            entity.Property(e => e.ClientName).IsUnicode(false);
+            entity.Property(e => e.ClientRefName).IsUnicode(false);
+            entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
+            entity.Property(e => e.CompanyName).IsUnicode(false);
+            entity.Property(e => e.DivisionCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.DivisionName).IsUnicode(false);
+            entity.Property(e => e.FinanceCostCenterCode)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.ProjectCompletedOn).HasColumnType("date");
+            entity.Property(e => e.ProjectDescription).IsUnicode(false);
+            entity.Property(e => e.ProjectDuration)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ProjectEndDate).HasColumnType("date");
+            entity.Property(e => e.ProjectGroup).IsUnicode(false);
+            entity.Property(e => e.ProjectGroupCode)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.ProjectGroupId).HasColumnName("ProjectGroupID");
+            entity.Property(e => e.ProjectId)
+                .IsRequired()
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("ProjectID");
+            entity.Property(e => e.ProjectInchargeEmail).IsUnicode(false);
+            entity.Property(e => e.ProjectLocation)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.ProjectManager).IsUnicode(false);
+            entity.Property(e => e.ProjectStartDate).HasColumnType("date");
+            entity.Property(e => e.ProjectStatus).IsUnicode(false);
+            entity.Property(e => e.ProjectStatusCode)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.SubmittedBy).IsUnicode(false);
+            entity.Property(e => e.SubmittedOn).HasColumnType("date");
+            entity.Property(e => e.VerifiedBy).IsUnicode(false);
+            entity.Property(e => e.VerifiedOn).HasColumnType("datetime");
+        });
+
         modelBuilder.Entity<Tbl101DocumentType>(entity =>
         {
             entity.HasKey(e => e.DocumentTypeId);
@@ -1458,6 +1524,33 @@ public partial class ERPMasterWtDataContext : DbContext
                 .HasColumnName("VATRegistrationNo");
             entity.Property(e => e.VoucherAbbr)
                 .HasMaxLength(3)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl201CostAllocationUnit>(entity =>
+        {
+            entity.HasKey(e => e.CostAllocationUnitId);
+
+            entity.ToTable("tbl201CostAllocationUnits");
+
+            entity.Property(e => e.CostAllocationUnitId)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("CostAllocationUnitID");
+            entity.Property(e => e.BranchCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.CostAllocationGroup).IsUnicode(false);
+            entity.Property(e => e.CostAllocationMasterGroup).IsUnicode(false);
+            entity.Property(e => e.CostAllocationUnit).IsUnicode(false);
+            entity.Property(e => e.CostCenterIncharge).IsUnicode(false);
+            entity.Property(e => e.CostUnitRemarks).IsUnicode(false);
+            entity.Property(e => e.CreatedBy).IsUnicode(false);
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.ProjectMasterCode)
+                .HasMaxLength(25)
                 .IsUnicode(false);
         });
 
