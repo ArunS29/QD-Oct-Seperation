@@ -1,27 +1,27 @@
-﻿@page 
-
+﻿@page
+@model QDWEB.Pages.Shared.GridforAssetViewModel
 <style type="text/css">
     .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; 
+        border-bottom: 1px solid #ccc;
     }
 
 
 
     .horizontal-container {
         display: flex;
-        gap: 10px; 
-        justify-content: start; 
-        align-items: center; 
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
         margin: 15px;
     }
 
-    
+
     #voucherPopup {
         border-radius: 5px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-   
+
     .voucher-actions {
         list-style-type: none;
         padding: 0;
@@ -46,56 +46,56 @@
             }
 
             .voucher-actions .menu-item:last-child {
-                border-bottom: none; 
+                border-bottom: none;
             }
 
-   
+
     .dx-icon {
         font-size: 16px;
         margin-right: 10px;
     }
 
-  
+
     .dx-checkbox {
         margin: 10px;
     }
 
     .menu-item i {
-        color: #555; 
-        font-size: 20px; 
-        margin-right: 10px; 
+        color: #555;
+        font-size: 20px;
+        margin-right: 10px;
     }
 
-   
+
     .menu-item .dx-icon-edit {
-        color: #007bff; 
+        color: #007bff;
     }
 
     .menu-item .dx-icon-find {
-        color: #28a745; 
+        color: #28a745;
     }
 
     .menu-item .dx-icon-check {
-        color: #ffc107; 
+        color: #ffc107;
     }
 
     .menu-item .dx-icon-trash {
-        color: #dc3545; 
+        color: #dc3545;
     }
 
     .menu-item .dx-icon-selectall {
-        color: #17a2b8; 
+        color: #17a2b8;
     }
 
     .menu-item .dx-icon-todo {
-        color: #6c757d; 
+        color: #6c757d;
     }
 
     .menu-item .dx-icon-unlock {
-        color: #6610f2; 
+        color: #6610f2;
     }
 
-   
+
     .menu-item:hover i {
         opacity: 0.8;
     }
@@ -128,15 +128,15 @@
                 </div>
             </div>
         </div>
-    
 
 
-        
+
+
         <div class="dx-fieldset" style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
             <div>
                 @(Html.DevExtreme().DateBox()
                     .ID("VoucherDate")
-                    .InputAttr("aria-label", "Date")
+                    .InputAttr("aria-label", "Voucher Date")
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)
                     .DisplayFormat("dd-MMM-yyyy")
@@ -145,18 +145,23 @@
             <div>
                 @(Html.DevExtreme().DateBox()
                     .ID("EffectiveDate")
-                    .InputAttr("aria-label", "Date")
+                    .InputAttr("aria-label", "Effective Date")
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)
                     .DisplayFormat("dd-MMM-yyyy")
-                    .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)))
+                    .Value(DateTime.Now))
             </div>
+
+
             <div>
+
                 @(Html.DevExtreme().DropDownButton()
                     .ID("ddBtnShowRecords")
                     .Text("Show Records")
                     .Icon("smalliconslayout")
                     .Width(180)
+
+                    .TabIndex(4)
                     .DropDownOptions(options => options.Width(230))
                     .Items(items =>
                     {
@@ -170,12 +175,13 @@
                         items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
                         items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
                         items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                    }))
+                    })
+                    )
             </div>
 
         </div>
 
-       
+
         <div class="dx-field ledgerResult">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
                     .ID("dataGrid")
@@ -246,9 +252,10 @@
         function ddBtnShowRecords_click(filterType) {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-            let today = new Date();
+            const today = new Date();
             let startDate = null, endDate = null;
 
+            // Define date ranges based on filterType
             switch (filterType) {
                 case 'today':
                     startDate = new Date(today.setHours(0, 0, 0, 0));
@@ -280,7 +287,8 @@
 
                 case 'fullmonth':
                     startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    endDate.setHours(23, 59, 59, 999);
                     break;
 
                 case 'tillyear':
@@ -291,20 +299,24 @@
 
                 case 'fullyear':
                     startDate = new Date(today.getFullYear(), 0, 1);
-                    endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+                    endDate = new Date(today.getFullYear(), 11, 31);
+                    endDate.setHours(23, 59, 59, 999);
                     break;
 
                 case 'lastmonth':
                     startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                    endDate = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                    endDate.setHours(23, 59, 59, 999);
                     break;
 
                 case 'lastyear':
                     startDate = new Date(today.getFullYear() - 1, 0, 1);
-                    endDate = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+                    endDate = new Date(today.getFullYear() - 1, 11, 31);
+                    endDate.setHours(23, 59, 59, 999);
                     break;
 
                 default:
+                    // Reset DataGrid data source
                     dataGrid.option("dataSource", {
                         load: function () {
                             return $.ajax({
@@ -313,13 +325,16 @@
                             });
                         }
                     });
-
                     dataGrid.refresh();
                     return;
             }
 
-            // Ensure both startDate and endDate are set before making the AJAX request
             if (startDate && endDate) {
+                // Update DateBox controls
+                $("#VoucherDate").dxDateBox("instance").option("value", startDate);
+                $("#EffectiveDate").dxDateBox("instance").option("value", endDate);
+
+                // Update the DataGrid with the filtered data
                 dataGrid.option("dataSource", {
                     load: function () {
                         return $.ajax({
@@ -333,11 +348,13 @@
                     }
                 });
 
+                // Refresh the grid
                 dataGrid.refresh();
             }
         }
+
         $(function () {
-           
+
             $("#voucherPopup").dxPopup({
                 width: 300,
                 height: 400,
@@ -371,7 +388,7 @@
                     .on("click", clickHandler);
             }
 
-          
+
             function editVoucher() { console.log("Edit Voucher Clicked"); }
             function viewVoucher() { console.log("View Voucher Clicked"); }
             function verifyVoucher() { console.log("Verify Voucher Clicked"); }
@@ -380,21 +397,21 @@
             function approveAll() { console.log("Approve All Selected Vouchers Clicked"); }
             function unlockVoucher() { console.log("Unlock Voucher Clicked"); }
 
-        
+
             $(document).on("click", ".dx-row", function () {
-            
+
                 $("#voucherPopup").dxPopup("instance").show();
             });
 
-          
+
             $(document).on("change", ".dx-checkbox", function () {
-            
+
                 if (!$(this).prop("checked")) {
                     $("#voucherPopup").dxPopup("instance").hide();
                 }
             });
 
-           
+
             $(document).on("click", function (e) {
                 if (!$(e.target).closest("#voucherPopup").length && !$(e.target).closest(".dx-row").length) {
                     $("#voucherPopup").dxPopup("instance").hide();
