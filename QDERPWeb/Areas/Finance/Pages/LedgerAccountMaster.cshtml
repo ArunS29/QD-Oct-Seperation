@@ -111,18 +111,18 @@
     <div class="card">
         <div class="dx-fieldset vertical-container">
             <div class="form-group">
-                <label><strong>Account Group ID</strong></label>
+                <label style="color: #0066CC;"><strong>Account Group ID</strong></label>
                 @(
                     Html.DevExtreme().TextBox()
                     .ID("AccountGroupID")
                     .Value(null)
                     .Width(250)
                     .Disabled(true)
-
+                    .ElementAttr(new { style = "background-color: #FFCC99; color: #FFCC99;" })
                     )
             </div>
             <div class="form-group">
-                <label><strong>Account Group</strong></label>
+                <label style="color: #0066CC;"><strong>Account Group</strong></label>
                 @(
                     Html.DevExtreme().TextBox()
                     .ID("AccountGroup")
@@ -140,7 +140,7 @@
             </div>
 
             <div class="form-group">
-                <label for="" class="button-alignment-down"><strong>Account Master</strong></label>
+                <label for="" class="button-alignment-down" style="color: #0066CC;"><strong>Account Master</strong></label>
                 @(Html.DevExtreme().DropDownBox()
                     .DataSource(d => d.WebApi()
                     .Controller("LedgerAccountMaster")
@@ -184,7 +184,7 @@
     <div class="card" style="text-align: right;">
         <div class="dx-fieldset vertical-container" style="align-items: flex-end;">
             <div class="form-group">
-                <label style="float: right;"><strong>رقم</label></strong>
+                <label style="float: right;color: #0066CC;"><strong>رقم</label></strong>
                 @(
                     Html.DevExtreme().TextBox()
                     .ID("AccountGroupID1")
@@ -192,12 +192,13 @@
                     .Width(250)
                     .RtlEnabled(true)
                     .Disabled(true)
+                    .ElementAttr(new { style = "background-color: #FFCC99; color: #FFCC99;" })
 
                     // .InputAttr(new { lang = "ar", dir = "rtl" })
                     )
             </div>
             <div class="form-group" style="display: flex;">
-                <label style="float: right; margin-right: 15px;"><strong>اسم مجموعة الحساب</strong></label>
+                <label style="float: right; margin-right: 15px;color: #0066CC;"><strong>اسم مجموعة الحساب</strong></label>
                 <div class="input-group" style="display: flex; align-items: center; width: 100%;">
                     <span class="input-group-prepend" style="margin-right: 10px;">
                         @(
@@ -222,7 +223,7 @@
 
 
             <div class="form-group">
-                <label for="" class="button-alignment-down"><strong>جماعة حساب</strong></label>
+                <label for="" class="button-alignment-down" style="color: #0066CC;"><strong>جماعة حساب</strong></label>
                 @(Html.DevExtreme().DropDownBox()
                     .DataSource(d => d.WebApi()
                     .Controller("LedgerAccountMaster")
@@ -277,7 +278,7 @@
         <div class="dx-fieldset vertical-container">
             <div class="form-group-row">
                 <div class="form-group">
-                    <label><strong>Sales Group</strong></label>
+                    <label style="color: #0066CC;"><strong>Sales Group</strong></label>
                 </div>
                 <div class="form-group" style="position:relative;left:70px;">
                     <div class="col-md-12">
@@ -294,7 +295,7 @@
             </div>
             <div class="form-group-row">
                 <div class="form-group">
-                    <label><strong>Purchase Group</strong></label>
+                    <label style="color: #0066CC;"><strong>Purchase Group</strong></label>
                 </div>
                 <div class="form-group" style="position:relative;left:42px;">
                     <div class="col-md-12">
@@ -309,7 +310,7 @@
             </div>
             <div class="form-group-row">
                 <div class="form-group">
-                    <label><strong>Salary Payable Group</strong></label>
+                    <label style="color: #0066CC;"><strong>Salary Payable Group</strong></label>
                 </div>
                 <div class="form-group" style="position:relative;left:11px;">
                     <div class="col-md-13">
@@ -324,7 +325,7 @@
             </div>
             <div class="form-group-row">
                 <div class="form-group">
-                    <label><strong>Bank Reconciliation</strong></label>
+                    <label style="color: #0066CC;"><strong>Bank Reconciliation</strong></label>
                 </div>
                 <div class="form-group" style="position:relative;left:18px;">
                     <div class="col-md-12">
@@ -345,7 +346,7 @@
         <div class="dx-fieldset vertical-container">
             <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
                 <div class="form-group">
-                    <label><strong>مجموعة المبيعات</strong></label>
+                    <label style="color: #0066CC;"><strong>مجموعة المبيعات</strong></label>
                 </div>
                 <div class="form-group">
                     <div class="col-md-12" style="text-align: right;">
@@ -362,7 +363,7 @@
             </div>
             <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
                 <div class="form-group">
-                    <label><strong>مجموعة الشراء</label></strong>
+                    <label style="color: #0066CC;"><strong>مجموعة الشراء</label></strong>
                 </div>
                 <div class="form-group">
                     <div class="col-md-12" style="text-align: right;">
@@ -378,7 +379,7 @@
             </div>
             <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
                 <div class="form-group">
-                    <label><strong>مجموعة الرواتب المستحقة</strong></label>
+                    <label style="color: #0066CC;"><strong>مجموعة الرواتب المستحقة</strong></label>
                 </div>
                 <div class="form-group">
                     <div class="col-md-13" style="text-align: right;">
@@ -394,7 +395,7 @@
             </div>
             <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
                 <div class="form-group">
-                    <label><strong>تسوية الحسابات المصرفية</strong></label>
+                    <label style="color: #0066CC;"><strong>تسوية الحسابات المصرفية</strong></label>
                 </div>
                 <div class="form-group">
                     <div class="col-md-12" style="text-align: right;">
@@ -548,28 +549,24 @@
             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
             .OnSelectionChanged("dataGridAccountMasterSelectionChanged")
             .OnInitialized("dataGridAccountMasterInitialized")
-            .HeaderFilter(p => p.Visible(true))
+            // .HeaderFilter(p => p.Visible(true))
             .ShowBorders(true)
             .HoverStateEnabled(true)
             .Paging(p => p.PageSize(15))
-            .FilterRow(f => f.Visible(true))
+            // .FilterRow(f => f.Visible(true))
             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .Height(345)
+            .Height(250)
             .Selection(s => s.Mode(SelectionMode.Single))
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            @*  .Columns(columns =>
-    {
-    columns.Add().DataField("AccountId");
-    columns.Add().DataField("AccountHead");
-    columns.Add().DataField("AccountHeadArabic");
-    columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
-    .CellTemplate(@<text>
-    <div class="dx-icon">
-    <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-    </div>
-    </text>);
+            //    .ShowColumnHeaders(false)
+            .Columns(columns =>
+            {
+                columns.Add().DataField("MasterGroup")
+                .Caption("Master Group")
+                .AllowSorting(false)
+                ; // This removes the header name
 
-    }) *@
+            })
             )
     }
     @using (Html.DevExtreme().NamedTemplate("AccountMasterContentTemplate1"))
@@ -589,28 +586,22 @@
             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
             .OnSelectionChanged("dataGridAccountMasterSelectionChangedAr")
             .OnInitialized("dataGridAccountMasterInitializedAr")
-            .HeaderFilter(p => p.Visible(true))
+            //.HeaderFilter(p => p.Visible(true))
             .ShowBorders(true)
             .HoverStateEnabled(true)
             .Paging(p => p.PageSize(15))
-            .FilterRow(f => f.Visible(true))
+            //  .FilterRow(f => f.Visible(true))
             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .Height(345)
+            .Height(250)
             .Selection(s => s.Mode(SelectionMode.Single))
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-            @*  .Columns(columns =>
-    {
-    columns.Add().DataField("AccountId");
-    columns.Add().DataField("AccountHead");
-    columns.Add().DataField("AccountHeadArabic");
-    columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
-    .CellTemplate(@<text>
-    <div class="dx-icon">
-    <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-    </div>
-    </text>);
-
-    }) *@
+            //  .ShowColumnHeaders(false)
+            .Columns(columns =>
+            {
+                columns.Add().DataField("MasterGroupAr")
+                .Caption("Master Group Ar") // This removes the header name
+                .AllowSorting(false);
+            })
             )
     }
 </div>

@@ -58,6 +58,10 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
+
+    .bold-button .dx-button-text {
+        font-weight: bold;
+    }
 </style>
 <div class="dx-fieldset horizontal-container mt-2">
 
@@ -67,17 +71,20 @@
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("save")
+        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
-    
+
     @(Html.DevExtreme().Button()
         .ID("btnDelete")
         .Text("Delete")
         .Icon("close")
+        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
         .ID("btnBack")
         .Text("Close")
         .Icon("arrowleft")
+        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
 </div>
 <script type="text/javascript">
