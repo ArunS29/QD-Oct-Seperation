@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace QD.ERP.Web.Pages.Shared
 {
-    public class GridFooterExpensesModel : PageModel
+    public class GridFooterApprovalModel : PageModel
     {
         public void OnGet()
         {
