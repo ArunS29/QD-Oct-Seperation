@@ -85,6 +85,11 @@
         max-width: 100%;
     }
 
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
 </style>
 
 
@@ -98,20 +103,20 @@
             <span class="header-text">Finance Management : Dashboard</span>
         </div>
         <br />
-        <div class="container">
-            <div class="card">
-                <h5 style="margin-left:10px">Accounts Receivable</h5>
-            </div>
+        @*  <div class="container">
+        <div class="card">
+        <h5 style="margin-left:10px">Accounts Receivable</h5>
         </div>
+        </div> *@
         <div class="container">
 
             <div class="row">
                 <!-- Left Text Section -->
                 <div class="col-md-6" style="padding-top: 10px; padding-bottom: 10px; display: flex; align-items: center;">
                     <!-- Icon -->
-                    <i class="fas fa-clone" style="font-size: 20px; margin-right: 10px; color: #ffcc00;"></i>
+                    <i class="fas fa-clone" style="margin-right: 10px; color: #ffcc00;"></i>
                     <!-- Text styled with .left-text -->
-                    <h5 class="left-text">Bills Receivable</h5>
+                    <h4 class="left-text">Bills Receivable</h4>
                 </div>
 
                 <!-- Right Button Section -->
@@ -163,6 +168,10 @@
                     // Grid Band: Bills Receivable
                     columns.Add().Caption("Bills Receivable").Columns(band =>
                 {
+                    band.AddFor(m => m.AccountHead)
+                .Caption("Ledger Account")
+                .Alignment(HorizontalAlignment.Left)
+                .Width(200);
                     // Account Head column
                     band.AddFor(m => m.AccountHead)
                 .Caption("Ledger Account")
@@ -176,13 +185,13 @@
                 .CellTemplate(@<text>
             <a href="/Finance/SalesVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
         </text>)
-            .Width(140);
+            .Width(150);
 
                     // Voucher Reference No column
                     band.AddFor(m => m.VoucherRefNo)
             .Caption("Voucher Ref No")
             .Alignment(HorizontalAlignment.Center)
-            .Width(140);
+            .Width(150);
 
                     band.AddFor(m => m.VoucherDate).Alignment(HorizontalAlignment.Center).Width(140).Format(format => format
             .Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
@@ -202,7 +211,7 @@
                 // Receivable Amount column
                     band.AddFor(m => m.ReceivableAmount)
                 .Caption("Invoice Amount")
-                .Alignment(HorizontalAlignment.Center)
+                .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
         if (e.value === null || e.value === undefined) {
@@ -219,17 +228,18 @@
                 // Paid Amount column
                     band.AddFor(m => m.Received)
                 .Caption("Received")
-                .Alignment(HorizontalAlignment.Center)
+                .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ")
                 .Width(140);
@@ -237,7 +247,7 @@
                 // Balance Amount column
                     band.AddFor(m => m.Balance)
                 .Caption("Balance")
-                .Alignment(HorizontalAlignment.Center)
+                .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
         if (e.value === null || e.value === undefined) {
@@ -262,9 +272,10 @@
             .HeaderFilter(filter => filter.Visible(true))
             .Height(600)
             .ColumnAutoWidth(true)
-            .WordWrapEnabled(true)
+            .WordWrapEnabled(false)
             .FilterRow(filterRow => filterRow.Visible(false))
-            .GroupPanel(groupPanel => groupPanel.Visible(true))
+            .Grouping(grouping => grouping.AutoExpandAll(true))
+            .GroupPanel(groupPanel => groupPanel.Visible(false))
             .ShowBorders(true)
             .Width("100%")
             .Summary(summary =>
@@ -275,7 +286,7 @@
                     items.Add().Column("VoucherRefNo")
                 .SummaryType(SummaryType.Count)
                 .ShowInGroupFooter(true)
-                .DisplayFormat("{0}");
+                .DisplayFormat("No of Invoices: {0}");
 
                     items.Add().Column("ReceivableAmount")
                 .SummaryType(SummaryType.Sum)
@@ -297,16 +308,18 @@
                 .ShowInGroupFooter(true)
                 .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ");
+
 
                     items.Add().Column("Balance")
                 .SummaryType(SummaryType.Sum)
@@ -329,7 +342,7 @@
                 {
                     items.Add().Column("VoucherRefNo")
                 .SummaryType(SummaryType.Count)
-                .DisplayFormat("{0}");
+                .DisplayFormat("No of Invoices: {0}");
 
                     items.Add().Column("ReceivableAmount")
                 .SummaryType(SummaryType.Sum)
@@ -344,19 +357,19 @@
         });
         }
         ");
-
                     items.Add().Column("Received")
                 .SummaryType(SummaryType.Sum)
                 .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ");
 

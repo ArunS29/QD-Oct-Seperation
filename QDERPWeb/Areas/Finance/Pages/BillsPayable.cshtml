@@ -69,6 +69,10 @@
         margin-top: 20px; /* Adjust this value to control the space */
     }
 
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
 </style>
 
 
@@ -82,7 +86,7 @@
             <div class="row">
                 <!-- Left Text Section -->
                 <div class="col-md-6" style="padding-top: 10px; padding-bottom: 10px;">
-                    <h5 class="left-text">Bills Payable</h5>
+                    <h4 class="left-text">Bills Payable</h4>
                 </div>
 
                 <!-- Right Button Section -->
@@ -115,8 +119,6 @@
     </div>
 
     <div class="dx-field ledgerResult" style="overflow: hidden;">
-        <h5 style="margin: 10px; text-align: center; ">Bills Payable</h5>
-
 
         @(
                 Html.DevExtreme().DataGrid<Qry201SubLedgerPayablesMaster>()
@@ -144,6 +146,11 @@
                     band.AddFor(m => m.AccountHeadNo).Alignment(HorizontalAlignment.Center)
                 .Width(120);
 
+                    // Account Head column
+                    band.AddFor(m => m.AccountHead)
+                .Caption("Ledger Account")
+                .Alignment(HorizontalAlignment.Left)
+                .Width(200);
 
                     // Account Head column
                     band.AddFor(m => m.AccountHead)
@@ -166,24 +173,29 @@
 
 
                     band.AddFor(m => m.VoucherRefNo).Alignment(HorizontalAlignment.Center)
-            .Width(120);
+            .Width(150);
 
-                    band.AddFor(m => m.InvoiceAmountBeforeRetention).Caption("Invoice Amount").Alignment(HorizontalAlignment.Left)
-            .Width(140).CustomizeText(@"
+                    band.AddFor(m => m.InvoiceAmountBeforeRetention)
+            .Caption("Invoice Amount")
+            .Alignment(HorizontalAlignment.Right)
+            .Width(140)
+            .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ");
 
 
-                    band.AddFor(m => m.Paid).Alignment(HorizontalAlignment.Center)
+
+                    band.AddFor(m => m.Paid).Alignment(HorizontalAlignment.Right)
             .Width(140).CustomizeText(@"
         function(e) {
         if(e.value === null || e.value === undefined) {
@@ -194,20 +206,23 @@
         maximumFractionDigits: 2
         });
         }
-        ");
-                    band.AddFor(m => m.Balance).Alignment(HorizontalAlignment.Center)
-            .Width(140).CustomizeText(@"
+        "); band.AddFor(m => m.Balance)
+            .Alignment(HorizontalAlignment.Right)
+            .Width(140)
+            .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ");
+
                     band.AddFor(m => m.InvoiceDueDate).Alignment(HorizontalAlignment.Center)
             .Width(120).Format(format => format
             .Type(Format.ShortDate)
@@ -231,13 +246,13 @@
 
             .HeaderFilter(filter => filter.Visible(true))
 
-            .Height(500)
+            .Height(600)
 
             .ColumnAutoWidth(true)
-
+            .WordWrapEnabled(false)
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-
-            .GroupPanel(groupPanel => groupPanel.Visible(true)) // Hide group panel
+            .Grouping(grouping => grouping.AutoExpandAll(true))
+            .GroupPanel(groupPanel => groupPanel.Visible(false))
 
             .ShowBorders(true)
 
@@ -250,7 +265,7 @@
                     items.Add().Column("VoucherRefNo")
                 .SummaryType(SummaryType.Count)
                 .ShowInGroupFooter(true)
-                .DisplayFormat("{0}");
+                .DisplayFormat("No of Invoices: {0}");
 
 
                     items.Add().Column("InvoiceAmountBeforeRetention")
@@ -258,14 +273,15 @@
                 .ShowInGroupFooter(true)
                 .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ");
                     items.Add().Column("Paid")
@@ -287,14 +303,15 @@
                 .ShowInGroupFooter(true)
                 .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ");
 
@@ -306,20 +323,22 @@
                 {
                     items.Add().Column("VoucherRefNo")
                 .SummaryType(SummaryType.Count)
-                .DisplayFormat("{0}");
+                .DisplayFormat("No of Invoices: {0}");
+
 
                     items.Add().Column("InvoiceAmountBeforeRetention")
                 .SummaryType(SummaryType.Sum)
                 .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ");
 
@@ -341,14 +360,15 @@
                 .SummaryType(SummaryType.Sum)
                 .CustomizeText(@"
         function(e) {
-        if(e.value === null || e.value === undefined) {
+        if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
         }
         let positiveValue = Math.abs(e.value); // Convert to positive
-        return positiveValue.toLocaleString(undefined, {
+        let formattedValue = positiveValue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        }) + ' CR'; // Append 'CR' after the value
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
         }
         ");
 

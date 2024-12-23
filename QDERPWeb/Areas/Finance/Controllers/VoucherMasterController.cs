@@ -11,7 +11,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 
 
-namespace PaymentForm.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     //[Area("Finance")]
     [Route("api/[controller]/[action]")]

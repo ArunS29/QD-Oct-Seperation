@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
+
 using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 
-namespace PaymentForm.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
@@ -53,12 +54,32 @@ namespace PaymentForm.Areas.Finance.Controllers
             var qryListOfAccountlists = _context.Tbl201MasterGroups.Select(i => new
 
             {
-                i.MasterGroupId,
-                i.MasterGroup,
-                i.MasterGroupAr,
-                i.IsCalculateOpeningBalance,
-                i.IsProfitLossAccount,
-                i.IsBalanceSheetAccount
+                //i.MasterGroupId,
+                i.MasterGroup
+                //i.MasterGroupAr,
+                //i.IsCalculateOpeningBalance,
+                //i.IsProfitLossAccount,
+                //i.IsBalanceSheetAccount
+
+
+
+            });
+
+            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetAccountMasterArabic(DataSourceLoadOptions loadOptions)
+        {
+
+            var qryListOfAccountlists = _context.Tbl201MasterGroups.Select(i => new
+
+            {
+                //i.MasterGroupId,
+                //i.MasterGroup
+                i.MasterGroupAr
+                //i.IsCalculateOpeningBalance,
+                //i.IsProfitLossAccount,
+                //i.IsBalanceSheetAccount
 
 
 
@@ -147,24 +168,24 @@ namespace PaymentForm.Areas.Finance.Controllers
         }
 
 
-       
+
 
         [HttpGet]
         public async Task<ActionResult> GetAccountMasterAR(string MasterGroup)
         {
             string val = "";
             try
-           {
+            {
                 if (string.IsNullOrEmpty(MasterGroup))
                 {
                     return BadRequest("MasterGroup parameter is required.");
                 }
 
                 var result = await _context.Tbl201MasterGroups
-                    .Where(x => x.MasterGroupId == MasterGroup)
+                    .Where(x => x.MasterGroup == MasterGroup)
                     .Select(x => x.MasterGroupAr)
                     .FirstOrDefaultAsync();
-                val= result.ToString(); 
+                val = result.ToString();
             }
             catch (ArgumentException argEx)
             {
@@ -239,7 +260,7 @@ namespace PaymentForm.Areas.Finance.Controllers
 
 
             return Json(await DataSourceLoader.LoadAsync(result, loadOptions));
-        
+
         }
 
         [HttpGet]
@@ -247,7 +268,7 @@ namespace PaymentForm.Areas.Finance.Controllers
         {
             // Get the voucher No. string and Get the next serial of the voucher No.
 
-         
+
             int newAccountGroupID;
             string DocumentNo = "";
             // SQL query to get the max voucher number
@@ -280,7 +301,7 @@ namespace PaymentForm.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument documentdetails,string DocumentType)
+        public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument documentdetails, string DocumentType)
         {
             if (documentdetails == null)
             {
@@ -293,7 +314,7 @@ namespace PaymentForm.Areas.Finance.Controllers
 
                 // Add entries to the database
                 _context.Tbl20116LedgerDocuments.Add(documentdetails);
-              
+
 
                 await _context.SaveChangesAsync();
                 var qryListOfAccountlists = _context.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == documentdetails.DocumentNo).Select(i => new
@@ -363,13 +384,13 @@ namespace PaymentForm.Areas.Finance.Controllers
 
                 return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
 
 
-         
+
         }
 
         [HttpPost]

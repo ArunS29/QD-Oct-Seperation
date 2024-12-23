@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace PaymentForm.Areas.Finance.Pages
+namespace QD.ERP.Web.Areas.Finance.Pages
 {
     public class VoucherMasterModel : PageModel
     {
