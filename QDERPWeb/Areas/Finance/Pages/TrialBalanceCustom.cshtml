@@ -67,7 +67,7 @@
                     .LoadAction("GetAssetView"))
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("TrailBalance").Columns(group =>
+                        columns.Add().Caption("TrialBalance").Columns(group =>
                     {
                         // Adding select checkbox column
                         group.Add().DataField("Select").Caption("Select").CellTemplate(@<text>
@@ -76,39 +76,39 @@
 
                         group.Add().DataField("AccountHead").Caption("LedgerNo");
                         group.Add().DataField("AccountName").Caption("LedgerName");
-                      
+
                         group.Add()
                     .DataField("Op_Bal")
                     .Caption("Opening Balance")
                     .Alignment(HorizontalAlignment.Right)
-                    .Format("fixedPoint")// Ensure right alignment
+                    .Format("fixedPoint")
                     .CustomizeText(@"
             function(e) {
-            let value = e.value || 0; // Get the value
+            let value = e.value || 0;
             let formattedValue = Math.abs(value).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            // Append 'Cr' only for negative values
-            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
             }");
+
                         group.Add().DataField("TransDebit").Caption("Debit Transaction").Format("fixedPoint");
-                      @*   group.Add().DataField("TransCredit").Caption("Credit Transaction").Format("fixedPoint"); *@
+
                         group.Add()
                     .DataField("TransCredit")
                     .Caption("Credit Transaction")
                     .Alignment(HorizontalAlignment.Right)
-                    .Format("fixedPoint")// Ensure right alignment
+                    .Format("fixedPoint")
                     .CustomizeText(@"
             function(e) {
-            let value = e.value || 0; // Get the value
+            let value = e.value || 0;
             let formattedValue = Math.abs(value).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            // Append 'Cr' only for negative values
-            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
             }");
+
                         group.Add().DataField("MasterGroup").Caption("Master Group").GroupIndex(0);
                         group.Add().DataField("AccountGroup").Caption("Account Group").GroupIndex(1);
 
@@ -119,18 +119,16 @@
                     .Format("fixedPoint")
                     .CustomizeText(@"
             function(e) {
-            let value = e.value || 0; // Get the value
+            let value = e.value || 0;
             let formattedValue = Math.abs(value).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            // Append 'Cr' only for negative values
-            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
             }")
                     .CalculateCellValue(@"function(data) {
             return (data.Op_Bal || 0) + (data.TransDebit || 0) - (data.TransCredit || 0);
             }");
-
                     });
                     })
                 .Summary(summary =>
@@ -138,55 +136,62 @@
                     summary.GroupItems(groupItems =>
                     {
                         groupItems.Add().Column("Op_Bal").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
-                    .CustomizeText("function(e) { return ' ' + e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                    .CustomizeText("function(e) { let value = e.value || 0; let formattedValue = Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return value < 0 ? '(' + formattedValue + ')' : formattedValue; }");
 
                         groupItems.Add().Column("TransDebit").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
-                    .CustomizeText("function(e) { return ' ' + e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                    .CustomizeText("function(e) { let value = e.value || 0; return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-                      @*   groupItems.Add().Column("TransCredit").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
-                    .CustomizeText("function(e) { return ' ' + e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
-                        groupItems.Add()
-                    .Column("TransCredit")
-                    .SummaryType(SummaryType.Sum)
-                    .ShowInGroupFooter(true)
-                    .CustomizeText(@"
-            function(e) {
-            let total = Math.abs(e.value || 0); 
-            return total.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-            }) + 'Cr';
-            }");
+                        groupItems.Add().Column("TransCredit").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { let value = e.value || 0; let formattedValue = Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return value < 0 ? '(' + formattedValue + ')' : formattedValue; }");
 
-                        
                         groupItems.Add().Column("ClosingBalance").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
-                    .CustomizeText("function(e) { return ' ' + e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                    .CustomizeText("function(e) { let value = e.value || 0; let formattedValue = Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return value < 0 ? '(' + formattedValue + ')' : formattedValue; }");
                     });
 
                     summary.TotalItems(items =>
                     {
                         items.Add().Column("Op_Bal").SummaryType(SummaryType.Sum)
-                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-                        items.Add().Column("TransDebit").SummaryType(SummaryType.Sum)
-                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-                       
-                        items.Add()
-                    .Column("TransCredit")
-                    .SummaryType(SummaryType.Sum)
                     .CustomizeText(@"
             function(e) {
-            let total = Math.abs(e.value || 0);
-            return total.toLocaleString(undefined, {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
-            }) + 'Cr'; 
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
             }");
 
-                      
+                        items.Add().Column("TransDebit").SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            return value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            }");
+
+                        items.Add().Column("TransCredit").SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+            }");
+
                         items.Add().Column("ClosingBalance").SummaryType(SummaryType.Sum)
-                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+            }");
                     });
                 })
                 .AllowColumnReordering(true)
@@ -201,10 +206,13 @@
                 .ShowBorders(true)
                 .Width("100%"))
         </div>
+ 
 
 
 
-   <div>
+
+
+        <div>
             @await Html.PartialAsync("GridFooterExpenses")
         </div>
         <div id="voucherPopup"></div>

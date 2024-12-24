@@ -163,16 +163,15 @@
                     columns.Add()
                     .DataField("PayableAmount")
                     .Caption("Payable Amount")
-                    .Alignment(HorizontalAlignment.Right) // Ensure right alignment
+                    .Alignment(HorizontalAlignment.Right) 
                     .CustomizeText(@"
             function(e) {
-            let value = e.value || 0; // Get the value
+            let value = e.value || 0;
             let formattedValue = Math.abs(value).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            // Append 'Cr' only for negative values
-            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            return value < 0 ? formattedValue + 'Cr' : formattedValue + '.00';
             }");
 
                     columns.Add().DataField("Paid").Caption("Paid").Width(100).Alignment(HorizontalAlignment.Right);
@@ -180,16 +179,15 @@
                     columns.Add()
                     .DataField("Balance")
                     .Caption("Balance")
-                    .Alignment(HorizontalAlignment.Right) // Ensure right alignment
+                    .Alignment(HorizontalAlignment.Right) 
                     .CustomizeText(@"
             function(e) {
-            let value = e.value || 0; // Get the value
+            let value = e.value || 0;
             let formattedValue = Math.abs(value).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            // Append 'Cr' only for negative values
-            return value < 0 ? formattedValue + 'Cr' : formattedValue;
+            return value < 0 ? formattedValue + 'Cr' : formattedValue + '.00';
             }");
 
 
@@ -205,15 +203,13 @@
                     .SummaryType(SummaryType.Sum)
                     .CustomizeText(@"
             function(e) {
-            let total = e.value || 0; // Get the total value
+            let total = e.value || 0;
             let formattedValue = Math.abs(total).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            // Append 'Cr' only for negative totals
-            return total < 0 ? formattedValue + 'Cr' : formattedValue;
+            return total < 0 ? formattedValue + 'Cr' : formattedValue + '.00';
             }");
-
                         items.Add().Column("Paid").SummaryType(SummaryType.Sum).DisplayFormat("{0}").Alignment(HorizontalAlignment.Right);
 
                         items.Add()
@@ -221,13 +217,12 @@
                     .SummaryType(SummaryType.Sum)
                     .CustomizeText(@"
             function(e) {
-            let total = e.value || 0; // Get the total value
+            let total = e.value || 0;
             let formattedValue = Math.abs(total).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            // Append 'Cr' only for negative totals
-            return total < 0 ? formattedValue + 'Cr' : formattedValue;
+            return total < 0 ? formattedValue + 'Cr' : formattedValue + '.00';
             }");
 
                     });

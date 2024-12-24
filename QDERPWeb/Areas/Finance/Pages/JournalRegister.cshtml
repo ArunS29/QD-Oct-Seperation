@@ -62,6 +62,12 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         padding: 10px;
     }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
 <div class="content-container-top">
@@ -106,7 +112,7 @@
             .DisplayExpr("UserName") // Expression for displaying values
             .Value(null) // Optional: Set a default value (if needed)
             .ShowClearButton(true)
-            ):
+            )
 
         @(Html.DevExtreme().DateBox()
             .ID("startDate")
@@ -114,7 +120,7 @@
             .Label("Start Date")
             .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
-            .DisplayFormat("yyyy-MM-dd")
+            .DisplayFormat("dd-MMM-yyyy")
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
             )
         @(Html.DevExtreme().DateBox()
@@ -123,7 +129,7 @@
             .Label("End Date")
             .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
-            .DisplayFormat("yyyy-MM-dd")
+            .DisplayFormat("dd-MMM-yyyy")
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
             )
         @(Html.DevExtreme().Button()
@@ -153,7 +159,7 @@
                 items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
                 items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
                 items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text("This Year Dill Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
                 items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
                 items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
                 items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
@@ -403,6 +409,8 @@
             }
         });
     }
+
+
 
     // This function used to call API to get records for the selected values.
     function ddBtnShowRecords_click(duration) {

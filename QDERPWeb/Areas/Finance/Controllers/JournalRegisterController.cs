@@ -21,16 +21,50 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetJournalview(byte RequesterID, DateTime StartDate, DateTime EndDate, bool IfShowAll)
         {
-            ERPMasterWtDataContextProcedures procedure = new ERPMasterWtDataContextProcedures(_context);
-            var result = await procedure.sp20201JournalRegisterViewAsync(RequesterID, StartDate, EndDate, IfShowAll);
-            return Json(result);
+            try
+            {
+                ERPMasterWtDataContextProcedures procedure = new ERPMasterWtDataContextProcedures(_context);
+                var result = await procedure.sp20201JournalRegisterViewAsync(RequesterID, StartDate, EndDate, IfShowAll);
+
+                if (result != null && result.Any())
+                {
+                    return Json(result);
+                }
+
+                return Json(new { success = false, message = "No data found." });
+            }
+            catch (Exception ex)
+            {
+                // Log error
+                Console.WriteLine($"Error: {ex.Message}");
+                return Json(new { success = false, message = "An error occurred while fetching the data." });
+            }
         }
+
         [HttpGet]
         public async Task<ActionResult> GetUser()
         {
+            try
+            {
+                // Fetch user data from the database
+                var users = await _context.TblUserMasters
+                    .Select(u => new
+                    {
+                        u.UserId,
+                        u.UserName // Ensure this is a valid property
+                    })
+                    .ToListAsync();
 
-            return Json(_context.TblUserMasters.ToList());
+                return Json(users);
+            }
+            catch (Exception ex)
+            {
+                // Log the error (implement a logger like Serilog or NLog)
+                Console.WriteLine($"Error fetching users: {ex.Message}");
+                return Json(new { error = "Unable to fetch user data at this time." });
+            }
         }
+
         [HttpPost]
         public ActionResult UpdateData(QD.ERP.Web.DAL.Entities.sp20201JournalRegisterViewResult updatedItem)
         {
