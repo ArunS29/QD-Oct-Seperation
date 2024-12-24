@@ -62,7 +62,7 @@
 				.Key("AccountId")
 				)
 				.LabelMode(EditorLabelMode.Outside)
-				.Label("Select a Ledger Account")
+				.Label("Please Select the Account to Edit")
 				.ID("accountDropDownBox")
 				.ShowClearButton(true)
 				.AcceptCustomValue(true)
@@ -111,7 +111,7 @@
 				.ID("btnAddAccount")
 				.Icon("plus")
 				.ElementAttr("class", "button-alignment-down button-group")
-
+				.OnClick("redirectToLedgerAccount")
 				)
 		@(Html.DevExtreme().Button()
 				.ID("btnEditAccount")
@@ -197,15 +197,14 @@
 
 			).Visible(true);
 						columns.AddFor(m => m.VoucherAmountFormatted).Caption("VoucherAmountFormatted").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.Add().Caption("Balance").Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number)
-			.CalculateCellValue("function(rowData) { " +
+						columns.Add().Caption("Balance").Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number).CalculateCellValue("function(rowData) { " +
 			"    let balance = 0;" +
 			"    const dataSource = $('#dataGrid').dxDataGrid('instance').option('dataSource');" + // Access data source
 			"    dataSource.forEach((item, index) => { " +
 			"        if (index <= dataSource.indexOf(rowData)) { " +
 			"            let debit = parseFloat(item.DrAmount ? item.DrAmount.toString().replace(/,/g, '') : 0);" + // Parse DrAmount
 			"            let credit = parseFloat(item.CrAmount ? item.CrAmount.toString().replace(/,/g, '') : 0);" + // Parse CrAmount
-			"            if (!isNaN(debit)) balance -= debit;" + // Subtract DrAmount
+			"            if (!isNaN(debit)) balance = debit;" + // Subtract DrAmount
 			"            if (!isNaN(credit)) balance += credit;" + // Add CrAmount
 			"        }" +
 			"    });" +
@@ -513,9 +512,10 @@
 	function btnEditAccount_click(){
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {
-			alert("Please select a ledger account.");
+			alert("Please Select the Account to Edit.");
 			return;
 		}
+		DevExpress.ui.notify("Working on Progress", "success", 2000);
 	}
 	function addVoucher_click(form){
 		let url="";
@@ -660,5 +660,10 @@
 			day = '0' + day;
 
 		return [day, strmonth, year].join('-');
+	}
+
+	function redirectToLedgerAccount() {
+		DevExpress.ui.notify("Working on Progress", "success", 2000);
+		//window.open('/Finance/LedgerAccount', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
 	}
 </script>

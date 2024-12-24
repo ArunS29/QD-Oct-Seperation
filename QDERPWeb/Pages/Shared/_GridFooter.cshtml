@@ -130,7 +130,7 @@
             items.Add().Text("Add Cash Payment").Icon("money");
             items.Add().Text("Add Bank Payment").Icon("product");
         })
-        .OnItemClick("addRecipitsButton_click")
+        .OnItemClick("addPaymentButton_click")
         )
     @(Html.DevExtreme().DropDownButton()
         .ID("ddOtherVouchers")
@@ -139,10 +139,10 @@
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("Add Purchase Voucher").Icon("add").OnClick("function() { addVoucher_click('Purchase'); }"); ;
-            items.Add().Text("Add Sales Voucher").Icon("add").OnClick("function() { addVoucher_click('Sales'); }"); ; ;
-            items.Add().Text("Add Journal Voucher").Icon("add").OnClick("function() { addVoucher_click('Journal'); }"); ; ;
-        })
+            items.Add().Text("Add Purchase Voucher").Icon("add");
+            items.Add().Text("Add Sales Voucher").Icon("add");
+            items.Add().Text("Add Journal Voucher").Icon("add");
+        }).OnItemClick("otherVoucherButton_click")
         )
     @(Html.DevExtreme().DropDownButton()
         .ID("ddReports")
@@ -306,9 +306,58 @@
         }
 
         // Footer Recipits button event
-        function addRecipitsButton_click(e) {
-            DevExpress.ui.notify(e.itemData, "success", 600);
+  function addRecipitsButton_click(e) {
+        switch (e.itemData.text) {
+            case 'Add Cash Receipts':
+                window.open('/Finance/VoucherEntryCashReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+            case 'Add Bank Receipts':
+                window.open('/Finance/VoucherEntryReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+            // You can handle other cases here if needed
+            default:
+                console.log("Clicked item: ", e.itemData.text);
         }
+        }
+    function addPaymentButton_click(e) {
+        switch (e.itemData.text) {
+
+            case 'Add Cash Payment':
+                window.open('/Finance/VoucherCashPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+
+            case 'Add Bank Payment':
+                window.open('/Finance/VoucherBankPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+         
+            // You can handle other cases here if needed
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+        }
+    }
+        function otherVoucherButton_click(e) {
+        switch (e.itemData.text) {
+
+            case 'Add Purchase Voucher':
+                window.open('/Finance/Purchasevoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+
+            case 'Add Sales Voucher':
+                window.open('/Finance/Salesvoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+
+                    case 'Add Journal Voucher':
+                window.open('/Finance/Voucherjournal', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+         
+            // You can handle other cases here if needed
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+        }
+    }
+    
+
+
         function ChangeRowHeight(newHeight) {
             // Update the row height
             $("#dataGrid .dx-data-row").css("height", newHeight + "px");
@@ -345,10 +394,10 @@
 
                 reader.onload = function (e) {
                     try {
-                        // Parse the JSON string from the file
+                      
                         const layout = JSON.parse(e.target.result);
 
-                        // Restore the grid state
+                       
                         dataGrid.state(layout);
                     } catch (error) {
                         console.error("Error parsing JSON:", error);
@@ -356,7 +405,7 @@
                     }
                 };
 
-                // Read the file as text
+               
                 reader.readAsText(file);
             }
         });
