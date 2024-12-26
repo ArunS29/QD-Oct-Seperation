@@ -67,15 +67,15 @@
                     .LoadAction("GetAssetView"))
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("TrialBalance").Columns(group =>
+                        columns.Add().Caption("Trial Balance").Columns(group =>
                     {
                         // Adding select checkbox column
                         group.Add().DataField("Select").Caption("Select").CellTemplate(@<text>
                 <input type="checkbox" class="select-checkbox" data-bind="checked: Select" />
             </text>).AllowSorting(true).AllowEditing(true);
 
-                        group.Add().DataField("AccountHead").Caption("LedgerNo");
-                        group.Add().DataField("AccountName").Caption("LedgerName");
+                        group.Add().DataField("AccountHead").Caption("Ledger No");
+                        group.Add().DataField("AccountName").Caption("Ledger Name");
 
                         group.Add()
                     .DataField("Op_Bal")
