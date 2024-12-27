@@ -78,7 +78,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
-        [HttpGet]
+	
+
+		[HttpGet]
         public async Task<ActionResult> GetAccountHead(DataSourceLoadOptions loadOptions)
         {
             var qryListOfAccountlists = _context.Qry201ListOfAccounts
@@ -183,6 +185,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         }
+
+      
+
         [HttpPost]
         public async Task<ActionResult> SaveVoucher([FromBody] Tbl201VoucherMaster VM)
         {

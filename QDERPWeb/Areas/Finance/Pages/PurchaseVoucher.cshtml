@@ -60,8 +60,9 @@
 												.InputAttr("aria-label", "Date")
 												.LabelMode(EditorLabelMode.Outside)
 												.Type(DateBoxType.Date)
-												.DisplayFormat("yyyy-MM-dd")
-												.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+												.DisplayFormat("dd-MMM-yyyy")
+												//.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+												.Value(DateTime.Now)
 												)
 				</div>
 			</div>
@@ -73,8 +74,9 @@
 												.InputAttr("aria-label", "Date")
 												.LabelMode(EditorLabelMode.Outside)
 												.Type(DateBoxType.Date)
-												.DisplayFormat("yyyy-MM-dd")
-												.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+												.DisplayFormat("dd-MMM-yyyy")
+												//.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+												.Value(DateTime.Now)
 												)
 				</div>
 			</div>
@@ -91,8 +93,8 @@
 												.InputAttr("aria-label", "Date")
 												.LabelMode(EditorLabelMode.Outside)
 												.Type(DateBoxType.Date)
-												.DisplayFormat("yyyy-MM-dd")
-												.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+												.DisplayFormat("dd-MMM-yyyy")
+												.Value(DateTime.Now)
 												)
 				</div>
 
@@ -158,8 +160,8 @@
 												.InputAttr("aria-label", "Date")
 												.LabelMode(EditorLabelMode.Outside)
 												.Type(DateBoxType.Date)
-												.DisplayFormat("yyyy-MM-dd")
-												.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+												.DisplayFormat("dd-MMM-yyyy")
+												.Value(DateTime.Now)
 												)
 				</div>
 			</div>
@@ -241,6 +243,7 @@
 			@(Html.DevExtreme().Button()
 						.ID("btnAddAHead")
 						.Icon("plus")
+						.OnClick("redirectToLedgerAccount")
 						)
 		</div>
 		<div class="form-group" style="margin-top:56px;margin-left:-10px">
@@ -260,9 +263,15 @@
 							rules.AddRequired()
 							.Message("Voucher Amount is required");
 						})
-						.Placeholder("0.000")
-						.Format("#,##0.000")  // Specify the format for two decimal places
-						.InputAttr(new { type = "number", step = "1.000" }) // HTML attribute to allow decimal input
+					
+						.Placeholder("0.00")
+						.Format("#,##0.00")
+						.InputAttr(new
+						{
+							style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+							type = "number",
+							step = "0.01"
+						})
 						)
 
 		</div>
@@ -301,15 +310,29 @@
 				.Columns(columns =>
 				{
 					columns.AddFor(m => m.DrCr).Caption("Dr/Cr");
-					columns.AddFor(m => m.AccountHead).Caption("Account Head");
-					columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
-					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
+					columns.AddFor(m => m.AccountHead)
+					.Caption("Account Head") // Column header text
+					.DataType(GridColumnDataType.String) // Column data type
+					.Lookup(lookup => lookup
+					.DataSource(ds => ds.WebApi() // Web API data source
+					.Controller("VoucherEntryCashReceipts") // Controller handling the data
+					.LoadAction("GetAccountHead") // Action to fetch data from the API
+					)
+					.ValueExpr("AccountId") // Field in the API response for the value of the dropdown
+					.DisplayExpr("AccountHead") // Field in the API response to be displayed in the dropdown
 					);
-					columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
+						columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
 					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+					).AllowEditing(false).HeaderCellTemplate(@<div style="font-weight: bold;">Debit</div>);
+						columns.AddFor(m => m.CrAmount)
+					.Caption("Credit")
+					.AllowEditing(false)
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<div style="font-weight: bold;">Credit</div>)
+				@* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
+				.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-					);
+
 					columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
 					columns.AddFor(m => m.SysRemarks).Caption("Remarks");
 				})
@@ -326,6 +349,45 @@
 				.Width("100%")
 				)
 	</div>
+	<!-- Footer with TextBoxes Aligned Directly Under Debit and Credit -->
+	<div id="footerTotals" style="display: flex; justify-content: space-between; background-color: #f5f5f5; color: white; padding:10px; margin-top: -11px; font-size: 14px; max-width:1245px;position:relative;left:15px;">
+		<div style="flex: 1;">&nbsp;</div> <!-- Aligns with Dr/Cr column -->
+		<div style="flex: 1;">&nbsp;</div> <!-- Aligns with Account Head column -->
+		<!-- TextBox for Debit -->
+		<div style="flex: none; text-align: right;">
+
+			@(Html.DevExtreme().TextBox()
+
+						.ID("totalDebitTextbox")
+
+						.Value("0.00")
+
+						.ReadOnly(true)
+
+						.Width("60%")
+
+						)
+		</div>
+
+		<!-- TextBox for Credit -->
+		<div style="flex: none; text-align: right;">
+
+			@(Html.DevExtreme().TextBox()
+
+						.ID("totalCreditTextbox")
+
+						.Value("0.00")
+
+						.ReadOnly(true)
+
+						.Width("60%")
+
+						)
+		</div>
+
+		<div style="flex: 2;">&nbsp;</div> <!-- Aligns with Entry Narration and Remarks columns -->
+	</div>
+
 
 	<div class="container">
 		<div class="row g-3">
@@ -673,7 +735,18 @@
 	$("#btnSave").on("click", function (e) {
 		e.preventDefault();
 
-		var VM = {
+
+		var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+
+		var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
+
+
+
+		if (rowCount !== 0) {
+
+
+
+			var VM = {
 			"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 			"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 			"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
@@ -703,13 +776,23 @@
 					DevExpress.ui.notify("Voucher details saved succfully!", "success", 2000);
 
 				} else {
-					alert("Update failed: " + response.message);
+					DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
 				}
 			},
 			error: function (xhr, status, error) {
-				alert("Error occurred while updating data: " + error);
+
+				DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
+
 			}
 		});
+		} else {
+
+			DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
+
+		}
+
+
+
 	});
 	function dropDownBoxOnInput(e) {
 		const ddbInstance = e.component;
@@ -770,5 +853,10 @@
 	}
 	function dataGridAccountHeadInitialized(e) {
 		dataGrid = e.component;
+	}
+
+	function redirectToLedgerAccount() {
+		DevExpress.ui.notify("Working on Progress", "success", 2000);
+		//window.open('/Finance/LedgerAccount', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
 	}
 </script>

@@ -8,7 +8,6 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 //using QD.ERP.Web.DAL.Entities;

@@ -19,13 +19,13 @@ namespace Form.Areas.Finance.Controllers
         {
             _context = context;
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> GetReceivingAccount(DataSourceLoadOptions loadOptions)
         {
             var tbl20101salespersonmasters = _context.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A013").Select(i => new
             {
-                
+
                 i.AccountId,
                 i.AccountHead,
                 i.AccountHeadArabic,
@@ -35,49 +35,13 @@ namespace Form.Areas.Finance.Controllers
             return Json(await DataSourceLoader.LoadAsync(tbl20101salespersonmasters, loadOptions));
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAccountHead(string inputParameter)
-        //{
-        //    // Debugging log
-        //    //Console.WriteLine($"Received selectedPaymentAccount: {selectedPaymentAccount}");
 
-        //    // Ensure selectedPaymentAccount is not null or empty
-        //    if (string.IsNullOrEmpty(inputParameter))
-        //    {
-        //        return BadRequest("selectedPaymentAccount cannot be null or empty");
-        //    }
-
-        //    // Query to fetch the accounts excluding the selected receiving account
-        //    var tbl20101salespersonmasters = _context.Qry201ListOfAccounts
-        //        .Where(p => p.AccountId != inputParameter) // Filter out the selected receiving account
-        //        .Select(i => new
-        //        {
-        //            i.AccountId,
-        //            i.AccountHead,
-        //            i.AccountGroup,
-        //            i.AccountHeadArabic,
-        //            i.ReferenceNo,
-        //            i.IsLedgerObselete
-        //        });
-
-        //    // Load the data and return as JSON
-        //    // return Json(await DataSourceLoader.LoadAsync(tbl20101salespersonmasters, loadOptions));
-        //    return Json(tbl20101salespersonmasters);
-        //}
 
         [HttpGet]
-        public async Task<IActionResult> GetAccountHead([FromQuery] string inputParameter)
+        public async Task<IActionResult> GetAccountHead(DataSourceLoadOptions loadOptions, string SelectedPaymentAccount)
         {
-            if (string.IsNullOrEmpty(inputParameter))
-            {
-                Console.WriteLine("Error: inputParameter is null or empty.");
-                return BadRequest("inputParameter cannot be null or empty");
-            }
-
-            Console.WriteLine($"Received inputParameter: {inputParameter}");
-
-            var tbl20101salespersonmasters = _context.Qry201ListOfAccounts
-                .Where(p => p.AccountId != inputParameter)
+            var qryListOfAccountlists = _context.Qry201ListOfAccounts
+                .Where(i => i.AccountId != SelectedPaymentAccount) // Exclude the Receiving Account value
                 .Select(i => new
                 {
                     i.AccountId,
@@ -88,7 +52,7 @@ namespace Form.Areas.Finance.Controllers
                     i.IsLedgerObselete
                 });
 
-            return Json(tbl20101salespersonmasters);
+            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
 
 
@@ -111,82 +75,64 @@ namespace Form.Areas.Finance.Controllers
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
-        //[HttpPost]
-        //public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl201VoucherEntry VE)
-        //{
-        //    if (VE == null)
-        //    {
-        //        return BadRequest(new { success = false, message = "Invalid data received." });
-        //    }
 
-        //    try
-        //    {
-        //        _context.Tbl201VoucherEntries.Add(VE);
-        //        await _context.SaveChangesAsync();
-        //        var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays.Where(p => p.VoucherNo == VE.VoucherNo).Select(i => new
-        //        {
-        //            i.VoucherNo,
-        //            i.DrCr,
-        //            i.DrAmount,
-        //            i.CrAmount,
-        //            i.EntryNarration,
-        //            i.AccountHead,
-        //            i.SysRemarks,
-        //        });
-
-        //        return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-        //        //return Json(new { VoucherEntryNo = VE.VoucherNo });
-        //        //return Ok(new { success = true, message = "Data inserted successfully!" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //    }
-
-
-        //}
         [HttpPost]
         public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries)
         {
-            if (voucherEntries == null || !voucherEntries.Any())
+            if (voucherEntries == null)
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
             try
             {
-
-
-                //var PaymentAccount = "Select AccountHead From tbl201ChartOfAccounts where AccountGroupID = 'A012'and AccountHead = ''";
-
                 // Add entries to the database
+
                 _context.Tbl201VoucherEntries.AddRange(voucherEntries);
+
                 await _context.SaveChangesAsync();
 
                 // Retrieve updated data for the submitted vouchers
+
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+
                 var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
-                    .Where(p => voucherNos.Contains(p.VoucherNo))
-                    .Select(i => new
-                    {
-                        i.VoucherNo,
-                        i.DrCr,
-                        i.DrAmount,
-                        i.CrAmount,
-                        i.EntryNarration,
-                        i.AccountHead,
-                        i.SysRemarks,
-                    });
+
+                     .Where(p => voucherNos.Contains(p.VoucherNo))
+
+                     .Select(i => new
+
+                     {
+
+                         i.VoucherNo,
+
+                         i.DrCr,
+
+                         i.DrAmount,
+
+                         i.CrAmount,
+
+                         i.EntryNarration,
+
+                         i.AccountHead,
+
+                         i.SysRemarks,
+
+                         i.VoucherEntryNo
+                     });
 
                 // Return the updated data as a JSON response
+
                 return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException?.Message);
+
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
+
+
         }
         [HttpGet]
 
@@ -194,35 +140,39 @@ namespace Form.Areas.Finance.Controllers
 
         {
 
-            // Get the voucher No. string and Get the next serial of the voucher No.
-
             DateTime currentDate = DateTime.Now;
 
             string currentYear = currentDate.Year.ToString();
 
             string currentMonth = currentDate.Month.ToString("00");
 
-            string voucherString = "BR-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth.Substring(currentMonth.Length - 2, 2) + "-";
+            string voucherString = "BR-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
 
             string strNewReceiptNo;
 
-            // SQL query to get the max voucher number
+            // SQL query with interpolated string
 
-
-            string sql = "SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo " +
-
-                          "FROM tbl201VoucherMaster " +
-
-                          "WHERE VoucherNo LIKE {0}";
+            string likePattern = voucherString + "%";
 
             try
 
             {
 
-                var result = await _context.SqlQueryAsync<VoucherResult>(sql, new object[] { voucherString + "%" });
+                // Use raw SQL query to fetch the maximum voucher number
 
-                int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
+                var result = await _context.VoucherResults
 
+                    .FromSqlInterpolated($@"
+
+        SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+
+        FROM Tbl201VoucherEntry
+
+        WHERE VoucherNo LIKE {likePattern}")
+
+                    .ToListAsync();
+
+                int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
 
                 int newVoucherNo = maxVoucherNo + 1;
 
@@ -238,13 +188,13 @@ namespace Form.Areas.Finance.Controllers
 
             }
 
-            catch (Exception ex)
+            catch (Exception)
 
             {
 
                 // Handle cases where there's no existing voucher number
 
-                strNewReceiptNo = voucherString + "002";
+                strNewReceiptNo = voucherString + "001";
 
             }
 
@@ -275,85 +225,82 @@ namespace Form.Areas.Finance.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<ActionResult> DeleteVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo /*string PaymentAccoutHeadName*/)
+        {
+            try
+            {
+                // Find the record to delete
+                var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                if (record == null)
+                {
+                    return NotFound(new { message = "Record not found!" });
+                }
 
-        //[HttpGet]
+                // Remove the record
+                _context.Tbl201VoucherEntries.Remove(record);
+                await _context.SaveChangesAsync();
 
-        //public async Task<IActionResult> GetAccountHeadeDetails(DataSourceLoadOptions loadOptions, string AccountID)
+                // Get the list of updated vouchers
+                var voucherEntries = _context.Tbl201VoucherEntries
+                                              .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
+                                              .ToList();
 
-        //{
+                var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
 
-        //    var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountGroupId !=  AccountID).Select(i => new
+                // Query the display list
+                var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
+                                                    .Where(p => voucherNos.Contains(p.VoucherNo))
 
-        //    {
+                     .Select(i => new
 
-        //        i.MasterGroupId,
+                     {
 
-        //        i.MasterGroup,
+                         i.VoucherNo,
 
-        //        i.AccountGroup,
+                         i.DrCr,
 
-        //        i.AccountGroupId,
+                         i.DrAmount,
 
-        //        i.AccountId,
+                         i.CrAmount,
 
-        //        i.AccountHead,
+                         i.EntryNarration,
 
-        //        i.AccountHeadArabic,
+                         i.AccountHead,
 
-        //        i.ReferenceNo,
+                         i.SysRemarks,
 
-        //        i.IsLedgerObselete
+                     });
 
-        //    });
+                var resultList = await qryListOfAccountLists.ToListAsync();
 
+                //// Update the fields in the result list
+                //foreach (var entry in resultList)
+                //{
+                //    if (!string.IsNullOrEmpty(entry.AccountHead))
+                //    {
+                //        // Find the account head
+                //        var accountHead = _context.Qry201ListOfAccounts
+                //                                  .Where(a => a.AccountId == entry.AccountHead)
+                //                                  .Select(a => a.AccountHead)
+                //                                  .FirstOrDefault();
 
-        //    return Json(qryListOfAccountlists);
+                //        // Update AccountHead and SysRemarks
+                //        entry.AccountHead = accountHead ?? PaymentAccoutHeadName;
+                //        //entry.SysRemarks = PaymentAccoutHeadName;
+                //    }
+                //}
 
-        //}
+                // Return the modified list for DataSourceLoader
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                // Return a detailed error response
+                return StatusCode(500, new { message = "An error occurred while deleting the record.", error = ex.Message });
+            }
+        }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAccountHeadeDetails(DataSourceLoadOptions loadOptions, string AccountID)
-        //{
-        //    // Get the data from the database
-        //    var qryListOfAccountlists = _context.Qry201ListOfAccounts
-        //        .Where(p => p.AccountGroupId != AccountID)
-        //        .Select(i => new
-        //        {
-        //            i.MasterGroupId,
-        //            i.MasterGroup,
-        //            i.AccountGroup,
-        //            i.AccountGroupId,
-        //            i.AccountId,
-        //            i.AccountHead,
-        //            i.AccountHeadArabic,
-        //            i.ReferenceNo,
-        //            i.IsLedgerObselete
-        //        }).ToList();
-
-        //    // SQL command to insert data into the temporary table
-        //    string insertQuery = "INSERT INTO TempAccountDetails (MasterGroupId, MasterGroup, AccountGroup, AccountGroupId, AccountId, AccountHead, AccountHeadArabic, ReferenceNo, IsLedgerObselete) VALUES ";
-
-        //    var values = new List<string>();
-
-        //    foreach (var account in qryListOfAccountlists)
-        //        if(account.IsLedgerObselete == true)
-        //        {
-        //            account.IsLedgerObselete = 1;
-        //        }
-        //    {
-        //        values.Add($"({account.MasterGroupId}, '{account.MasterGroup}', '{account.AccountGroup}', '{account.AccountGroupId}', '{account.AccountId}', '{account.AccountHead}', '{account.AccountHeadArabic}', '{account.ReferenceNo}', {account.IsLedgerObselete})");
-        //    }
-
-        //    insertQuery += string.Join(", ", values);
-
-        //    // Execute the SQL command to insert the data into the temp table
-        //    await _context.Database.ExecuteSqlRawAsync(insertQuery);
-
-        //    // Optionally, you can now query the temporary table if needed or return it as part of the response
-        //    var tempTableData = await _context.Set<TempAccountDetail>().ToListAsync();
-
-        //    return Json(tempTableData); // return data from temp table as the response
-        //}
 
 
 
