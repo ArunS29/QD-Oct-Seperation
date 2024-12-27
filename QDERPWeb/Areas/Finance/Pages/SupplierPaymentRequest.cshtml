@@ -1,5 +1,5 @@
 ﻿@page
-@model QDWEB.Pages.Shared.SupplierPaymentfooterModel
+@model QD.ERP.Web.Pages.Shared.SupplierPaymentfooterModel
 
 <style type="text/css">
     .dx-datagrid .dx-row {
@@ -35,7 +35,6 @@
         font-weight: bold;
         color: black;
     }
-
 </style>
 
 <div class="container mt-4">
@@ -52,34 +51,21 @@
                     .LabelMode(EditorLabelMode.Outside))
             </div>
 
-
             <div class="mb-4">
                 @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201SubLedgerPayablesMaster>()
                         .ID("dataGrid")
                         .KeyExpr("AccountHeadNo")
                         .RemoteOperations(true)
-                        .DataSource(ds => ds.Mvc()
-                        .Controller("SupplierPaymentRequest")
-                        .LoadAction("GetSupplierPaymentRequest"))
                         .Columns(columns =>
                         {
-                            columns.Add()
-                        .DataField("select")
-                        .Caption("Select")
+                            columns.Add().DataField("select").Caption("Select")
                         .CellTemplate(@<text>
                     <input type="checkbox" class="dx-checkbox" />
                 </text>);
                             columns.Add().DataField("ReferenceNo").Caption("Reference No");
-                            columns.Add().DataField("PurchaseOrderNo").Caption("SupplierBill No");
-                            columns.Add().DataField("PurchaseOrderNo").Caption("Purchase Order No");
+                            columns.Add().DataField("PurchaseOrderNo").Caption("Supplier Bill No");
                             columns.Add().DataField("VoucherDate").Caption("Voucher Date");
-                            columns.Add().DataField("Paid").Caption("Paid");
-                          
-                            columns.Add().DataField("VoucherEffectiveDate").Caption("EffectiveMonth ");
-                            columns.Add().DataField("InvoiceDueDate").Caption("Invoice Due Date");
-
-                            columns.Add().DataField("VoucherNarration").Caption("Voucher Narration");
-                            columns.Add() .DataField("PayableAmount").Caption("Payable Amount") .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+                            columns.Add().DataField("PayableAmount").Caption("Payable Amount").Alignment(HorizontalAlignment.Right).CustomizeText(@"
                 function(e) {
                 let value = e.value || 0;
                 let formattedValue = Math.abs(value).toLocaleString(undefined, {
@@ -88,12 +74,8 @@
                 });
                 return value < 0 ? formattedValue + 'Cr' : formattedValue;
                 }");
-                            columns.Add().DataField("Paid").Caption("Paid");
-                            columns.Add()
-                            .DataField("Balance")
-                            .Caption("Balance")
-                            .Alignment(HorizontalAlignment.Right) 
-                            .CustomizeText(@"
+                            columns.Add().DataField("Balance").Caption("Balance")
+                            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
                 function(e) {
                 let value = e.value || 0;
                 let formattedValue = Math.abs(value).toLocaleString(undefined, {
@@ -102,77 +84,42 @@
                 });
                 return value < 0 ? formattedValue + 'Cr' : formattedValue;
                 }");
-                         
                             columns.Add().DataField("OverdueDays").Caption("Overdue Days");
                         })
-                    .Summary(summary =>
-                    {
-                        summary.TotalItems(items =>
-                        {
-                            items.Add()
-                        .Column("ReferenceNo")
-                        .SummaryType(SummaryType.Count)
-                        .DisplayFormat("{0}");
-                            items.Add()
-                        .Column("PayableAmount")
-                        .SummaryType(SummaryType.Sum)
-                        .CustomizeText(@"
-                function(e) {
-                return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                }");
-                            items.Add()
-                        .Column("Paid")
-                        .SummaryType(SummaryType.Sum)
-                        .CustomizeText(@"
-                function(e) {
-                return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                }");
-                            items.Add()
-                        .Column("Balance")
-                        .SummaryType(SummaryType.Sum)
-                        .CustomizeText(@"
-                function(e) {
-                return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                }");
-                        });
-                    })
-                    .AllowColumnReordering(true)
-                    .AllowColumnResizing(true)
-                    .ColumnFixing(fixing => fixing.Enabled(true))
-                    .HeaderFilter(filter => filter.Visible(true))
-                    .Paging(paging => paging.PageSize(10))
-                    .Pager(pager => pager.ShowPageSizeSelector(true).AllowedPageSizes(new[] { 10, 20, 50 }))
-                    .Height(300)
+                    .Height(500)
                     .ColumnAutoWidth(true)
+                    .FilterRow(filterRow => filterRow.Visible(false))
+                    .Grouping(grouping => grouping.AutoExpandAll(true))
+                    .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
-                    .Width("100%")
-                    )
-
+                    .Width("100%"))
             </div>
 
             <div>
                 @await Html.PartialAsync("SupplierPaymentFooter")
             </div>
         </div>
-    
+    </div>
+</div>
 
-    <script>
-        $(function () {
-           
-            $("#SupplierName").dxSelectBox({
-                dataSource: DevExpress.data.AspNet.createStore({
-                    key: "AccountHeadNo",
-                    loadUrl: "/api/SupplierPaymentRequest/GetSuppliers"
-                }),
-                displayExpr: "AccountHead",
-                valueExpr: "AccountHeadNo",
-                placeholder: "Select a Supplier",
-                onValueChanged: function (e) {
-                    const supplierId = e.value; 
-                    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+<script>
+    $(function () {
+        // Initialize the SelectBox
+        $("#SupplierName").dxSelectBox({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AccountHeadNo",
+                loadUrl: "/api/SupplierPaymentRequest/GetSuppliers"
+            }),
+            displayExpr: "AccountHead",
+            valueExpr: "AccountHeadNo",
+            placeholder: "Select a Supplier",
+            onValueChanged: function (e) {
+                const supplierId = e.value;
+                const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-                  
+                if (dataGrid) {
                     if (supplierId) {
+                        // Update data source for the selected supplier
                         dataGrid.option("dataSource", {
                             load: function () {
                                 return $.ajax({
@@ -181,23 +128,92 @@
                                 });
                             }
                         });
-                        dataGrid.refresh(); 
+                        dataGrid.refresh();
                     } else {
-                        dataGrid.clearFilter(); 
+                        // Clear grid data if no supplier is selected
+                        dataGrid.clearFilter();
+                        dataGrid.option("dataSource", null);
                     }
                 }
-            });
+            }
         });
-                 function onSupplierChanged(e) {
-                    var selectedSupplier = e.value; // Get the selected supplier value
-                    var dataGrid = $('#dataGrid').dxDataGrid('instance'); // Get the DataGrid instance
-                    dataGrid.clearFilter(); // Clear any existing filters
 
-                    // Apply a filter on the Supplier column (adjust the field name as necessary)
-                    dataGrid.filter(["SupplierId", "=", selectedSupplier]);
+        $("#dataGrid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AccountHeadNo",
+                loadUrl: "/api/SupplierPaymentRequest/GetSupplierPaymentRequest"
+            }),
+            remoteOperations: true,
+            columns: [
+                {
+                    dataField: "select",
+                    caption: "Select",
+                    cellTemplate: function (container, options) {
+                        $("<input>")
+                            .addClass("dx-checkbox")
+                            .attr("type", "checkbox")
+                            .appendTo(container);
+                    }
+                },
+                { dataField: "ReferenceNo", caption: "Reference No" },
+                { dataField: "PurchaseBillNo", caption: "Supplier Bill No" },
+                { dataField: "PurchaseOrderNo", caption: "Purchase Order No" },
+                { dataField: "VoucherDate", caption: "Voucher Date" },
+                { dataField: "VoucherEffectiveDate", caption: "Effective Date" },
+                { dataField: "InvoiceDueDate", caption: "Invoice Date" },
 
-                    // Optionally, reload the data to reflect changes
-                    dataGrid.refresh();
-                }
-    </script>
+                { dataField: "OverdueDays", caption: "Due Date" },
+                { dataField: "VoucherNarration", caption: "Voucher Narration" },
+                {
+                    dataField: "PayableAmount",
+                    caption: "Payable Amount",
+                    alignment: "right",
+                    customizeText: function (cellInfo) {
+                        let value = cellInfo.value || 0;
+                        let formattedValue = Math.abs(value).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                        return value < 0 ? `(${formattedValue})` : formattedValue;
+                    }
+                },
+                {
+                    dataField: "PaidAmount",
+                    caption: "Paid Amount",
+                    alignment: "right",
+                    customizeText: function (cellInfo) {
+                        let value = cellInfo.value || 0;
+                        let formattedValue = Math.abs(value).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                        return value < 0 ? `(${formattedValue})` : formattedValue;
+                    }
+                },
+                {
+                    dataField: "Balance",
+                    caption: "Balance to Pay",
+                    alignment: "right",
+                    customizeText: function (cellInfo) {
+                        let value = cellInfo.value || 0;
+                        let formattedValue = Math.abs(value).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                        return value < 0 ? `(${formattedValue})` : formattedValue;
+                    }
+                },
+                {
+                    dataField: "OverdueDays",
+                    caption: "Overdue Days",
+                    alignment: "center"
+                },
 
+            ],
+            columnAutoWidth: true,
+            showBorders: true,
+            height: 500
+        });
+
+    });
+</script>

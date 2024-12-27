@@ -63,6 +63,11 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         padding: 10px;
     }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
 </style>
 <input id="formId" value="frn20107ExpenseClaimView" type="hidden" />
 <div class="content-container-top">
@@ -84,7 +89,7 @@
                     <span style="color:black" class="spnRightClickGride">Unlock Claim</span>
                 </i>
             </div>
-             
+
         </div>
     </div>
 
@@ -103,7 +108,7 @@
             .DisplayExpr("UserName") // Expression for displaying values
             .Value(null) // Optional: Set a default value (if needed)
             .ShowClearButton(true)
-            ):
+            )
 
         @(Html.DevExtreme().DateBox()
             .ID("startDate")
@@ -111,7 +116,7 @@
             .Label("Start Date")
             .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
-            .DisplayFormat("yyyy-MM-dd")
+            .DisplayFormat("dd-MMM-yyyy")
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
             )
         @(Html.DevExtreme().DateBox()
@@ -120,8 +125,8 @@
             .Label("End Date")
             .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
-            .DisplayFormat("yyyy-MM-dd")
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+            .DisplayFormat("dd-MMM-yyyy")
+            .Value(DateTime.Now)
             )
         @(Html.DevExtreme().Button()
             .Text("Show all Submissions")
@@ -150,7 +155,7 @@
                 items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
                 items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
                 items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text("This Year Dill Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
                 items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
                 items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
                 items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
@@ -231,7 +236,7 @@
                 <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>).Visible(true);
-                    
+
                 })
             .Height(440)
             .ColumnAutoWidth(true)
@@ -240,14 +245,14 @@
             .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
             .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-           @*  .Editing(editing => editing
-            .AllowUpdating(true)    // Allow updating of existing rows
-            .AllowAdding(false)     // Disable adding new records
-            .AllowDeleting(false)   // Disable deleting records
-            .UseIcons(true))        // Enable edit icons (like pencil) *@
+            @*  .Editing(editing => editing
+        .AllowUpdating(true)    // Allow updating of existing rows
+        .AllowAdding(false)     // Disable adding new records
+        .AllowDeleting(false)   // Disable deleting records
+        .UseIcons(true))        // Enable edit icons (like pencil) *@
             //.Paging(paging => paging.Enabled(false))
             .ShowBorders(true)
-                 .ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
+            .ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
             .Summary(s => s
             .TotalItems(totalItems =>
             {

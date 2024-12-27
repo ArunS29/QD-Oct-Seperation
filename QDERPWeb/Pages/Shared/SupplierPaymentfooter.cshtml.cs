@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QDWEB.Pages.Shared
+namespace QD.ERP.Web.Pages.Shared
 {
     public class SupplierPaymentfooterModel : PageModel
     {
