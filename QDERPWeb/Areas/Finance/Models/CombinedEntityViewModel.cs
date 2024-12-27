@@ -22,6 +22,7 @@
         public string EntryNarration { get; set; }
         public string AccountHead { get; set; }
         public string SysRemarks { get; set; }
+        public long VoucherEntryNo { get; set; }
     }
 
 }

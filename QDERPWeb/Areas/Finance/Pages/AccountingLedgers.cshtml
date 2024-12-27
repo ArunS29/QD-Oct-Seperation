@@ -189,7 +189,6 @@
 						columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger").Alignment(HorizontalAlignment.Left).Visible(true);
 						columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
 			"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
 			)
 			.Visible(true);
 						columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
@@ -323,10 +322,12 @@
 				columns.Add().DataField("MasterGroup");
 				columns.Add().DataField("AccountGroup");
 				columns.Add().DataField("ReferenceNo");
+				columns.Add().DataField("IsLedgerObselete");
 			})
 		)
 }
 <script>
+
 	var inputPopupInstance
 	$(function () {
 		// Initialize the DevExtreme Popup

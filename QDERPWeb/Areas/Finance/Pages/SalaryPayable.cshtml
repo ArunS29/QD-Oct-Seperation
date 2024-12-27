@@ -112,7 +112,7 @@
     </div>
     <div class="card-body" style="padding: 20px; background-color: #c0dceb; border-radius: 5px;">
         <div class="d-flex align-items-center mb-3">
-            <!-- DateBox -->
+
             <div class="me-3">
                 @(Html.DevExtreme().DateBox()
                     .ID("EffectiveDate")
@@ -121,7 +121,7 @@
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)
                     .DisplayFormat("dd-MMM-yyyy")
-                    .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)))
+                    .Value(DateTime.Now))
             </div>
 
             <div>
@@ -133,8 +133,6 @@
 
 
         </div>
-
-
         <div class="table-responsive">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
                 .ID("dataGrid")
@@ -160,10 +158,12 @@
             ");
 
                     columns.Add().DataField("MonthOf").Caption("Month Of").Width(120);
+
+                    // Payable Amount
                     columns.Add()
                     .DataField("PayableAmount")
                     .Caption("Payable Amount")
-                    .Alignment(HorizontalAlignment.Right) 
+                    .Alignment(HorizontalAlignment.Right)
                     .CustomizeText(@"
             function(e) {
             let value = e.value || 0;
@@ -171,15 +171,21 @@
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            return value < 0 ? formattedValue + 'Cr' : formattedValue + '.00';
+            return value < 0 ? '(' + formattedValue + ' )' : formattedValue + '.00';
             }");
 
-                    columns.Add().DataField("Paid").Caption("Paid").Width(100).Alignment(HorizontalAlignment.Right);
+                    // Paid
+                    columns.Add()
+                    .DataField("Paid")
+                    .Caption("Paid")
+                    .Width(100)
+                    .Alignment(HorizontalAlignment.Right);
 
+                    // Balance
                     columns.Add()
                     .DataField("Balance")
                     .Caption("Balance")
-                    .Alignment(HorizontalAlignment.Right) 
+                    .Alignment(HorizontalAlignment.Right)
                     .CustomizeText(@"
             function(e) {
             let value = e.value || 0;
@@ -187,17 +193,14 @@
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            return value < 0 ? formattedValue + 'Cr' : formattedValue + '.00';
+            return value < 0 ? '(' + formattedValue + ' )' : formattedValue + '.00';
             }");
-
-
                 })
                 .Summary(summary =>
                 {
-
                     summary.TotalItems(items =>
                     {
-
+                        // Payable Amount Summary
                         items.Add()
                     .Column("PayableAmount")
                     .SummaryType(SummaryType.Sum)
@@ -208,10 +211,17 @@
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            return total < 0 ? formattedValue + 'Cr' : formattedValue + '.00';
+            return total < 0 ? '(' + formattedValue + ' )' : formattedValue + '.00';
             }");
-                        items.Add().Column("Paid").SummaryType(SummaryType.Sum).DisplayFormat("{0}").Alignment(HorizontalAlignment.Right);
 
+                        // Paid Summary
+                        items.Add()
+                    .Column("Paid")
+                    .SummaryType(SummaryType.Sum)
+                    .DisplayFormat("{0}")
+                    .Alignment(HorizontalAlignment.Right);
+
+                        // Balance Summary
                         items.Add()
                     .Column("Balance")
                     .SummaryType(SummaryType.Sum)
@@ -222,11 +232,15 @@
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
             });
-            return total < 0 ? formattedValue + 'Cr' : formattedValue + '.00';
+            return total < 0 ? '(' + formattedValue + ' )' : formattedValue + '.00';
             }");
-
                     });
                 })
+                .Paging(paging => paging.PageSize(10))
+                .Pager(pager => pager
+                .ShowPageSizeSelector(false)
+                .AllowedPageSizes(new[] { 10, 20, 50 })
+                .ShowInfo(false))
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
@@ -238,6 +252,8 @@
                 .ShowBorders(true)
                 .Width("100%"))
         </div>
+
+
 
 
         <div class="mt-4">
@@ -252,7 +268,7 @@
         function showRecords() {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-           
+
             dataGrid.option("dataSource", {
                 load: function () {
                     return $.ajax({
@@ -309,10 +325,10 @@
             function unlockVoucher() { console.log("Unlock Voucher Clicked"); }
 
             $(document).on("change", ".dx-checkbox", function () {
-               
+
                 if ($(this).prop("checked")) {
                     $("#voucherPopup").dxPopup("instance").show();
                 }
             });
         });
- </script>
+    </script>

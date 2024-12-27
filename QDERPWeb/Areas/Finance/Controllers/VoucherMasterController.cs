@@ -1,17 +1,20 @@
 ﻿using System.Data.SqlClient;
 using System.Security.Policy;
+using System.Xml.Linq;
+using DevExpress.DataAccess.Native.Json;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using QD.ERP.Web.Areas.Finance.Models;
-
 using QD.ERP.Web.DAL.Entities;
+//using QD.ERP.Web.DAL.Entities;
 
 
-namespace QD.ERP.Web.Areas.Finance.Controllers
+namespace PaymentForm.Areas.Finance.Controllers
 {
     //[Area("Finance")]
     [Route("api/[controller]/[action]")]
@@ -118,19 +121,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
 .Where(p => p.VoucherNo != null).Select(i => new
 
-            {
-                i.DrCr,
-                i.AccountHead,
-                i.DrAmount,
-                i.CrAmount,
-                i.EntryNarration,
-                i.SysRemarks
-                //,
-                //i.,
-                //i.MasterGroup,
-                //i.MasterGroupId
+{
+    i.DrCr,
+    i.AccountHead,
+    i.DrAmount,
+    i.CrAmount,
+    i.EntryNarration,
+    i.SysRemarks
+    //,
+    //i.,
+    //i.MasterGroup,
+    //i.MasterGroupId
 
-            });
+});
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
@@ -266,27 +269,46 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     .Select(i => new VoucherEntryDisplayDTO
                     {
                         VoucherNo = i.VoucherNo,
+                        VoucherEntryNo = i.VoucherEntryNo,
                         DrCr = i.DrCr,
                         DrAmount = i.DrAmount,
                         CrAmount = i.CrAmount,
                         EntryNarration = i.EntryNarration,
-                        AccountHead = AccountHead,
+                        AccountHead = i.AccountHead,
                         SysRemarks = i.SysRemarks
                     });
 
-                // Convert the query to a list for modification
                 var resultList = await qryListOfAccountlists.ToListAsync();
 
-                // Modify the AccountHead of the second item if necessary
-                if (resultList.Count >= 2)
+                // Loop through each item in the list and update fields
+                foreach (var entry in resultList)
                 {
-                    var secondEntry = resultList[1];
-                    if (!string.IsNullOrEmpty(secondEntry.AccountHead))
+                    if (!string.IsNullOrEmpty(entry.AccountHead))
                     {
-                        secondEntry.AccountHead = PaymentAccoutHeadName; // Replace with the new value
-                        secondEntry.SysRemarks = PaymentAccoutHeadName;
+                        // Use LINQ to find the AccountHead from qry201ListOfAccounts
+                        var accountHead = _context.Qry201ListOfAccounts
+                                                  .Where(a => a.AccountId == entry.AccountHead)
+                                                  .Select(a => a.AccountHead)
+                                                  .FirstOrDefault();
+
+                        // Update the fields with the retrieved or default values
+                        entry.AccountHead = accountHead; // Use PaymentAccoutHeadName if no match is found
+                                                         // entry.SysRemarks = PaymentAccoutHeadName;
                     }
                 }
+
+                //int cnt = resultList.Count;
+                // // Modify the AccountHead of the second item if necessary
+                //int arraycount = cnt - 1;
+                // if (resultList.Count >= 2)
+                // {
+                //     var secondEntry = resultList[arraycount];
+                //     if (!string.IsNullOrEmpty(secondEntry.AccountHead))
+                //     {
+                //         secondEntry.AccountHead = PaymentAccoutHeadName; // Replace with the new value
+                //         secondEntry.SysRemarks = PaymentAccoutHeadName;
+                //     }
+                // }
 
                 // Return the modified list for DataSourceLoader
                 return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
@@ -523,6 +545,104 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         //    };
         //    return Ok(previewData); // Returns JSON automatically
         //}
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo, string PaymentAccoutHeadName)
+        {
+            try
+            {
+                // Find the record to delete
+                var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                if (record == null)
+                {
+                    return NotFound(new { message = "Record not found!" });
+                }
+
+                // Remove the record
+                _context.Tbl201VoucherEntries.Remove(record);
+                await _context.SaveChangesAsync();
+
+                // Get the list of updated vouchers
+                var voucherEntries = _context.Tbl201VoucherEntries
+                                              .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
+                                              .ToList();
+
+                var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+
+                // Query the display list
+                var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
+                                                    .Where(p => voucherNos.Contains(p.VoucherNo))
+                                                    .Select(i => new VoucherEntryDisplayDTO
+                                                    {
+                                                        VoucherNo = i.VoucherNo,
+                                                        VoucherEntryNo = i.VoucherEntryNo,
+                                                        DrCr = i.DrCr,
+                                                        DrAmount = i.DrAmount,
+                                                        CrAmount = i.CrAmount,
+                                                        EntryNarration = i.EntryNarration,
+                                                        AccountHead = i.AccountHead,
+                                                        SysRemarks = i.SysRemarks
+                                                    });
+
+                var resultList = await qryListOfAccountLists.ToListAsync();
+
+                // Update the fields in the result list
+                foreach (var entry in resultList)
+                {
+                    if (!string.IsNullOrEmpty(entry.AccountHead))
+                    {
+                        // Find the account head
+                        var accountHead = _context.Qry201ListOfAccounts
+                                                  .Where(a => a.AccountId == entry.AccountHead)
+                                                  .Select(a => a.AccountHead)
+                                                  .FirstOrDefault();
+
+                        // Update AccountHead and SysRemarks
+                        entry.AccountHead = accountHead ?? PaymentAccoutHeadName;
+                        //entry.SysRemarks = PaymentAccoutHeadName;
+                    }
+                }
+
+                // Return the modified list for DataSourceLoader
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                // Return a detailed error response
+                return StatusCode(500, new { message = "An error occurred while deleting the record.", error = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> VerifyVoucher([FromBody] string voucherNo)
+        {
+            try
+            {
+                // Find the voucher by VoucherNo
+                var voucher = _context.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+
+                if (voucher == null)
+                {
+                    throw new Exception("Voucher not found.");
+                }
+
+                // Update the fields
+                voucher.IsVerified = true;
+                voucher.VoucherApprovedBy = "Admin";
+                voucher.VoucherApprovedOn = DateTime.Now;
+
+                // Save changes to the database
+                _context.SaveChanges();
+                return Ok(new { Message = "Voucher verified successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
 
 
 

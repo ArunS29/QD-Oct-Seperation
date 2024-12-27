@@ -131,16 +131,16 @@
                 .RemoteOperations(false)
                 .Columns(columns =>
                 {
-                    columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Alignment(HorizontalAlignment.Center)
+                    columns.AddFor(m => m.VoucherNo).Caption("Voucher No").MinWidth(150).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div>
                 <a href="javascript:void(0);"><%-data.VoucherNo%></a>
             </div>
         </text>).Visible(true);
-                    columns.AddFor(m => m.VoucherDate).Caption("Voucher Date").Alignment(HorizontalAlignment.Center).Format(format => format
+                    columns.AddFor(m => m.VoucherDate).Caption("Voucher Date").MinWidth(150).Alignment(HorizontalAlignment.Center).Format(format => format
             .Type(Format.ShortDate)    // Custom type format
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
-                    columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On").Alignment(HorizontalAlignment.Center).Format(format => format
+                    columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On").MinWidth(150).Alignment(HorizontalAlignment.Center).Format(format => format
             .Type(Format.ShortDate)
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }")).Visible(true);
                     columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger").Alignment(HorizontalAlignment.Left).Visible(true);
@@ -182,7 +182,7 @@
                     columns.AddFor(m => m.VoucherEnteredOn).Alignment(HorizontalAlignment.Left).Visible(false);
                     columns.AddFor(m => m.VoucherEntryNo).Alignment(HorizontalAlignment.Left).Visible(false);
                     columns.AddFor(m => m.VoucherModifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.VoucherNarration).Alignment(HorizontalAlignment.Left).Visible(false);
+                  
                     // Enable custom inline editing for "SysRemarks" with a multiline TextArea
                     columns.AddFor(m => m.SysRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
                     columns.AddFor(m => m.VoucherType).Visible(false);
@@ -201,6 +201,8 @@
             .Enabled(true) // Allow column fixing (pinning)
             )
             .Height(440)
+            .ColumnAutoWidth(true)
+            .Width("100%")
             .Summary(summary =>
             {
                 summary.TotalItems(totalItems =>
@@ -245,6 +247,10 @@
     </div>
 </div>
 <script>
+ 
+
+
+
     $(function () {
         var contextMenu = $("#contextMenu");
         var contextMenuContent = $("#contextMenuContent");
@@ -257,19 +263,19 @@
             $("#dataGrid").customizeGridContextMenu();
 
 
-        // // Handle right-click event on the DataGrid rows
-        // $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-        //     e.preventDefault(); // Prevent the default context menu
-        //     var rowIndex = $(this).index(); // Get the row index
-        //     var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-        //     console.log(rowData); // Log or use the row data as needed
-        //     // Clear previous content
-        //     contextMenuContent.empty();
-        //     // Add column titles and values to the context menu
-        //     contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
-        //     // Show custom context menu
-        //     contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-        // });
+        // Handle right-click event on the DataGrid rows
+        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            e.preventDefault(); // Prevent the default context menu
+            var rowIndex = $(this).index(); // Get the row index
+            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
+            console.log(rowData); // Log or use the row data as needed
+            // Clear previous content
+            contextMenuContent.empty();
+            // Add column titles and values to the context menu
+            contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+            // Show custom context menu
+            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+        });
         // Get voucher Pop Up
         $("#voucherPopup").dxPopup({
             title: "Voucher Details",
@@ -283,7 +289,11 @@
 
 
     });
+    let dataGrid;
 
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
     // Grid cell click handle event
     function handleCellClick(e) {
         if (e.column.dataField === "VoucherNo") {
@@ -431,7 +441,7 @@
             success: function (data) {
                 // Bind the data to the DataGrid
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-                DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+               // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
             },
             error: function () {
                 DevExpress.ui.notify("Error while loading data", "error", 2000);
