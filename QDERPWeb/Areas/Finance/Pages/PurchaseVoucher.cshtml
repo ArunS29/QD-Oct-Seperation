@@ -63,6 +63,7 @@
 												.DisplayFormat("dd-MMM-yyyy")
 												//.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
 												.Value(DateTime.Now)
+												.OnValueChanged("onDateChange")
 												)
 				</div>
 			</div>
@@ -162,6 +163,7 @@
 												.Type(DateBoxType.Date)
 												.DisplayFormat("dd-MMM-yyyy")
 												.Value(DateTime.Now)
+												.OnValueChanged("onDateChange")
 												)
 				</div>
 			</div>
@@ -169,20 +171,18 @@
 				<div class="form-group">
 					<label for="InvoiceNoOfDays" class="">No. Of Days</label>
 					<div style="display:flex;">
-						@(
-													Html.DevExtreme().NumberBox()
+						@(Html.DevExtreme().NumberBox()
 													.ID("InvoiceNoOfDays")
-
 													.Value(0)
 													.ShowSpinButtons(true)
 													.Min(0)
 													.Max(1000)
 													.Step(1)
+													.ReadOnly(true)
 													)
 						<label style="margin-top:10px;" for="InvoiceNoOfDays">Days</label>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -564,6 +564,59 @@
 
 </div>
 <script>
+
+	function onDateChange(e) {
+	
+		const voucherDate = new Date($("#VoucherDate").dxDateBox("instance").option("value"));
+		const dueDate = new Date($("#InvoiceDueDate").dxDateBox("instance").option("value"));
+
+		// Ensure that Due Date is not less than Voucher Date
+		if (dueDate < voucherDate) {
+			alert("Due Date cannot be earlier than Voucher Date.");
+			$("#InvoiceDueDate").dxDateBox("instance").option("value", voucherDate); // Reset Due Date
+			return;
+		}
+
+		// Calculate the difference in days
+		const diffTime = Math.abs(dueDate - voucherDate);
+		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+		// Set the difference in the No. Of Days field
+		$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", diffDays);
+	}
+
+	$(function () {
+
+		const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+		const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
+
+		const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+
+		function calculateTotals() {
+
+			const data = dataGrid.getVisibleRows().map(row => row.data);
+
+			const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
+
+			const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
+
+			// Update TextBox values dynamically
+
+			totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+			totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+		}
+
+		// Recalculate totals on content changes
+
+		dataGrid.on("contentReady", calculateTotals);
+
+		dataGrid.on("dataSourceChanged", calculateTotals);
+	});
+
+
 	$(function () {
 	const voucherNo = getQueryParam('VoucherNo');
 		//alert(voucherNo);

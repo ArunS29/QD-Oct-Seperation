@@ -35,14 +35,20 @@
         font-weight: bold;
         color: black;
     }
-</style>
 
+    #totalPayable {
+        font-weight: bold;
+        margin-top: 10px;
+        color: white;
+    }
+</style>
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-dark text-white font-weight-bold">
             Supplier Payment Requests
         </div>
         <div class="card-body bg-secondary">
+            <!-- Supplier Selection Dropdown -->
             <div class="mb-4">
                 <label for="SupplierName" style="color: white;">Select Supplier</label>
                 @(Html.DevExtreme().SelectBox()
@@ -50,7 +56,7 @@
                     .Width("300px")
                     .LabelMode(EditorLabelMode.Outside))
             </div>
-
+            <!-- Data Grid to Display Payment Data -->
             <div class="mb-4">
                 @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201SubLedgerPayablesMaster>()
                         .ID("dataGrid")
@@ -65,25 +71,40 @@
                             columns.Add().DataField("ReferenceNo").Caption("Reference No");
                             columns.Add().DataField("PurchaseOrderNo").Caption("Supplier Bill No");
                             columns.Add().DataField("VoucherDate").Caption("Voucher Date");
-                            columns.Add().DataField("PayableAmount").Caption("Payable Amount").Alignment(HorizontalAlignment.Right).CustomizeText(@"
+                            columns.Add().DataField("PayableAmount").Caption("Payable Amount")
+                            .Alignment(HorizontalAlignment.Right)
+                            .CustomizeText(@"
                 function(e) {
                 let value = e.value || 0;
                 let formattedValue = Math.abs(value).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
                 });
-                return value < 0 ? formattedValue + 'Cr' : formattedValue;
+                return value < 0 ? '(' + formattedValue + ')' : formattedValue;
                 }");
                             columns.Add().DataField("Balance").Caption("Balance")
-                            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+                            .Alignment(HorizontalAlignment.Right)
+                            .CustomizeText(@"
                 function(e) {
                 let value = e.value || 0;
                 let formattedValue = Math.abs(value).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
                 });
-                return value < 0 ? formattedValue + 'Cr' : formattedValue;
+                return value < 0 ? '(' + formattedValue + ')' : formattedValue;
                 }");
+                            columns.Add().DataField("Paid").Caption("Paid")
+                            .Alignment(HorizontalAlignment.Right)
+                            .CustomizeText(@"
+                function(e) {
+                let value = e.value || 0;
+                let formattedValue = Math.abs(value).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+                }");
+
                             columns.Add().DataField("OverdueDays").Caption("Overdue Days");
                         })
                     .Height(500)
@@ -95,125 +116,116 @@
                     .Width("100%"))
             </div>
 
+            <!-- Footer Totals -->
+            <div id="footerTotals" style="display: flex; background-color: #666; color: white; padding: 5px 10px; font-size: 14px;">
+                <div style="flex: 6;">&nbsp;</div>
+                <div style="flex: 2; text-align: right;">
+                    <!-- Total Payable -->
+                    @(Html.DevExtreme().TextBox()
+                        .ID("totalPayableTextbox")
+                        .Value("0.00")
+                        .ReadOnly(true)
+                        .Width("100%"))
+                </div>
+                <div style="flex: 2; text-align: right;">
+                    <!-- Total Balance -->
+                    @(Html.DevExtreme().TextBox()
+                        .ID("totalBalanceTextbox")
+                        .Value("0.00")
+                        .ReadOnly(true)
+                        .Width("100%"))
+                </div>
+                <div style="flex: 2; text-align: right;">
+                    <!-- Total Paid (new column) -->
+                    @(Html.DevExtreme().TextBox()
+                        .ID("totalPaidTextbox")
+                        .Value("0.00")
+                        .ReadOnly(true)
+                        .Width("100%"))
+                </div>
+                <div style="flex: 0;">&nbsp;</div>
+            </div>
+
+
+
+
+
+            <!-- Footer Partial -->
             <div>
                 @await Html.PartialAsync("SupplierPaymentFooter")
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    $(function () {
-        // Initialize the SelectBox
-        $("#SupplierName").dxSelectBox({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AccountHeadNo",
-                loadUrl: "/api/SupplierPaymentRequest/GetSuppliers"
-            }),
-            displayExpr: "AccountHead",
-            valueExpr: "AccountHeadNo",
-            placeholder: "Select a Supplier",
-            onValueChanged: function (e) {
-                const supplierId = e.value;
-                const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-                if (dataGrid) {
-                    if (supplierId) {
-                        // Update data source for the selected supplier
-                        dataGrid.option("dataSource", {
-                            load: function () {
-                                return $.ajax({
-                                    url: `/api/SupplierPaymentRequest/GetSupplierPaymentRequest?supplierId=${supplierId}`,
-                                    type: "GET"
-                                });
-                            }
-                        });
-                        dataGrid.refresh();
-                    } else {
-                        // Clear grid data if no supplier is selected
-                        dataGrid.clearFilter();
-                        dataGrid.option("dataSource", null);
+    <script>
+        $(function () {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            // Initialize Supplier SelectBox
+            $("#SupplierName").dxSelectBox({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "AccountHeadNo",
+                    loadUrl: "/api/SupplierPaymentRequest/GetSuppliers"
+                }),
+                displayExpr: "AccountHead",
+                valueExpr: "AccountHeadNo",
+                placeholder: "Select a Supplier",
+                onValueChanged: function (e) {
+                    const supplierId = e.value;
+
+                    if (dataGrid) {
+                        if (supplierId) {
+                            // Update data source for the selected supplier
+                            dataGrid.option("dataSource", DevExpress.data.AspNet.createStore({
+                                key: "AccountHeadNo",
+                                loadUrl: `/api/SupplierPaymentRequest/GetSupplierPaymentRequest?supplierId=${supplierId}`
+                            }));
+                            dataGrid.refresh();
+                        } else {
+                            // Clear grid data if no supplier is selected
+                            dataGrid.option("dataSource", []);
+                        }
                     }
                 }
+            });
+
+
+        });
+        $(function () {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            const totalPayableTextbox = $("#totalPayableTextbox").dxTextBox("instance");
+            const totalBalanceTextbox = $("#totalBalanceTextbox").dxTextBox("instance");
+
+            function calculateTotals() {
+                const data = dataGrid.getVisibleRows().map(row => row.data);
+
+                // Calculate totals for PayableAmount and Balance
+                const totalPayable = data.reduce((sum, row) => sum + (row.PayableAmount || 0), 0);
+                const totalBalance = data.reduce((sum, row) => sum + (row.Balance || 0), 0);
+
+                // Format totals and update the textboxes
+                totalPayableTextbox.option(
+                    "value",
+                    totalPayable < 0
+                        ? `(${Math.abs(totalPayable).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`
+                        : totalPayable.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                );
+
+                totalBalanceTextbox.option(
+                    "value",
+                    totalBalance < 0
+                        ? `(${Math.abs(totalBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`
+                        : totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                );
             }
+
+            // Recalculate totals when grid content changes
+            dataGrid.on("contentReady", calculateTotals);
+            dataGrid.on("dataSourceChanged", calculateTotals);
         });
 
-        $("#dataGrid").dxDataGrid({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AccountHeadNo",
-                loadUrl: "/api/SupplierPaymentRequest/GetSupplierPaymentRequest"
-            }),
-            remoteOperations: true,
-            columns: [
-                {
-                    dataField: "select",
-                    caption: "Select",
-                    cellTemplate: function (container, options) {
-                        $("<input>")
-                            .addClass("dx-checkbox")
-                            .attr("type", "checkbox")
-                            .appendTo(container);
-                    }
-                },
-                { dataField: "ReferenceNo", caption: "Reference No" },
-                { dataField: "PurchaseBillNo", caption: "Supplier Bill No" },
-                { dataField: "PurchaseOrderNo", caption: "Purchase Order No" },
-                { dataField: "VoucherDate", caption: "Voucher Date" },
-                { dataField: "VoucherEffectiveDate", caption: "Effective Date" },
-                { dataField: "InvoiceDueDate", caption: "Invoice Date" },
 
-                { dataField: "OverdueDays", caption: "Due Date" },
-                { dataField: "VoucherNarration", caption: "Voucher Narration" },
-                {
-                    dataField: "PayableAmount",
-                    caption: "Payable Amount",
-                    alignment: "right",
-                    customizeText: function (cellInfo) {
-                        let value = cellInfo.value || 0;
-                        let formattedValue = Math.abs(value).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-                        return value < 0 ? `(${formattedValue})` : formattedValue;
-                    }
-                },
-                {
-                    dataField: "PaidAmount",
-                    caption: "Paid Amount",
-                    alignment: "right",
-                    customizeText: function (cellInfo) {
-                        let value = cellInfo.value || 0;
-                        let formattedValue = Math.abs(value).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-                        return value < 0 ? `(${formattedValue})` : formattedValue;
-                    }
-                },
-                {
-                    dataField: "Balance",
-                    caption: "Balance to Pay",
-                    alignment: "right",
-                    customizeText: function (cellInfo) {
-                        let value = cellInfo.value || 0;
-                        let formattedValue = Math.abs(value).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-                        return value < 0 ? `(${formattedValue})` : formattedValue;
-                    }
-                },
-                {
-                    dataField: "OverdueDays",
-                    caption: "Overdue Days",
-                    alignment: "center"
-                },
 
-            ],
-            columnAutoWidth: true,
-            showBorders: true,
-            height: 500
-        });
-
-    });
-</script>
+    </script>
