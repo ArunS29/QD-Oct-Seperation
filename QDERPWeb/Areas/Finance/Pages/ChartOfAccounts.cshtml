@@ -50,6 +50,11 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         z-index: 1001;
     }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
 </style>
 
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
@@ -69,8 +74,10 @@
                 {
                     columns.AddFor(m => m.AccountId).Caption("Account ID").Alignment(HorizontalAlignment.Center).Visible(true);
                     columns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.MasterGroup).Caption("Account Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
                     columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head (Ar)").Alignment(HorizontalAlignment.Right).Visible(true);
-                    columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center).GroupIndex(0);
+                    columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center).GroupIndex(1);
+                    columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center);
                     columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Alignment(HorizontalAlignment.Center).Visible(true);
                     columns.AddFor(m => m.OpeningBalanceDrCr).Caption("Dr/Cr").Alignment(HorizontalAlignment.Right).Visible(true);
                     columns.AddFor(m => m.IsLedgerObselete).Caption("Is Ledger Obsolete").Alignment(HorizontalAlignment.Center)
