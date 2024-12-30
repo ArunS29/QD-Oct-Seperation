@@ -149,6 +149,7 @@
                     .OpenOnFieldClick(false)
                     .ValueChangeEvent("change") // Detects changes in the dropdown
                     .HoverStateEnabled(true)
+                    .Value("Petty Cash - Shabbir")
                     .ValueExpr("AccountId")
                     .DisplayExpr("AccountHead")
                     .OnValueChanged("onReceivingAccountChange") // Call the change handler
@@ -314,7 +315,7 @@
                         rules.AddRequired()
                         .Message("Voucher Amount is required");
                     })
-
+                    .Min(0)
                     .Placeholder("0.00")
                     .Format("#,##0.00")
                     .InputAttr(new
@@ -374,16 +375,16 @@
                     );
 
                     columns.AddFor(m => m.AccountHead)
-                    .Caption("Account Head") // Column header text
-                    .DataType(GridColumnDataType.String) // Column data type
-                    .Lookup(lookup => lookup
-                    .DataSource(ds => ds.WebApi() // Web API data source
-                    .Controller("VoucherEntryCashReceipts") // Controller handling the data
-                    .LoadAction("GetAccountHead") // Action to fetch data from the API
-                    )
-                    .ValueExpr("AccountId") // Field in the API response for the value of the dropdown
-                    .DisplayExpr("AccountHead") // Field in the API response to be displayed in the dropdown
-                    );
+                    .Caption("Account Head"); // Column header text
+                    @* .DataType(GridColumnDataType.String) // Column data type
+            .Lookup(lookup => lookup
+            .DataSource(ds => ds.WebApi() // Web API data source
+            .Controller("VoucherEntryCashReceipts") // Controller handling the data
+            .LoadAction("GetAccountHead") // Action to fetch data from the API
+            )
+            .ValueExpr("AccountId") // Field in the API response for the value of the dropdown
+            .DisplayExpr("AccountHead") // Field in the API response to be displayed in the dropdown
+            ); *@
                     columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
                     "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
@@ -737,82 +738,281 @@
 
     let selectedAccountKey = null;
 
+    let paymentaccheadname;
+    let accheadname;
     let isUpdatingCell = false; // Add a flag to prevent recursive triggering
 
     function addVoucherEntry() {
-        var accountHead = $("#AccountHeadDropDown").dxDropDownBox("instance");
+
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        var amount = $("#Amount").dxNumberBox("instance").option("value");
+
+        var accountHead = $("#AccountHeadDropDown").dxDropDownBox("instance").option("value");
+
         var sbDrCr = $("#TransactionTypeComboBox").dxSelectBox("instance").option("value");
-        var receivingAccount = $("#accountDropDownBox").dxDropDownBox("instance");
-        var amount = $("#Amount").dxNumberBox("instance");
 
         var accountHeadValidator = $("#AccountHeadDropDown").dxValidator("instance");
+
         var voucherAmtValidator = $("#Amount").dxValidator("instance");
-        var receivingaccountvalidator = $("#accountDropDownBox").dxValidator("instance");
 
         var accountHeadValidation = accountHeadValidator.validate();
+
         var voucherAmtValidation = voucherAmtValidator.validate();
-        var receivingaccountvalidation = receivingaccountvalidator.validate();
 
-        if (accountHeadValidation.isValid && voucherAmtValidation.isValid && receivingaccountvalidation.isValid) {
+        if (!paymentaccheadname) {
 
-            var VE = [{
-                "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
-                // "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
-                // "EffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
-                "AccountHead": $("#AccountHeadDropDown").dxDropDownBox("instance").option("value"),
-                "VoucherAmount": $("#Amount").dxNumberBox("instance").option("value"),
-                "DrCr": $("#TransactionTypeComboBox").dxSelectBox("instance").option("value"),
+            paymentaccheadname = "Petty Cash - Shabbir";
 
-                "AddedBy": "102",
-                "AddedOn": new Date(),
-                "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
-                "SysRemarks": "Received By:" + $("#AccountHeadDropDown").dxDropDownBox("instance").option("value")
-            },
-            {
-                "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
-                // "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
-                // "EffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
-                "AccountHead": $("#accountDropDownBox").dxDropDownBox("instance").option("value"),
-                "VoucherAmount": $("#Amount").dxNumberBox("instance").option("value"),
-                "DrCr": sbDrCr === "Cr" ? "Dr" : "Cr",
-                "AddedBy": "102",
-                "AddedOn": new Date(),
-                "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
-                "SysRemarks": $("#accountDropDownBox").dxDropDownBox("instance").option("value")
-            }];
-            debugger;
+            paymentaccheadId = "L00811";
+
+        }
+
+        var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+
+        var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
+
+        griddatacount = rowCount;
+
+        if (accountHeadValidation.isValid && voucherAmtValidation.isValid && amount != "0.00") {
+
+            var sysRemarks1 = paymentaccheadname ? `Received by : ${paymentaccheadname}` : "";
+
+            var sysRemarks2 = accheadname || "";
+
+            var VE = [];
+
+            var gridData = $("#dataGrid").dxDataGrid("instance").option("dataSource") || [];
+
+            // Check if "Petty Cash - Shabbir" already exists in the grid
+
+            var exists = gridData.some(function (row) {
+
+                return row.AccountHead === "Petty Cash - Shabbir";
+
+            });
+
+            if (!exists) {
+
+                // Add both entries if "Petty Cash - Shabbir" does not exist
+
+                VE = [
+
+                    {
+
+                        "VoucherNo": voucherNo,
+
+                        "AccountHead": accountHead,
+
+                        "VoucherAmount": amount,
+
+                        "DrCr": sbDrCr,
+
+                        "AddedBy": "102",
+
+                        "AddedOn": new Date(),
+
+                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
+
+                        "SysRemarks": sysRemarks1
+
+                    },
+
+                    {
+
+                        "VoucherNo": voucherNo,
+
+                        "AccountHead": paymentaccheadId,
+
+                        "VoucherAmount": amount,
+
+                        "DrCr": sbDrCr === "Cr" ? "Dr" : "Cr",
+
+                        "AddedBy": "102",
+
+                        "AddedOn": new Date(),
+
+                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
+
+                        "SysRemarks": sysRemarks2
+
+                    }
+
+                ];
+
+            }
+
+            else if (paymentaccheadname != "Petty Cash - Shabbir") {
+
+                // Add only the first entry if "Petty Cash - Shabbir" exists
+
+                VE = [
+
+                    {
+
+                        "VoucherNo": voucherNo,
+
+                        "AccountHead": accountHead,
+
+                        "VoucherAmount": amount,
+
+                        "DrCr": sbDrCr,
+
+                        "AddedBy": "102",
+
+                        "AddedOn": new Date(),
+
+                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
+
+                        "SysRemarks": sysRemarks1
+
+                    },
+
+                    {
+
+                        "VoucherNo": voucherNo,
+
+                        "AccountHead": paymentaccheadId,
+
+                        "VoucherAmount": amount,
+
+                        "DrCr": sbDrCr === "Cr" ? "Dr" : "Cr",
+
+                        "AddedBy": "102",
+
+                        "AddedOn": new Date(),
+
+                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
+
+                        "SysRemarks": sysRemarks2
+
+                    }
+
+                ];
+
+            }
+
+            else {
+
+                // Add only the first entry if "Petty Cash - Shabbir" exists
+
+                VE = [
+
+                    {
+
+                        "VoucherNo": voucherNo,
+
+                        "AccountHead": accountHead,
+
+                        "VoucherAmount": amount,
+
+                        "DrCr": sbDrCr,
+
+                        "AddedBy": "102",
+
+                        "AddedOn": new Date(),
+
+                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
+
+                        "SysRemarks": sysRemarks1
+
+                    }
+
+                ];
+
+            }
+
+            // Perform the AJAX request
+
             $.ajax({
+
                 type: "POST",
-                url: "/api/VoucherEntryCashReceipts/AddVoucherEntry",
+
+                url: `/api/VoucherEntryCashReceipts/AddVoucherEntry?AccountHead=${encodeURIComponent(sysRemarks2)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadname)}&Gridcount=${encodeURIComponent(griddatacount)}`,
+
                 contentType: "application/json",
+
                 data: JSON.stringify(VE),
 
                 dataType: "json",
+
                 success: function (response) {
 
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                    DevExpress.ui.notify("Voucher entry saved succfully!", "success", 2000);
-                    // Clear the selected value in the Account Head dropdown
-                    $("#AccountHeadDropDown").dxDropDownBox("instance").option("value", null);
 
-                    // Optionally, reset other fields if needed
-                    $("#Amount").dxNumberBox("instance").option("value", null); // Clear amount
-                    $("#Narration").dxTextArea("instance").option("value", ""); // Clear narration
+                    //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+
+                    //console.log(response.data);
+
+                    if (accheadname && accheadname.startsWith("Salary Payable")) {
+
+                        $("#SalaryPaidEntryPopup").dxPopup({
+
+                            title: "Salary Paid Entry",
+
+                            width: 1250,
+
+                            height: 860,
+
+                            showCloseButton: true,
+
+                            visible: true
+
+
+                        });
+
+                    }
+
                 },
+
                 error: function (xhr, status, error) {
+
                     alert("Error occurred while updating data: " + error);
+
                 }
+
             });
+
         } else {
+
             DevExpress.ui.notify("Please fill required details!", "error", 2000);
+
         }
 
+        if (accheadname != null) {
 
-        //$("#costAllocationPopup").dxPopup("instance").show();
-        // } else {
-        //     DevExpress.ui.notify("Please fill required details!", "error", 2000);
-        // }
+            const ddbInstance = $("#AccountHeadDropDown").dxDropDownBox("instance");
+
+            ddbInstance.option("value", "");
+
+            $("#Narration").dxTextArea("instance").option("value", "");
+
+            $("#Amount").dxNumberBox("instance").option("value", "0.00")
+
+            if (accheadname.startsWith("Salary Payable")) {
+
+                var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
+
+                dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [accheadname] });
+
+                $("#SPtxtVoucherAmount").dxNumberBox("instance").option("value", amount + ".00");
+
+                // Show the button
+
+                // alert("1");
+
+                //       window.location.href = `/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
+
+                // return;
+
+            }
+
+        }
+
     }
+
 
     // Run the function inside $(function ())
     $(function () {
@@ -924,21 +1124,22 @@
     }
 
     function dataGridSelectionChanged(e) {
-        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#accountDropDownBox").dxDropDownBox("instance");
-
+        spentry = selectedKey;
         if (selectedKey) {
-            selectedAccountKey = selectedKey;
             ddbInstance.option("value", selectedKey);
-
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
+            var selectedRowData = $("#suppliername-datagrid").dxDataGrid("instance").getSelectedRowsData();
+            // Get ReferenceNo from selected row
+            if (selectedRowData.length > 0) {
+                paymentaccheadId = selectedRowData[0].AccountId;
+                paymentaccheadname = selectedRowData[0].AccountHead;
 
-
+            }
         }
-
-
 
     }
 
@@ -953,14 +1154,23 @@
     function dataGridAccountHeadSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#AccountHeadDropDown").dxDropDownBox("instance");
-
+        acchead = selectedKey;
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
-        }
+            var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
+            // Get ReferenceNo from selected row
+            if (selectedRowData.length > 0) {
+                accheadid = selectedRowData[0].AccountId;
+                accheadname = selectedRowData[0].AccountHead;
 
+            } else {
+                DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+                return;
+            }
+        }
     }
 
 
@@ -999,7 +1209,7 @@
 
                 "VoucherRefNo": $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null,
 
-                "VoucherNarration": $("#VoucherNarration").dxTextBox("instance").option("value") || null,
+                "VoucherNarration": $("#Narration").dxTextBox("instance").option("value") || null,
 
 
 
@@ -1033,7 +1243,7 @@
 
                     if (response.success) {
 
-                        DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+                        // DevExpress.ui.notify("Data saved successfully!", "success", 2000);
 
                         // Change button label to "Update"
 
@@ -1289,6 +1499,7 @@
     //         refreshDataGrid(selectedKey); // Refresh DataGrid with new dropdown value
     //     });
     // });
+
     function onReceivingAccountChange(e) {
         const receivingAccountValue = e.value; // Get the new value of Receiving Account
 
@@ -1363,7 +1574,7 @@
             url: `/api/VoucherEntryCashReceipts/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
             type: "POST", // HTTP DELETE request
             success: function (response) {
-                DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
+                // DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
             },
             error: function (xhr, status, error) {
@@ -1404,7 +1615,7 @@
                 // Show SweetAlert2 for success message
                 Swal.fire({
                     title: "Success!",
-                    text: `${vno} is Voucher verified successfully.`,
+                    text: `Voucher has been Verified.`,
                     icon: "success",
                     confirmButtonText: "OK"
                 }).then(() => {
@@ -1425,10 +1636,12 @@
     }
 
     function disableEditing() {
-        // Disable all input fields and buttons except for navigation buttons
+        // Disable all input fields and buttons except for specific ones
         $('input, select, textarea').prop('disabled', true);
+
         $('.dx-button').each(function () {
-            if ($(this).attr('id') !== 'btnBack') {
+            const allowedButtons = ['btnBack', 'btnPreview', 'btnPrint', 'btnAttach'];
+            if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
         });
@@ -1452,7 +1665,7 @@
                 // Show SweetAlert2 for success message
                 Swal.fire({
                     title: "Success!",
-                    text: `${vno} is Voucher approved successfully.`,
+                    text: `Voucher has been Approved.`,
                     icon: "success",
                     confirmButtonText: "OK"
                 }).then(() => {

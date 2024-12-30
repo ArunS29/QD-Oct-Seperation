@@ -183,33 +183,40 @@
 
 
         <div class="dx-field ledgerResult">
-            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-                    .ID("dataGrid")
-                    .KeyExpr("VoucherNo")
-                    .RemoteOperations(false)
-                    .DataSource(ds => ds.Mvc()
-                    .Controller("VoucherApproval")
-                    .LoadAction("GetVoucherApproval"))
-                    .Columns(columns =>
-                    {
-                        columns.Add()
-                    .DataField("select")
-                    .Caption("Select")
-                    .CellTemplate(@<text>
+            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20136VoucherMasterList>()
+                .ID("dataGrid")
+                .KeyExpr("VoucherNo")
+                .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("VoucherApproval")
+                .LoadAction("GetVoucherApproval"))
+                .Columns(columns =>
+                {
+
+                    columns.Add().DataField("select").Caption("Select").CellTemplate(@<text>
                 <input type="checkbox" class="dx-checkbox" />
-            </text>);
-                        columns.Add().DataField("VoucherNo").Caption("Voucher No").Width(80);
-                        columns.Add().DataField("VoucherDate").Caption("Voucher Date").Width(100);
-                        columns.Add().DataField("VoucherEffectiveDate").Caption("Effective On").Width(100);
-                        columns.Add().DataField("VoucherNarration").Caption("Voucher Narration").Width(150);
-                        columns.Add().DataField("DebitAmount").Caption("Debit").Width(100);
-                        columns.Add().DataField("CreditAmount").Caption("Credit").Width(100);
-                        columns.Add().DataField("VoucherEnteredBy").Caption("Entered By").Width(120);
-                        columns.Add().DataField("VoucherVerifiedBy").Caption("Verified By").Width(120);
-                        columns.Add().DataField("VoucherApprovedBy").Caption("Approved").Width(120);
-                        columns.Add().DataField("VoucherType").Caption("Voucher").Width(100);
-                        columns.Add().DataField("AuditVerifiedBy").Caption("Audit").Width(120);
-                    })
+            </text>)
+                .Width(50);
+                    columns.Add().DataField("VoucherNo").Caption("Voucher No").Width(80);
+
+
+                    columns.Add().DataField("VoucherDate").Caption("Voucher Date").Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
+                    columns.Add().DataField("VoucherEffectiveDate").Caption("Effective On").Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
+                    columns.Add().DataField("VoucherNarration").Caption("Voucher Narration").Width(150);
+                    columns.Add().DataField("DebitAmount").Caption("Debit").Width(100).Alignment(HorizontalAlignment.Right)
+                    .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }");
+                    columns.Add().DataField("CreditAmount").Caption("Credit").Width(100).Alignment(HorizontalAlignment.Right)
+                    .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }");
+                    columns.Add().DataField("VoucherEnteredBy").Caption("Entered By").Width(120);
+                    columns.Add().DataField("VoucherVerifiedBy").Caption("Verified By").Width(120);
+                    columns.Add().DataField("VoucherApprovedBy").Caption("Approved").Width(120);
+                    columns.Add().DataField("VoucherType").Caption("Voucher").Width(100);
+                    columns.Add().DataField("AuditVerifiedBy").Caption("Audit").Width(120);
+                    columns.Add().DataField("IsApproved").Caption("Approved?").Width(120);
+                    columns.Add().DataField("IsVerified").Caption("Verified").Width(120);
+                    columns.Add().DataField("IsAuditVerified").Caption("Audit").Width(120);
+                })
+
                 .Summary(summary =>
                 {
                     summary.TotalItems(items =>
@@ -230,13 +237,13 @@
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
                 .HeaderFilter(filter => filter.Visible(true))
-                .Height(300)
+                .Height(500)
                 .ColumnAutoWidth(true)
                 .FilterRow(filterRow => filterRow.Visible(false))
+                .Grouping(grouping => grouping.AutoExpandAll(true))
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
                 .ShowBorders(true)
                 .Width("100%")
-                .Paging(paging => paging.Enabled(false))
                 )
         </div>
 
