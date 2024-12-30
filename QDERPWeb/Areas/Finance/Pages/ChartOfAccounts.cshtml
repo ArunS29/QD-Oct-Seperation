@@ -1,264 +1,220 @@
 ﻿@page
 <style>
-	/* .content-container {
-		background-color: #c0dceb;
-		border-radius: 10px;
-		padding: 5px;
+    .content-container {
+        background-color: #c0dceb;
+        border-radius: 10px;
+        padding: 5px;
+    }
 
-		}
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
 
-		.dx-datagrid .dx-row {
-		border-bottom: 1px solid #ccc; /* Border between rows */
-	}
-	/* .context-menu {
-		display: none;
-		position: absolute;
-		background-color: white;
-		border: 1px solid #ccc;
-		box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-		z-index: 1000;
-		}
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        border-radius: 5px;
+    }
 
-		.context-menu-item {
-		padding: 10px 15px;
-		cursor: pointer;
-		} */
+    .context-menu-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+    }
+
+        .context-menu-item i {
+            margin-right: 10px; /* Space for the icon */
+        }
+
+        .context-menu-item:hover {
+            background-color: #f1f1f1;
+        }
+
+    .popup-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #4CAF50; /* Success green color */
+        color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        font-size: 16px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        z-index: 1001;
+    }
 </style>
+
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
 <div class="content-container-top">
-	<div class="context-menu" id="contextMenu">
-		<div id="contextMenuContent"></div>
-		<div class="context-menu-item">
-			<div style="margin-bottom:5px">
-				<i style="color:cornflowerblue" class="fa fa-pencil-square-o">
-					<span style="color:black" class="spnRightClickGride spneditJournal">Edit Ledger Account</span>
-				</i>
-			</div>
-
-			<div style="margin-bottom:5px">
-				<i style="color:cornflowerblue" class="fa fa-file-text">
-					<span style="color:black" class="spnRightClickGride">View Ledger Transaction</span>
-				</i>
-			</div>
-			<div style="margin-bottom:5px">
-				<i style="color:red" class="fa fa-times">
-					<span class="spnRightClickGride">Delete Ledger Account</span>
-				</i>
-			</div>
-		</div>
-	</div>
-
-	<div class="dx-field chartOfAccount">
-		@(
-					Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20107ChartOfAccount>() // Replace with your model
-					.ID("dataGrid")
-					.DataSource(d => d.WebApi()
-					.Controller("ChartOfAccounts")
-					.LoadAction("GetChartOfAccounts")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("AccountId")
-					)
-					.RemoteOperations(false)
-					.ShowBorders(true)
-					.Columns(columns =>
-					{
-						columns.AddFor(m => m.AccountId).Alignment(HorizontalAlignment.Center).Visible(true);
-						columns.AddFor(m => m.AccountHead).Alignment(HorizontalAlignment.Center).Visible(true);
-						columns.AddFor(m => m.AccountGroup).Alignment(HorizontalAlignment.Center).GroupIndex(1).Visible(true);
-						columns.AddFor(m => m.OpeningBalance).Alignment(HorizontalAlignment.Center).Visible(true);
-						columns.AddFor(m => m.OpeningBalanceDrCr).Caption("Dr/Cr").Alignment(HorizontalAlignment.Right).Visible(true);
-						columns.AddFor(m => m.AccountGroupAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.AccountGroupId).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.AccountGroupOrderNo).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.AccountHeadArabic).Alignment(HorizontalAlignment.Right).Visible(true);
-						columns.AddFor(m => m.AccountsContactMobile).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.AccountsContactName).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.AccountsContactTitle).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.AccountSubGroup).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BankAccountName).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BankAccountNo).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BankBranch).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BankIban).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BankSwiftCode).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BankName).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BillingAddress).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BillingBankAccount).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BillingContactPerson).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BillingContactPersonTitle).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BillingFaxNo).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BillingName).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.BillingPhoneNo).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ChartOfAccountsOrder).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientAdditionalNumber).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientAdditionalStreet).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientAddressStreetAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientBuildingNumber).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientCity).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientCityAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientCountryCode).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientGroupVatnumber).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientNeighborhood).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientNeighborhoodAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientOtherId).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientOtherIdtype).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientPostalCode).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientProvince).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientProvinceAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientVatno).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.ClientVendorNo).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.MainGroup).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.MasterGroup).Alignment(HorizontalAlignment.Right).GroupIndex(0);
-						columns.AddFor(m => m.MasterGroupAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.MasterGroupCategory).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.MasterGroupCategoryAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.MasterGroupId).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.MasterGroupRefNo).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.MasterOrderNo).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.NoOfDaysCreditPeriod).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.RecordCreatedBy).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.RecordCreatedOn).Alignment(HorizontalAlignment.Right).Format(format => format
-					.Type(Format.ShortDate)    // Custom type format
-					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
-						columns.AddFor(m => m.RecordModifiedBy).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.RecordModifiedOn).Alignment(HorizontalAlignment.Right).Format(format => format
-					.Type(Format.ShortDate)    // Custom type format
-					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(false);
-						columns.AddFor(m => m.ReferenceNo).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierAdditionalNumber).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierAdditionalStreet).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierAdditionalStreetAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierAddress).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierAddressAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierAddressStreet).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierAddressStreetAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierBuildingNumber).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierCity).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierCityAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierCountryCode).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierGroupVatnumber).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierName).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierNameAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierNeighborhood).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierNeighborhoodAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierOtherId).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierOtherIdtype).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierPostalCode).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierProvince).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierProvinceAr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.SupplierVatno).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.VoucherAbbr).Alignment(HorizontalAlignment.Right).Visible(false);
-						columns.AddFor(m => m.IsEmployeeAllocated).Alignment(HorizontalAlignment.Center)
-					.Caption("Verified")
-					.Alignment(HorizontalAlignment.Center)
-					.CellTemplate(@<text>
-			<div class="dx-icon">
-				<%= data.IsEmployeeAllocated ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-			</div>
-		</text>
-					).Visible(false);
-						columns.AddFor(m => m.IsLedgerObselete).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-					.CellTemplate(@<text>
-			<div class="dx-icon">
-				<%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-			</div>
-		</text>
-					).Visible(true);
-						columns.AddFor(m => m.IsMaintainBillByBill).Alignment(HorizontalAlignment.Center).AllowEditing(false)
-					.CellTemplate(@<text>
-			<div class="dx-icon">
-				<%= data.IsMaintainBillByBill ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-			</div>
-		</text>
-					).Visible(false);
-						columns.AddFor(m => m.IsPropertyAllocated).Alignment(HorizontalAlignment.Center).AllowEditing(false)
-					.CellTemplate(@<text>
-			<div class="dx-icon">
-				<%= data.IsPropertyAllocated ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-			</div>
-		</text>
-					).Visible(false);
-						columns.AddFor(m => m.IsRestrictedEntry).Alignment(HorizontalAlignment.Center).AllowEditing(false)
-					.CellTemplate(@<text>
-			<div class="dx-icon">
-				<%= data.IsRestrictedEntry ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-			</div>
-		</text>
-				).Visible(false);
-
-					})
-				.Height(500)
-				.Paging(p => p.PageSize(10))
-				.ColumnAutoWidth(true)
-				.AllowColumnReordering(true) // Enable column reordering
-				.AllowColumnResizing(true)   // Enable column resizing
-				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-				.GroupPanel(groupPanel => groupPanel.Visible(true)) // Display group panel
-				.ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
-				//.Paging(paging => paging.Enabled(false))
-				.HeaderFilter(hf => hf
-				.Visible(true)  // Display header filters for each column
-				)
-				.OnCellPrepared("onCellPrepared")
-				.ShowBorders(true)
-				@* .Summary(s => s
-            .TotalItems(totalItems =>
-            {
-                totalItems.AddFor(m => m.AccountId).SummaryType(SummaryType.Count);
-            })) *@
-				)
-	</div>
-	<div>
-		@await Html.PartialAsync("_GridFooter")
-	</div>
+    <div class="dx-field chartOfAccount">
+        @(
+                Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20107ChartOfAccount>()
+                .ID("dataGrid")
+                .DataSource(d => d.WebApi()
+                .Controller("ChartOfAccounts")
+                .LoadAction("GetChartOfAccounts")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("AccountId"))
+                .RemoteOperations(false)
+                .ShowBorders(true)
+                .Columns(columns =>
+                {
+                    columns.AddFor(m => m.AccountId).Caption("Account ID").Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head (Ar)").Alignment(HorizontalAlignment.Right).Visible(true);
+                    columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center).GroupIndex(0);
+                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.OpeningBalanceDrCr).Caption("Dr/Cr").Alignment(HorizontalAlignment.Right).Visible(true);
+                    columns.AddFor(m => m.IsLedgerObselete).Caption("Is Ledger Obsolete").Alignment(HorizontalAlignment.Center)
+                .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>)
+            .Visible(true);
+                })
+            .Height(500)
+            .Paging(p => p.PageSize(10))
+            .ColumnAutoWidth(true)
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .ColumnFixing(fixing => fixing.Enabled(true))
+            .FilterRow(filterRow => filterRow.Visible(false))
+            .GroupPanel(groupPanel => groupPanel.Visible(false))
+            .ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
+            .HeaderFilter(hf => hf.Visible(true))
+            .OnCellPrepared("onCellPrepared")
+            )
+    </div>
+    <div>
+        @await Html.PartialAsync("_GridFooter")
+    </div>
 </div>
+
+<!-- Context Menu (hidden initially) -->
+<div id="contextMenu" class="context-menu">
+    <div class="context-menu-item" onclick="editLedger()">
+        <i class="fa fa-edit"></i> Edit Ledger Account
+    </div>
+    <div class="context-menu-item" onclick="viewTransactions()">
+        <i class="fa fa-search"></i> View Ledger Transactions
+    </div>
+    <div class="context-menu-item" onclick="deleteLedger()">
+        <i class="fa fa-trash"></i> Delete Ledger Account
+    </div>
+</div>
+
 <script type="text/javascript">
-		$(function () {
-			//getChatOfAccount();
-			var contextMenu = $("#contextMenu");
-			var contextMenuContent = $("#contextMenuContent");
-			// Hide context menu on click outside
-			$(document).on("click", function () {
-				contextMenu.hide();
+    $(function () {
+        var contextMenu = $("#contextMenu");
 
-			});
-			// Apply the custom context menu plugin
-			$("#dataGrid").customizeGridContextMenu();
+        // Hide context menu when clicking outside
+        $(document).on("click", function () {
+            contextMenu.hide();
+        });
 
-			// Handle right-click event on the DataGrid rows
-			$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-				e.preventDefault(); // Prevent the default context menu
-				var rowIndex = $(this).index(); // Get the row index
-				var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-				console.log(rowData); // Log or use the row data as needed
+        // Right-click event to show context menu
+        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            e.preventDefault();
 
-				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-			});
+            // Get instance of the DataGrid
+            var dataGridInstance = $("#dataGrid").dxDataGrid("instance");
+            var visibleRows = dataGridInstance.getVisibleRows(); // Retrieve visible rows
+            var rowIndex = $(this).index();
 
-		});
-	function onCellPrepared(e) {
-			if (e.rowType === "data" && e.column.dataField === "AccountHead") {
-					console.log(e.data);
-				if (!e.data.IsLedgerObselete) {
-						e.cellElement.css({
-						"background-color": "red",
-						"color": "white"
-					}); // Apply multiple styles together
-				}
-			}
-		}
-		function getChatOfAccount() {
-			$.ajax({
-				url: '/api/ChartOfAccounts/GetChartOfAccounts',  // API endpoint
-				type: 'GET',
-				success: function (data) {
-					// Bind the data to the DataGrid
-					$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-					// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
-				},
-				error: function () {
-					DevExpress.ui.notify("Error while loading data", "error", 2000);
-				}
-			});
-		}
+            // Debugging: Ensure rowIndex is correct
+            console.log("Row Index:", rowIndex);
+
+            var rowData = visibleRows[rowIndex]?.data; // Retrieve the row data from visible rows
+            console.log("Row Data:", rowData); // Debugging: Log the row data
+
+            if (rowData && rowData.AccountId) {
+                window.selectedRowData = rowData; // Store selected row data for use in actions
+                contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+            } else {
+                alert("Error: AccountId is undefined. Please select a valid row.");
+            }
+        });
+    });
+    // Function to handle Edit Ledger Account action
+    function editLedger() {
+        var rowData = window.selectedRowData;
+        if (rowData && rowData.AccountId) {
+            // Navigate to frm201LedgerAccount with Edit mode
+            window.location.href = `/frm201LedgerAccount?mode=edit&accountId=${rowData.AccountId}`;
+        } else {
+            alert("No valid row selected for editing.");
+        }
+    }
+
+    // Function to handle View Ledger Transactions action
+    function viewTransactions() {
+        var rowData = window.selectedRowData;
+        if (rowData && rowData.AccountId) {
+            // Navigate to frm201LedgerAccount with View Transactions mode
+            window.location.href = `/frm201LedgerAccount?mode=view&accountId=${rowData.AccountId}`;
+        } else {
+            alert("No valid row selected to view transactions.");
+        }
+    }
+
+    $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+        e.preventDefault();
+        var rowIndex = $(this).index();
+        var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+        window.selectedRowData = rowData;
+    });
+
+    function deleteLedger() {
+        var rowData = window.selectedRowData;
+        if (rowData && rowData.AccountId) {
+            // Correct API endpoint URL
+            var deleteUrl = `/api/ChartOfAccounts/Delete?accountId=${rowData.AccountId}`;
+
+            console.log("Delete URL:", deleteUrl);
+
+            // Confirmation dialog
+            if (confirm("Are you sure you want to delete this ledger account?")) {
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'POST', // Ensure the correct HTTP method
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message || "Ledger Account deleted successfully.");
+                            $("#dataGrid").dxDataGrid("instance").refresh(); // Refresh the grid
+                        } else {
+                            alert(response.message || "Error deleting ledger account.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error deleting ledger account:", error);
+                        var errorMessage = xhr.responseJSON?.message || "An unexpected error occurred.";
+                        alert(errorMessage);
+                    }
+                });
+            }
+        } else {
+            alert("Error: AccountId is undefined. Please select a valid row.");
+        }
+    }
+
+
+    function onCellPrepared(e) {
+        if (e.rowType === "data" && e.column.dataField === "AccountHead") {
+            if (!e.data.IsLedgerObselete) {
+                e.cellElement.css({
+                    "background-color": "red",
+                    "color": "white"
+                });
+            }
+        }
+    }
 </script>
