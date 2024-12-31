@@ -4,6 +4,12 @@
     ViewData["Title"] = "Receipt Voucher Details";
 
 }
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- SweetAlert2 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc; /* Border between rows */
@@ -52,12 +58,7 @@
         color: red; /* Red color for delete */
     }
 </style>
-<!-- SweetAlert2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<!-- SweetAlert2 JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="card">
     <div class="content-container">
@@ -240,7 +241,7 @@
                     .ValidationRules(rules =>
                     {
                         rules.AddRequired()
-                        .Message("Voucher Amount is required");
+                        .Message("Amount value doesnot allow to add Zero or negative");
                     })
                     .Min(0)
                     .Placeholder("0.00")
@@ -940,7 +941,7 @@
 
             const ddbInstance = $("#AccountHeadDropDown").dxDropDownBox("instance");
 
-            ddbInstance.option("value", "");
+            ddbInstance.option("value", "-");
 
             $("#Narration").dxTextArea("instance").option("value", "");
 
@@ -1425,15 +1426,33 @@
             }
         });
     }
+    debugger;
     function onVerifyButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        // Check if dataGrid exists and contains rows
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Verified",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithVerification(); // If data exists, proceed with verification
+        }
+    }
+
+    function proceedWithVerification() {
         // Set VerifiedBy checkbox to true
         $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+        const vno = $("#VoucherNo").dxTextBox("instance").option("value");
 
         // Prepare data for verification
-        const currentDate = new Date(); // Get the current date
-
-        // Format the date as "dd-MMM-yyyy"
+        const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "short",
@@ -1441,27 +1460,20 @@
         }).replace(/ /g, '-');
 
         const data = {
-            voucherNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+            voucherNo: vno,
             verifiedBy: "Admin",
-            verifiedOn: new Date().toISOString() // Current date in ISO format
+            verifiedOn: new Date().toISOString()
         };
-        console.log(data);
 
-        // Send verification data to the server
         $.ajax({
-            // url: `/api/VoucherMaster/VerifyVoucher?voucherNo=${encodeURIComponent(vno)}`,
-            // type: 'POST',
-            // contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                // Show SweetAlert2 for success message
                 Swal.fire({
                     title: "Success!",
                     text: `Voucher has been Verified.`,
                     icon: "success",
                     confirmButtonText: "OK"
                 }).then(() => {
-                    // Optionally update UI with verification details after user closes the Swal
                     $("#VerifiedBytext").dxTextBox("instance").option("value", "Admin");
                     $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
                 });
@@ -1491,37 +1503,48 @@
     }
 
     function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Approved",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithApproval();
+        }
+    }
+
+    function proceedWithApproval() {
         $("#ApprovedBy").dxCheckBox("instance").option("value", true);
         var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-        const currentDate = new Date(); // Get the current date
 
-        // Format the date as "dd-MMM-yyyy"
+        const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "short",
             year: "numeric"
         }).replace(/ /g, '-');
 
-        // Perform approval logic (e.g., update database via API)
-        // Simulate approval with an AJAX call
         $.ajax({
-            success: function (response) {
-                // Show SweetAlert2 for success message
+            success: function () {
                 Swal.fire({
                     title: "Success!",
-                    text: `Voucher has been Approved.`,
+                    text: "Voucher has been Approved.",
                     icon: "success",
                     confirmButtonText: "OK"
                 }).then(() => {
-                    // Execute after user closes the Swal alert
-                    isVoucherApproved = true;
                     disableEditing();
                     $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
                     $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
                 });
             },
             error: function () {
-                // Show SweetAlert2 for error message
                 Swal.fire({
                     title: "Error",
                     text: "Please save the transactions after proceeding!",

@@ -983,7 +983,7 @@
 
             const ddbInstance = $("#AccountHeadDropDown").dxDropDownBox("instance");
 
-            ddbInstance.option("value", "");
+            ddbInstance.option("value", "-");
 
             $("#Narration").dxTextArea("instance").option("value", "");
 
@@ -1584,14 +1584,31 @@
     }
 
     function onVerifyButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        // Check if dataGrid exists and contains rows
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Verified",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithVerification(); // If data exists, proceed with verification
+        }
+    }
+
+    function proceedWithVerification() {
         // Set VerifiedBy checkbox to true
         $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+        const vno = $("#VoucherNo").dxTextBox("instance").option("value");
 
         // Prepare data for verification
-        const currentDate = new Date(); // Get the current date
-
-        // Format the date as "dd-MMM-yyyy"
+        const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "short",
@@ -1599,27 +1616,20 @@
         }).replace(/ /g, '-');
 
         const data = {
-            voucherNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+            voucherNo: vno,
             verifiedBy: "Admin",
-            verifiedOn: new Date().toISOString() // Current date in ISO format
+            verifiedOn: new Date().toISOString()
         };
-        console.log(data);
 
-        // Send verification data to the server
         $.ajax({
-            // url: `/api/VoucherMaster/VerifyVoucher?voucherNo=${encodeURIComponent(vno)}`,
-            // type: 'POST',
-            // contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                // Show SweetAlert2 for success message
                 Swal.fire({
                     title: "Success!",
                     text: `Voucher has been Verified.`,
                     icon: "success",
                     confirmButtonText: "OK"
                 }).then(() => {
-                    // Optionally update UI with verification details after user closes the Swal
                     $("#VerifiedBytext").dxTextBox("instance").option("value", "Admin");
                     $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
                 });
@@ -1635,6 +1645,7 @@
         });
     }
 
+
     function disableEditing() {
         // Disable all input fields and buttons except for specific ones
         $('input, select, textarea').prop('disabled', true);
@@ -1646,38 +1657,50 @@
             }
         });
     }
+
     function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Approved",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithApproval();
+        }
+    }
+
+    function proceedWithApproval() {
         $("#ApprovedBy").dxCheckBox("instance").option("value", true);
         var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-        const currentDate = new Date(); // Get the current date
 
-        // Format the date as "dd-MMM-yyyy"
+        const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "short",
             year: "numeric"
         }).replace(/ /g, '-');
 
-        // Perform approval logic (e.g., update database via API)
-        // Simulate approval with an AJAX call
         $.ajax({
-            success: function (response) {
-                // Show SweetAlert2 for success message
+            success: function () {
                 Swal.fire({
                     title: "Success!",
-                    text: `Voucher has been Approved.`,
+                    text: "Voucher has been Approved.",
                     icon: "success",
                     confirmButtonText: "OK"
                 }).then(() => {
-                    // Execute after user closes the Swal alert
-                    isVoucherApproved = true;
                     disableEditing();
                     $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
                     $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
                 });
             },
             error: function () {
-                // Show SweetAlert2 for error message
                 Swal.fire({
                     title: "Error",
                     text: "Please save the transactions after proceeding!",
