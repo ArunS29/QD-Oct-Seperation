@@ -26,6 +26,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Qry20149AssetsRegisterView> Qry20149AssetsRegisterViews { get; set; }
 
+    public virtual DbSet<Qry20152BankAccount> Qry20152BankAccounts { get; set; }
+
     public virtual DbSet<Qry20164SalaryPayableLedgerMaster> Qry20164SalaryPayableLedgerMasters { get; set; }
 
     public virtual DbSet<Qry20167SalaryLedgerPayableBalance> Qry20167SalaryLedgerPayableBalances { get; set; }
@@ -39,6 +41,8 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<Qry201VoucherEntryScreenDisplay> Qry201VoucherEntryScreenDisplays { get; set; }
 
     public virtual DbSet<Qry70002projectsViewMaster> Qry70002projectsViewMasters { get; set; }
+
+    public virtual DbSet<Tbl00105BuyerIdtype> Tbl00105BuyerIdtypes { get; set; }
 
     public virtual DbSet<Tbl101DocumentType> Tbl101DocumentTypes { get; set; }
 
@@ -684,6 +688,30 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.YearlyDepreciation).HasColumnType("money");
         });
 
+        modelBuilder.Entity<Qry20152BankAccount>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry20152BankAccounts");
+
+            entity.Property(e => e.AccountGroup)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.AccountGroupId)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AccountGroupID");
+            entity.Property(e => e.AccountHead)
+                .IsRequired()
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.AccountId)
+                .IsRequired()
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AccountID");
+        });
+
         modelBuilder.Entity<Qry20164SalaryPayableLedgerMaster>(entity =>
         {
             entity
@@ -987,6 +1015,22 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.SubmittedOn).HasColumnType("date");
             entity.Property(e => e.VerifiedBy).IsUnicode(false);
             entity.Property(e => e.VerifiedOn).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Tbl00105BuyerIdtype>(entity =>
+        {
+            entity.HasKey(e => e.BuyerOtherIdtype);
+
+            entity.ToTable("tbl00105BuyerIDTypes");
+
+            entity.Property(e => e.BuyerOtherIdtype)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("BuyerOtherIDType");
+            entity.Property(e => e.BuyerIdtypeName)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("BuyerIDTypeName");
         });
 
         modelBuilder.Entity<Tbl101DocumentType>(entity =>

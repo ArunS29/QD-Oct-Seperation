@@ -15,6 +15,10 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[tbl00105BuyerIDTypes]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl101DocumentType]",
          "ObjectType": 0
       },
@@ -136,6 +140,10 @@
       },
       {
          "Name": "[dbo].[qry20149AssetsRegisterView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry20152BankAccounts]",
          "ObjectType": 3
       },
       {
