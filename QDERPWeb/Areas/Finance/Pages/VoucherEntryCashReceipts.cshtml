@@ -1209,7 +1209,7 @@
 
                 "VoucherRefNo": $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null,
 
-                "VoucherNarration": $("#Narration").dxTextBox("instance").option("value") || null,
+                "VoucherNarration": $("#VoucherNarration").dxTextBox("instance").option("value") || null,
 
 
 
@@ -1231,7 +1231,7 @@
 
                 type: "POST",
 
-                url: "/api/VoucherEntryCashReceipts/SaveVoucher",
+                url: "/api/VoucherEntryReceipts/SaveVoucher",
 
                 contentType: "application/json",
 
@@ -1243,7 +1243,7 @@
 
                     if (response.success) {
 
-                        // DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+                        DevExpress.ui.notify("Data saved successfully!", "success", 2000);
 
                         // Change button label to "Update"
 
