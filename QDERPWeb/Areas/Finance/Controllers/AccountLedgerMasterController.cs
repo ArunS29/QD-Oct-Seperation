@@ -358,6 +358,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Json(new { success = true, message = "Ledger account inserted successfully" });
         }
 
-        #endregion
-    }
+		#endregion
+
+	
+	}
 }

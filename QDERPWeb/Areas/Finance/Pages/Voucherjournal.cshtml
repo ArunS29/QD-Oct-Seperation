@@ -116,7 +116,6 @@
             <div class="form-group" style="padding-left:20px">
                 <div class="button-alignment-down">
                     <label for="DrCr" style="color: white;">Dr/Cr</label>
-
                 </div>
                 @(
                     Html.DevExtreme().SelectBox()
@@ -152,11 +151,7 @@
                     .DropDownOptions(o => o.Width(1000))
                     .OnKeyDown("onKeyDown")
                     .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message("Account Head is required");
-                    })
+
                     )
             </div>
 
@@ -178,11 +173,7 @@
                     Html.DevExtreme().NumberBox()
                     .ID("txtVoucherAmount")
                     .Value(0.00)
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message("Amount value doesnot allow to add Zero or negative");
-                    })
+
                     .Min(0)
                     .Placeholder("0.00")
                     .Format("#,##0.00")
@@ -284,12 +275,18 @@
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
                 .ShowBorders(true)
                 .Width("100%")
-                .Editing(edit => edit.Mode(GridEditMode.Row)
+                .Editing(editing => editing
+                .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
+                .AllowUpdating(true)   // Enable editing of existing rows
+                .AllowDeleting(true)   // Enable deleting rows
+                .UseIcons(true)
 
-                .AllowDeleting(true)
+
+
 
                 )
                 .OnEditorPreparing("onEditorPreparing")
+
                 )
             <div id="footerTotals" style="display: flex; background-color: #c0dceb; color: white; padding: 5px 10px; font-size: 14px;">
                 <div style="flex: 3.4;">&nbsp;</div>
@@ -456,14 +453,17 @@
             </div>
 
             <script>
+                var lastDrCr = "Dr"; // Default value for the first entry (Dr)
+                let isUpdatingCell;
                 function addVoucherEntry() {
+                    // Get values from the fields
                     var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                     var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
                     var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value");
-                    var drCr = $("#sbDrCr").dxSelectBox("instance").option("value");
+                    var drCr = lastDrCr; // Set DrCr based on the previous entry
                     var entryNarration = $("#txtEntryNarration").dxTextArea("instance").option("value");
 
-                    // Reset any previous error styles
+                    // Reset previous error styles
                     $("#ddAccountHead").css("border", "");
                     $("#txtVoucherAmount").css("border", "");
 
@@ -472,19 +472,19 @@
 
                     if (!accountHead) {
                         isValid = false;
-                        $("#ddAccountHead"); // Highlight accountHead in red
+                        $("#ddAccountHead").css("border", "1px solid red"); // Highlight accountHead in red
                         DevExpress.ui.notify("Account Head is required.", "error", 2000);
                     }
 
                     if (!voucherAmount || voucherAmount <= 0) {
                         isValid = false;
-                        $("#txtVoucherAmount"); // Highlight amount in red
+                        $("#txtVoucherAmount").css("border", "1px solid red"); // Highlight amount in red
                         DevExpress.ui.notify("Amount should not be 0 or less.", "error", 2000);
                     }
 
                     // Stop execution if validation fails
                     if (!isValid) {
-                        return;
+                        return; // Exit function if validation fails
                     }
 
                     // Prepare the object to send
@@ -498,7 +498,7 @@
                         "EntryNarration": entryNarration
                     };
 
-                    // AJAX request
+                    // AJAX request to add voucher entry
                     $.ajax({
                         type: "POST",
                         url: "/api/VoucherJournal/AddVoucherEntry",
@@ -507,14 +507,22 @@
                         dataType: "json",
                         success: function (response) {
                             console.log(response.data);
+                            // Update the data grid with the new data
                             $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+
+                            // Clear Account Head and Amount fields after submission
+                            $("#ddAccountHead").dxDropDownBox("instance").option("value", null);
+                            $("#txtVoucherAmount").dxNumberBox("instance").option("value", null);
+
+                            // Toggle DrCr for next entry and update the dropdown value
+                            lastDrCr = (lastDrCr === "Dr") ? "Cr" : "Dr"; // Toggle Dr and Cr
+                            $("#sbDrCr").dxSelectBox("instance").option("value", lastDrCr); // Set the dropdown value
                         },
                         error: function (xhr, status, error) {
                             DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 3000);
                         }
                     });
                 }
-
 
 
                 function onVoucherNoChanged(e) {
@@ -603,7 +611,7 @@
 
                     // Check if both Debit and Credit amounts are equal
                     if (totalDrAmount !== totalCrAmount) {
-                        DevExpress.ui.notify("Voucher Entry is not talling please check the Debit / Credit Totals.", "error", 2000);
+                        DevExpress.ui.notify("Voucher Entry is not tallying, please check the Debit / Credit Totals.", "error", 2000);
                         return; // Stop further processing if amounts don't match
                     }
 
@@ -620,27 +628,40 @@
                         "VoucherApprovedOn": new Date()
                     };
 
-                    // Perform AJAX request to save the voucher data
+                    // Check the button text to determine save or update action
+                    var button = $("#btnSave").dxButton("instance");
+                    var action = button.option("text") === "Save" ? "SaveVoucher" : "UpdateVoucher";
+
+                    // Perform AJAX request to save/update the voucher data
                     $.ajax({
                         type: "POST",
-                        url: "/api/VoucherJournal/SaveVoucher",
+                        url: `/api/VoucherJournal/${action}`,
                         contentType: "application/json",
                         data: JSON.stringify(VM),
                         dataType: "json",
                         success: function (response) {
                             if (response.success) {
-                                // Show success message after successful save
-                                DevExpress.ui.notify("Voucher saved successfully with matching Debit and Credit amounts.", "success", 2000);
+                                // Show appropriate success message based on the action
+                                var successMessage =
+                                    action === "SaveVoucher"
+                                        ? "Voucher saved successfully with matching Debit and Credit amounts."
+                                        : "Voucher updated successfully!";
+                                DevExpress.ui.notify(successMessage, "success", 2000);
 
                                 // Change button label to "Update" after saving
-                                var button = $("#btnSave").dxButton("instance");
-                                button.option("text", "Update");
+                                if (action === "SaveVoucher") {
+                                    button.option("text", "Update");
+                                }
                             } else {
-                                alert("Update failed: " + response.message);
+                                DevExpress.ui.notify("Update failed: " + response.message, "error", 2000);
                             }
                         },
                         error: function (xhr, status, error) {
-                            DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.", "error", 2000);
+                            DevExpress.ui.notify(
+                                "An error occurred while processing the voucher. Please try again.",
+                                "error",
+                                2000
+                            );
                         }
                     });
                 });
@@ -728,28 +749,37 @@
                     dataGrid = e.component;
                 }
                 function onRowRemoved(e) {
-                    alert(e.data.VoucherEntryNo);
-
-
                     $.ajax({
                         url: "/api/VoucherJournal/Delete",
                         type: 'GET',
-                        data: { VoucherEntryNo: e.data.VoucherEntryNo }
-                        ,
+                        data: { VoucherEntryNo: e.data.VoucherEntryNo },
                         success: function (response) {
                             if (response.success) {
-                                alert('Item deleted successfully!');
 
+                                showToast("Item deleted successfully!", "success");
                             } else {
-                                alert('Failed to delete the item. ' + response.message);
+
+                                showToast("Failed to delete the item. " + response.message, "error");
                             }
                         },
                         error: function () {
-                            alert('An error occurred while deleting the item.');
+                            // Show an error message using a toast notification
+                            showToast("An error occurred while deleting the item.", "error");
                         }
                     });
-
                 }
+
+                // Function to display a toast notification
+                function showToast(message, type) {
+                    // Create a new DevExtreme toast notification
+                    $("#toast").dxToast({
+                        message: message,
+                        type: type,  // "success" or "error"
+                        displayTime: 3000,  // Duration of the toast in milliseconds
+                        closeOnClick: true  // Close the toast on click
+                    }).dxToast("show");
+                }
+
 
                 function updateTemporaryNo(e) {
                     const voucherNo = e.value;
@@ -918,18 +948,7 @@
                         }
                     });
                 }
-                function onEditorPreparing(e) {
-                    // Check if the user is adding a new row
-                    if (e.parentType === "dataRow" && e.row && e.row.rowType === "data") {
-                        e.component.getDataSource().store().load().done(function (data) {
-                            // Check the number of rows in the grid
-                            if (data.length === 1) {
-                                // If there is only one entry, show an alert
-                                DevExpress.ui.notify("You have added just one entry. Please save or complete the process.", "info", 3000);
-                            }
-                        });
-                    }
-                }
+
 
                 // You can also add logic here to trigger an alert when the save button is clicked
                 function onSaveButtonClick() {
@@ -940,6 +959,59 @@
                     if (data.length === 1) {
                         // Show an alert for only one entry
                         DevExpress.ui.notify("Voucher Entry is not talling please check the Debit/ Credit Totals.", "info", 3000);
+                    }
+                }
+                function onEditorPreparing(e) {
+                    // Check if the data field being edited is 'EntryNarration'
+                    if (e.dataField === 'EntryNarration') {
+                        if (isUpdatingCell) {
+                            return; // Prevent recursive triggering
+                        }
+
+                        e.cancel = true; // Prevent the default editor behavior
+
+                        const dataGridInstance = e.component; // Get the DataGrid instance
+                        const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
+                        const initialValue = e.row.data[e.dataField] || ""; // Get the current value of the cell
+
+                        // Show Swal modal for editing EntryNarration
+                        Swal.fire({
+                            title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit Entry Narration`,
+                            html: `
+                                                    <textarea id="swal-field-editor"
+                                                              style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+                                                              placeholder="Enter Entry Narration...">${initialValue}</textarea>
+                                                `,
+                            showCancelButton: true,
+                            confirmButtonText: 'OK',
+                            cancelButtonText: 'Cancel',
+                            focusConfirm: false,
+                            didOpen: () => {
+                                // Focus the textarea and move the cursor to the end
+                                const textarea = document.getElementById('swal-field-editor');
+                                textarea.focus();
+                                textarea.setSelectionRange(initialValue.length, initialValue.length);
+                            },
+                            preConfirm: () => {
+                                const newValue = document.getElementById('swal-field-editor').value.trim();
+                                return newValue; // Return the new value from the modal
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const newValue = result.value;
+
+                                // Only update the cell if the new value is different
+                                if (newValue !== initialValue) {
+                                    isUpdatingCell = true; // Set the flag before updating the cell
+                                    dataGridInstance.cellValue(rowIndex, e.dataField, newValue); // Update the specific cell dynamically
+                                    dataGridInstance.saveEditData(); // Save the edit data
+                                    dataGridInstance.refresh(); // Refresh the grid to reflect changes
+                                    isUpdatingCell = false; // Reset the flag after updating
+                                }
+                            } else if (result.isDismissed) {
+                                console.log('Edit cancelled');
+                            }
+                        });
                     }
                 }
 
