@@ -393,6 +393,44 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         }
 
+        //[HttpPost]
+        //public async Task<ActionResult> AddEmployeeEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20114SalaryPayableMaster salarydetails, string EmployeeName)
+        //{
+        //    if (salarydetails == null)
+        //    {
+        //        return BadRequest(new { success = false, message = "Invalid data received." });
+        //    }
+
+        //    try
+        //    {
+
+        //        // Add entries to the database
+        //        _context.Tbl20114SalaryPayableMasters.Add(salarydetails);
+
+        //        await _context.SaveChangesAsync();
+
+        //        // Add the WHERE condition for ReferenceNo
+        //        var qryListOfAccountlists = _context.Tbl20114SalaryPayableMasters
+        //            .Where(p => p.EmployeeNo == salarydetails.EmployeeNo && p.ReferenceNo == salarydetails.ReferenceNo && p.ReferenceType == salarydetails.ReferenceType && p.Amount == salarydetails.Amount && p.DrCr == salarydetails.DrCr)
+        //            .Select(i => new
+        //            {
+        //                i.SalaryPayableLedgerNo,
+        //                i.ReferenceType,
+        //                i.ReferenceNo,
+        //                i.EmployeeNo,
+        //                EmployeeName,
+        //                i.Amount,
+        //                i.DrCr
+        //            });
+
+        //        return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+        //}
+
         [HttpPost]
         public async Task<ActionResult> AddEmployeeEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20114SalaryPayableMaster salarydetails, string EmployeeName)
         {
@@ -403,21 +441,46 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                // Validate EmployeeNo
+                var employeeInfo = _context.Qry20167SalaryLedgerPayableBalances
+                    .Where(s => s.EmployeeNo == EmployeeName)
+                    .Select(s => new
+                    {
+                        s.EmployeeNo,
+                        s.EmployeeName,
+                        ReferenceNo = s.ReferenceNo
+                    })
+                    .FirstOrDefault();
+
+                if (employeeInfo == null)
+                {
+                    return NotFound(new { success = false, message = "Employee not found in the ledger balances." });
+                }
+
+                // Map the employee details
+                salarydetails.EmployeeNo = employeeInfo.EmployeeNo;
+                salarydetails.ReferenceNo = employeeInfo.ReferenceNo;
+
                 // Add entries to the database
                 _context.Tbl20114SalaryPayableMasters.Add(salarydetails);
 
+                // Save changes
                 await _context.SaveChangesAsync();
 
-                // Add the WHERE condition for ReferenceNo
+                // Query the updated list
                 var qryListOfAccountlists = _context.Tbl20114SalaryPayableMasters
-                    .Where(p => p.EmployeeNo == salarydetails.EmployeeNo && p.ReferenceNo == salarydetails.ReferenceNo && p.ReferenceType == salarydetails.ReferenceType && p.Amount == salarydetails.Amount && p.DrCr == salarydetails.DrCr)
+                    .Where(p => p.EmployeeNo == salarydetails.EmployeeNo
+                                && p.ReferenceNo == salarydetails.ReferenceNo
+                                && p.ReferenceType == salarydetails.ReferenceType
+                                && p.Amount == salarydetails.Amount
+                                && p.DrCr == salarydetails.DrCr)
                     .Select(i => new
                     {
                         i.SalaryPayableLedgerNo,
                         i.ReferenceType,
                         i.ReferenceNo,
                         i.EmployeeNo,
-                        EmployeeName,
+                        EmployeeName = employeeInfo.EmployeeName, // Use the queried EmployeeName
                         i.Amount,
                         i.DrCr
                     });
@@ -426,9 +489,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                return StatusCode(500, new { success = false, message = $"An error occurred: {ex.Message}" });
             }
         }
+
 
 
         [HttpGet]
@@ -439,20 +503,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 Console.WriteLine("Error: inputParameter is null or empty.");
                 return BadRequest("inputParameter cannot be null or empty");
             }
-
-            var result = _context.Qry20167SalaryLedgerPayableBalances
-                .Where(s => s.EmployeeNo == inputParameter)
-                .Select(s => new
-                {
-                    s.EmployeeNo,
-                    s.EmployeeName,
-                    s.ReferenceNo,
-                    s.PayableAmount,
-                    s.Paid,
-                    s.Balance
-                });
-
-            return Json(result);
+            try
+            {
+                var result = _context.Qry20167SalaryLedgerPayableBalances
+                    .Where(s => s.EmployeeNo == inputParameter)
+                    .Select(s => new
+                    {
+                        s.EmployeeNo,
+                        s.EmployeeName,
+                        s.ReferenceNo,
+                        s.PayableAmount,
+                        s.Paid,
+                        s.Balance
+                    });
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 

@@ -121,7 +121,7 @@
                 @(Html.DevExtreme().DropDownBox()
                     .DataSource(d => d.WebApi()
                     .Controller("VoucherMaster")
-                    .LoadAction("GetCPPaymentAccounts")
+                    .LoadAction("GetBPPaymentAccounts")
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("AccountHead")
                     )
@@ -133,7 +133,7 @@
                     .OpenOnFieldClick(false)
                     .ValueChangeEvent("input")
                     .HoverStateEnabled(true)
-                    .Value("Petty Cash - Shabbir")
+                    .Value("Riyadh Bank")
                     .ValueExpr("AccountId")
                     .DisplayExpr("AccountHead")
                     .OnInput("dropDownBoxOnInput")
@@ -960,18 +960,18 @@
                                             .LoadAction("GetEmployeeDetails")
                                             .LoadMode(DataSourceLoadMode.Raw)
                                             .Key("EmployeeNo"))
-                                            .ValidationRules(rules =>
-                                            {
-                                                rules.AddRequired()
-                                                .Message("Employee details is required");
-                                            })
+                                            @*   .ValidationRules(rules =>
+                                        {
+                                        rules.AddRequired()
+                                        .Message("Employee details is required");
+                                        }) *@
                                             .LabelMode(EditorLabelMode.Outside)
                                             .ID("accountEmployeeDropDownBox")
                                             .ShowClearButton(true)
                                             .AcceptCustomValue(true)
                                             .Width("100%")
                                             .OpenOnFieldClick(false)
-                                            .ValueChangeEvent("input")
+                                            //.ValueChangeEvent("input")
                                             .HoverStateEnabled(true)
                                             .ValueExpr("EmployeeNo")
                                             .DisplayExpr("EmployeeName")
@@ -997,38 +997,62 @@
                                     </div>
 
                                     <!-- Against Payable For -->
+                                    @*    <div class="col-md-3">
+                                    <label for="payableDropdown" class="form-label"><strong>Against Payable For:</strong></label>
+                                    @(Html.DevExtreme().DropDownBox()
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("LedgerAccountMaster")
+                                    .LoadAction("GetAgainstPayable")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("EmployeeNo"))
+                                    .ValidationRules(rules =>
+                                    {
+                                    rules.AddRequired()
+                                    .Message("Against Payable is required");
+                                    })
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("againstDropDownBoxPayable")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    //.ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("EmployeeNo")
+                                    .DisplayExpr("ReferenceNo")
+                                    .OnInput("dropDownBoxOnInput")
+                                    .OnOpened("onOpened")
+                                    .Width("100%")
+                                    .OnKeyDown("onKeyDown")
+                                    .TabIndex(1)
+                                    .DropDownOptions(o => o
+                                    .Width(1000)
+                                    )
+                                    .ContentTemplate(new TemplateName("AgainstPayableContentTemplate")))
+                                    </div> *@
                                     <div class="col-md-3">
                                         <label for="payableDropdown" class="form-label"><strong>Against Payable For:</strong></label>
                                         @(Html.DevExtreme().DropDownBox()
-                                            .DataSource(d => d.WebApi()
-                                            .Controller("LedgerAccountMaster")
-                                            .LoadAction("GetAgainstPayable")
-                                            .LoadMode(DataSourceLoadMode.Raw)
-                                            .Key("EmployeeNo"))
                                             .ValidationRules(rules =>
                                             {
-                                                rules.AddRequired()
-                                                .Message("Against Payable is required");
+                                                rules.AddRequired().Message("Against Payable is required");
                                             })
                                             .LabelMode(EditorLabelMode.Outside)
                                             .ID("againstDropDownBoxPayable")
                                             .ShowClearButton(true)
                                             .AcceptCustomValue(true)
                                             .OpenOnFieldClick(false)
-                                            .ValueChangeEvent("input")
                                             .HoverStateEnabled(true)
                                             .ValueExpr("EmployeeNo")
                                             .DisplayExpr("ReferenceNo")
-                                            .OnInput("dropDownBoxOnInput")
-                                            .OnOpened("onOpened")
+                                            .OnOpened("onOpened") // Call the reload function when the dropdown is opened
                                             .Width("100%")
-                                            .OnKeyDown("onKeyDown")
                                             .TabIndex(1)
-                                            .DropDownOptions(o => o
-                                            .Width(1000)
+                                            .DropDownOptions(o => o.Width(1000))
+
+                                            .ContentTemplate(new TemplateName("AgainstPayableContentTemplate"))
                                             )
-                                            .ContentTemplate(new TemplateName("AgainstPayableContentTemplate")))
                                     </div>
+
 
                                     <!-- Add Button 2 -->
                                     <div class="col-md-1 d-flex align-items-end">
@@ -1135,7 +1159,7 @@
                                         .HeaderFilter(filter => filter.Visible(true))
                                         .Height(250)
                                         .ColumnAutoWidth(true)
-                                        .FilterRow(filterRow => filterRow.Visible(true))
+                                        .FilterRow(filterRow => filterRow.Visible(false))
                                         .GroupPanel(groupPanel => groupPanel.Visible(false))
                                         .ShowBorders(true)
                                         .Editing(editing => editing
@@ -1278,14 +1302,14 @@
                             @(Html.DevExtreme().DataGrid()
 
                                 .ID("accountpayable-datagrid")
-                                .DataSource(d => d.WebApi()
-                                .Controller("LedgerAccountMaster")
-                                .LoadAction("GetAgainstPayable")
-                                .LoadParams(new { inputParameter = new JS("employeeval") })
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("ReferenceNo")
+                                @*  .DataSource(d => d.WebApi()
+                        .Controller("LedgerAccountMaster")
+                        .LoadAction("GetAgainstPayable")
+                        .LoadParams(new { inputParameter = new JS("employeeval") })
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("ReferenceNo")
 
-                                )
+                        ) *@
                                 .WordWrapEnabled(true)
                                 .ShowBorders(true)
                                 .SearchPanel(sp => sp.HighlightSearchText(true))
@@ -1337,7 +1361,7 @@
                     .ID("accountpaymentamount-datagrid")
                     .DataSource(d => d.WebApi()
                     .Controller("VoucherMaster")
-                    .LoadAction("GetCPPaymentAccounts")
+                    .LoadAction("GetBPPaymentAccounts")
                     .LoadMode(DataSourceLoadMode.Raw)
                     /// .Key("AccountHead") //salary paid entry
                     .Key("AccountId")
@@ -1427,7 +1451,7 @@
 </div>
 <script>
 
-    let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount;
+    let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName;
     // let spentry;
     // let accheadid;
     // let accheadname;
@@ -1604,7 +1628,7 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                        DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+                        // DevExpress.ui.notify("Data saved successfully!", "success", 2000);
                         // Change button label to "Update"
                         var button = $("#btnSave").dxButton("instance");
                         button.option("text", "Update");
@@ -1699,17 +1723,9 @@
         }
     });
 
-    $("#btncancel").on("click", function (e) {
-        e.preventDefault();
 
-        // Get the instance of the SalaryPaidEntryPopup
-        const salaryPaidEntryPopup = $("#SalaryPaidEntryPopup").dxPopup("instance");
 
-        // Hide the popup
-        if (salaryPaidEntryPopup) {
-            salaryPaidEntryPopup.hide();
-        }
-    });
+
 
 
     function addCostAllocation() {
@@ -1878,7 +1894,7 @@
         var voucherAmtValidation = voucherAmtValidator.validate();
 
         if (!paymentaccheadname) {
-            paymentaccheadname = "Petty Cash - Shabbir";
+            paymentaccheadname = "Riyadh Bank";
             paymentaccheadId = "L00811";
         }
         var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
@@ -1981,8 +1997,6 @@
                             height: 860,
                             showCloseButton: true,
                             visible: true
-
-
                         });
                     }
                 },
@@ -2003,7 +2017,7 @@
 
                 $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
                 dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [accheadname] });
-                $("#SPtxtVoucherAmount").dxNumberBox("instance").option("value", amount + "0.00");
+                $("#SPtxtVoucherAmount").dxNumberBox("instance").option("value", amount + ".00");
                 // Show the button
                 // alert("1");
 
@@ -2013,6 +2027,8 @@
             }
         }
     }
+
+
     $(function () {
         const popup = $("#chequePopup").dxPopup("instance"); // Popup instance
 
@@ -2254,89 +2270,258 @@
 
 
     function onVerifyButtonClick() {
+
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        // Check if dataGrid exists and contains rows
+
+        if (rowCount == 0) {
+
+            Swal.fire({
+
+                title: "Voucher is not Verified",
+
+                text: "Voucher has not been Verified, Click Yes if you want to Verify and Approve this Voucher.",
+
+                icon: "warning",
+
+                showCancelButton: true,
+
+                confirmButtonText: "Yes",
+
+                cancelButtonText: "No"
+
+            })
+
+        } else {
+
+            proceedWithVerification(); // If data exists, proceed with verification
+
+        }
+
+    }
+
+    function proceedWithVerification() {
+
         // Set VerifiedBy checkbox to true
+
         $("#VerifiedBy").dxCheckBox("instance").option("value", true);
 
+        const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
         // Prepare data for verification
-        // Set current date to the dxTextBox
-        const currentDate = new Date(); // Get the current date
 
-        // Format the date as "dd-MMM-yyyy"
+        const currentDate = new Date();
+
         const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
-        const data = {
-            voucherNo: $("#VoucherNo").dxTextBox("instance").option("value"),
-            //  $("#VoucherNo").dxTextBox("instance").option("value")
-            verifiedBy: "Admin",
-            verifiedOn: new Date().toISOString() // Current date in ISO format
-        };
-        console.log(data);
-        // Send verification data to the server
-        $.ajax({
-            //   url: `/api/VoucherMaster/VerifyVoucher?voucherNo=${encodeURIComponent(vno)}`,
-            // type: 'POST',
-            // contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function (response) {
-                alert("Voucher has been verified.");
-                // Optionally update UI with verification details
-                $("#VerifiedBytext").dxTextBox("instance").option("value", "Admin");
-                $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
 
-                // $("#VerifiedOn").text(`Verified On: ${new Date(data.verifiedOn).toLocaleString()}`);
+            day: "2-digit",
+
+            month: "short",
+
+            year: "numeric"
+
+        }).replace(/ /g, '-');
+
+        const data = {
+
+            voucherNo: vno,
+
+            verifiedBy: "Admin",
+
+            verifiedOn: new Date().toISOString()
+
+        };
+
+        $.ajax({
+
+            data: JSON.stringify(data),
+
+            success: function (response) {
+
+                Swal.fire({
+
+                    title: "Success!",
+
+                    text: `Voucher has been Verified.`,
+
+                    icon: "success",
+
+                    confirmButtonText: "OK"
+
+                }).then(() => {
+
+                    $("#VerifiedBytext").dxTextBox("instance").option("value", "Admin");
+
+                    $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
+
+                });
+
             },
+
             error: function () {
-                alert("Please save the transactions after proceeding!!");
+
+                Swal.fire({
+
+                    title: "Error",
+
+                    text: "Please save the transactions after proceeding!!",
+
+                    icon: "error",
+
+                    confirmButtonText: "OK"
+
+                });
+
             }
+
         });
+
     }
 
     function disableEditing() {
-        // Disable all input fields and buttons except for navigation buttons
+        // Disable all input fields and buttons except for specific ones
         $('input, select, textarea').prop('disabled', true);
+
         $('.dx-button').each(function () {
-            if ($(this).attr('id') !== 'btnBack') {
+            const allowedButtons = ['btnBack', 'btnPreview1', 'btnPrint', 'btnAttach'];
+            if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
         });
     }
 
+    //      function onApproveButtonClick() {
+    //         // Check if already approved
+    //         // if (isVoucherApproved) {
+    //         //     alert("This voucher is already approved.");
+    //         //     return;
+    //         // }
+    //         const currentDate = new Date(); // Get the current date
+
+    // // Format the date as "dd-MMM-yyyy"
+    //          const formattedDate = currentDate.toLocaleDateString("en-GB", {
+    //                           day: "2-digit",
+    //                          month: "short",
+    //                           year: "numeric"
+    //                        }).replace(/ /g, '-');
+
+    //         // Perform approval logic (e.g., update database via API)
+    //         // Simulate approval with an AJAX call
+    //          $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+
+    //         $.ajax({
+
+    //             success: function (response) {
+    //                 alert("Voucher has been approved.");
+    //                 isVoucherApproved = true;
+    //                 disableEditing();
+    //                 $("#ApprovedBytext").dxTextBox("instance").option("value","Admin");
+    //                 $("#ApprovedOntext").dxTextBox("instance").option("value",formattedDate);
+
+    //             },
+    //             error: function () {
+    //                  alert("Please save the transactions after proceeding!");
+    //             }
+    //         });
+    //     }
+
     function onApproveButtonClick() {
-        // Check if already approved
-        // if (isVoucherApproved) {
-        //     alert("This voucher is already approved.");
-        //     return;
-        // }
-        const currentDate = new Date(); // Get the current date
 
-        // Format the date as "dd-MMM-yyyy"
-        const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-        // Perform approval logic (e.g., update database via API)
-        // Simulate approval with an AJAX call
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount == 0) {
+
+            Swal.fire({
+
+                title: "Voucher is not Approved",
+
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+
+                icon: "warning",
+
+                showCancelButton: true,
+
+                confirmButtonText: "Yes",
+
+                cancelButtonText: "No"
+
+            })
+
+        } else {
+
+            proceedWithApproval();
+
+        }
+
+    }
+
+    function proceedWithApproval() {
+
         $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+
+        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const currentDate = new Date();
+
+        const formattedDate = currentDate.toLocaleDateString("en-GB", {
+
+            day: "2-digit",
+
+            month: "short",
+
+            year: "numeric"
+
+        }).replace(/ /g, '-');
 
         $.ajax({
 
-            success: function (response) {
-                alert("Voucher has been approved.");
-                isVoucherApproved = true;
-                disableEditing();
-                $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-                $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+            success: function () {
+
+                Swal.fire({
+
+                    title: "Success!",
+
+                    text: "Voucher has been Approved.",
+
+                    icon: "success",
+
+                    confirmButtonText: "OK"
+
+                }).then(() => {
+
+                    disableEditing();
+
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+
+                });
 
             },
+
             error: function () {
-                alert("Please save the transactions after proceeding!");
+
+                Swal.fire({
+
+                    title: "Error",
+
+                    text: "Please save the transactions after proceeding!",
+
+                    icon: "error",
+
+                    confirmButtonText: "OK"
+
+                });
+
             }
+
         });
+
     }
 
 
@@ -2367,6 +2552,269 @@
         }
     }
 
+    // $("#btncancel").on("click", function (e) {
+    //        e.preventDefault();
+
+    //     // Get the instance of the SalaryPaidEntryPopup
+    //    const salaryPaidEntryPopup = $("#SalaryPaidEntryPopup").dxPopup("instance");
+
+    //    // Hide the popup
+    //    if (salaryPaidEntryPopup) {
+    //          const content = salaryPaidEntryPopup.content(); // Get the popup content
+    //         //  dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [""] });
+    //           dataGridEmployeeSelectionChanged({ selectedRowKeys: [""] });
+    //           dataGridAgainstPayableSelectionChanged({ selectedRowKeys: [""] });
+    //            $("#txtVoucherAmount1").dxNumberBox("instance").option("value","0.00")
+    //        salaryPaidEntryPopup.hide();
+    //    }
+    //    });
+    $("#btncancel").on("click", function (e) {
+        e.preventDefault();
+
+        // Get the instance of the SalaryPaidEntryPopup
+        const salaryPaidEntryPopup = $("#SalaryPaidEntryPopup").dxPopup("instance");
+
+
+        if (salaryPaidEntryPopup) {
+
+            const content = salaryPaidEntryPopup.content();
+
+            const ddbInstance = $("#accountEmployeeDropDownBox").dxDropDownBox("instance");
+            ddbInstance.option("value", "");
+
+
+            const ddbInstance1 = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+            ddbInstance1.option("value", "-");
+
+
+
+            // Reset all fields to their default state
+            // $(content).find("input, textarea, select").each(function () {
+            //     if ($(this).is("input[type='checkbox'], input[type='radio']")) {
+            //         $(this).prop("checked", false); // Uncheck checkboxes and radio buttons
+            //     } else if ($(this).is("select")) {
+            //         $(this).val(null).trigger("change"); // Reset dropdowns
+            //     } else {
+            //         $(this).val(""); // Clear text inputs
+            //     }
+            // });
+
+            // Reset the number box value to "0.00"
+            const voucherAmountBox = $("#txtVoucherAmount1").dxNumberBox("instance");
+            if (voucherAmountBox) {
+                voucherAmountBox.option("value", "0.00");
+            }
+
+            // Clear the salarydataGrid by setting its dataSource to an empty array
+            const dataGrid = $("#salarydataGrid").dxDataGrid("instance");
+            if (dataGrid) {
+                dataGrid.option("dataSource", []);
+            }
+
+            // Hide the popup
+            salaryPaidEntryPopup.hide();
+            // reloademployeedetails();
+            // reloademployeeagainstpayable();
+            //againstDropDownBoxPayable
+
+            const grid = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+            const dataSource = grid.getDataSource();
+            dataSource.reload();
+
+
+        }
+    });
+
+    function reloademployeedetails() {
+
+        $.ajax({
+            type: "GET",
+            url: "/api/LedgerAccountMaster/GetEmployeeDetails",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                if (response) {
+                    // Notify user of successful reload
+                    console.log(response);
+                    dataGridEmployeeSelectionChanged({ selectedRowKeys: response.data });
+                    DevExpress.ui.notify("Employee details reloaded successfully!", "success", 2000);
+                } else {
+                    DevExpress.ui.notify("Update failed: Unable to reload employee details!", "error", 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                // Notify user of the error
+                DevExpress.ui.notify("Error reloading employee details: " + error, "error", 2000);
+            }
+        });
+    }
+
+    // function reloademployeeagainstpayable() {
+
+    //     $.ajax({
+    //         type: "GET",
+    //         url: `/api/LedgerAccountMaster/GetAgainstPayable?inputParameter=${encodeURIComponent(employeeval)}`,
+    //         success: function (response) {
+    //             if (response) {
+    //                 // Notify user of successful reload
+    //                 //console.log(response);
+    //                 alert("test")
+    //              const grid = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+    //                 if (grid) {
+
+    //                     console.log(response.data);
+    //                     grid.option("dataSource", response.data); // Set new data
+    //                       alert("reloading")
+    //                       // const dataSource = grid.getDataSource();
+    //                       // dataSource.reload();
+    //                   /// grid.clearSelection(); // Clear previous selection if needed
+    //                 }
+    //                 DevExpress.ui.notify("Employee details reloaded successfully!", "success", 2000);
+    //             } else {
+    //                 DevExpress.ui.notify("Update failed: Unable to reload employee details!", "error", 2000);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             // Notify user of the error
+    //             DevExpress.ui.notify("Error reloading employee details: " + error, "error", 2000);
+    //         }
+    //     });
+    // }
+
+    // function reloademployeeagainstpayable() {
+    //     if (!employeeval) {
+    //         DevExpress.ui.notify("Employee value is not defined!", "warning", 2000);
+    //         return;
+    //     }
+
+    //     // Fetch data via AJAX
+    //     $.ajax({
+    //         type: "GET",
+    //         url: `/api/LedgerAccountMaster/GetAgainstPayable?inputParameter=${encodeURIComponent(employeeval)}`,
+    //         success: function (response) {
+    //             if (response) {
+    //                 const dropdownBox = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+    //                 if (dropdownBox) {
+    //                     // Update the DataSource dynamically
+    //                     dropdownBox.option("contentTemplate", function () {
+    //                         return $("<div>")
+    //                             .dxDataGrid({
+    //                                 dataSource: response.data, // Use the fetched data
+    //                                 keyExpr: "EmployeeNo",
+    //                                 columns: [
+    //                                     { dataField: "EmployeeNo", caption: "Employee No" },
+    //                                     { dataField: "ReferenceNo", caption: "Reference No" },
+    //                                     { dataField: "PayableAmount", caption: "Payable Amount" },
+    //                                     { dataField: "Paid", caption: "Paid" },
+    //                                     { dataField: "Balance", caption: "Balance" }
+    //                                 ],
+    //                                 showBorders: true,
+    //                                 selection: {
+    //                                     mode: "single"
+    //                                 },
+    //                                 hoverStateEnabled: true,
+    //                                 paging: {
+    //                                     pageSize: 15
+    //                                 },
+    //                                 filterRow: {
+    //                                     visible: true
+    //                                 },
+    //                                 scrolling: {
+    //                                     mode: "virtual"
+    //                                 },
+    //                                 height: 345
+
+    //                             });
+    //                     });
+
+    //                     DevExpress.ui.notify("Employee details reloaded successfully!", "success", 2000);
+    //                 }
+    //             } else {
+    //                 DevExpress.ui.notify("Update failed: Unable to reload employee details!", "error", 2000);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             DevExpress.ui.notify("Error reloading employee details: " + error, "error", 2000);
+    //         }
+    //     });
+    // }
+
+
+    function reloademployeeagainstpayable() {
+        if (!employeeval) {
+            DevExpress.ui.notify("Employee value is not defined!", "warning", 2000);
+            return;
+        }
+
+        // Fetch data via AJAX
+        $.ajax({
+            type: "GET",
+            url: `/api/LedgerAccountMaster/GetAgainstPayable?inputParameter=${encodeURIComponent(employeeval)}`,
+            success: function (response) {
+                // Debugging: Log the response
+                console.log(response);
+
+                if (response) {
+                    const dropdownBox = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+                    if (dropdownBox) {
+                        // Update the DataSource dynamically
+                        const dataGrid = $("<div>")
+                            .dxDataGrid({
+                                dataSource: response, // Use the fetched data
+                                keyExpr: "EmployeeNo",
+                                columns: [
+                                    { dataField: "EmployeeNo", caption: "Employee No" },
+                                    { dataField: "EmployeeName", caption: "Employee Name" },
+                                    { dataField: "ReferenceNo", caption: "Reference No" },
+                                    { dataField: "PayableAmount", caption: "Payable Amount" },
+                                    { dataField: "Paid", caption: "Paid" },
+                                    { dataField: "Balance", caption: "Balance" }
+                                ],
+                                showBorders: true,
+                                selection: {
+                                    mode: "single"
+                                },
+                                hoverStateEnabled: true,
+                                paging: {
+                                    pageSize: 15
+                                },
+                                filterRow: {
+                                    visible: true
+                                },
+                                scrolling: {
+                                    mode: "virtual"
+                                },
+                                height: 345,
+                                deferredRendering: true, // Ensure grid is rendered after data is ready
+                                onSelectionChanged: function (e) {
+                                    // Set selected key in DropDownBox
+                                    const selectedData = e.selectedRowsData[0];
+                                    if (selectedData) {
+                                        dropdownBox.option("value", selectedData.ReferenceNo);
+
+                                    }
+                                }
+                            });
+
+                        // Assign the new template to the DropDownBox
+                        dropdownBox.option("contentTemplate", function () {
+                            return dataGrid;
+                        });
+
+                    }
+                } else {
+                    DevExpress.ui.notify("No data available to reload!", "warning", 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify("Error reloading employee details: " + error, "error", 2000);
+            }
+        });
+    }
+
+
+
+
 
     function dataGridSelectionChangedPaymentAccount(e) {
         const selectedKey = e.selectedRowKeys[0];
@@ -2387,16 +2835,19 @@
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#accountEmployeeDropDownBox").dxDropDownBox("instance");
         employeeval = selectedKey;
-
+        alert(employeeval);
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
         }
+        reloademployeeagainstpayable();
+
 
     }
     function dataGridAgainstPayableSelectionChanged(e) {
+
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
         const payableAmount = e.selectedRowsData[0].PayableAmount;
@@ -2407,8 +2858,7 @@
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
-            // const voucherAmountBox = $("#txtVoucherAmount1").dxNumberBox("instance");
-            // voucherAmountBox.option("value", payableAmount);
+
         }
 
     }
@@ -2417,15 +2867,15 @@
 
 
     function addSalaryPaidEntry() {
-        var AccountEmployeeValidator = $("#accountEmployeeDropDownBox").dxValidator("instance");
+        // var AccountEmployeeValidator = $("#accountEmployeeDropDownBox").dxValidator("instance");
         var AccountDropDownPayableValidator = $("#againstDropDownBoxPayable").dxValidator("instance");
         var voucherAmtValidator = $("#txtVoucherAmount1").dxValidator("instance");
-
-        var accountemployeeValidation = AccountEmployeeValidator.validate();
+        var selectedRowData = null;
+        // var accountemployeeValidation = AccountEmployeeValidator.validate();
         var accountpayableValidation = AccountDropDownPayableValidator.validate();
         var voucheramountValidation = voucherAmtValidator.validate();
 
-        if (accountemployeeValidation.isValid && accountpayableValidation.isValid && voucheramountValidation.isValid) {
+        if (accountpayableValidation.isValid && voucheramountValidation.isValid) {
 
             var VE = {
                 SalaryPayableLedgerNo: accheadid,
@@ -2438,19 +2888,58 @@
             };
 
             // Get ReferenceNo from selected row
-            var selectedRowData = $("#accountpayable-datagrid").dxDataGrid("instance").getSelectedRowsData();
-            if (selectedRowData.length > 0) {
-                VE.ReferenceNo = selectedRowData[0].ReferenceNo;
-                VE.EmployeeNo = selectedRowData[0].EmployeeNo;
-                //VE.EmployeeName = selectedRowData[0].EmployeeName;
+            // var selectedRowData = $("#againstDropDownBoxPayable").dxDataGrid("instance").getSelectedRowsData();
+            // if (selectedRowData.length > 0) {
+            //     VE.ReferenceNo = selectedRowData[0].ReferenceNo;
+            //     VE.EmployeeNo = selectedRowData[0].EmployeeNo;
+            //     //VE.EmployeeName = selectedRowData[0].EmployeeName;
+            // } else {
+            //     DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+            //     return;
+            // }
+
+            // Get DropDownBox instance
+            var dropdownBox = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+
+            if (dropdownBox) {
+                // Wait for the content to load completely
+                dropdownBox.on("opened", function () {
+                    // Locate the DataGrid inside the DropDownBox
+                    var dataGridElement = $("#againstDropDownBoxPayable").find(".dx-datagrid");
+
+                    if (dataGridElement.length > 0) {
+                        var dataGrid = dataGridElement.dxDataGrid("instance");
+
+                        if (dataGrid) {
+                            // Get selected row data
+                            selectedRowData = dataGrid.getSelectedRowsData();
+                            if (selectedRowData.length > 0) {
+                                // Assign selected row values to VE
+                                VE.ReferenceNo = selectedRowData[0].ReferenceNo;
+                                VE.EmployeeNo = selectedRowData[0].EmployeeNo;
+                                // Uncomment if needed
+                                VE.EmployeeName = selectedRowData[0].EmployeeName;
+                                empName = VE.EmployeeName;
+                                console.log("Selected ReferenceNo:", VE.ReferenceNo);
+                                console.log("Selected EmployeeNo:", VE.EmployeeNo);
+                            } else {
+                                console.log("No row selected.");
+                            }
+                        } else {
+                            console.error("DataGrid instance not found.");
+                        }
+                    } else {
+                        console.error("DataGrid element not found inside DropDownBox.");
+                    }
+                });
             } else {
-                DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-                return;
+                console.error("DropDownBox instance not found.");
             }
+
 
             $.ajax({
                 type: "POST",
-                url: `/api/LedgerAccountMaster/AddEmployeeEntry?EmployeeName=${encodeURIComponent(selectedRowData[0].EmployeeName)}`, // Pass value as a query parameter
+                url: `/api/LedgerAccountMaster/AddEmployeeEntry?EmployeeName=${encodeURIComponent(employeeval)}`, // Pass value as a query parameter
                 // url: "/api/LedgerAccountMaster/AddEmployeeEntry?MasterGroup=${encodeURIComponent(selectedValue)}`",
                 contentType: "application/json",
                 data: JSON.stringify(VE),
@@ -2505,6 +2994,7 @@
 
 
     });
+
 
 
 </script>
