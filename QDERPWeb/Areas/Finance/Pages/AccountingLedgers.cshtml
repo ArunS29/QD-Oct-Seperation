@@ -516,7 +516,8 @@
 			alert("Please Select the Account to Edit.");
 			return;
 		}
-		DevExpress.ui.notify("Working on Progress", "success", 2000);
+		//DevExpress.ui.notify("Working on Progress", "success", 2000);
+		window.open('/Finance/LedgerAccount', 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
 	}
 	function addVoucher_click(form){
 		let url="";
@@ -664,7 +665,7 @@
 	}
 
 	function redirectToLedgerAccount() {
-		DevExpress.ui.notify("Working on Progress", "success", 2000);
-		//window.open('/Finance/LedgerAccount', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+		//DevExpress.ui.notify("Working on Progress", "success", 2000);
+		window.open('/Finance/LedgerAccount', 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
 	}
 </script>
