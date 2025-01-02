@@ -611,14 +611,34 @@
             <div style="background-color:#c0dceb;">
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                     <tr>
-                        <td>
+                        <td style="width: 15%;">
                             <label>Account Name:</label>
                         </td>
-                        <td colspan="3">
+                        <td style="width: 35%;">
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtBankAccountName")
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
+                                )
+                        </td>
+                        <td style="width: 15%;">
+                            <label>اسم الحساب المصرفي:</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnConvertAccountName")
+                                .Width(40)
+                                .Height(32)
+                                .Icon("fas fa-language") // Add an icon
+                                .ElementAttr(new { @class = "convert-button" })
+                                .OnClick("convertAccountNameToArabic") // Define the function
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankAccountNameAr")
+                                .InputAttr("aria-label", "Text")
+                                .Width("calc(100% - 50px)") // Adjust for button
+                                .RtlEnabled(true)
+
                                 )
                         </td>
                     </tr>
@@ -634,6 +654,25 @@
                                 .Width("100%")
                                 )
                         </td>
+                        <td>
+                            <label>اسم البنك:</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnConvertBankName")
+                                .Width(40)
+                                .Height(32)
+                                .Icon("fas fa-language")
+                                .ElementAttr(new { @class = "convert-button" })
+                                .OnClick("convertBankNameToArabic")
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankNameAr")
+                                .InputAttr("aria-label", "Text")
+                                .Width("calc(100% - 50px)")
+                                .RtlEnabled(true)
+                                )
+                        </td>
                     </tr>
 
                     <tr>
@@ -645,6 +684,25 @@
                                 .ID("txtBankBranch")
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
+                                )
+                        </td>
+                        <td>
+                            <label>اسم الفوترة:</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnConvertBankBranch")
+                                .Width(40)
+                                .Height(32)
+                                .Icon("fas fa-language")
+                                .ElementAttr(new { @class = "convert-button" })
+                                .OnClick("convertBankBranchToArabic")
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankBranchAr")
+                                .InputAttr("aria-label", "Text")
+                                .Width("calc(100% - 50px)")
+                                .RtlEnabled(true)
                                 )
                         </td>
                     </tr>
@@ -707,6 +765,26 @@
                                 .AddRequired()  // This adds the required validation rule
                                 )
                                 )
+                        </td>
+                        <td>
+                            <label>اسم الفوترة:</label>
+                        </td>
+                        <td colspan="3">
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnClientBillingAr")
+                                    // .Text("Action")
+                                    .Width("auto")
+                                    .Icon("fas fa-language")
+                                    .OnClick("onClientBillingArClick") // Add your JavaScript handler here
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtClientBillingAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "Client Billing")
+                                    .ValidationRules(rules => rules.AddRequired())
+                                    )
+                            </div>
                         </td>
                     </tr>
 
@@ -809,6 +887,25 @@
                                 )
                                 )
                         </td>
+                        <td>
+                            <label>Client Address - Street Name (Arabic):</label>
+                        </td>
+                        <td colspan="3">
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnClientAddressAr")
+                                    .Width("auto")
+                                    .Icon("fas fa-language")
+                                    .OnClick("onClientAddressArClick")
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtClientAddressAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "Client Address")
+                                    .ValidationRules(rules => rules.AddRequired())
+                                    )
+                            </div>
+                        </td>
                     </tr>
 
                     <tr>
@@ -821,6 +918,24 @@
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtClientAdditionalAddress")
                                 )
+                        </td>
+                        <td>
+                            <label>Client Address - Additional Address (Arabic):</label>
+                        </td>
+                        <td colspan="3">
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnClientAdditionalAddressAr")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onClientAdditionalAddressArClick")
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtClientAdditionalAddressAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "Client Additional Address")
+                                    )
+                            </div>
                         </td>
                     </tr>
 
@@ -857,6 +972,24 @@
                                 )
                                 )
                         </td>
+                        <td>
+                            <label>Client City(Arabic):</label>
+                        </td>
+                        <td colspan="3">
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnClientCityAr")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onClientCityArClick")
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtClientCityAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "Client Additional Address")
+                                    )
+                            </div>
+                        </td>
                     </tr>
 
                     <tr>
@@ -885,6 +1018,24 @@
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtClientCity")
                                 )
+                        </td>
+                        <td>
+                            <label>Province/State(Arabic):</label>
+                        </td>
+                        <td colspan="3">
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnStateAr")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onClientProvinceStateArClick")
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtStateAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "Client Additional Address")
+                                    )
+                            </div>
                         </td>
                     </tr>
 
@@ -921,6 +1072,25 @@
                                 )
                                 )
                         </td>
+                        <td>
+                            <label>District/Neighborhood (Arabic):</label>
+                        </td>
+                        <td colspan="3">
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnDistrictAr")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onDistrictArClick")
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtDistrictAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "District")
+                                    .ValidationRules(rules => rules.AddRequired())
+                                    )
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -946,6 +1116,24 @@
                                 .AddRequired()  // This adds the required validation rule
                                 )
                                 )
+                        </td>
+                        <td>
+                            <label for="SupplierNameArabic" class="form-label text-dark-skyblue fw-bold">اسم المورد:</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+
+                            @(Html.DevExtreme().Button()
+                                .ID("btnSupBillingAr")
+                                .Icon("fas fa-language")
+                                .Width("auto")
+                                .OnClick("onSupplierNameArabicClick")
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtSupBillingAr")
+                                .Value("")
+                                .Width("100%")
+                                )
+
                         </td>
                     </tr>
 
@@ -996,6 +1184,23 @@
                                 )
                                 )
                         </td>
+                        <td>
+                            <label for="AddressStreetArabic2" class="form-label text-dark-skyblue">Address-Street Name (Arabic):</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+
+                            @(Html.DevExtreme().Button()
+                                .ID("btnSupAddress1")
+                                .Icon("fas fa-language")
+                                .Width("auto")
+                                .OnClick("onSupAddressClick")
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtSupAddressAr1")
+                                .Value("")
+                                .Width("100%")
+                                )
+                        </td>
                     </tr>
 
                     <tr>
@@ -1007,6 +1212,22 @@
                                 .ID("txtSupAdditionalAddress")
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtSupAdditionalAddress")
+                                )
+                        </td>
+                        <td>
+                            <label for="AddressAdditionalArabic2" class="form-label text-dark-skyblue">Address-Additional Address (Arabic):</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnSupAdditionalAddress1")
+                                .Icon("fas fa-language")
+                                .Width("auto")
+                                .OnClick("onSupAddressAdditionalClick")
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtSupAdditionalAddressAr1")
+                                .Value("")
+                                .Width("100%")
                                 )
                         </td>
                     </tr>
@@ -1044,6 +1265,22 @@
                                 )
                                 )
                         </td>
+                        <td>
+                            <label for="ClientCityArabic2" class="form-label text-dark-skyblue">Client City (Arabic):</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnSupCity1")
+                                .Icon("fas fa-language")
+                                .Width("auto")
+                                .OnClick("onSupCityClick")
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtSupCityAr1")
+                                .Value("")
+                                .Width("100%")
+                                )
+                        </td>
                     </tr>
 
                     <tr>
@@ -1071,6 +1308,22 @@
                                 .ID("txtSupState")
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtSupState")
+                                )
+                        </td>
+                        <td>
+                            <label for="Province/stateArabic2" class="form-label text-dark-skyblue">Province / State (Arabic):</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnSupState1")
+                                .Icon("fas fa-language")
+                                .Width("auto")
+                                .OnClick("onSupStateClick")
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtSupStateAr1")
+                                .Value("")
+                                .Width("100%")
                                 )
                         </td>
                     </tr>
@@ -1106,6 +1359,22 @@
                                 .ValidationRules(rules => rules
                                 .AddRequired()  // This adds the required validation rule
                                 )
+                                )
+                        </td>
+                        <td>
+                            <label for="Neighborhood2" class="form-label text-dark-skyblue">Neighborhood (Arabic):</label>
+                        </td>
+                        <td style="display: flex; align-items: center;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnSupDistrict1")
+                                .Icon("fas fa-language")
+                                .Width("auto")
+                                .OnClick("onSupDistrictClick")
+                                )
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtSupDistrictAr1")
+                                .Value("")
+                                .Width("100%")
                                 )
                         </td>
                     </tr>
@@ -1169,6 +1438,27 @@
                                 )
                         </td>
                         <td>
+                            <label>اسم العميل للفوترة</label>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnClientBillingNameArabic")
+                                    .Icon("fas fa-language")
+                                    .Width(35) // Adjust width as needed
+                                    .Height(30) // Adjust height as needed
+                                    .ElementAttr(new { style = "margin-right: 5px;" }) // Add space between button and text box
+                                    .OnClick("onClientBillingNameArabicButtonClick") // JavaScript function for button click
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtClientBillingNameAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtClientBillingNameArabic")
+                                    .RtlEnabled(true)
+                                    )
+                            </div>
+                        </td>
+                        <td>
                             <lable>Client Billing Address</lable>
                         </td>
                         <td colspan="2">
@@ -1183,6 +1473,32 @@
                                 .IsValid(true)  // Optional: Add validation for the textarea (you can also make it mandatory by setting this to false)
                                 )
                         </td>
+                        <td>
+                            <label>عنوان العميل للفوترة</label>
+                        </td>
+                        <td colspan="2">
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnBillingAddressArabic")
+                                    .Icon("fas fa-language")
+                                    .Width(35) // Adjust width as needed
+                                    .Height(30) // Adjust height as needed
+                                    .ElementAttr(new { style = "margin-right: 5px;" }) // Add space between button and text box
+                                    .OnClick("onBillingAddressArabicButtonClick") // JavaScript function for button click
+                                    )
+                                @(Html.DevExtreme().TextArea()
+                                    .ID("txtBillingAddressAr")
+                                    .Name("addressArabic")
+                                    .Value("")
+                                    .Height(100)
+                                    .Width("100%")
+                                    // .Placeholder("أدخل العنوان هنا...")
+                                    .MaxLength(500)
+                                    .IsValid(true)
+                                    .RtlEnabled(true)
+                                    )
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -1193,6 +1509,17 @@
                                 .ID("txtBillingVATRegNo")
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtBillingVATRegNo")
+                                )
+                        </td>
+                        <td>
+                            <label>رقم تسجيل ضريبة القيمة المضافة للعميل</label>
+                        </td>
+                        <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBillingVATRegNoArabic")
+                                .Width("100%")
+                                .InputAttr("aria-label", "txtBillingVATRegNoArabic")
+                                .RtlEnabled(true)  // Enable RTL for Arabic VAT Registration Number
                                 )
                         </td>
                         <td>
@@ -1320,6 +1647,24 @@
                                 .InputAttr("aria-label", "txtObsSupAddress")
                                 )
                         </td>
+                        <td>
+                            <label>عنوان المورد</label>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnArabObsSupAddress")
+                                    // .Text("Action")
+                                    .Width("auto")
+                                    .Icon("fas fa-language")
+                                    .OnClick("onArabObsSupAddressClick")
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtObsSupAddressAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "Arabic Supplier Address"))
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -1331,6 +1676,24 @@
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtObsSupRegNo")
                                 )
+                        </td>
+                        <td>
+                            <label>رقم تسجيل ضريبة القيمة المضافة للموردين</label>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnObsSupRegNoArabic")
+                                    //     .Text("Action")
+                                    .Width("auto")
+                                    .Icon("fas fa-language")
+                                    .OnClick("onObsSupRegNoArabicClick")
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtObsSupRegNoAr")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "Arabic Supplier VAT Registration No"))
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -2437,6 +2800,941 @@
         //     obVATNo
         // )
 
+
+    }
+
+    //english text convert to arabic
+
+    async function translateToArabic(text) {
+
+        try {
+
+
+            const response = await fetch(
+
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+            );
+
+            const data = await response.json();
+            console.log(data);
+            return data.responseData.translatedText;
+
+        } catch (error) {
+
+            console.error("Translation failed:", error);
+
+            return "Translation Error";
+
+        }
+
+    }
+
+    async function convertToArabic() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtAccountHead").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtAccountHeadAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+
+    async function convertAccountNameToArabic() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtBankAccountName").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtBankAccountNameAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function convertBankNameToArabic() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtBankName").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtBankNameAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function convertBankBranchToArabic() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtBankBranch").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtBankBranchAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onDistrictArClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtDistrict").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtDistrictAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onClientAdditionalAddressArClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtClientAdditionalAddress").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtClientAdditionalAddressAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onClientAddressArClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtClientAddress").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtClientAddressAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onClientBillingArClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtClientBilling").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtClientBillingAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onClientCityArClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtClientCity").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtClientCityAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onClientProvinceStateArClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtState").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtStateAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onObsSupRegNoArabicClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtObsSupRegNo").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtObsSupRegNoAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onArabObsSupAddressClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtObsSupAddress").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtObsSupAddressAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+
+    async function onBillingAddressArabicButtonClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtBillingAddress").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtBillingAddressAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+
+    async function onClientBillingNameArabicButtonClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtClientBillingName").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtClientBillingNameAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+    ////
+
+    async function onSupplierNameArabicClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtSupBilling").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtSupBillingAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+
+    async function onSupAddressClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtSupAddress1").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtSupAddressAr1").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+    async function onSupAddressAdditionalClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtSupAdditionalAddress1").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtSupAdditionalAddressAr1").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+
+    async function onSupCityClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtSupCity1").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtSupCityAr1").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+
+    async function onSupStateClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtSupState1").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtSupStateAr1").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+
+    async function onSupDistrictClick() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtSupDistrict1").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtSupDistrictAr1").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
 
     }
 

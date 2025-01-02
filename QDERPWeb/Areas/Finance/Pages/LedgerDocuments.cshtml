@@ -94,6 +94,7 @@
                             .ID("btnAddAHead")
                             .Icon("plus")
                             .Width("100%")
+                            .OnClick("redirecttoledgersubgroup")
                             )
                     </div>
                     <div class="col-6 col-md-1 mt-4">
@@ -126,11 +127,6 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("Remarks")
                             .Value(null)
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired().Message("Remarks is required");
-
-                            })
                             .Width("100%"))
                     </div>
                     <div class="col-12 col-md-2 mt-4">
@@ -167,13 +163,9 @@
                             .DisplayFormat("dd-MMM-yyyy")
                             .Value("") //Specifies the type as a date picker
                             .ID("accountMasterDropDownBoxExpiry")
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired().Message("Document Expiry Date is required");
 
-                            })
                             .ShowClearButton(true)
-                            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                            .Value(DateTime.Now)
                             .Width("100%"))
                     </div>
 
@@ -194,13 +186,9 @@
                             .DisplayFormat("dd-MMM-yyyy")
                             .Value("") //Specifies the type as a date picker
                             .ID("accountMasterDropDownBoxNotification")
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired().Message("Notification Date is required");
 
-                            })
                             .ShowClearButton(true)
-                            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                            .Value(DateTime.Now)
                             .Width("100%"))
                     </div>
                     <div class="col-6 col-md-2">
@@ -229,15 +217,22 @@
                     .Columns(columns =>
                     {
                         columns.AddFor(m => m.DocumentNo).Caption("DocumentNo");
-                        columns.AddFor(m => m.DocumentType).Caption("DocumetType");
+                        columns.AddFor(m => m.DocumentType).Caption("DocumentType");
                         columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref No");
-
                         columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks");
-                        columns.AddFor(m => m.DocumentExpDate).Caption("Expiry On");
-                        columns.AddFor(m => m.DocumentExpDateAr).Caption("Expiry Arabic");
-                        columns.AddFor(m => m.NotifiedOn).Caption("Notify On");
-                    }
-                    )
+
+                        columns.AddFor(m => m.DocumentExpDate)
+                        .Caption("Expiry On")
+                        .Format("dd-MM-yyyy"); // Format date as DD-MM-YYYY
+
+                        columns.AddFor(m => m.DocumentExpDateAr)
+                        .Caption("Expiry Arabic")
+                        .Format("dd-MM-yyyy"); // Format date as DD-MM-YYYY
+
+                        columns.AddFor(m => m.NotifiedOn)
+                        .Caption("Notify On")
+                        .Format("dd-MM-yyyy"); // Format date as DD-MM-YYYY
+                    })
                     .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))
@@ -248,9 +243,11 @@
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
                     .Width("100%")
+                    .OnCellClick("onDocumentNoClick") // Add the click event
                     )
             </div>
         </div>
+
 
         <div class="dx-fieldset horizontal-container mt-2">
 
@@ -364,27 +361,11 @@
     function addVoucherEntry() {
         // debugger;
 
-        //   var DocumentNoValidator = $("#DocumentNo").dxValidator("instance");
+
         var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
-        // var ReferenceNoValidator = $("#ReferenceNo").dxValidator("instance");
-        var RemarksValidator = $("#Remarks").dxValidator("instance");
-        //   var accountMasterDropDownBoxExpiryValidator = $("#accountMasterDropDownBoxExpiry").dxValidator("instance");
-        //     var accountMasterDropDownBoxNotificationValidator = $("#accountMasterDropDownBoxNotification").dxValidator("instance");
-
-        //    var DocumentNoValidation = DocumentNoValidator.validate();
         var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
-        //  var ReferenceNoValidation = ReferenceNoValidator.validate();
-        var RemarksValidation = RemarksValidator.validate();
-        //  var accountMasterDropDownBoxExpiryValidation = accountMasterDropDownBoxExpiryValidator.validate();
-        //     var accountMasterDropDownBoxNotificationValidation = accountMasterDropDownBoxNotificationValidator.validate();
 
-        if (accountMasterDropDownBoxValidation.isValid
-            // && ReferenceNoValidation.isValid
-            &&
-            RemarksValidation.isValid
-            // && accountMasterDropDownBoxExpiryValidation.isValid
-            // && accountMasterDropDownBoxNotificationValidation.isValid
-        ) {
+        if (accountMasterDropDownBoxValidation.isValid) {
 
 
             var VM = {
@@ -416,6 +397,10 @@
                 success: function (response) {
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
                     DevExpress.ui.notify("Document details added succfully!", "success", 2000);
+                    $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value", "-"),
+                        $("#Remarks").dxTextBox("instance").option("value", ""),
+                        $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value", ""),
+                        $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value", "")
                 },
                 error: function (xhr, status, error) {
                     alert("Error occurred while updating data: " + error);
@@ -431,23 +416,16 @@
 
     function UpdateVoucherEntry() {
 
-        //var DocumentNoValidator = $("#DocumentNo").dxValidator("instance");
-        var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
-        //  var ReferenceNoValidator = $("#ReferenceNo").dxValidator("instance");
-        var RemarksValidator = $("#Remarks").dxValidator("instance");
-        // var accountMasterDropDownBoxExpiryValidator = $("#accountMasterDropDownBoxExpiry").dxValidator("instance");
-        // var accountMasterDropDownBoxNotificationValidator = $("#accountMasterDropDownBoxNotification").dxValidator("instance");
 
-        // var DocumentNoValidation = DocumentNoValidator.validate();
+        var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
+
+
         var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
-        //var ReferenceNoValidation = ReferenceNoValidator.validate();
-        var RemarksValidation = RemarksValidator.validate();
-        //  var accountMasterDropDownBoxExpiryValidation = accountMasterDropDownBoxExpiryValidator.validate();
-        //     var accountMasterDropDownBoxNotificationValidation = accountMasterDropDownBoxNotificationValidator.validate();
+
         if (
             //DocumentNoValidation.isValid
-            accountMasterDropDownBoxValidation.isValid &&
-            RemarksValidation.isValid
+            accountMasterDropDownBoxValidation.isValid
+
         ) {
 
             var VU = {
@@ -766,7 +744,48 @@
         }
     });
 
+    function onDocumentNoClick(e) {
+        // Check if the clicked column is "DocumentNo"
+        if (e.column && e.column.dataField === "DocumentNo") {
+            const documentNo = e.data.DocumentNo; // Get the value of the DocumentNo field
+            console.log("Clicked Document No:", documentNo);
 
+            // Trigger any desired action
+            alert(`You clicked on Document No: ${documentNo}`);
+
+            // Optionally, open file explorer
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.style.display = "none";
+
+            // Append the file input temporarily to the document body
+            document.body.appendChild(fileInput);
+
+            // Simulate a click on the file input to open the file explorer
+            fileInput.click();
+
+            // Handle the selected file
+            fileInput.addEventListener("change", () => {
+                console.log("Selected file:", fileInput.files[0]); // Log the selected file
+                document.body.removeChild(fileInput); // Clean up
+            });
+        }
+    }
+
+    function redirecttoledgersubgroup() {
+        const masterFormWindow = window.open(
+            '/Finance/LedgerSubGroupMaster',
+            'popupWindow',
+            'width=800,height=600,scrollbars=yes,resizable=yes'
+        );
+
+        const interval = setInterval(() => {
+            if (masterFormWindow.closed) {
+                clearInterval(interval);
+                // refreshLedgerSubGroupSelectBox();
+            }
+        }, 500);
+    }
 
 
 </script>
