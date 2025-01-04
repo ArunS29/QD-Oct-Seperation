@@ -34,6 +34,17 @@
         margin: 0 auto;
         background-color: #B4E1F5;
     }
+    /* Apply bold text to all DevExtreme buttons */
+    .dx-button .dx-button-text {
+        font-weight: bold;
+    }
+
+    /* Optionally, apply bold text only to specific buttons using their IDs */
+    #btnUpdate .dx-button-text,
+    #btnAllAttachments .dx-button-text,
+    #btnBack .dx-button-text {
+        font-weight: bold;
+    }
 </style>
 
 <h2 class="cards-container-title">Ledger Documents</h2>
@@ -48,7 +59,7 @@
                 <h3>Enter a New Document & Add to the Existing List:</h3>
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
-                        <label>Document No:</label>
+                        <label><strong>Document No:</strong></label>
                         @(Html.DevExtreme().TextBox()
                             .ID("DocumentNo")
                             .Value(null)
@@ -58,7 +69,7 @@
                             )
                     </div>
                     <div class="col-12 col-md-6">
-                        <label>Type of the Document Attached:</label>
+                        <label><strong>Type of the Document Attached:</strong></label>
                         @(Html.DevExtreme().DropDownBox()
                             .DataSource(d => d.WebApi()
                             .Controller("LedgerAccountMaster")
@@ -109,7 +120,7 @@
                 <!-- Second Row -->
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
-                        <label>Reference No:</label>
+                        <label><strong>Reference No:</strong></label>
                         @(Html.DevExtreme().TextBox()
                             .ID("ReferenceNo")
                             .Value(null)
@@ -123,7 +134,7 @@
                             )
                     </div>
                     <div class="col-12 col-md-6">
-                        <label>Remarks/Notes:</label>
+                        <label><strong>Remarks/Notes:</strong></label>
                         @(Html.DevExtreme().TextBox()
                             .ID("Remarks")
                             .Value(null)
@@ -155,7 +166,7 @@
                     .Width("100%"))
                     </div> *@
                     <div class="col-12 col-md-4">
-                        <label>Document Expiry Date:</label>
+                        <label><strong>Document Expiry Date:</strong></label>
                         @(Html.DevExtreme().DateBox()
 
                             .LabelMode(EditorLabelMode.Outside)
@@ -171,14 +182,14 @@
 
 
                     <div class="col-10 col-md-3">
-                        <label>Expiry Date (Hijri):</label>
+                        <label><strong>Expiry Date (Hijri):</strong></label>
                         @(Html.DevExtreme().TextBox()
                             .ID("ExpiryDate")
                             .Value(null)
                             .Width("100%"))
                     </div>
                     <div class="col-10 col-md-3">
-                        <label>Notification Date:</label>
+                        <label><strong>Notification Date:</strong></label>
                         @(Html.DevExtreme().DateBox()
 
                             .LabelMode(EditorLabelMode.Outside)
@@ -216,22 +227,22 @@
                     .RemoteOperations(false)
                     .Columns(columns =>
                     {
-                        columns.AddFor(m => m.DocumentNo).Caption("DocumentNo");
-                        columns.AddFor(m => m.DocumentType).Caption("DocumentType");
-                        columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref No");
-                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks");
+                        columns.AddFor(m => m.DocumentNo).Caption("DocumentNo").HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>);
+                        columns.AddFor(m => m.DocumentType).Caption("DocumentType").HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
+                        columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref No").HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
+                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks").HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
 
                         columns.AddFor(m => m.DocumentExpDate)
-                        .Caption("Expiry On")
-                        .Format("dd-MM-yyyy"); // Format date as DD-MM-YYYY
+                    .Caption("Expiry On")
+                    .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry On</div>); // Format date as DD-MM-YYYY
 
                         columns.AddFor(m => m.DocumentExpDateAr)
-                        .Caption("Expiry Arabic")
-                        .Format("dd-MM-yyyy"); // Format date as DD-MM-YYYY
+                    .Caption("Expiry Arabic")
+                    .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry Arabic</div>);  // Format date as DD-MM-YYYY
 
                         columns.AddFor(m => m.NotifiedOn)
-                        .Caption("Notify On")
-                        .Format("dd-MM-yyyy"); // Format date as DD-MM-YYYY
+                    .Caption("Notify On")
+                    .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Notify On</div>);  // Format date as DD-MM-YYYY
                     })
                     .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
@@ -248,9 +259,7 @@
             </div>
         </div>
 
-
         <div class="dx-fieldset horizontal-container mt-2">
-
             @(Html.DevExtreme().Button()
                 .ID("btnUpdate")
                 .Text("Update")
@@ -262,13 +271,11 @@
                 .Text("Show All Documents")
                 .Icon("save")
                 )
-
             @(Html.DevExtreme().Button()
                 .ID("btnBack")
                 .Text("Back")
                 .Icon("arrowleft")
                 )
-
         </div>
         @using (Html.DevExtreme().NamedTemplate("DocumentAttachedContentTemplate"))
         {
@@ -311,10 +318,6 @@
 
 <!-- Add more cards here following the same structure -->
 <!-- DataGrid -->
-
-
-
-
 <script>
 
     var mARkey = null;
@@ -413,36 +416,27 @@
 
     }
 
-
     function UpdateVoucherEntry() {
-
-
+        // Get validator instances
         var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
-
-
         var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
 
-        if (
-            //DocumentNoValidation.isValid
-            accountMasterDropDownBoxValidation.isValid
-
-        ) {
-
+        // Perform validation
+        if (accountMasterDropDownBoxValidation.isValid) {
+            // Create the Voucher object
             var VU = {
-                // alert($("#VoucherNo").dxTextBox("instance").option("value"));
-                "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
-
-                "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value"),
-
-                "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value"),
-
-                "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value"),
-                "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value"),
-                "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value"),
-                "NotifiedOn": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value")
-
+                "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value") || null,
+                // "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value") || null,
+                "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value") || null,
+                "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value") || null,
+                "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value") || null,
+                "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value") || null,
+                "NotifiedOn": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value") || null
             };
 
+            console.log("Voucher Object:", VU);
+
+            // Perform AJAX call to update the document
             $.ajax({
                 type: "POST",
                 url: "/api/LedgerAccountMaster/UpdateDocument",
@@ -450,62 +444,22 @@
                 data: JSON.stringify(VU),
                 dataType: "json",
                 success: function (response) {
+                    // Update the data grid with the response data
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
-                    DevExpress.ui.notify("Document details updated succfully!", "success", 2000);
+                    DevExpress.ui.notify("Document details updated successfully!", "success", 2000);
                 },
                 error: function (xhr, status, error) {
-                    alert("Error occurred while updating data: " + error);
+                    // Improved error message
+                    alert("Error occurred while updating data: " + xhr.responseText || error);
                 }
             });
         } else {
+            // Notify user about validation failure
             DevExpress.ui.notify("Please fill the required details!", "error", 2000);
         }
-
-        //$("#costAllocationPopup").dxPopup("instance").show();
-
     }
 
-
-    $("#AMbtnSave").on("click", function (e) {
-        e.preventDefault();
-
-        // debugger;
-        var VM = {
-            // alert($("#VoucherNo").dxTextBox("instance").option("value"));
-            "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
-
-            "DocumentType": $("#accountMasterDropDownBox").dxTextBox("instance").option("value"),
-
-            "DocumentRefNo": $("#ReferenceNo").dxDropDownBox("instance").option("value"),
-
-            "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value"),
-            "AccountGroupAr": $("#AccountGroup1").dxTextBox("instance").option("value"),
-            "AccountMasterAr": $("#accountDropDownBoxArabic").dxDropDownBox("instance").option("value"),
-            "AccountGroupUnder": mARresponse
-
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "/api/LedgerAccountMaster/SaveLedgerMasterDetails",
-            contentType: "application/json",
-            data: JSON.stringify(VM),
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
-                    alert("Data saved successfully..");
-                    //   window.location.href = "http://localhost:5000/";
-
-                } else {
-                    alert("Update failed: " + response.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("Error occurred while updating data: " + error);
-            }
-        });
-    });
 
     $("#btnBack").on("click", function (e) {
         e.preventDefault();
@@ -655,55 +609,6 @@
         dataGrid = e.component;
     }
 
-
-
-
-    async function translateToArabic(text) {
-        // try {
-        //     const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`);
-        //     const data = await response.json();
-        //     return data.responseData.translatedText;
-        // } catch (error) {
-        //     console.error("Translation failed:", error);
-        //     return "Translation Error";
-        // }
-        const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar&mt=1`;
-
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-
-            if (data && data.responseData) {
-                return data.responseData.translatedText || "No translation found";
-            } else if (data.matches && data.matches.length > 0) {
-                // Fallback: Check for alternative matches if responseData is empty
-                return data.matches[0].translation || "No match found";
-            } else {
-                return "Translation Error";
-            }
-        } catch (error) {
-            console.error("Translation failed:", error);
-            return "Translation Error";
-        }
-    }
-
-
-    document.getElementById("convertToArabic").addEventListener("click", async () => {
-        const englishText = document.getElementById("AccountGroup").value;
-
-        // if (englishText.trim() === "") {
-        //     alert("Please enter text to translate.");
-        //     return;
-        // }
-
-        // Await the result of the asynchronous translation function
-        const arabicTranslation = await translateToArabic(englishText);
-
-        // Update the Arabic text field with the resolved value
-        const accountGroup1Instance = $("#AccountGroup1").dxTextBox("instance");
-        accountGroup1Instance.option("value", arabicTranslation);
-    });
-
     function onCheckboxInit(e) {
         $(e.element).attr("data-id", e.component.option("id"));
     }
@@ -730,47 +635,70 @@
 
     }
 
+    // Handle the button click to trigger the file input
     function onAttachClicked(e) {
-        // Trigger the hidden file input when the button is clicked
+
         document.getElementById("fileInput").click();
+        //  var docno = $("#DocumentNo").dxTextBox("instance").option("value");
+        // // Handle file selection and upload the file
+        document.getElementById("fileInput").addEventListener("change", function (event) {
+            const files = event.target.files; // Get the selected files
+
+            if (files.length > 0) {
+                const selectedFile = files[0]; // Get the first selected file
+
+                // Display the file name (optional)
+                // alert(`File selected: ${selectedFile.name}`);
+
+                // Create a FormData object to prepare the file for upload
+                const formData = new FormData();
+                formData.append("file", selectedFile);
+
+                // Use AJAX to upload the file to the server
+                $.ajax({
+                    url: "/api/LedgerAccountMaster/UploadFile", // Change to your API endpoint
+                    type: "POST",
+                    data: formData,
+                    processData: false, // Important for FormData
+                    contentType: false, // Important for FormData
+                    success: function (response) {
+                        // Handle successful response
+                        DevExpress.ui.notify("File uploaded successfully!", "success", 2000);
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        alert(`Error uploading file: ${xhr.responseText || error}`);
+                    }
+                });
+            }
+        });
     }
 
-    // Optional: Handle file selection
-    document.getElementById("fileInput").addEventListener("change", function (event) {
-        const files = event.target.files; // Get the selected files
-        if (files.length > 0) {
-            alert(`File selected: ${files[0].name}`);
-            // Perform additional actions, such as uploading the file
-        }
-    });
-
     function onDocumentNoClick(e) {
-        // Check if the clicked column is "DocumentNo"
         if (e.column && e.column.dataField === "DocumentNo") {
-            const documentNo = e.data.DocumentNo; // Get the value of the DocumentNo field
-            console.log("Clicked Document No:", documentNo);
+            // Get the DocumentNo value
+            var documentNo = e.data.DocumentNo;
 
-            // Trigger any desired action
-            alert(`You clicked on Document No: ${documentNo}`);
-
-            // Optionally, open file explorer
-            const fileInput = document.createElement("input");
-            fileInput.type = "file";
-            fileInput.style.display = "none";
-
-            // Append the file input temporarily to the document body
-            document.body.appendChild(fileInput);
-
-            // Simulate a click on the file input to open the file explorer
-            fileInput.click();
-
-            // Handle the selected file
-            fileInput.addEventListener("change", () => {
-                console.log("Selected file:", fileInput.files[0]); // Log the selected file
-                document.body.removeChild(fileInput); // Clean up
+            // Send the DocumentNo to the server
+            $.ajax({
+                type: "POST",
+                url: "/api/LedgerAccountMaster/OpenFileExplorer", // Adjust the URL to match your controller/action
+                data: { documentNo: documentNo },
+                success: function (response) {
+                    if (response.success) {
+                        alert("File explorer opened successfully.");
+                    } else {
+                        alert("Failed to open file explorer: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred: " + error);
+                }
             });
         }
     }
+
+
 
     function redirecttoledgersubgroup() {
         const masterFormWindow = window.open(

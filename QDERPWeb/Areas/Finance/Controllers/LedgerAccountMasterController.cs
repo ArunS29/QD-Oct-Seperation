@@ -1,4 +1,5 @@
 ﻿//using DevExpress.Xpo;
+using System.Diagnostics;
 using System.Xml.Linq;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
@@ -350,25 +351,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
 
 
-                // Find the existing document by DocumentNo
+                //  Find the existing document by DocumentNo
                 var document = await _context.Tbl20116LedgerDocuments
                     .FirstOrDefaultAsync(d => d.DocumentNo == updatedDocument.DocumentNo);
 
-                if (document == null)
-                {
-                    return NotFound("Document not found.");
-                }
+                //if (document == null)
+                //{
+                //    return NotFound("Document not found.");
+                //}
 
-                // Update the fields
-                document.DocumentType = updatedDocument.DocumentType;
-                document.DocumentRefNo = updatedDocument.DocumentRefNo;
-                document.DocumentRemarks = updatedDocument.DocumentRemarks;
-                document.DocumentExpDate = updatedDocument.DocumentExpDate;
-                document.DocumentExpDateAr = updatedDocument.DocumentExpDateAr;
-                document.NotifiedOn = updatedDocument.NotifiedOn;
+                //// Update the fields
+                //document.DocumentType = updatedDocument.DocumentType;
+                //document.DocumentRefNo = updatedDocument.DocumentRefNo;
+                //document.DocumentRemarks = updatedDocument.DocumentRemarks;
+                //document.DocumentExpDate = updatedDocument.DocumentExpDate;
+                //document.DocumentExpDateAr = updatedDocument.DocumentExpDateAr;
+                //document.NotifiedOn = updatedDocument.NotifiedOn;
 
-                // Save changes to the database
-                await _context.SaveChangesAsync();
+                //// Save changes to the database
+                //await _context.SaveChangesAsync();
 
                 var qryListOfAccountlists = _context.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == document.DocumentNo).Select(i => new
                 {
@@ -525,29 +526,74 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
-        //[HttpGet]
-        //public IActionResult GetAgainstPayable([FromQuery] string inputParameter)
-        //{
-        //    var result = _context.Qry20167SalaryLedgerPayableBalances
-        //        .Where(s => s.EmployeeNo == inputParameter)
-        //        .Select(s => new
-        //        {
-        //            s.EmployeeNo,
-        //            s.EmployeeName,
-        //            s.ReferenceNo,
-        //            s.PayableAmount,
-        //            s.Paid,
-        //            s.Balance
-        //        });
 
-        //    if (result == null || !result.Any())
-        //    {
-        //        return NotFound(new { Message = "No records found for the specified EmployeeNo." });
-        //    }
+        [HttpPost]
+        public async Task<IActionResult> UploadFile(IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("No file uploaded.");
+                }
 
-        //    return Json(result);
-        //}
+                // Use a configurable path for storing uploads
+                var uploadsFolder = @"D:\!QuickDiceDMS-\VoucherScanned"; // Updated the path here
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder); // Ensure the directory exists
+                }
+
+                // Sanitize file name
+                var fileName = Path.GetFileName(file.FileName);
+
+                // Check if the file already exists
+                var filePath = Path.Combine(uploadsFolder, fileName);
+                if (System.IO.File.Exists(filePath))
+                {
+                    return Conflict(new { Message = "File with the same name already exists." });
+                }
+
+                // Save the file
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                return Ok(new { Message = "File uploaded successfully.", FilePath = filePath });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (using a logger is recommended)
+                return StatusCode(500, new { Message = "An error occurred while uploading the file.", Details = ex.Message });
+            }
+        }
 
 
+        [HttpPost]
+        public IActionResult OpenFileExplorer(string documentNo)
+        {
+            try
+            {
+                documentNo = "0";
+                // Construct the path
+                var basePath = @"D:\!QuickDiceDMS-\VoucherScanned";
+                var filePath = System.IO.Path.Combine(basePath);
+
+                // Open the file explorer at the specified path
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = filePath,
+                    UseShellExecute = true
+                });
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }
