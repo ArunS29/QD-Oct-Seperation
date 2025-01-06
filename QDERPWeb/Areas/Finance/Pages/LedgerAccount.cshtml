@@ -70,15 +70,15 @@
     }
 
     /*     .dx-editor-outlined .dx-label span {
-                   font-weight:bold !important;
-                } */
+                       font-weight:bold !important;
+                    } */
 
     .custom-textbox input {
         background-color: #1f216d;
         font-weight: bold !important;
         color: white !important; /* Use !important to override DevExtreme styles */
         /*   border: 3px solid #282222;
-                  border-radius: 8px !important; */
+                      border-radius: 8px !important; */
     }
 
     .custom-textbox1 input {
@@ -91,6 +91,7 @@
         /*  border-radius: 8px !important; */
     }
 </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 
 <input id="formId" value="frm201LedgerAccount" type="hidden" />
 
@@ -133,7 +134,7 @@
         <div class="d-flex align-items-center">
             @(Html.DevExtreme().DropDownBox()
                 .DataSource(d => d.WebApi()
-            .Controller("AccountLedgerMaster")
+                .Controller("AccountLedgerMaster")
                 .LoadAction("getAccountingLedger")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("AccountGroupId") // This is the unique key for the data source
@@ -757,14 +758,24 @@
                             </label>
                         </td>
                         <td colspan="3">
-                            @(Html.DevExtreme().TextBox()
-                                .ID("txtClientBilling")
-                                .Width("100%")
-                                .InputAttr("aria-label", "Client Billing")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                            <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                    .ID("dwnarrow")
+                                    .Width("auto")
+                                    .Icon("fas fa-chevron-down")
+                                    .OnClick("onDownArrowClick")
+
+                                    )
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtClientBilling")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "Client Billing")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
+
+                            </div>
                         </td>
                         <td>
                             <label>اسم الفوترة:</label>
@@ -1116,6 +1127,7 @@
                                 .AddRequired()  // This adds the required validation rule
                                 )
                                 )
+
                         </td>
                         <td>
                             <label for="SupplierNameArabic" class="form-label text-dark-skyblue fw-bold">اسم المورد:</label>
@@ -1725,225 +1737,235 @@
 @using (Html.DevExtreme().NamedTemplate("AccountGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("ledgeraccount-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                .LoadAction("getAccountingLedger")
-                .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("AccountGroupId")
+                    .ID("ledgeraccount-datagrid")
+                    .DataSource(d => d.WebApi()
+                        .Controller("AccountLedgerMaster")
+                    .LoadAction("getAccountingLedger")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("AccountGroupId")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("dataGridSelectionChanged")
+                    .OnInitialized("dataGridInitialized")
+                    .HeaderFilter(p => p.Visible(true))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(false))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("AccountGroup");
+                    })
                 )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                .SearchPanel(sp => sp.HighlightSearchText(true))
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                .OnSelectionChanged("dataGridSelectionChanged")
-                .OnInitialized("dataGridInitialized")
-                .HeaderFilter(p => p.Visible(true))
-                .ShowBorders(true)
-                .HoverStateEnabled(true)
-                .Paging(p => p.PageSize(15))
-                .FilterRow(f => f.Visible(false))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(345)
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("AccountGroup");
-                })
-            )
 }
 
 @using (Html.DevExtreme().NamedTemplate("DrCrContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("DrCraccount-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("AccountLedgerMaster")
-                    .LoadAction("getCreditDebit")
-                .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("OpeningBalanceDrCr")
+                    .ID("DrCraccount-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("AccountLedgerMaster")
+                        .LoadAction("getCreditDebit")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("OpeningBalanceDrCr")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .ShowColumnHeaders(false)
+                     .FilterRow(f => f.Visible(false))
+                     .SearchPanel(sp => sp.HighlightSearchText(false))
+                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                    .OnSelectionChanged("DrCrdataGridSelectionChanged")
+                    .OnInitialized("DrCrdataGridInitialized")
+                         .HeaderFilter(p => p.Visible(false))
+        .ShowBorders(true)
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(130)
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("OpeningBalanceDrCr");
+                    })
                 )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                .ShowColumnHeaders(false)
-                 .FilterRow(f => f.Visible(false))
-                 .SearchPanel(sp => sp.HighlightSearchText(false))
-                .Selection(sl => sl.Mode(SelectionMode.Single))
-                .OnSelectionChanged("DrCrdataGridSelectionChanged")
-                .OnInitialized("DrCrdataGridInitialized")
-                     .HeaderFilter(p => p.Visible(false))
-    .ShowBorders(true)
-    .HoverStateEnabled(true)
-    .Paging(p => p.PageSize(15))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(130)
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("OpeningBalanceDrCr");
-                })
-            )
 }
 
 @using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("branch-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("AccountLedgerMaster")
-                .LoadAction("getAccountBranch")
-                .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("BranchCode")
-                )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-
-                @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                .OnSelectionChanged("branchdataGridSelectionChanged")
-                .OnInitialized("branchdataGridInitialized")
-                @*.HeaderFilter(p => p.Visible(true))
-    .ShowBorders(true)
-    .HoverStateEnabled(true)
-    .Paging(p => p.PageSize(15))*@
-                .FilterRow(f => f.Visible(false))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(200)
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("BranchName");
-                })
-                )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                .ID("subgroup-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("AccountLedgerMaster")
-                .LoadAction("getSubGroup")
-                .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("LedgerSubGroupCode")
-                )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                .OnSelectionChanged("subgroupdataGridSelectionChanged")
-                    .OnInitialized("subgroupdataGridInitialized")
-         @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-         .FilterRow(f => f.Visible(false))
-                //.FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(200)
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("SubGroupName");
-                })
-            )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                .ID("sales-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("AccountLedgerMaster")
-                .LoadAction("getSalesPersonList")
-                .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("SalesPersonCode")
-                )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                     .FilterRow(f => f.Visible(false))
-                @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                .OnSelectionChanged("salesdataGridSelectionChanged")
-                    .OnInitialized("salesdataGridInitialized")
-                @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                // .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(200)
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("SalesPersonName");
-                })
-            )
-}
-
-@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                    .ID("othertype-datagrid")
+                    .ID("branch-datagrid")
                     .DataSource(d => d.WebApi()
                     .Controller("AccountLedgerMaster")
-                        .LoadAction("getOtherIDTypes")
+                    .LoadAction("getAccountBranch")
                     .LoadMode(DataSourceLoadMode.Raw)
-                         .Key("BuyerOtherIDType")
+                        .Key("BranchCode")
                     )
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
+
                     @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                        .OnSelectionChanged("othertypedataGridSelectionChanged")
-                        .OnInitialized("othertypedataGridInitialized")
-                        @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                        .FilterRow(f => f.Visible(true))
+                    .OnSelectionChanged("branchdataGridSelectionChanged")
+                    .OnInitialized("branchdataGridInitialized")
+                    @*.HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+                    .FilterRow(f => f.Visible(false))
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                     .Height(200)
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("BuyerIDTypeName");
+                        columns.Add().DataField("BranchName");
+                    })
+                    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("subgroup-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("AccountLedgerMaster")
+                    .LoadAction("getSubGroup")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("LedgerSubGroupCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("subgroupdataGridSelectionChanged")
+                        .OnInitialized("subgroupdataGridInitialized")
+             @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+             .FilterRow(f => f.Visible(false))
+                    //.FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(200)
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("SubGroupName");
                     })
                 )
 }
 
-@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("billingpayment-datagrid")
+                    .ID("sales-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("AccountLedgerMaster")
+                    .LoadAction("getSalesPersonList")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("SalesPersonCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                         .FilterRow(f => f.Visible(false))
+                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("salesdataGridSelectionChanged")
+                        .OnInitialized("salesdataGridInitialized")
+                    @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                    // .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(200)
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("SalesPersonName");
+                    })
+                )
+}
+
+@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("othertype-datagrid")
                         .DataSource(d => d.WebApi()
                         .Controller("AccountLedgerMaster")
-                            .LoadAction("getBillingPayments")
+                            .LoadAction("getOtherIDTypes")
                         .LoadMode(DataSourceLoadMode.Raw)
-                             .Key("BillingAccountID")
+                             .Key("BuyerOtherIDType")
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
                         @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("billingdataGridSelectionChanged")
-                            .OnInitialized("billingdataGridInitialized")
+                            .OnSelectionChanged("othertypedataGridSelectionChanged")
+                            .OnInitialized("othertypedataGridInitialized")
+                            @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
                             .FilterRow(f => f.Visible(true))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(200)
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("BillingAccountHead");
+                            columns.Add().DataField("BuyerIDTypeName");
                         })
                     )
+}
+
+@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("billingpayment-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AccountLedgerMaster")
+                                .LoadAction("getBillingPayments")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                                 .Key("BillingAccountID")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                .OnSelectionChanged("billingdataGridSelectionChanged")
+                                .OnInitialized("billingdataGridInitialized")
+                                .FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(200)
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("BillingAccountHead");
+                            })
+                        )
 }
 
 
 <script>
     //Tab events
     $(document).ready(function () {
+
+        var urlParams = new URLSearchParams(window.location.search);
+        var accountGroupId = urlParams.get('AccountGroupId');
+
+        if (accountGroupId) {
+            // Set the value in the DropDownBox and make it readonly
+            $('#ddlAccountGroup').dxDropDownBox('instance').option('value', accountGroupId);
+            $('#ddlAccountGroup').dxDropDownBox('instance').option('disabled', true); // Make it readonly
+        }
+
 
         // Show the content of the selected tab
         var selectedTabIndex = 0;
@@ -2086,7 +2108,7 @@
     function redirectAccoutledgerMaster() {
 
         const masterFormWindow = window.open(
-            '/Finance/LedgerAccountMaster',
+            '/Finance/LedgerAccount?AccountGroupId=A013',
             'popupWindow',
             'width=1400,height=600,scrollbars=yes,resizable=yes'
         );
@@ -2099,6 +2121,25 @@
             }
         }, 500);
     }
+
+    function onDownArrowClick() {
+        // Get the TextBox instances
+        const clientBillingTextBox = $("#txtClientBilling").dxTextBox("instance");
+        const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
+
+        // Get the value from txtClientBilling
+        const accountHeadValue = accountHeadTextBox.option("value");
+
+        // Check if the value is not empty
+        if (accountHeadValue && accountHeadValue.trim() !== "") {
+            // Set the value of txtAccountHead to txtClientBilling value
+            clientBillingTextBox.option("value", accountHeadValue);
+        } else {
+            // If txtClientBilling is empty or null, show an alert
+            alert("Account Head Name cannot be empty.");
+        }
+    }
+
 
     function refreshaccountledgerSelectBox() {
         const accountledgerselectbox = $("#ddlAccountGroup").dxSelectBox("instance"); // Ensure ID matches Razor
@@ -3376,11 +3417,11 @@
 
         // Get the TextBox1 (input) instance
 
-        const textBox1Instance = $("#txtBillingAddress").dxTextBox("instance");
+        const textBox1Instance = $("#txtBillingAddress").dxTextArea("instance");
 
         // Get the TextBox2 (output) instance
 
-        const textBox2Instance = $("#txtBillingAddressAr").dxTextBox("instance");
+        const textBox2Instance = $("#txtBillingAddressAr").dxTextArea("instance");
 
         // Ensure both instances are initialized
 
@@ -3512,9 +3553,11 @@
 
     async function onSupAddressClick() {
 
+
         // Get the TextBox1 (input) instance
 
-        const textBox1Instance = $("#txtSupAddress1").dxTextBox("instance");
+        const textBox1Instance = $("#txtSupAddress").dxTextBox("instance");
+
 
         // Get the TextBox2 (output) instance
 
@@ -3559,7 +3602,7 @@
 
         // Get the TextBox1 (input) instance
 
-        const textBox1Instance = $("#txtSupAdditionalAddress1").dxTextBox("instance");
+        const textBox1Instance = $("#txtSupAdditionalAddress").dxTextBox("instance");
 
         // Get the TextBox2 (output) instance
 
@@ -3605,7 +3648,7 @@
 
         // Get the TextBox1 (input) instance
 
-        const textBox1Instance = $("#txtSupCity1").dxTextBox("instance");
+        const textBox1Instance = $("#txtSupCity").dxTextBox("instance");
 
         // Get the TextBox2 (output) instance
 
@@ -3651,7 +3694,7 @@
 
         // Get the TextBox1 (input) instance
 
-        const textBox1Instance = $("#txtSupState1").dxTextBox("instance");
+        const textBox1Instance = $("#txtSupState").dxTextBox("instance");
 
         // Get the TextBox2 (output) instance
 
@@ -3697,7 +3740,7 @@
 
         // Get the TextBox1 (input) instance
 
-        const textBox1Instance = $("#txtSupDistrict1").dxTextBox("instance");
+        const textBox1Instance = $("#txtSupDistrict").dxTextBox("instance");
 
         // Get the TextBox2 (output) instance
 
