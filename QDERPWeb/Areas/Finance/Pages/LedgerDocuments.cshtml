@@ -222,28 +222,30 @@
         <div class="col-12">
             <div class="dx-field ledgerResult">
                 @(
-                    Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20116LedgerDocument>()
-                    .ID("dataGrid")
-                    .RemoteOperations(false)
-                    .Columns(columns =>
-                    {
-                        columns.AddFor(m => m.DocumentNo).Caption("DocumentNo").HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>);
-                        columns.AddFor(m => m.DocumentType).Caption("DocumentType").HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
-                        columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref No").HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
-                        columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks").HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
+                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20116LedgerDocument>()
+                        .ID("dataGrid")
+                        .RemoteOperations(false)
+                        .Columns(columns =>
+                        {
+                            columns.AddFor(m => m.DocumentNo).Caption("DocumentNo")
+                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+                        .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>);
+                            columns.AddFor(m => m.DocumentType).Caption("DocumentType").HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
+                            columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref No").HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
+                            columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks").HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
 
-                        columns.AddFor(m => m.DocumentExpDate)
-                    .Caption("Expiry On")
-                    .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry On</div>); // Format date as DD-MM-YYYY
+                            columns.AddFor(m => m.DocumentExpDate)
+                        .Caption("Expiry On")
+                        .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry On</div>); // Format date as DD-MM-YYYY
 
-                        columns.AddFor(m => m.DocumentExpDateAr)
-                    .Caption("Expiry Arabic")
-                    .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry Arabic</div>);  // Format date as DD-MM-YYYY
+                            columns.AddFor(m => m.DocumentExpDateAr)
+                        .Caption("Expiry Arabic")
+                        .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry Arabic</div>);  // Format date as DD-MM-YYYY
 
-                        columns.AddFor(m => m.NotifiedOn)
-                    .Caption("Notify On")
-                    .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Notify On</div>);  // Format date as DD-MM-YYYY
-                    })
+                            columns.AddFor(m => m.NotifiedOn)
+                        .Caption("Notify On")
+                        .Format("dd-MM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Notify On</div>);  // Format date as DD-MM-YYYY
+                        })
                     .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))
@@ -362,59 +364,90 @@
     });
 
     function addVoucherEntry() {
-        // debugger;
-
-
+        // Get the validator instance for the dropdown
         var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
         var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
 
+        // Validate input fields
         if (accountMasterDropDownBoxValidation.isValid) {
-
-
+            // Prepare the VM (View Model) for the API call
             var VM = {
-                // alert($("#VoucherNo").dxTextBox("instance").option("value"));
-
                 "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
-
                 "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value"),
-
                 "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value"),
-
                 "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value"),
                 "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value"),
                 "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value"),
                 "NotifiedOn": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value")
-
             };
-            // Get ReferenceNo from selected row
+
+            // Get selected row data from the data grid
             var selectedRowData = $("#accountpaymentamount-datagrid").dxDataGrid("instance").getSelectedRowsData();
 
+            // Check if selectedRowData is valid and has at least one row
+            if (!selectedRowData || selectedRowData.length === 0) {
+                DevExpress.ui.notify("Please select a row in the grid!", "error", 2000);
+                return;
+            }
 
+            // Extract DocumentType from the selected row
+            var documentType = selectedRowData[0].DocumentType;
+
+            // Make the AJAX POST request
             $.ajax({
                 type: "POST",
-                url: `/api/LedgerAccountMaster/AddDocumentsEntry?DocumentType=${encodeURIComponent(selectedRowData[0].DocumentType)}`, // Pass value as a query parameter
-                //url: "/api/LedgerAccountMaster/AddDocumentsEntry",
+                url: `/api/LedgerAccountMaster/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
                 contentType: "application/json",
                 data: JSON.stringify(VM),
                 dataType: "json",
                 success: function (response) {
+                    // Update the grid data source with the new response
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                    DevExpress.ui.notify("Document details added succfully!", "success", 2000);
-                    $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value", "-"),
-                        $("#Remarks").dxTextBox("instance").option("value", ""),
-                        $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value", ""),
-                        $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value", "")
+
+                    // Notify the user of successful operation
+                    DevExpress.ui.notify("Document details added successfully!", "success", 2000);
+
+                    // Reset form fields
+                    resetFormFields();
+
+                    // Refresh the DocumentNo field
+                    fetchNewDocumentNo();
                 },
                 error: function (xhr, status, error) {
-                    alert("Error occurred while updating data: " + error);
+                    console.error("Error occurred while updating data:", error);
+                    DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 2000);
                 }
             });
         } else {
             DevExpress.ui.notify("Please fill the required details!", "error", 2000);
         }
-        //$("#costAllocationPopup").dxPopup("instance").show();
-
     }
+
+
+    // Function to reset form fields
+    function resetFormFields() {
+        $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value", "-");
+        $("#Remarks").dxTextBox("instance").option("value", "");
+        $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value", null);
+        $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value", null);
+    }
+
+    // Function to fetch the new DocumentNo
+    function fetchNewDocumentNo() {
+        $.ajax({
+            url: "/api/LedgerAccountMaster/GetDocumentNo",
+            type: "GET",
+            success: function (data) {
+                // Set the value in the DocumentNo TextBox
+                $("#DocumentNo").dxTextBox("instance").option("value", data);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading DocumentNo:", error);
+                DevExpress.ui.notify("Error loading DocumentNo!", "error", 2000);
+            }
+        });
+    }
+
 
     function UpdateVoucherEntry() {
         // Get validator instances

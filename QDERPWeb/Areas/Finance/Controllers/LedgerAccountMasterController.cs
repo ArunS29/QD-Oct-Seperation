@@ -264,42 +264,92 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetDocumentNo(DataSourceLoadOptions loadOptions)
-        {
-            // Get the voucher No. string and Get the next serial of the voucher No.
+        //    [HttpGet]
+        //    public async Task<ActionResult> GetDocumentNo(DataSourceLoadOptions loadOptions)
+        //    {
+        //        // Get the voucher No. string and Get the next serial of the voucher No.
 
 
-            int newAccountGroupID;
-            string DocumentNo = "";
-            // SQL query to get the max voucher number
+        //        int newAccountGroupID;
+        //        string DocumentNo = "";
+        //        // SQL query to get the max voucher number
 
 
-            string sql = "SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo " +
-                          "FROM Tbl20116LedgerDocuments ";
+        //        string sql = "SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo " +
+        //                      "FROM Tbl20116LedgerDocuments ";
 
-            try
-            {
-                var results = await _context.VoucherResults
-    .FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20116LedgerDocuments")
-    .ToListAsync();
+        //        try
+        //        {
 
-                int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
+        //            var results = await _context.VoucherResults
+        //.FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20116LedgerDocuments")
+        //.ToListAsync();
 
-
-                newAccountGroupID = MaxAccountGroupID + 1;
-                DocumentNo = newAccountGroupID.ToString();
+        //            int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
 
 
-            }
-            catch (Exception)
-            {
-                // Handle cases where there's no existing voucher number
-                DocumentNo = "1";
-            }
+        //            newAccountGroupID = MaxAccountGroupID + 1;
+        //            DocumentNo = newAccountGroupID.ToString();
 
-            return Json(DocumentNo);
-        }
+
+        //        }
+        //        catch (Exception)
+        //        {
+        //            // Handle cases where there's no existing voucher number
+        //            DocumentNo = "1";
+        //        }
+
+        //        return Json(DocumentNo);
+        //    }
+
+        //    [HttpPost]
+        //    public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument documentdetails,string DocumentType)
+        //    {
+        //        if (documentdetails == null)
+        //        {
+        //            return BadRequest(new { success = false, message = "Invalid data received." });
+        //        }
+        //        int newAccountGroupID;
+        //        string DocumentNo = "";
+
+        //        try
+        //        {
+        //            //var PaymentAccount = "Select AccountHead From tbl201ChartOfAccounts where AccountGroupID = 'A012'and AccountHead = ''";
+
+        //            // Add entries to the database
+
+        //            var results = await _context.VoucherResults
+        //.FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20116LedgerDocuments")
+        //.ToListAsync();
+
+        //            int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
+
+
+        //            newAccountGroupID = MaxAccountGroupID + 1;
+        //            documentdetails.DocumentNo = newAccountGroupID.ToString();
+        //            _context.Tbl20116LedgerDocuments.Add(documentdetails);
+
+
+        //            await _context.SaveChangesAsync();
+        //            var qryListOfAccountlists = _context.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == documentdetails.DocumentNo).Select(i => new
+        //            {
+        //                i.DocumentNo,
+        //                //i.DocumentType,
+        //                i.DocumentRefNo,
+        //                DocumentType,
+        //                i.DocumentRemarks,
+        //                i.DocumentExpDate,
+        //                i.DocumentExpDateAr,
+        //                i.NotifiedOn,
+        //            });
+
+        //            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //        }
+        //    }
 
         [HttpPost]
         public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument documentdetails, string DocumentType)
@@ -311,24 +361,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                //var PaymentAccount = "Select AccountHead From tbl201ChartOfAccounts where AccountGroupID = 'A012'and AccountHead = ''";
+                // Generate a new document number.
+                var newDocumentNo = await GenerateDocumentNoAsync();
+                documentdetails.DocumentNo = newDocumentNo;
 
-                // Add entries to the database
+                // Add the new document entry to the database.
                 _context.Tbl20116LedgerDocuments.Add(documentdetails);
-
-
                 await _context.SaveChangesAsync();
-                var qryListOfAccountlists = _context.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == documentdetails.DocumentNo).Select(i => new
-                {
-                    i.DocumentNo,
-                    //i.DocumentType,
-                    i.DocumentRefNo,
-                    DocumentType,
-                    i.DocumentRemarks,
-                    i.DocumentExpDate,
-                    i.DocumentExpDateAr,
-                    i.NotifiedOn,
-                });
+
+                // Query to fetch and return the newly added document details.
+                var qryListOfAccountlists = _context.Tbl20116LedgerDocuments
+                    .Where(p => p.DocumentRefNo == documentdetails.DocumentRefNo)
+                    .Select(i => new
+                    {
+                        i.DocumentNo,
+                        //i.DocumentType,
+                        i.DocumentRefNo,
+                        DocumentType,
+                        i.DocumentRemarks,
+                        i.DocumentExpDate,
+                        i.DocumentExpDateAr,
+                        i.NotifiedOn,
+                    });
 
                 return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
             }
@@ -337,6 +391,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateDocument(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument updatedDocument)
@@ -595,5 +650,43 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        private async Task<string> GenerateDocumentNoAsync()
+        {
+            string documentNo = "1"; // Default value if no records exist.
+            int newAccountGroupID;
+
+            try
+            {
+                // Query to get the maximum document number.
+
+                var results = await _context.VoucherResults
+    .FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20116LedgerDocuments")
+    .ToListAsync();
+
+                int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
+
+
+                newAccountGroupID = MaxAccountGroupID + 1;
+                documentNo = newAccountGroupID.ToString();
+
+            }
+            catch
+            {
+                // Handle any potential errors by using default "1".
+                documentNo = "1";
+            }
+
+            return documentNo;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetDocumentNo(DataSourceLoadOptions loadOptions)
+        {
+            var documentNo = await GenerateDocumentNoAsync();
+            return Json(documentNo);
+        }
+
+
     }
 }
