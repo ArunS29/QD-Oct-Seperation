@@ -1,4 +1,4 @@
-﻿//using DevExpress.Xpo;
+﻿
 using System.Diagnostics;
 using System.Xml.Linq;
 using DevExtreme.AspNet.Data;
@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 
-using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
+//using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -686,7 +686,5 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             var documentNo = await GenerateDocumentNoAsync();
             return Json(documentNo);
         }
-
-
     }
 }
