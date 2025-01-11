@@ -350,10 +350,19 @@
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("save")
                     )
+                @* @(Html.DevExtreme().Button()
+                .ID("btnUpdate")
+                .Text("Update")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                )   *@
                 @(Html.DevExtreme().Button()
                     .ID("btnBack")
                     .Text("Back")
                     .Icon("arrowleft")
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
                     .OnClick("navigateToHome")
                     )
             </div>
@@ -442,9 +451,10 @@
 
 <script>
     let dataGrid;
+
     $(function () {
         $("#costCenterComboBox").dxSelectBox({
-            dataSource: {
+            dataSource: new DevExpress.data.CustomStore({
                 load: function (loadOptions) {
                     return $.ajax({
                         url: "/api/CostCenterMaster/GetCostAllocationGroup", // Replace with your API endpoint
@@ -452,8 +462,15 @@
                         data: loadOptions,
                         type: "GET"
                     });
+                },
+                byKey: function (key) {
+                    return $.ajax({
+                        url: "/api/CostCenterMaster/GetCostCenterByKey", // Use an appropriate API endpoint for this
+                        data: { key: key },
+                        type: "GET"
+                    });
                 }
-            },
+            }),
             displayExpr: "CostAllocationGroup", // Field to display in ComboBox
             valueExpr: "CostAllocationUnitId", // Field to use as the value
             placeholder: "Select or Enter a Cost Center Group",
@@ -462,14 +479,12 @@
             inputAttr: { style: "text-align: left;" },
             onCustomItemCreating: function (args) {
                 const newValue = args.text; // The custom value entered by the user
-                // Optionally, you can send the custom value to the server or add it to the dataSource dynamically
                 return {
                     CostAllocationUnitId: newValue, // Assign a unique ID or key
                     CostAllocationGroup: newValue  // Use the entered value as the display text
                 };
             },
             onValueChanged: function (args) {
-                // Handle value changes (custom or selected)
                 const selectedValue = args.value;
                 console.log("Selected/Entered Value:", selectedValue);
             }
@@ -478,7 +493,7 @@
 
     $(function () {
         $("#costCenterMaster1").dxSelectBox({
-            dataSource: {
+            dataSource: new DevExpress.data.CustomStore({
                 load: function (loadOptions) {
                     return $.ajax({
                         url: "/api/CostCenterMaster/GetCostAllocationMasterGroup", // Replace with your API endpoint
@@ -486,8 +501,15 @@
                         data: loadOptions,
                         type: "GET"
                     });
+                },
+                byKey: function (key) {
+                    return $.ajax({
+                        url: "/api/CostCenterMaster/GetCostCenterMasterGroupByKey", // Use your specific endpoint for fetching a single record by key
+                        data: { key: key },
+                        type: "GET"
+                    });
                 }
-            },
+            }),
             displayExpr: "CostAllocationMasterGroup", // Field to display in ComboBox
             valueExpr: "CostAllocationUnitId", // Field to use as the value
             placeholder: "Select or Enter a Cost Center MasterGroup",
@@ -496,21 +518,19 @@
             inputAttr: { style: "text-align: left;" },
             onCustomItemCreating: function (args) {
                 const newValue = args.text; // The custom value entered by the user
-                // Optionally, you can send the custom value to the server or add it to the dataSource dynamically
                 return {
                     CostAllocationUnitId: newValue, // Assign a unique ID or key
                     CostAllocationMasterGroup: newValue  // Use the entered value as the display text
                 };
             },
             onValueChanged: function (args) {
-                // Handle value changes (custom or selected)
                 const selectedValue = args.value;
                 console.log("Selected/Entered Value:", selectedValue);
             }
         });
     });
 
-    //GetBranchDropDown
+    // GetBranchDropDown
     function dataGridSelectionChangedbranch(e) {
         const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
         const ddbInstance = $("#GetBranchCodeDropDown").dxDropDownBox("instance");
@@ -561,6 +581,38 @@
     }
 
     $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const costAllocationUnitId = urlParams.get('CostAllocationUnitId');
+
+        if (costAllocationUnitId) {
+            // Change the Save button to Update
+            // $("#btnSave").text("Update");
+            var button = $("#btnSave").dxButton("instance");
+            button.option("text", "Update");
+
+            // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
+            $.ajax({
+                url: `/api/ChartOfCostCenters/GetCostCenterById?id=${costAllocationUnitId}`,
+                type: "GET",
+                success: function (response) {
+                    if (response.success) {
+                        // Bind data to form fields
+                        $("#CostAllocationUnitID").dxTextBox("instance").option("value", response.data.CostAllocationUnitId);
+                        $("#CostAllocationUnit").dxTextBox("instance").option("value", response.data.CostAllocationUnit);
+                        $("#costCenterComboBox").dxSelectBox("instance").option("value", response.data.CostAllocationGroup);
+                        $("#costCenterMaster1").dxSelectBox("instance").option("value", response.data.CostAllocationMasterGroup);
+                        $("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.data.ProjectMasterCode);
+                        $("#GetBranchCodeDropDown").dxDropDownBox("instance").option("value", response.data.BranchCode);
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while fetching the Cost Center data.");
+                }
+            });
+        }
+
         // Define the fields array for validation
         const fields = [
             { id: "#CostAllocationUnitID", message: "Cost Allocation Unit ID is required." },
@@ -602,6 +654,46 @@
                 type: "GET",
                 data: { costAllocationUnitId: costAllocationUnitId },
                 dataType: "json"
+            });
+        }
+
+        function updateCostCenterMaster(costAllocationUnitId) {
+            const costAllocationUnit = $("#CostAllocationUnit").dxTextBox("instance").option("value");
+            const costAllocationGroup = $("#costCenterComboBox").dxSelectBox("instance").option("value");
+            const costAllocationMasterGroup = $("#costCenterMaster1").dxSelectBox("instance").option("value");
+            const costUnitRemarks = $("#CostUnitRemarks").dxTextBox("instance").option("value");
+            const costCenterIncharge = $("#CostCenterIncharge").dxTextBox("instance").option("value");
+            const projectMasterCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
+            const branchCode = $("#GetBranchCodeDropDown").dxDropDownBox("instance").option("value");
+            const isDisabled = $("#Discontinued").dxCheckBox("instance").option("value");
+
+            const data = {
+                CostAllocationUnitId: costAllocationUnitId,
+                CostAllocationUnit: costAllocationUnit,
+                CostAllocationGroup: costAllocationGroup,
+                CostAllocationMasterGroup: costAllocationMasterGroup,
+                CostUnitRemarks: costUnitRemarks,
+                CostCenterIncharge: costCenterIncharge,
+                ProjectMasterCode: projectMasterCode,
+                BranchCode: branchCode,
+                IsDisabled: isDisabled
+            };
+
+            $.ajax({
+                url: "/api/CostCenterMaster/UpdateCostCenterMaster", // Use API endpoint for update
+                type: "PUT", // PUT request for updating
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.success) {
+                        DevExpress.ui.notify(response.message, "success", 3000);
+                    } else {
+                        DevExpress.ui.notify(response.message, "error", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("An error occurred while updating the data.", "error", 3000);
+                }
             });
         }
 
@@ -682,15 +774,23 @@
             });
         }
 
-        // Save Button Click Event
-        $("#btnSave").on("click", function () {
-            saveCostCenterMaster();
-        });
 
+        // Save/Update Button Click Event
+        $("#btnSave").on("click", function () {
+            if (costAllocationUnitId) {
+                // If CostAllocationUnitId is present, perform update
+                updateCostCenterMaster(costAllocationUnitId);
+            } else {
+                // Otherwise, perform save
+                saveCostCenterMaster();
+            }
+        });
     });
 
     function navigateToHome() {
         window.location.href = '/';
     }
+
 </script>
+
 

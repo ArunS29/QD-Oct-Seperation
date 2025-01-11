@@ -131,6 +131,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[qry20108ChartOfCostCenters]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry20121ExpenseClaimForm]",
          "ObjectType": 3
       },

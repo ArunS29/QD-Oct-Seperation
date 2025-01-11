@@ -18,6 +18,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Qry20107ChartOfAccount> Qry20107ChartOfAccounts { get; set; }
 
+    public virtual DbSet<Qry20108ChartOfCostCenter> Qry20108ChartOfCostCenters { get; set; }
+
     public virtual DbSet<Qry201206depreciationChild> Qry201206depreciationChildren { get; set; }
 
     public virtual DbSet<Qry20121ExpenseClaimForm> Qry20121ExpenseClaimForms { get; set; }
@@ -347,6 +349,42 @@ public partial class ERPMasterWtDataContext : DbContext
                 .HasColumnName("SupplierVATNo");
             entity.Property(e => e.VoucherAbbr)
                 .HasMaxLength(3)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Qry20108ChartOfCostCenter>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry20108ChartOfCostCenters");
+
+            entity.Property(e => e.BranchCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.BranchName).IsUnicode(false);
+            entity.Property(e => e.CostAllocationGroup).IsUnicode(false);
+            entity.Property(e => e.CostAllocationMasterGroup).IsUnicode(false);
+            entity.Property(e => e.CostAllocationUnit).IsUnicode(false);
+            entity.Property(e => e.CostAllocationUnitId)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("CostAllocationUnitID");
+            entity.Property(e => e.CostCenterIncharge).IsUnicode(false);
+            entity.Property(e => e.CostUnitRemarks).IsUnicode(false);
+            entity.Property(e => e.CreatedBy).IsUnicode(false);
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.ProjectDescription).IsUnicode(false);
+            entity.Property(e => e.ProjectDuration)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ProjectLocation)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.ProjectMasterCode)
+                .HasMaxLength(25)
                 .IsUnicode(false);
         });
 

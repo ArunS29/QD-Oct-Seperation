@@ -580,6 +580,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
         }
+        [HttpPost]
+        public IActionResult CheckIsMaintainBillByBill([FromBody] string accheadname)
+        {
+            var result = _context.Qry201ListOfAccounts
+                .Where(a => a.IsMaintainBillByBill == true && a.AccountHead == accheadname)
+                .Any();
+
+            return Ok(result);
+        }
 
     }
 }

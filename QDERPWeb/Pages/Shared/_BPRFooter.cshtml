@@ -58,89 +58,42 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
-
-    #previewModal {
-        border: 1px solid #ccc;
-    }
-
-    .bold-button .dx-button-text {
-        font-weight: bold;
-    }
 </style>
 <div class="dx-fieldset horizontal-container mt-2">
 
-    @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text("Save")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-        )
     @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text("Save and Close")
+        .ID("btnUpdateAndClose")
+        .Text("Update")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("save")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
         .ID("btnPreview")
         .Text("Preview")
         .Icon("fullscreen")
-        .OnClick("function() { openPreview(); }")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
         )
-    <div id="previewModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000;">
-        <h3>Preview</h3>
-        <pre id="previewContent">Loading...</pre>
-    </div>
     @(Html.DevExtreme().Button()
-        .ID("btnPrint")
+        .ID("btnPrint1")
         .Text("Print")
         .Icon("print")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
-        .ID("btnDelete")
+        .ID("btnDelete1")
         .Text("Delete")
         .Icon("close")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
-        .ID("btnBack")
+        .ID("btnBackERP")
         .Text("Back")
         .Icon("arrowleft")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        // .OnClick("function() { hidePopup(); }")
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnVerify")
-        .Text("Verify")
-        .Icon("check")
-        .OnClick("onVerifyButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnApprove")
-        .Text("Approve")
-        .Icon("exportselected")
-        .OnClick("onApproveButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text("Attach")
-        .Icon("link")
-        .OnClick("openAttachmentOptions")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
 </div>
 <script type="text/javascript">
-
     // Hide context menu on click outside
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");
@@ -341,5 +294,4 @@
             reader.readAsText(file);
         }
     });
-
 </script>

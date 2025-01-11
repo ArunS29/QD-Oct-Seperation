@@ -1,0 +1,167 @@
+﻿@page
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+
+
+
+    .button-alignment-down {
+        margin-bottom: 10px
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    .dx-datagrid {
+        color: #000000;
+    }
+
+    .center-checkbox {
+        display: block;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .dx-datagrid .dx-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+</style>
+<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+        FinancesModules - Chart Of Cost Centers
+    </div>
+    <div class="card-body" style="padding: 20px; background-color: #c0dceb; border-radius: 5px;">
+        <div id="dataGridContainer" class="dx-field ledgerResult">
+            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20108ChartOfCostCenter>()
+                .ID("dataGrid")
+                .KeyExpr("CostAllocationUnit")
+                .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("ChartOfCostCenters")
+                .LoadAction("GetChartOfCostCenters"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").CellTemplate(@<text>
+                <a href="/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank">
+                    <%-data.CostAllocationUnitId%>
+                </a>
+            </text>);
+                    columns.Add().DataField("CostAllocationUnit").Caption("Cost Center Unit");
+                    columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Center Master").GroupIndex(0);
+                    columns.Add().DataField("CostAllocationGroup").Caption("Cost Center Group").GroupIndex(1);
+                    columns.Add().DataField("IsDisabled").Caption("Is Disabled").CellTemplate(@<text>
+                <input type="checkbox" class="dx-checkbox" />
+            </text>);
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(500)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .Grouping(grouping => grouping.AutoExpandAll(true))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%")
+                .OnInitialized("dataGridInitialized") // Store the DataGrid instance
+                .OnContextMenuPreparing("onContextMenuPreparing") // Handle right-click event
+
+                )
+        </div>
+
+
+
+        <div>
+            @await Html.PartialAsync("FooterChartOfCostCenters")
+        </div>
+    </div>
+
+
+
+
+    <script>
+        let dataGridInstance = null; // Store the DataGrid instance globally
+        let selectedRowData = null; // Store the selected row data
+
+        // Store the DataGrid instance when it's initialized
+        function dataGridInitialized(e) {
+            dataGridInstance = e.component;
+        }
+
+        // Handle the context menu event
+        function onContextMenuPreparing(e) {
+            if (e.row && e.row.rowType === "data") {
+                // Row was right-clicked
+                e.items = [
+                    {
+                        text: "Edit Cost Center",
+                        onItemClick: function () {
+                            selectedRowData = e.row.data; // Get the row data
+                         //   alert(selectedRowData.IsDisabled)
+                            if (!selectedRowData) {
+                                alert("No row selected");
+                            } else {
+                                // Navigate to the EditCostCenter page
+                                window.location.href = `/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}`;
+                                //&CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
+                            }
+                        }
+                    },
+                    {
+                        text: "Delete Cost Center",
+                        onItemClick: function () {
+                            selectedRowData = e.row.data; // Get the row data
+                         //   alert(selectedRowData.CostAllocationUnitId)
+                            if (!selectedRowData) {
+                                alert("No row selected");
+                            } else {
+                                if (confirm(`Are you sure you want to delete Cost Center: ${selectedRowData.CostAllocationUnitId}?`)) {
+                                    // Perform delete operation via AJAX
+
+                                    $.post(`/api/ChartOfCostCenters/DeleteCostCenter?id=${encodeURIComponent(selectedRowData.CostAllocationUnitId)}`, function () {
+                                        alert("Cost Center deleted successfully!");
+                                        dataGridInstance.refresh(); // Refresh the grid
+                                    });
+                                }
+                            }
+                        }
+                    }
+                ];
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+

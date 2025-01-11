@@ -1,4 +1,5 @@
-﻿<style type="text/css">
+﻿
+<style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
@@ -58,89 +59,90 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
-
-    #previewModal {
-        border: 1px solid #ccc;
-    }
-
-    .bold-button .dx-button-text {
-        font-weight: bold;
-    }
 </style>
-<div class="dx-fieldset horizontal-container mt-2">
+<div class="dx-fieldset horizontal-container">
 
-    @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text("Save")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+    @* <div id="ddButtonLayout"></div> *@
+
+
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddButtonLayout")
+        .Text("Layout")
+        .Icon("smalliconslayout")
+        .Width(180)
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu"); ;
+            items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
+            items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
+            items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
+            items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
+        })
+        .ShowArrowIcon(true)
+
+        @* .OnItemClick("addRecipitsButton_click") *@
 
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text("Save and Close")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnPreview")
-        .Text("Preview")
-        .Icon("fullscreen")
-        .OnClick("function() { openPreview(); }")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
-    <div id="previewModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000;">
-        <h3>Preview</h3>
-        <pre id="previewContent">Loading...</pre>
-    </div>
+
     @(Html.DevExtreme().Button()
         .ID("btnPrint")
         .Text("Print")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
         .Icon("print")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .Width(180)
         )
     @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text("Delete")
-        .Icon("close")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ID("btnToggleSearch")
+        .Text("Search")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("search")
+        .Width(180)
+        .OnClick("function() { toggleFilterRow(); }")
         )
     @(Html.DevExtreme().Button()
-        .ID("btnBack")
-        .Text("Back")
-        .Icon("arrowleft")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ID("btntoggleGroupPanel")
+        .Text("Group")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("hierarchy")
+        .Width(180)
+        .OnClick("toggleGroupPanel")
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnVerify")
-        .Text("Verify")
-        .Icon("check")
-        .OnClick("onVerifyButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-        )
     @(Html.DevExtreme().Button()
-        .ID("btnApprove")
-        .Text("Approve")
-        .Icon("exportselected")
-        .OnClick("onApproveButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .ID("btnAddNewCostCenter")
+        .Text("Add New Cost Center")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("add")
+        .Width(180)
+        .OnClick("createNewCostCenter")
+        )
+    @*  @(Html.DevExtreme().Button()
+    .ID("btnEditCostCenter")
+    .Text("Edit Cost Center")
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+    .Icon("doc")
+    .Width(180)
+    //.OnClick("createNewCostCenter")
+    )
+    @(Html.DevExtreme().Button()
+    .ID("btnDeleteCostCenter")
+    .Text("Delete Cost Center")
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+    .Icon("doc")
+    .Width(180)
+    //  .OnClick("createNewCostCenter")
+    ) *@
 
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text("Attach")
-        .Icon("link")
-        .OnClick("openAttachmentOptions")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
 </div>
-<script type="text/javascript">
 
+<script type="text/javascript">
     // Hide context menu on click outside
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");
@@ -286,6 +288,7 @@
 
         grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
     }
+
     // Footer Recipits button event
     function addRecipitsButton_click(e) {
         DevExpress.ui.notify(e.itemData, "success", 600);
@@ -341,5 +344,37 @@
             reader.readAsText(file);
         }
     });
+    function refreshPage() {
+        // Logic to refresh the current page or reload data in a specific grid
+        location.reload(); // Reloads the entire page
+        // Or refresh a specific grid, for example:
+        // $("#YourGridID").dxDataGrid("instance").refresh();
+    }
+
+    function createNewCostCenter() {
+        // Show a notification for feedback
+        DevExpress.ui.notify("Create CostCenterMaster clicked", "info", 2000);
+
+        // Perform desired logic here
+        // Example: Redirecting to another page or opening a modal
+        window.location.href = "/Finance/CostCenterMaster"; // Change to your desired URL
+
+        // Or, if using a modal
+        // $("#createPaymentModal").modal("show");
+
+        // Optionally, make an API call
+        // $.ajax({
+        //     url: '/api/payment/create',
+        //     type: 'POST',
+        //     data: { /* Data to send */ },
+        //     success: function(response) {
+        //         DevExpress.ui.notify("Payment Request Created Successfully", "success", 2000);
+        //     },
+        //     error: function(error) {
+        //         DevExpress.ui.notify("Error creating payment request", "error", 2000);
+        //     }
+        // });
+    }
 
 </script>
+

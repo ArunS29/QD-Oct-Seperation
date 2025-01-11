@@ -184,6 +184,47 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<ActionResult> UpdateCostCenterMaster([FromBody] Tbl201CostAllocationUnit VM)
+        {
+            if (VM == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                // Use the EntityFrameworkCore extension for FirstOrDefaultAsync
+                var existingUnit = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
+                    .FirstOrDefaultAsync(_context.Tbl201CostAllocationUnits
+                        .Where(x => x.CostAllocationUnitId == VM.CostAllocationUnitId));
+
+                if (existingUnit == null)
+                {
+                    return BadRequest(new { success = false, message = "Cost Allocation Unit ID does not exist." });
+                }
+
+                // Update the existing unit with new values
+                existingUnit.CostAllocationUnit = VM.CostAllocationUnit;
+                existingUnit.CostAllocationGroup = VM.CostAllocationGroup;
+                existingUnit.CostAllocationMasterGroup = VM.CostAllocationMasterGroup;
+                existingUnit.CostUnitRemarks = VM.CostUnitRemarks;
+                existingUnit.CostCenterIncharge = VM.CostCenterIncharge;
+                existingUnit.ProjectMasterCode = VM.ProjectMasterCode;
+                existingUnit.BranchCode = VM.BranchCode;
+                existingUnit.IsDisabled = VM.IsDisabled;
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Data updated successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
 
     }
 
