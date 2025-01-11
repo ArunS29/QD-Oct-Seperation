@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html>
 <head>
@@ -36,7 +36,7 @@
     <script src="~/js/devextreme/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
-     @* <script src="~/js/devextreme/bootstrap.js"></script> *@
+    @* <script src="~/js/devextreme/bootstrap.js"></script> *@
 
     @* Uncomment to use Globalize for localization *@
     @* Docs: https://docs.devexpress.com/AspNetCore/400577#globalize *@
@@ -63,361 +63,358 @@
     <script src="~/js/devextreme/aspnet/dx.aspnet.data.js"></script>
     <script src="~/js/custom/datagrid-dynamic-conditional-formatting.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
+        /* General Styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            /* overflow-x: hidden; /* Prevent horizontal scrolling */ */
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #c0dceb; /* Sky Blue color */
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+            .sidebar a {
+                padding: 8px 8px 8px 32px;
+                text-decoration: none;
+                font-size: 15px;
+                color: #818181;
+                display: block;
+                transition: 0.3s;
+            }
+
+                .sidebar a:hover {
+                    color: black;
+                }
+
+            .sidebar .closebtn {
+                position: absolute;
+                top: 0;
+                right: 25px;
+                font-size: 36px;
+                margin-left: 50px;
+            }
+
+
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #c0dceb;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+        }
+
+            .openbtn:hover {
+                background-color: #c0dceb;
+            }
+
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+
+
+        /* Main Content Styles */
+        #mContent {
+            /* margin-left: 250px; /* Aligns with the sidebar width */ */ transition: margin-left 0.3s ease; /* Smooth transition when toggling */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1020;
+        }
+
+        .navbar-toggler {
+            font-size: 1.5rem;
+            border: none;
+            background: none;
+        }
+
+        /* Dropdown Menu Scroll */
         .nav-item .dropdown-menu {
-            max-height: 650px; /* Adjust the height */
+            max-height: 650px; /* Adjust dropdown height */
             overflow-y: auto; /* Enable scrolling */
         }
+
+        /* Adjustments for Small Screens */
+        @@media (max-width: 768px) {
+            #sideMenu {
+                width: 0; /* Collapse sidebar */
+            }
+
+            #mContent {
+                margin-left: 0; /* Full width for main content */
+            }
+        }
+
+        /* Submenu Styles */
+        .context-menu {
+            display: none;
+            position: absolute;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 1000;
+            border-radius: 5px;
+        }
+
+        .context-menu-item div {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+
+            .context-menu-item div:hover {
+                background-color: #f1f1f1;
+            }
+
+        .context-menu-item i {
+            margin-right: 8px;
+            color: #333;
+        }
+
+        .context-menu-item span {
+            font-size: 13px;
+            color: #333;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f1f1f1;
+            color: #666;
+            border-top: 1px solid #ccc;
+        }
+
+            footer a {
+                text-decoration: none;
+                color: #666;
+                margin: 0 10px;
+            }
+
+                footer a:hover {
+                    color: #000;
+                }
     </style>
+
 </head>
 
 
-<body style="padding-top: 3.5rem;">
+<body style="">
 
-    <nav class="navbar navbar-dark bg-dark fixed-top navbar-expand-md">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">DemoPOC</a>
+    <!-- Sidebar -->
+    <div class="container">
+        <div class="row">
 
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="col-md-12">
+                <div class="container-fluid">
 
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a href="/" class="nav-link active">Home</a></li>
-                    <li class="nav-item"><a href="/#about" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="/#contact" class="nav-link">Contact</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Finance
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="financeDropdown">
-                            <!-- Your dropdown items go here -->
-                            <li><a href="/Finance/AccountingLedgers" class="dropdown-item">Accounting Ledgers</a></li>
-                            <li><a href="/Finance/AccountingRegister" class="dropdown-item">Accounting Registers</a></li>
-                            <li><a href="/Finance/Assetview" class="dropdown-item">Asset View</a></li>
-                            <li><a href="/Finance/Voucherjournal" class="dropdown-item">Voucher journal</a></li>
-                            <li><a href="/Finance/VoucherApproval" class="dropdown-item">Voucher Approval</a></li>
-                            <li><a href="/Finance/ChartOfAccounts" class="dropdown-item">Chart Of Accounts</a></li>
-                            <li><a href="/Finance/ExpensesClaims" class="dropdown-item">Expenses Claims</a></li>
-                            <li><a href="/Finance/ExpensesClaim" class="dropdown-item">Expenses Claim With Detail</a></li>
-                            <li><a href="/Finance/JournalRegister" class="dropdown-item">Journal Register</a></li>
-                            <li><a href="/Finance/PurchaseVoucher" class="dropdown-item">Purchase Voucher</a></li>
-                            <li><a href="/Finance/SalesVoucher" class="dropdown-item">Sales Voucher</a></li>
-                            <li><a href="/Finance/VoucherEntryCashReceipts" class="dropdown-item">CashReceipts</a></li>
-                            <li><a href="/Finance/VoucherEntryReceipts" class="dropdown-item">Bank Receipts</a></li>
-                            <li><a href="/Finance/VoucherCashPayment" class="dropdown-item">Voucher Cash Payment</a></li>
-                            <li><a href="/Finance/VoucherBankPayment" class="dropdown-item">Voucher Bank Payment</a></li>
-                            <li><a href="/Finance/LedgerAccountMaster" class="dropdown-item">LedgerAccountMaster</a></li>
-                            <li><a href="/Finance/LedgerAccount" class="dropdown-item">Ledger Account Entry</a></li>
-                            <li><a href="/Finance/divmaster" class="dropdown-item">Branch Master</a></li>
-                            <li><a href="/Finance/AssetCategoryView" class="dropdown-item">Asset Category Master</a></li>
-                            <li><a href="/Finance/AssetLocation" class="dropdown-item">Assets Location Master</a></li>
-                            <li><a href="/Finance/AssetMaintanenceMaster" class="dropdown-item">Asset Maintanence Master</a></li>
-                            <li><a href="/Finance/Salespersonmaster" class="dropdown-item">Sales Person Master</a></li>
-                            <li><a href="/Finance/LedgerSubGroupMaster" class="dropdown-item">Ledger Sub Group Master</a></li>
-                            <li><a href="/Finance/AssetsDocTypeMaster" class="dropdown-item">Assets DocType Master</a></li>
-                            @* <li><a href="/Finance/Asset" class="dropdown-item">Asset</a></li> *@
-                            <li><a href="/Finance/BillsPayable" class="dropdown-item">Bills Payable</a></li>
-                            <li><a href="/Finance/BillsReceivable" class="dropdown-item">Bills Receiveable</a></li>
-                            <li><a href="/Finance/SalaryPayableDetails" class="dropdown-item">Salary Payable Details</a></li>
-                            <li><a href="/Finance/salarypayable" class="dropdown-item">Salary Payable By Date</a></li>
-                            <li><a href="/Finance/CostCenterMaster" class="dropdown-item">Cost Center Master</a></li>
-                             <li><a href="/Finance/SupplierPaymentRequest" class="dropdown-item">Supplier Payment Request</a></li>
-                              <li><a href="/Finance/TrialBalanceCustom" class="dropdown-item">Trial Balance Custom</a></li>
-                            <li><a href="/Finance/chartofcostcenters" class="dropdown-item">Chart of Cost Center</a></li>
 
-                        </ul>
-                    </li>
-                   @*  <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Master
-                        </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="\Finance\divmaster">Division</a></li>
-                        <li><a class="dropdown-item" href="\Finance\AssetCategoryView">AssetCategory</a></li>
-                        <li><a class="dropdown-item" href="\Finance\AssetLocation">AssetLocation</a></li>
-                        <li><a class="dropdown-item" href="\Finance\AssetMaintanenceMaster">AssetMaintanence</a></li>
-                        <li><a class="dropdown-item" href="\Finance\Salespersonmaster">Salespersonmaster</a></li>
-                        <li><a class="dropdown-item" href="\Finance\LedgerSubGroupMaster">Subgroup</a></li>
-                        <li><a class="dropdown-item" href="\Finance\AssetsDocTypeMaster">AssetsDocType</a></li>
-                        <li><a class="dropdown-item" href="\Finance\Asset">Asset Entry</a></li>
 
-                    </ul>
-                    </li> *@
-                </ul>
+
+
+                    <main id="main" class="container">
+
+                        <div id="main">
+                            <button class="openbtn" onclick="openNav()"> ☰ </button>
+
+                        </div>
+                        <div id="mySidebar" class="sidebar">
+                            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+
+                            <a href="/"><i class="fas fa-chart-pie"></i> My Dashboard</a>
+                            <a href="#"><i class="fas fa-check-square"></i> Voucher Verification</a>
+                            <a href="/Finance/BillsReceivable"><i class="fas fa-file-invoice"></i> Bills Receivables</a>
+                            <a href="/Finance/BillsPayable"><i class="fas fa-file-invoice-dollar"></i> Bills Payables</a>
+                            <a href="/Finance/SalaryPayableDetails"><i class="fas fa-money-check-alt"></i> Salary Payable</a>
+                            <a href="#"><i class="fas fa-chart-line"></i> Cost Analysis</a>
+                            <a href="#"><i class="fas fa-chart-bar"></i> Cost Reports By Branch</a>
+                            <a href="/Finance/ChartOfAccounts"><i class="fas fa-th-list"></i> Chart of Accounts</a>
+                            <a href="/Finance/ChartOfCostCenters"><i class="fas fa-sitemap"></i> Chart of Cost Centers</a>
+                            <a href="#"><i class="fas fa-chart-area"></i> Financial Reports</a>
+                            <a href="/Finance/Assetview"><i class="fas fa-warehouse"></i> Asset Register</a>
+                            <a href="#"><i class="fas fa-plus-square"></i> New Dashboard</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Finance
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="financeDropdown">
+                                    <!-- Your dropdown items go here -->
+                                    <li><a href="/Finance/AccountingLedgers" class="dropdown-item">Accounting Ledgers</a></li>
+                                    <li><a href="/Finance/AccountingRegister" class="dropdown-item">Accounting Registers</a></li>
+                                    <li><a href="/Finance/Assetview" class="dropdown-item">Asset View</a></li>
+                                    <li><a href="/Finance/Voucherjournal" class="dropdown-item">Voucher journal</a></li>
+                                    <li><a href="/Finance/VoucherApproval" class="dropdown-item">Voucher Approval</a></li>
+                                    <li><a href="/Finance/ChartOfAccounts" class="dropdown-item">Chart Of Accounts</a></li>
+                                    <li><a href="/Finance/ExpensesClaims" class="dropdown-item">Expenses Claims</a></li>
+                                    <li><a href="/Finance/ExpensesClaim" class="dropdown-item">Expenses Claim With Detail</a></li>
+                                    <li><a href="/Finance/JournalRegister" class="dropdown-item">Journal Register</a></li>
+                                    <li><a href="/Finance/PurchaseVoucher" class="dropdown-item">Purchase Voucher</a></li>
+                                    <li><a href="/Finance/SalesVoucher" class="dropdown-item">Sales Voucher</a></li>
+                                    <li><a href="/Finance/VoucherEntryCashReceipts" class="dropdown-item">CashReceipts</a></li>
+                                    <li><a href="/Finance/VoucherEntryReceipts" class="dropdown-item">Bank Receipts</a></li>
+                                    <li><a href="/Finance/VoucherCashPayment" class="dropdown-item">Voucher Cash Payment</a></li>
+                                    <li><a href="/Finance/VoucherBankPayment" class="dropdown-item">Voucher Bank Payment</a></li>
+                                    <li><a href="/Finance/LedgerAccountMaster" class="dropdown-item">LedgerAccountMaster</a></li>
+                                    <li><a href="/Finance/LedgerAccount" class="dropdown-item">Ledger Account Entry</a></li>
+                                    <li><a href="/Finance/divmaster" class="dropdown-item">Branch Master</a></li>
+                                    <li><a href="/Finance/AssetCategoryView" class="dropdown-item">Asset Category Master</a></li>
+                                    <li><a href="/Finance/AssetLocation" class="dropdown-item">Assets Location Master</a></li>
+                                    <li><a href="/Finance/AssetMaintanenceMaster" class="dropdown-item">Asset Maintanence Master</a></li>
+                                    <li><a href="/Finance/Salespersonmaster" class="dropdown-item">Sales Person Master</a></li>
+                                    <li><a href="/Finance/LedgerSubGroupMaster" class="dropdown-item">Ledger Sub Group Master</a></li>
+                                    <li><a href="/Finance/AssetsDocTypeMaster" class="dropdown-item">Assets DocType Master</a></li>
+                                    <li><a href="/Finance/CostCenterMaster" class="dropdown-item">CostCenterMaster</a></li>
+                                    <li><a href="/Finance/BillsPayable" class="dropdown-item">Bills Payable</a></li>
+                                    <li><a href="/Finance/BillsReceivable" class="dropdown-item">Bills Receiveable</a></li>
+                                    <li><a href="/Finance/SalaryPayableDetails" class="dropdown-item">Salary Payable Details</a></li>
+                                    <li><a href="/Finance/BillsPayableReceivable" class="dropdown-item">Bills Payable Receivable</a></li>
+                                    <li><a href="/Finance/salarypayable" class="dropdown-item">Salary Payable By Date</a></li>
+                                    <li><a href="/Finance/CostCenterMaster" class="dropdown-item">Cost Center Master</a></li>
+                                    <li><a href="/Finance/SupplierPaymentRequest" class="dropdown-item">Supplier Payment Request</a></li>
+                                    <li><a href="/Finance/TrialBalanceCustom" class="dropdown-item">Trial Balance Custom</a></li>
+                                    <li><a href="/Finance/chartofcostcenters" class="dropdown-item">Chart of Cost Center</a></li>
+
+                                </ul>
+                            </li>
+                        </div>
+
+
+
+                        <input type="file" id="loadLayoutInput" accept=".json" style="display: none;" />
+                        <div id="rowHeightMenu"></div>
+                        <!-- Submenu-->
+                        <div id="submenuContainer" class="context-menu" style="display:none;">
+                            <div class="context-menu-item">
+                                <div style="margin-bottom:5px;" onclick="ChangeRowHeight(30)">
+                                    <i style="color:black" class="fa fa-th-list">
+                                        <span style="color:black">Short</span>
+                                    </i>
+                                </div>
+                                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(40)">
+                                    <i style="color:black" class="fa fa-th-list">
+                                        <span>Medium</span>
+                                    </i>
+                                </div>
+                                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(60)">
+                                    <i style="color:black" class="fa fa-th-list">
+                                        <span style="color:black">Tall</span>
+                                    </i>
+                                </div>
+                                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(70)">
+                                    <i style="color:black" class="fa fa-th-list">
+                                        <span style="color:black">Extra Tall</span>
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Submenu1-->
+                        <div id="submenuContainer1" class="context-menu" style="display:none;">
+                            <div class="context-menu-item1">
+                                <div onclick="ChangeRowHeight(70)">
+                                    <i class="fa fa-th-list"></i>
+                                    <span>Receivables Ageing Report</span>
+                                </div>
+                                <div onclick="ChangeRowHeight(70)">
+                                    <i class="fa fa-th-list"></i>
+                                    <span>Receivables Ageing Report (By Sales Person)</span>
+                                </div>
+                                <div onclick="ChangeRowHeight(70)">
+                                    <i class="fa fa-th-list"></i>
+                                    <span>Receivables Ageing Report (Customizable)</span>
+                                </div>
+                                <div onclick="ChangeRowHeight(70)">
+                                    <i class="fa fa-th-list"></i>
+                                    <span>Receivables Ageing Summary</span>
+                                </div>
+                                <div onclick="ChangeRowHeight(70)">
+                                    <i class="fa fa-th-list"></i>
+                                    <span>Receivables Ageing Summary (Customizable)</span>
+                                </div>
+                            </div>
+                        </div>
+                        @RenderBody()
+                        <footer class="footer mt-auto content-container-bottom">
+
+                            <div class="container">
+                                <span class="text-muted">© 2024 My Application. All rights reserved.</span>
+                                <a href="/privacy" class="text-muted">Privacy Policy</a>
+                                <a href="/terms" class="text-muted">Terms of Service</a>
+                            </div>
+                        </footer>
+                    </main>
+
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <main class="container" style="margin-top: 1.5rem;">
-        <input type="file" id="loadLayoutInput" accept=".json" style="display: none;" />
-        <div id="rowHeightMenu"></div>
-        <!-- Submenu-->
-        <div id="submenuContainer" class="context-menu" style="display:none;">
-            <div class="context-menu-item">
-                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(40)">
-                    <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Short</span>
-                    </i>
-                </div>
-                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(50)">
-                    <i style="color:black" class="fa fa-th-list">
-                        <span>Medium</span>
-                    </i>
-                </div>
-                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(60)">
-                    <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Tall</span>
-                    </i>
-                </div>
-                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(70)">
-                    <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Extra Tall</span>
-                    </i>
-                </div>
-            </div>
-        </div>
 
-          <!-- Submenu-->
-<div id="submenuContainer1" class="context-menu" style="display:none;">
-<div class="context-menu-item1">
-<div onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Receivables Ageing Report</span>
-</div>
-<div onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Receivables Ageing Report (By Sales Person)</span>
-</div>
-<div onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Receivables Ageing Report (Customizable)</span>
-</div>
-<div onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Receivables Ageing Summary</span>
-</div>
-<div onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Receivables Ageing Summary (Customizable)</span>
-</div>
-</div>
-</div>
 
-        @RenderBody()
-        <footer class="footer mt-auto content-container-bottom">
-         
-            <div class="container">
-                <span class="text-muted">� 2024 My Application. All rights reserved.</span>
-                <a href="/privacy" class="text-muted">Privacy Policy</a>
-                <a href="/terms" class="text-muted">Terms of Service</a>
-            </div>
-        </footer>
-    </main>
-   @*   <script type="text/javascript">
-         // Hide context menu on click outside
-         $(document).on("click", function () {
-             var contextMenu = $("#contextMenu");
-             contextMenu.hide();
-             var $submenu = $('#submenuContainer');
-             $submenu.hide(); // Hide the submenu popup
-         });
-
-         // Handle the file selection
-         $("#loadLayoutInput").on("change", function (event) {
-             const dataGrid = $("#dataGrid").dxDataGrid("instance");
-             const file = event.target.files[0];
-
-             if (file) {
-                 const reader = new FileReader();
-
-                 reader.onload = function (e) {
-                     try {
-                         // Parse the JSON string from the file
-                         const layout = JSON.parse(e.target.result);
-
-                         // Restore the grid state
-                         dataGrid.state(layout);
-                     } catch (error) {
-                         console.error("Error parsing JSON:", error);
-                         alert("Failed to load layout. Please ensure the file is valid JSON.");
-                     }
-                 };
-
-                 // Read the file as text
-                 reader.readAsText(file);
-             }
-         });
-         function saveLayoutClick(e) {
-             var grid = $("#dataGrid").dxDataGrid("instance");
-             var layout = grid.state();
-             const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-             //console.log(layoutJson);
-             // Create a Blob from the JSON string
-             const blob = new Blob([layoutJson], { type: "application/json" });
-             // Create a URL for the Blob
-             const url = URL.createObjectURL(blob);
-             // Create a link element
-             const a = document.createElement("a");
-             a.href = url;
-             a.download = "grid-layout.json"; // Set the file name for download
-             // Append the link to the body (needed for Firefox)
-             document.body.appendChild(a);
-             // Programmatically click the link to trigger the download
-             a.click();
-             // Clean up by removing the link and revoking the Object URL
-             document.body.removeChild(a);
-             URL.revokeObjectURL(url);
-             //DevExpress.ui.notify("Layout", "success", 600);
-         }
-         function openLayoutClick(e) {
-             $("#loadLayoutInput").click();
-         }
-
-         function loadGridState() {
-             var form = $('#formId').val();
-             // Call the API to get the grid state
-             $.ajax({
-                 url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-                 method: 'GET',
-                 data:{
-                     form: form
-                 },
-                 success: function (response) {
-                     // Get the DataGrid instance
-                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-                     // Load the state into the DataGrid
-                     if (response) {
-                         try {
-                             // Parse the JSON string from the file
-                             const layout = JSON.parse(response);
-
-                             // Restore the grid state
-                             dataGrid.state(layout);
-                         } catch (error) {
-                             console.error("Error parsing JSON:", error);
-                             alert("Failed to load layout. Please ensure the JSON is valid.");
-                         }
-                     }
-                 },
-                 error: function (xhr, status, error) {
-                     console.error("Error loading grid state:", error);
-                 }
-             });
-         }
-         function setDefaultLayoutClick(e) {
-             var grid = $("#dataGrid").dxDataGrid("instance");
-             var form = $('#formId').val();
-             var layout = grid.state();
-             const layoutJson = JSON.stringify(layout, null, 2);
-             console.log(layoutJson);
-
-             $.ajax({
-                 url: '/api/Utility/SaveLayout',  // API endpoint
-                 type: 'POST',
-                 data: {
-                     layout: layoutJson,
-                     form: form
-                 },
-                 success: function (data) {
-                     DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-                 },
-                 error: function () {
-                     DevExpress.ui.notify("Error while saving data", "error", 2000);
-                 }
-             });
-         }
-         function resetLayoutClick(e) {
-             var grid = $("#dataGrid").dxDataGrid("instance");
-             var form = $('#formId').val();
-             $.ajax({
-                 url: '/api/Utility/SaveLayout',  // API endpoint
-                 type: 'POST',
-                 data: {
-                     layout: null,
-                     form:form
-                 },
-                 success: function (data) {
-                     DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                     grid.state({});
-                 },
-                 error: function () {
-                     DevExpress.ui.notify("Error while saving data", "error", 2000);
-                 }
-             });
-         }
-         // Footer Group Pannel button click event
-         function toggleGroupPanel() {
-             var dataGrid = $("#dataGrid").dxDataGrid("instance");
-             var isVisible = dataGrid.option("groupPanel.visible");
-             dataGrid.option("groupPanel.visible", !isVisible);
-         }
-         // Footer Filter row button click event
-         function toggleFilterRow() {
-             var grid = $("#dataGrid").dxDataGrid("instance");
-             var currentVisibility = grid.option("filterRow.visible");
-
-             grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
-         }
-         // Footer Recipits button event
-         function addRecipitsButton_click(e) {
-             DevExpress.ui.notify(e.itemData, "success", 600);
-         }
-         function ChangeRowHeight(newHeight) {
-             // Update the row height
-             $("#dataGrid .dx-data-row").css("height", newHeight + "px");
-             closeSubmenu();
-         }
-         function showSubmenu(e) {
-             e.event.stopPropagation();
-             var $submenu = $('#submenuContainer');
-             var $target = $(e.event.target).closest('.dx-item-content'); // Target the content of the item
-             var offset = $target.offset();
-             var elementWidth = $target.outerWidth();
-             var elementHeight = $target.outerHeight();
-
-             // Position the submenu to the right of the dropdown item
-             $submenu.css({
-                 'width': 180,
-                 'position': 'absolute',
-                 'top': offset.top,
-                 'left': offset.left + elementWidth, // Position to the right of the item
-                 'display': 'block' // Show the submenu
-             });
-         }
-         function closeSubmenu() {
-             var $submenu = $('#submenuContainer');
-             $submenu.hide(); // Hide the submenu popup
-         }
-         // Handle the file selection
-         $("#loadLayoutInput").on("change", function (event) {
-             const dataGrid = $("#dataGrid").dxDataGrid("instance");
-             const file = event.target.files[0];
-
-             if (file) {
-                 const reader = new FileReader();
-
-                 reader.onload = function (e) {
-                     try {
-                         // Parse the JSON string from the file
-                         const layout = JSON.parse(e.target.result);
-
-                         // Restore the grid state
-                         dataGrid.state(layout);
-                     } catch (error) {
-                         console.error("Error parsing JSON:", error);
-                         alert("Failed to load layout. Please ensure the file is valid JSON.");
-                     }
-                 };
-
-                 // Read the file as text
-                 reader.readAsText(file);
-             }
-         });
-     </script> *@
 </body>
+<script>
+    function openNav() {
+        document.getElementById("mySidebar").style.width = "250px";
+        document.getElementById("main").style.marginLeft = "120px";
+    }
 
+    function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+        document.getElementById("main").style.marginLeft = "0";
+    }
+
+    const sideMenu = document.getElementById("sideMenu");
+    const mContent = document.getElementById("mContent");
+
+    // Toggle sidebar visibility
+    function toggleMenu() {
+        if (sideMenu.style.width === "250px") {
+            sideMenu.style.width = "0";
+            mContent.style.marginLeft = "0";
+        } else {
+            sideMenu.style.width = "250px";
+            mContent.style.marginLeft = "250px";
+        }
+    }
+
+    // Function to adjust sidebar on screen size change
+    function adjustMenuForScreenSize() {
+        const screenWidth = window.innerWidth;
+        if (screenWidth <= 768) {
+            sideMenu.style.width = "0"; // Hide sidebar by default on small screens
+            mContent.style.marginLeft = "0";
+        } else {
+            sideMenu.style.width = "250px"; // Show sidebar on larger screens
+            mContent.style.marginLeft = "250px";
+        }
+    }
+
+
+    // Adjust menu on window resize
+    window.addEventListener("resize", adjustMenuForScreenSize);
+
+    // Initial adjustment on page load
+    adjustMenuForScreenSize();
+</script>
 </html>
