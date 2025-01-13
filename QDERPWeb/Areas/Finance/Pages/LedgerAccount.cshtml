@@ -1955,41 +1955,69 @@
 
 <script>
     //Tab events
-    $(document).ready(function () {
 
+    $(document).ready(function () {
         var urlParams = new URLSearchParams(window.location.search);
         var accountGroupId = urlParams.get('AccountGroupId');
+        var accountheadid = urlParams.get('AccountHeadID');
+        var refno = urlParams.get('ReferenceNo')?? " ";
+        var accheadname = urlParams.get('AccountHeadName') || "";
+        var accgroup = urlParams.get('AccountGroup') || "";
+        var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
 
+        // If AccountGroupId exists, set it in the DropDownBox and make it readonly
         if (accountGroupId) {
-            // Set the value in the DropDownBox and make it readonly
-            $('#ddlAccountGroup').dxDropDownBox('instance').option('value', accountGroupId);
-            $('#ddlAccountGroup').dxDropDownBox('instance').option('disabled', true); // Make it readonly
+            var ddlAccountGroup = $('#ddlAccountGroup').dxDropDownBox('instance');
+            if (ddlAccountGroup) {
+                ddlAccountGroup.option('value', accountGroupId);
+                ddlAccountGroup.option('disabled', true); // Make it readonly
+            }
         }
 
+        // Set other fields
+        var txtAccountHead = $("#txtAccountHead").dxTextBox("instance");
+        if (txtAccountHead) txtAccountHead.option("value", accheadname);
 
-        // Show the content of the selected tab
+        var txtReferenceNo = $("#txtReferenceNo").dxTextBox("instance");
+        if (txtReferenceNo) txtReferenceNo.option("value", refno);
+
+        var txtAccountId = $("#txtAccountId").dxTextBox("instance");
+        if (txtAccountId) txtAccountId.option("value", accountheadid);
+
+        dataGridSelectionChanged({ selectedRowKeys: [accgroup] });
+        // Show the content of the first tab by default
         var selectedTabIndex = 0;
         $("#tab-content-" + (selectedTabIndex + 1)).show();
 
-        $.ajax({
-            url: '/api/AccountLedgerMaster/GetMaxLedgerAccountID',
-            type: 'GET',
-            dataType: 'json',  // The type of data you're expecting back from the server
-            success: function (response) {
-                // Handle the response, which contains the nextAccountId
-                if (response.nextAccountId) {
-                    // For example, update a field with the new AccountId
-                    $('#txtAccountId').dxTextBox('option', 'value', response.nextAccountId);
-                } else {
-                    console.log("No account ID returned.");
-                }
-            },
-            error: function (xhr, status, error) {
-                // Handle any error that occurred during the request
-                console.log("Error: " + error);
+        if (!isedit) {
+            // Reset validator if it exists
+            var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
+            if (AccountHeadNameValidator) {
+                AccountHeadNameValidator.reset();
             }
-        });
+
+            // AJAX call to fetch the next Account ID
+            $.ajax({
+                url: '/api/AccountLedgerMaster/GetMaxLedgerAccountID',
+                type: 'GET',
+                dataType: 'json',  // Expecting JSON response
+                success: function (response) {
+                    // Check if response has the expected structure
+                    if (response && response.nextAccountId) {
+                        if (txtAccountId) {
+                            txtAccountId.option('value', response.nextAccountId);
+                        }
+                    } else {
+                        console.log("No account ID returned.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Account ID:", error);
+                }
+            });
+        }
     });
+
 
     function redirectToBranchMaster() {
 

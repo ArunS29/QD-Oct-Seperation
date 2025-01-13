@@ -279,6 +279,7 @@
 				@(Html.DevExtreme().Button()
 								.ID("btnAddAHead")
 								.Icon("plus")
+								.OnClick("navigateToLedger")
 								)
 			</div>
 			<div class="form-group" style="margin-top:56px;margin-left:-10px">
@@ -682,18 +683,15 @@
 		$("#btnSave").on("click", function (e) {
 			e.preventDefault();
 
-			// Perform validation for required fields
 			var isValid = true;
 			var requiredFields = [
 				{ id: "#VoucherNo", type: "dxTextBox" },
 				{ id: "#VoucherDate", type: "dxDateBox" },
 				{ id: "#VoucherEffectiveDate", type: "dxDateBox" },
-				{ id: "#VoucherRefNo", type: "dxTextBox" },
-				{ id: "#VoucharNarration", type: "dxTextBox" },
-				{ id: "#VoucherType", type: "dxSelectBox" },
-				{ id: "#BillRemarks", type: "dxTextBox" }
+				// { id: "#VoucherRefNo", type: "dxTextBox" },
+				{ id: "#VoucherType", type: "dxSelectBox" }
+				// Removed #VoucharNarration and #BillRemarks
 			];
-
 			requiredFields.forEach(function (field) {
 				var instance = $(field.id)[field.type]("instance");
 				var value = instance.option("value");
@@ -865,7 +863,7 @@
 			}
 
 			if (!ClientName.option("value")) {
-				alert("Please select Claim Name.");
+				alert("Please select Client Name.");
 				isValid = false;
 			}
 
@@ -1021,10 +1019,17 @@
 			dataGrid = e.component;
 		}
 		function navigateToLedger() {
-			// Define the navigation URL for the Accounting Ledger form
-			const ledgerFormUrl = "/Accounting/Ledger"; // Replace with the actual URL of the form
-			window.location.href = ledgerFormUrl;
+			// Show a notification
+			DevExpress.ui.notify("Navigating to Accounting Ledgers page...", "success", 2000);
+
+			// Open the Accounting Ledgers form in a popup window
+			window.open(
+				"/Finance/LedgerAccount", // URL to the form
+				"popupWindow", // Window name
+				"width=800,height=600,scrollbars=yes,resizable=yes" // Window features
+			);
 		}
+
 		$(function () {
 			const dataGrid = $("#dataGrid").dxDataGrid("instance");
 			const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
@@ -1444,7 +1449,6 @@
 			});
 		}
 
-
 		$("#btnSaveAndClose").on("click", function (e) {
 			e.preventDefault();
 
@@ -1454,10 +1458,8 @@
 				{ id: "#VoucherNo", type: "dxTextBox" },
 				{ id: "#VoucherDate", type: "dxDateBox" },
 				{ id: "#VoucherEffectiveDate", type: "dxDateBox" },
-				{ id: "#VoucherRefNo", type: "dxTextBox" },
-				{ id: "#VoucharNarration", type: "dxTextBox" },
-				{ id: "#VoucherType", type: "dxSelectBox" },
-				{ id: "#BillRemarks", type: "dxTextBox" }
+				{ id: "#VoucherType", type: "dxSelectBox" }
+				// Removed validation for VoucharNarration, BillRemarks, and VoucherRefNo
 			];
 
 			requiredFields.forEach(function (field) {
@@ -1526,6 +1528,7 @@
 				DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
 			}
 		});
+
 	</script>
 
 

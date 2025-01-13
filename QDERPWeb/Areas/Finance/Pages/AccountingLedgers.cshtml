@@ -328,6 +328,8 @@
 }
 <script>
 
+	let acchedid, accheadname, refno, accgroup, IsEdit = false;
+
 	var inputPopupInstance
 	$(function () {
 		// Initialize the DevExtreme Popup
@@ -420,6 +422,7 @@
 		}
 	}
 
+	
 	function dataGridSelectionChanged(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 		const ddbInstance = $("#accountDropDownBox").dxDropDownBox("instance");
@@ -427,6 +430,17 @@
 		if (selectedKey) {
 			ddbInstance.option("value", selectedKey);
 			if (ddbInstance.option("opened")) ddbInstance.close();
+		}
+
+		var selectedRowData = $("#ledgeraccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+		// Get ReferenceNo from selected row
+		if (selectedRowData.length > 0) {
+			acchedid = selectedRowData[0].AccountId;
+			accheadname = selectedRowData[0].AccountHead;
+			refno = selectedRowData[0].ReferenceNo;
+			accgroup = selectedRowData[0].AccountGroup;
+
+
 		}
 
 	}
@@ -667,5 +681,19 @@
 	function redirectToLedgerAccount() {
 		//DevExpress.ui.notify("Working on Progress", "success", 2000);
 		window.open('/Finance/LedgerAccount', 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
+	}
+
+	function btnEditAccount_click() {
+		IsEdit = true;
+
+		if(refno==null)
+		{
+			refno="";
+		}
+		
+		const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}`;
+
+
+		window.open(url, 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
 	}
 </script>

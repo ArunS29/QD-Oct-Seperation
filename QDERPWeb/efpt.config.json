@@ -31,6 +31,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl20105AssetMaster]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl20106AssetCategories]",
          "ObjectType": 0
       },
@@ -108,6 +112,10 @@
       },
       {
          "Name": "[dbo].[tbl201VoucherTypes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl40101PropertyMaster]",
          "ObjectType": 0
       },
       {
