@@ -5,6 +5,10 @@
     ViewData["Title"] = "Asset View";
 }
 
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/24.1.6/css/dx.common.css">
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/24.1.6/css/dx.light.css">
+
 <style>
 
     /* Ensure tab text is styled properly */
@@ -70,7 +74,7 @@
 
     .footer-buttons .col-md-1 {
         /*  padding-left: 10px;
-                padding-right: 10px; */
+                                padding-right: 10px; */
     }
 
     /* Adds border to form control elements */
@@ -104,19 +108,27 @@
                     <div class="form-label">
                         <label for="AssetLedgerNo">Asset Ledger No</label>
                     </div>
-                    @(Html.DevExtreme().TextBox().ID("AssetLedgerNo").Value(""))
+                    @(Html.DevExtreme().TextBox().ID("txtacctledno").Value(""))
                 </div>
 
 
 
                 <!-- Asset Category Dropdown -->
-                <div class="col-md-2">
+                <div class="col-md-2 ">
                     <div class="form-label">
                         <label for="AssetCategory">Asset Category</label>
                     </div>
                     <div class="form-group-row">
-                        @(Html.DevExtreme().SelectBox().ID("AssetCategoryselect")
-                            .LabelMode(EditorLabelMode.Outside).ValueExpr("AssetCategory").InputAttr("aria-label", "Owner").DisplayExpr("AssetCategory").DataSource(d => d.WebApi().Controller("Asset").LoadAction("GetAssetCategoriesByCode").LoadMode(DataSourceLoadMode.Raw).Key("AssetCategory")).SearchEnabled(true).ShowClearButton(true).TabIndex(1))
+                        @(Html.DevExtreme().SelectBox().ID("ddassetCategory")
+                            .LabelMode(EditorLabelMode.Outside).ValueExpr("AssetCategoryCode")
+                            .InputAttr("aria-label", "Owner")
+                            .DisplayExpr("AssetCategory")
+                            .DataSource(d => d.WebApi().Controller("assetview")
+                            .LoadAction("GetAssetCategoriesByCode")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("AssetCategory")).SearchEnabled(true).ShowClearButton(true).TabIndex(1)
+
+                            )
                         @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToAssetCategoryView"))
                     </div>
                 </div>
@@ -162,7 +174,7 @@
                     </div>
                     @(
                         Html.DevExtreme().TextBox()
-                        .ID("PlateNo")
+                        .ID("txtplatno")
                         .Value("")
                         )
                 </div>
@@ -172,13 +184,37 @@
                     <div class="form-label">
                         <label for="PropertyNo">Property No(Modules)</label>
                     </div>
-                    @(
-                        Html.DevExtreme().SelectBox()
-                        .ID("PropertyNo")
-                        .Items(new List<string> { "Property 1", "Property 2", "Property 3" }) // Add your property numbers here
-                        .Value("Property 1")
+                    @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi()
+                        .Controller("assetview")
+                        .LoadAction("GetPropertDetails")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("PropertyNo")
                         )
+                        .LabelMode(EditorLabelMode.Outside)
+                        // .Label("Select a Ledger Account")
+                        .ID("ddlpropertyno")
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("PropertyNo")
+                        .DisplayExpr("AccountHead")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .Width(300)
+                        .TabIndex(1)
+                        .DropDownOptions(o => o
+                        .Width(1000) // Set the desired width for the dropdown content
+                        )
+                        .OnKeyDown("onKeyDown")
+                        //.OnValueChanged("dropDownBoxValueChanged")
+                        .ContentTemplate(new TemplateName("LedgerContentTemplate"))
+                        )
+
                 </div>
+
             </div>
 
 
@@ -193,7 +229,7 @@
                                 </div>
                                 @(
                                     Html.DevExtreme().TextBox()
-                                    .ID("AssetDescription")
+                                    .ID("txtAssetDescription")
                                     .Value("")
                                     )
                             </div>
@@ -206,14 +242,14 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-11" style="padding-right:0px">
                                         @(Html.DevExtreme().SelectBox()
-                                            .ID("Assetlocationselect")
+                                            .ID("ddlassetlocation")
                                             .LabelMode(EditorLabelMode.Outside)
-                                            .ValueExpr("AssetLocation")
+                                            .ValueExpr("AssetLocationCode")
                                             .InputAttr("aria-label", "Owner")
                                             .DisplayExpr("AssetLocation")
                                             .DataSource(d => d.WebApi()
-                                            .Controller("Asset")
-                                            .LoadAction("GetAssetlocation")
+                                            .Controller("Assetview")
+                                            .LoadAction("GetddlAssetlocation")
                                             .LoadMode(DataSourceLoadMode.Raw)
                                             .Key("AssetLocation")
                                             )
@@ -247,7 +283,7 @@
                             </div>
                             @(
                                 Html.DevExtreme().TextArea().Height(120)
-                                .ID("AssetSpecification")
+                                .ID("txtspecifications")
                                 .Value("")
                                 .InputAttr("style", "overflow-y: auto; resize: none;")
                                 )
@@ -273,8 +309,7 @@
 
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel()
-                .ID("AssetTabs")
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("AssetTabs")
                 .Items(item =>
                 {
                     item.Add()
@@ -289,28 +324,28 @@
                         <div class="form-label">
                             <label for="PurchasedDate">Purchased Date</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("PurchasedDate").Value(DateTime.Now)
+                        @Html.DevExtreme().DateBox().ID("txtPurchasedDate").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy")
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="PurchasedFrom">Purchased From</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("PurchasedFrom").Value("")
+                        @Html.DevExtreme().TextBox().ID("txtPurchasedFrom").Value("")
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="PurchasedAs">Purchased As</label>
                         </div>
-                        @Html.DevExtreme().SelectBox().ID("PurchasedAs").Items(new List<string> { "New", "Used" }).Value("New")
+                        @Html.DevExtreme().SelectBox().ID("ddlPurchasedAs").Items(new List<string> { "As New", "Second Hand","Under repair" }).Value("1")
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="CurrentCondition">Current Condition</label>
                         </div>
-                        @Html.DevExtreme().SelectBox().ID("CurrentCondition").Items(new List<string> { "Good", "Average", "Poor" }).Value("Good")
+                        @Html.DevExtreme().SelectBox().ID("txtCurrentCondition").Items(new List<string> { "Excellent Condition", "Good Condition","Under Repair", "Ready to Scrap","Not Used anymore","To be repaired" }).Value("1")
                     </div>
                 </div>
 
@@ -320,28 +355,28 @@
                         <div class="form-label">
                             <label for="Brand">Brand</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("Brand").Value("")
+                        @Html.DevExtreme().TextBox().ID("txtBrand").Value("")
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="Model">Model</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("Model").Value("")
+                        @Html.DevExtreme().TextBox().ID("txtModel").Value("")
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="Year">Year</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("Year").Value("")
+                        @Html.DevExtreme().TextBox().ID("txtYear").Value("")
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="Type">Type</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("Type").Value("")
+                        @Html.DevExtreme().TextBox().ID("txtAssetType").Value("")
                     </div>
                 </div>
 
@@ -351,24 +386,21 @@
                         <div class="form-label">
                             <label for="FMV">FMV (Fair Market Value)</label>
                         </div>
-                        @Html.DevExtreme().NumberBox().ID("FMV").Value(0)
+                        @Html.DevExtreme().NumberBox().ID("txtFMV").Value(0)
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
-                            <label for="BMW">BMW Numbers</label>
+                            <label for="BMW">BMV Numbers</label>
                         </div>
-                        @Html.DevExtreme().NumberBox().ID("BMW").Value(0)
+                        @Html.DevExtreme().NumberBox().ID("txtBMV").Value(0)
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-label">
-                    @Html.DevExtreme().CheckBox() <label for="IsPropertyFinanced"> Is Property Financed?</label>
+                    @Html.DevExtreme().CheckBox().ID("Ispropertychk") <label for="IsPropertyFinanced"> Is Property Financed?</label>
                 </div>
-
-
-
             </div>
 
             <div class="form-container">
@@ -377,21 +409,21 @@
                         <div class="form-label">
                             <label for="FinanceBy">Finance By</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("FinanceBy").Value("")
+                        @Html.DevExtreme().TextBox().ID("txtFinanceBy").Value("")
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="StartDate">Start Date</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("StartDate").Value(DateTime.Now)
+                        @Html.DevExtreme().DateBox().ID("txtStartDate").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy")
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="EndDate">End Date</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("EndDate").Value(DateTime.Now)
+                        @Html.DevExtreme().DateBox().ID("txtEndDate").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy")
                     </div>
                     <div class="col-md-3">
                     </div>
@@ -404,9 +436,9 @@
                         </div>
                         @(
                         Html.DevExtreme().NumberBox()
-                        .ID("NoOfInstallments")
+                        .ID("txtNoOfInstallments")
                         .Value(0)
-                        .Max(1000000)
+                        // .Max(1000000)
                         .ShowSpinButtons(true)
                         .Format("#,##0")
                         .Step(1)
@@ -421,7 +453,7 @@
                         </div>
                         @(
                         Html.DevExtreme().NumberBox()
-                        .ID("Downpayment")
+                        .ID("txtDownpayment")
                         .Value(0)
                         .Max(1000000)
                         .ShowSpinButtons(true)
@@ -438,7 +470,7 @@
                         </div>
                         @(
                         Html.DevExtreme().NumberBox()
-                        .ID("MonthlyInstallment")
+                        .ID("txtMonthlyInstallment")
                         .Value(0)
                         .Max(1000000)
                         .ShowSpinButtons(true)
@@ -455,7 +487,7 @@
                         </div>
                         @(
                         Html.DevExtreme().NumberBox()
-                        .ID("FinalPayment")
+                        .ID("txtFinalPayment")
                         .Value(0)
                         .Max(1000000)
                         .ShowSpinButtons(true)
@@ -503,7 +535,7 @@
                         <label for="VoucherType">Depreciation Method:</label>
                         @(
                         Html.DevExtreme().SelectBox()
-                        .ID("DepreciationMethod")
+                        .ID("txtDepreciationMethod")
                         .DataSource(new[] { "Straight Line Method" })
                         .Value("Straight Line Method")
                         .Width(520)
@@ -516,12 +548,11 @@
                     <div class="form-group">
                         <label for="AmountinSAR" class="button-alignment-down">Scarp Value</label>
                         @(Html.DevExtreme().NumberBox()
-                        .ID("ScarpValue")
+                        .ID("txtScarpValue")
                         .Width(150)
                         .Value(0)
                         .ShowSpinButtons(true)
-                        .Min(0)
-                        .Max(1000)
+                        @*  // .Min(0).Max(1000) *@
                         .Step(1))
                     </div>
 
@@ -529,7 +560,7 @@
                     <div class="form-group">
                         <label for="AmountinSAR" class="button-alignment-down">Life in years</label>
                         @(Html.DevExtreme().NumberBox()
-                        .ID("Lifeinyears")
+                        .ID("txtLifeinyears")
                         .Width(100)
                         .Value(0)
                         .ShowSpinButtons(true)
@@ -542,7 +573,7 @@
                     <div class="form-group">
                         <label for="AmountinSAR" class="button-alignment-down">Dep.Percentage(%)</label>
                         @(Html.DevExtreme().NumberBox()
-                        .ID("DepPercentage")
+                        .ID("txtDepPercentage")
                         .Width(100)
                         .Value(0)
                         .ShowSpinButtons(true)
@@ -559,6 +590,7 @@
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("save")
+                        .OnClick("function() {alert('This is a Feature (Document Viewer)');}")
                         )
                     </div>
                 </div>
@@ -624,6 +656,7 @@
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("save")
+                    .OnClick("function() { alert('This feature is currently in progress. Please check back later.'); }")
                     )
 
                 </div>
@@ -680,13 +713,31 @@
 
                         <label for="" class="button-alignment-down">Latest Meter Reading:</label>
                         @(Html.DevExtreme().NumberBox()
-                        .ID("MaintenanceScarpValue")
+                        .ID("txtMaintenanceScarpValue")
                         .Width(350)
                         .Value(0)
                         .ShowSpinButtons(true)
-                        .Min(0)
-                        .Max(1000)
+                        .Min(0)//                        .Max(1000)
                         .Step(1))
+                    </div>
+                    <div class="form-group">
+                        <label for="maintenanceTypes" class="button-alignment-down">Select Maintenance Type:</label>
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("ddlMaintenanceTypes")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ValueExpr("AssetMaintenanceTypeId")
+                        .DisplayExpr("AssetMaintenanceType")
+                        .DataSource(d => d.WebApi()
+                        .Controller("assetview")
+                        .LoadAction("GetddlAssetMaintanence")
+                        .LoadMode(DataSourceLoadMode.Raw)
+
+                        )
+                        .SearchEnabled(true)
+                        .ShowClearButton(true)
+                        .Placeholder("Select Maintenance Type")
+                        .Width(400)
+                        )
                     </div>
 
 
@@ -697,61 +748,45 @@
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("save")
+                        .OnClick("redirectassetmaintanence")
                         )
                     </div>
 
-
-                    <!-- Schedule Button -->
-
-                    <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                    <!-- Add Scheduled Types Button -->
+                    <div class="form-group">
                         @(Html.DevExtreme().Button()
-                        .ID("btnMaintenanceScheduled")
+                        .ID("btnAddScheduledTypes")
                         .Text("Add Scheduled Types")
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
-                        .Icon("save")
+                        .Icon("plus")
+                        .OnClick("addScheduledTypeRow")
                         )
                     </div>
                 </div>
 
 
 
-                <!-- Card 2 -->
                 <div class="card">
-                    <div class="dx-field ledgerResult">
-
-                        @(
-                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-                        .ID("Maintenance-dataGrid")
-                        .RemoteOperations(false)
-                        .Columns(columns =>
-                        {
-
-                        columns.AddFor(m => m.AccountHead).Caption("Maintenance Type ID");
-                        columns.AddFor(m => m.EntryNarration).Caption("Maintenance Reading");
-                        columns.AddFor(m => m.SysRemarks).Caption("Maintenance Scheduled On");
-                        @*  columns.AddFor(m => m.SysRemarks).Caption("Reminder Date");
-                        columns.AddFor(m => m.SysRemarks).Caption("Maintenance Done?");
-                        columns.AddFor(m => m.SysRemarks).Caption("Maintenance Done On");
-                        columns.AddFor(m => m.SysRemarks).Caption("Remarks"); *@
-
-                        })
-                        //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
-                        .AllowColumnReordering(true) // Enable column reordering
-                        .AllowColumnResizing(true)   // Enable column resizing
-                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                        .HeaderFilter(filter => filter.Visible(true))
-                        .Height(250)
-                        .ColumnAutoWidth(true)
-                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-                        .ShowBorders(true)
-                        .Width("100%")
-                        )
-                    </div>
+                    @(Html.DevExtreme().DataGrid()
+                    .ID("MaintenanceGrid")
+                    .Columns(columns =>
+                    {
+                    columns.Add().Caption("Maintenance Type").DataField("MaintenanceType").DataType(GridColumnDataType.String);
+                    columns.Add().Caption("Maintenance Reading").DataField("MaintenanceReading").DataType(GridColumnDataType.Number);
+                    columns.Add().Caption("Maintenance Scheduled On").DataField("ScheduledOn").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption("Reminder Date").DataField("ReminderDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption("Maintenance Done?").DataField("MaintenanceDone").DataType(GridColumnDataType.Boolean);
+                    columns.Add().Caption("Remarks").DataField("Remarks").DataType(GridColumnDataType.String);
+                    columns.Add().Caption("Actions").CellTemplate("deleteTemplate");
+                    })
+                    .Height(250)
+                    .Width("100%")
+                    .DataSource(new object[0])
+                    .RemoteOperations(false)
+                    )
                 </div>
 
-                @* </div> *@
 
 
 
@@ -770,11 +805,11 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").OnClick("function() { alert('Update clicked!'); }"))
+                        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").OnClick("updateAsset"))
                     </div>
-                    <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
-                    </div>
+                    @*       <div class="col-md-2">
+                    @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
+                    </div> *@
                     <div class="col-md-2">
                         @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").OnClick("function() { alert('Delete clicked!'); }"))
                     </div>
@@ -790,7 +825,338 @@
 
 </div>
 
+@using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                .ID("ddlpropertyno-datagrid")
+                .DataSource(d => d.WebApi()
+                    .Controller("assetview")
+                    .LoadAction("GetPropertDetails")
+                .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("PropertyNo")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                .OnSelectionChanged("dataGridSelectionChanged")
+                .OnInitialized("dataGridInitialized")
+                .HeaderFilter(p => p.Visible(true))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("PropertyNo");
+                    columns.Add().DataField("PropertyDescription");
+
+
+                    columns.Add().DataField("PlateNo");
+                    columns.Add().DataField("Brand");
+                    columns.Add().DataField("Capacity");
+                    columns.Add().DataField("Model");
+
+                    @*          columns.Add().DataField("DoorNo");
+            columns.Add().DataField("ChassisNo");
+            columns.Add().DataField("Color");
+            columns.Add().DataField("Specifications");
+            columns.Add().DataField("Year");
+            columns.Add().DataField("Ownership");
+            columns.Add().DataField("PropertyGroupId");
+            columns.Add().DataField("PropertyType"); *@
+                })
+                        )
+}
+<script type="text/html" id="deleteTemplate">
+    <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
+</script>
 <script>
+    $(document).ready(function () {
+        // Extract assetLedgerNo from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const assetLedgerNo = urlParams.get("assetLedgerNo");  // Get assetLedgerNo from the URL query string
+
+        if (assetLedgerNo) {
+            fetchAssetData(assetLedgerNo);  // Call the function to fetch data
+        }
+    });
+
+    function deleteRow(element) {
+        var grid = $("#MaintenanceGrid").dxDataGrid("instance");
+        var rowIndex = $(element).closest("tr").index();
+        var dataSource = grid.option("dataSource");
+        dataSource.splice(rowIndex, 1);
+        grid.option("dataSource", dataSource);
+        grid.refresh();
+    }
+
+    function addScheduledTypeRow() {
+        // Get the dxNumberBox and dxSelectBox instances
+        var readingBox = $("#txtMaintenanceReading").dxNumberBox("instance");
+        var typeBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
+
+        // Validate instances
+        if (!readingBox || !typeBox) {
+            console.error("dxNumberBox or dxSelectBox not initialized properly.");
+            return;
+        }
+
+        // Get values
+        var maintenanceReading = readingBox.option("value");
+        var maintenanceType = typeBox.option("text");
+
+        // Validate inputs
+        if (!maintenanceType || maintenanceReading === null) {
+            alert("Please select a maintenance type and enter a valid reading.");
+            return;
+        }
+
+        // Prepare data
+        var today = new Date();
+        var formattedDate = today.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
+
+        // Add row to grid
+        var grid = $("#MaintenanceGrid").dxDataGrid("instance");
+        var dataSource = grid.option("dataSource") || [];
+        dataSource.push({
+            MaintenanceType: maintenanceType,
+            MaintenanceReading: maintenanceReading,
+            ScheduledOn: formattedDate,
+            ReminderDate: formattedDate,
+            MaintenanceDone: false,
+            Remarks: "",
+        });
+
+        // Update grid
+        grid.option("dataSource", dataSource);
+        grid.refresh();
+    }
+
+
+
+    function fetchAssetData(assetLedgerNo) {
+
+        $.ajax({
+            url: "/api/assetview/GetAssetViewedit",
+            type: "GET",
+            data: { assetLedgerNo: assetLedgerNo },
+            success: function (data) {
+                console.log("Data received from API:", data);
+                if (data && data.length > 0) {
+                    populateFields(data[0]);
+                } else {
+                    console.warn("No data found for the given AssetLedgerNo.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching asset data:", error);
+            }
+        });
+    }
+
+    function populateFields(assetData) {
+
+        $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo);
+        $("#ddassetCategory").dxSelectBox("instance").option("value", assetData.AssetCategory);
+        alert(assetData.AssetCategory);
+        var testAssetCategory = $("#ddassetCategory").dxSelectBox("instance").option("value");
+        alert(testAssetCategory);
+
+        if (assetData.PlateNo && assetData.PlateNo !== "null") {
+            $("#txtplatno").dxTextBox("instance").option("value", assetData.PlateNo);
+        } else {
+            $("#txtplatno").dxTextBox("instance").option("value", "");
+        }
+
+
+        $("#txtAssetDescription").dxTextBox("instance").option("value", assetData.AssetDescription);
+        $("#ddlassetlocation").dxSelectBox("instance").option("value", assetData.AssetLocation);
+
+        $("#txtspecifications").dxTextArea("instance").option("value", assetData.Specifications);
+        $("#PurchasedAssetValue").dxNumberBox("instance").option("value", assetData.ValueOfProperty);
+        $("#txtPurchasedDate").dxDateBox("instance").option("value", assetData.PurchaseDate);
+        $("#txtPurchasedFrom").dxTextBox("instance").option("value", assetData.PurchasedFrom);
+        $("#ddlPurchasedAs").dxSelectBox("instance").option("value", assetData.PurchasedAs);
+        $("#txtCurrentCondition").dxSelectBox("instance").option("value", assetData.CurrentCondition);
+        $("#txtAssetType").dxTextBox("instance").option("value", assetData.AssetType);
+        $("#txtBrand").dxTextBox("instance").option("value", assetData.Brand);
+        $("#txtYear").dxTextBox("instance").option("value", assetData.Year);
+        $("#txtModel").dxTextBox("instance").option("value", assetData.Model);
+        if (assetData && assetData.FMV !== undefined) {
+            const fmvValue = assetData.FMV || 0; // Default to 0 if null/undefined
+            const fmvInstance = $("#txtFMV").dxNumberBox("instance");
+            if (fmvInstance) {
+                fmvInstance.option("value", fmvValue);
+            } else {
+                console.error("NumberBox instance not found for #txtFMV.");
+            }
+        } else {
+            console.warn("FMV data not found in assetData.");
+
+        }
+        if (assetData && assetData.BMV !== undefined) {
+            const bmvValue = assetData.BMV || 0; // Default to 0 if null/undefined
+            const bmvInstance = $("#txtBMV").dxNumberBox("instance");
+            if (bmvInstance) {
+                bmvInstance.option("value", bmvValue);
+            } else {
+                console.error("NumberBox instance not found for #txtBMV.");
+            }
+        } else {
+            console.warn("BMV data not found in assetData.");
+        }
+
+        if (assetData && assetData.NoOfInstallments !== undefined) {
+            const NoOfInstallmentsvalue = assetData.NoOfInstallments || 0; // Default to 0 if null/undefined
+            const NoOfInstallmentsinstance = $("#txtNoOfInstallments").dxNumberBox("instance");
+            if (NoOfInstallmentsinstance) {
+                NoOfInstallmentsinstance.option("value", NoOfInstallmentsvalue);
+            } else {
+                console.error("NumberBox instance not found for #txtNoOfInstallments.");
+            }
+        } else {
+            console.warn("NoOfInstallments data not found in assetData.");
+        }
+        if (assetData && assetData.InitialDownPayment !== undefined) {
+            const InitialDownPaymentvalue = assetData.InitialDownPayment || 0; // Default to 0 if null/undefined
+            const InitialDownPaymentinstance = $("#txtDownpayment").dxNumberBox("instance");
+            if (InitialDownPaymentinstance) {
+                InitialDownPaymentinstance.option("value", InitialDownPaymentvalue);
+            } else {
+                console.error("NumberBox instance not found for #txtDownpayment.");
+            }
+        } else {
+            console.warn("InitialDownPayment data not found in assetData.");
+
+        }
+        if (assetData && assetData.MonthlyInstallment !== undefined) {
+            const monthlyInstallmentvalue = assetData.MonthlyInstallment || 0; // Default to 0 if null/undefined
+            const monthlyInstallmentinstance = $("#txtMonthlyInstallment").dxNumberBox("instance");
+            if (monthlyInstallmentinstance) {
+                monthlyInstallmentinstance.option("value", monthlyInstallmentvalue);
+            } else {
+                console.error("NumberBox instance not found for #txtMonthlyInstallment.");
+            }
+        } else {
+            console.warn("monthlyInstallment data not found in assetData.");
+        }
+        if (assetData && assetData.FinalInstallment !== undefined) {
+            const FinalInstallmentvalue = assetData.FinalInstallment || 0; // Default to 0 if null/undefined
+            const FinalInstallmentinstance = $("#txtFinalPayment").dxNumberBox("instance");
+            if (FinalInstallmentinstance) {
+                FinalInstallmentinstance.option("value", FinalInstallmentvalue);
+            } else {
+                console.error("NumberBox instance not found for #txtFinalPayment.");
+            }
+        } else {
+            console.warn("FinalInstallment data not found in assetData.");
+        }
+
+
+        $("#txtStartDate").dxDateBox("instance").option("value", assetData.InstallmentStartDate);
+
+        $("#txtEndDate").dxDateBox("instance").option("value", assetData.InstallmentEndDate);
+        // alert(assetData.FinancedBy);
+        $("#txtFinanceBy").dxTextBox("instance").option("value", assetData.FinancedBy);
+        if (assetData && assetData.PropertyNo && assetData.PropertyNo !== "null") {
+            $("#ddlpropertyno").dxDropDownBox("instance").option("value", assetData.PropertyNo);
+        } else {
+            $("#ddlpropertyno").dxDropDownBox("instance").option("value", "");
+        }
+
+        if (assetData && typeof assetData.IsFinanced !== 'undefined') {
+            const isPropertyCheckbox = $("#Ispropertychk").dxCheckBox("instance");
+            if (isPropertyCheckbox) {
+                // Set the checkbox value: true = checked, false = unchecked
+                isPropertyCheckbox.option("value", !!assetData.IsFinanced);
+            } else {
+                console.error("Checkbox instance not found for #Ispropertychk.");
+            }
+        } else {
+            console.warn("IsFinanced property is not defined in assetData.");
+        }
+
+        //  alert(assetData.DepreciationMethod);
+        // New fields to be added
+        //  $("#txtDepreciationMethod").dxSelectBox("instance").option("value", assetData.DepreciationMethod);
+
+
+        if (assetData && assetData.ScrapValueOfProperty !== undefined) {
+            const ScrapValueOfPropertyValue = assetData.ScrapValueOfProperty || 0; // Default to 0 if null/undefined
+            const ScrapValueOfPropertyinstance = $("#txtScarpValue").dxNumberBox("instance");
+            if (ScrapValueOfPropertyinstance) {
+                ScrapValueOfPropertyinstance.option("value", ScrapValueOfPropertyValue);
+            } else {
+                console.error("NumberBox instance not found for #txtScarpValue.");
+            }
+        } else {
+            console.warn("ScrapValueOfProperty data not found in assetData.");
+        }
+
+        // $("#txtScarpValue").dxNumberBox("instance").option("value", assetData.ScrapValueOfProperty || 0);
+        $("#txtLifeinyears").dxNumberBox("instance").option("value", assetData.LifeSpanOfProperty);
+        $("#txtDepPercentage").dxNumberBox("instance").option("value", assetData.DepPercentage);
+        $("#txtMaintenanceScarpValue").dxNumberBox("instance").option("value", assetData.CurrentReading);
+
+
+        $("#txtDepreciationMethod").val(assetData.DepreciationMethod);
+        $("#scrapValueOfProperty").val(assetData.ScrapValueOfProperty);
+        $("#lifeSpanOfProperty").val(assetData.LifeSpanOfProperty);
+        $("#depreciationPercentage").val(assetData.DepreciationPercentage);
+        $("#openingTotal").val(assetData.OpeningTotal);
+        $("#totalDebit").val(assetData.TotalDebit);
+        $("#totalCredit").val(assetData.TotalCredit);
+        $("#closingBalance").val(assetData.ClosingBalance);
+        $("#totalDepreciatedAmount").val(assetData.TotalDepreciatedAmount);
+        $("#netBookValue").val(assetData.NetBookValue);
+
+        $("#year").val(assetData.Year);
+        $("#ownership").val(assetData.Ownership);
+        $("#purchaseDate").val(assetData.PurchaseDate);
+        $("#valueOfProperty").val(assetData.ValueOfProperty);
+        $("#purchasedAs").val(assetData.PurchasedAs);
+        $("#isFinanced").prop("checked", assetData.IsFinanced);
+        $("#financedFrom").val(assetData.FinancedFrom);
+
+        $("#initialDocCharges").val(assetData.InitialDocCharges);
+        $("#finalInstallment").val(assetData.FinalInstallment)
+
+
+
+    }
+
+    function dataGridSelectionChanged(e) {
+        const selectedRow = e.selectedRowsData[0]; // Get the selected row
+        if (selectedRow) {
+            const dropDownBoxInstance = $("#ddlpropertyno").dxDropDownBox("instance");
+            if (dropDownBoxInstance) {
+                dropDownBoxInstance.option("value", selectedRow.PropertyNo); // Set selected value
+            }
+        }
+    }
+
+    $("#txtScarpValue").on("dxready", function () {
+        const ScrapValueOfPropertyinstance = $("#txtScarpValue").dxNumberBox("instance");
+        if (ScrapValueOfPropertyinstance) {
+            ScrapValueOfPropertyinstance.option("value", ScrapValueOfPropertyValue);
+        } else {
+            console.error("NumberBox instance not found for #txtScarpValue.");
+        }
+    });
+
+
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
 
     function onOpened(e) {
         setTimeout(() => {
@@ -821,19 +1187,211 @@
             dataGrid.option("searchPanel.text", text);
         }
     }
-    $(document).ready(function () {
 
-    });
-
-    // Function for redirecting to Asset Category View
     function redirectToAssetCategoryView() {
-        window.open('/Finance/AssetCategoryView', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+        // Open the master form in a new popup window
+        const masterFormWindow = window.open(
+            '/Finance/AssetCategoryView', // URL of the master form
+            'popupWindow',
+            'width=800,height=600,scrollbars=yes,resizable=yes'
+        );
+
+        // Monitor the popup window for closure
+        const interval = setInterval(() => {
+            if (masterFormWindow.closed) {
+                clearInterval(interval); // Stop checking when the window is closed
+                refreshAssetCategorySelectBox(); // Refresh the SelectBox data
+            }
+        }, 500);
     }
 
-    // Function for redirecting to Asset Location
-    function redirectToAssetLocationMaster() {
-        window.open('/Finance/AssetLocation', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+    function refreshAssetCategorySelectBox() {
+        const assetCategorySelectBox = $("#ddassetCategory").dxSelectBox("instance");
+
+        if (assetCategorySelectBox) {
+            const dataSource = assetCategorySelectBox.getDataSource();
+
+            // Reload the data source and log success or failure
+            if (dataSource) {
+                dataSource.reload()
+                    .then(() => console.log("SelectBox data refreshed successfully."))
+                    .catch(error => console.error("Error refreshing SelectBox data:", error));
+            } else {
+                console.warn("DataSource is not defined for the SelectBox.");
+            }
+        } else {
+            console.error("SelectBox instance not found.");
+        }
     }
+
+
+
+    // Function to redirect to the Asset Location master form
+    function redirectToAssetLocationMaster() {
+        // Open the master form in a popup window
+        const masterFormWindow = window.open(
+            '/Finance/AssetLocation', // URL of the master form
+            'popupWindow',
+            'width=800,height=600,scrollbars=yes,resizable=yes'
+        );
+
+        // Monitor the popup window for closure
+        const interval = setInterval(() => {
+            if (masterFormWindow.closed) {
+                clearInterval(interval); // Stop monitoring when the window is closed
+                refreshAssetLocationSelectBox(); // Refresh the Asset Location SelectBox
+            }
+        }, 500);
+    }
+
+    // Function to refresh the Asset Location SelectBox
+    function refreshAssetLocationSelectBox() {
+        const assetLocationSelectBox = $("#ddlassetlocation").dxSelectBox("instance"); // Ensure ID matches Razor
+
+        if (assetLocationSelectBox) {
+            const dataSource = assetLocationSelectBox.getDataSource();
+
+            // Reload the data source and log success or failure
+            if (dataSource) {
+                dataSource.reload()
+                    .then(() => {
+                        console.log("Asset Location SelectBox updated successfully.");
+                    })
+                    .catch(error => {
+                        console.error("Error updating Asset Location SelectBox:", error);
+                    });
+            } else {
+                console.warn("DataSource is not defined for the Asset Location SelectBox.");
+            }
+        } else {
+            console.error("Asset Location SelectBox instance not found. Ensure the ID matches.");
+        }
+    }
+
+    // Function to redirect to the Asset Location master form
+    function redirectassetmaintanence() {
+        // Open the master form in a popup window
+        const masterFormWindow = window.open(
+            '/Finance/AssetMaintanenceMaster', // URL of the master form
+            'popupWindow',
+            'width=800,height=600,scrollbars=yes,resizable=yes'
+
+
+
+        );
+
+        // Monitor the popup window for closure
+        const interval = setInterval(() => {
+            if (masterFormWindow.closed) {
+                clearInterval(interval); // Stop monitoring when the window is closed
+                refreshAssetMaintanenceSelectBox(); // Refresh the Asset Location SelectBox
+            }
+        }, 500);
+    }
+
+    // Function to refresh the Asset Location SelectBox
+    function refreshAssetMaintanenceSelectBox() {
+        const assetLocationSelectBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
+
+        // Reload the SelectBox's data source
+        if (assetLocationSelectBox) {
+            const dataSource = assetLocationSelectBox.getDataSource();
+            if (dataSource) {
+                dataSource.reload()
+                    .then(() => {
+                        console.log("Asset Location SelectBox updated successfully.");
+                    })
+                    .catch(error => {
+                        console.error("Failed to update the Asset Location SelectBox:", error);
+                    });
+            } else {
+                console.warn("DataSource is not defined for the Asset Location SelectBox.");
+            }
+        } else {
+            console.error("Asset Location SelectBox instance not found.");
+        }
+    }
+
+
+
+
+    function dropDownBoxValueChanged(e) {
+
+        var dataGrid = $("#ddlpropertyno").dxDataGrid("instance");
+
+
+        if (!e.value) {
+
+            if (dataGrid) {
+                dataGrid.clearSelection();
+                console.log("Selection cleared due to empty dropdown value.");
+            } else {
+                console.error("DataGrid instance not found.");
+            }
+            return;
+        }
+
+
+        console.log("Dropdown value changed:", e.value);
+    }
+
+    function updateAsset() {
+        const updatedAsset = {
+            AssetLedgerNo: $("#txtacctledno").dxTextBox("instance").option("value"),
+            AssetCategory: $("#ddassetCategory").dxSelectBox("instance").option("value"),
+            PlateNo: $("#txtplatno").dxTextBox("instance").option("value"),
+            AssetDescription: $("#txtAssetDescription").dxTextBox("instance").option("value"),
+            AssetLocation: $("#ddlassetlocation").dxSelectBox("instance").option("value"),
+            Specifications: $("#txtspecifications").dxTextArea("instance").option("value"),
+            ValueOfProperty: $("#PurchasedAssetValue").dxNumberBox("instance").option("value"),
+            PurchaseDate: $("#txtPurchasedDate").dxDateBox("instance").option("value"),
+            PurchasedFrom: $("#txtPurchasedFrom").dxTextBox("instance").option("value"),
+            PurchasedAs: $("#ddlPurchasedAs").dxSelectBox("instance").option("value"),
+            CurrentCondition: $("#txtCurrentCondition").dxSelectBox("instance").option("value"),
+            AssetType: $("#txtAssetType").dxTextBox("instance").option("value"),
+            Brand: $("#txtBrand").dxTextBox("instance").option("value"),
+            Year: $("#txtYear").dxTextBox("instance").option("value"),
+            Model: $("#txtModel").dxTextBox("instance").option("value"),
+            FMV: $("#txtFMV").dxNumberBox("instance")?.option("value") || 0,
+            BMV: $("#txtBMV").dxNumberBox("instance")?.option("value") || 0,
+            NoOfInstallments: $("#txtNoOfInstallments").dxNumberBox("instance")?.option("value") || 0,
+            InitialDownPayment: $("#txtDownpayment").dxNumberBox("instance")?.option("value") || 0,
+            MonthlyInstallment: $("#txtMonthlyInstallment").dxNumberBox("instance")?.option("value") || 0,
+            FinalInstallment: $("#txtFinalPayment").dxNumberBox("instance")?.option("value") || 0,
+            InstallmentStartDate: $("#txtStartDate").dxDateBox("instance").option("value"),
+            InstallmentEndDate: $("#txtEndDate").dxDateBox("instance").option("value"),
+            FinancedBy: $("#txtFinanceBy").dxTextBox("instance").option("value"),
+            PropertyNo: $("#ddlpropertyno").dxDropDownBox("instance")?.option("value") || "",
+            IsFinanced: $("#Ispropertychk").dxCheckBox("instance")?.option("value") || false,
+            ScrapValueOfProperty: $("#txtScarpValue").dxNumberBox("instance")?.option("value") || 0,
+            DepreciationMethod: $("#txtDepreciationMethod").dxSelectBox("instance").option("value"),
+        };
+
+        console.log("Updated Asset Data:", updatedAsset);
+
+        $.ajax({
+
+            url: "/api/assetview/updateAsset",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(updatedAsset),
+            success: function (response) {
+                alert(response.message || "Asset updated successfully!");
+            },
+            error: function (xhr) {
+                console.error("Error Response:", xhr);
+                alert(xhr.responseJSON?.message || "An error occurred during the update process.");
+            }
+        });
+    }
+
+
+
+
+
+
 
 </script>
 
+<script src="https://cdn3.devexpress.com/jslib/24.1.6/js/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/24.1.6/js/jszip.min.js"></script>

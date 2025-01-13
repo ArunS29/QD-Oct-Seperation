@@ -686,9 +686,8 @@
 	function btnEditAccount_click() {
 		IsEdit = true;
 
-		if(refno==null)
-		{
-			refno="";
+		if (refno == null) {
+			refno = "";
 		}
 		
 		const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}`;
