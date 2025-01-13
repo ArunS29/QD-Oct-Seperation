@@ -92,6 +92,37 @@ namespace FormQD.ERP.Web.Areas.Finance.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult DeleteRecord(string id)
+        {
+            try
+            {
+                // Validate the ID
+                if (string.IsNullOrEmpty(id))
+                {
+                    return Json(new { success = false, message = "Invalid Reference No provided." });
+                }
+
+                // Find the record in the database
+                var record = _context.Tbl201SubLedgerMasters.FirstOrDefault(r => r.ReferenceNo == id);
+                if (record == null)
+                {
+                    return Json(new { success = false, message = "Record not found." });
+                }
+
+                // Remove the record from the database
+                _context.Tbl201SubLedgerMasters.Remove(record);
+                _context.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging
+                //  _logger.LogError(ex, "Error occurred while deleting record with Reference No: {id}", id);
+                return Json(new { success = false, message = "An error occurred while deleting the record." });
+            }
+        }
 
 
     }

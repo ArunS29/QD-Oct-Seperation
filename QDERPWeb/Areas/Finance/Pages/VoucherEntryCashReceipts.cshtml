@@ -621,7 +621,7 @@
                                 Html.DevExtreme().SelectBox()
                                 .ID("Reference")
                                 .DataSource(new[] { "New Reference", "Against Reference" })
-                                .Value("Dr")
+                                .Value("Against Reference")
                                 .Placeholder("Select Transaction Type")
                                 .Width(150)
                                 )
@@ -666,15 +666,20 @@
                                 Html.DevExtreme().NumberBox()
                                 .ID("txtAmount2")
                                 .Value(null)
-                                .Width(150)
                                 .ValidationRules(rules =>
                                 {
                                     rules.AddRequired()
-                                    .Message("Voucher Amount is required");
+                                    .Message("Amount is required");
                                 })
-                                .Placeholder("0.000")
-                                .Format("#,##0.000")  // Specify the format for two decimal places
-                                .InputAttr(new { type = "number", step = "1.000" }) // HTML attribute to allow decimal input
+                                .Min(0)
+                                .Placeholder("0.00")
+                                .Format("#,##0.00")
+                                .InputAttr(new
+                                {
+                                    style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+                                    type = "number",
+                                    step = "0.01"
+                                })
                                 )
 
                         </div>
@@ -708,13 +713,24 @@
                                 .ID("dataGrid2")
                                 .KeyExpr("ReferenceNo")
                                 .RemoteOperations(false)
-                                //.OnRowRemoved("onRowRemoved")
+                                .OnInitialized("dataGridInitialized")
+                                .OnContextMenuPreparing("onContextMenuPreparing")
                                 .Columns(columns =>
                                 {
                                     columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center).Width(100);
                                     columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Center).Width(100);
                                     columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).Width(100);
-                                    columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Center).Width(100);
+                                    columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).Width(100).CustomizeText(@"
+                        function(e) {
+                        if(e.value === null || e.value === undefined) {
+                        return ''; // Return empty string for null values
+                        }
+                        return e.value.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                        });
+                        }
+                        ");
                                     columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center).Width(100);
 
 
@@ -1157,7 +1173,7 @@
                         success: function (isMaintainBillByBill) {
                             if (isMaintainBillByBill) {
                                 $("#SalaryPaidEntryPopup").dxPopup({
-                                    title: "Salary Paid Entry",
+                                    //title: "Salary Paid Entry",
                                     width: 1250,
                                     height: 860,
                                     showCloseButton: true,
@@ -1963,4 +1979,55 @@
             console.error("Popup element not found!");
         }
     }
+
+
+    let dataGridInstance2 = null; // Reference to DataGrid
+    let selectedRowData = null;   // Store selected row data
+
+    // Store the DataGrid instance when initialized
+    function dataGridInitialized(e) {
+        dataGridInstance2 = e.component; // Assign the grid instance
+    }
+
+    // Handle the right-click context menu event
+    function onContextMenuPreparing(e) {
+        if (e.row && e.row.rowType === "data") {
+            // Row is right-clicked
+            selectedRowData = e.row.data;
+
+            e.items = [
+                {
+                    text: "Delete",
+                    onItemClick: function () {
+                        if (confirm(`Are you sure you want to delete the record with Reference No: ${selectedRowData.ReferenceNo}?`)) {
+                            // Call server-side delete method
+                            $.post(`/Finance/api/BillsPayableReceivable/DeleteRecord?id=${encodeURIComponent(selectedRowData.ReferenceNo)}`, function (response) {
+                                if (response.success) {
+                                    alert("Record deleted successfully!");
+
+                                    if (dataGridInstance2) {
+                                        // Force reload of the data source
+                                        dataGridInstance2.getDataSource().reload().done(function () {
+                                            console.log("Data reloaded successfully!");
+                                        }).fail(function () {
+                                            console.error("Error reloading data source!");
+                                        });
+                                    } else {
+                                        alert("DataGrid instance not found.");
+                                    }
+                                } else {
+                                    alert(`Error: ${response.message}`);
+                                }
+                            }).fail(function () {
+                                alert("An error occurred while processing your request.");
+                            });
+                        }
+                    }
+                }
+            ];
+        }
+    }
+
+
+
 </script>
