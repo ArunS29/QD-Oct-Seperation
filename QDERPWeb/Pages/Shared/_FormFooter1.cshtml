@@ -8,14 +8,15 @@
     }
 
     .dx-button {
-        background-color: whitesmoke;
+        background-color: aliceblue;
+        border-color: aliceblue
     }
 
 
 
     .horizontal-container {
         display: flex;
-        gap: 10px; /* Adds spacing between buttons */
+        gap: 40px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
         align-items: center; /* Vertically centers the buttons */
         margin: 15px;
@@ -31,7 +32,7 @@
     }
 
     .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; /* Border between rows */
+        border-bottom: 1px solid aliceblue; /* Border between rows */
     }
     /* Custom styles for context menu */
     .context-menu {
@@ -60,14 +61,14 @@
     }
 
     #previewModal {
-        border: 1px solid #ccc;
+        border: 1px solid aliceblue;
     }
 
     .bold-button .dx-button-text {
         font-weight: bold;
     }
 </style>
-<div class="dx-fieldset horizontal-container mt-2">
+<div class="dx-fieldset horizontal-container mt-2" style="background-color:aliceblue">
 
     @(Html.DevExtreme().Button()
         .ID("btnSave")
@@ -93,7 +94,7 @@
         .OnClick("function() { openPreview(); }")
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
-    <div id="previewModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000;">
+    <div id="previewModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: aliceblue; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000;">
         <h3>Preview</h3>
         <pre id="previewContent">Loading...</pre>
     </div>

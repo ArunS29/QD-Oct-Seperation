@@ -18,6 +18,7 @@
         justify-content: start;
         align-items: center;
         margin: 15px;
+        background-color: white;
     }
 
     .dx-selectbox .dx-texteditor-input {
@@ -37,10 +38,10 @@
 
 </style>
 <div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+    <div class="card-header" style="background-color: white; color:black; ">
         JournalVoucherEntry
     </div>
-    <div class="card-body" style="padding: 20px; background-color:  #c0dceb; border-radius: 5px;">
+    <div class="card-body" style="padding: 20px; background-color: white; border-radius: 5px;">
 
         <div id="costAllocationPopup" style="display:none;">
             <div style="margin-bottom:10px">
@@ -111,11 +112,11 @@
 
 
 
-        <div class="dx-fieldset horizontal-container " style="margin-top:15px;margin-bottom:0px;background-color:#4a4a9c">
+        <div class="dx-fieldset horizontal-container " style="margin-top:15px;margin-bottom:0px;">
 
             <div class="form-group" style="padding-left:20px">
                 <div class="button-alignment-down">
-                    <label for="DrCr" style="color: white;">Dr/Cr</label>
+                    <label for="DrCr">Dr/Cr</label>
                 </div>
                 @(
                     Html.DevExtreme().SelectBox()
@@ -127,7 +128,7 @@
                     )
             </div>
             <div class="form-group">
-                <label for="AccountHead" class="button-alignment-down" style="color: white;">Account Head:</label>
+                <label for="AccountHead" class="button-alignment-down">Account Head:</label>
                 @(Html.DevExtreme().DropDownBox()
                     .DataSource(d => d.WebApi()
                     .Controller("VoucherJournal")
@@ -168,7 +169,7 @@
                     )
             </div>
             <div class="form-group">
-                <label for="Amount" class="button-alignment-down" style="color: white;">Amount</label>
+                <label for="Amount" class="button-alignment-down" ">Amount</label>
                 @(
                     Html.DevExtreme().NumberBox()
                     .ID("txtVoucherAmount")
@@ -188,9 +189,9 @@
             </div>
 
         </div>
-        <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:15px;background-color:#4a4a9c;padding-bottom:30px">
+        <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:15px;background-color:white;padding-bottom:30px">
             <div class="form-group" style="padding-left:20px">
-                <label for="Narration" class="button-alignment-down" style="margin-right:25px; color: white;">Narration</label>
+                <label for="Narration" class="button-alignment-down" style="margin-right:25px; color: black;">Narration</label>
 
             </div>
 
@@ -199,7 +200,7 @@
                     Html.DevExtreme().TextArea()
                     .ID("txtEntryNarration")
                     .Value("")
-                    .Height(70)
+                    .Height(40)
                     .Width(720)
                     .Placeholder("Enter your comments here...")
                     .MaxLength(500)
@@ -209,7 +210,7 @@
                 @(Html.DevExtreme().Button()
                     .ID("btnVoucherEntry")
                     .Text("ADD")
-                    .Height(70)
+                    .Height(40)
                     .Width(178)
                     .Icon("plus")
                     .OnClick("function() { addVoucherEntry(); }")
@@ -220,144 +221,144 @@
 
 
         <div class="dx-field ledgerResult">
-            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-                .ID("dataGrid")
-                .KeyExpr("VoucherEntryNo")
-                .RemoteOperations(false)
-                .OnRowRemoved("onRowRemoved")
+                @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+                    .ID("dataGrid")
+                    .KeyExpr("VoucherEntryNo")
+                    .RemoteOperations(false)
+                    .OnRowRemoved("onRowRemoved")
 
-                .Columns(columns =>
-                {
-                    columns.AddFor(m => m.DrCr).Caption("Dr/Cr");
-                    columns.AddFor(m => m.AccountHead)
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.DrCr).Caption("Dr/Cr");
+                        columns.AddFor(m => m.AccountHead)
 
-                    .Caption("Account Head")
+                        .Caption("Account Head")
 
-                    .DataType(GridColumnDataType.String)
+                        .DataType(GridColumnDataType.String)
 
-                    .Lookup(lookup => lookup
+                        .Lookup(lookup => lookup
 
-                    .DataSource(ds => ds.WebApi()
+                        .DataSource(ds => ds.WebApi()
 
-                    .Controller("VoucherJournal")
+                        .Controller("VoucherJournal")
 
-                    .LoadAction("GetSupplierName")
+                        .LoadAction("GetSupplierName")
+
+                        )
+
+                        .ValueExpr("AccountId")
+
+                        .DisplayExpr("AccountHead")
+
+                        );
+                        columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
+                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                        );
+                        columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
+                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                        );
+                        columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
+                        columns.AddFor(m => m.VoucherEntryNo).Caption("DeleteLine").Visible(false);
+
+
+
+
+                    })
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnFixing(fixing => fixing.Enabled(true))
+                    .HeaderFilter(filter => filter.Visible(true))
+                    .Height(250)
+                    .ColumnAutoWidth(true)
+                    .FilterRow(filterRow => filterRow.Visible(false))
+                    .GroupPanel(groupPanel => groupPanel.Visible(false))
+                    .ShowBorders(true)
+                    .Width("100%")
+                    .Editing(editing => editing
+                    .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
+                    .AllowUpdating(true)   // Enable editing of existing rows
+                    .AllowDeleting(true)   // Enable deleting rows
+                    .UseIcons(true)
+
+
+
 
                     )
+                    .OnEditorPreparing("onEditorPreparing")
 
-                    .ValueExpr("AccountId")
-
-                    .DisplayExpr("AccountHead")
-
-                    );
-                    columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
-                    "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
-                    );
-                    columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
-                    "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
-                    );
-                    columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
-                    columns.AddFor(m => m.VoucherEntryNo).Caption("DeleteLine").Visible(false);
-
-
-
-
-                })
-                .AllowColumnReordering(true)
-                .AllowColumnResizing(true)
-                .ColumnFixing(fixing => fixing.Enabled(true))
-                .HeaderFilter(filter => filter.Visible(true))
-                .Height(250)
-                .ColumnAutoWidth(true)
-                .FilterRow(filterRow => filterRow.Visible(false))
-                .GroupPanel(groupPanel => groupPanel.Visible(false))
-                .ShowBorders(true)
-                .Width("100%")
-                .Editing(editing => editing
-                .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
-                .AllowUpdating(true)   // Enable editing of existing rows
-                .AllowDeleting(true)   // Enable deleting rows
-                .UseIcons(true)
-
-
-
-
-                )
-                .OnEditorPreparing("onEditorPreparing")
-
-                )
-            <div id="footerTotals" style="display: flex; background-color: #c0dceb; color: white; padding: 5px 10px; font-size: 14px;">
+                    )
+            <div id="footerTotals" style="display: flex; background-color: aliceblue; color: black; padding: 5px 10px; font-size: 14px;">
                 <div style="flex: 3.4;">&nbsp;</div>
 
                 <div style="flex: 1; text-align: center;">
-                    @(Html.DevExtreme().TextBox()
-                        .ID("totalDebitTextbox")
-                        .Value("0.00")
-                        .ReadOnly(true)
-                        .Width("100%")
-                        )
+                @(Html.DevExtreme().TextBox()
+                    .ID("totalDebitTextbox")
+                    .Value("0.00")
+                    .ReadOnly(true)
+                    .Width("100%")
+                    )
                 </div>
 
                 <div style="flex: 1; text-align: center;">
-                    @(Html.DevExtreme().TextBox()
-                        .ID("totalCreditTextbox")
-                        .Value("0.00")
-                        .ReadOnly(true)
-                        .Width("100%")
-                        )
+                @(Html.DevExtreme().TextBox()
+                    .ID("totalCreditTextbox")
+                    .Value("0.00")
+                    .ReadOnly(true)
+                    .Width("100%")
+                    )
                 </div>
                 <div style="flex: 4;">&nbsp;</div>
             </div>
 
             <div class="container">
-                <div class="card" style="background-color: #89f0b5; color: black;">
+                <div class="card" style="background-color:white; color: black;">
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-4 backgroundcolor" style="padding-top:3px; padding-bottom:3px;">
 
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                                    @(Html.DevExtreme().CheckBox()
-                                        .ID("VerifiedBy")
-                                        )
+                @(Html.DevExtreme().CheckBox()
+                    .ID("VerifiedBy")
+                    )
                                     <span style="margin-left:5px; margin-right:104px;">VerifiedBy:</span>
-                                    @(Html.DevExtreme().TextBox()
-                                        .ID("VerifiedBytext")
-                                        .Width("150px")
-                                        .Height("20px")
-                                        )
+                @(Html.DevExtreme().TextBox()
+                    .ID("VerifiedBytext")
+                    .Width("150px")
+                    .Height("20px")
+                    )
                                 </div>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
                                     <span>VerifiedOn:</span>
                                     <span id="VoucherVerifiedOn" style="margin-left:5px; margin-right:5px;"></span>
-                                    @(Html.DevExtreme().TextBox()
-                                        .ID("VerifiedOnDate")
-                                        .Width("150px")
-                                        .Height("20px")
-                                        )
+                @(Html.DevExtreme().TextBox()
+                    .ID("VerifiedOnDate")
+                    .Width("150px")
+                    .Height("20px")
+                    )
                                 </div>
 
 
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                                    @(Html.DevExtreme().CheckBox()
-                                        .ID("ApprovedBy")
-                                        )
+                @(Html.DevExtreme().CheckBox()
+                    .ID("ApprovedBy")
+                    )
                                     <span style="margin-left:5px; margin-right:104px;">ApprovedBy:</span>
-                                    @(Html.DevExtreme().TextBox()
-                                        .ID("ApprovedBytext")
-                                        .Width("150px")
-                                        .Height("20px")
-                                        )
+                @(Html.DevExtreme().TextBox()
+                    .ID("ApprovedBytext")
+                    .Width("150px")
+                    .Height("20px")
+                    )
                                 </div>
                                 <div style="display: flex; align-items: center; justify-content: space-between;">
                                     <span>ApprovedOn:</span>
                                     <span id="VoucherApprovedOn" style="margin-left:5px; margin-right:5px;"></span>
-                                    @(Html.DevExtreme().TextBox()
-                                        .ID("ApprovedOntext")
-                                        .Width("150px")
-                                        .Height("20px")
-                                        )
+                @(Html.DevExtreme().TextBox()
+                    .ID("ApprovedOntext")
+                    .Width("150px")
+                    .Height("20px")
+                    )
                                 </div>
                             </div>
 
@@ -365,34 +366,34 @@
                             <div class="col-md-7 backgroundcolor" style="padding-top:10px; padding-bottom:10px;">
                                 <div class="form-group">
                                     <label for="VoucharNarration">Voucher Narration:</label>
-                                    @(
-                                        Html.DevExtreme().TextBox()
-                                        .ID("VoucherNarration")
-                                        .Value(null)
-                                        .Width("100%")
-                                        .Height("30px")
-                                        )
+                @(
+                    Html.DevExtreme().TextBox()
+                    .ID("VoucherNarration")
+                    .Value(null)
+                    .Width("100%")
+                    .Height("30px")
+                    )
                                 </div>
                                 <div class="form-group mt-3">
                                     <label for="BillRemarks">Remarks:</label>
-                                    @(
-                                        Html.DevExtreme().TextBox()
-                                        .ID("Remarks")
-                                        .Value(null)
-                                        .Width("100%")
-                                        .Height("30px")
-                                        )
+                @(
+                    Html.DevExtreme().TextBox()
+                    .ID("Remarks")
+                    .Value(null)
+                    .Width("100%")
+                    .Height("30px")
+                    )
                                 </div>
                             </div>
 
                             <div class="col-md-1 backgroundcolor">
                                 <div class="form-group" style="padding-top:40px; padding-left:10px;">
-                                    @(Html.DevExtreme().Button()
-                                        .ID("btnAttachment")
-                                        .Icon("fa fa-book")
-                                        .Height(80)
-                                        .Width(100)
-                                        )
+                @(Html.DevExtreme().Button()
+                    .ID("btnAttachment")
+                    .Icon("fa fa-book")
+                    .Height(80)
+                    .Width(100)
+                    )
                                     </d
                                 </div>
                             </div>
@@ -402,7 +403,7 @@
 
 
                 <div>
-                    @await Html.PartialAsync("_FormFooter1")
+                @await Html.PartialAsync("_FormFooter1")
                 </div>
 
 

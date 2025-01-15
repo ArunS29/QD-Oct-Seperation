@@ -1,24 +1,33 @@
 .content-container-top {
-    background-color: #c0dceb;
+    background-color: white;
     border-top-left-radius: 10px; /* Radius for top-left corner */
     border-top-right-radius: 10px; /* Radius for top-right corner */
     padding: 5px;
+    font-family: "Inter", Helvetica, Arial, sans-serif;
 }
+
 .content-container-Middle {
     background-color: #c0dceb;
     padding: 5px;
 }
+
+.dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
+    background-color: aliceblue;
+}
+
 .content-container-bottom {
     background-color: #c0dceb;
     border-bottom-left-radius: 10px; /* Radius for top-left corner */
     border-bottom-right-radius: 10px; /* Radius for top-right corner */
     padding: 5px;
 }
+
 .content-container {
-    background-color: #c0dceb;
+    background-color: white;
     /* border-radius: 10px; */
     padding: 5px;
 }
+
 .custom-context-menu {
     list-style: none;
     margin: 0;
@@ -41,6 +50,7 @@
     width: 300px;
     text-align: center;
 }
+
 .dx-datagrid .dx-row {
     height: 35px;
     line-height: 35px; /* Align text vertically */
