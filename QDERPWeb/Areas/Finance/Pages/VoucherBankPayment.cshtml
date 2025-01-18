@@ -52,15 +52,7 @@
     .custom-popup-background {
     background-color: #f0f0f0; /* Change the background color as needed */
     }
-    .bold-header {
-    font-weight: bold;
-    }
-    .bold-value {
-    font-weight: bold;
-    }
-    .bold-button .dx-button-text {
-    font-weight: bold;
-    }
+
     #SalaryPaidEntryPopup {
     background-color: black !important;
     }
@@ -79,7 +71,7 @@
     <div class="content-container">
         <div class="dx-fieldset horizontal-container" style="margin-bottom:0px">
             <div class="form-group">
-                <label for="PurchaseVoucherNo" class="button-alignment-down"><strong>Voucher No</strong></label>
+                <label for="PurchaseVoucherNo" class="button-alignment-down">Voucher No</label>
                 @(
                                                     Html.DevExtreme().TextBox()
                                                     .ID("VoucherNo")
@@ -93,7 +85,7 @@
                                                     )
             </div>
             <div class="form-group">
-                <label for="VoucherDate" class="button-alignment-down"><strong>Voucher Date</strong></label>
+                <label for="VoucherDate" class="button-alignment-down">Voucher Date</label>
                 @(Html.DevExtreme().DateBox()
                                                     .ID("VoucherDate")
                                                     .InputAttr("aria-label", "Date")
@@ -104,7 +96,7 @@
                                                     )
             </div>
             <div class="form-group">
-                <label for="EffectiveDate" class="button-alignment-down"><strong>Effective Date</strong></label>
+                <label for="EffectiveDate" class="button-alignment-down">Effective Date</label>
                 @(Html.DevExtreme().DateBox()
                                                     .ID("VoucherEffectiveDate")
                                                     .InputAttr("aria-label", "Date")
@@ -115,7 +107,7 @@
                                                     )
             </div>
             <div class="form-group">
-                <label for="" class="button-alignment-down"><strong>Payment Account:</strong></label>
+                <label for="" class="button-alignment-down">Payment Account:</label>
                 @(Html.DevExtreme().DropDownBox()
                                                     .DataSource(d => d.WebApi()
                                                     .Controller("VoucherMaster")
@@ -153,7 +145,7 @@
 
             <div class="form-group">
                 <div class="button-alignment-down" >
-                    <label for="DrCr"><strong>Dr/Cr</strong></label>
+                    <label for="DrCr">Dr/Cr</label>
                 </div>
                 @(
                                                     Html.DevExtreme().SelectBox()
@@ -165,7 +157,7 @@
                                                     )
             </div>
             <div class="form-group">
-                <label for="AccountHead" class="button-alignment-down"><strong>Account Head:</strong></label>
+                <label for="AccountHead" class="button-alignment-down">Account Head:</label>
                 @(Html.DevExtreme().DropDownBox()
                                                     .DataSource(d => d.WebApi()
                                                     .Controller("VoucherMaster")
@@ -213,7 +205,7 @@
             </div>
 
             <div class="form-group">
-                <label for="Amount" class="button-alignment-down"><strong>Amount</strong></label>
+                <label for="Amount" class="button-alignment-down">Amount</label>
                 @(
                                                                 Html.DevExtreme().NumberBox()
                                                                 .ID("txtVoucherAmount")
@@ -237,14 +229,14 @@
 
         <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:10px;">
             <div class="form-group" style="padding-left:20px">
-                <label for="Amount" class="button-alignment-down" style="margin-right:25px"><strong>Narration</strong></label>
+                <label for="Amount" class="button-alignment-down" style="margin-right:25px">Narration</label>
             </div>
             <div class="form-group">
                 @(
                                                     Html.DevExtreme().TextArea()
                                                     .ID("txtEntryNarration")
                                                     .Value("")
-                                                    .Height(70)
+                                                    .Height(40)
                                                     .Width(720)
                                                     .Placeholder("Enter your comments here...")
                                                     .MaxLength(111500)
@@ -255,7 +247,7 @@
                 @(Html.DevExtreme().Button()
                                                     .ID("btnVoucherEntry")
                                                     .Text("ADD")
-                                                    .Height(70)
+                                                    .Height(40)
                                                     .Width(178)
                                                     .Icon("plus")
                                                     .OnClick("function() { addVoucherEntry(); }")
@@ -442,7 +434,7 @@
 
                         <div class="col-12 col-md-6 col-lg-4 mb-3">
                             <div class="form-group">
-                                <label for="ChequeNo"><strong>Cheque No/Reference No</strong></label>
+                                <label for="ChequeNo">Cheque No/Reference No</label>
                                 <div class="input-group">
                                     @(
                                                             Html.DevExtreme().TextBox()
@@ -479,7 +471,7 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="ChequeNo" class="button-alignment-down"><strong>Cheque No</strong></label>
+                                                <label for="ChequeNo" class="button-alignment-down">Cheque No</label>
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("ChequeNo")
                                                 .Value(null)
@@ -496,7 +488,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="VoucherNo1" class="button-alignment-down"><strong>Voucher No</strong></label>
+                                                <label for="VoucherNo1" class="button-alignment-down">Voucher No</label>
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("PopVoucherNo")
                                                 .Value(popvno)
@@ -508,7 +500,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="ChequeDate" class="button-alignment-down"><strong>Cheque Date</strong></label>
+                                                <label for="ChequeDate" class="button-alignment-down">Cheque Date</label>
                                                 @(Html.DevExtreme().DateBox()
                                                 .ID("ChequeDate")
                                                 .InputAttr("aria-label", "Date")
@@ -521,7 +513,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="PlaceofIssue" class="button-alignment-down"><strong>Place of Issue</strong></label>
+                                                <label for="PlaceofIssue" class="button-alignment-down">Place of Issue</label>
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("PlaceofIssue")
                                                  .ValidationRules(rules =>
@@ -540,7 +532,7 @@
                                         <div class="col-md-12">
 
                                             <div class="form-group">
-                                                   <label for="ChequeIssuedinfavourof" class="button-alignment-down"><strong>Cheque Issued in favour of</strong></label>
+                                                   <label for="ChequeIssuedinfavourof" class="button-alignment-down">Cheque Issued in favour of</label>
                                                  <div class="btn" style="position:relative;left:650px;">
                                                      @(Html.DevExtreme().Button()
                                                        .ID("popupbtnAddAHead")
@@ -548,7 +540,7 @@
                                                        .OnClick("function() { onPopupAddButtonClick(); }")
                                                         )
                                                         </div>
-                                       <label for="Addcaption" style="position:relative;left:395px;color: #0066CC;"><strong>Use Ledger Account Name</strong></label>
+                                       <label for="Addcaption" style="position:relative;left:395px;color: #0066CC;">Use Ledger Account Name</label>
 
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("ChequeIssuedinfavourof")
@@ -568,7 +560,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="AmountinWords" class="button-alignment-down"><strong>AmountinWords</strong></label>
+                                                <label for="AmountinWords" class="button-alignment-down">AmountinWords</label>
                                                 @(Html.DevExtreme().TextBox()
                                                 .ID("AmountinWords")
                                                 .Value("No Riyals Only.")
@@ -582,7 +574,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="AmountinSAR" class="button-alignment-down"><strong>AmountinSAR</strong></label>
+                                                <label for="AmountinSAR" class="button-alignment-down">AmountinSAR</label>
                                                 @(Html.DevExtreme().NumberBox()
                                                 .ID("AmountinSAR")
                                                 .Width(100)
@@ -657,7 +649,7 @@
                         <!-- Voucher Narration -->
                         <div class="col-md-8" style="position:relative;right:102px;">
                             <div class="form-group">
-                                <label for="VoucherNarration"><strong>Voucher Narration</strong></label>
+                                <label for="VoucherNarration">Voucher Narration</label>
                                 @(
                                                         Html.DevExtreme().TextBox()
                                                         .ID("VoucherNarration")
@@ -689,7 +681,7 @@
                         <!-- Bill No -->
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="BillNo"><strong>Bill No</strong></label>
+                                <label for="BillNo">Bill No</label>
                                 @(
                                                         Html.DevExtreme().TextBox()
                                                         .ID("BillNo")
@@ -702,7 +694,7 @@
                         <!-- Bill Date -->
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="BillDate"><strong>Bill Date</strong></label>
+                                <label for="BillDate">Bill Date</label>
                                 @(
                                                 Html.DevExtreme().DateBox()
                         .ID("BillDate")
@@ -720,7 +712,7 @@
                         <!-- Bill Paid To -->
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="BillPaidTo"><strong>Bill Paid To</strong></label>
+                                <label for="BillPaidTo">Bill Paid To</label>
                                 @(
                                                     Html.DevExtreme().TextBox()
                                                     .ID("BillPaidTo")
@@ -733,7 +725,7 @@
                         <!-- Remarks -->
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="Remarks"><strong>Remarks</strong></label>
+                                <label for="Remarks">Remarks</label>
                                 @(
                                                     Html.DevExtreme().TextBox()
                                                     .ID("Remarks")
@@ -775,14 +767,14 @@
                                                             .ID("VerifiedBy")
                                                                 .Value(null) // Default value
 
-                                                                    )<span style="margin-left:5px"><strong>Verified By:</strong></span>
+                                                                    )<span style="margin-left:5px">Verified By:</span>
                                         @(Html.DevExtreme().TextBox()
                                                             .ID("VerifiedBytext")
                                                                 .Value(null) // Default value
                                                                 .Disabled(true)
                                                      )
                                     </div>
-                                    <div style="margin-left:25px"><strong>Verified On:</strong></div>
+                                    <div style="margin-left:25px">Verified On:</div>
                                     @(Html.DevExtreme().TextBox()
                                                                .ID("VerifiedOnDate")
                                                                    .Value(null) // Default value
@@ -794,14 +786,14 @@
                                         @(Html.DevExtreme().CheckBox()
                                                             .ID("ApprovedBy")
                                                                 .Value(null) // Default value
-                                                                    )<span style="margin-left:5px"><strong>Approved By:</strong></span>
+                                                                    )<span style="margin-left:5px">Approved By:</span>
                                         @(Html.DevExtreme().TextBox()
                                                                 .ID("ApprovedBytext")
                                                                 .Value(null) // Default value
                                                                      .Disabled(true)
                                                      )
                                     </div>
-                                    <div style="margin-left:25px"><strong>Approved On:</strong></div>
+                                    <div style="margin-left:25px">Approved On:</div>
                                     @(Html.DevExtreme().TextBox()
                                                              .ID("ApprovedOntext")
                                                                  .Value(null) // Default value
@@ -842,7 +834,7 @@
                                 <div class="row mb-3">
                                     <!-- Voucher Entry ID -->
                                     <div class="col-md-2">
-                                        <label for="PurchaseVoucherNo" class="form-label"><strong>Voucher Entry ID:</strong></label>
+                                        <label for="PurchaseVoucherNo" class="form-label">Voucher Entry ID:</label>
                                         @(Html.DevExtreme().TextBox()
                                                                     .ID("VoucherEntryID")
                                                                     .Value(null)
@@ -852,7 +844,7 @@
 
                                     <!-- Payment Account -->
                                     <div class="col-md-3">
-                                        <label for="" class="form-label"><strong>Payment Account:</strong></label>
+                                        <label for="" class="form-label">Payment Account:</label>
                                         @(Html.DevExtreme().DropDownBox()
                                                                     .DataSource(d => d.WebApi()
                                                                         .Controller("LedgerAccoutMaster")
@@ -884,7 +876,7 @@
 
                                     <!-- Amount -->
                                     <div class="col-md-2">
-                                        <label for="Amount" class="form-label"><strong>Amount:</strong></label>
+                                        <label for="Amount" class="form-label">Amount:</label>
                                         @(Html.DevExtreme().NumberBox()
                                                                     .ID("SPtxtVoucherAmount")
                                                                     .Value(null)
@@ -903,7 +895,7 @@
 
                                     <!-- Dr/Cr -->
                                     <div class="col-md-2">
-                                        <label for="DrCr" class="form-label"><strong>Dr/Cr:</strong></label>
+                                        <label for="DrCr" class="form-label">Dr/Cr:</label>
                                         @(Html.DevExtreme().SelectBox()
                                                                     .ID("spDrCr")
                                                                     .DataSource(new[] { "Dr", "Cr" })
@@ -916,7 +908,7 @@
 
                                     <!-- Salary Paid -->
                                     <div class="col-md-2">
-                                        <label for="SalaryPaid" class="form-label"><strong>Reference:</strong></label>
+                                        <label for="SalaryPaid" class="form-label">Reference:</label>
                                         @(Html.DevExtreme().SelectBox()
                                                                     .ID("SalaryPaid")
                                                                     .DataSource(new[] { "Salary Paid", "Salary Payable" })
@@ -935,7 +927,7 @@
                                 <div class="row mb-3 align-items-end">
                                     <!-- Employee Dropdown -->
                                     <div class="col-md-3">
-                                        <label for="employeeDropdown" class="form-label"><strong>Select the Employee:</strong></label>
+                                        <label for="employeeDropdown" class="form-label">Select the Employee:</label>
                                         @(Html.DevExtreme().DropDownBox()
                                                                     .DataSource(d => d.WebApi()
                                                                         .Controller("LedgerAccountMaster")
@@ -980,7 +972,7 @@
 
                                     <!-- Against Payable For -->
                                     @*    <div class="col-md-3">
-                                        <label for="payableDropdown" class="form-label"><strong>Against Payable For:</strong></label>
+                                        <label for="payableDropdown" class="form-label">Against Payable For:</label>
                                         @(Html.DevExtreme().DropDownBox()
                                                             .DataSource(d => d.WebApi()
                                                                 .Controller("LedgerAccountMaster")
@@ -1012,7 +1004,7 @@
                                                                       .ContentTemplate(new TemplateName("AgainstPayableContentTemplate")))
                                     </div> *@
                                     <div class="col-md-3">
-    <label for="payableDropdown" class="form-label"><strong>Against Payable For:</strong></label>
+    <label for="payableDropdown" class="form-label">Against Payable For:</label>
                                         @(Html.DevExtreme().DropDownBox()
                                                         .ValidationRules(rules =>
                                                         {
@@ -1048,7 +1040,7 @@
 
                                     <!-- Amount Field -->
                                     <div class="col-md-2">
-                                        <label for="Amount" class="button-alignment-down"><strong>Amount:</strong></label>
+                                        <label for="Amount" class="button-alignment-down">Amount:</label>
                                         @(
                                                                                         Html.DevExtreme().NumberBox()
                                                                                         .ID("txtVoucherAmount1")
