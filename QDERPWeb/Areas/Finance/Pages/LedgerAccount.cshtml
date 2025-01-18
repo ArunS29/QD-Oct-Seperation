@@ -2,6 +2,8 @@
 @using DevExtreme.AspNet.Mvc
 @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
+
+
 }
 
 <style>
@@ -33,8 +35,8 @@
 
 <style>
     .tab-content {
-        background-color: white;
-        border: 5px solid white;
+        background-color: #c0dceb;
+        border: 5px solid #212529;
         border-radius: 5px;
         margin-top: 10px;
         display: none;
@@ -74,7 +76,7 @@
                     } */
 
     .custom-textbox input {
-        background-color: aliceblue;
+        background-color: #1f216d;
         font-weight: bold !important;
         color: white !important; /* Use !important to override DevExtreme styles */
         /*   border: 3px solid #282222;
@@ -98,127 +100,157 @@
 <div class="content-container-top">
     <div class="dx-fieldset horizontal-container">
         @(Html.DevExtreme().TextBox()
-            .ID("txtAccountId")
-            .Label("Account ID")
-            .Disabled(false)
-            .LabelMode(EditorLabelMode.Outside)
-            .InputAttr("aria-label", "Text")
-            .ElementAttr(new { @class = "custom-textbox" })
-            .Width("10%")
-            .TabIndex(1)
-            )
+                .ID("txtAccountId")
+                .Label("Account ID")
+                   .Disabled(true)
+                .LabelMode(EditorLabelMode.Outside)
+                .InputAttr("aria-label", "Text")
+                .ElementAttr(new { @class = "custom-textbox" })
+                .Width("10%")
+                .TabIndex(1)
+                )
         @(Html.DevExtreme().TextBox()
-            .ID("txtReferenceNo")
-            .Label("Reference No")
-            .LabelMode(EditorLabelMode.Outside)
-            .InputAttr("aria-label", "Text")
-            @* .ElementAttr(new { @class = "custom-textbox1" }) *@
-            .Width("30%")
-            .TabIndex(2)
-            )
+                .ID("txtReferenceNo")
+                .Label("Reference No")
+                .LabelMode(EditorLabelMode.Outside)
+                .InputAttr("aria-label", "Text")
+                @* .ElementAttr(new { @class = "custom-textbox1" }) *@
+                .Width("30%")
+                .TabIndex(2)
+                )
         @(Html.DevExtreme().TextBox()
-            .ID("txtAccountHead")
-            .Label("Account Head Name")
-            .LabelMode(EditorLabelMode.Outside)
-            .InputAttr("aria-label", "Text")
-            @*  .ElementAttr(new { @class = "custom-textbox1" }) *@
-            .TabIndex(3)
-            .Width("100%")
-            .ValidationRules(value => value.AddRequired().Message("Account Head Name cannot be empty"))
-            .OnFocusOut("txtAccountHeadFocusOut")
-            )
+                .ID("txtAccountHead")
+                .Label("Account Head Name")
+                .LabelMode(EditorLabelMode.Outside)
+                .InputAttr("aria-label", "Text")
+                @*  .ElementAttr(new { @class = "custom-textbox1" }) *@
+                .TabIndex(3)
+                .Width("100%")
+                .ValidationRules(value => value.AddRequired().Message("Account Head Name cannot be empty"))
+                .OnFocusOut("txtAccountHeadFocusOut")
+                )
+            <div style="display: flex; align-items: center; width: 100%;">
+
+
+            @(Html.DevExtreme().TextBox()
+                            .ID("txtAccountHeadAr")
+                               .Label("Account Head in Arabic")
+
+                        .LabelMode(EditorLabelMode.Outside)
+                        .InputAttr("aria-label", "Text")
+
+                            .Width("100%")
+                        .TabIndex(2)
+                             //.ValidationRules(value => value.AddRequired().Message("Account Head Name cannot be empty"))
+                             .OnFocusOut("txtAccountHeadFocusOut")
+                        )
+             <span class="input-group-prepend" style="margin-top: 22px;">
+
+                @(
+                                                   Html.DevExtreme().Button()
+                                                   .ID("convertToArabic1")
+                                                   .Width(39)
+                                                   .Height(33)
+                                                       .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                                                   .ElementAttr(new { @class = "input-button" })
+                                                           .OnClick("function() { convertToArabic(); }")
+                                                   )
+                                </span>
+
+
+    </div>
 
     </div>
     <div class="col-md-12">
         <!-- Create a wrapper div for the row layout -->
         <div class="d-flex align-items-center">
             @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi()
-                .Controller("AccountLedgerMaster")
-                .LoadAction("getAccountingLedger")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountGroupId") // This is the unique key for the data source
-                )
-                .LabelMode(EditorLabelMode.Outside)
-                .Label("Account Group")
-                .ID("ddlAccountGroup")
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("input")
-                .HoverStateEnabled(true)
-                .ValueExpr("AccountGroupId")
-                .DisplayExpr("AccountGroup")
-                .OnInput("ddlAccountGroupOnInput")
-                .OnOpened("ddlAccountGrouponOpened")
-                .Width("100%")
-                .TabIndex(4)
-                .ValidationRules(value => value.AddRequired().Message("Account Group cannot be empty"))
-                .ValidationMessageMode(ValidationMessageMode.Auto)
-                .DropDownOptions(o => o
-                .Width("100%")
-                )
-                .OnKeyDown("ddlAccountGrouponKeyDown")
-                .OnValueChanged("ddlAccountGroupValueChanged")
-                .ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
-                )
+                    .DataSource(d => d.WebApi()
+                    .Controller("AccountLedgerMaster")
+                    .LoadAction("getAccountingLedger")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("AccountGroupId") // This is the unique key for the data source
+                    )
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Account Group")
+                    .ID("ddlAccountGroup")
+                    .ShowClearButton(true)
+                    .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("AccountGroupId")
+                    .DisplayExpr("AccountGroup")
+                    .OnInput("ddlAccountGroupOnInput")
+                    .OnOpened("ddlAccountGrouponOpened")
+                    .Width("100%")
+                    .TabIndex(4)
+                    .ValidationRules(value => value.AddRequired().Message("Account Group cannot be empty"))
+                    .ValidationMessageMode(ValidationMessageMode.Auto)
+                    .DropDownOptions(o => o
+                    .Width("100%")
+                    )
+                    .OnKeyDown("ddlAccountGrouponKeyDown")
+                    .OnValueChanged("ddlAccountGroupValueChanged")
+                    .ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
+                    )
 
             @(Html.DevExtreme().Button()
-                .ID("btnAddAccount")
-                .Icon("plus")
-                .ElementAttr("class", "button-alignment-up button-group")
-                .OnClick("redirectAccoutledgerMaster")
-                )
+                    .ID("btnAddAccount")
+                    .Icon("plus")
+                    .ElementAttr("class", "button-alignment-up button-group")
+                    .OnClick("redirectAccoutledgerMaster")
+                    )
             @(Html.DevExtreme().Button()
-                .ID("btnEditAccount")
-                .Icon("edit")
-                .ElementAttr("class", "button-alignment-up button-group")
-                .OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectAccoutledgerMaster() }")
-                )
+                    .ID("btnEditAccount")
+                    .Icon("edit")
+                    .ElementAttr("class", "button-alignment-up button-group")
+                    .OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectAccoutledgerMaster() }")
+                    )
         </div>
     </div>
     <br />
     <div class="dx-fieldset horizontal-container">
         @(Html.DevExtreme().Tabs()
-            .Items(items =>
-            {
-                items.Add()
-                .Icon("optionsgear")
-                .Text("Settings");
+                .Items(items =>
+                {
+                    items.Add()
+                    .Icon("optionsgear")
+                    .Text("Settings");
 
-                items.Add()
-                .Icon("accountbox")
-                .Text("Contact Details");
+                    items.Add()
+                    .Icon("accountbox")
+                    .Text("Contact Details");
 
 
-                items.Add()
-                .Icon("description")
-                .Text("Bank Details");
+                    items.Add()
+                    .Icon("description")
+                    .Text("Bank Details");
 
-                items.Add()
-                .Icon("card")
-                .Text("Client Details");
+                    items.Add()
+                    .Icon("card")
+                    .Text("Client Details");
 
-                items.Add()
-                .Icon("group")
-                .Text("Supplier Details");
+                    items.Add()
+                    .Icon("group")
+                    .Text("Supplier Details");
 
-                items.Add()
-                .Icon("attach")
-                .Text("Attachments");
+                    items.Add()
+                    .Icon("attach")
+                    .Text("Attachments");
 
-                items.Add()
-                .Icon("file")
-                .Text("Billing Details");
+                    items.Add()
+                    .Icon("file")
+                    .Text("Billing Details");
 
-                items.Add()
-                .Icon("description")
-                .Text("Obselete(for Old Version)");
-            })
-            .SelectedIndex(0)  // Default selected tab is 0 (first tab)
-            .OnSelectionChanged("onTabSelectionChanged")  // Event handler for tab selection change
+                    items.Add()
+                    .Icon("description")
+                    .Text("Obselete(for Old Version)");
+                })
+                .SelectedIndex(0)  // Default selected tab is 0 (first tab)
+                .OnSelectionChanged("onTabSelectionChanged")  // Event handler for tab selection change
 
-            )
+                )
 
 
     </div>
@@ -234,66 +266,66 @@
                         </td>
                         <td>
                             @(
-                                Html.DevExtreme().NumberBox()
-                                .ID("txtOpeningBalance")
-                                .Value(0)
-                                .Min(0.00)
-                                .Format(format => format.Type("fixedPoint").Precision(2))
-                                .Width("100%")// Initial value
-                                @*  .Min(0)              // Minimum value
+                                    Html.DevExtreme().NumberBox()
+                                    .ID("txtOpeningBalance")
+                                    .Value(0)
+                                    .Min(0.00)
+                                    .Format(format => format.Type("fixedPoint").Precision(2))
+                                    .Width("100%")// Initial value
+                                    @*  .Min(0)              // Minimum value
                             .Max(1000)  *@              // Maximum value
-                                .Step(1)             // Increment step
-                                .ShowSpinButtons(true) // Show spin buttons for up/down
-                                                       //.Format("fixedPoint")  // Format as fixed-point (number with decimals)
-                                                       //.FormatOptions(options => options.Precision(2))  // 2 decimal places
-                                .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }) //.OnValueChanged("onValueChangedHandler") // Optional JS function for value change
-                                )
+                                    .Step(1)             // Increment step
+                                    .ShowSpinButtons(true) // Show spin buttons for up/down
+                                                           //.Format("fixedPoint")  // Format as fixed-point (number with decimals)
+                                                           //.FormatOptions(options => options.Precision(2))  // 2 decimal places
+                                    .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }) //.OnValueChanged("onValueChangedHandler") // Optional JS function for value change
+                                    )
                         </td>
                         <td>
                             @(Html.DevExtreme().DropDownBox()
-                                .DataSource(d => d.WebApi()
-                                .Controller("AccountLedgerMaster")
-                                .LoadAction("getCreditDebit")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("OpeningBalanceDrCr")
-                                )
-                                .ID("ddlCreditDebit")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(false)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("OpeningBalanceDrCr")
-                                .DisplayExpr("OpeningBalanceDrCr")
-                                .OnInput("DrCrOnInput")
-                                .OnOpened("onOpenedDrCr")
-                                .Width("100%")
-                                .TabIndex(4)
-                                .DropDownOptions(o => o
-                                .Width("100%") // Set the desired width for the dropdown content*@
-                                )
-                                .OnKeyDown("DrCrKeyDown")
-                                .OnValueChanged("DrCrValueChanged")
-                                .ContentTemplate(new TemplateName("DrCrContentTemplate"))
-                                )
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                    .LoadAction("getCreditDebit")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("OpeningBalanceDrCr")
+                                    )
+                                    .ID("ddlCreditDebit")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(false)
+                                    .OpenOnFieldClick(false)
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("OpeningBalanceDrCr")
+                                    .DisplayExpr("OpeningBalanceDrCr")
+                                    .OnInput("DrCrOnInput")
+                                    .OnOpened("onOpenedDrCr")
+                                    .Width("100%")
+                                    .TabIndex(4)
+                                    .DropDownOptions(o => o
+                                    .Width("100%") // Set the desired width for the dropdown content*@
+                                    )
+                                    .OnKeyDown("DrCrKeyDown")
+                                    .OnValueChanged("DrCrValueChanged")
+                                    .ContentTemplate(new TemplateName("DrCrContentTemplate"))
+                                    )
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .ID("btnPost")
-                                .Icon("datausage")
-                                .Text("Post")
-                                .Width("100%")
-                                .OnClick("onPostButtonClick")
-                                )
+                                    .ID("btnPost")
+                                    .Icon("datausage")
+                                    .Text("Post")
+                                    .Width("100%")
+                                    .OnClick("onPostButtonClick")
+                                    )
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .ID("btnOpeningBills")
-                                .Icon("contentlayout")
-                                .Text("Opening Bills")
-                                .Width("100%")
-                                .Disabled(false)
-                                )
+                                    .ID("btnOpeningBills")
+                                    .Icon("contentlayout")
+                                    .Text("Opening Bills")
+                                    .Width("100%")
+                                    .Disabled(false)
+                                    )
                         </td>
                     </tr>
                     <tr>
@@ -302,23 +334,23 @@
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().CheckBox()
-                                .ID("chkDefaultEntry")
-                                .Text("Choose if you want this to be Default Entry in vouchers ")
-                                .Value(false)
-                                // .Disabled(true)
-                                .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                )
+                                    .ID("chkDefaultEntry")
+                                    .Text("Choose if you want this to be Default Entry in vouchers ")
+                                    .Value(false)
+                                    // .Disabled(true)
+                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
+                                    )
                         </td>
                         <td>
                             <label>Voucher No Abbr:</label>
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtVoucherNoAbbr")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                .MaxLength(3)
-                                )
+                                    .ID("txtVoucherNoAbbr")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    .MaxLength(3)
+                                    )
                         </td>
                     </tr>
                     <tr>
@@ -327,26 +359,26 @@
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().CheckBox()
-                                .ID("chkMaintainBillEntry")
-                                .Text("Choose if you want to Maintain Billwise Details ")
-                                .Value(false)
-                                //.Disabled(true)
-                                .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                )
+                                    .ID("chkMaintainBillEntry")
+                                    .Text("Choose if you want to Maintain Billwise Details ")
+                                    .Value(false)
+                                    //.Disabled(true)
+                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
+                                    )
                         </td>
                         <td>
                             <label>No of Days Credit:</label>
                         </td>
                         <td>
                             @(Html.DevExtreme().NumberBox()
-                                .ID("txtNoDays")
-                                .Value(0)
-                                .Min(0)
-                                .Step(1)             // Increment step
-                                .ShowSpinButtons(true) // Show spin buttons for up/down
-                                .Format("fixedpoint")
-                                .InputAttr(new { style = "text-align: left; color:darkblack; font-weight:bold;" })
-                                )
+                                    .ID("txtNoDays")
+                                    .Value(0)
+                                    .Min(0)
+                                    .Step(1)             // Increment step
+                                    .ShowSpinButtons(true) // Show spin buttons for up/down
+                                    .Format("fixedpoint")
+                                    .InputAttr(new { style = "text-align: left; color:darkblack; font-weight:bold;" })
+                                    )
                         </td>
                     </tr>
 
@@ -356,12 +388,12 @@
                         </td>
                         <td colspan="4">
                             @(Html.DevExtreme().CheckBox()
-                                .ID("chkEmployeeDBEntry")
-                                .Text("Choose if you want this account to link with Employee Database.")
-                                .Value(false)
-                                //.Disabled(true)
-                                .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                )
+                                    .ID("chkEmployeeDBEntry")
+                                    .Text("Choose if you want this account to link with Employee Database.")
+                                    .Value(false)
+                                    //.Disabled(true)
+                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
+                                    )
                         </td>
                     </tr>
 
@@ -371,12 +403,12 @@
                         </td>
                         <td colspan="4">
                             @(Html.DevExtreme().CheckBox()
-                                .ID("chkPropertyDBEntry")
-                                .Text("Choose if you want this account to link with Property Database.")
-                                .Value(false)
-                                //.Disabled(true)
-                                .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                )
+                                    .ID("chkPropertyDBEntry")
+                                    .Text("Choose if you want this account to link with Property Database.")
+                                    .Value(false)
+                                    //.Disabled(true)
+                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
+                                    )
                         </td>
                     </tr>
 
@@ -386,12 +418,12 @@
                         </td>
                         <td colspan="4">
                             @(Html.DevExtreme().CheckBox()
-                                .ID("chkLoanAccountEntry")
-                                .Text("Choose if you want this account to link with Employee's Salary Advance.")
-                                .Value(false)
-                                //.Disabled(true)
-                                .ElementAttr("style", "font-style:italic;font-weight:bold;")
-                                )
+                                    .ID("chkLoanAccountEntry")
+                                    .Text("Choose if you want this account to link with Employee's Salary Advance.")
+                                    .Value(false)
+                                    //.Disabled(true)
+                                    .ElementAttr("style", "font-style:italic;font-weight:bold;")
+                                    )
                         </td>
                     </tr>
 
@@ -401,12 +433,12 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().Switch()
-                                .ID("schLedgerActive")
-                                .Value(true)  // Set initial state to "on"
-                                .SwitchedOffText("No") // Text to display when the toggle is on
-                                .SwitchedOnText("Yes") // Text to display when the toggle is off
-                                .Width(100) // Width of the toggle switch
-                                )
+                                    .ID("schLedgerActive")
+                                    .Value(true)  // Set initial state to "on"
+                                    .SwitchedOffText("No") // Text to display when the toggle is on
+                                    .SwitchedOnText("Yes") // Text to display when the toggle is off
+                                    .Width(100) // Width of the toggle switch
+                                    )
                         </td>
                     </tr>
 
@@ -423,41 +455,41 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().DropDownBox()
-                                .DataSource(d => d.WebApi()
-                                .Controller("AccountLedgerMaster")
-                                .LoadAction("getAccountBranch")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("BranchCode")
-                                )
-                                .LabelMode(EditorLabelMode.Outside)
-                                .ID("ddlbranch")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(true)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("BranchCode")
-                                .DisplayExpr("BranchName")
-                                .OnInput("ddlbranchOnInput")
-                                .OnOpened("ddlbranchonOpened")
-                                .Width("100%")
-                                .DropDownOptions(o => o
-                                .Width("100%")
-                                )
-                                .OnKeyDown("ddlbranchonKeyDown")
-                                .OnValueChanged("ddlbranchValueChanged")
-                                .ContentTemplate(new TemplateName("BranchContentTemplate"))
-                                )
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                    .LoadAction("getAccountBranch")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("BranchCode")
+                                    )
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("ddlbranch")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("BranchCode")
+                                    .DisplayExpr("BranchName")
+                                    .OnInput("ddlbranchOnInput")
+                                    .OnOpened("ddlbranchonOpened")
+                                    .Width("100%")
+                                    .DropDownOptions(o => o
+                                    .Width("100%")
+                                    )
+                                    .OnKeyDown("ddlbranchonKeyDown")
+                                    .OnValueChanged("ddlbranchValueChanged")
+                                    .ContentTemplate(new TemplateName("BranchContentTemplate"))
+                                    )
 
 
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .ID("btnAddDivision")
-                                .Icon("plus")
-                                .ElementAttr("class", "button-alignment-down button-group")
-                                .OnClick("redirectToBranchMaster")
-                                )
+                                    .ID("btnAddDivision")
+                                    .Icon("plus")
+                                    .ElementAttr("class", "button-alignment-down button-group")
+                                    .OnClick("redirectToBranchMaster")
+                                    )
                         </td>
                     </tr>
                     <tr>
@@ -466,40 +498,40 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().DropDownBox()
-                                .DataSource(d => d.WebApi()
-                                .Controller("AccountLedgerMaster")
-                                .LoadAction("getSubGroup")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("LedgerSubGroupCode")
-                                )
-                                .ID("ddlSubgroup")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(true)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("LedgerSubGroupCode")
-                                .DisplayExpr("SubGroupName")
-                                .OnInput("ddlsubGroupOnInput")
-                                .OnOpened("ddlsubGrouponOpened")
-                                .Width("100%")
-                                .TabIndex(4)
-                                .DropDownOptions(o => o
-                                .Width("100%")
-                                )
-                                .OnKeyDown("ddlsubGrouponKeyDown")
-                                .OnValueChanged("ddlsubGroupValueChanged")
-                                .ContentTemplate(new TemplateName("SubGroupContentTemplate"))
-                                )
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                    .LoadAction("getSubGroup")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("LedgerSubGroupCode")
+                                    )
+                                    .ID("ddlSubgroup")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("LedgerSubGroupCode")
+                                    .DisplayExpr("SubGroupName")
+                                    .OnInput("ddlsubGroupOnInput")
+                                    .OnOpened("ddlsubGrouponOpened")
+                                    .Width("100%")
+                                    .TabIndex(4)
+                                    .DropDownOptions(o => o
+                                    .Width("100%")
+                                    )
+                                    .OnKeyDown("ddlsubGrouponKeyDown")
+                                    .OnValueChanged("ddlsubGroupValueChanged")
+                                    .ContentTemplate(new TemplateName("SubGroupContentTemplate"))
+                                    )
 
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .ID("btnAddSubgroup")
-                                .Icon("plus")
-                                .ElementAttr("class", "button-alignment-down button-group")
-                                .OnClick("redirecttoledgersubgroup")
-                                )
+                                    .ID("btnAddSubgroup")
+                                    .Icon("plus")
+                                    .ElementAttr("class", "button-alignment-down button-group")
+                                    .OnClick("redirecttoledgersubgroup")
+                                    )
                         </td>
                     </tr>
                     <tr>
@@ -508,39 +540,39 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().DropDownBox()
-                                .DataSource(d => d.WebApi()
-                                .Controller("AccountLedgerMaster")
-                                .LoadAction("getSalesPersonList")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("SalesPersonCode")
-                                )
-                                .ID("ddlSales")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(true)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("SalesPersonCode")
-                                .DisplayExpr("SalesPersonName")
-                                .OnInput("ddlSalesOnInput")
-                                .OnOpened("ddlSalesonOpened")
-                                .Width("100%")
-                                .TabIndex(4)
-                                .DropDownOptions(o => o
-                                .Width("100%")
-                                )
-                                .OnKeyDown("ddlSalesonKeyDown")
-                                .OnValueChanged("ddlSalesValueChanged")
-                                .ContentTemplate(new TemplateName("SalesContentTemplate"))
-                                )
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                    .LoadAction("getSalesPersonList")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("SalesPersonCode")
+                                    )
+                                    .ID("ddlSales")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("SalesPersonCode")
+                                    .DisplayExpr("SalesPersonName")
+                                    .OnInput("ddlSalesOnInput")
+                                    .OnOpened("ddlSalesonOpened")
+                                    .Width("100%")
+                                    .TabIndex(4)
+                                    .DropDownOptions(o => o
+                                    .Width("100%")
+                                    )
+                                    .OnKeyDown("ddlSalesonKeyDown")
+                                    .OnValueChanged("ddlSalesValueChanged")
+                                    .ContentTemplate(new TemplateName("SalesContentTemplate"))
+                                    )
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .ID("btnAddSalesperson")
-                                .Icon("plus")
-                                .ElementAttr("class", "button-alignment-down button-group")
-                                .OnClick("redirecttosalespersonmaster")
-                                )
+                                    .ID("btnAddSalesperson")
+                                    .Icon("plus")
+                                    .ElementAttr("class", "button-alignment-down button-group")
+                                    .OnClick("redirecttosalespersonmaster")
+                                    )
                         </td>
                     </tr>
 
@@ -550,10 +582,10 @@
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtContactPerson")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtContactPerson")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
 
@@ -563,18 +595,18 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtPersonTitle")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtPersonTitle")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .Placeholder("Mobile No")
-                                .ID("txtPersonMobile")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .Placeholder("Mobile No")
+                                    .ID("txtPersonMobile")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
 
@@ -584,11 +616,11 @@
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtEmail")
-                                .ValidationRules(value => value.AddEmail().Message("Please Enter the Valid Email Address"))
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtEmail")
+                                    .ValidationRules(value => value.AddEmail().Message("Please Enter the Valid Email Address"))
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
 
@@ -598,10 +630,10 @@
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtRemarks")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtRemarks")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
                 </table>
@@ -609,7 +641,7 @@
         </div>
 
         <div id="tab-content-3" class="tab-content" style="display: none;">
-            <div style="background-color:aliceblue;">
+            <div style="background-color:#c0dceb;">
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                     <tr>
                         <td style="width: 15%;">
@@ -617,30 +649,30 @@
                         </td>
                         <td style="width: 35%;">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBankAccountName")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtBankAccountName")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                         <td style="width: 15%;">
                             <label>اسم الحساب المصرفي:</label>
                         </td>
                         <td style="display: flex; align-items: center;">
                             @(Html.DevExtreme().Button()
-                                .ID("btnConvertAccountName")
-                                .Width(40)
-                                .Height(32)
-                                .Icon("fas fa-language") // Add an icon
-                                .ElementAttr(new { @class = "convert-button" })
-                                .OnClick("convertAccountNameToArabic") // Define the function
-                                )
+                                    .ID("btnConvertAccountName")
+                                    .Width(40)
+                                    .Height(32)
+                                    .Icon("fas fa-language") // Add an icon
+                                    .ElementAttr(new { @class = "convert-button" })
+                                    .OnClick("convertAccountNameToArabic") // Define the function
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBankAccountNameAr")
-                                .InputAttr("aria-label", "Text")
-                                .Width("calc(100% - 50px)") // Adjust for button
-                                .RtlEnabled(true)
+                                    .ID("txtBankAccountNameAr")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("calc(100% - 50px)") // Adjust for button
+                                    .RtlEnabled(true)
 
-                                )
+                                    )
                         </td>
                     </tr>
 
@@ -650,29 +682,29 @@
                         </td>
                         <td colspan="3">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBankName")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtBankName")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                         <td>
                             <label>اسم البنك:</label>
                         </td>
                         <td style="display: flex; align-items: center;">
                             @(Html.DevExtreme().Button()
-                                .ID("btnConvertBankName")
-                                .Width(40)
-                                .Height(32)
-                                .Icon("fas fa-language")
-                                .ElementAttr(new { @class = "convert-button" })
-                                .OnClick("convertBankNameToArabic")
-                                )
+                                    .ID("btnConvertBankName")
+                                    .Width(40)
+                                    .Height(32)
+                                    .Icon("fas fa-language")
+                                    .ElementAttr(new { @class = "convert-button" })
+                                    .OnClick("convertBankNameToArabic")
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBankNameAr")
-                                .InputAttr("aria-label", "Text")
-                                .Width("calc(100% - 50px)")
-                                .RtlEnabled(true)
-                                )
+                                    .ID("txtBankNameAr")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("calc(100% - 50px)")
+                                    .RtlEnabled(true)
+                                    )
                         </td>
                     </tr>
 
@@ -682,29 +714,29 @@
                         </td>
                         <td colspan="3">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBankBranch")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtBankBranch")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                         <td>
                             <label>اسم الفوترة:</label>
                         </td>
                         <td style="display: flex; align-items: center;">
                             @(Html.DevExtreme().Button()
-                                .ID("btnConvertBankBranch")
-                                .Width(40)
-                                .Height(32)
-                                .Icon("fas fa-language")
-                                .ElementAttr(new { @class = "convert-button" })
-                                .OnClick("convertBankBranchToArabic")
-                                )
+                                    .ID("btnConvertBankBranch")
+                                    .Width(40)
+                                    .Height(32)
+                                    .Icon("fas fa-language")
+                                    .ElementAttr(new { @class = "convert-button" })
+                                    .OnClick("convertBankBranchToArabic")
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBankBranchAr")
-                                .InputAttr("aria-label", "Text")
-                                .Width("calc(100% - 50px)")
-                                .RtlEnabled(true)
-                                )
+                                    .ID("txtBankBranchAr")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("calc(100% - 50px)")
+                                    .RtlEnabled(true)
+                                    )
                         </td>
                     </tr>
 
@@ -714,10 +746,10 @@
                         </td>
                         <td colspan="3">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBankAccountNo")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtBankAccountNo")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
 
@@ -727,20 +759,20 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBankIBAN")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtBankIBAN")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                         <td>
                             <label>Swift Code:</label>
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSwiftCode")
-                                .InputAttr("aria-label", "Text")
-                                .Width("100%")
-                                )
+                                    .ID("txtSwiftCode")
+                                    .InputAttr("aria-label", "Text")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
                 </table>
@@ -748,7 +780,7 @@
         </div>
 
         <div id="tab-content-4" class="tab-content" style="display: none;">
-            <div style="background-color:aliceblue;">
+            <div style="background-color:#c0dceb;">
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                     <tr>
                         <td>
@@ -760,20 +792,20 @@
                         <td colspan="3">
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("dwnarrow")
-                                    .Width("auto")
-                                    .Icon("fas fa-chevron-down")
-                                    .OnClick("onDownArrowClick")
+                                        .ID("dwnarrow")
+                                        .Width("auto")
+                                        .Icon("fas fa-chevron-down")
+                                        .OnClick("onDownArrowClick")
 
-                                    )
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtClientBilling")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "Client Billing")
-                                    .ValidationRules(rules => rules
-                                    .AddRequired()  // This adds the required validation rule
-                                    )
-                                    )
+                                        .ID("txtClientBilling")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "Client Billing")
+                                        .ValidationRules(rules => rules
+                                        .AddRequired()  // This adds the required validation rule
+                                        )
+                                        )
 
                             </div>
                         </td>
@@ -783,18 +815,18 @@
                         <td colspan="3">
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnClientBillingAr")
-                                    // .Text("Action")
-                                    .Width("auto")
-                                    .Icon("fas fa-language")
-                                    .OnClick("onClientBillingArClick") // Add your JavaScript handler here
-                                    )
+                                        .ID("btnClientBillingAr")
+                                        // .Text("Action")
+                                        .Width("auto")
+                                        .Icon("fas fa-language")
+                                        .OnClick("onClientBillingArClick") // Add your JavaScript handler here
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtClientBillingAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "Client Billing")
-                                    .ValidationRules(rules => rules.AddRequired())
-                                    )
+                                        .ID("txtClientBillingAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "Client Billing")
+                                        .ValidationRules(rules => rules.AddRequired())
+                                        )
                             </div>
                         </td>
                     </tr>
@@ -808,23 +840,23 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtClientVATNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtClientVATNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtClientVATNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtClientVATNo")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>Group VAT Number:</label>
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtGrouptVATNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtGrouptVATNo")
-                                )
+                                    .ID("txtGrouptVATNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtGrouptVATNo")
+                                    )
                         </td>
                     </tr>
 
@@ -837,31 +869,31 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().DropDownBox()
-                                .DataSource(d => d.WebApi()
-                                .Controller("AccountLedgerMaster")
-                                .LoadAction("getOtherIDTypes")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("BuyerOtherIDType")
-                                )
-                                .LabelMode(EditorLabelMode.Outside)
-                                .ID("ddlOtherType")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(true)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("BuyerOtherIDType")
-                                .DisplayExpr("BuyerIDTypeName")
-                                .OnInput("ddlOtherTypeOnInput")
-                                .OnOpened("ddlOtherTypeonOpened")
-                                .Width("100%")
-                                .DropDownOptions(o => o
-                                .Width("100%") // Set the desired width for the dropdown content*@
-                                )
-                                .OnKeyDown("ddlOtherTypeonKeyDown")
-                                .OnValueChanged("ddlOtherTypeValueChanged")
-                                .ContentTemplate(new TemplateName("OtherTypeContentTemplate"))
-                                )
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                    .LoadAction("getOtherIDTypes")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("BuyerOtherIDType")
+                                    )
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("ddlOtherType")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("BuyerOtherIDType")
+                                    .DisplayExpr("BuyerIDTypeName")
+                                    .OnInput("ddlOtherTypeOnInput")
+                                    .OnOpened("ddlOtherTypeonOpened")
+                                    .Width("100%")
+                                    .DropDownOptions(o => o
+                                    .Width("100%") // Set the desired width for the dropdown content*@
+                                    )
+                                    .OnKeyDown("ddlOtherTypeonKeyDown")
+                                    .OnValueChanged("ddlOtherTypeValueChanged")
+                                    .ContentTemplate(new TemplateName("OtherTypeContentTemplate"))
+                                    )
                         </td>
                         <td>
                             <label>
@@ -871,13 +903,13 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtOtherId")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtOtherId")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtOtherId")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtOtherId")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                     </tr>
 
@@ -890,13 +922,13 @@
                         </td>
                         <td colspan="3">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtClientAddress")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtClientAddress")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtClientAddress")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtClientAddress")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>Client Address - Street Name (Arabic):</label>
@@ -904,17 +936,17 @@
                         <td colspan="3">
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnClientAddressAr")
-                                    .Width("auto")
-                                    .Icon("fas fa-language")
-                                    .OnClick("onClientAddressArClick")
-                                    )
+                                        .ID("btnClientAddressAr")
+                                        .Width("auto")
+                                        .Icon("fas fa-language")
+                                        .OnClick("onClientAddressArClick")
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtClientAddressAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "Client Address")
-                                    .ValidationRules(rules => rules.AddRequired())
-                                    )
+                                        .ID("txtClientAddressAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "Client Address")
+                                        .ValidationRules(rules => rules.AddRequired())
+                                        )
                             </div>
                         </td>
                     </tr>
@@ -925,10 +957,10 @@
                         </td>
                         <td colspan="3">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtClientAdditionalAddress")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtClientAdditionalAddress")
-                                )
+                                    .ID("txtClientAdditionalAddress")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtClientAdditionalAddress")
+                                    )
                         </td>
                         <td>
                             <label>Client Address - Additional Address (Arabic):</label>
@@ -936,16 +968,16 @@
                         <td colspan="3">
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnClientAdditionalAddressAr")
-                                    .Icon("fas fa-language")
-                                    .Width("auto")
-                                    .OnClick("onClientAdditionalAddressArClick")
-                                    )
+                                        .ID("btnClientAdditionalAddressAr")
+                                        .Icon("fas fa-language")
+                                        .Width("auto")
+                                        .OnClick("onClientAdditionalAddressArClick")
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtClientAdditionalAddressAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "Client Additional Address")
-                                    )
+                                        .ID("txtClientAdditionalAddressAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "Client Additional Address")
+                                        )
                             </div>
                         </td>
                     </tr>
@@ -959,13 +991,13 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBuildingNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBuildingNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtBuildingNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBuildingNo")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>
@@ -975,13 +1007,13 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtClientCity")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtClientCity")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtClientCity")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtClientCity")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>Client City(Arabic):</label>
@@ -989,16 +1021,16 @@
                         <td colspan="3">
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnClientCityAr")
-                                    .Icon("fas fa-language")
-                                    .Width("auto")
-                                    .OnClick("onClientCityArClick")
-                                    )
+                                        .ID("btnClientCityAr")
+                                        .Icon("fas fa-language")
+                                        .Width("auto")
+                                        .OnClick("onClientCityArClick")
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtClientCityAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "Client Additional Address")
-                                    )
+                                        .ID("txtClientCityAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "Client Additional Address")
+                                        )
                             </div>
                         </td>
                     </tr>
@@ -1012,23 +1044,23 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtAdditionalNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtAdditionalNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtAdditionalNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtAdditionalNo")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>Province/State:</label>
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtState")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtClientCity")
-                                )
+                                    .ID("txtState")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtClientCity")
+                                    )
                         </td>
                         <td>
                             <label>Province/State(Arabic):</label>
@@ -1036,16 +1068,16 @@
                         <td colspan="3">
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnStateAr")
-                                    .Icon("fas fa-language")
-                                    .Width("auto")
-                                    .OnClick("onClientProvinceStateArClick")
-                                    )
+                                        .ID("btnStateAr")
+                                        .Icon("fas fa-language")
+                                        .Width("auto")
+                                        .OnClick("onClientProvinceStateArClick")
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtStateAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "Client Additional Address")
-                                    )
+                                        .ID("txtStateAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "Client Additional Address")
+                                        )
                             </div>
                         </td>
                     </tr>
@@ -1059,13 +1091,13 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtPostalCode")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtPostalCode")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtPostalCode")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtPostalCode")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>
@@ -1075,13 +1107,13 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtDistrict")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtDistrict")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtDistrict")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtDistrict")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>District/Neighborhood (Arabic):</label>
@@ -1089,17 +1121,17 @@
                         <td colspan="3">
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnDistrictAr")
-                                    .Icon("fas fa-language")
-                                    .Width("auto")
-                                    .OnClick("onDistrictArClick")
-                                    )
+                                        .ID("btnDistrictAr")
+                                        .Icon("fas fa-language")
+                                        .Width("auto")
+                                        .OnClick("onDistrictArClick")
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtDistrictAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "District")
-                                    .ValidationRules(rules => rules.AddRequired())
-                                    )
+                                        .ID("txtDistrictAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "District")
+                                        .ValidationRules(rules => rules.AddRequired())
+                                        )
                             </div>
                         </td>
                     </tr>
@@ -1108,7 +1140,7 @@
         </div>
 
         <div id="tab-content-5" class="tab-content" style="display: none;">
-            <div style="background-color:aliceblue;">
+            <div style="background-color:#c0dceb;">
 
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                     <tr>
@@ -1119,14 +1151,23 @@
                             </label>
                         </td>
                         <td colspan="3">
-                            @(Html.DevExtreme().TextBox()
-                                .ID("txtSupBilling")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupBilling")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                               <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                                    .ID("dwnarrowsup")
+                                                    .Width("auto")
+                                                    .Icon("fas fa-chevron-down")
+                                                    .OnClick("onDownArrowSupClick")
+
+                                                    )
+                                @(Html.DevExtreme().TextBox()
+                                            .ID("txtSupBilling")
+                                            .Width("100%")
+                                            .InputAttr("aria-label", "txtSupBilling")
+                                            .ValidationRules(rules => rules
+                                            .AddRequired()  // This adds the required validation rule
+                                            )
+                                            )
+                                </div>
 
                         </td>
                         <td>
@@ -1135,16 +1176,16 @@
                         <td style="display: flex; align-items: center;">
 
                             @(Html.DevExtreme().Button()
-                                .ID("btnSupBillingAr")
-                                .Icon("fas fa-language")
-                                .Width("auto")
-                                .OnClick("onSupplierNameArabicClick")
-                                )
+                                    .ID("btnSupBillingAr")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onSupplierNameArabicClick")
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupBillingAr")
-                                .Value("")
-                                .Width("100%")
-                                )
+                                    .ID("txtSupBillingAr")
+                                    .Value("")
+                                    .Width("100%")
+                                    )
 
                         </td>
                     </tr>
@@ -1159,23 +1200,23 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupVATNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupVATNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtSupVATNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupVATNo")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>Group VAT Number:</label>
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupGroupVATNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupGroupVATNo")
-                                )
+                                    .ID("txtSupGroupVATNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupGroupVATNo")
+                                    )
                         </td>
                     </tr>
 
@@ -1188,13 +1229,13 @@
                         </td>
                         <td colspan="3">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupAddress")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupAddress")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtSupAddress")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupAddress")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label for="AddressStreetArabic2" class="form-label text-dark-skyblue">Address-Street Name (Arabic):</label>
@@ -1202,16 +1243,16 @@
                         <td style="display: flex; align-items: center;">
 
                             @(Html.DevExtreme().Button()
-                                .ID("btnSupAddress1")
-                                .Icon("fas fa-language")
-                                .Width("auto")
-                                .OnClick("onSupAddressClick")
-                                )
+                                    .ID("btnSupAddress1")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onSupAddressClick")
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupAddressAr1")
-                                .Value("")
-                                .Width("100%")
-                                )
+                                    .ID("txtSupAddressAr1")
+                                    .Value("")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
 
@@ -1221,26 +1262,26 @@
                         </td>
                         <td colspan="3">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupAdditionalAddress")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupAdditionalAddress")
-                                )
+                                    .ID("txtSupAdditionalAddress")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupAdditionalAddress")
+                                    )
                         </td>
                         <td>
                             <label for="AddressAdditionalArabic2" class="form-label text-dark-skyblue">Address-Additional Address (Arabic):</label>
                         </td>
                         <td style="display: flex; align-items: center;">
                             @(Html.DevExtreme().Button()
-                                .ID("btnSupAdditionalAddress1")
-                                .Icon("fas fa-language")
-                                .Width("auto")
-                                .OnClick("onSupAddressAdditionalClick")
-                                )
+                                    .ID("btnSupAdditionalAddress1")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onSupAddressAdditionalClick")
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupAdditionalAddressAr1")
-                                .Value("")
-                                .Width("100%")
-                                )
+                                    .ID("txtSupAdditionalAddressAr1")
+                                    .Value("")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
 
@@ -1253,13 +1294,13 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupBuildingNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupBuildingNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtSupBuildingNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupBuildingNo")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>
@@ -1269,29 +1310,29 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupCity")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupCity")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtSupCity")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupCity")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label for="ClientCityArabic2" class="form-label text-dark-skyblue">Client City (Arabic):</label>
                         </td>
                         <td style="display: flex; align-items: center;">
                             @(Html.DevExtreme().Button()
-                                .ID("btnSupCity1")
-                                .Icon("fas fa-language")
-                                .Width("auto")
-                                .OnClick("onSupCityClick")
-                                )
+                                    .ID("btnSupCity1")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onSupCityClick")
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupCityAr1")
-                                .Value("")
-                                .Width("100%")
-                                )
+                                    .ID("txtSupCityAr1")
+                                    .Value("")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
 
@@ -1304,39 +1345,39 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupAdditionalNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupAdditionalNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtSupAdditionalNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupAdditionalNo")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>Province/State:</label>
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupState")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupState")
-                                )
+                                    .ID("txtSupState")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupState")
+                                    )
                         </td>
                         <td>
                             <label for="Province/stateArabic2" class="form-label text-dark-skyblue">Province / State (Arabic):</label>
                         </td>
                         <td style="display: flex; align-items: center;">
                             @(Html.DevExtreme().Button()
-                                .ID("btnSupState1")
-                                .Icon("fas fa-language")
-                                .Width("auto")
-                                .OnClick("onSupStateClick")
-                                )
+                                    .ID("btnSupState1")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onSupStateClick")
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupStateAr1")
-                                .Value("")
-                                .Width("100%")
-                                )
+                                    .ID("txtSupStateAr1")
+                                    .Value("")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
 
@@ -1349,13 +1390,13 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupPostalCode")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupPostalCode")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtSupPostalCode")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupPostalCode")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label>
@@ -1365,29 +1406,29 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupDistrict")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtSupDistrict")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
-                                )
+                                    .ID("txtSupDistrict")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupDistrict")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
                         </td>
                         <td>
                             <label for="Neighborhood2" class="form-label text-dark-skyblue">Neighborhood (Arabic):</label>
                         </td>
                         <td style="display: flex; align-items: center;">
                             @(Html.DevExtreme().Button()
-                                .ID("btnSupDistrict1")
-                                .Icon("fas fa-language")
-                                .Width("auto")
-                                .OnClick("onSupDistrictClick")
-                                )
+                                    .ID("btnSupDistrict1")
+                                    .Icon("fas fa-language")
+                                    .Width("auto")
+                                    .OnClick("onSupDistrictClick")
+                                    )
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtSupDistrictAr1")
-                                .Value("")
-                                .Width("100%")
-                                )
+                                    .ID("txtSupDistrictAr1")
+                                    .Value("")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
                 </table>
@@ -1400,27 +1441,27 @@
                     <tr>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .Text("Attach File")  // The button's text
-                                .Icon("attach")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
-                                .OnClick("function() { alert('Attachment clicked!'); }")
-                                .Width("100%")
-                                )
+                                    .Text("Attach File")  // The button's text
+                                    .Icon("attach")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
+                                    .OnClick("function() { alert('Attachment clicked!'); }")
+                                    .Width("100%")
+                                    )
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .Text("Merger Selected files")  // The button's text
-                                .Icon("mergecells")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
-                                .OnClick("function() { alert('Selected files are merged!'); }")
-                                .Width("100%")
-                                )
+                                    .Text("Merger Selected files")  // The button's text
+                                    .Icon("mergecells")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
+                                    .OnClick("function() { alert('Selected files are merged!'); }")
+                                    .Width("100%")
+                                    )
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .Text("Save Separate PDF files")  // The button's text
-                                .Icon("pdffile")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
-                                .OnClick("function() { alert('PDF files are saved!'); }")
-                                .Width("100%")
-                                )
+                                    .Text("Save Separate PDF files")  // The button's text
+                                    .Icon("pdffile")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
+                                    .OnClick("function() { alert('PDF files are saved!'); }")
+                                    .Width("100%")
+                                    )
                         </td>
                     </tr>
                     <tr>
@@ -1444,10 +1485,30 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtClientBillingName")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtClientBillingName")
-                                )
+                                    .ID("txtClientBillingName")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtClientBillingName")
+                                    )
+                        </td>
+                           <td colspan="3">
+                             <div style="display: flex; align-items: center;">
+                                @(Html.DevExtreme().Button()
+                                                        .ID("dwnarrowbill")
+                                                        .Width("auto")
+                                                        .Icon("fas fa-chevron-down")
+                                                            .OnClick("onDownArrowBillClick")
+
+                                                        )
+                                @(Html.DevExtreme().TextBox()
+                                                .ID("txtSupBilling")
+                                                .Width("100%")
+                                                .InputAttr("aria-label", "txtSupBilling")
+                                                .ValidationRules(rules => rules
+                                                .AddRequired()  // This adds the required validation rule
+                                                )
+                                                )
+                                </div>
+
                         </td>
                         <td>
                             <label>اسم العميل للفوترة</label>
@@ -1455,19 +1516,19 @@
                         <td>
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnClientBillingNameArabic")
-                                    .Icon("fas fa-language")
-                                    .Width(35) // Adjust width as needed
-                                    .Height(30) // Adjust height as needed
-                                    .ElementAttr(new { style = "margin-right: 5px;" }) // Add space between button and text box
-                                    .OnClick("onClientBillingNameArabicButtonClick") // JavaScript function for button click
-                                    )
+                                        .ID("btnClientBillingNameArabic")
+                                        .Icon("fas fa-language")
+                                        .Width(35) // Adjust width as needed
+                                        .Height(30) // Adjust height as needed
+                                        .ElementAttr(new { style = "margin-right: 5px;" }) // Add space between button and text box
+                                        .OnClick("onClientBillingNameArabicButtonClick") // JavaScript function for button click
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtClientBillingNameAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtClientBillingNameArabic")
-                                    .RtlEnabled(true)
-                                    )
+                                        .ID("txtClientBillingNameAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "txtClientBillingNameArabic")
+                                        .RtlEnabled(true)
+                                        )
                             </div>
                         </td>
                         <td>
@@ -1475,15 +1536,15 @@
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().TextArea()
-                                .ID("txtBillingAddress")
-                                .Name("address")  // The name attribute for the textarea, used for form submission
-                                .Value("")  // Optional: Initial value of the textarea (empty here)
-                                .Height(100)  // Set the height of the textarea
-                                .Width("100%")  // Make the width 100% of its parent container (you can set this value based on your layout)
-                                .Placeholder("Enter address here...")  // Placeholder text for the textarea
-                                .MaxLength(500)  // Optional: Set maximum length (e.g., max 500 characters)
-                                .IsValid(true)  // Optional: Add validation for the textarea (you can also make it mandatory by setting this to false)
-                                )
+                                    .ID("txtBillingAddress")
+                                    .Name("address")  // The name attribute for the textarea, used for form submission
+                                    .Value("")  // Optional: Initial value of the textarea (empty here)
+                                    .Height(100)  // Set the height of the textarea
+                                    .Width("100%")  // Make the width 100% of its parent container (you can set this value based on your layout)
+                                    .Placeholder("Enter address here...")  // Placeholder text for the textarea
+                                    .MaxLength(500)  // Optional: Set maximum length (e.g., max 500 characters)
+                                    .IsValid(true)  // Optional: Add validation for the textarea (you can also make it mandatory by setting this to false)
+                                    )
                         </td>
                         <td>
                             <label>عنوان العميل للفوترة</label>
@@ -1491,24 +1552,24 @@
                         <td colspan="2">
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnBillingAddressArabic")
-                                    .Icon("fas fa-language")
-                                    .Width(35) // Adjust width as needed
-                                    .Height(30) // Adjust height as needed
-                                    .ElementAttr(new { style = "margin-right: 5px;" }) // Add space between button and text box
-                                    .OnClick("onBillingAddressArabicButtonClick") // JavaScript function for button click
-                                    )
+                                        .ID("btnBillingAddressArabic")
+                                        .Icon("fas fa-language")
+                                        .Width(35) // Adjust width as needed
+                                        .Height(30) // Adjust height as needed
+                                        .ElementAttr(new { style = "margin-right: 5px;" }) // Add space between button and text box
+                                        .OnClick("onBillingAddressArabicButtonClick") // JavaScript function for button click
+                                        )
                                 @(Html.DevExtreme().TextArea()
-                                    .ID("txtBillingAddressAr")
-                                    .Name("addressArabic")
-                                    .Value("")
-                                    .Height(100)
-                                    .Width("100%")
-                                    // .Placeholder("أدخل العنوان هنا...")
-                                    .MaxLength(500)
-                                    .IsValid(true)
-                                    .RtlEnabled(true)
-                                    )
+                                        .ID("txtBillingAddressAr")
+                                        .Name("addressArabic")
+                                        .Value("")
+                                        .Height(100)
+                                        .Width("100%")
+                                        // .Placeholder("أدخل العنوان هنا...")
+                                        .MaxLength(500)
+                                        .IsValid(true)
+                                        .RtlEnabled(true)
+                                        )
                             </div>
                         </td>
                     </tr>
@@ -1518,31 +1579,31 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBillingVATRegNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBillingVATRegNo")
-                                )
+                                    .ID("txtBillingVATRegNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBillingVATRegNo")
+                                    )
                         </td>
                         <td>
                             <label>رقم تسجيل ضريبة القيمة المضافة للعميل</label>
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBillingVATRegNoArabic")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBillingVATRegNoArabic")
-                                .RtlEnabled(true)  // Enable RTL for Arabic VAT Registration Number
-                                )
+                                    .ID("txtBillingVATRegNoArabic")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBillingVATRegNoArabic")
+                                    .RtlEnabled(true)  // Enable RTL for Arabic VAT Registration Number
+                                    )
                         </td>
                         <td>
                             <lable>Client TIN:</lable>
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBillingTIN")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBillingTIN")
-                                )
+                                    .ID("txtBillingTIN")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBillingTIN")
+                                    )
                         </td>
                     </tr>
                     <tr>
@@ -1551,20 +1612,20 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBillingContactPerson")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBillingContactPerson")
-                                )
+                                    .ID("txtBillingContactPerson")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBillingContactPerson")
+                                    )
                         </td>
                         <td>
                             <lable>Billing Contact Number:</lable>
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBillingContactNumber")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBillingContactNumber")
-                                )
+                                    .ID("txtBillingContactNumber")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBillingContactNumber")
+                                    )
                         </td>
                     </tr>
                     <tr>
@@ -1573,20 +1634,20 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBillingFaxNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBillingFaxNo")
-                                )
+                                    .ID("txtBillingFaxNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBillingFaxNo")
+                                    )
                         </td>
                         <td>
                             <lable>Vendor No:</lable>
                         </td>
                         <td colspan="2">
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBillingVendorNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBillingVendorNo")
-                                )
+                                    .ID("txtBillingVendorNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBillingVendorNo")
+                                    )
                         </td>
                     </tr>
                     <tr>
@@ -1595,50 +1656,50 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtBillingContactPersonTitle")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtBillingContactPersonTitle")
-                                )
+                                    .ID("txtBillingContactPersonTitle")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtBillingContactPersonTitle")
+                                    )
                         </td>
                         <td>
                             <lable>Bank Account for Receiving Payment:</lable>
                         </td>
                         <td>
                             @(Html.DevExtreme().DropDownBox()
-                                .DataSource(d => d.WebApi()
-                                .Controller("AccountLedger")
-                                .LoadAction("getBillingPayments")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("BillingAccountID")
-                                )
-                                .ID("ddlBillingPayment")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(true)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("BillingAccountID")
-                                .DisplayExpr("BillingAccountHead")
-                                .OnInput("ddlBillingPaymentOnInput")
-                                .OnOpened("ddlBillingPaymentonOpened")
-                                .Width("100%")
-                                .TabIndex(4)
-                                .DropDownOptions(o => o
-                                .Width("100%")
-                                )
-                                .OnKeyDown("ddlBillingPaymentponKeyDown")
-                                .OnValueChanged("ddlBillingPaymentValueChanged")
-                                .ContentTemplate(new TemplateName("BillingPaymentContentTemplate"))
-                                )
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedger")
+                                    .LoadAction("getBillingPayments")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("BillingAccountID")
+                                    )
+                                    .ID("ddlBillingPayment")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("BillingAccountID")
+                                    .DisplayExpr("BillingAccountHead")
+                                    .OnInput("ddlBillingPaymentOnInput")
+                                    .OnOpened("ddlBillingPaymentonOpened")
+                                    .Width("100%")
+                                    .TabIndex(4)
+                                    .DropDownOptions(o => o
+                                    .Width("100%")
+                                    )
+                                    .OnKeyDown("ddlBillingPaymentponKeyDown")
+                                    .OnValueChanged("ddlBillingPaymentValueChanged")
+                                    .ContentTemplate(new TemplateName("BillingPaymentContentTemplate"))
+                                    )
 
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
-                                .ID("btnAddPayment")
-                                .Icon("plus")
-                                .ElementAttr("class", "button-alignment-down button-group")
-                                .OnClick("redirectAccoutledgerMaster")
-                                )
+                                    .ID("btnAddPayment")
+                                    .Icon("plus")
+                                    .ElementAttr("class", "button-alignment-down button-group")
+                                    .OnClick("redirectAccoutledgerMaster")
+                                    )
                         </td>
                     </tr>
                 </table>
@@ -1654,10 +1715,10 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtObsSupAddress")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtObsSupAddress")
-                                )
+                                    .ID("txtObsSupAddress")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtObsSupAddress")
+                                    )
                         </td>
                         <td>
                             <label>عنوان المورد</label>
@@ -1665,16 +1726,16 @@
                         <td>
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnArabObsSupAddress")
-                                    // .Text("Action")
-                                    .Width("auto")
-                                    .Icon("fas fa-language")
-                                    .OnClick("onArabObsSupAddressClick")
-                                    )
+                                        .ID("btnArabObsSupAddress")
+                                        // .Text("Action")
+                                        .Width("auto")
+                                        .Icon("fas fa-language")
+                                        .OnClick("onArabObsSupAddressClick")
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtObsSupAddressAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "Arabic Supplier Address"))
+                                        .ID("txtObsSupAddressAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "Arabic Supplier Address"))
                             </div>
                         </td>
                     </tr>
@@ -1684,10 +1745,10 @@
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
-                                .ID("txtObsSupRegNo")
-                                .Width("100%")
-                                .InputAttr("aria-label", "txtObsSupRegNo")
-                                )
+                                    .ID("txtObsSupRegNo")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtObsSupRegNo")
+                                    )
                         </td>
                         <td>
                             <label>رقم تسجيل ضريبة القيمة المضافة للموردين</label>
@@ -1695,16 +1756,16 @@
                         <td>
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnObsSupRegNoArabic")
-                                    //     .Text("Action")
-                                    .Width("auto")
-                                    .Icon("fas fa-language")
-                                    .OnClick("onObsSupRegNoArabicClick")
-                                    )
+                                        .ID("btnObsSupRegNoArabic")
+                                        //     .Text("Action")
+                                        .Width("auto")
+                                        .Icon("fas fa-language")
+                                        .OnClick("onObsSupRegNoArabicClick")
+                                        )
                                 @(Html.DevExtreme().TextBox()
-                                    .ID("txtObsSupRegNoAr")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "Arabic Supplier VAT Registration No"))
+                                        .ID("txtObsSupRegNoAr")
+                                        .Width("100%")
+                                        .InputAttr("aria-label", "Arabic Supplier VAT Registration No"))
                             </div>
                         </td>
                     </tr>
@@ -1717,306 +1778,326 @@
 
     <div style="width: 500px;" class="dx-fieldset horizontal-container">
         @(Html.DevExtreme().Button()
-            .ID("btnSave")
-            .Icon("save")
-            .Text("Save")
-            .Width("100%")
-            .OnClick("onsaveLedgerAccountClick")
-            )
+                .ID("btnSave")
+                .Icon("save")
+                .Text("Save")
+                .Width("100%")
+                .OnClick("onsaveLedgerAccountClick")
+                )
 
         @(Html.DevExtreme().Button()
-            .ID("btnCLose")
-            .Icon("arrowleft")
-            .Text("Close")
-            .Width("100%")
-            .Disabled(true)
-            )
+                .ID("btnCLose")
+                .Icon("arrowleft")
+                .Text("Close")
+                .Width("100%")
+                .Disabled(true)
+                )
     </div>
 </div>
 
 @using (Html.DevExtreme().NamedTemplate("AccountGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("ledgeraccount-datagrid")
-                    .DataSource(d => d.WebApi()
-                        .Controller("AccountLedgerMaster")
-                    .LoadAction("getAccountingLedger")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("AccountGroupId")
+                        .ID("ledgeraccount-datagrid")
+                        .DataSource(d => d.WebApi()
+                            .Controller("AccountLedgerMaster")
+                        .LoadAction("getAccountingLedger")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("AccountGroupId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged")
+                        .OnInitialized("dataGridInitialized")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("AccountGroup");
+                        })
                     )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridSelectionChanged")
-                    .OnInitialized("dataGridInitialized")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(false))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("AccountGroup");
-                    })
-                )
 }
 
 @using (Html.DevExtreme().NamedTemplate("DrCrContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("DrCraccount-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                        .LoadAction("getCreditDebit")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("OpeningBalanceDrCr")
+                        .ID("DrCraccount-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AccountLedgerMaster")
+                            .LoadAction("getCreditDebit")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("OpeningBalanceDrCr")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .ShowColumnHeaders(false)
+                         .FilterRow(f => f.Visible(false))
+                         .SearchPanel(sp => sp.HighlightSearchText(false))
+                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                        .OnSelectionChanged("DrCrdataGridSelectionChanged")
+                        .OnInitialized("DrCrdataGridInitialized")
+                             .HeaderFilter(p => p.Visible(false))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(130)
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("OpeningBalanceDrCr");
+                        })
                     )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .ShowColumnHeaders(false)
-                     .FilterRow(f => f.Visible(false))
-                     .SearchPanel(sp => sp.HighlightSearchText(false))
-                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                    .OnSelectionChanged("DrCrdataGridSelectionChanged")
-                    .OnInitialized("DrCrdataGridInitialized")
-                         .HeaderFilter(p => p.Visible(false))
-        .ShowBorders(true)
-        .HoverStateEnabled(true)
-        .Paging(p => p.PageSize(15))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(130)
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("OpeningBalanceDrCr");
-                    })
-                )
 }
 
 @using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("branch-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                    .LoadAction("getAccountBranch")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("BranchCode")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-
-                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("branchdataGridSelectionChanged")
-                    .OnInitialized("branchdataGridInitialized")
-                    @*.HeaderFilter(p => p.Visible(true))
-    .ShowBorders(true)
-    .HoverStateEnabled(true)
-    .Paging(p => p.PageSize(15))*@
-                    .FilterRow(f => f.Visible(false))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(200)
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("BranchName");
-                    })
-                    )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                    .ID("subgroup-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                    .LoadAction("getSubGroup")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("LedgerSubGroupCode")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("subgroupdataGridSelectionChanged")
-                        .OnInitialized("subgroupdataGridInitialized")
-             @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-             .FilterRow(f => f.Visible(false))
-                    //.FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(200)
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("SubGroupName");
-                    })
-                )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                    .ID("sales-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                    .LoadAction("getSalesPersonList")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("SalesPersonCode")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                         .FilterRow(f => f.Visible(false))
-                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("salesdataGridSelectionChanged")
-                        .OnInitialized("salesdataGridInitialized")
-                    @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                    // .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(200)
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("SalesPersonName");
-                    })
-                )
-}
-
-@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                        .ID("othertype-datagrid")
+                        .ID("branch-datagrid")
                         .DataSource(d => d.WebApi()
                         .Controller("AccountLedgerMaster")
-                            .LoadAction("getOtherIDTypes")
+                        .LoadAction("getAccountBranch")
                         .LoadMode(DataSourceLoadMode.Raw)
-                             .Key("BuyerOtherIDType")
+                            .Key("BranchCode")
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
+
                         @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("othertypedataGridSelectionChanged")
-                            .OnInitialized("othertypedataGridInitialized")
-                            @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                            .FilterRow(f => f.Visible(true))
+                        .OnSelectionChanged("branchdataGridSelectionChanged")
+                        .OnInitialized("branchdataGridInitialized")
+                        @*.HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(200)
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("BuyerIDTypeName");
+                            columns.Add().DataField("BranchName");
+                        })
+                        )
+}
+
+@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("subgroup-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AccountLedgerMaster")
+                        .LoadAction("getSubGroup")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("LedgerSubGroupCode")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("subgroupdataGridSelectionChanged")
+                            .OnInitialized("subgroupdataGridInitialized")
+                 @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                 .FilterRow(f => f.Visible(false))
+                        //.FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(200)
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SubGroupName");
                         })
                     )
 }
 
-@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                            .ID("billingpayment-datagrid")
+                        .ID("sales-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AccountLedgerMaster")
+                        .LoadAction("getSalesPersonList")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("SalesPersonCode")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                             .FilterRow(f => f.Visible(false))
+                        @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("salesdataGridSelectionChanged")
+                            .OnInitialized("salesdataGridInitialized")
+                        @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                        // .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(200)
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SalesPersonName");
+                        })
+                    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("othertype-datagrid")
                             .DataSource(d => d.WebApi()
                             .Controller("AccountLedgerMaster")
-                                .LoadAction("getBillingPayments")
+                                .LoadAction("getOtherIDTypes")
                             .LoadMode(DataSourceLoadMode.Raw)
-                                 .Key("BillingAccountID")
+                                 .Key("BuyerOtherIDType")
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
                             @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                .OnSelectionChanged("billingdataGridSelectionChanged")
-                                .OnInitialized("billingdataGridInitialized")
+                                .OnSelectionChanged("othertypedataGridSelectionChanged")
+                                .OnInitialized("othertypedataGridInitialized")
+                                @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
                                 .FilterRow(f => f.Visible(true))
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Height(200)
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("BillingAccountHead");
+                                columns.Add().DataField("BuyerIDTypeName");
                             })
                         )
+}
+
+@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                .ID("billingpayment-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("AccountLedgerMaster")
+                                    .LoadAction("getBillingPayments")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                     .Key("BillingAccountID")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                    .OnSelectionChanged("billingdataGridSelectionChanged")
+                                    .OnInitialized("billingdataGridInitialized")
+                                    .FilterRow(f => f.Visible(true))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(200)
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("BillingAccountHead");
+                                })
+                            )
 }
 
 
 <script>
     //Tab events
 
+<<<<<<< Updated upstream
     $(document).ready(function () {
         var urlParams = new URLSearchParams(window.location.search);
         var accountGroupId = urlParams.get('AccountGroupId');
         var accountheadid = urlParams.get('AccountHeadID');
-        var refno = urlParams.get('ReferenceNo')?? " ";
+        var refno = urlParams.get('ReferenceNo') || " ";
         var accheadname = urlParams.get('AccountHeadName') || "";
         var accgroup = urlParams.get('AccountGroup') || "";
         var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
+=======
+  $(document).ready(function () {
+    var urlParams = new URLSearchParams(window.location.search);
+    var accountGroupId = urlParams.get('AccountGroupId');
+    var accountheadid = urlParams.get('AccountHeadID');
+    var refno = urlParams.get('ReferenceNo') || " ";
+    var accheadname = urlParams.get('AccountHeadName') || "";
+    var accgroup = urlParams.get('AccountGroup') || "";
+    var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
+   // alert(accountheadid)
+    // If AccountGroupId exists, set it in the DropDownBox and make it readonly
+>>>>>>> Stashed changes
 
-        // If AccountGroupId exists, set it in the DropDownBox and make it readonly
-        if (accountGroupId) {
-            var ddlAccountGroup = $('#ddlAccountGroup').dxDropDownBox('instance');
-            if (ddlAccountGroup) {
-                ddlAccountGroup.option('value', accountGroupId);
-                ddlAccountGroup.option('disabled', true); // Make it readonly
-            }
+    if (accountGroupId) {
+        var ddlAccountGroup = $('#ddlAccountGroup').dxDropDownBox('instance');
+        if (ddlAccountGroup) {
+            ddlAccountGroup.option('value', accountGroupId);
+            ddlAccountGroup.option('disabled', true); // Make it readonly
+        }
+    }
+    else if (accountheadid=="undefined" || accheadname=="undefined" || accgroup=="undefined")
+    {
+        accountheadid="";
+        accheadname="";
+        accgroup="";
+    }
+
+
+    // Set other fields
+    var txtAccountHead = $("#txtAccountHead").dxTextBox("instance");
+    if (txtAccountHead) txtAccountHead.option("value", accheadname);
+
+    var txtReferenceNo = $("#txtReferenceNo").dxTextBox("instance");
+    if (txtReferenceNo) txtReferenceNo.option("value", refno);
+
+    var txtAccountId = $("#txtAccountId").dxTextBox("instance");
+    if (txtAccountId) txtAccountId.option("value", accountheadid);
+
+     dataGridSelectionChanged({ selectedRowKeys: [accgroup] });
+    // Show the content of the first tab by default
+    var selectedTabIndex = 0;
+    $("#tab-content-" + (selectedTabIndex + 1)).show();
+
+    if (!isedit) {
+        // Reset validator if it exists
+        var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
+        if (AccountHeadNameValidator) {
+            AccountHeadNameValidator.reset();
         }
 
-        // Set other fields
-        var txtAccountHead = $("#txtAccountHead").dxTextBox("instance");
-        if (txtAccountHead) txtAccountHead.option("value", accheadname);
-
-        var txtReferenceNo = $("#txtReferenceNo").dxTextBox("instance");
-        if (txtReferenceNo) txtReferenceNo.option("value", refno);
-
-        var txtAccountId = $("#txtAccountId").dxTextBox("instance");
-        if (txtAccountId) txtAccountId.option("value", accountheadid);
-
-        dataGridSelectionChanged({ selectedRowKeys: [accgroup] });
-        // Show the content of the first tab by default
-        var selectedTabIndex = 0;
-        $("#tab-content-" + (selectedTabIndex + 1)).show();
-
-        if (!isedit) {
-            // Reset validator if it exists
-            var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
-            if (AccountHeadNameValidator) {
-                AccountHeadNameValidator.reset();
-            }
-
-            // AJAX call to fetch the next Account ID
-            $.ajax({
-                url: '/api/AccountLedgerMaster/GetMaxLedgerAccountID',
-                type: 'GET',
-                dataType: 'json',  // Expecting JSON response
-                success: function (response) {
-                    // Check if response has the expected structure
-                    if (response && response.nextAccountId) {
-                        if (txtAccountId) {
-                            txtAccountId.option('value', response.nextAccountId);
-                        }
-                    } else {
-                        console.log("No account ID returned.");
+        // AJAX call to fetch the next Account ID
+        $.ajax({
+            url: '/api/AccountLedgerMaster/GetMaxLedgerAccountID',
+            type: 'GET',
+            dataType: 'json',  // Expecting JSON response
+            success: function (response) {
+                // Check if response has the expected structure
+                if (response && response.nextAccountId) {
+                    if (txtAccountId) {
+                        txtAccountId.option('value', response.nextAccountId);
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching Account ID:", error);
+                } else {
+                    console.log("No account ID returned.");
                 }
-            });
-        }
-    });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching Account ID:", error);
+            }
+        });
+    }
+});
+
 
 
     function redirectToBranchMaster() {
@@ -2169,6 +2250,42 @@
     }
 
 
+     function onDownArrowSupClick() {
+        // Get the TextBox instances
+        const supplierBillingTextBox = $("#txtSupBilling").dxTextBox("instance");
+        const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
+
+        // Get the value from txtClientBilling
+        const accountHeadValue = accountHeadTextBox.option("value");
+
+        // Check if the value is not empty
+        if (accountHeadValue && accountHeadValue.trim() !== "") {
+            // Set the value of txtAccountHead to txtClientBilling value
+            supplierBillingTextBox.option("value", accountHeadValue);
+        } else {
+            // If txtClientBilling is empty or null, show an alert
+            alert("Account Head Name cannot be empty.");
+        }
+    }
+      function onDownArrowBillClick() {
+        // Get the TextBox instances
+        const ClientBillingNameTextBox = $("#txtClientBillingName").dxTextBox("instance");
+        const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
+
+        // Get the value from txtClientBilling
+        const accountHeadValue = accountHeadTextBox.option("value");
+
+        // Check if the value is not empty
+        if (accountHeadValue && accountHeadValue.trim() !== "") {
+            // Set the value of txtAccountHead to txtClientBilling value
+            ClientBillingNameTextBox.option("value", accountHeadValue);
+        } else {
+            // If txtClientBilling is empty or null, show an alert
+            alert("Account Head Name cannot be empty.");
+        }
+    }
+
+
     function refreshaccountledgerSelectBox() {
         const accountledgerselectbox = $("#ddlAccountGroup").dxSelectBox("instance"); // Ensure ID matches Razor
 
@@ -2295,6 +2412,8 @@
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
         }
+
+
     }
 
     function dataGridInitialized(e) {
@@ -2705,15 +2824,23 @@
         var obAddress = $('#txtObsSupAddress').dxTextBox('option', 'value');
         var obVATNo = $('#txtObsSupRegNo').dxTextBox('option', 'value');
 
-        if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
-            alert("Account Head Name cannot be empty");
-            return false;
-        }
+        // if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
+        //     alert("Account Head Name cannot be empty");
+        //     return false;
+        // }
 
-        if (sAccountGroup == null || sAccountGroup == "undefined" || sAccountGroup == "") {
-            alert("Account group cannot be empty");
-            return false;
-        }
+        // if (sAccountGroup == null || sAccountGroup == "undefined" || sAccountGroup == "") {
+        //     alert("Account group cannot be empty");
+        //     return false;
+        // }
+          var accountHeadValidator = $("#txtAccountHead").dxValidator("instance");
+    var AccountGroupValidator = $("#ddlAccountGroup").dxValidator("instance");
+
+    var accountHeadValidation = accountHeadValidator.validate();
+    var AccountGroupValidation = AccountGroupValidator.validate();
+
+    if(accountHeadValidation.isValid && AccountGroupValidation.isValid)
+    {
 
         const data = {
             AccountID: sAccountID,
@@ -2871,6 +2998,8 @@
 
 
     }
+    }
+
 
     //english text convert to arabic
 
