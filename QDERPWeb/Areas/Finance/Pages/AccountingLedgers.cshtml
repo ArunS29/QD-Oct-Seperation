@@ -527,8 +527,19 @@
 			   alert("Please Select the Account to Edit.");
 			   return;
 		   }
+		 IsEdit = true;
+	     if(refno==null)
+		   {
+			   refno="";
+
+		   }
+
+	   const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}`;
+
+	   // Open the popup window
+	   window.open(url, 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
 		   //DevExpress.ui.notify("Working on Progress", "success", 2000);
-		   window.open('/Finance/LedgerAccount', 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
+		 //  window.open('/Finance/LedgerAccount', 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
 	   }
 	   function addVoucher_click(form){
 		   let url="";
@@ -680,18 +691,18 @@
 		   window.open('/Finance/LedgerAccount', 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
 	   }
 
-	   function btnEditAccount_click() {
-	IsEdit = true;
-	if(refno==null)
-		   {
-			   refno="";
+	//    function btnEditAccount_click() {
+	// IsEdit = true;
+	// if(refno==null)
+	// 	   {
+	// 		   refno="";
 
-		   }
+	// 	   }
 
-	   const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}`;
+	//    const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}`;
 
-	   // Open the popup window
-	   window.open(url, 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
-	   }
+	//    // Open the popup window
+	//    window.open(url, 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
+	//    }
 
 </script>
