@@ -83,6 +83,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl201CostAllocationMaster]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl201CostAllocationUnits]",
          "ObjectType": 0
       },

@@ -1,0 +1,504 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.CostAllocationModel
+@using System.Text.Json
+
+@{
+    Layout = null;
+    string voucherNo = Request.Query["VoucherNo"];
+    string drCr = Request.Query["DrCr"];
+    string accountHead = Request.Query["AccountHead"];
+    string voucherAmount = Request.Query["VoucherAmount"];
+    string effectiveDate = Request.Query["EffectiveDate"];
+    double? voucherAmountParsed = null;
+    string voucherentryid = Request.Query["VoucherEntryID"];
+
+    // Try parsing the voucherAmount to a nullable double
+    if (!string.IsNullOrEmpty(voucherAmount))
+    {
+        double parsedAmount;
+        if (double.TryParse(voucherAmount, out parsedAmount))
+        {
+            voucherAmountParsed = parsedAmount;
+        }
+    }
+
+    // If voucherAmountParsed is not null, ensure it's formatted to 2 decimal places
+    if (voucherAmountParsed.HasValue)
+    {
+        // Format the amount to 2 decimal places and then parse it back to double
+        voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
+    }
+
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<style type="text/css">
+    #costdataGrid .dx-datagrid-headers .dx-datagrid-action {
+        text-align: center !important;
+    }
+
+    #costdataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+        text-align: center !important;
+    }
+
+    .dx-button {
+        background-color: whitesmoke;
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+        margin-top: 0px;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: -10px !important;
+    }
+
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+    /* Custom styles for context menu */
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 0px, 15px,10px 15px;
+        cursor: pointer;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+
+    #rowHeightMenu {
+        position: absolute;
+        top: 100px; /* Adjust positioning as per your design */
+        left: 300px; /* Adjust positioning as per your design */
+        display: none; /* Keep it hidden until needed */
+    }
+
+    #previewModal {
+        border: 1px solid #ccc;
+    }
+
+    .bold-button .dx-button-text {
+        font-weight: bold;
+    }
+</style>
+<div id="CostAllocationPopup" class="card shadow-sm" style="border-radius: 8px;">
+    <!-- Header Section -->
+    <div class="card-header text-white"
+         style="
+    background: linear-gradient(to bottom, #FFDAB9, #d35400); /* Light orange at the top and maroon at the bottom */
+    height: 100px; /* Adjusts the height for a larger header */
+    display: flex; /* Centers content */
+    align-items: center; /* Vertically aligns the content */
+    padding-left: 20px; /* Adds space to the left for alignment */
+    gap: 10px; /* Adds space between logo and text */
+  ">
+        <!-- Add the Font Awesome icon -->
+        <i class="fa-duotone fa-solid fa-clipboard"
+           style="font-size: 2.5rem; color: white;"></i>
+        <!-- Header text -->
+        <h5 class="mb-0" style="font-size: 1.5rem;">Cost Allocation</h5>
+    </div>
+
+
+
+    <!-- Inputs and DataGrid Combined -->
+    <div class="Card-container" style="border-left: 15px solid #d35400; padding: 10px 20px;">
+
+        <!-- Input Fields Section -->
+        <div class="row" style="padding:5px">
+
+            <div class="col-md-1" style="margin-top: 5px;">
+                <label for="DrCr" style="color: maroon;">Dr/Cr</label>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("DrCr")
+                    .DataSource(new[] { drCr })
+                    .Value(drCr)
+                    .ReadOnly(true)
+                    )
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-8">
+                        <label for="CostAllocationExpense" style="color: maroon;">
+                            Cost Allocation for the Expenses:
+                        </label>
+                    </div>
+                    <div class="col-md-4" style="margin-top: -8px;">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("Textbox")
+                            .Value(voucherNo)
+                            .ReadOnly(true)
+                            )
+                    </div>
+                </div>
+
+
+
+                @(Html.DevExtreme().SelectBox()
+                    .ID("CostAllocationExpense")
+                    .DataSource(new[] { accountHead }) // Only the selected AccountHead
+                    .Value(accountHead) // Pre-selected value
+                    .ReadOnly(true) // Make the dropdown read-onlyr
+
+                    )
+            </div>
+            <div class="col-md-2" style="margin-top: 5px;">
+                <label for="Amount" style="color: maroon;">Amount</label>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("CostAmount")
+                    .Value(voucherAmountParsed)
+                    .ShowSpinButtons(true)
+                    .ReadOnly(true)
+                    .Format("#,##0.00")
+                    )
+            </div>
+            <div class="col-md-2" style="margin-top: 5px;">
+                <!-- Approved By Section -->
+                @(Html.DevExtreme().CheckBox().ID("ApprovedBy"))
+                <span style="margin-left:5px;color:black">Approved By:</span>
+                @*  @(Html.DevExtreme().TextBox()
+                .ID("ApprovedBytext")
+                .Value(null)
+                .Disabled(true)
+                .Width("200px")
+                )
+                *@
+                <!-- Approved On Section -->
+                <div class="mt-2" style="margin-left: 40px;">
+                    <span style="color:black">Approved On:</span>
+                    @* @(Html.DevExtreme().TextBox()
+                    .ID("ApprovedOntext")
+                    .Value(null)
+                    .Disabled(true)
+                    .Width("200px")
+                    .ElementAttr(new { style = "margin-left: 10px;" })
+                    ) *@
+                </div>
+            </div>
+
+
+            <!-- DataGrid Section -->
+            <div class="dx-field ledgerResult" style="padding-top:20px">
+                @(
+                        Html.DevExtreme().DataGrid()
+                        .ID("costdataGrid")
+                        .RemoteOperations(false)
+                        .RowAlternationEnabled(true)
+                        .DataSource(new object[] { })
+                        .Columns(columns =>
+                        {
+                            columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
+                            columns.Add().Caption("Cost Allocated (Projects/Jobs)")
+                        .Width(400).AllowEditing(false)
+                        .CellTemplate(@<text>
+                    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().DropDownBox()
+                            .DataSource(d => d.WebApi()
+                            .Controller("CostAllocation")
+                            .LoadAction("GetCostAllocationUnits")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CostAllocationUnitId")
+                            )
+                            .ValueExpr("CostAllocationUnitId")
+                            .DisplayExpr("CostAllocationUnit")
+                            .ID("Costgriddropdown")
+                            .DropDownOptions(options =>
+                            {
+                            options.Width(800);  // Set dropdown width
+                            options.Height(400); // Set dropdown height
+                            })
+                            .ContentTemplate(new TemplateName("costAllocationDropdownContentTemplate"))
+                            .ShowClearButton(false)
+                            .OpenOnFieldClick(true)
+                            .Width("100%")
+                            )
+                        </div>
+                        <div style="margin-left: 0px; display: flex; gap: 0px;">
+                            @(Html.DevExtreme().Button()
+                            .ID("btnAddcost")
+                            .Icon("plus")
+
+                            )
+                            @(Html.DevExtreme().Button()
+                            .ID("btnEditcost")
+                            .Icon("edit")
+
+                            )
+                        </div>
+                    </div>
+                </text>);
+                            columns.Add().Caption("Effective Date").DataField("EffectiveDate").AllowEditing(false);
+                            columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+                            columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
+
+                        })
+                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                    .AllowColumnReordering(true) // Enable column reordering
+                    .AllowColumnResizing(true)   // Enable column resizing
+                    .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                    .HeaderFilter(filter => filter.Visible(true))
+                    .ColumnAutoWidth(true)
+                    .Height(250)
+                    .ColumnAutoWidth(true)
+                    .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                    .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                    .ShowBorders(true)
+                    .Width("100%")
+
+                    )
+            </div>
+            <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: #F5F5F5; color: white; padding: 5px 10px; margin-top: -3px; font-size: 14px;">
+                <div style="flex: 6;">&nbsp;</div> <!-- Aligns with Dr/Cr column -->
+                <div style="flex: 5;">&nbsp;</div> <!-- Aligns with Account Head column -->
+                <!-- TextBox for Debit -->
+                <div style="flex: none; text-align: right;">
+                    @(Html.DevExtreme().NumberBox()
+                        .ID("totalAmountTextbox")
+                        .Value(voucherAmountParsed)
+                        .ReadOnly(true)
+                        .Width("60%")
+                        .Format("#,##0.00")
+                        .InputAttr(new { style = "text-align: right;" })
+                        )
+                </div>
+
+                <div style="flex: 2;">&nbsp;</div> <!-- Aligns with Entry Narration and Remarks columns -->
+            </div>
+        </div>
+
+
+        <div class="card-footer text-center">
+            <div class="dx-fieldset horizontal-container mt-2">
+
+
+                @(Html.DevExtreme().Button()
+                    .ID("btnSaveAndClose")
+                    .Text("Save and Close")
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("save")
+                    .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                    )
+
+                @(Html.DevExtreme().Button()
+                    .ID("btnDelete")
+                    .Text("Delete")
+                    .Icon("close")
+                    .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                    )
+                @(Html.DevExtreme().Button()
+                    .ID("btncostBack")
+                    .Text("Back")
+                    .Icon("arrowleft")
+                    .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                    )
+
+            </div>
+            @using (Html.DevExtreme().NamedTemplate("costAllocationDropdownContentTemplate"))
+            {
+                @(
+                        Html.DevExtreme().DataGrid()
+                        .ID("costAllocationDropdownGrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("CostAllocation")
+                        .LoadAction("GetCostAllocationUnits")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CostAllocationUnitId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged")
+
+                        .OnInitialized("dataGridInitialized")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .Columns(columns =>
+                        {
+                            columns.Add().Caption("Cost Allocation UnitID").DataField("CostAllocationUnitId");
+                            columns.Add().Caption("Cost Allocation Unit").DataField("CostAllocationUnit");
+                            columns.Add().Caption("Cost Allocation Group").DataField("CostAllocationGroup");
+                            columns.Add().Caption("Is Disabled").DataField("IsDisabled")
+                        .CellTemplate(@<text>
+                <div class="dx-icon">
+                    <%= data.IsDisabled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                </div>
+            </text>);
+                        })
+                    )
+            }
+        </div>
+    </div>
+    <script>
+
+                let costallocunitId;
+
+                  $(document).ready(function () {
+            // Capture the initial value of the NumberBox
+            const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+
+            // Sample data with initial value of VoucherAmount
+            const costData = [
+                {
+                    DrCr: '@drCr',  // Ensure @drCr is correctly rendered as a string value
+
+                    EffectiveDate: new Date().toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                    }),
+                    VoucherAmount: initialVoucherAmount.toFixed(2),
+                    Remarks: ''
+                }
+            ];
+           // alert(voucherentryid)
+            // Debug to check the formatted data
+            console.log('Cost Data:', costData);
+
+            // Get the DataGrid instance
+            const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+
+            if (costdataGrid) {
+                costdataGrid.option('dataSource', costData);
+            }
+
+            // Function to handle changes to the NumberBox value
+            $('#CostAmount').dxNumberBox({
+                valueChanged: function (e) {
+                    const newVoucherAmount = e.value.toFixed(2);
+
+                    // Update the data in the DataGrid
+                    if (costdataGrid) {
+                        // Find the first row (assuming only one row in this case)
+                        const updatedData = [{
+                            DrCr: '@drCr', // Make sure @drCr is a valid string
+                            CostAllocated: '',
+                            EffectiveDate: new Date().toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                            }),
+                            VoucherAmount: newVoucherAmount,
+                            Remarks: 'N/A'
+                        }];
+
+                        costdataGrid.option('dataSource', updatedData);
+                    }
+                }
+            });
+
+            // Function to format the EffectiveDate
+            function formatEffectiveDate(dateString) {
+                if (!dateString) return 'N/A'; // Handle null or empty dates
+
+                const dateObj = new Date(dateString);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+            }
+        });
+
+        function dataGridSelectionChanged(e) {
+                    const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+                    const ddbInstance = $("#Costgriddropdown").dxDropDownBox("instance");
+
+                    if (selectedKey) {
+                        ddbInstance.option("value", selectedKey);
+                        if (ddbInstance.option("opened")) {
+                            ddbInstance.close();
+                        }
+                      var selectedRowData = $("#costAllocationDropdownGrid").dxDataGrid("instance").getSelectedRowsData();
+                    // Get ReferenceNo from selected row
+                    if (selectedRowData.length > 0) {
+                        costallocunitId=selectedRowData[0].CostAllocationUnitId;
+
+
+                    }
+                    }
+
+                }
+
+                function dataGridInitialized(e) {
+                    dataGrid = e.component;
+                }
+                function collapseRowsIfNeeded(e) {
+                if (!e.component.option('dataSource').length) {
+                    e.component.collapseAll();
+                }
+            }
+
+
+                  $("#btnSaveAndClose").on("click", function (e) {
+                    e.preventDefault();
+
+                    var VM = {
+                        // alert($("#VoucherNo").dxTextBox("instance").option("value"));
+
+                        "VoucherEntryID": 001,
+
+                        "CostAllocationUnitID": costallocunitId,
+
+                        "EffectiveDate": new Date().toISOString().split('T')[0],
+
+                        // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
+
+                        "AmountAllocated": '@voucherAmountParsed',
+
+                        "CostAllocRemarks": null
+
+
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/CostAllocation/SaveCostAllocation",
+                        contentType: "application/json",
+                        data: JSON.stringify(VM),
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.success) {
+                               //  DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+                              //     window.location.reload();
+                                     CostAllocationPopup.hide();
+
+                            } else {
+                                alert("Update failed: " + response.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
+                        }
+
+                    });
+
+
+                });
+
+
+    </script>

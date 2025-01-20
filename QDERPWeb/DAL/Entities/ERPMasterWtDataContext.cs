@@ -78,6 +78,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl201ChartOfAccount> Tbl201ChartOfAccounts { get; set; }
 
+    public virtual DbSet<Tbl201CostAllocationMaster> Tbl201CostAllocationMasters { get; set; }
+
     public virtual DbSet<Tbl201CostAllocationUnit> Tbl201CostAllocationUnits { get; set; }
 
     public virtual DbSet<Tbl201MasterGroup> Tbl201MasterGroups { get; set; }
@@ -1685,6 +1687,37 @@ public partial class ERPMasterWtDataContext : DbContext
                 .HasColumnName("VATRegistrationNo");
             entity.Property(e => e.VoucherAbbr)
                 .HasMaxLength(3)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl201CostAllocationMaster>(entity =>
+        {
+            entity.HasKey(e => e.CostAllocationId);
+
+            entity.ToTable("tbl201CostAllocationMaster");
+
+            entity.HasIndex(e => e.CostAllocationUnitId, "IX_tbl201CostAllocationMaster");
+
+            entity.Property(e => e.CostAllocationId).HasColumnName("CostAllocationID");
+            entity.Property(e => e.AmountAllocated).HasColumnType("money");
+            entity.Property(e => e.ApprovedBy).IsUnicode(false);
+            entity.Property(e => e.ApprovedOn).HasColumnType("datetime");
+            entity.Property(e => e.CostAllocDrCr)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CostAllocRemarks).IsUnicode(false);
+            entity.Property(e => e.CostAllocationUnitId)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("CostAllocationUnitID");
+            entity.Property(e => e.EffectiveDate).HasColumnType("datetime");
+            entity.Property(e => e.EnteredBy).IsUnicode(false);
+            entity.Property(e => e.EnteredOn).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.VoucherEntryId).HasColumnName("VoucherEntryID");
+            entity.Property(e => e.VoucherNo)
+                .HasMaxLength(50)
                 .IsUnicode(false);
         });
 
