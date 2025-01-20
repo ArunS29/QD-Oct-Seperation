@@ -66,6 +66,17 @@
         color: red; /* Red color for delete */
     }
 
+    .content-container-top {
+        background-color: #c0dceb;
+        border-top-left-radius: 10px; /* Radius for top-left corner */
+        border-top-right-radius: 10px; /* Radius for top-right corner */
+        padding: 5px;
+    }
+
+    label {
+        color: black;
+        font-weight: bold;
+    }
 </style>
 <!-- SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -193,77 +204,6 @@
                     .Width(90)
                     )
             </div>
-            @*   <div class="form-group">
-            <label for="AccountHead" class="button-alignment-down">Account Head:</label>
-            @(Html.DevExtreme().DropDownBox()
-            .DataSource(d => d.WebApi()
-            .Controller("VoucherEntryReceipts")
-            .LoadAction("GetAccountHead")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("AccountId")
-            )
-            .ValidationRules(rules =>
-            {
-            rules.AddRequired()
-            .Message("Account Head is required");
-            })
-            .LabelMode(EditorLabelMode.Outside)
-            .ID("AccountHeadDropDown")
-            .ShowClearButton(true)
-            .AcceptCustomValue(true)
-            .OpenOnFieldClick(false)
-            .ValueChangeEvent("input")
-            .HoverStateEnabled(true)
-            .ValueExpr("AccountId")
-            .DisplayExpr("AccountHead")
-            .OnInput("dropDownBoxOnInput")
-            .OnOpened("onOpened")
-            .Width(650)
-            .TabIndex(1)
-            .DropDownOptions(o => o
-            .Width(1000)
-            )
-            .OnKeyDown("onKeyDown")
-            //.OnValueChanged("dropDownBoxValueChanged")
-            .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
-            )
-            </div> *@
-
-            @*   <div class="form-group">
-            <label for="AccountHead" class="button-alignment-down">Account Head:</label>
-            @(Html.DevExtreme().DropDownBox()
-            .DataSource(d => d.WebApi()
-            .Controller("VoucherEntryReceipts")
-            .LoadAction("GetAccountHead")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("AccountId")
-            )
-            .ValidationRules(rules =>
-            {
-            rules.AddRequired()
-            .Message("Account Head is required");
-            })
-            .LabelMode(EditorLabelMode.Outside)
-            .ID("AccountHeadDropDown")
-            .ShowClearButton(true)
-            .AcceptCustomValue(true)
-            .OpenOnFieldClick(false)
-            .ValueChangeEvent("input")
-            .HoverStateEnabled(true)
-            .ValueExpr("AccountId")
-            .DisplayExpr("AccountHead")
-            .OnInput("dropDownBoxOnInput")
-            .OnOpened("onOpened")
-            .Width(650)
-            .TabIndex(1)
-            .DropDownOptions(o => o
-            .Width(1000)
-            )
-            .OnKeyDown("onKeyDown")
-            //.OnValueChanged("dropDownBoxValueChanged")
-            .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
-            )
-            </div> *@
 
             <div class="form-group">
                 <label for="" class="button-alignment-down">Account Head:</label>
@@ -384,35 +324,48 @@
                         );
 
                         columns.AddFor(m => m.AccountHead)
-                        .Caption("Account Head");
-
+                        .Caption("Account Head"); // Column header text
+                        @* .DataType(GridColumnDataType.String) // Column data type
+                .Lookup(lookup => lookup
+                .DataSource(ds => ds.WebApi() // Web API data source
+                .Controller("VoucherEntryCashReceipts") // Controller handling the data
+                .LoadAction("GetAccountHead") // Action to fetch data from the API
+                )
+                .ValueExpr("AccountId") // Field in the API response for the value of the dropdown
+                .DisplayExpr("AccountHead") // Field in the API response to be displayed in the dropdown
+                ); *@
                         columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
-                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-                        );
+                            "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                            );
                         columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
                         "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
                         );
                         columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
                         columns.AddFor(m => m.SysRemarks).Caption("Remarks");
                     })
-                    .AllowColumnReordering(true)
-                    .AllowColumnResizing(true)
-                    .ColumnFixing(fixing => fixing.Enabled(true))
+
+                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                    .AllowColumnReordering(true) // Enable column reordering
+                    .AllowColumnResizing(true)   // Enable column resizing
+                    .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                     .HeaderFilter(filter => filter.Visible(true))
                     .Height(250)
                     .ColumnAutoWidth(true)
-                    .FilterRow(filterRow => filterRow.Visible(false))
-                    .GroupPanel(groupPanel => groupPanel.Visible(false))
+                    .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                    .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                     .ShowBorders(true)
                     .Width("100%")
                     .Editing(editing => editing
-                    .Mode(GridEditMode.Cell)
-                    .AllowUpdating(true)
-                    .AllowDeleting(true)
-                    .UseIcons(true)
+                    .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
+                    .AllowUpdating(true)   // Enable editing of existing rows
+                    .AllowDeleting(true)   // Enable deleting rows
+                    .UseIcons(true) // Enables icons for editing buttons
                     )
                     .OnEditorPreparing("onEditorPreparing")
                     .OnRowRemoving("onRowRemoving")
+
                     )
             </div>
         </div>
@@ -548,181 +501,458 @@
                 </div>
             </div>
         </div>
+        <div id="SalaryPaidEntryPopup"
+             style="display: none; padding: 20px;border-radius: 8px;
+            max-width: 90%; max-height: 60%; flex-direction: column; overflow: hidden;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
 
+            <!-- Close Button -->
+            @*     <button onclick="hidePopup()" style="position: absolute; top: 10px; right: 10px; border: none; background: none; font-size: 16px; cursor: pointer;">
+            &times;
+            </button> *@
+            <div class="popup" style="background-color:grey;height: 100vh; padding-bottom: 20px; overflow-y: auto;">
+                <!-- Header Section -->
+                @*     <h2 class="cards-container-title" style="margin-left: 20px; position: relative; top: 5px; background: linear-gradient(to bottom, #000000, #A9A9A9); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Employee Salary Payables
+                </h2> *@
+                <h4 class="cards-container-title" style="margin-left:20px;position:relative;top:5px;color:white;font-weight:bold;">Bills Payables/Receivables</h4>
+
+                <!-- Popup Content (Your existing content here) -->
+                <div id="costAllocationPopup" style="display:none;">
+                    <div style="margin-bottom:10px">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnSaveCostAllocation")
+                            .Icon("save")
+                            .Text("Save")
+                            .OnClick("function() { saveCostAllocation(); }")
+                            )
+                    </div>
+                </div>
+                <div class="content-container-top">
+                    <div class="container">
+                        <div class="row g-5">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="SalesInvoiceNo" class="button-alignment-down">Voucher Entry ID:</label>
+                                    @(
+                                        Html.DevExtreme().TextBox()
+                                        .ID("VoucherNoId")
+                                        .Value(null)
+                                        //.OnValueChanged("onVoucherNoChanged")
+                                        .Disabled(true)
+                                        )
+                                </div>
+                            </div>
+
+                            <div class="col-md-4" style="padding-right:0px;padding-top:33px;">
+                                <div class="form-group">
+                                    <label for="PaymentAccount" class="">Payment Account:</label>
+                                    @(Html.DevExtreme().DropDownBox()
+                                        .Disabled(true)
+                                        .DataSource(d => d.WebApi()
+                                        //	.Controller("PurchaseVoucher")
+                                        //.LoadAction("GetSupplierName")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("AccountId")
+                                        )
+                                        .ValidationRules(rules =>
+                                        {
+                                            rules.AddRequired()
+                                            .Message("Supplier Name is required");
+                                        })
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        .ID("PaymentNameDropDown")
+                                        .ShowClearButton(true)
+                                        .AcceptCustomValue(true)
+                                        .OpenOnFieldClick(false)
+                                        .ValueChangeEvent("input")
+                                        .HoverStateEnabled(true)
+                                        .ValueExpr("AccountId")
+                                        .DisplayExpr("AccountHead")
+                                        .OnInput("dropDownBoxOnInput")
+                                        .OnOpened("onOpened")
+                                        .TabIndex(1)
+                                        .OnKeyDown("onKeyDown")
+                                        //.OnValueChanged("dropDownBoxValueChanged")
+                                        .ContentTemplate(new TemplateName("PaymentAccountContentTemplate"))
+                                        )
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-1" style="padding-top:57px;padding-left:0px;padding-right:0px;width:3%">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnAddPaymentAccount")
+                                    .Icon("plus")
+                                    .Disabled(true)
+                                    )
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="Amount" class="button-alignment-down">Amount</label>
+                                    @(Html.DevExtreme().NumberBox()
+                                        .ID("AmountId")
+                                        .Value(null)
+                                        .ShowSpinButtons(true)
+                                        .Min(0)
+                                        .Min(0)
+                                        .Placeholder("0.00")
+                                        .Format("#,##0.00")
+                                        .InputAttr(new
+                                        {
+                                            style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+                                            type = "number",
+                                            step = "0.01"
+                                        })
+                                        .Step(1)
+                                        .Disabled(true)
+                                        )
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group" style="margin-top: 33px;">
+                                    <label for="DrCr" class="">DrCr</label>
+                                    @(
+                                        Html.DevExtreme().SelectBox()
+                                        .ID("DrCrId")
+                                        .DataSource(new[] { "Dr", "Cr" })
+                                        .Value("null")
+                                        .Placeholder("Select Transaction Type")
+                                        .Width(90)
+                                        .Disabled(true)
+                                        )
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+
+                    <div class="dx-fieldset horizontal-container" style="margin-top:15px;margin-bottom:0px;background-color:white;">
+                        <div class="form-group" style="padding-left:20px">
+                            <div class="button-alignment-down">
+                                <label for="Reference">Reference:</label>
+                            </div>
+                            @(
+                                Html.DevExtreme().SelectBox()
+                                .ID("Reference")
+                                .DataSource(new[] { "New Reference", "Against Reference" })
+                                .Value("Against Reference")
+                                .Placeholder("Select Transaction Type")
+                                .Width(150)
+                                )
+                        </div>
+                        <div class="form-group">
+                            <label for="AccountHead" class="button-alignment-down">Reference No:</label>
+                            @(Html.DevExtreme().DropDownBox()
+                                .DataSource(new[] {
+                            new { AccountId = "2024-00088", AccountHead = "Account 2024-00088" },
+                            new { AccountId = "2024-00089", AccountHead = "Account 2024-00089" }
+                            })
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message("Account Head is required");
+                                })
+                                .LabelMode(EditorLabelMode.Outside)
+                                .ID("ddAccountHead")
+                                .ShowClearButton(true)
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("AccountId")
+                                .DisplayExpr("AccountHead")
+                                .Value("2024-00088")
+                                .TabIndex(1)
+                                .DropDownOptions(o => o.Width(1000))
+                                .ContentTemplate(new TemplateName("ReferenceNoContentTemplate"))
+                                )
+
+                        </div>
+                        <div class="form-group" style="margin-top:56px;margin-left:-10px">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnAddAHead")
+                                .Icon("plus")
+                                )
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Amount2" class="button-alignment-down">Amount</label>
+                            @(
+                                Html.DevExtreme().NumberBox()
+                                .ID("txtAmount2")
+                                .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                    .Message("Amount is required");
+                                })
+                                .Min(0)
+                                .Placeholder("0.00")
+                                .Format("#,##0.00")
+                                .InputAttr(new
+                                {
+                                    style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+                                    type = "number",
+                                    step = "0.01"
+                                })
+                                )
+
+                        </div>
+                        <div class="form-group" style="margin-top:40px;">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnVoucherEntry")
+                                .Text("ADD")
+                                .Height(50)
+                                .Width(150)
+                                .Icon("plus")
+                                .OnClick("function() { addBillsPayableReceivable(); }")
+                                )
+                        </div>
+                    </div>
+                    <div class="dx-fieldset horizontal-container" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px;background-color:white;">
+
+                        <div class="form-group" style="padding-left:145px">
+                            <divstyle ="display:flex;>
+                            @(Html.DevExtreme().CheckBox()
+                                .ID("IsVerified1")
+                                )
+
+                                <label for="Amount">Show Retained Value</label>
+                        </div>
+
+                    </div>
+
+                    <div class="dx-field ledgerResult">
+                            @(
+                                Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl201SubLedgerMaster>()
+                                .ID("dataGrid2")
+                                .KeyExpr("ReferenceNo")
+                                .RemoteOperations(false)
+                                .OnInitialized("dataGridInitialized")
+                                .OnContextMenuPreparing("onContextMenuPreparing")
+                                .Columns(columns =>
+                                {
+                                    columns.AddFor(m => m.SubLedgerId).Caption("Sub Ledger Id").Alignment(HorizontalAlignment.Center).Width(100);
+                                    columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center).Width(100);
+                                    columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left).Width(100);
+                                    columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).Width(100);
+                                    columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).Width(100).CustomizeText(@"
+                        function(e) {
+                        if(e.value === null || e.value === undefined) {
+                        return ''; // Return empty string for null values
+                        }
+                        return e.value.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                        });
+                        }
+                        ");
+                                    columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center).Width(100);
+
+
+                                })
+                                //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                                .AllowColumnReordering(true) // Enable column reordering
+                                .AllowColumnResizing(true)   // Enable column resizing
+                                .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                                .HeaderFilter(filter => filter.Visible(true))
+                                .Height(250)
+                                .ColumnAutoWidth(true)
+                                .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                                .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                                .ShowBorders(true)
+                                .Width("100%")
+                                )
+                    </div>
+                    <br />
+
+                    <div>
+                            @await Html.PartialAsync("_BPRFooter")
+                    </div>
+                    <!-- Drop Down Grid Template -->
+                            @using (Html.DevExtreme().NamedTemplate("PaymentAccountContentTemplate"))
+                            {
+                                @(Html.DevExtreme().DataGrid()
+                                        .ID("Payment-datagrid")
+                                        .DataSource(d => d.WebApi()
+                                        //	.Controller("PurchaseVoucher")
+                                        //	.LoadAction("GetSupplierName")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("AccountId")
+                                        )
+                                        .WordWrapEnabled(true)
+                                        .ShowBorders(true)
+                                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                        .OnSelectionChanged("dataGridEPRPaymentSelectionChanged")
+                                        .OnInitialized("dataGridEPRPaymentInitialized")
+                                        .HeaderFilter(p => p.Visible(true))
+                                        .ShowBorders(true)
+                                        .HoverStateEnabled(true)
+                                        .Paging(p => p.PageSize(15))
+                                        .FilterRow(f => f.Visible(true))
+                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                        .Height(345)
+                                        .Selection(s => s.Mode(SelectionMode.Single))
+                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                        .Columns(columns =>
+                                        {
+                                            columns.Add().DataField("AccountId");
+                                            columns.Add().DataField("AccountHead");
+                                            columns.Add().DataField("AccountHeadArabic");
+                                            columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+                                        .CellTemplate(@<text>
+                        <div class="dx-icon">
+                            <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                        </div>
+                    </text>);
+
+                                        })
+                                    )
+                            }
+                    <!-- Drop Down Account Head Grid Template -->
+                            @using (Html.DevExtreme().NamedTemplate("ReferenceNoContentTemplate"))
+                            {
+                                @(Html.DevExtreme().DataGrid()
+                                        .ID("accounthead-datagrid")
+                                        .DataSource(d => d.WebApi()
+                                        //.Controller("PurchaseVoucher")
+                                        //.LoadAction("GetAccountHead")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("AccountId")
+                                        )
+                                        .WordWrapEnabled(true)
+                                        .ShowBorders(true)
+                                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                        .OnSelectionChanged("dataGridEPRAccountHeadSelectionChanged")
+                                        .OnInitialized("dataGridEPRAccountHeadInitialized")
+                                        .HeaderFilter(p => p.Visible(true))
+                                        .ShowBorders(true)
+                                        .HoverStateEnabled(true)
+                                        .Paging(p => p.PageSize(15))
+                                        .FilterRow(f => f.Visible(true))
+                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                        .Height(345)
+                                        .Width(300)
+                                        .Selection(s => s.Mode(SelectionMode.Single))
+                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                        .Columns(columns =>
+                                        {
+                                            columns.Add().DataField("AccountId");
+                                            columns.Add().DataField("AccountHead");
+                                            columns.Add().DataField("AccountHeadArabic");
+                                            columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+                                        .CellTemplate(@<text>
+                        <div class="dx-icon">
+                            <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                        </div>
+                    </text>);
+
+                                        })
+                                    )
+                            }
+                </div>
+
+            </div>
+        </div>
         <div>
-            @await Html.PartialAsync("_Formfooter")
+                            @await Html.PartialAsync("_Formfooter")
         </div>
         <!-- Drop Down Grid Template -->
-        @using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
-        {
-            @(Html.DevExtreme().DataGrid()
-                    .ID("suppliername-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("VoucherEntryCashReceipts")
-                    .LoadAction("GetReceivingAccount")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("AccountId")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridSelectionChanged")
+                            @using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
+                            {
+                                @(Html.DevExtreme().DataGrid()
+                                        .ID("suppliername-datagrid")
+                                        .DataSource(d => d.WebApi()
+                                        .Controller("VoucherEntryCashReceipts")
+                                        .LoadAction("GetReceivingAccount")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("AccountId")
+                                        )
+                                        .WordWrapEnabled(true)
+                                        .ShowBorders(true)
+                                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                        .OnSelectionChanged("dataGridSelectionChanged")
 
-                    .OnInitialized("dataGridInitialized")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("AccountId");
-                        columns.Add().DataField("AccountHead");
-                        columns.Add().DataField("AccountHeadArabic");
-                        columns.Add().DataField("IsLedgerObselete")
+                                        .OnInitialized("dataGridInitialized")
+                                        .HeaderFilter(p => p.Visible(true))
+                                        .ShowBorders(true)
+                                        .HoverStateEnabled(true)
+                                        .Paging(p => p.PageSize(15))
+                                        .FilterRow(f => f.Visible(true))
+                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                        .Height(345)
+                                        .Selection(s => s.Mode(SelectionMode.Single))
+                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                        .Columns(columns =>
+                                        {
+                                            columns.Add().DataField("AccountId");
+                                            columns.Add().DataField("AccountHead");
+                                            columns.Add().DataField("AccountHeadArabic");
+                                            columns.Add().DataField("IsLedgerObselete")
 
 
-                    .Alignment(HorizontalAlignment.Center)
-                    .CellTemplate(@<text>
+                                        .Alignment(HorizontalAlignment.Center)
+                                        .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>);
 
-                    }))
-        }
+                                        }))
+                            }
 
-        @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
-        {
-            @(Html.DevExtreme().DataGrid()
-                    .ID("accounthead-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("VoucherEntryCashReceipts")
+                            @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
+                            {
+                                @(Html.DevExtreme().DataGrid()
+                                        .ID("accounthead-datagrid")
+                                        .DataSource(d => d.WebApi()
+                                        .Controller("VoucherEntryCashReceipts")
 
-                    .LoadAction("GetAccountHead")
-                    .LoadParams(new { SelectedPaymentAccount = new JS("$('#accountDropDownBox').dxDropDownBox('instance').option('value')") }) // Exclude Receiving Account
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("AccountId")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
-                    .OnInitialized("dataGridAccountHeadInitialized")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("AccountId");
-                        columns.Add().DataField("AccountHead");
-                        columns.Add().DataField("AccountGroup");
-                        columns.Add().DataField("AccountHeadArabic");
-                        columns.Add().DataField("ReferenceNo");
-                        columns.Add().DataField("IsLedgerObselete")
+                                        .LoadAction("GetAccountHead")
+                                        .LoadParams(new { SelectedPaymentAccount = new JS("$('#accountDropDownBox').dxDropDownBox('instance').option('value')") }) // Exclude Receiving Account
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("AccountId")
+                                        )
+                                        .WordWrapEnabled(true)
+                                        .ShowBorders(true)
+                                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                        .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
+                                        .OnInitialized("dataGridAccountHeadInitialized")
+                                        .HeaderFilter(p => p.Visible(true))
+                                        .ShowBorders(true)
+                                        .HoverStateEnabled(true)
+                                        .Paging(p => p.PageSize(15))
+                                        .FilterRow(f => f.Visible(true))
+                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                        .Height(345)
+                                        .Selection(s => s.Mode(SelectionMode.Single))
+                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                        .Columns(columns =>
+                                        {
+                                            columns.Add().DataField("AccountId");
+                                            columns.Add().DataField("AccountHead");
+                                            columns.Add().DataField("AccountGroup");
+                                            columns.Add().DataField("AccountHeadArabic");
+                                            columns.Add().DataField("ReferenceNo");
+                                            columns.Add().DataField("IsLedgerObselete")
 
 
 
-                    .Alignment(HorizontalAlignment.Center)
-                    .CellTemplate(@<text>
+                                        .Alignment(HorizontalAlignment.Center)
+                                        .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>);
 
-                    }))
-        }
-        <!-- Drop Down Account Head Grid Template -->
-        @* @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
-        {
-        @(Html.DevExtreme().DataGrid()
-
-        .ID("accounthead-datagrid")
-        .OnInitialized("dataGridAccountHeadInitialized")
-        .DataSource(d => d.WebApi()
-        .Controller("VoucherEntryReceipts")
-        .LoadAction("GetAccountHead")
-        .LoadParams(new { inputParameter = new JS("selectedAccountKey") })
-        .LoadMode(DataSourceLoadMode.Raw)
-        .Key("AccountId")
-        )
-        .WordWrapEnabled(true)
-        .ShowBorders(true)
-        .SearchPanel(sp => sp.HighlightSearchText(true))
-        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-        .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
-        .HeaderFilter(p => p.Visible(true))
-        .ShowBorders(true)
-        .HoverStateEnabled(true)
-        .Paging(p => p.PageSize(15))
-        .FilterRow(f => f.Visible(true))
-        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-        .Height(345)
-        .Selection(s => s.Mode(SelectionMode.Single))
-        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
-        )
-        } *@
-        @*  @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
-        {
-        @(Html.DevExtreme().DataGrid()
-        .ID("accounthead-datagrid")
-        .OnInitialized("dataGridAccountHeadInitialized")
-        .DataSource(d => d.WebApi()
-        .Controller("VoucherEntryReceipts")
-        .LoadAction("GetAccountHead")
-        .LoadParams(new { inputParameter = new JS("selectedAccountKey") })
-
-        .LoadMode(DataSourceLoadMode.Raw)
-        .Key("AccountId")
-        )
-        .WordWrapEnabled(true)
-        .ShowBorders(true)
-        .SearchPanel(sp => sp.HighlightSearchText(true))
-        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-        .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
-
-
-        .HeaderFilter(p => p.Visible(true))
-        .ShowBorders(true)
-        .HoverStateEnabled(true)
-        .Paging(p => p.PageSize(15))
-        .FilterRow(f => f.Visible(true))
-        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-        .Height(345)
-        .Selection(s => s.Mode(SelectionMode.Single))
-        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-        .Columns(columns =>
-        {
-        columns.Add().DataField("AccountId");
-        columns.Add().DataField("AccountHead");
-        columns.Add().DataField("AccountGroup");
-        columns.Add().DataField("AccountHeadArabic");
-        columns.Add().DataField("ReferenceNo");
-        columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
-        .CellTemplate(@<text>
-        <div class="dx-icon">
-        <%: data.IsLedgerObselete ? "<i style='color:green' class='fa fa-toggle-on'></i>" : "<i style='color:red' class='fa fa-toggle-off'></i>" %>
-        </div>
-        </text>);
-
-
-        })
-
-        )
-        } *@
+                                        }))
+                            }
 
 
     </div>
@@ -736,7 +966,8 @@
     let selectedAccountKey = null;
 
     let paymentaccheadname;
-    let accheadname;
+    let accheadname = null;
+
     let isUpdatingCell = false; // Add a flag to prevent recursive triggering
 
     function addVoucherEntry() {
@@ -937,28 +1168,35 @@
 
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
-                    //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+                    $("#VoucherNoId").dxTextBox("instance").option("value", voucherNo);
+                    $("#PaymentNameDropDown").dxDropDownBox("instance").option("value", accheadname);
+                    $("#AmountId").dxNumberBox("instance").option("value", amount);
+                    $("#DrCrId").dxSelectBox("instance").option("value", sbDrCr);
+
+                    DevExpress.ui.notify("Data saved successfully!", "success", 2000);
 
                     //console.log(response.data);
 
-                    if (accheadname && accheadname.startsWith("Salary Payable")) {
-
-                        $("#SalaryPaidEntryPopup").dxPopup({
-
-                            title: "Salary Paid Entry",
-
-                            width: 1250,
-
-                            height: 860,
-
-                            showCloseButton: true,
-
-                            visible: true
-
-
-                        });
-
-                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/VoucherEntryCashReceipts/CheckIsMaintainBillByBill",
+                        contentType: "application/json",
+                        data: JSON.stringify(accheadname),
+                        success: function (isMaintainBillByBill) {
+                            if (isMaintainBillByBill) {
+                                $("#SalaryPaidEntryPopup").dxPopup({
+                                    //title: "Salary Paid Entry",
+                                    width: 1250,
+                                    height: 860,
+                                    showCloseButton: true,
+                                    visible: true
+                                }).dxPopup("show");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error checking isMaintainBillByBill:", error);
+                        }
+                    });
 
                 },
 
@@ -1343,10 +1581,10 @@
             Swal.fire({
                 title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
                 html: `
-                        <textarea id="swal-field-editor"
-                                  style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
-                                  placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
-                    `,
+                                <textarea id="swal-field-editor"
+                                          style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+                                          placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
+                            `,
                 showCancelButton: true,
                 confirmButtonText: 'OK',
                 cancelButtonText: 'Cancel',
@@ -1379,123 +1617,6 @@
         }
 
     }
-    // // Function that handles the dropdown opening event
-    // function onDropDownBoxOpened(e) {
-    //     var dropDownBox = e.component;
-    //     var dataSource = dropDownBox.getDataSource();
-
-    //     // Check if the dataSource is already loaded
-    //     if (!dataSource.isLoaded()) {
-    //         dataSource.load().done(function (data) {
-    //             if (data && data.length > 0) {
-    //                 // Set the first item's AccountId as the default value
-    //                 dropDownBox.option("value", data[0].AccountId);
-    //             }
-    //         }).fail(function () {
-    //             console.error("Failed to load data for DropDownBox.");
-    //         });
-    //     }
-    // }
-
-    // // Ensuring that DataGrid is initialized properly within the content template
-    // $(document).ready(function () {
-    //     var dataGrid = $('#suppliername-datagrid').dxDataGrid({
-    //         dataSource: new DevExpress.data.DataSource({
-    //             store: {
-    //                 type: "odata",
-    //                 url: "/VoucherEntryCashReceipts/GetReceivingAccount"
-    //             }
-    //         }),
-    //         selection: { mode: "single" },
-    //         paging: { pageSize: 15 },
-    //         columns: ["AccountId", "AccountHead", "AccountHeadArabic", "IsLedgerObselete"],
-    //         onSelectionChanged: function (e) {
-    //             console.log("Selection changed", e);
-    //         }
-    //     }).dxDataGrid("instance"); // Ensures proper initialization
-    // });
-    // $(document).ready(function () {
-    //     const dropdown = $("#accountDropDownBox").dxDropDownBox("instance");
-
-    //     // Wait for the data source to load
-    //     dropdown.getDataSource().load().done(function (data) {
-    //         if (data.length > 0) {
-    //             // Set the first value as the selected value
-    //             dropdown.option("value", data[0].AccountId);
-    //         }
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     const dropdown = $("#accountDropDownBox").dxDropDownBox("instance");
-    //     const dataGrid = $("#accounthead-datagrid").dxDataGrid("instance");
-
-    //     // Wait for the dropdown's data source to load
-    //     dropdown.getDataSource().load().done(function (data) {
-    //         if (data.length > 0) {
-    //             // Set the first value as the default selected value if none is set
-    //             const currentValue = dropdown.option("value");
-    //             if (!currentValue) {
-    //                 dropdown.option("value", data[0].AccountId);
-    //             }
-    //         }
-    //     });
-
-    //     // Handle dropdown value change and reload the DataGrid
-    //     dropdown.on("valueChanged", function (e) {
-    //         const selectedKey = e.value; // Get the selected dropdown value
-
-    //         // Reload the DataGrid with the selectedKey
-    //         dataGrid.option("dataSource", {
-    //             load: function () {
-    //                 return $.get("/api/VoucherEntryCashReceipts/GetAccountHead", {
-    //                     inputParameter: selectedKey || "defaultAccountValue"
-    //                 });
-    //             }
-    //         });
-
-    //         // Refresh the DataGrid
-    //         dataGrid.refresh();
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     const dropdown = $("#accountDropDownBox").dxDropDownBox("instance");
-    //     const dataGrid = $("#accounthead-datagrid").dxDataGrid("instance");
-
-    //     // Wait for the dropdown's data source to load and set the default value
-    //     dropdown.getDataSource().load().done(function (data) {
-    //         if (data.length > 0) {
-    //             const currentValue = dropdown.option("value");
-    //             if (!currentValue) {
-    //                 dropdown.option("value", data[0].AccountId); // Set the first value as default
-    //             }
-
-    //             // Refresh DataGrid with the default dropdown value
-    //             refreshDataGrid(dropdown.option("value"));
-    //         }
-    //     });
-
-    //     // Function to refresh DataGrid with the selected dropdown value
-    //     function refreshDataGrid(selectedValue) {
-    //         if (!dataGrid) return;
-
-    //         dataGrid.option("dataSource", {
-    //             load: function () {
-    //                 // Pass the selected dropdown value as a parameter to the API
-    //                 return $.get("/api/VoucherEntryCashReceipts/GetAccountHead", {
-    //                     inputParameter: selectedValue || "defaultAccountValue"
-    //                 });
-    //             }
-    //         });
-
-    //         dataGrid.refresh(); // Refresh the DataGrid
-    //     }
-
-    //     // Handle dropdown value change
-    //     dropdown.on("valueChanged", function (e) {
-    //         const selectedKey = e.value; // Get the selected dropdown value
-    //         refreshDataGrid(selectedKey); // Refresh DataGrid with new dropdown value
-    //     });
-    // });
 
     function onReceivingAccountChange(e) {
         const receivingAccountValue = e.value; // Get the new value of Receiving Account
@@ -1516,7 +1637,7 @@
 
         // Apply the new filter based on the Receiving Account value
         if (receivingAccountValue !== null && receivingAccountValue !== undefined) {
-            dataSource.filter(["AccountId", "", receivingAccountValue]);
+            dataSource.filter(["AccountId", "<>", receivingAccountValue]);
         }
 
         // Reload the data source
@@ -1536,7 +1657,7 @@
 
                             // Apply the new filter to the DataGrid if needed
                             if (receivingAccountValue !== null && receivingAccountValue !== undefined) {
-                                gridContent.filter(["AccountId", "", receivingAccountValue]);
+                                gridContent.filter(["AccountId", "<>", receivingAccountValue]);
                             }
 
                             gridContent.refresh(); // Refresh the grid to reflect changes
@@ -1707,5 +1828,224 @@
             }
         });
     }
+    //BillsPayable/Receivable form code
 
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+
+    function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid.option("focusedRowIndex");
+            let visibleRows = dataGrid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+        }
+    }
+
+    function dataGridEPRPaymentSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#PaymentNameDropDown").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+
+    }
+    function dataGridEPRAccountHeadSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+
+    }
+    function dataGridEPRPaymentInitialized(e) {
+        dataGrid = e.component;
+    }
+    function dataGridAccountEPRHeadInitialized(e) {
+        dataGrid = e.component;
+    }
+
+    function addBillsPayableReceivable() {
+
+        var DrCr = $("#DrCrId").dxSelectBox("instance").option("value");
+        var ReferenceType = $("#Reference").dxSelectBox("instance").option("value");
+        var ReferenceNo = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+        var Amount = $("#txtAmount2").dxNumberBox("instance").option("value");
+
+        if (!DrCr || !ReferenceType || !ReferenceNo || !Amount) {
+            alert("Please fill in all required fields before submitting.");
+            return;
+        }
+
+        var VE = {
+            "DrCr": DrCr,
+            "ReferenceType": ReferenceType,
+            "ReferenceNo": ReferenceNo,
+            "Amount": Amount,
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Finance/api/BillsPayableReceivable/AddBillsPayableReceivable",
+            contentType: "application/json",
+            data: JSON.stringify(VE),
+            dataType: "json",
+            success: function (response) {
+                DevExpress.ui.notify("BillsPayable/Receivable details saved succfully!", "success", 2000);
+
+                console.log(response.data);
+                $("#dataGrid2").dxDataGrid("instance").option("dataSource", response.data);
+
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while updating data: " + error);
+            }
+        });
+    }
+
+    $("#btnUpdateAndClose").on("click", function (e) {
+        e.preventDefault();
+
+        var VM = {
+            "VoucherNo": $("#VoucherNoId").dxTextBox("instance").option("value"),
+            "DrCr": $("#DrCrId").dxSelectBox("instance").option("value"),
+            "ReferenceType": $("#Reference").dxSelectBox("instance").option("value"),
+            "ReferenceNo": $("#ddAccountHead").dxDropDownBox("instance").option("value"),
+            "Amount": $("#txtAmount2").dxNumberBox("instance").option("value")
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Finance/api/BillsPayableReceivable/UpdateBillsPayableReceivable",
+            contentType: "application/json",
+            data: JSON.stringify(VM),
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    alert("Data Updated successfully..");
+
+                } else {
+                    alert("Update failed: " + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while updating data: " + error);
+            }
+        });
+
+    });
+
+    $("#btnBackERP").on("click", function (e) {
+        e.preventDefault();
+
+        // Get the instance of the SalaryPaidEntryPopup
+        const salaryPaidEntryPopup = $("#SalaryPaidEntryPopup").dxPopup("instance");
+
+
+        if (salaryPaidEntryPopup) {
+            const content = salaryPaidEntryPopup.content();
+
+            // Hide the popup
+            salaryPaidEntryPopup.hide();
+
+
+        }
+    });
+    // Function to hide the popup
+    function hidePopup() {
+        document.getElementById('SalaryPaidEntryPopup').style.display = 'none';
+        document.getElementById('popupOverlay').style.display = 'none';
+    }
+    function hidePopup() {
+        const popup = document.getElementById("SalaryPaidEntryPopup");
+        if (popup) {
+            popup.style.display = "none"; // Attempt to hide
+
+        } else {
+            console.error("Popup element not found!");
+        }
+    }
+
+
+    let dataGridInstance2 = null; // Reference to DataGrid
+    let selectedRowData = null;   // Store selected row data
+
+    // Store the DataGrid instance when initialized
+    function dataGridInitialized(e) {
+        dataGridInstance2 = e.component; // Assign the grid instance
+    }
+
+    // Handle the right-click context menu event
+    function onContextMenuPreparing(e) {
+        if (e.row && e.row.rowType === "data") {
+            // Row is right-clicked
+            selectedRowData = e.row.data;
+            //  alert(selectedRowData.SubLedgerId);
+            e.items = [
+                {
+                    text: "Delete Line Entry",
+                    onItemClick: function () {
+
+                        if (confirm(`You are about to delete the Bills Payable Records from the database. You cannot revert the changes. Are you sure you want to delete?`)) {
+
+                            // Call server-side delete method
+                            $.post(`/Finance/api/BillsPayableReceivable/DeleteRecord?id=${selectedRowData.SubLedgerId}`, function (response) {
+
+                                if (response.success) {
+                                    alert("Bills Payable Records have been successfully removed from the database");
+
+                                    // Remove the selected row from the DataGrid
+                                    if (dataGridInstance2) {
+                                        // Remove the row directly from the grid data source
+                                        let dataSource = dataGridInstance2.option('dataSource');  // Get the current data source
+
+                                        // Filter out the deleted record based on SubLedgerId
+                                        let updatedDataSource = dataSource.filter(function (item) {
+                                            return item.SubLedgerId !== selectedRowData.SubLedgerId;  // Remove the row by matching SubLedgerId
+                                        });
+
+                                        // Update the grid's data source to the new filtered data (which no longer includes the deleted row)
+                                        dataGridInstance2.option('dataSource', updatedDataSource);
+                                    }
+
+                                } else {
+                                    alert(`Error: ${response.message}`);
+                                }
+                            }).fail(function () {
+                                alert("An error occurred while processing your request.");
+                            });
+                        }
+                    }
+                }
+            ];
+        }
+    }
 </script>
+
+

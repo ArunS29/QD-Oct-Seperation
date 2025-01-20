@@ -26,7 +26,8 @@ namespace FormQD.ERP.Web.Areas.Finance.Controllers
                 i.DrCr,
                 i.ReferenceType,
                 i.ReferenceNo,
-                i.Amount
+                i.Amount,
+                i.SubLedgerId
             });
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
@@ -47,7 +48,7 @@ namespace FormQD.ERP.Web.Areas.Finance.Controllers
                 await _context.SaveChangesAsync();
                 var qryListOfAccountlists = _context.Tbl201SubLedgerMasters.Where(p => p.ReferenceNo == VE.ReferenceNo).Select(i => new
                 {
-
+                    i.SubLedgerId,
                     i.DrCr,
                     i.ReferenceType,
                     i.ReferenceNo,
@@ -91,20 +92,19 @@ namespace FormQD.ERP.Web.Areas.Finance.Controllers
 
 
         }
-
         [HttpPost]
-        public IActionResult DeleteRecord(string id)
+        public IActionResult DeleteRecord(long id)
         {
             try
             {
                 // Validate the ID
-                if (string.IsNullOrEmpty(id))
+                if (id <= 0) // Check if id is a valid number
                 {
-                    return Json(new { success = false, message = "Invalid Reference No provided." });
+                    return Json(new { success = false, message = "Invalid SubLedgerId provided." });
                 }
 
                 // Find the record in the database
-                var record = _context.Tbl201SubLedgerMasters.FirstOrDefault(r => r.ReferenceNo == id);
+                var record = _context.Tbl201SubLedgerMasters.FirstOrDefault(r => r.SubLedgerId == id);
                 if (record == null)
                 {
                     return Json(new { success = false, message = "Record not found." });
@@ -119,7 +119,7 @@ namespace FormQD.ERP.Web.Areas.Finance.Controllers
             catch (Exception ex)
             {
                 // Log the exception for debugging
-                //  _logger.LogError(ex, "Error occurred while deleting record with Reference No: {id}", id);
+                // _logger.LogError(ex, "Error occurred while deleting record with Reference No: {id}", id);
                 return Json(new { success = false, message = "An error occurred while deleting the record." });
             }
         }
