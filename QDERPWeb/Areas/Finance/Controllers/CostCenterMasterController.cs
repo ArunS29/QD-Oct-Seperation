@@ -176,7 +176,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 _context.Tbl201CostAllocationUnits.Add(VM);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Data inserted successfully!" });
+                return Ok(new { success = true, message = "Cost Center Information Saved Successfully!" });
             }
             catch (Exception ex)
             {
@@ -213,11 +213,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existingUnit.ProjectMasterCode = VM.ProjectMasterCode;
                 existingUnit.BranchCode = VM.BranchCode;
                 existingUnit.IsDisabled = VM.IsDisabled;
+                //existingUnit.CreatedBy= VM.CreatedBy;
+                //existingUnit.CreatedOn= VM.CreatedOn;
+                existingUnit.ModifiedBy = VM.ModifiedBy;
+                existingUnit.ModifiedOn = VM.ModifiedOn;
 
                 // Save changes to the database
                 await _context.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Data updated successfully!" });
+                return Ok(new { success = true, message = "Cost Center Information Updated Successfully!" });
             }
             catch (Exception ex)
             {

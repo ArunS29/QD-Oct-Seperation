@@ -28,7 +28,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     i.CostAllocationMasterGroup,
                     i.CostAllocationGroup,
                     i.CostAllocationUnit,
-                    i.IsDisabled
+                    i.IsDisabled,
+                    i.CostCenterIncharge,
+                    i.CostUnitRemarks,
+                    i.CreatedBy,
+                    i.CreatedOn,
+                    i.ModifiedBy,
+                    i.ModifiedOn
+
                 });
 
 
@@ -49,11 +56,55 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpPost]
+        public JsonResult UpdateIsDisabled(string id, bool isDisabled)
+        {
+            try
+            {
+                // Fetch the record from the database using the provided id
+                var record = _context.Qry20108ChartOfCostCenters.FirstOrDefault(cc => cc.CostAllocationUnitId == id);
+
+                if (record == null)
+                {
+                    return Json(new { success = false, message = "Record not found." });
+                }
+
+                // Update the IsDisabled property
+                record.IsDisabled = isDisabled;
+
+                // Save changes to the database
+                _context.SaveChanges();
+
+                return Json(new { success = true, message = "Record updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
         public IActionResult DeleteCostCenter(string id)
         {
             try
             {
-                // Find the record in the database by its AccountID
+                // Check if the provided id is for the Common Overheads (ADMIN-0001)
+                if (id == "ADMIN-0001")
+                {
+                    // Return a specific error message if it's the Common Overheads cost center
+                    return Json(new { success = false, message = "Cost Center for Common Overheads cannot be removed from the database. Overheads is default." });
+                }
+
+                // Check if there are any transactions associated with the CostCenterCode in tbl201CostAllocationMaster
+                var transactionsExist = _context.Tbl201CostAllocationMasters
+                    .Any(c => c.CostAllocationUnitId == id);  // Modify this based on actual field names
+
+                if (transactionsExist)
+                {
+                    // Return an alert message if transactions are found
+                    return Json(new { success = false, message = "Cost Center has transactions posted. Please remove them before deleting." });
+                }
+
+                // Find the record in the database by its CostAllocationUnitId
                 var costCenter = _context.Tbl201CostAllocationUnits.FirstOrDefault(c => c.CostAllocationUnitId == id);
                 if (costCenter == null)
                 {
@@ -74,6 +125,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
 
 
         [HttpGet]
@@ -120,7 +172,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 costCenter.CostAllocationUnit = model.CostAllocationUnit;
                 costCenter.CostAllocationGroup = model.CostAllocationGroup;
                 costCenter.IsDisabled = model.IsDisabled;
-
+                costCenter.CostCenterIncharge = model.CostCenterIncharge;
+                costCenter.CostUnitRemarks = model.CostUnitRemarks;
+                costCenter.CostAllocationMasterGroup = model.CostAllocationMasterGroup;
+                costCenter.ProjectMasterCode = model.ProjectMasterCode;
+                costCenter.BranchCode = model.BranchCode;
                 // Save changes
                 _context.SaveChanges();
 

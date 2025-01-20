@@ -485,8 +485,8 @@
                             if (response.success) {
                                //  DevExpress.ui.notify("Data saved successfully!", "success", 2000);
                               //     window.location.reload();
-                                     CostAllocationPopup.hide();
-
+                                  //   CostAllocationPopup.hide();
+                        $("#CostAllocationModal").modal('hide');
                             } else {
                                 alert("Update failed: " + response.message);
                             }
