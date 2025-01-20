@@ -29,13 +29,13 @@
 
 
     .card {
-        background-color: #c0dceb;
+        background-color: white;
     }
 
     .dx-datagrid-pager .dx-page.dx-selection,
     .pagination .active a {
         color: black !important; /* Set the active page number to yellow */
-        font-weight: bold; /* Optional: Make the active page bold */
+      
     }
 
     .button-alignment-down {
@@ -47,12 +47,12 @@
     }
 
     .card-footer {
-        background-color: #c0dceb;
+        background-color: white;
     }
 
     .card-header {
-        background-color: #124eb0; /* Sets the background color to blue */
-        color: white; /* Changes the text color to white for contrast */
+        /* Sets the background color to blue */
+        color: black; /* Changes the text color to white for contrast */
         text-align: right; /* Aligns the text to the right */
         padding: 20px; /* Adds some padding around the text */
         font-weight: bold;
@@ -60,7 +60,7 @@
     }
 
     .left-text {
-        color: blue; /* Sets the text color to blue */
+        color: black; /* Sets the text color to blue */
         text-decoration: underline; /* Underlines the text */
         margin-right: 20px;
     }
@@ -70,8 +70,9 @@
     }
 
     #dataGrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
+       
         color: black;
+        font-family: "Inter", Helvetica, Arial, sans-serif;
     }
 </style>
 
@@ -118,7 +119,7 @@
         </div>
     </div>
 
-    <div class="dx-field ledgerResult" style="overflow: hidden;">
+    <div class="dx-field ledgerResult" style="overflow: hidden; font-family: Inter, Helvetica, Arial, sans-serif">
 
         @(
                 Html.DevExtreme().DataGrid<Qry201SubLedgerPayablesMaster>()
@@ -246,7 +247,7 @@
 
             .HeaderFilter(filter => filter.Visible(true))
 
-            .Height(600)
+            .Height(300)
 
             .ColumnAutoWidth(true)
             .WordWrapEnabled(false)

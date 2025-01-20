@@ -177,6 +177,82 @@
         .mandatory {
             color: red;
         }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        /* Modal Styling */
+ 
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3); /* Light overlay for background */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+            .modal-content .close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #fff; /* White color for the "X" */
+                background-color: #ff0000; /* Red background for contrast */
+                border: none;
+                border-radius: 50%;
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+                .modal-content .close:hover {
+                    background-color: #cc0000; /* Slightly darker red on hover */
+                }
+
+            .modal-content p {
+                font-size: 16px;
+                color: #ff0000;
+                margin: 20px 0 0;
+            }
+
+
+
+        /* Fade-in animation */
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        }
     </style>
 </head>
 <body>
@@ -191,6 +267,8 @@
         <div class="login-container">
             <h2>Login</h2>
             <p>Welcome back! Please login to your account</p>
+
+    
 
             <form method="post" asp-action="Login" asp-controller="Login">
                 <div>
@@ -218,6 +296,13 @@
                 <button type="submit">Sign In</button>
             </form>
         </div>
+        <!-- Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p id="errorMessage">@ViewBag.Error</p>
+            </div>
+        </div>
 
         <!-- Full-size Building Skyline -->
         <div class="skyline"></div>
@@ -231,6 +316,26 @@
     <!-- Password visibility toggle script -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+         $(document).ready(function () {
+            // Check if an error message is present
+            if ($('#errorMessage').length && $('#errorMessage').text().trim() !== '') {
+                $('#errorModal').css('display', 'flex'); // Show modal
+            }
+
+            // Close the modal when the close button is clicked
+            $('.close').click(function () {
+                $('#errorModal').hide(); // Hide modal
+            });
+
+            // Optional: Close modal if the user clicks outside the modal content
+            $('#errorModal').click(function (e) {
+                if ($(e.target).is('#errorModal')) {
+                    $(this).hide();
+                }
+            });
+        });
+
+
         $('#togglePassword').click(function () {
             var passwordField = $('#password');
             var type = passwordField.attr('type') === 'password' ? 'text' : 'password';
