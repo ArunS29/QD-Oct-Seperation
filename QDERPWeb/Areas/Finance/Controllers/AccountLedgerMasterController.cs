@@ -221,14 +221,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 		[HttpGet("GetMaxLedgerAccountID")]
 		public async Task<ActionResult> GetMaxLedgerAccountID()
 		{
-			var nextAccountId = (from account in _context.Tbl201ChartOfAccounts
-								 where account.AccountId.StartsWith("L0")
-								 orderby account.AccountId descending
-								 select account.AccountId)
-					.Take(1)
-					.Select(accountId => "L" + (int.Parse(accountId.Substring(1)) + 1).ToString().PadLeft(accountId.Substring(1).Length, '0')).FirstOrDefault();
+			try
+			{
+				var nextAccountId = (from account in _context.Tbl201ChartOfAccounts
+									 where account.AccountId.StartsWith("L0")
+									 orderby account.AccountId descending
+									 select account.AccountId)
+						.Take(1)
+						.Select(accountId => "L" + (int.Parse(accountId.Substring(1)) + 1).ToString().PadLeft(accountId.Substring(1).Length, '0')).FirstOrDefault();
 
-			return Json(new { nextAccountId });
+				return Json(new { nextAccountId });
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
 		}
 
 		[HttpGet("FindDuplicatesOnAccountHead")]
@@ -282,100 +289,257 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			return Json(new { success = true, message = "Ledger account inserted successfully." });
 		}
 
-		[HttpPost("Insert")]
-		public IActionResult Insert([FromBody] Tbl201ChartOfAccount chartAccount)
+		//[HttpPost("Insert")]
+		//public IActionResult Insert([FromBody] Tbl201ChartOfAccount chartAccount)
+		//{
+		//	if (chartAccount == null)
+		//	{
+		//		return BadRequest("Invalid data.");
+		//	}
+
+		//	//var LedgerAccountEntries = _context.Tbl201ChartOfAccounts.Add(chartAccount);
+
+		//	//_context.SaveChanges();
+
+		//	var LedgerAccuntEntry = new Tbl201ChartOfAccount
+		//	{
+		//		AccountId = chartAccount.AccountId,
+		//		ReferenceNo = chartAccount.ReferenceNo,
+		//		AccountHead = chartAccount.AccountHead,
+		//		AccountGroupId = chartAccount.AccountGroupId,
+		//		OpeningBalance = chartAccount.OpeningBalance,
+		//		OpeningBalanceDrCr = chartAccount.OpeningBalanceDrCr,
+		//		IsDefaultForCash = chartAccount.IsDefaultForCash,
+		//		VoucherAbbr = chartAccount.VoucherAbbr,
+		//		IsMaintainBillByBill = chartAccount.IsMaintainBillByBill,
+		//		NoOfDaysCreditPeriod = chartAccount.NoOfDaysCreditPeriod,
+		//		IsEmployeeAllocated = chartAccount.IsEmployeeAllocated,
+		//		IsPropertyAllocated = chartAccount.IsPropertyAllocated,
+		//		IsEmployeePaymentAc = chartAccount.IsEmployeePaymentAc,
+		//		IsLedgerObselete = chartAccount.IsLedgerObselete,
+		//		//ContactDetails
+		//		AccountBranch = chartAccount.AccountBranch,
+		//		AccountSubGroup = chartAccount.AccountSubGroup,
+		//		SalesPersonCode = chartAccount.SalesPersonCode,
+		//		AccountsContactName = chartAccount.AccountsContactName,
+		//		AccountsContactTitle = chartAccount.AccountsContactTitle,
+		//		AccountsContactMobile = chartAccount.AccountsContactMobile,
+		//		EmailAddress = chartAccount.EmailAddress,
+		//		LedgerRemarks = chartAccount.LedgerRemarks,
+		//		//BankDetails
+		//		BankAccountName = chartAccount.BankAccountName,
+		//		BankName = chartAccount.BankName,
+		//		BankBranch = chartAccount.BankBranch,
+		//		BankAccountNo = chartAccount.BankAccountNo,
+		//		BankIban = chartAccount.BankIban,
+		//		BankSwiftCode = chartAccount.BankSwiftCode,
+		//		//ClientDetails
+		//		BillingName = chartAccount.BillingName,
+		//		VatregistrationNo = chartAccount.VatregistrationNo,
+		//		ClientGroupVatnumber = chartAccount.ClientGroupVatnumber,
+		//		ClientOtherIdtype = chartAccount.ClientOtherIdtype,
+		//		ClientOtherId = chartAccount.ClientOtherId,
+		//		ClientAddressStreet = chartAccount.ClientAddressStreet,
+		//		ClientAdditionalStreet = chartAccount.ClientAdditionalStreet,
+		//		ClientBuildingNumber = chartAccount.ClientBuildingNumber,
+		//		ClientCity = chartAccount.ClientCity,
+		//		ClientProvince = chartAccount.ClientProvince,
+		//		ClientPostalCode = chartAccount.ClientPostalCode,
+		//		ClientNeighborhood = chartAccount.ClientNeighborhood,
+		//		//ClientCountryCode = chartAccount.ClientCountryCode,
+		//		//Supplier Details
+		//		SupplierName = chartAccount.SupplierName,
+		//		SupplierVatno = chartAccount.SupplierVatno,
+		//		SupplierGroupVatnumber = chartAccount.SupplierGroupVatnumber,
+		//		//SupplierOtherIdtype = chartAccount.SupplierOtherIdtype,
+		//		//SupplierOtherId = chartAccount.SupplierOtherId,
+		//		SupplierAddressStreet = chartAccount.SupplierAddressStreet,
+		//		SupplierAdditionalStreet = chartAccount.SupplierAdditionalStreet,
+		//		SupplierBuildingNumber = chartAccount.SupplierBuildingNumber,
+		//		SupplierCity = chartAccount.SupplierCity,
+		//		SupplierProvince = chartAccount.SupplierProvince,
+		//		SupplierPostalCode = chartAccount.SupplierPostalCode,
+		//		SupplierNeighborhood = chartAccount.SupplierNeighborhood,
+		//		//SupplierCountryCode = chartAccount.SupplierCountryCode,
+		//		//Billing Details
+		//		//BillingName = chartAccount.BillingNameAr
+		//		BillingAddress = chartAccount.BillingAddress,
+		//		ClientTin = chartAccount.ClientTin,
+		//		BillingContactPerson = chartAccount.BillingContactPerson,
+		//		BillingPhoneNo = chartAccount.BillingPhoneNo,
+		//		BillingFaxNo = chartAccount.BillingFaxNo,
+		//		ClientVendorNo = chartAccount.ClientVendorNo,
+		//		BillingContactPersonTitle = chartAccount.BillingContactPersonTitle,
+		//		BillingBankAccount = chartAccount.BillingBankAccount,
+		//		//Obselete details
+		//		SupplierAddress = chartAccount.SupplierAddress
+		//	};
+
+		//	var LedgerAccountEntries = _context.Tbl201ChartOfAccounts.Add(LedgerAccuntEntry);
+
+		//	_context.SaveChanges();
+
+		//	// You can now work with the 'person' object, which is deserialized from the JSON.
+		//	// For example, log or return the data:
+		//	return Json(new { success = true, message = "Ledger account inserted successfully" });
+		//}
+
+		[HttpPost("InsertOrUpdate")]
+		public IActionResult InsertOrUpdate([FromBody] Tbl201ChartOfAccount chartAccount, string AccountGroupID)
 		{
 			if (chartAccount == null)
 			{
 				return BadRequest("Invalid data.");
 			}
 
-			//var LedgerAccountEntries = _context.Tbl201ChartOfAccounts.Add(chartAccount);
+			// Check if the AccountId exists in the database
+			var existingAccount = _context.Tbl201ChartOfAccounts
+										  .FirstOrDefault(a => a.AccountId == chartAccount.AccountId);
 
-			//_context.SaveChanges();
 
-			var LedgerAccuntEntry = new Tbl201ChartOfAccount
+
+			if (existingAccount != null)
 			{
-				AccountId = chartAccount.AccountId,
-				ReferenceNo = chartAccount.ReferenceNo,
-				AccountHead = chartAccount.AccountHead,
-				AccountGroupId = chartAccount.AccountGroupId,
-				OpeningBalance = chartAccount.OpeningBalance,
-				OpeningBalanceDrCr = chartAccount.OpeningBalanceDrCr,
-				IsDefaultForCash = chartAccount.IsDefaultForCash,
-				VoucherAbbr = chartAccount.VoucherAbbr,
-				IsMaintainBillByBill = chartAccount.IsMaintainBillByBill,
-				NoOfDaysCreditPeriod = chartAccount.NoOfDaysCreditPeriod,
-				IsEmployeeAllocated = chartAccount.IsEmployeeAllocated,
-				IsPropertyAllocated = chartAccount.IsPropertyAllocated,
-				IsEmployeePaymentAc = chartAccount.IsEmployeePaymentAc,
-				IsLedgerObselete = chartAccount.IsLedgerObselete,
-				//ContactDetails
-				AccountBranch = chartAccount.AccountBranch,
-				AccountSubGroup = chartAccount.AccountSubGroup,
-				SalesPersonCode = chartAccount.SalesPersonCode,
-				AccountsContactName = chartAccount.AccountsContactName,
-				AccountsContactTitle = chartAccount.AccountsContactTitle,
-				AccountsContactMobile = chartAccount.AccountsContactMobile,
-				EmailAddress = chartAccount.EmailAddress,
-				LedgerRemarks = chartAccount.LedgerRemarks,
-				//BankDetails
-				BankAccountName = chartAccount.BankAccountName,
-				BankName = chartAccount.BankName,
-				BankBranch = chartAccount.BankBranch,
-				BankAccountNo = chartAccount.BankAccountNo,
-				BankIban = chartAccount.BankIban,
-				BankSwiftCode = chartAccount.BankSwiftCode,
-				//ClientDetails
-				BillingName = chartAccount.BillingName,
-				VatregistrationNo = chartAccount.VatregistrationNo,
-				ClientGroupVatnumber = chartAccount.ClientGroupVatnumber,
-				ClientOtherIdtype = chartAccount.ClientOtherIdtype,
-				ClientOtherId = chartAccount.ClientOtherId,
-				ClientAddressStreet = chartAccount.ClientAddressStreet,
-				ClientAdditionalStreet = chartAccount.ClientAdditionalStreet,
-				ClientBuildingNumber = chartAccount.ClientBuildingNumber,
-				ClientCity = chartAccount.ClientCity,
-				ClientProvince = chartAccount.ClientProvince,
-				ClientPostalCode = chartAccount.ClientPostalCode,
-				ClientNeighborhood = chartAccount.ClientNeighborhood,
-				//ClientCountryCode = chartAccount.ClientCountryCode,
-				//Supplier Details
-				SupplierName = chartAccount.SupplierName,
-				SupplierVatno = chartAccount.SupplierVatno,
-				SupplierGroupVatnumber = chartAccount.SupplierGroupVatnumber,
-				//SupplierOtherIdtype = chartAccount.SupplierOtherIdtype,
-				//SupplierOtherId = chartAccount.SupplierOtherId,
-				SupplierAddressStreet = chartAccount.SupplierAddressStreet,
-				SupplierAdditionalStreet = chartAccount.SupplierAdditionalStreet,
-				SupplierBuildingNumber = chartAccount.SupplierBuildingNumber,
-				SupplierCity = chartAccount.SupplierCity,
-				SupplierProvince = chartAccount.SupplierProvince,
-				SupplierPostalCode = chartAccount.SupplierPostalCode,
-				SupplierNeighborhood = chartAccount.SupplierNeighborhood,
-				//SupplierCountryCode = chartAccount.SupplierCountryCode,
-				//Billing Details
-				//BillingName = chartAccount.BillingNameAr
-				BillingAddress = chartAccount.BillingAddress,
-				ClientTin = chartAccount.ClientTin,
-				BillingContactPerson = chartAccount.BillingContactPerson,
-				BillingPhoneNo = chartAccount.BillingPhoneNo,
-				BillingFaxNo = chartAccount.BillingFaxNo,
-				ClientVendorNo = chartAccount.ClientVendorNo,
-				BillingContactPersonTitle = chartAccount.BillingContactPersonTitle,
-				BillingBankAccount = chartAccount.BillingBankAccount,
-				//Obselete details
-				SupplierAddress = chartAccount.SupplierAddress
-			};
+				// Update the existing record
+				existingAccount.ReferenceNo = chartAccount.ReferenceNo;
+				existingAccount.AccountHead = chartAccount.AccountHead;
 
-			var LedgerAccountEntries = _context.Tbl201ChartOfAccounts.Add(LedgerAccuntEntry);
+				existingAccount.AccountGroupId = AccountGroupID;
+				existingAccount.OpeningBalance = chartAccount.OpeningBalance;
+				existingAccount.OpeningBalanceDrCr = chartAccount.OpeningBalanceDrCr;
+				existingAccount.IsDefaultForCash = chartAccount.IsDefaultForCash;
+				existingAccount.VoucherAbbr = chartAccount.VoucherAbbr;
+				existingAccount.IsMaintainBillByBill = chartAccount.IsMaintainBillByBill;
+				existingAccount.NoOfDaysCreditPeriod = chartAccount.NoOfDaysCreditPeriod;
+				existingAccount.IsEmployeeAllocated = chartAccount.IsEmployeeAllocated;
+				existingAccount.IsPropertyAllocated = chartAccount.IsPropertyAllocated;
+				existingAccount.IsEmployeePaymentAc = chartAccount.IsEmployeePaymentAc;
+				existingAccount.IsLedgerObselete = chartAccount.IsLedgerObselete;
+				existingAccount.AccountBranch = chartAccount.AccountBranch;
+				existingAccount.AccountSubGroup = chartAccount.AccountSubGroup;
+				existingAccount.SalesPersonCode = chartAccount.SalesPersonCode;
+				existingAccount.AccountsContactName = chartAccount.AccountsContactName;
+				existingAccount.AccountsContactTitle = chartAccount.AccountsContactTitle;
+				existingAccount.AccountsContactMobile = chartAccount.AccountsContactMobile;
+				existingAccount.EmailAddress = chartAccount.EmailAddress;
+				existingAccount.LedgerRemarks = chartAccount.LedgerRemarks;
+				existingAccount.BankAccountName = chartAccount.BankAccountName;
+				existingAccount.AccountHeadArabic = chartAccount.AccountHeadArabic;
+				existingAccount.BankName = chartAccount.BankName;
+				existingAccount.BankBranch = chartAccount.BankBranch;
+				existingAccount.BankAccountNo = chartAccount.BankAccountNo;
+				existingAccount.BankIban = chartAccount.BankIban;
+				existingAccount.BankSwiftCode = chartAccount.BankSwiftCode;
+				existingAccount.BillingName = chartAccount.BillingName;
+				existingAccount.VatregistrationNo = chartAccount.VatregistrationNo;
+				existingAccount.ClientGroupVatnumber = chartAccount.ClientGroupVatnumber;
+				existingAccount.ClientOtherIdtype = chartAccount.ClientOtherIdtype;
+				existingAccount.ClientOtherId = chartAccount.ClientOtherId;
+				existingAccount.ClientAddressStreet = chartAccount.ClientAddressStreet;
+				existingAccount.ClientAdditionalStreet = chartAccount.ClientAdditionalStreet;
+				existingAccount.ClientBuildingNumber = chartAccount.ClientBuildingNumber;
+				existingAccount.ClientCity = chartAccount.ClientCity;
+				existingAccount.ClientProvince = chartAccount.ClientProvince;
+				existingAccount.ClientPostalCode = chartAccount.ClientPostalCode;
+				existingAccount.ClientNeighborhood = chartAccount.ClientNeighborhood;
+				existingAccount.SupplierName = chartAccount.SupplierName;
+				existingAccount.SupplierVatno = chartAccount.SupplierVatno;
+				existingAccount.SupplierGroupVatnumber = chartAccount.SupplierGroupVatnumber;
+				existingAccount.SupplierAddressStreet = chartAccount.SupplierAddressStreet;
+				existingAccount.SupplierAdditionalStreet = chartAccount.SupplierAdditionalStreet;
+				existingAccount.SupplierBuildingNumber = chartAccount.SupplierBuildingNumber;
+				existingAccount.SupplierCity = chartAccount.SupplierCity;
+				existingAccount.SupplierProvince = chartAccount.SupplierProvince;
+				existingAccount.SupplierPostalCode = chartAccount.SupplierPostalCode;
+				existingAccount.SupplierNeighborhood = chartAccount.SupplierNeighborhood;
+				existingAccount.BillingAddress = chartAccount.BillingAddress;
+				existingAccount.ClientTin = chartAccount.ClientTin;
+				existingAccount.BillingContactPerson = chartAccount.BillingContactPerson;
+				existingAccount.BillingPhoneNo = chartAccount.BillingPhoneNo;
+				existingAccount.BillingFaxNo = chartAccount.BillingFaxNo;
+				existingAccount.ClientVendorNo = chartAccount.ClientVendorNo;
+				existingAccount.BillingContactPersonTitle = chartAccount.BillingContactPersonTitle;
+				existingAccount.BillingBankAccount = chartAccount.BillingBankAccount;
+				existingAccount.SupplierAddress = chartAccount.SupplierAddress;
 
-			_context.SaveChanges();
+				_context.Tbl201ChartOfAccounts.UpdateRange(existingAccount);
+				_context.SaveChanges();
+				return Json(new { success = true, message = "Ledger account updated successfully" });
+			}
+			else
+			{
+				// Insert a new record
+				var newAccount = new Tbl201ChartOfAccount
+				{
+					AccountId = chartAccount.AccountId,
+					ReferenceNo = chartAccount.ReferenceNo,
+					AccountHead = chartAccount.AccountHead,
+					AccountGroupId = chartAccount.AccountGroupId,
+					OpeningBalance = chartAccount.OpeningBalance,
+					OpeningBalanceDrCr = chartAccount.OpeningBalanceDrCr,
+					IsDefaultForCash = chartAccount.IsDefaultForCash,
+					VoucherAbbr = chartAccount.VoucherAbbr,
+					IsMaintainBillByBill = chartAccount.IsMaintainBillByBill,
+					NoOfDaysCreditPeriod = chartAccount.NoOfDaysCreditPeriod,
+					IsEmployeeAllocated = chartAccount.IsEmployeeAllocated,
+					IsPropertyAllocated = chartAccount.IsPropertyAllocated,
+					IsEmployeePaymentAc = chartAccount.IsEmployeePaymentAc,
+					IsLedgerObselete = chartAccount.IsLedgerObselete,
+					AccountBranch = chartAccount.AccountBranch,
+					AccountSubGroup = chartAccount.AccountSubGroup,
+					SalesPersonCode = chartAccount.SalesPersonCode,
+					AccountsContactName = chartAccount.AccountsContactName,
+					AccountsContactTitle = chartAccount.AccountsContactTitle,
+					AccountsContactMobile = chartAccount.AccountsContactMobile,
+					EmailAddress = chartAccount.EmailAddress,
+					LedgerRemarks = chartAccount.LedgerRemarks,
+					BankAccountName = chartAccount.BankAccountName,
+					AccountHeadArabic = chartAccount.AccountHeadArabic,
+					BankName = chartAccount.BankName,
+					BankBranch = chartAccount.BankBranch,
+					BankAccountNo = chartAccount.BankAccountNo,
+					BankIban = chartAccount.BankIban,
+					BankSwiftCode = chartAccount.BankSwiftCode,
+					BillingName = chartAccount.BillingName,
+					VatregistrationNo = chartAccount.VatregistrationNo,
+					ClientGroupVatnumber = chartAccount.ClientGroupVatnumber,
+					ClientOtherIdtype = chartAccount.ClientOtherIdtype,
+					ClientOtherId = chartAccount.ClientOtherId,
+					ClientAddressStreet = chartAccount.ClientAddressStreet,
+					ClientAdditionalStreet = chartAccount.ClientAdditionalStreet,
+					ClientBuildingNumber = chartAccount.ClientBuildingNumber,
+					ClientCity = chartAccount.ClientCity,
+					ClientProvince = chartAccount.ClientProvince,
+					ClientPostalCode = chartAccount.ClientPostalCode,
+					ClientNeighborhood = chartAccount.ClientNeighborhood,
+					SupplierName = chartAccount.SupplierName,
+					SupplierVatno = chartAccount.SupplierVatno,
+					SupplierGroupVatnumber = chartAccount.SupplierGroupVatnumber,
+					SupplierAddressStreet = chartAccount.SupplierAddressStreet,
+					SupplierAdditionalStreet = chartAccount.SupplierAdditionalStreet,
+					SupplierBuildingNumber = chartAccount.SupplierBuildingNumber,
+					SupplierCity = chartAccount.SupplierCity,
+					SupplierProvince = chartAccount.SupplierProvince,
+					SupplierPostalCode = chartAccount.SupplierPostalCode,
+					SupplierNeighborhood = chartAccount.SupplierNeighborhood,
+					BillingAddress = chartAccount.BillingAddress,
+					ClientTin = chartAccount.ClientTin,
+					BillingContactPerson = chartAccount.BillingContactPerson,
+					BillingPhoneNo = chartAccount.BillingPhoneNo,
+					BillingFaxNo = chartAccount.BillingFaxNo,
+					ClientVendorNo = chartAccount.ClientVendorNo,
+					BillingContactPersonTitle = chartAccount.BillingContactPersonTitle,
+					BillingBankAccount = chartAccount.BillingBankAccount,
+					SupplierAddress = chartAccount.SupplierAddress
+				};
 
-			// You can now work with the 'person' object, which is deserialized from the JSON.
-			// For example, log or return the data:
-			return Json(new { success = true, message = "Ledger account inserted successfully" });
+				_context.Tbl201ChartOfAccounts.Add(newAccount);
+				_context.SaveChanges();
+				return Json(new { success = true, message = "Ledger account inserted successfully" });
+			}
 		}
+
+
 
 		#endregion
 

@@ -70,15 +70,15 @@
     }
 
     /*     .dx-editor-outlined .dx-label span {
-                       font-weight:bold !important;
-                    } */
+                           font-weight:bold !important;
+                        } */
 
     .custom-textbox input {
         background-color: aliceblue;
         font-weight: bold !important;
-        color: white !important; /* Use !important to override DevExtreme styles */
+        color: black !important; /* Use !important to override DevExtreme styles */
         /*   border: 3px solid #282222;
-                      border-radius: 8px !important; */
+                          border-radius: 8px !important; */
     }
 
     .custom-textbox1 input {
@@ -100,7 +100,7 @@
         @(Html.DevExtreme().TextBox()
             .ID("txtAccountId")
             .Label("Account ID")
-                .Disabled(true)
+            .Disabled(true)
             .LabelMode(EditorLabelMode.Outside)
             .InputAttr("aria-label", "Text")
             .ElementAttr(new { @class = "custom-textbox" })
@@ -127,37 +127,37 @@
             .ValidationRules(value => value.AddRequired().Message("Account Head Name cannot be empty"))
             .OnFocusOut("txtAccountHeadFocusOut")
             )
-                <!-- Container for txtAccountHeadAr and button -->
-    <div style="display: flex; align-items: center; width: 100%;">
+        <!-- Container for txtAccountHeadAr and button -->
+        <div style="display: flex; align-items: center; width: 100%;">
 
 
             @(Html.DevExtreme().TextBox()
-                        .ID("txtAccountHeadAr")
-                           .Label("Account Head in Arabic")
+                .ID("txtAccountHeadAr")
+                .Label("Account Head in Arabic")
 
-                    .LabelMode(EditorLabelMode.Outside)
-                    .InputAttr("aria-label", "Text")
+                .LabelMode(EditorLabelMode.Outside)
+                .InputAttr("aria-label", "Text")
 
-                        .Width("100%")
-                    .TabIndex(2)
-                         //.ValidationRules(value => value.AddRequired().Message("Account Head Name cannot be empty"))
-                         .OnFocusOut("txtAccountHeadFocusOut")
-                    )
-             <span class="input-group-prepend" style="margin-top: 22px;">
+                .Width("100%")
+                .TabIndex(2)
+                //.ValidationRules(value => value.AddRequired().Message("Account Head Name cannot be empty"))
+                .OnFocusOut("txtAccountHeadFocusOut")
+                )
+            <span class="input-group-prepend" style="margin-top: 22px;">
 
                 @(
-                                               Html.DevExtreme().Button()
-                                               .ID("convertToArabic1")
-                                               .Width(39)
-                                               .Height(33)
-                                                   .Icon("fas fa-language") // Ensure Font Awesome class is correct
-                                               .ElementAttr(new { @class = "input-button" })
-                                                       .OnClick("function() { convertToArabic(); }")
-                                               )
-                                </span>
+                    Html.DevExtreme().Button()
+                    .ID("convertToArabic1")
+                    .Width(39)
+                    .Height(33)
+                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                    .ElementAttr(new { @class = "input-button" })
+                    .OnClick("function() { convertToArabic(); }")
+                    )
+            </span>
 
 
-    </div>
+        </div>
 
     </div>
     <div class="col-md-12">
@@ -1151,23 +1151,23 @@
                         </td>
 
                         <td colspan="3">
-                             <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                                .ID("dwnarrowsup")
-                                                .Width("auto")
-                                                .Icon("fas fa-chevron-down")
-                                                .OnClick("onDownArrowSupClick")
+                                    .ID("dwnarrowsup")
+                                    .Width("auto")
+                                    .Icon("fas fa-chevron-down")
+                                    .OnClick("onDownArrowSupClick")
 
-                                                )
+                                    )
                                 @(Html.DevExtreme().TextBox()
-                                        .ID("txtSupBilling")
-                                        .Width("100%")
-                                        .InputAttr("aria-label", "txtSupBilling")
-                                        .ValidationRules(rules => rules
-                                        .AddRequired()  // This adds the required validation rule
-                                        )
-                                        )
-                                </div>
+                                    .ID("txtSupBilling")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupBilling")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
+                            </div>
 
                         </td>
                         <td>
@@ -1490,24 +1490,24 @@
                                 .InputAttr("aria-label", "txtClientBillingName")
                                 )
                         </td>
-                         <td colspan="3">
-                             <div style="display: flex; align-items: center;">
+                        <td colspan="3">
+                            <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
-                                                    .ID("dwnarrowbill")
-                                                    .Width("auto")
-                                                    .Icon("fas fa-chevron-down")
-                                                        .OnClick("onDownArrowBillClick")
+                                    .ID("dwnarrowbill")
+                                    .Width("auto")
+                                    .Icon("fas fa-chevron-down")
+                                    .OnClick("onDownArrowBillClick")
 
-                                                    )
+                                    )
                                 @(Html.DevExtreme().TextBox()
-                                            .ID("txtSupBilling")
-                                            .Width("100%")
-                                            .InputAttr("aria-label", "txtSupBilling")
-                                            .ValidationRules(rules => rules
-                                            .AddRequired()  // This adds the required validation rule
-                                            )
-                                            )
-                                </div>
+                                    .ID("txtSupBilling")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupBilling")
+                                    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    )
+                                    )
+                            </div>
 
                         </td>
                         <td>
@@ -1798,295 +1798,314 @@
 @using (Html.DevExtreme().NamedTemplate("AccountGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("ledgeraccount-datagrid")
-                    .DataSource(d => d.WebApi()
-                        .Controller("AccountLedgerMaster")
-                    .LoadAction("getAccountingLedger")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("AccountGroupId")
+                        .ID("ledgeraccount-datagrid")
+                        .DataSource(d => d.WebApi()
+                            .Controller("AccountLedgerMaster")
+                        .LoadAction("getAccountingLedger")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("AccountGroupId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged")
+                        .OnInitialized("dataGridInitialized")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("AccountGroup");
+                        })
                     )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridSelectionChanged")
-                    .OnInitialized("dataGridInitialized")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(false))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("AccountGroup");
-                    })
-                )
 }
 
 @using (Html.DevExtreme().NamedTemplate("DrCrContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("DrCraccount-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                        .LoadAction("getCreditDebit")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("OpeningBalanceDrCr")
+                        .ID("DrCraccount-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AccountLedgerMaster")
+                            .LoadAction("getCreditDebit")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("OpeningBalanceDrCr")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .ShowColumnHeaders(false)
+                         .FilterRow(f => f.Visible(false))
+                         .SearchPanel(sp => sp.HighlightSearchText(false))
+                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                        .OnSelectionChanged("DrCrdataGridSelectionChanged")
+                        .OnInitialized("DrCrdataGridInitialized")
+                             .HeaderFilter(p => p.Visible(false))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(130)
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("OpeningBalanceDrCr");
+                        })
                     )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .ShowColumnHeaders(false)
-                     .FilterRow(f => f.Visible(false))
-                     .SearchPanel(sp => sp.HighlightSearchText(false))
-                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                    .OnSelectionChanged("DrCrdataGridSelectionChanged")
-                    .OnInitialized("DrCrdataGridInitialized")
-                         .HeaderFilter(p => p.Visible(false))
-        .ShowBorders(true)
-        .HoverStateEnabled(true)
-        .Paging(p => p.PageSize(15))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(130)
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("OpeningBalanceDrCr");
-                    })
-                )
 }
 
 @using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                    .ID("branch-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                    .LoadAction("getAccountBranch")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("BranchCode")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-
-                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("branchdataGridSelectionChanged")
-                    .OnInitialized("branchdataGridInitialized")
-                    @*.HeaderFilter(p => p.Visible(true))
-    .ShowBorders(true)
-    .HoverStateEnabled(true)
-    .Paging(p => p.PageSize(15))*@
-                    .FilterRow(f => f.Visible(false))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(200)
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("BranchName");
-                    })
-                    )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                    .ID("subgroup-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                    .LoadAction("getSubGroup")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("LedgerSubGroupCode")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("subgroupdataGridSelectionChanged")
-                        .OnInitialized("subgroupdataGridInitialized")
-             @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-             .FilterRow(f => f.Visible(false))
-                    //.FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(200)
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("SubGroupName");
-                    })
-                )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                    .ID("sales-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("AccountLedgerMaster")
-                    .LoadAction("getSalesPersonList")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("SalesPersonCode")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                         .FilterRow(f => f.Visible(false))
-                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("salesdataGridSelectionChanged")
-                        .OnInitialized("salesdataGridInitialized")
-                    @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                    // .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(200)
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("SalesPersonName");
-                    })
-                )
-}
-
-@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                        .ID("othertype-datagrid")
+                        .ID("branch-datagrid")
                         .DataSource(d => d.WebApi()
                         .Controller("AccountLedgerMaster")
-                            .LoadAction("getOtherIDTypes")
+                        .LoadAction("getAccountBranch")
                         .LoadMode(DataSourceLoadMode.Raw)
-                             .Key("BuyerOtherIDType")
+                            .Key("BranchCode")
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
+
                         @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("othertypedataGridSelectionChanged")
-                            .OnInitialized("othertypedataGridInitialized")
-                            @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                            .FilterRow(f => f.Visible(true))
+                        .OnSelectionChanged("branchdataGridSelectionChanged")
+                        .OnInitialized("branchdataGridInitialized")
+                        @*.HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(200)
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("BuyerIDTypeName");
+                            columns.Add().DataField("BranchName");
+                        })
+                        )
+}
+
+@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("subgroup-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AccountLedgerMaster")
+                        .LoadAction("getSubGroup")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("LedgerSubGroupCode")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("subgroupdataGridSelectionChanged")
+                            .OnInitialized("subgroupdataGridInitialized")
+                 @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                 .FilterRow(f => f.Visible(false))
+                        //.FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(200)
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SubGroupName");
                         })
                     )
 }
 
-@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                            .ID("billingpayment-datagrid")
+                        .ID("sales-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AccountLedgerMaster")
+                        .LoadAction("getSalesPersonList")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("SalesPersonCode")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                             .FilterRow(f => f.Visible(false))
+                        @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("salesdataGridSelectionChanged")
+                            .OnInitialized("salesdataGridInitialized")
+                        @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                        // .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(200)
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SalesPersonName");
+                        })
+                    )
+}
+
+@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("othertype-datagrid")
                             .DataSource(d => d.WebApi()
                             .Controller("AccountLedgerMaster")
-                                .LoadAction("getBillingPayments")
+                                .LoadAction("getOtherIDTypes")
                             .LoadMode(DataSourceLoadMode.Raw)
-                                 .Key("BillingAccountID")
+                                 .Key("BuyerOtherIDType")
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
                             @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                .OnSelectionChanged("billingdataGridSelectionChanged")
-                                .OnInitialized("billingdataGridInitialized")
+                                .OnSelectionChanged("othertypedataGridSelectionChanged")
+                                .OnInitialized("othertypedataGridInitialized")
+                                @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
                                 .FilterRow(f => f.Visible(true))
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Height(200)
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("BillingAccountHead");
+                                columns.Add().DataField("BuyerIDTypeName");
                             })
                         )
+}
+
+@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                .ID("billingpayment-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("AccountLedgerMaster")
+                                    .LoadAction("getBillingPayments")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                     .Key("BillingAccountID")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                    .OnSelectionChanged("billingdataGridSelectionChanged")
+                                    .OnInitialized("billingdataGridInitialized")
+                                    .FilterRow(f => f.Visible(true))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(200)
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("BillingAccountHead");
+                                })
+                            )
 }
 
 
 <script>
     //Tab events
+    let acgid;
 
+    $(document).ready(function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        var accountGroupId = urlParams.get('AccountGroupId');
+        var accountheadid = urlParams.get('AccountHeadID');
+        var refno = urlParams.get('ReferenceNo') || " ";
+        var accheadname = urlParams.get('AccountHeadName') || "";
+        var accgroup = urlParams.get('AccountGroup') || "";
+        var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
+        var accgroupid = urlParams.get('AccountGroupID') || "";
+        acgid = accgroupid;
+        var accheadar = urlParams.get('AccountHeadAr') || "";
 
- $(document).ready(function () {
-    var urlParams = new URLSearchParams(window.location.search);
-    var accountGroupId = urlParams.get('AccountGroupId');
-    var accountheadid = urlParams.get('AccountHeadID');
-    var refno = urlParams.get('ReferenceNo') || " ";
-    var accheadname = urlParams.get('AccountHeadName') || "";
-    var accgroup = urlParams.get('AccountGroup') || "";
-    var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
-   // alert(accountheadid)
-    // If AccountGroupId exists, set it in the DropDownBox and make it readonly
+        // alert(accountheadid)
+        // If AccountGroupId exists, set it in the DropDownBox and make it readonly
 
-    if (accountGroupId) {
-        var ddlAccountGroup = $('#ddlAccountGroup').dxDropDownBox('instance');
-        if (ddlAccountGroup) {
-            ddlAccountGroup.option('value', accountGroupId);
-            ddlAccountGroup.option('disabled', true); // Make it readonly
-        }
-    }
-    else if (accountheadid=="undefined" || accheadname=="undefined" || accgroup=="undefined")
-    {
-        accountheadid="";
-        accheadname="";
-        accgroup="";
-    }
-
-
-    // Set other fields
-    var txtAccountHead = $("#txtAccountHead").dxTextBox("instance");
-    if (txtAccountHead) txtAccountHead.option("value", accheadname);
-
-    var txtReferenceNo = $("#txtReferenceNo").dxTextBox("instance");
-    if (txtReferenceNo) txtReferenceNo.option("value", refno);
-
-    var txtAccountId = $("#txtAccountId").dxTextBox("instance");
-    if (txtAccountId) txtAccountId.option("value", accountheadid);
-
-     dataGridSelectionChanged({ selectedRowKeys: [accgroup] });
-    // Show the content of the first tab by default
-    var selectedTabIndex = 0;
-    $("#tab-content-" + (selectedTabIndex + 1)).show();
-
-    if (!isedit) {
-        // Reset validator if it exists
-        var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
-        if (AccountHeadNameValidator) {
-            AccountHeadNameValidator.reset();
-        }
-
-        // AJAX call to fetch the next Account ID
-        $.ajax({
-            url: '/api/AccountLedgerMaster/GetMaxLedgerAccountID',
-            type: 'GET',
-            dataType: 'json',  // Expecting JSON response
-            success: function (response) {
-                // Check if response has the expected structure
-                if (response && response.nextAccountId) {
-                    if (txtAccountId) {
-                        txtAccountId.option('value', response.nextAccountId);
-                    }
-                } else {
-                    console.log("No account ID returned.");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching Account ID:", error);
+        if (accountGroupId) {
+            var ddlAccountGroup = $('#ddlAccountGroup').dxDropDownBox('instance');
+            if (ddlAccountGroup) {
+                ddlAccountGroup.option('value', accountGroupId);
+                ddlAccountGroup.option('disabled', true); // Make it readonly
             }
-        });
-    }
-});
+        }
+        else if (accountheadid == "undefined" || accheadname == "undefined" || accgroup == "undefined") {
+            accountheadid = "";
+            accheadname = "";
+            accgroup = "";
+
+        }
+
+
+
+        // Set other fields
+        var txtAccountHead = $("#txtAccountHead").dxTextBox("instance");
+        if (txtAccountHead) txtAccountHead.option("value", accheadname);
+
+        var txtReferenceNo = $("#txtReferenceNo").dxTextBox("instance");
+        if (txtReferenceNo) txtReferenceNo.option("value", refno);
+
+        var txtAccountId = $("#txtAccountId").dxTextBox("instance");
+        if (txtAccountId) txtAccountId.option("value", accountheadid);
+
+        var txtAccountHeadAr = $("#txtAccountHeadAr").dxTextBox("instance");
+        if (txtAccountHeadAr) txtAccountHeadAr.option("value", accheadar);
+
+
+
+        dataGridSelectionChanged({ selectedRowKeys: [accgroup] });
+        // Show the content of the first tab by default
+        var selectedTabIndex = 0;
+        $("#tab-content-" + (selectedTabIndex + 1)).show();
+
+        var button = $("#btnSave").dxButton("instance");
+        button.option("text", "Update");
+
+        if (!isedit) {
+
+            // Reset validator if it exists
+            var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
+            if (AccountHeadNameValidator) {
+                AccountHeadNameValidator.reset();
+            }
+
+            // AJAX call to fetch the next Account ID
+            $.ajax({
+                url: '/api/AccountLedgerMaster/GetMaxLedgerAccountID',
+                type: 'GET',
+                dataType: 'json',  // Expecting JSON response
+                success: function (response) {
+                    // Check if response has the expected structure
+                    if (response && response.nextAccountId) {
+                        if (txtAccountId) {
+
+                            txtAccountId.option('value', response.nextAccountId);
+                        }
+                    } else {
+                        console.log("No account ID returned.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Account ID:", error);
+                }
+            });
+
+            var button = $("#btnSave").dxButton("instance");
+            button.option("text", "Save");
+
+        }
+    });
 
 
 
@@ -2221,57 +2240,121 @@
         }, 500);
     }
 
-    function onDownArrowClick() {
+    async function onDownArrowClick() {
         // Get the TextBox instances
         const clientBillingTextBox = $("#txtClientBilling").dxTextBox("instance");
         const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
+        const clientBillingTextBoxAr = $("#txtClientBillingAr").dxTextBox("instance");
 
-        // Get the value from txtClientBilling
+        // Ensure the text box instances are defined
+        if (!clientBillingTextBox || !accountHeadTextBox || !clientBillingTextBoxAr) {
+            alert("One or more TextBox instances could not be initialized.");
+            return;
+        }
+
+        // Get the value from txtAccountHead
         const accountHeadValue = accountHeadTextBox.option("value");
 
         // Check if the value is not empty
         if (accountHeadValue && accountHeadValue.trim() !== "") {
-            // Set the value of txtAccountHead to txtClientBilling value
-            clientBillingTextBox.option("value", accountHeadValue);
+            try {
+                // Get Arabic translation
+                const arabicTranslation = await translateToArabic(accountHeadValue);
+
+                // Set the value of txtClientBilling and txtClientBillingAr
+                clientBillingTextBox.option("value", accountHeadValue);
+                clientBillingTextBoxAr.option("value", arabicTranslation);
+            } catch (error) {
+                console.error("Error during translation:", error);
+                alert("Failed to translate Account Head Name to Arabic.");
+            }
         } else {
-            // If txtClientBilling is empty or null, show an alert
+            // If txtAccountHead is empty or null, show an alert
             alert("Account Head Name cannot be empty.");
         }
     }
-       function onDownArrowSupClick() {
-        // Get the TextBox instances
-        const supplierBillingTextBox = $("#txtSupBilling").dxTextBox("instance");
-        const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
+    async function onDownArrowSupClick() {
+        try {
+            // Get the TextBox instances
+            const supplierBillingTextBox = $("#txtSupBilling").dxTextBox("instance");
+            const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
+            const supplierBillingTextBoxAr = $("#txtSupBillingAr").dxTextBox("instance");
 
-        // Get the value from txtClientBilling
-        const accountHeadValue = accountHeadTextBox.option("value");
+            // Ensure the text box instances are defined
+            if (!supplierBillingTextBox || !accountHeadTextBox || !supplierBillingTextBoxAr) {
+                alert("One or more TextBox instances could not be initialized.");
+                return;
+            }
 
-        // Check if the value is not empty
-        if (accountHeadValue && accountHeadValue.trim() !== "") {
-            // Set the value of txtAccountHead to txtClientBilling value
-            supplierBillingTextBox.option("value", accountHeadValue);
-        } else {
-            // If txtClientBilling is empty or null, show an alert
-            alert("Account Head Name cannot be empty.");
+            // Get the value from txtAccountHead
+            const accountHeadValue = accountHeadTextBox.option("value")?.trim();
+
+            // Check if the value is not empty
+            if (accountHeadValue) {
+                // Translate the value to Arabic
+                let arabicTranslation = "";
+                try {
+                    arabicTranslation = await translateToArabic(accountHeadValue);
+                } catch (translationError) {
+                    console.error("Error during translation:", translationError);
+                    alert("Failed to translate Account Head Name to Arabic. Please try again.");
+                    return;
+                }
+
+                // Set the values in the respective text boxes
+                supplierBillingTextBox.option("value", accountHeadValue);
+                supplierBillingTextBoxAr.option("value", arabicTranslation);
+            } else {
+                // Show an alert if the Account Head Name is empty
+                alert("Account Head Name cannot be empty.");
+            }
+        } catch (error) {
+            console.error("An unexpected error occurred:", error);
+            alert("An error occurred while processing the request. Please try again.");
         }
     }
-      function onDownArrowBillClick() {
-        // Get the TextBox instances
-        const ClientBillingNameTextBox = $("#txtClientBillingName").dxTextBox("instance");
-        const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
 
-        // Get the value from txtClientBilling
-        const accountHeadValue = accountHeadTextBox.option("value");
+    async function onDownArrowBillClick() {
+        try {
+            // Get the TextBox instances
+            const clientBillingNameTextBox = $("#txtClientBillingName").dxTextBox("instance");
+            const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
+            const clientBillingNameTextBoxAr = $("#txtClientBillingNameAr").dxTextBox("instance");
 
-        // Check if the value is not empty
-        if (accountHeadValue && accountHeadValue.trim() !== "") {
-            // Set the value of txtAccountHead to txtClientBilling value
-            ClientBillingNameTextBox.option("value", accountHeadValue);
-        } else {
-            // If txtClientBilling is empty or null, show an alert
-            alert("Account Head Name cannot be empty.");
+            // Ensure the text box instances are defined
+            if (!clientBillingNameTextBox || !accountHeadTextBox || !clientBillingNameTextBoxAr) {
+                alert("One or more TextBox instances could not be initialized.");
+                return;
+            }
+
+            // Get the value from txtAccountHead
+            const accountHeadValue = accountHeadTextBox.option("value")?.trim();
+
+            // Check if the value is not empty
+            if (accountHeadValue) {
+                // Translate the value to Arabic
+                let arabicTranslation = "";
+                try {
+                    arabicTranslation = await translateToArabic(accountHeadValue);
+                } catch (translationError) {
+                    console.error("Error during translation:", translationError);
+                    alert("Failed to translate Account Head Name to Arabic. Please try again.");
+                    return;
+                }
+
+                // Set the values in the respective text boxes
+                clientBillingNameTextBox.option("value", accountHeadValue);
+                clientBillingNameTextBoxAr.option("value", arabicTranslation);
+            } else {
+                // Show an alert if the Account Head Name is empty
+                alert("Account Head Name cannot be empty.");
+            }
+        } catch (error) {
+            console.error("An unexpected error occurred:", error);
+            alert("An error occurred while processing the request. Please try again.");
         }
     }
+
 
 
     function refreshaccountledgerSelectBox() {
@@ -2346,8 +2429,9 @@
             });
         }
         else {
-            alert("Account Head Cannot be empty");
-            return false;
+            //  alert("Account Head Cannot be empty");
+            DevExpress.ui.notify("Account Head Cannot be empty", "error", 2000);
+
         }
 
 
@@ -2739,6 +2823,7 @@
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
         var sRefNo = $('#txtReferenceNo').dxTextBox("instance").option("value");
         var sAcccountHead = $('#txtAccountHead').dxTextBox("instance").option("value");
+        var sAcccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance").option("value");
         var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox('option', 'value');
         //Setting Tab Values
         var sOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
@@ -2821,172 +2906,112 @@
         // }
 
 
-    var accountHeadValidator = $("#txtAccountHead").dxValidator("instance");
-    var AccountGroupValidator = $("#ddlAccountGroup").dxValidator("instance");
+        var accountHeadValidator = $("#txtAccountHead").dxValidator("instance");
+        var AccountGroupValidator = $("#ddlAccountGroup").dxValidator("instance");
 
-    var accountHeadValidation = accountHeadValidator.validate();
-    var AccountGroupValidation = AccountGroupValidator.validate();
+        var accountHeadValidation = accountHeadValidator.validate();
+        var AccountGroupValidation = AccountGroupValidator.validate();
 
-    if(accountHeadValidation.isValid && AccountGroupValidation.isValid)
-    {
+        if (accountHeadValidation.isValid && AccountGroupValidation.isValid) {
 
-        const data = {
-            AccountID: sAccountID,
-            ReferenceNo: sRefNo,
-            AccountHead: sAcccountHead,
-            AccountGroupId: sAccountGroup,
-            OpeningBalance: sOpeningBalance,
-            OpeningBalanceDrCr: sCreditDebit,
-            IsDefaultForCash: isDefaultEntryChecked,
-            VoucherAbbr: sVoucherAbbr,
-            IsMaintainBillByBill: isMaintainBillEntryChecked,
-            NoDays: sNodays,
-            IsEmployeeAllocated: chkEmployeeDBEntryChecked,
-            IsPropertyAllocated: chkPropertyDBEntryChecked,
-            IsEmployeePaymentAc: chkLoanAccountEntryChecked,
-            LedgerActiveChecked: schLedgerActiveChecked,
-            AccountBranch: cdBranch,
-            AccountSubGroup: cdSubGroup,
-            SalesPersonCode: cdSales,
-            AccountsContactName: cdContact,
-            AccountsContactTitle: cdTitle,
-            AccountsContactMobile: cdMobile,
-            EmailAddress: cdEmail,
-            LedgerRemarks: cdRemarks,
-            BankAccountName: bdAccountName,
-            BankName: bdBankName,
-            BankBranch: bdBankBranch,
-            BankAccountNo: bdBankAccountNo,
-            BankIBAN: bdIBAN,
-            BankSwiftCode: bdSwiftCode,
-            BillingName: cntBillingName,
-            VATRegistrationNo: cntVATNo,
-            ClientGroupVATNumber: cntGroupVATNo,
-            ClientOtherIDType: cntOtherType,
-            ClientOtherID: cntOtherID,
-            ClientAddressStreet: cntAddress,
-            ClientAdditionalStreet: cntAdditionalAddress,
-            ClientBuildingNumber: cntBuildingNo,
-            ClientCity: cntCity,
-            ClientAdditionalNumber: cntAdditionalNo,
-            ClientProvince: cntState,
-            ClientPostalCode: cntPostalCode,
-            ClientNeighborhood: cntDistrict,
-            SupplierName: supBillingName,
-            SupplierVATNo: supVATNo,
-            SupplierGroupVATNumber: supGroupVATNo,
-            SupplierAddressStreet: supAddress,
-            SupplierAdditionalStreet: supAdditionalAddress,
-            SupplierBuildingNumber: supBuildingNo,
-            SupplierCity: supCity,
-            SupplierAdditionalNumber: supAdditionalNo,
-            SupplierProvince: supState,
-            SupplierPostalCode: supPostalCode,
-            SupplierNeighborhood: supDistrict,
-            BillingName: bClientBillingName,
-            BillingAddress: bBillingAddress,
-            VATRegistrationNo: bVATNO,
-            ClientTIN: bTIN,
-            BillingContactPerson: bContactPerson,
-            BillingPhoneNo: bContactNo,
-            BillingFaxNo: bFaxNo,
-            ClientVendorNo: bVendorNo,
-            BillingContactPersonTitle: bBillingTitle,
-            BillingBankAccount: bBillingPayment,
-            SupplierAddress: obAddress,
-            SupplierVATNo: obVATNo
-        };
+            const data = {
+                AccountID: sAccountID,
+                ReferenceNo: sRefNo,
+                AccountHead: sAcccountHead,
+                AccountGroupId: sAccountGroup,
+                OpeningBalance: sOpeningBalance,
+                OpeningBalanceDrCr: sCreditDebit,
+                IsDefaultForCash: isDefaultEntryChecked,
+                VoucherAbbr: sVoucherAbbr,
+                IsMaintainBillByBill: isMaintainBillEntryChecked,
+                NoDays: sNodays,
+                IsEmployeeAllocated: chkEmployeeDBEntryChecked,
+                IsPropertyAllocated: chkPropertyDBEntryChecked,
+                IsEmployeePaymentAc: chkLoanAccountEntryChecked,
+                LedgerActiveChecked: schLedgerActiveChecked,
+                AccountBranch: cdBranch,
+                AccountSubGroup: cdSubGroup,
+                SalesPersonCode: cdSales,
+                AccountsContactName: cdContact,
+                AccountsContactTitle: cdTitle,
+                AccountsContactMobile: cdMobile,
+                EmailAddress: cdEmail,
+                LedgerRemarks: cdRemarks,
+                BankAccountName: bdAccountName,
+                AccountHeadArabic: sAcccountHeadAr,
+                BankName: bdBankName,
+                BankBranch: bdBankBranch,
+                BankAccountNo: bdBankAccountNo,
+                BankIBAN: bdIBAN,
+                BankSwiftCode: bdSwiftCode,
+                BillingName: cntBillingName,
+                VATRegistrationNo: cntVATNo,
+                ClientGroupVATNumber: cntGroupVATNo,
+                ClientOtherIDType: cntOtherType,
+                ClientOtherID: cntOtherID,
+                ClientAddressStreet: cntAddress,
+                ClientAdditionalStreet: cntAdditionalAddress,
+                ClientBuildingNumber: cntBuildingNo,
+                ClientCity: cntCity,
+                ClientAdditionalNumber: cntAdditionalNo,
+                ClientProvince: cntState,
+                ClientPostalCode: cntPostalCode,
+                ClientNeighborhood: cntDistrict,
+                SupplierName: supBillingName,
+                SupplierVATNo: supVATNo,
+                SupplierGroupVATNumber: supGroupVATNo,
+                SupplierAddressStreet: supAddress,
+                SupplierAdditionalStreet: supAdditionalAddress,
+                SupplierBuildingNumber: supBuildingNo,
+                SupplierCity: supCity,
+                SupplierAdditionalNumber: supAdditionalNo,
+                SupplierProvince: supState,
+                SupplierPostalCode: supPostalCode,
+                SupplierNeighborhood: supDistrict,
+                BillingName: bClientBillingName,
+                BillingAddress: bBillingAddress,
+                VATRegistrationNo: bVATNO,
+                ClientTIN: bTIN,
+                BillingContactPerson: bContactPerson,
+                BillingPhoneNo: bContactNo,
+                BillingFaxNo: bFaxNo,
+                ClientVendorNo: bVendorNo,
+                BillingContactPersonTitle: bBillingTitle,
+                BillingBankAccount: bBillingPayment,
+                SupplierAddress: obAddress,
+                SupplierVATNo: obVATNo
+            };
 
-        const values = JSON.stringify(data);
+            const values = JSON.stringify(data);
 
 
-        $.ajax({
-            //url: '/api/ledgeraccount/InsertLedgerAccount',
-            url: '/api/AccountLedgerMaster/Insert',
-            type: 'POST',
-            contentType: 'application/json',  // Set the content type to JSON
-            data: values,  // Convert the object to JSON
-            success: function (response) {
-                if (response.success) {
-                    alert('AccountLedger values are saved successfully!');
-                    window.location.reload(); // This is for only particular page reload
-                    // window.location.href = '/account-ledger-list';   // Redirect to master page in the same website
+            $.ajax({
+                //url: '/api/ledgeraccount/InsertLedgerAccount',
+                url: `/api/AccountLedgerMaster/InsertOrUpdate?AccountGroupID=${encodeURIComponent(acgid)}`,
+                type: 'POST',
+                contentType: 'application/json',  // Set the content type to JSON
+                data: values,  // Convert the object to JSON
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        //     window.location.reload(); // This is for only particular page reload
+                        window.location.href = `/Finance/LedgerAccount`;
+
+                        // window.location.href = '/account-ledger-list';   // Redirect to master page in the same website
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle any error that occurred during the request
+                    console.log("Error: " + error);
                 }
-            },
-            error: function (xhr, status, error) {
-                // Handle any error that occurred during the request
-                console.log("Error: " + error);
-            }
-        });
-
-        // console.log(sAccountID + "-" +
-        //     sRefNo + "-" +
-        //     sAcccountHead + "-" +
-        //     sAccountGroup + "-" +
-        //     sOpeningBalance + "-" +
-        //     sCreditDebit + "-" +
-        //     isDefaultEntryChecked + "-" +
-        //     sVoucherAbbr + "-" +
-        //     isMaintainBillEntryChecked + "-" +
-        //     sNodays + "-" +
-        //     chkEmployeeDBEntryChecked + "-" +
-        //     chkPropertyDBEntryChecked + "-" +
-        //     chkLoanAccountEntryChecked + "-" +
-        //     schLedgerActiveChecked + "-" +
-        //     cdBranch + "-" +
-        //     cdSubGroup + "-" +
-        //     cdSales + "-" +
-        //     cdContact + "-" +
-        //     cdTitle + "-" +
-        //     cdMobile + "-" +
-        //     cdRemarks + "-" +
-        //     bdAccountName + "-" +
-        //     bdBankName + "-" +
-        //     bdBankBranch + "-" +
-        //     bdBankAccountNo + "-" +
-        //     bdIBAN + "-" +
-        //     bdSwiftCode + "-" +
-        //     cntBillingName + "-" +
-        //     cntVATNo + "-" +
-        //     cntGroupVATNo + "-" +
-        //     cntOtherType + "-" +
-        //     cntOtherID + "-" +
-        //     cntAddress + "-" +
-        //     cntAdditionalAddress + "-" +
-        //     cntBuildingNo + "-" +
-        //     cntCity + "-" +
-        //     cntAdditionalNo + "-" +
-        //     cntState + "-" +
-        //     cntPostalCode + "-" +
-        //     cntDistrict + "-" +
-        //     supBillingName + "-" +
-        //     supVATNo + "-" +
-        //     supGroupVATNo + "-" +
-        //     supAddress + "-" +
-        //     supAdditionalAddress + "-" +
-        //     supBuildingNo + "-" +
-        //     supCity + "-" +
-        //     supAdditionalNo + "-" +
-        //     supState + "-" +
-        //     supPostalCode + "-" +
-        //     supDistrict + "-" +
-        //     bClientBillingName + "-" +
-        //     bBillingAddress + "-" +
-        //     bVATNO + "-" +
-        //     bTIN + "-" +
-        //     bContactPerson + "-" +
-        //     bContactNo + "-" +
-        //     bFaxNo + "-" +
-        //     bVendorNo + "-" +
-        //     bBillingTitle + "-" +
-        //     bBillingPayment + "-" +
-        //     obAddress + "-" +
-        //     obVATNo
-        // )
+            });
 
 
+
+        }
     }
-    }
+
+
 
     //english text convert to arabic
 

@@ -1456,48 +1456,19 @@
         $("#attachOptionsPopup").dxPopup("instance").show();
     }
 
-    $("#btnAttach").on("click", function (e) {
-        e.preventDefault();
-        var aVoucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
-        $("#attachOptionsPopup").dxPopup({
-            visible: false,
-            width: 300,
-            height: 200,
-            showTitle: true,
-            title: "Attach Options",
-            dragEnabled: true,
-            closeOnOutsideClick: true,
-            contentTemplate: function (contentElement) {
-                // Store `aVoucherNo` in a closure for use inside event handlers
-                contentElement.append(
-                    `<div>
-                        <button id="singleFileBtn" class="dx-button">Attach Single File</button>
-                        <button id="multipleFileBtn" class="dx-button">Attach Multiple Files</button>
-                     </div>`
-                );
+       
 
-                // Single file button click
-                $("#singleFileBtn").dxButton({
-                    text: "Attach Single File",
-                    onClick: function () {
-                        attachSingleFile();
-                        $("#attachOptionsPopup").dxPopup("instance").hide();
-                    }
-                });
 
                 // Multiple files button click
-                $("#multipleFileBtn").dxButton({
-                    text: "Attach Multiple Files",
-                    onClick: function () {
-                        attachMultipleFiles(aVoucherNo); // Pass `aVoucherNo` here
-                        $("#attachOptionsPopup").dxPopup("instance").hide();
-                    }
-                });
-            }
-        });
+    $("#multipleFileBtn").dxButton({
+        text: "Attach Multiple Files",
+        onClick: function () {
+            attachMultipleFiles(aVoucherNo); // Pass `aVoucherNo` here
+            $("#attachOptionsPopup").dxPopup("instance").hide();
+        }
     });
-
+     
     function attachSingleFile() {
         // Logic for attaching a single file
         DevExpress.ui.notify("Single file attach initiated.", "info", 2000);
