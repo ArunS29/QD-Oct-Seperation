@@ -23,10 +23,10 @@ namespace QD.ERP.Web.Controllers
             {
                 // Create user claims
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, email),
-                    new Claim(ClaimTypes.Role, "Admin") // Assign user roles as needed
-                };
+        {
+            new Claim(ClaimTypes.Name, email),
+            new Claim(ClaimTypes.Role, "Admin") // Assign user roles as needed
+        };
 
                 // Create claims identity
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -40,9 +40,10 @@ namespace QD.ERP.Web.Controllers
             else
             {
                 ViewBag.Error = "Invalid Email or Password!";
-                return View();
+                return View("/Pages/Login.cshtml"); // Render the same view with the error message
             }
         }
+
 
         [Authorize]
         [HttpGet]

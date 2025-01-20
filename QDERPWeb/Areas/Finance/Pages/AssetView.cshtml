@@ -49,30 +49,30 @@
 
    
     #dataGrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
+        
         color: black;
     }
 
 </style>
 <div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+    <div class="card-header" style=" color: black; ">
         AssetView
     </div>
-    <div class="card-body" style="padding: 20px; background-color:  #c0dceb; border-radius: 5px;">
-        <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
+    <div class="card-body" style="padding: 20px; border-radius: 5px;">
+        <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px ; background-color:white">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                <div style="flex: 1; margin: 10px; padding: 50px; background-color: #629e63; color: white; text-align: center;  font-weight: bold; font-size: 12px;">
+                <div style="flex: 1; margin: 10px; padding: 30px; background-color: #629e63; color: white; text-align: center;  font-weight: bold; font-size: 12px;">
                  QuickDiceERPSolutions<br>
                  AssetsRegister
                 </div>
-                <div style="flex: 1; margin: 10px; padding: 50px; background-color: #5a85b0; color: white; text-align: center;  font-weight: bold; font-size: 12px;">
+                <div style="flex: 1; margin: 10px; padding: 30px; background-color: #5a85b0; color: white; text-align: center;  font-weight: bold; font-size: 12px;">
                   No of voucher verified
                 </div>
-                <div style="flex: 1; margin: 10px; padding: 25px; background-color: #c94d44; color: white; text-align: center; font-weight: bold; font-size: 12px; display: flex; justify-content: center; align-items: center;">
+                <div style="flex: 1; margin: 10px; padding: 35px; background-color: #c94d44; color: white; text-align: center; font-weight: bold; font-size: 12px; display: flex; justify-content: center; align-items: center;">
                     No of Assets
                 </div>
 
-                <div style="flex: 1; margin: 10px; padding: 50px; background-color: #0b6e25; color:  white; text-align: center;  font-weight: bold; font-size: 12px;">
+                <div style="flex: 1; margin: 10px; padding: 30px; background-color: #0b6e25; color:  white; text-align: center;  font-weight: bold; font-size: 12px;">
                    CurrentAssetsValue
                 </div>
             </div>
@@ -273,7 +273,7 @@
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
                 .HeaderFilter(filter => filter.Visible(true))
-                .Height(500)
+                .Height(300)
                 .ColumnAutoWidth(true)
                 .FilterRow(filterRow => filterRow.Visible(false)) 
                 .Grouping(grouping => grouping.AutoExpandAll(true))

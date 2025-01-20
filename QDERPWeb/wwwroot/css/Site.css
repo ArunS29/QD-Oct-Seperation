@@ -5,6 +5,9 @@
     padding: 5px;
     font-family: "Inter", Helvetica, Arial, sans-serif;
 }
+.card-header{
+    background-color:aliceblue;
+}
 
 .content-container-Middle {
     background-color: #c0dceb;

@@ -62,7 +62,7 @@
             padding-top: 37px;
             margin-top: 47px;
             transition: width 0.3s ease;
-            height: 650px;
+            height: 690px;
         }
 
         /* Sidebar 2 styles */
@@ -565,7 +565,7 @@
                     @*   <div id="loader" class="loader">
     <img src="~/images/Loading.gif" alt="Loading..." />
     </div>
-    <iframe id="contentIframe" onload="hideLoader()" style="display: none;"></iframe *@>
+    <iframe id="contentIframe" onload="hideLoader()" style="display: none;"></iframe *@
 
 
 
@@ -777,7 +777,7 @@
                            function loadBillsPayable() {
                             const iframe = document.getElementById("contentIframe");
                                     iframe.src = "/Finance/BillsPayable";
-                            updateBreadcrumbFromSidebar2('/ Bills Payabls');
+                            updateBreadcrumbFromSidebar2('/ Bills Payable');
                         }
                                    function loadCostAnalysis() {
                             const iframe = document.getElementById("contentIframe");
@@ -789,11 +789,11 @@
                                     iframe.src = "/Finance/BillsReceivable";
                             updateBreadcrumbFromSidebar2('/ Bills Receivable');
                         }
-                                    function loadSalaryPayable() {
-                            const iframe = document.getElementById("contentIframe");
-                                    iframe.src = "/Finance/SalaryPayable";
-                            updateBreadcrumbFromSidebar2('/ Salary Payable');
-                        }
+                        //             function loadSalaryPayable() {
+                        //     const iframe = document.getElementById("contentIframe");
+                        //             iframe.src = "/Finance/SalaryPayable";
+                        //     updateBreadcrumbFromSidebar2('/ Salary Payable');
+                        // }
                          function loadFinancialReports() {
                                     const iframe = document.getElementById("contentIframe");
                                             iframe.src = "/Finance/TrialBalance";

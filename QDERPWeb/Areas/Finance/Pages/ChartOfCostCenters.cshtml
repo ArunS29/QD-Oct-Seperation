@@ -48,15 +48,15 @@
     }
 
     #dataGrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
+        
         color: black;
     }
 </style>
 <div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+    <div class="card-header" style=" color: black; ">
         FinancesModules - Chart Of Cost Centers
     </div>
-    <div class="card-body" style="padding: 20px; background-color: #c0dceb; border-radius: 5px;">
+    <div class="card-body" style="padding: 20px; background-color: white; border-radius: 5px;">
         <div id="dataGridContainer" class="dx-field ledgerResult">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20108ChartOfCostCenter>()
                 .ID("dataGrid")
@@ -67,14 +67,14 @@
                 .LoadAction("GetChartOfCostCenters"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").CellTemplate(@<text>
+                    columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
                 <a href="/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank">
                     <%-data.CostAllocationUnitId%>
                 </a>
             </text>);
-                    columns.Add().DataField("CostAllocationUnit").Caption("Cost Center Unit");
-                    columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Center Master").GroupIndex(0);
-                    columns.Add().DataField("CostAllocationGroup").Caption("Cost Center Group").GroupIndex(1);
+                    columns.Add().DataField("CostAllocationUnit").Caption("Cost Center Unit").Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Center Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
+                    columns.Add().DataField("CostAllocationGroup").Caption("Cost Center Group").Alignment(HorizontalAlignment.Center).GroupIndex(1);
                     columns.Add().DataField("IsDisabled").Caption("Is Disabled").CellTemplate(@<text>
                 <input type="checkbox" class="dx-checkbox" />
             </text>);
@@ -83,7 +83,7 @@
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
                 .HeaderFilter(filter => filter.Visible(true))
-                .Height(500)
+                .Height(400)
                 .ColumnAutoWidth(true)
                 .FilterRow(filterRow => filterRow.Visible(false))
                 .Grouping(grouping => grouping.AutoExpandAll(true))
@@ -92,6 +92,7 @@
                 .Width("100%")
                 .OnInitialized("dataGridInitialized") // Store the DataGrid instance
                 .OnContextMenuPreparing("onContextMenuPreparing") // Handle right-click event
+                .OnRowPrepared("onRowPrepared")       // Handle row appearance dynamically
 
                 )
         </div>
@@ -124,38 +125,56 @@
                         text: "Edit Cost Center",
                         onItemClick: function () {
                             selectedRowData = e.row.data; // Get the row data
-                         //   alert(selectedRowData.IsDisabled)
+                           alert(selectedRowData.IsDisabled);
+                              alert(selectedRowData.CostUnitRemarks);
+                               // alert(selectedRowData.CostCenterIncharge);
                             if (!selectedRowData) {
                                 alert("No row selected");
                             } else {
                                 // Navigate to the EditCostCenter page
-                                window.location.href = `/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}`;
-                                //&CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
+                                    window.location.href = `/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+                                    //&CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
                             }
                         }
                     },
-                    {
-                        text: "Delete Cost Center",
-                        onItemClick: function () {
-                            selectedRowData = e.row.data; // Get the row data
-                         //   alert(selectedRowData.CostAllocationUnitId)
-                            if (!selectedRowData) {
-                                alert("No row selected");
-                            } else {
-                                if (confirm(`Are you sure you want to delete Cost Center: ${selectedRowData.CostAllocationUnitId}?`)) {
-                                    // Perform delete operation via AJAX
+                        {
+                            text: "Delete Cost Center",
+                            onItemClick: function () {
+                                selectedRowData = e.row.data; // Get the row data
+                               // alert(selectedRowData.CostAllocationUnitId);
+                               // alret(selectedRowData.CreatedBy);
+                               // alert(selectedRowData.CreatedOn);
 
-                                    $.post(`/api/ChartOfCostCenters/DeleteCostCenter?id=${encodeURIComponent(selectedRowData.CostAllocationUnitId)}`, function () {
-                                        alert("Cost Center deleted successfully!");
-                                        dataGridInstance.refresh(); // Refresh the grid
-                                    });
+                                if (!selectedRowData) {
+                                    alert("No row selected");
+                                } else {
+                                    if (confirm(`You are about to delete the Cost Center from the database, Click Ok if you would like to continue.`)) {
+                                        // Perform delete operation via AJAX
+                                        $.post(`/api/ChartOfCostCenters/DeleteCostCenter?id=${encodeURIComponent(selectedRowData.CostAllocationUnitId)}`, function (response) {
+                                            if (response.success) {
+                                                alert("Cost Center has been successfully removed from the database.");
+                                                dataGridInstance.refresh(); // Refresh the grid
+                                            } else {
+                                                // Display the error message from the server response
+                                                alert(response.message); // Display the custom error message (e.g., for Common Overheads)
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         }
-                    }
+
                 ];
             }
         }
+            function onRowPrepared(e) {
+                // Check if the rowType is "data" and the rowElement is available
+                if (e.rowType === "data" && e.rowElement && e.data.IsDisabled) {
+                    // Set the background color for the row
+                    $(e.rowElement).css("background-color", "rgb(255, 192, 192)"); // Light red for disabled rows
+                }
+            }
+
     </script>
 
 

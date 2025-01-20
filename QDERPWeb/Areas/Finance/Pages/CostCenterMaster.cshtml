@@ -29,7 +29,7 @@
 
 
     .card {
-        background-color: #c0dceb;
+        background-color: white;
     }
 
     .dx-datagrid-pager .dx-page.dx-selection,
@@ -43,18 +43,18 @@
     }
 
     .dx-field {
-        background-color: whitesmoke;
+        background-color: white;
     }
 
     .card-footer {
-        background-color: #c0dceb;
+        background-color: white;
     }
 
     .card-header {
-        background-color: #124eb0; /* Blue background */
-        color: white; /* White text */
+        background-color: white; /* Blue background */
+        color: black; /* White text */
         padding: 20px; /* Padding around the header */
-        font-weight: bold;
+        
         display: flex; /* Flex container for alignment */
         align-items: center; /* Vertically align icon and text */
     }
@@ -106,8 +106,8 @@
     }
 
     label {
-        color: #124eb0;
-        font-weight: bold;
+        color: black;
+        
     }
 </style>
 <div id="costAllocationPopup" style="display:none;">
@@ -125,13 +125,13 @@
     <div class="content-container-top">
         <div class="card-header">
             <i class="fas fa-pen-nib header-icon"></i> <!-- Font Awesome pen nib icon -->
-            <span class="header-text">Cost Center's</span>
+            <span class="header-text"style="background-color:lightgrey">Cost Center's</span>
         </div>
 
         <br />
         <div class="container">
             <div class="card">
-                <h5 style="margin-left:10px">Cost Center Details</h5>
+                <h5 style="margin-left:10px;background-color:aliceblue">Cost Center Details</h5>
             </div>
         </div>
 
@@ -141,7 +141,7 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label for="CostAllocationUnitID" style="color: #124eb0;">
+                        <label for="CostAllocationUnitID" >
                             Cost Center Code:
                         </label>
                     </div>
@@ -162,7 +162,7 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label for="CostAllocationUnit" style="color: #124eb0;">
+                        <label for="CostAllocationUnit" >
                             Cost Center Unit:
                         </label>
                     </div>
@@ -179,7 +179,7 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label for="CostCenterGroup" style="color: #124eb0; ">
+                        <label for="CostCenterGroup" >
                             Cost Center Group:
                         </label>
                     </div>
@@ -195,7 +195,7 @@
                 <div class="form-group">
                     <div class="col-md-2">
 
-                        <label for="CostAllocationMasterGroup" style="color: #124eb0">
+                        <label for="CostAllocationMasterGroup">
                             Cost Center Master
                             :
                         </label>
@@ -210,7 +210,7 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label for="CostUnitRemarks" style="color: #124eb0;">
+                        <label for="CostUnitRemarks" >
                             Cost Center Remarks:
                         </label>
                     </div>
@@ -229,7 +229,7 @@
                 <div class="col-md-5">
                     <div class="form-group">
 
-                        <label for="CostCenterIncharge" style="color: #124eb0">
+                        <label for="CostCenterIncharge" >
                             Cost Center Incharge:
                         </label>
                         @(Html.DevExtreme().TextBox().ID("CostCenterIncharge").Value(null).Width("100%"))
@@ -243,7 +243,7 @@
                 </div> *@
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label for="Branch" style="color: #124eb0; display: flex; justify-content: space-between; align-items: center;">
+                        <label for="Branch" style=" display: flex; justify-content: space-between; align-items: center;">
                             <span>Project:</span>
                             <span class="right-text">Add from the Project</span>
                         </label>
@@ -284,7 +284,7 @@
                 <!-- Dropdown Section -->
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label for="Branch" style="color: #124eb0;">Division/Branch:</label>
+                        <label for="Branch" >Division/Branch:</label>
                         @(Html.DevExtreme().DropDownBox()
                             .DataSource(d => d.WebApi()
                             .Controller("CostCenterMaster")
@@ -330,12 +330,37 @@
     <hr />
     <div class="container">
         <div class="row">
-            <div class="col-md-3"><span>Created By:</span></div>
-            <div class="col-md-3"><span>Created On:</span></div>
-            <div class="col-md-3"><span>Modified By:</span></div>
-            <div class="col-md-3"><span>Modified On:</span></div>
+            <div class="col-md-2">
+                <label for="CreatedBy" >Created By:</label>
+            </div>
+            <div class="col-md-2">
+                @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(false))
+            </div>
 
+            <div class="col-md-2">
+                <label for="CreatedOn" style="color: aliceblue">Created On:</label>
+            </div>
+            <div class="col-md-2">
+                @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(false))
+            </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label for="ModifiedBy" >Modified By:</label>
+            </div>
+            <div class="col-md-2">
+                @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(false))
+            </div>
+
+            <div class="col-md-2">
+                <label for="ModifiedOn" >Modified On:</label>
+            </div>
+            <div class="col-md-2">
+                @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(false))
+            </div>
+        </div>
+
     </div>
 
     <br />
@@ -351,12 +376,12 @@
                     .Icon("save")
                     )
                 @* @(Html.DevExtreme().Button()
-                .ID("btnUpdate")
-                .Text("Update")
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("save")
-                )   *@
+                    .ID("btnUpdate")
+                    .Text("Update")
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("save")
+                    )   *@
                 @(Html.DevExtreme().Button()
                     .ID("btnBack")
                     .Text("Back")
@@ -451,6 +476,7 @@
 
 <script>
     let dataGrid;
+    let CreatedOnvalue = null;
 
     $(function () {
         $("#costCenterComboBox").dxSelectBox({
@@ -587,8 +613,8 @@
         if (costAllocationUnitId) {
             // Change the Save button to Update
             // $("#btnSave").text("Update");
-            var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Update");
+              var button = $("#btnSave").dxButton("instance");
+             button.option("text", "Update");
 
             // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
             $.ajax({
@@ -596,13 +622,24 @@
                 type: "GET",
                 success: function (response) {
                     if (response.success) {
+                        alert(response.data.IsDisabled);
+                        //alert(formatDate(response.data.CreatedOn));
                         // Bind data to form fields
                         $("#CostAllocationUnitID").dxTextBox("instance").option("value", response.data.CostAllocationUnitId);
+                        $("#CostAllocationUnitID").dxTextBox("instance").option("readOnly", true);  // Make it read-only
                         $("#CostAllocationUnit").dxTextBox("instance").option("value", response.data.CostAllocationUnit);
                         $("#costCenterComboBox").dxSelectBox("instance").option("value", response.data.CostAllocationGroup);
                         $("#costCenterMaster1").dxSelectBox("instance").option("value", response.data.CostAllocationMasterGroup);
                         $("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.data.ProjectMasterCode);
                         $("#GetBranchCodeDropDown").dxDropDownBox("instance").option("value", response.data.BranchCode);
+                        $("#CostUnitRemarks").dxTextBox("instance").option("value", response.data.CostUnitRemarks);
+                        $("#CostCenterIncharge").dxTextBox("instance").option("value", response.data.CostCenterIncharge);
+                        $("#Discontinued").dxCheckBox("instance").option("value", response.data.IsDisabled);
+                        // Dates
+                        $("#CreatedBy").dxTextBox("instance").option("value", response.data.CreatedBy);
+                        $("#CreatedOn").dxTextBox("instance").option("value", formatDate(response.data.CreatedOn));
+                        $("#ModifiedBy").dxTextBox("instance").option("value", response.data.ModifiedBy);
+                        $("#ModifiedOn").dxTextBox("instance").option("value", formatDate(new Date()));
                     } else {
                         alert(response.message);
                     }
@@ -610,7 +647,10 @@
                 error: function () {
                     alert("An error occurred while fetching the Cost Center data.");
                 }
+
+
             });
+
         }
 
         // Define the fields array for validation
@@ -667,6 +707,18 @@
             const branchCode = $("#GetBranchCodeDropDown").dxDropDownBox("instance").option("value");
             const isDisabled = $("#Discontinued").dxCheckBox("instance").option("value");
 
+
+
+           // CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
+         // let CreatedOn = $("#CreatedOn").dxTextBox("instance").option("value"); // Get CreatedOn value
+            const ModifiedBy = $("#ModifiedBy").dxTextBox("instance").option("value");
+            const ModifiedOn = new Date().toISOString(); // Current date in ISO format
+
+            // Ensure CreatedOn is a valid date or null
+            //if (!CreatedOn || !Date.parse(CreatedOn)) {
+             //   CreatedOn = null;  // Set CreatedOn to null if it's invalid or empty
+           // }
+
             const data = {
                 CostAllocationUnitId: costAllocationUnitId,
                 CostAllocationUnit: costAllocationUnit,
@@ -676,7 +728,12 @@
                 CostCenterIncharge: costCenterIncharge,
                 ProjectMasterCode: projectMasterCode,
                 BranchCode: branchCode,
-                IsDisabled: isDisabled
+                IsDisabled: isDisabled,
+               //CreatedBy: CreatedBy,
+               //CreatedOn: CreatedOn,
+                ModifiedBy: ModifiedBy,
+                ModifiedOn: ModifiedOn
+
             };
 
             $.ajax({
@@ -686,7 +743,8 @@
                 data: JSON.stringify(data),
                 success: function (response) {
                     if (response.success) {
-                        DevExpress.ui.notify(response.message, "success", 3000);
+                        DevExpress.ui.notify(response.message, "success", 5000);
+                         location.reload();
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }
@@ -695,6 +753,14 @@
                     DevExpress.ui.notify("An error occurred while updating the data.", "error", 3000);
                 }
             });
+        }
+        // Format date function
+        function formatDate(date) {
+            if (date) {
+                const dateObj = new Date(date);
+                return dateObj.toISOString().slice(0, 19).replace("T", " "); // Adjust format as needed
+            }
+            return '';
         }
 
         function saveCostCenterMaster() {
@@ -707,6 +773,12 @@
             const projectMasterCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
             const branchCode = $("#GetBranchCodeDropDown").dxDropDownBox("instance").option("value");
             const isDisabled = $("#Discontinued").dxCheckBox("instance").option("value");
+            const CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
+            // Handle CreatedOn for new records
+            let CreatedOn = $("#CreatedOn").dxTextBox("instance").option("value");
+            if (!CreatedOn || !Date.parse(CreatedOn)) {
+                CreatedOn = new Date().toISOString(); // Set to current date if empty or invalid
+            }
 
             // Array to hold error messages for missing fields
             let missingFields = [];
@@ -749,7 +821,9 @@
                         CostCenterIncharge: costCenterIncharge,
                         ProjectMasterCode: projectMasterCode,
                         BranchCode: branchCode,
-                        IsDisabled: isDisabled
+                        IsDisabled: isDisabled,
+                        CreatedBy: CreatedBy,
+                        CreatedOn: CreatedOn
                     };
 
                     $.ajax({
@@ -760,6 +834,11 @@
                         success: function (response) {
                             if (response.success) {
                                 DevExpress.ui.notify(response.message, "success", 3000);
+                                // Change button label to "Update"
+                              //  location.reload();
+                                var button = $("#btnSave").dxButton("instance");
+                                button.option("text", "Update");
+
                             } else {
                                 DevExpress.ui.notify(response.message, "error", 3000);
                             }
@@ -788,7 +867,7 @@
     });
 
     function navigateToHome() {
-        window.location.href = '/';
+        window.location.href = '/Finance/ChartOfCostCenters';
     }
 
 </script>
