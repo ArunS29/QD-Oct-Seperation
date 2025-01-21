@@ -5,9 +5,9 @@
 @{
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-<style type="text/css">
+@* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+ *@
+@* <style type="text/css">
     .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc; /* Border between rows */
     }
@@ -109,7 +109,7 @@
         color: black;
         
     }
-</style>
+</style> *@
 <div id="costAllocationPopup" style="display:none;">
     <div style="margin-bottom:10px">
         @(Html.DevExtreme().Button()
@@ -338,7 +338,7 @@
             </div>
 
             <div class="col-md-2">
-                <label for="CreatedOn" style="color: aliceblue">Created On:</label>
+                <label for="CreatedOn" >Created On:</label>
             </div>
             <div class="col-md-2">
                 @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(false))
@@ -622,7 +622,7 @@
                 type: "GET",
                 success: function (response) {
                     if (response.success) {
-                        alert(response.data.IsDisabled);
+                       //alert(response.data.IsDisabled);
                         //alert(formatDate(response.data.CreatedOn));
                         // Bind data to form fields
                         $("#CostAllocationUnitID").dxTextBox("instance").option("value", response.data.CostAllocationUnitId);
@@ -641,7 +641,7 @@
                         $("#ModifiedBy").dxTextBox("instance").option("value", response.data.ModifiedBy);
                         $("#ModifiedOn").dxTextBox("instance").option("value", formatDate(new Date()));
                     } else {
-                        alert(response.message);
+                     //   alert(response.message);
                     }
                 },
                 error: function () {

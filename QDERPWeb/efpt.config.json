@@ -131,6 +131,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[qry201_205DepreciationMasterView]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry201_206DepreciationChild]",
          "ObjectType": 3
       },

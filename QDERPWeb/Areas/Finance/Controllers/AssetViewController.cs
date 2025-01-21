@@ -537,5 +537,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        public IActionResult Depreciation()
+        {
+           
+            return PartialView("Depreciation");
+        }
     }
 }

@@ -671,7 +671,7 @@
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("save")
-                    .OnClick("function() { attachMultipleFiles(aVoucherNo); $('#attachOptionsPopup').dxPopup('instance').hide(); }")
+                    .OnClick("function() { attachMultipleFiles(); $('#attachOptionsPopup').dxPopup('instance').hide(); }")
                     )
                 </div>
 
@@ -1460,22 +1460,14 @@
        
 
 
-                // Multiple files button click
-    $("#multipleFileBtn").dxButton({
-        text: "Attach Multiple Files",
-        onClick: function () {
-            attachMultipleFiles(aVoucherNo); // Pass `aVoucherNo` here
-            $("#attachOptionsPopup").dxPopup("instance").hide();
-        }
-    });
+  
      
-    function attachSingleFile() {
-        // Logic for attaching a single file
-        DevExpress.ui.notify("Single file attach initiated.", "info", 2000);
-    }
-    function attachMultipleFiles(aVoucherNo) {
+
+    
+    function attachMultipleFiles() {
         // Logic for attaching multiple files
-        DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
-        window.location.href = `/Finance/frm20112AssetDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
+      //  DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
+        window.location.href = `/Finance/frm20112AssetDocuments`;
     }
+
 </script>

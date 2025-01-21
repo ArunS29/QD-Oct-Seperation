@@ -140,13 +140,13 @@
         .OnClick("function() { chooseVoucher(); }")
         ) *@
     @(Html.DevExtreme().Button()
-        .ID("btnDepreciationSchedule") // Unique ID for the new button
+        .ID("btnDepreciationSchedule") // Unique ID for the button
         .Text("Depreciation Schedule") // Text for the button
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("fa fa-calendar-alt") // You can choose any relevant FontAwesome icon
+        .Icon("fa fa-calendar-alt") // Relevant FontAwesome icon
         .Width(200) // Adjust width as needed
-        .OnClick("function() { showDepreciationSchedule(); }") // New function to handle click
+        .OnClick("function() { showDepreciationSchedule(); }") // Call the JS function
         )
 
     @*    @(Html.DevExtreme().DropDownButton()

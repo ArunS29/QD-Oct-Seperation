@@ -20,6 +20,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Qry20108ChartOfCostCenter> Qry20108ChartOfCostCenters { get; set; }
 
+    public virtual DbSet<Qry201205depreciationMasterView> Qry201205depreciationMasterViews { get; set; }
+
     public virtual DbSet<Qry201206depreciationChild> Qry201206depreciationChildren { get; set; }
 
     public virtual DbSet<Qry20121ExpenseClaimForm> Qry20121ExpenseClaimForms { get; set; }
@@ -392,6 +394,47 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.ProjectMasterCode)
                 .HasMaxLength(25)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Qry201205depreciationMasterView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry201_205DepreciationMasterView");
+
+            entity.Property(e => e.AccumulatedOpeningBalance).HasColumnType("money");
+            entity.Property(e => e.AccumulatedTotalBalance).HasColumnType("money");
+            entity.Property(e => e.ApprovedBy).IsUnicode(false);
+            entity.Property(e => e.ApprovedOn).HasColumnType("datetime");
+            entity.Property(e => e.AssetClosingBalance)
+                .HasColumnType("money")
+                .HasColumnName("Asset_ClosingBalance");
+            entity.Property(e => e.AssetOpeningBalance)
+                .HasColumnType("money")
+                .HasColumnName("Asset_OpeningBalance");
+            entity.Property(e => e.AssetTotalCreditTrans)
+                .HasColumnType("money")
+                .HasColumnName("Asset_TotalCreditTrans");
+            entity.Property(e => e.AssetTotalDebitTrans)
+                .HasColumnType("money")
+                .HasColumnName("Asset_TotalDebitTrans");
+            entity.Property(e => e.CreatedBy).IsUnicode(false);
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.DeprEndDate).HasColumnType("date");
+            entity.Property(e => e.DeprStartDate).HasColumnType("date");
+            entity.Property(e => e.DepreciationDocNo)
+                .IsRequired()
+                .HasMaxLength(25)
+                .IsUnicode(false);
+            entity.Property(e => e.JournalVoucherNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.PostedBy).IsUnicode(false);
+            entity.Property(e => e.PostedOn).HasColumnType("datetime");
+            entity.Property(e => e.TotalBookValue).HasColumnType("money");
+            entity.Property(e => e.TotalDepreciationAmount).HasColumnType("money");
         });
 
         modelBuilder.Entity<Qry201206depreciationChild>(entity =>
