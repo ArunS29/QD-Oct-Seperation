@@ -94,15 +94,15 @@
 </style>
 
 
-<div class="card">
-    <div class="content-container-top">
+<div class="card"style="height:500px">
+   @*  <div class="content-container-top"> *@
         <div class="container-fluid"></div>
 
 
-        <div class="card-header">
+  @*       <div class="card-header">
             <i class="fas fa-chart-bar header-icon"></i> <!-- Font Awesome icon -->
             <span class="header-text">Finance Management : Dashboard</span>
-        </div>
+        </div> *@
         <br />
         @*  <div class="container">
         <div class="card">
@@ -113,7 +113,7 @@
 
             <div class="row">
                 <!-- Left Text Section -->
-                <div class="col-md-6" style="padding-top: 10px; padding-bottom: 10px; display: flex; align-items: center;">
+                <div class="col-md-6" style="padding-bottom: 10px; display: flex; align-items: center;">
                     <!-- Icon -->
                     <i class="fas fa-clone" style="margin-right: 10px; color: #ffcc00;"></i>
                     <!-- Text styled with .left-text -->
@@ -121,7 +121,7 @@
                 </div>
 
                 <!-- Right Button Section -->
-                <div class="form-group col-md-6" id="Btnchange" style="padding-top: 10px; padding-bottom: 10px;  text-align: right;">
+                <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;">
                     <div>
                         @(Html.DevExtreme().Button()
                             .ID("btnBillsWithBalance")
@@ -147,7 +147,7 @@
                 </div>
             </div>
         </div>
-    </div>
+  
 
     <div class="dx-field ledgerResult" style="width: 98%; overflow: hidden;">
 

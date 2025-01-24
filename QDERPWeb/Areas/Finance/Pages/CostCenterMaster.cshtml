@@ -122,18 +122,18 @@
 </div>
 
 <div class="card">
-    <div class="content-container-top">
+    <div class="content-container-top"style="background-color:white">
         <div class="card-header">
             <i class="fas fa-pen-nib header-icon"></i> <!-- Font Awesome pen nib icon -->
-            <span class="header-text"style="background-color:lightgrey">Cost Center's</span>
+            <span class="header-text">Cost Center's</span>
         </div>
 
         <br />
-        <div class="container">
+@*         <div class="container">
             <div class="card">
-                <h5 style="margin-left:10px;background-color:aliceblue">Cost Center Details</h5>
+                <h5 style="margin-left:10px;">Cost Center Details</h5>
             </div>
-        </div>
+        </div> *@
 
 
         <div class="container">
@@ -743,8 +743,8 @@
                 data: JSON.stringify(data),
                 success: function (response) {
                     if (response.success) {
-                        DevExpress.ui.notify(response.message, "success", 5000);
-                         location.reload();
+                        DevExpress.ui.notify(response.message, "success", 3000);
+                         // location.reload();
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }
