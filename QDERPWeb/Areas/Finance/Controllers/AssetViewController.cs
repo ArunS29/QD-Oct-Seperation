@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
-using System.Diagnostics;
 using System.Drawing;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
+    //[Area("Finance")]
     [Route("api/[controller]/[action]")]
+    // [Route("Finapi/[controller]/[action]")]
+    [ApiController]
     public class AssetViewController : Controller
     {
         private ERPMasterWtDataContext _context;
@@ -224,7 +226,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existingAsset.PropertyNo = updatedAsset.PropertyNo;
 
                 // Set modification details
-                existingAsset.ModifiedBy = "CurrentUser"; // Replace with actual current user
+                existingAsset.ModifiedBy = "Admin"; // Replace with actual current user
                 existingAsset.ModifiedOn = DateTime.Now;
 
                 // Save changes
@@ -238,27 +240,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int id)
+        [HttpPost]
+        public IActionResult Delete(string assetLedgerNo)
         {
             try
             {
 
-                var result = _context.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @Id = {0}", id);
-
+                var result = _context.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @AssetLedgerNo = {0}", assetLedgerNo);
 
                 if (result == 0)
                     return NotFound(new { message = "Asset not found or could not be deleted." });
-
 
                 return Ok(new { message = "Asset deleted successfully." });
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, new { message = "An error occurred while deleting the asset.", error = ex.Message });
             }
         }
+
 
         [HttpPost]
         public IActionResult DeleteAsset(string assetLedgerNo)
@@ -347,200 +347,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             });
 
             return Json(await DataSourceLoader.LoadAsync(assetlocation, loadOptions));
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> GetDocumentType(DataSourceLoadOptions loadOptions)
-        {
-
-            var qryListOfAccountlists = _context.Tbl101DocumentTypes.Select(i => new
-
-            {
-                i.DocumentTypeId,
-                i.DocumentType
-                //i.ReminderDays,
-                //i.IsEmployeeDocument
-            });
-
-            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-        }
-
-
-        [HttpGet]
-        public async Task<ActionResult> GetAccountMasterAR(string MasterGroup)
-        {
-            string val = "";
-            try
-            {
-                if (string.IsNullOrEmpty(MasterGroup))
-                {
-                    return BadRequest("MasterGroup parameter is required.");
-                }
-
-                var result = await _context.Tbl201MasterGroups
-                    .Where(x => x.MasterGroup == MasterGroup)
-                    .Select(x => x.MasterGroupAr)
-                    .FirstOrDefaultAsync();
-                val = result.ToString();
-            }
-            catch (ArgumentException argEx)
-            {
-                // Log the detailed exception for debugging
-                Console.WriteLine($"ArgumentException: {argEx.Message}, ParamName: {argEx.ParamName}");
-                return BadRequest($"Invalid argument: {argEx.ParamName}");
-            }
-            catch (Exception ex)
-            {
-                // Log the general exception
-                Console.WriteLine($"Exception: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
-            return Json(val);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file)
-        {
-            try
-            {
-                if (file == null || file.Length == 0)
-                {
-                    return BadRequest("No file uploaded.");
-                }
-
-                // Use a configurable path for storing uploads
-                var uploadsFolder = @"D:\!QuickDiceDMS-\VoucherScanned1"; // Updated the path here
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder); // Ensure the directory exists
-                }
-
-                // Sanitize file name
-                var fileName = Path.GetFileName(file.FileName);
-
-                // Check if the file already exists
-                var filePath = Path.Combine(uploadsFolder, fileName);
-                if (System.IO.File.Exists(filePath))
-                {
-                    return Conflict(new { Message = "File with the same name already exists." });
-                }
-
-                // Save the file
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                return Ok(new { Message = "File uploaded successfully.", FilePath = filePath });
-            }
-            catch (Exception ex)
-            {
-                // Log the exception (using a logger is recommended)
-                return StatusCode(500, new { Message = "An error occurred while uploading the file.", Details = ex.Message });
-            }
-        }
-
-
-        [HttpPost]
-        public IActionResult OpenFileExplorer(string documentNo)
-        {
-            try
-            {
-                documentNo = "0";
-                // Construct the path
-                var basePath = @"D:\!QuickDiceDMS-\VoucherScanned1";
-                var filePath = System.IO.Path.Combine(basePath);
-
-                // Open the file explorer at the specified path
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "explorer.exe",
-                    Arguments = filePath,
-                    UseShellExecute = true
-                });
-
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
-
-        private async Task<string> GenerateDocumentNoAsync()
-        {
-            string documentNo = "1"; // Default value if no records exist.
-            int newAccountGroupID;
-
-            try
-            {
-                // Query to get the maximum document number.
-
-                var results = await _context.VoucherResults
-    .FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20108AssetDocuments")
-    .ToListAsync();
-
-                int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
-
-
-                newAccountGroupID = MaxAccountGroupID + 1;
-                documentNo = newAccountGroupID.ToString();
-
-            }
-            catch
-            {
-                // Handle any potential errors by using default "1".
-                documentNo = "1";
-            }
-
-            return documentNo;
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20108AssetDocument documentdetails, string DocumentType)
-        {
-            if (documentdetails == null)
-            {
-                return BadRequest(new { success = false, message = "Invalid data received." });
-            }
-
-            try
-            {
-                // Generate a new document number.
-                var newDocumentNo = await GenerateDocumentNoAsync();
-                documentdetails.DocumentNo = newDocumentNo;
-
-                // Add the new document entry to the database.
-                _context.Tbl20108AssetDocuments.Add(documentdetails);
-                await _context.SaveChangesAsync();
-
-                // Query to fetch and return the newly added document details.
-                var qryListOfAccountlists = _context.Tbl20108AssetDocuments
-                    .Where(p => p.DocumentRefNo == documentdetails.DocumentRefNo)
-                    .Select(i => new
-                    {
-                        i.DocumentNo,
-                        //i.DocumentType,
-                        i.DocumentRefNo,
-                        DocumentType,
-                        i.DocumentRemarks,
-                        i.DocumentExpDate,
-                        i.DocumentExpDateAr,
-                        // i.NotifiedOn,
-                    });
-
-                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
-        }
-
-        public IActionResult Depreciation()
-        {
-           
-            return PartialView("Depreciation");
         }
     }
 }

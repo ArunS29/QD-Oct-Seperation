@@ -743,8 +743,8 @@
                 data: JSON.stringify(data),
                 success: function (response) {
                     if (response.success) {
-                        DevExpress.ui.notify(response.message, "success", 5000);
-                         location.reload();
+                        DevExpress.ui.notify(response.message, "success", 3000);
+                         // location.reload();
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }
