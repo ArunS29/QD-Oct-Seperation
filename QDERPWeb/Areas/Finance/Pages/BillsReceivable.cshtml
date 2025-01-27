@@ -458,6 +458,18 @@
             ];
         }
     }
+    // Print button functionality (Export as PDF)
+    document.getElementById("RptReceivableAgeing").addEventListener("click", showReport);
+    document.getElementById("RptReceivableAgeingSummary").addEventListener("click", showReport1);
+    // Print button functionality (Export as PDF)
+    function showReport() {
+        // Open the report in a new tab
+        window.open('/Finance/api/BillsReceivable/GenerateReport', '_blank');
+    }
+    function showReport1() {
+        // Open the report in a new tab
+        window.open('/Finance/api/BillsReceivable/GenerateAgeingreportsummaryReport', '_blank');
+    }
 
 </script>
 

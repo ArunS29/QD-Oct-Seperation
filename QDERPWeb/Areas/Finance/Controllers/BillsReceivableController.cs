@@ -4,6 +4,7 @@ using DevExtreme.AspNet.Mvc;
 using QD.ERP.Web.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QD.ERP.Web.Areas.Finance.Reports;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -56,5 +57,36 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
             }
         }
+        public IActionResult GenerateReport()
+  {
+      // Create the report instance
+      var report = new XtraReportBillsReceivableAgeingReport();
+ 
+      // Export the report to PDF using a MemoryStream
+      using (var stream = new MemoryStream())
+      {
+          report.ExportToPdf(stream);
+          stream.Seek(0, SeekOrigin.Begin);
+ 
+          // Return the PDF as a file result
+          return File(stream.ToArray(), "application/pdf", "XtraReportBillsReceivableAgeingReport.pdf");
+      }
+  }
+  public IActionResult GenerateAgeingreportsummaryReport()
+  {
+      // Create the report instance
+ 
+      var report = new XtraReportAgeingreportsummary ();
+ 
+      // Export the report to PDF using a MemoryStream
+      using (var stream = new MemoryStream())
+      {
+          report.ExportToPdf(stream);
+          stream.Seek(0, SeekOrigin.Begin);
+ 
+          // Return the PDF as a file result
+          return File(stream.ToArray(), "application/pdf", "XtraReportAgeingreportsummary.pdf");
+      }
+  }                                              
     }
 }

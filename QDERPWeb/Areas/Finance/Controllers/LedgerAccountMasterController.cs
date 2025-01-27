@@ -712,5 +712,58 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         }
+
+        [HttpGet]
+        public IActionResult GetAccountGroupUnderID(string id)
+        {
+            try
+            {
+                // Query the database for the specified AccountGroupID
+                var accountGroupUnder = _context.Tbl201AccountGroups
+                    .Where(ag => ag.AccountGroupId == id)
+                    .Select(ag => ag.AccountGroupUnder)
+                    .FirstOrDefaultAsync();
+
+                if (accountGroupUnder == null)
+                {
+                    return NotFound("Account group not found.");
+                }
+                return Json(new { accountGroupUnder.Result });
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            // LINQ query to fetch MasterGroup
+
+
+        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetAccountGroupUnderID(string id)
+        //{
+        //    try
+        //    {
+        //        // Query the database for the specified AccountGroupID
+        //        var accountGroupUnder = await _context.Tbl201AccountGroups
+        //            .Where(ag => ag.AccountGroupId == id)
+        //            .Select(ag => ag.AccountGroupUnder)
+        //            .FirstOrDefaultAsync();
+
+        //        if (accountGroupUnder == null)
+        //        {
+        //            return NotFound("Account group not found.");
+        //        }
+        //        return Ok(accountGroupUnder);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+
+
+
+        //}
+
     }
 }

@@ -670,6 +670,9 @@
             <div class="submenu-item" onclick="loadAssestRegister()">
                 <div class="text">Asset Register</div>
             </div>
+                       <div class="submenu-item" onclick="loadrpt()">
+                        <div class="text">Report</div>
+                    </div>
         </div>
                    
               
@@ -703,7 +706,7 @@
             <i class="fas fa-receipt"></i>
             <div class="text">Bank Receipt</div>
         </div>
-        <div class="submenu-item" onclick="loadSalesVoucher()">
+                        <div class="submenu-item" onclick="loadsalesvoucher()">
             <i class="fas fa-tags"></i>
             <div class="text">Sales Voucher</div>
         </div>
@@ -794,6 +797,9 @@
                         //             iframe.src = "/Finance/SalaryPayable";
                         //     updateBreadcrumbFromSidebar2('/ Salary Payable');
                         // }
+ 
+                         
+
                          function loadFinancialReports() {
                                     const iframe = document.getElementById("contentIframe");
                                             iframe.src = "/Finance/TrialBalance";
@@ -804,6 +810,11 @@
                                             iframe.src = "/Finance/AssetView";
                                     updateBreadcrumbFromSidebar2('/ Asset Register');
                                 }
+        function loadrpt() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/viewer";
+            updateBreadcrumbFromSidebar2('/ viewer');
+        }
         function loadChartOfAccounts() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/ChartOfAccounts";
@@ -824,7 +835,18 @@
                                             iframe.src = "/Finance/VoucherEntryReceipts";
                             updateBreadcrumbFromSidebar2('/ Bank Receipt');
                         }
-                                                        function loadBankPayment() {
+        function loadsalesvoucher() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/salesVoucher";
+            updateBreadcrumbFromSidebar2('/ sales voucher');
+        }
+
+        function loadPurchaseVoucher() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/purchasevoucher";
+            updateBreadcrumbFromSidebar2('/ Purchase voucher');
+        }
+        function loadBankPayment() {
                                     const iframe = document.getElementById("contentIframe");
                                                     iframe.src = "/Finance/VoucherBankPayment";
                                     updateBreadcrumbFromSidebar2('/ Bank Payment');

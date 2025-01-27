@@ -1,0 +1,14 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.ViewerPageModel
+@addTagHelper *, DevExpress.AspNetCore.Reporting
+
+@{
+    ViewData["Title"] = "Report Viewer";
+}
+
+<h1>Report Viewer</h1>
+
+<div>
+    <dx:WebDocumentViewer Model="@Model.DocumentViewerModel" Height="800px" Width="100%" />
+    test
+</div>
