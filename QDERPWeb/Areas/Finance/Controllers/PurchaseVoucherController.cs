@@ -255,20 +255,36 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 				var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+				//var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+				//	.Where(p => voucherNos.Contains(p.VoucherNo))
+				//	.OrderBy(i => i.DrCr == "Cr") // Order by Dr first (DrCr != "Cr"), then Cr (DrCr == "Cr")
+				//	.Select(i => new VoucherEntryDisplayDTO
+				//	{
+				//		VoucherNo = i.VoucherNo,
+				//		VoucherEntryNo = i.VoucherEntryNo,
+				//		DrCr = i.DrCr,
+				//		DrAmount = i.DrAmount,
+				//		CrAmount = i.CrAmount,
+				//		EntryNarration = i.EntryNarration,
+				//		AccountHead = i.AccountHead,
+				//		SysRemarks = i.SysRemarks
+				//	});
+
 				var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
-					.Where(p => voucherNos.Contains(p.VoucherNo))
-					.OrderBy(i => i.DrCr == "Cr") // Order by Dr first (DrCr != "Cr"), then Cr (DrCr == "Cr")
-					.Select(i => new VoucherEntryDisplayDTO
-					{
-						VoucherNo = i.VoucherNo,
-						VoucherEntryNo = i.VoucherEntryNo,
-						DrCr = i.DrCr,
-						DrAmount = i.DrAmount,
-						CrAmount = i.CrAmount,
-						EntryNarration = i.EntryNarration,
-						AccountHead = i.AccountHead,
-						SysRemarks = i.SysRemarks
-					});
+	.Where(p => voucherNos.Contains(p.VoucherNo) && !string.IsNullOrEmpty(p.DrCr)) // Filter out empty or null DrCr
+	.OrderBy(i => i.DrCr == "Cr") // Order by Dr first (DrCr != "Cr"), then Cr (DrCr == "Cr")
+	.Select(i => new VoucherEntryDisplayDTO
+	{
+		VoucherNo = i.VoucherNo,
+		VoucherEntryNo = i.VoucherEntryNo,
+		DrCr = i.DrCr,
+		DrAmount = i.DrAmount,
+		CrAmount = i.CrAmount,
+		EntryNarration = i.EntryNarration,
+		AccountHead = i.AccountHead,
+		SysRemarks = i.SysRemarks
+	});
+
 
 
 
