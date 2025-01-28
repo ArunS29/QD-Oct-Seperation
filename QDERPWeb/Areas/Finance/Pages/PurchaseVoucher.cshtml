@@ -740,11 +740,6 @@
 
 		// Update Due Date
 		$("#InvoiceDueDate").dxDateBox("instance").option("value", calculatedDate);
-
-		// If Submitted Date is checked, reset "No of Days" to 0
-		if (useSubmittedDate) {
-			$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", 0);
-		}
 	}
 
 	function onDateChange() {
@@ -768,11 +763,11 @@
 	// Initialize the event handlers
 	$(function () {
 		$("#InvoiceSubmittedDate").dxDateBox({
-			onValueChanged: updateDueDate,
+			onValueChanged: updateDueDate, // Recalculate Due Date on change
 		});
 
 		$("#VoucherDate").dxDateBox({
-			onValueChanged: updateDueDate,
+			onValueChanged: updateDueDate, // Recalculate Due Date on change
 		});
 
 		$("#InvoiceNoOfDays").dxNumberBox({
@@ -794,9 +789,12 @@
 
 		$("#UseSubmittedDate").dxCheckBox({
 			value: true, // Default: Checked
-			onValueChanged: updateDueDate,
+			onValueChanged: function () {
+				updateDueDate(); // Recalculate Due Date when checkbox is toggled
+			},
 		});
 	});
+
 
 
 
