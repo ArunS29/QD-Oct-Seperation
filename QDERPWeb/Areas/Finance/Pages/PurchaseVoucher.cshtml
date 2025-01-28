@@ -83,7 +83,7 @@
 												.ID("VoucherNo")
 												.Value(null)
 												.OnValueChanged("onVoucherNoChanged")
-												.Disabled(true)
+												.Disabled(false)
 												)
 				</div>
 			</div>
@@ -367,13 +367,18 @@
 		.ValueExpr("AccountId") // Field in the API response for the value of the dropdown
 		.DisplayExpr("AccountHead") // Field in the API response to be displayed in the dropdown
 		); *@
-					columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
-			"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
+					columns.AddFor(m => m.DrAmount)
+			.Caption("Debit")
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText(
+			"function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"
 			);
-					columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
-					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
+					columns.AddFor(m => m.CrAmount)
+					.Caption("Credit")
+					.Alignment(HorizontalAlignment.Right)
+					.CustomizeText(
+					"function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"
 					);
 					columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
 					columns.AddFor(m => m.SysRemarks).Caption("Remarks");
@@ -906,58 +911,60 @@
 	}
 	function onVoucherNoChanged(e) {
 		const paramVoucherNo = getQueryParam('VoucherNo');
+
+		// Fetch voucher details
 		$.ajax({
 			type: "GET",
 			url: "/api/PurchaseVoucher/GetVoucherDetails",
 			contentType: "application/json",
-			data: {
-				voucherNo: e.value
-			},
+			data: { voucherNo: e.value },
 			success: function (response) {
 				if (response.success === false && paramVoucherNo) {
-					DevExpress.ui.notify(response.message, "error", 2000); // Notify if voucher not found
-					return;
-				}
-				console.log(response);
-				// Populate fields with the response data
-				$("#VoucherDate").dxDateBox("instance").option("value", response.data[0].VoucherDate);
-				$("#VoucherEffectiveDate").dxDateBox("instance").option("value", response.data[0].VoucherEffectiveDate);
-				$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", response.data[0].InvoiceSubmittedDate);
-				$("#InvoiceDueDate").dxDateBox("instance").option("value", response.data[0].InvoiceDueDate);
-				$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", response.data[0].InvoiceNoOfDays || null);
-				$("#VoucherRefNo").dxTextBox("instance").option("value", response.data[0].VoucherRefNo || "");
-				$("#ReferenceNote").dxTextBox("instance").option("value", response.data[0].ReferenceNote || "");
-				$("#VoucharNarration").dxTextBox("instance").option("value", response.data[0].VoucharNarration || "");
-				$("#VoucherType").dxSelectBox("instance").option("value", response.data[0].VoucherType || null);
-				$("#BillRemarks").dxTextBox("instance").option("value", response.data[0].BillRemarks || "");
-				$("#IsVerified").dxCheckBox("instance").option("value", response.data[0].IsVerified || false);
-				$("#IsApproved").dxCheckBox("instance").option("value", response.data[0].IsApproved || false);
-				$("#UseSubmittedDate").dxCheckBox("instance").option("value", response.data[0].UseSubmittedDate || false);
-			},
-			error: function (xhr, status, error) {
-				if (paramVoucherNo) {
-					alert('hi')
 					DevExpress.ui.notify(response.message, "error", 2000);
 					return;
 				}
+
+				if (response.data.length > 0) {
+					// Populate fields with voucher details
+					const data = response.data[0];
+					$("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate || null);
+					$("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate || null);
+					$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", data.InvoiceSubmittedDate || null);
+					$("#InvoiceDueDate").dxDateBox("instance").option("value", data.InvoiceDueDate || null);
+					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", data.InvoiceNoOfDays || null);
+					$("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
+					$("#ReferenceNote").dxTextBox("instance").option("value", data.ReferenceNote || "");
+					$("#VoucharNarration").dxTextBox("instance").option("value", data.VoucharNarration || "");
+					$("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
+					$("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+					$("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
+					$("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
+					$("#UseSubmittedDate").dxCheckBox("instance").option("value", data.UseSubmittedDate || false);
+				}
+			},
+			error: function (xhr, status, error) {
+				if (paramVoucherNo) {
+					DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+				}
 			}
 		});
+
+		// Fetch voucher entries
 		$.ajax({
 			type: "GET",
 			url: "/api/PurchaseVoucher/GetVoucherEntries",
 			contentType: "application/json",
-			data: {
-				voucherNo: e.value
-			},
+			data: { voucherNo: e.value },
 			success: function (response) {
-				$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+				const data = response.data || [];
+				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
 			},
 			error: function (xhr, status, error) {
-				alert("Error occurred while updating data: " + error);
+				DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
 			}
 		});
-
 	}
+
 
 	// function addVoucherEntry() {
 	// 	var accountHead = $("#ddAccountHead").dxDropDownBox("instance");
@@ -1250,6 +1257,7 @@
 						var button = $("#btnSave").dxButton("instance");
 
 						button.option("text", "Update");
+						$("#VoucherNo").dxTextBox("instance").option("disabled", true);
 					} else {
 						DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 2000);
 					}
