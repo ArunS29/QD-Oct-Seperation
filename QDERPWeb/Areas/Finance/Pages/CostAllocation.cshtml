@@ -374,11 +374,12 @@
     </div>
     <script>
 
-        let costallocunitId;
+
         let selectedDropDownValue = "Common Overheads"; // Default value
+        let selectedCostAllocationUnitID;
 
         function onDropDownBoxValueChanged(e) {
-            selectedDropDownValue = e.value; // Update the selected value
+            const selectedDropDownValue = e.value; // Update the selected value
 
             // Update the DataGrid selection to match the DropDownBox value
             const dataGrid = $("#costAllocationDropdownGrid").dxDataGrid("instance");
@@ -386,12 +387,13 @@
                 const items = dataGrid.getDataSource().items();
                 const selectedItem = items.find(item => item.CostAllocationUnit === selectedDropDownValue);
                 if (selectedItem) {
-                    dataGrid.selectRows([selectedItem.CostAllocationUnitId]);
+                    selectedCostAllocationUnitID = selectedItem.CostAllocationUnitId; // Store the ID
+                    dataGrid.selectRows([selectedCostAllocationUnitID]);
                 } else {
+                    selectedCostAllocationUnitID = null; // Clear the ID if no match
                     dataGrid.clearSelection();
                 }
             }
-
         }
 
         function onDataGridContentReady(e) {
@@ -401,8 +403,10 @@
             const items = dataGrid.getDataSource().items();
             const selectedItem = items.find(item => item.CostAllocationUnit === selectedDropDownValue);
             if (selectedItem) {
-                dataGrid.selectRows([selectedItem.CostAllocationUnitId]);
+                selectedCostAllocationUnitID = selectedItem.CostAllocationUnitId; // Update the ID
+                dataGrid.selectRows([selectedCostAllocationUnitID]);
             } else {
+                selectedCostAllocationUnitID = null; // Clear the ID if no match
                 dataGrid.clearSelection();
             }
         }
@@ -497,24 +501,45 @@
         $("#btnSaveAndClose").on("click", function (e) {
             e.preventDefault();
 
-            var VM = {
-                // alert($("#VoucherNo").dxTextBox("instance").option("value"));
+            // Get the DataGrid instance
+            const costdataGrid = $("#costdataGrid").dxDataGrid("instance");
 
-                "VoucherEntryID": 001,
+            if (!costdataGrid) {
+                DevExpress.ui.notify("DataGrid instance not found.", "error", 2000);
+                return;
+            }
 
-                "CostAllocationUnitID": costallocunitId,
+            // Get the data from the first row of the DataGrid
+            const dataGridData = costdataGrid.getDataSource().items();
+            if (!dataGridData || dataGridData.length === 0) {
+                DevExpress.ui.notify("No data in the grid to save.", "error", 2000);
+                return;
+            }
 
-                "EffectiveDate": new Date().toISOString().split('T')[0],
+            // Extract values from the first row (you can adjust logic for multiple rows if needed)
+            const firstRowData = dataGridData[0];
+            const selectedCostAllocUnit = selectedCostAllocationUnitID || "ADMIN-0001"; // From dropdown column
+            const remarks = firstRowData.Remarks || null; // Remarks column value
+            const effectiveDate = '@effectiveDate'; // Ensure this is populated from server-side Request.Query["EffectiveDate"]
 
-                // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
+            // Extract VoucherEntryID and increment for a new entry
+            const currentVoucherEntryID = parseInt($("#VoucherEntryID").val() || "1", 10); // Default to 1 if not set
+            const newVoucherEntryID = currentVoucherEntryID + 1; // Increment ID
 
-                "AmountAllocated": '@voucherAmountParsed',
-
-                "CostAllocRemarks": null
-
-
+            // Construct the ViewModel object
+            const VM = {
+                VoucherEntryID: newVoucherEntryID,
+                CostAllocationUnitID: selectedCostAllocUnit,
+                EffectiveDate: new Date().toISOString().split('T')[0],
+                AmountAllocated: '@voucherAmountParsed', // Ensure server-side value is correctly populated
+                CostAllocRemarks: remarks,
+                VoucherNo: '@voucherNo',
+                CostAllocDrCr: '@drCr'
             };
 
+            // Debug to ensure VM is correctly populated
+            console.log("VM to be sent:", VM);
+            // debugger;
             $.ajax({
                 type: "POST",
                 url: "/api/CostAllocation/SaveCostAllocation",

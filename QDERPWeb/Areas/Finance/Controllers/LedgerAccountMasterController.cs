@@ -392,6 +392,68 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> AddAssetDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20108AssetDocument documentdetails, string DocumentType)
+        {
+            const string voucherPrefix = "L00"; // Constant for the voucher prefix
+            if (documentdetails == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                // Generate a new document number.
+                var newDocumentNo = await GenerateAssetDocumentNoAsync();
+                documentdetails.DocumentNo = newDocumentNo;
+
+                // SQL query with interpolated string to fetch the max voucher number
+                var result = await _context.VoucherResults
+      .FromSqlInterpolated($@"
+        SELECT CAST(RIGHT(AssetLedgerNo, 3) AS INT) AS MaxVoucherNo
+        FROM Tbl20108AssetDocuments
+        WHERE AssetLedgerNo LIKE {voucherPrefix + "%"}
+        ORDER BY MaxVoucherNo DESC
+    ")
+      .ToListAsync();
+
+                // Get the max voucher number or default to 0 if no records are found
+                int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
+                int newVoucherNo = maxVoucherNo + 1;
+
+                // Format the new voucher number with leading zeros
+                //    var formattedVoucherNo = newVoucherNo.ToString("D3"); // Ensures 3 digits
+                documentdetails.AssetLedgerNo = voucherPrefix + newVoucherNo;
+
+                // Add the new document entry to the database
+                _context.Tbl20108AssetDocuments.Add(documentdetails);
+                await _context.SaveChangesAsync();
+
+                // Query to fetch and return the newly added document details
+                var qryListOfAccountlists = _context.Tbl20108AssetDocuments
+                    .Where(p => p.DocumentRefNo == documentdetails.DocumentRefNo)
+                    .Select(i => new
+                    {
+                        i.DocumentNo,
+                        i.DocumentRefNo,
+                        DocumentType,
+                        i.DocumentRemarks,
+                        i.DocumentExpDate,
+                        i.DocumentExpDateAr,
+                    });
+
+                // Return the data using DataSourceLoader
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                // Improved error response with more detailed error handling
+                return StatusCode(500, new { success = false, message = $"An error occurred: {ex.Message}", details = ex.StackTrace });
+            }
+        }
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateDocument(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument updatedDocument)
@@ -448,6 +510,52 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAssetDocument(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument updatedDocument)
+        {
+            try
+            {
+                if (updatedDocument == null)
+                {
+                    return BadRequest("Invalid document data.");
+                }
+
+                // Find the existing document by DocumentNo
+                var document = await _context.Tbl20108AssetDocuments
+                    .FirstOrDefaultAsync(d => d.DocumentNo == updatedDocument.DocumentNo);
+
+                // Check if the document exists
+                if (document == null)
+                {
+                    return NotFound($"Document with DocumentNo {updatedDocument.DocumentNo} not found.");
+                }
+
+                // Query the list of account lists
+                var qryListOfAccountlists = _context.Tbl20108AssetDocuments
+                    .Where(p => p.DocumentNo == document.DocumentNo)
+                    .Select(i => new
+                    {
+                        i.DocumentNo,
+                        i.DocumentType,
+                        i.DocumentRefNo,
+                        i.DocumentRemarks,
+                        i.DocumentExpDate,
+                        i.DocumentExpDateAr,
+                        i.DocumentNotificationDate,
+                    });
+
+                // Return the data
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (optional)
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
 
         //[HttpPost]
         //public async Task<ActionResult> AddEmployeeEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20114SalaryPayableMaster salarydetails, string EmployeeName)
@@ -680,10 +788,45 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return documentNo;
         }
 
+
         [HttpGet]
         public async Task<ActionResult> GetDocumentNo(DataSourceLoadOptions loadOptions)
         {
             var documentNo = await GenerateDocumentNoAsync();
+            return Json(documentNo);
+        }
+        private async Task<string> GenerateAssetDocumentNoAsync()
+        {
+            string documentNo = "1"; // Default value if no records exist.
+            int newAccountGroupID;
+
+            try
+            {
+                // Query to get the maximum document number.
+
+                var results = await _context.VoucherResults
+    .FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20108AssetDocuments")
+    .ToListAsync();
+
+                int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
+
+
+                newAccountGroupID = MaxAccountGroupID + 1;
+                documentNo = newAccountGroupID.ToString();
+
+            }
+            catch
+            {
+                // Handle any potential errors by using default "1".
+                documentNo = "1";
+            }
+
+            return documentNo;
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetAssetDocumentNo(DataSourceLoadOptions loadOptions)
+        {
+            var documentNo = await GenerateAssetDocumentNoAsync();
             return Json(documentNo);
         }
         [HttpGet]
@@ -718,6 +861,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             try
             {
+
                 // Query the database for the specified AccountGroupID
                 var accountGroupUnder = _context.Tbl201AccountGroups
                     .Where(ag => ag.AccountGroupId == id)

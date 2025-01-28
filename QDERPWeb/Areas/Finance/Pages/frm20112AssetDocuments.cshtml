@@ -72,7 +72,7 @@
                         <label><strong>Type of the Document Attached:</strong></label>
                         @(Html.DevExtreme().DropDownBox()
                             .DataSource(d => d.WebApi()
-                            .Controller("Assetview")
+                                .Controller("LedgerAccountMaster")
                             .LoadAction("GetDocumentType")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("DocumentTypeId"))
@@ -153,17 +153,17 @@
                 <!-- Third Row -->
                 <div class="row mb-3">
                     @* <div class="col-12 col-md-4">
-                    <label>Document Expiry Date:</label>
-                    @(Html.DevExtreme().DropDownBox()
-                    .DataSource(d => d.WebApi()
-                    .Controller("Assetview")
-                    .LoadAction("GetAccountMaster")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("DocumentExpiry"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("accountMasterDropDownBoxExpiry")
-                    .ShowClearButton(true)
-                    .Width("100%"))
+                        <label>Document Expiry Date:</label>
+                        @(Html.DevExtreme().DropDownBox()
+                                    .DataSource(d => d.WebApi()
+                                        .Controller("Assetview")
+                                        .LoadAction("GetAccountMaster")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("DocumentExpiry"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("accountMasterDropDownBoxExpiry")
+                                    .ShowClearButton(true)
+                                    .Width("100%"))
                     </div> *@
                     <div class="col-12 col-md-4">
                         <label><strong>Document Expiry Date:</strong></label>
@@ -220,7 +220,7 @@
             </div>
         </div>
         <div class="col-12">
-            <div class="dx-field ledgerResult">
+           @*  <div class="dx-field ledgerResult">
                 @(
                         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20116LedgerDocument>()
                         .ID("dataGrid")
@@ -258,7 +258,67 @@
                     .Width("100%")
                     .OnCellClick("onDocumentNoClick") // Add the click event
                     )
-            </div>
+            </div> *@
+            <div class="dx-field ledgerResult">
+                @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20116LedgerDocument>()
+                        .ID("dataGrid")
+                        .RemoteOperations(false)
+                        .Columns(columns =>
+                        {
+                            columns.AddFor(m => m.DocumentNo)
+                                .Caption("DocumentNo")
+                                .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+                                .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>)
+                              //  .DataType(DevExtreme.AspNet.Mvc.Builders.DataType.String) // Specify the column data type
+                                .AllowEditing(true); // Allow editing for this column
+
+                            columns.AddFor(m => m.DocumentType)
+                                .Caption("DocumentType")
+                                .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
+
+                            columns.AddFor(m => m.DocumentRefNo)
+                                .Caption("Document Ref No")
+                                .HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
+
+                            columns.AddFor(m => m.DocumentRemarks)
+                                .Caption("Document Remarks")
+                                .HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
+
+                            columns.AddFor(m => m.DocumentExpDate)
+                                .Caption("Expiry On")
+                                .Format("dd-MMM-yyyy")
+                                .HeaderCellTemplate(@<div style="font-weight: bold;">Expiry On</div>);
+
+                            columns.AddFor(m => m.DocumentExpDateAr)
+                                .Caption("Expiry Arabic")
+                                .Format("dd-MMM-yyyy")
+                                .HeaderCellTemplate(@<div style="font-weight: bold;">Expiry Arabic</div>);
+
+                            columns.AddFor(m => m.NotifiedOn)
+                                .Caption("Notify On")
+                                .Format("dd-MMM-yyyy")
+                                .HeaderCellTemplate(@<div style="font-weight: bold;">Notify On</div>);
+                        })
+                        .AllowColumnReordering(true)
+                        .AllowColumnResizing(true)
+                        .ColumnFixing(fixing => fixing.Enabled(true))
+                        .HeaderFilter(filter => filter.Visible(true))
+                        .Editing(editing => editing
+                                        .Mode(GridEditMode.Cell)
+                                            .AllowUpdating(true)   // Enable editing of existing rows
+                                        )
+                        .Height(250)
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false))
+                        .GroupPanel(groupPanel => groupPanel.Visible(false))
+                        .ShowBorders(true)
+                        .Width("100%")
+                        .OnCellClick("onDocumentNoClick") // Add the click event
+                        .OnRowUpdated("onRowUpdated") // Event for saving edited data
+                    )
+</div>
+
         </div>
 
         <div class="dx-fieldset horizontal-container mt-2">
@@ -285,7 +345,7 @@
 
                 .ID("accountpaymentamount-datagrid")
                 .DataSource(d => d.WebApi()
-                .Controller("Assetview")
+                    .Controller("LedgerAccountMaster")
                 .LoadAction("GetDocumentType")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("DocumentTypeId")
@@ -323,7 +383,7 @@
 <script>
 
         var mARkey = null;
-        let mARresponse = null;
+        let mARresponse = null,DocNo=null;
 
 
            $(document).ready(function () {
@@ -350,7 +410,7 @@
 
         $(function () {
             $.ajax({
-                url: "/api/Assetview/GetDocumentNo",
+                url: "/api/LedgerAccountMaster/GetAssetDocumentNo",
                 type: 'GET',
                 success: function (data) {
                     // Set the value in the VoucherNo TextBox
@@ -396,7 +456,7 @@
             // Make the AJAX POST request
             $.ajax({
                 type: "POST",
-                url: `/api/Assetview/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
+                url: `/api/LedgerAccountMaster/AddAssetDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
                 contentType: "application/json",
                 data: JSON.stringify(VM),
                 dataType: "json",
@@ -435,7 +495,7 @@
     // Function to fetch the new DocumentNo
     function fetchNewDocumentNo() {
         $.ajax({
-            url: "/api/Assetview/GetDocumentNo",
+            url: "/api/LedgerAccountMaster/GetAssetDocumentNo",
             type: "GET",
             success: function (data) {
                 // Set the value in the DocumentNo TextBox
@@ -448,56 +508,59 @@
         });
     }
 
+   
 
-    function UpdateVoucherEntry() {
-        // Get validator instances
-        var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
-        var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
 
-        // Perform validation
-        if (accountMasterDropDownBoxValidation.isValid) {
-            // Create the Voucher object
-            var VU = {
-                "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value") || null,
-               // "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value") || null,
-                "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-                "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value") || null,
-                "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value") || null,
-                "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value") || null,
-                "NotifiedOn": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value") || null
-            };
 
-            console.log("Voucher Object:", VU);
+    // function UpdateVoucherEntry() {
+    //     // Get validator instances
+    //     var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
+    //     var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
 
-            // Perform AJAX call to update the document
-            $.ajax({
-                type: "POST",
-                url: "/api/Assetview/UpdateDocument",
-                contentType: "application/json",
-                data: JSON.stringify(VU),
-                dataType: "json",
-                success: function (response) {
-                    // Update the data grid with the response data
-                    $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+    //     // Perform validation
+    //     if (accountMasterDropDownBoxValidation.isValid) {
+    //         // Create the Voucher object
+    //         var VU = {
+    //             "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value") || null,
+    //            // "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value") || null,
+    //             "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value") || null,
+    //             "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value") || null,
+    //             "DocumentExpDate": $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value") || null,
+    //             "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value") || null,
+    //             "NotifiedOn": $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value") || null
+    //         };
 
-                    DevExpress.ui.notify("Document details updated successfully!", "success", 2000);
-                },
-                error: function (xhr, status, error) {
-                    // Improved error message
-                    alert("Error occurred while updating data: " + xhr.responseText || error);
-                }
-            });
-        } else {
-            // Notify user about validation failure
-            DevExpress.ui.notify("Please fill the required details!", "error", 2000);
-        }
-    }
+    //         console.log("Voucher Object:", VU);
+
+    //         // Perform AJAX call to update the document
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/api/LedgerAccountMaster/UpdateAssetDocument",
+    //             contentType: "application/json",
+    //             data: JSON.stringify(VU),
+    //             dataType: "json",
+    //             success: function (response) {
+    //                 // Update the data grid with the response data
+    //                 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+
+    //                 DevExpress.ui.notify("Document details updated successfully!", "success", 2000);
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 // Improved error message
+    //                 alert("Error occurred while updating data: " + xhr.responseText || error);
+    //             }
+    //         });
+    //     } else {
+    //         // Notify user about validation failure
+    //         DevExpress.ui.notify("Please fill the required details!", "error", 2000);
+    //     }
+    // }
 
 
         $("#btnBack").on("click", function (e) {
             e.preventDefault();
             alert("Are you sure want to exit?");
-            window.location.href = "http://localhost:5000/";
+        window.location.href = "http://localhost:60232/Home/Dashboard";
             // debugger;
         });
 
@@ -587,7 +650,7 @@
             $.ajax({
 
                 type: "GET",
-                url: `/api/Assetview/GetAccountMasterAR?MasterGroup=${encodeURIComponent(selectedValue)}`, // Pass value as a query parameter
+                url: `/api/LedgerAccountMaster/GetAccountMasterAR?MasterGroup=${encodeURIComponent(selectedValue)}`, // Pass value as a query parameter
                 contentType: "application/json",
                 dataType: "json",
                 success: function (response) {
@@ -689,7 +752,7 @@
 
                 // Use AJAX to upload the file to the server
                 $.ajax({
-                    url: "/api/Assetview/UploadFile", // Change to your API endpoint
+                    url: "/api/LedgerAccountMaster/UploadFile", // Change to your API endpoint
                     type: "POST",
                     data: formData,
                     processData: false, // Important for FormData
@@ -711,11 +774,13 @@
             if (e.column && e.column.dataField === "DocumentNo") {
                 // Get the DocumentNo value
                 var documentNo = e.data.DocumentNo;
+               
+                  
 
                 // Send the DocumentNo to the server
                 $.ajax({
                     type: "POST",
-                    url: "/api/Assetview/OpenFileExplorer", // Adjust the URL to match your controller/action
+                    url: "/api/LedgerAccountMaster/OpenFileExplorer", // Adjust the URL to match your controller/action
                     data: { documentNo: documentNo },
                     success: function (response) {
                         if (response.success) {
@@ -747,6 +812,69 @@
                 }
             }, 500);
         }
+
+       function onRowUpdated(e) {
+    const updatedData = e.data; // The updated row data
+     DocNo = updatedData.DocumentNo; // Retrieve the DocumentNo from the updated row
+     //alert(DocNo)
+
+    if (!DocNo) {
+        DevExpress.ui.notify("DocumentNo is missing in the updated row.", "error", 2000);
+        return;
+    }
+
+    console.log("Updated DocumentNo:", DocNo);
+
+    // Pass the DocumentNo to the UpdateVoucherEntry function
+    UpdateVoucherEntry(DocNo);
+}
+ function UpdateVoucherEntry(DocNo) {
+
+    if (!DocNo) {
+        DevExpress.ui.notify("No document number provided to update.", "info", 2000);
+        return;
+    }
+
+    // Get the DataGrid instance
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    // Get all rows from the DataGrid
+    const allData = dataGrid.getDataSource().items();
+
+    // Find the specific row using the provided DocNo
+    const updatedRow = allData.find(row => row.DocumentNo === DocNo);
+
+    if (!updatedRow) {
+        DevExpress.ui.notify("Document number not found in grid data.", "error", 2000);
+        return;
+    }
+
+    // Prepare the data to send to the server
+    const documentData = { DocumentNo: updatedRow.DocumentNo };
+
+    console.log("Document to send:", documentData);
+
+    // Send the `DocumentNo` to the server
+    $.ajax({
+        url: "/api/LedgerAccountMaster/UpdateAssetDocument", // API endpoint
+        method: "POST", // HTTP method
+        contentType: "application/json", // Data format
+        data: JSON.stringify(documentData), // Serialize the data
+        success: function (response) {
+            // Notify user on success
+            DevExpress.ui.notify("Document updated successfully!", "success", 2000);
+        },
+        error: function (xhr, status, error) {
+            // Handle error and notify user
+            const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+            DevExpress.ui.notify(`Failed to update document: ${errorMessage}`, "error", 4000);
+        },
+    });
+}
+
+
+
+
 
 
 </script>
