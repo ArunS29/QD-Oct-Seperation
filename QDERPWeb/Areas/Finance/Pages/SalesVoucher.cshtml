@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@* <style type="text/css">
+<style type="text/css">
 	.dx-datagrid .dx-row {
 		border-bottom: 1px solid #ccc;
 	}
@@ -61,7 +61,7 @@
 				background-color: #f0f0f0;
 			}
 
-</style> *@
+</style>
 <div id="costAllocationPopup" style="display:none;">
 	<div style="margin-bottom:10px">
 		@(Html.DevExtreme().Button()
@@ -1199,26 +1199,14 @@
 			});
 		}
 		function updateDueDate() {
-			// Get the value of the checkbox
+			// Get checkbox value and "No of Days"
 			const useSubmittedDate = $("#UseSubmittedDate").dxCheckBox("instance").option("value");
-
-			// If Submitted Date is not checked, update based on Invoice Date
-			if (!useSubmittedDate) {
-				onDateChange();
-				return;
-			}
-
-			// Get the value of "No of Days"
 			const noOfDays = $("#InvoiceNoOfDays").dxNumberBox("instance").option("value");
 
-			let baseDate;
-
 			// Determine the base date (Submitted Date or Voucher Date)
-			if (useSubmittedDate) {
-				baseDate = $("#InvoiceSubmittedDate").dxDateBox("instance").option("value");
-			} else {
-				baseDate = $("#VoucherDate").dxDateBox("instance").option("value");
-			}
+			const baseDate = useSubmittedDate
+				? $("#InvoiceSubmittedDate").dxDateBox("instance").option("value")
+				: $("#VoucherDate").dxDateBox("instance").option("value");
 
 			// Validate the base date
 			if (!baseDate) {
@@ -1229,16 +1217,13 @@
 			// Calculate the Due Date
 			const calculatedDate = new Date(baseDate);
 			calculatedDate.setDate(calculatedDate.getDate() + noOfDays);
+
+			// Update Due Date
 			$("#InvoiceDueDate").dxDateBox("instance").option("value", calculatedDate);
 
+			// If Submitted Date is checked, reset "No of Days" to 0
 			if (useSubmittedDate) {
-				// Case 2: If Submitted Date is checked
-				const submittedDate = new Date($("#InvoiceSubmittedDate").dxDateBox("instance").option("value"));
-				$("#InvoiceDueDate").dxDateBox("instance").option("value", submittedDate);
-				$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", 0); // Set No of Days to 0
-			} else {
-				// Update based on Invoice Date if Submitted Date is not checked
-				onDateChange();
+				$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", 0);
 			}
 		}
 
@@ -1254,60 +1239,45 @@
 				return;
 			}
 
-			// Calculate the difference in days
-			const diffTime = Math.abs(dueDate - voucherDate);
+			// Calculate the difference in days and update "No of Days"
+			const diffTime = dueDate - voucherDate;
 			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-			// Update No of Days
 			$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", diffDays);
 		}
 
+		// Initialize the event handlers
 		$(function () {
-			// Handle changes to Submitted Date
 			$("#InvoiceSubmittedDate").dxDateBox({
-				onValueChanged: function () {
-					updateDueDate();
-				}
+				onValueChanged: updateDueDate,
 			});
 
-			// Handle changes to Voucher Date
 			$("#VoucherDate").dxDateBox({
-				onValueChanged: function () {
-					updateDueDate();
-				}
+				onValueChanged: updateDueDate,
 			});
 
-			// Handle changes to No of Days
 			$("#InvoiceNoOfDays").dxNumberBox({
 				onValueChanged: function () {
 					const noOfDays = $("#InvoiceNoOfDays").dxNumberBox("instance").option("value");
 					const useSubmittedDate = $("#UseSubmittedDate").dxCheckBox("instance").option("value");
-					let baseDate;
 
-					// Determine the base date (Submitted Date or Voucher Date)
-					if (useSubmittedDate) {
-						baseDate = $("#InvoiceSubmittedDate").dxDateBox("instance").option("value");
-					} else {
-						baseDate = $("#VoucherDate").dxDateBox("instance").option("value");
-					}
+					const baseDate = useSubmittedDate
+						? $("#InvoiceSubmittedDate").dxDateBox("instance").option("value")
+						: $("#VoucherDate").dxDateBox("instance").option("value");
 
-					// Calculate and update the Due Date
 					if (baseDate) {
 						const calculatedDate = new Date(baseDate);
 						calculatedDate.setDate(calculatedDate.getDate() + noOfDays);
 						$("#InvoiceDueDate").dxDateBox("instance").option("value", calculatedDate);
 					}
-				}
+				},
 			});
 
-			// Handle changes to the Submitted Date checkbox
 			$("#UseSubmittedDate").dxCheckBox({
 				value: true, // Default: Checked
-				onValueChanged: function () {
-					updateDueDate();
-				}
+				onValueChanged: updateDueDate,
 			});
 		});
+
 
 
 		document.addEventListener("DOMContentLoaded", function () {
