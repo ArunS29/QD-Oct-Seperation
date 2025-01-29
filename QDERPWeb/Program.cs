@@ -2,8 +2,16 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using DevExpress.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
+using DevExpress.AspNetCore.Reporting;
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services for Reporting
+builder.Services.AddDevExpressControls();
+builder.Services.ConfigureReportingServices(configurator => {
+    configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
+        viewerConfigurator.UseCachedReportSourceBuilder();
+    });
+});
 
 var DBConnection = builder.Configuration.GetConnectionString("DBConnection");
 // Add services to the container.
@@ -28,6 +36,7 @@ var app = builder.Build();
 builder.Services.AddAuthorization();
 
 // Ensure secure communication with TLS 1.2
+app.UseDevExpressControls();
 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
 // Configure the HTTP request pipeline.
