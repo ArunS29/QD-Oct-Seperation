@@ -670,8 +670,8 @@
             <div class="submenu-item" onclick="loadAssestRegister()">
                 <div class="text">Asset Register</div>
             </div>
-                       <div class="submenu-item" onclick="loadrpt()">
-                        <div class="text">Report</div>
+                       <div class="submenu-item" onclick="assetallocation()">
+                        <div class="text">Asset Allocation</div>
                     </div>
         </div>
                    
@@ -810,10 +810,10 @@
                                             iframe.src = "/Finance/AssetView";
                                     updateBreadcrumbFromSidebar2('/ Asset Register');
                                 }
-        function loadrpt() {
+        function assetallocation() {
             const iframe = document.getElementById("contentIframe");
-            iframe.src = "/Finance/viewer";
-            updateBreadcrumbFromSidebar2('/ viewer');
+            iframe.src = "/Finance/AssetAllocation";
+            updateBreadcrumbFromSidebar2('/ Asset Allocation');
         }
         function loadChartOfAccounts() {
             const iframe = document.getElementById("contentIframe");

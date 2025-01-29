@@ -212,8 +212,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 i.DocumentTypeId,
                 i.DocumentType
-                //i.ReminderDays,
-                //i.IsEmployeeDocument
+
             });
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
@@ -264,92 +263,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         }
 
-        //    [HttpGet]
-        //    public async Task<ActionResult> GetDocumentNo(DataSourceLoadOptions loadOptions)
-        //    {
-        //        // Get the voucher No. string and Get the next serial of the voucher No.
 
-
-        //        int newAccountGroupID;
-        //        string DocumentNo = "";
-        //        // SQL query to get the max voucher number
-
-
-        //        string sql = "SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo " +
-        //                      "FROM Tbl20116LedgerDocuments ";
-
-        //        try
-        //        {
-
-        //            var results = await _context.VoucherResults
-        //.FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20116LedgerDocuments")
-        //.ToListAsync();
-
-        //            int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
-
-
-        //            newAccountGroupID = MaxAccountGroupID + 1;
-        //            DocumentNo = newAccountGroupID.ToString();
-
-
-        //        }
-        //        catch (Exception)
-        //        {
-        //            // Handle cases where there's no existing voucher number
-        //            DocumentNo = "1";
-        //        }
-
-        //        return Json(DocumentNo);
-        //    }
-
-        //    [HttpPost]
-        //    public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument documentdetails,string DocumentType)
-        //    {
-        //        if (documentdetails == null)
-        //        {
-        //            return BadRequest(new { success = false, message = "Invalid data received." });
-        //        }
-        //        int newAccountGroupID;
-        //        string DocumentNo = "";
-
-        //        try
-        //        {
-        //            //var PaymentAccount = "Select AccountHead From tbl201ChartOfAccounts where AccountGroupID = 'A012'and AccountHead = ''";
-
-        //            // Add entries to the database
-
-        //            var results = await _context.VoucherResults
-        //.FromSqlInterpolated($"SELECT MAX(CAST(RIGHT(DocumentNo, 3) AS INT)) AS MaxDocumentNo FROM Tbl20116LedgerDocuments")
-        //.ToListAsync();
-
-        //            int MaxAccountGroupID = results.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
-
-
-        //            newAccountGroupID = MaxAccountGroupID + 1;
-        //            documentdetails.DocumentNo = newAccountGroupID.ToString();
-        //            _context.Tbl20116LedgerDocuments.Add(documentdetails);
-
-
-        //            await _context.SaveChangesAsync();
-        //            var qryListOfAccountlists = _context.Tbl20116LedgerDocuments.Where(p => p.DocumentNo == documentdetails.DocumentNo).Select(i => new
-        //            {
-        //                i.DocumentNo,
-        //                //i.DocumentType,
-        //                i.DocumentRefNo,
-        //                DocumentType,
-        //                i.DocumentRemarks,
-        //                i.DocumentExpDate,
-        //                i.DocumentExpDateAr,
-        //                i.NotifiedOn,
-        //            });
-
-        //            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //        }
-        //    }
 
         [HttpPost]
         public async Task<ActionResult> AddDocumentsEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl20116LedgerDocument documentdetails, string DocumentType)
@@ -429,18 +343,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 _context.Tbl20108AssetDocuments.Add(documentdetails);
                 await _context.SaveChangesAsync();
 
-                // Query to fetch and return the newly added document details
                 var qryListOfAccountlists = _context.Tbl20108AssetDocuments
-                    .Where(p => p.DocumentRefNo == documentdetails.DocumentRefNo)
-                    .Select(i => new
-                    {
-                        i.DocumentNo,
-                        i.DocumentRefNo,
-                        DocumentType,
-                        i.DocumentRemarks,
-                        i.DocumentExpDate,
-                        i.DocumentExpDateAr,
-                    });
+          .Where(p => p.DocumentRefNo == documentdetails.DocumentRefNo)
+          .Join(
+              _context.Tbl101DocumentTypes,
+              document => document.DocumentType,
+              docType => docType.DocumentTypeId,
+              (document, docType) => new
+              {
+                  document.DocumentNo,
+                  document.DocumentRefNo,
+                  docType.DocumentType,
+                  document.DocumentRemarks,
+                  document.DocumentExpDate,
+                  document.DocumentExpDateAr,
+                  document.DocumentNotificationDate
+              });
+
 
                 // Return the data using DataSourceLoader
                 return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
@@ -883,31 +802,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         }
-        //[HttpGet]
-        //public async Task<IActionResult> GetAccountGroupUnderID(string id)
-        //{
-        //    try
-        //    {
-        //        // Query the database for the specified AccountGroupID
-        //        var accountGroupUnder = await _context.Tbl201AccountGroups
-        //            .Where(ag => ag.AccountGroupId == id)
-        //            .Select(ag => ag.AccountGroupUnder)
-        //            .FirstOrDefaultAsync();
 
-        //        if (accountGroupUnder == null)
-        //        {
-        //            return NotFound("Account group not found.");
-        //        }
-        //        return Ok(accountGroupUnder);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-
-
-
-        //}
 
     }
 }

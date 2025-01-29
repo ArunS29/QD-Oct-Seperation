@@ -122,19 +122,22 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 		}
 		public async Task<ActionResult> GetVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
 		{
-			var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays.Where(p => p.VoucherNo == voucherNo).Select(i => new
-			{
-				i.VoucherNo,
-				i.DrCr,
-				i.DrAmount,
-				i.CrAmount,
-				i.EntryNarration,
-				i.AccountHead,
-				i.SysRemarks,
-			});
+			var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+				.Where(p => p.VoucherNo == voucherNo && !string.IsNullOrEmpty(p.DrCr)) // Exclude empty or null DrCr
+				.Select(i => new
+				{
+					i.VoucherNo,
+					i.DrCr,
+					i.DrAmount,
+					i.CrAmount,
+					i.EntryNarration,
+					i.AccountHead,
+					i.SysRemarks,
+				});
 
 			return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
 		}
+
 		[HttpGet]
 		public async Task<ActionResult> GetVoucherDetails(DataSourceLoadOptions loadOptions, string voucherNo)
 		{
@@ -407,20 +410,34 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 				var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
 
 				// Query the display list
+				//var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
+				//									.Where(p => voucherNos.Contains(p.VoucherNo))
+				//									.OrderBy(i => i.DrCr == "Cr")
+				//									.Select(i => new VoucherEntryDisplayDTO
+				//									{
+				//										VoucherNo = i.VoucherNo,
+				//										VoucherEntryNo = i.VoucherEntryNo,
+				//										DrCr = i.DrCr,
+				//										DrAmount = i.DrAmount,
+				//										CrAmount = i.CrAmount,
+				//										EntryNarration = i.EntryNarration,
+				//										AccountHead = i.AccountHead,
+				//										SysRemarks = i.SysRemarks
+				//									});
 				var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
-													.Where(p => voucherNos.Contains(p.VoucherNo))
-													.OrderBy(i => i.DrCr == "Cr")
-													.Select(i => new VoucherEntryDisplayDTO
-													{
-														VoucherNo = i.VoucherNo,
-														VoucherEntryNo = i.VoucherEntryNo,
-														DrCr = i.DrCr,
-														DrAmount = i.DrAmount,
-														CrAmount = i.CrAmount,
-														EntryNarration = i.EntryNarration,
-														AccountHead = i.AccountHead,
-														SysRemarks = i.SysRemarks
-													});
+	.Where(p => voucherNos.Contains(p.VoucherNo) && !string.IsNullOrEmpty(p.DrCr)) // Filter out empty or null DrCr
+	.OrderBy(i => i.DrCr == "Cr") // Order by Dr first (DrCr != "Cr"), then Cr (DrCr == "Cr")
+	.Select(i => new VoucherEntryDisplayDTO
+	{
+		VoucherNo = i.VoucherNo,
+		VoucherEntryNo = i.VoucherEntryNo,
+		DrCr = i.DrCr,
+		DrAmount = i.DrAmount,
+		CrAmount = i.CrAmount,
+		EntryNarration = i.EntryNarration,
+		AccountHead = i.AccountHead,
+		SysRemarks = i.SysRemarks
+	});
 
 				var resultList = await qryListOfAccountLists.ToListAsync();
 

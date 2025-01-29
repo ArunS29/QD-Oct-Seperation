@@ -1,0 +1,139 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@using QD.ERP.Web.DAL.Entities
+@{
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: -10px !important;
+    }
+
+    .dx-button {
+        background-color: whitesmoke;
+    }
+
+    .content-container-top, .content-container-Middle, .content-container-bottom {
+        border: 2px solid #ccc; 
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px; 
+    }
+
+    .card-header {
+    
+        color: black;
+        padding: 20px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #ccc; 
+    }
+
+   
+    .header-icon {
+        font-size: 40px;
+        margin-right: 15px;
+        color: goldenrod;
+        text-shadow: 2px 2px 4px black;
+    }
+
+    .header-text {
+        font-size: 25px;
+    }
+
+    .header-text, .header-icon {
+        font-size: 25px;
+    }
+</style>
+
+<div class="content-container-top container p-3">
+    <div class="card-header">
+        <i class="fas fa-pen-nib header-icon"></i>
+        <span class="header-text">Expenses / Reimbursement - Allocation for Assets</span>
+    </div>
+    <br />
+    <div class="row align-items-center">
+        <div class="col-md-1">
+            <label for="DrCr">Dr/Cr</label>
+            @(Html.DevExtreme().SelectBox()
+                .ID("DrCr")
+                .Width(90)
+                .DataSource(new[] { "Dr", "Cr" })  
+                )
+        </div>
+        <div class="col-md-3">
+            <label>Expenses Ledger Account</label>
+            @(Html.DevExtreme().SelectBox().ID("PropertyExpenses"))
+        </div>
+        <div class="col-md-2">
+            <label>Amount</label>
+            @(Html.DevExtreme().NumberBox().ID("propertyAmount").ShowSpinButtons(true).Format("#,##0.00").Min(0))
+        </div>
+        <div class="col-md-2">
+            <label>Approved By:</label>
+            @(Html.DevExtreme().CheckBox().ID("IsApproved"))
+            <div>Approved On: <span id="VoucherApprovedOn"></span></div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-2">
+                @(Html.DevExtreme().TextBox().ID("propertyVoucherNo").Disabled(false))
+            </div>
+            <div>
+                @(Html.DevExtreme().TextBox().ID("propertyId").Disabled(false))
+            </div>
+        </div>
+
+    </div>
+    <br />
+    <div class="dx-field ledgerResult">
+        @(Html.DevExtreme().DataGrid<Tbl20117AssetCostAllocationMaster>()
+            .ID("propertydataGrid")
+            .Height(250)
+            .Width("100%")
+            .ShowBorders(true)
+            .Columns(columns =>
+            {
+                columns.AddFor(m => m.AssetCostAllocDrCr).Caption("Dr/Cr");
+                columns.AddFor(m => m.AssetNo).Caption("Asset Description");
+                columns.AddFor(m => m.EffectiveDate).Caption("Effective Date").DataType(GridColumnDataType.Date);
+                columns.AddFor(m => m.AmountAllocated).Caption("Amount").Format("#,##0.00");
+                columns.AddFor(m => m.AssetCostAllocRemarks).Caption("Remarks");
+            })
+            )
+    </div>
+    <br />
+    <div class="container">
+        <div class="card-footer">
+            <div class="d-flex gap-2 mt-2">
+                @(Html.DevExtreme().Button().ID("btnpropertySave").Text("Save & Close").Icon("save"))
+                @(Html.DevExtreme().Button().ID("btnpropertyDelete").Text("Delete").Icon("close"))
+                @(Html.DevExtreme().Button().ID("btnPropertyBack").Text("Back").Icon("arrowleft"))
+                @(Html.DevExtreme().Button().ID("btnAddCostCentre").Text("Add New Cost Centre").Icon("plus"))
+                @(Html.DevExtreme().Button().ID("btnApproveAdd").Text("Approve [Add]").Icon("check"))
+            </div>
+        </div>
+    </div>
+</div>

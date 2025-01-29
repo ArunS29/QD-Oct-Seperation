@@ -75,6 +75,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl20117AssetCostAllocationMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20122PropertyAllocationMaster]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl20123LedgerSubGroups]",
          "ObjectType": 0
       },
@@ -192,6 +200,10 @@
       },
       {
          "Name": "[dbo].[qry201VoucherEntryScreenDisplay]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry40102PropertyMasterView2]",
          "ObjectType": 3
       },
       {

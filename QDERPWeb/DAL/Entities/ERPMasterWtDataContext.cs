@@ -44,6 +44,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Qry201VoucherEntryScreenDisplay> Qry201VoucherEntryScreenDisplays { get; set; }
 
+    public virtual DbSet<Qry40102PropertyMasterView2> Qry40102PropertyMasterView2s { get; set; }
+
     public virtual DbSet<Qry70002projectsViewMaster> Qry70002projectsViewMasters { get; set; }
 
     public virtual DbSet<Tbl00105BuyerIdtype> Tbl00105BuyerIdtypes { get; set; }
@@ -75,6 +77,10 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<Tbl20115CompanyBranch> Tbl20115CompanyBranches { get; set; }
 
     public virtual DbSet<Tbl20116LedgerDocument> Tbl20116LedgerDocuments { get; set; }
+
+    public virtual DbSet<Tbl20117AssetCostAllocationMaster> Tbl20117AssetCostAllocationMasters { get; set; }
+
+    public virtual DbSet<Tbl20122PropertyAllocationMaster> Tbl20122PropertyAllocationMasters { get; set; }
 
     public virtual DbSet<Tbl20123LedgerSubGroup> Tbl20123LedgerSubGroups { get; set; }
 
@@ -1045,6 +1051,173 @@ public partial class ERPMasterWtDataContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Qry40102PropertyMasterView2>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry40102PropertyMasterView2");
+
+            entity.Property(e => e.AddlField1).IsUnicode(false);
+            entity.Property(e => e.AddlField2).IsUnicode(false);
+            entity.Property(e => e.AddlField3).IsUnicode(false);
+            entity.Property(e => e.AddlSpec1).IsUnicode(false);
+            entity.Property(e => e.AddlSpec2).IsUnicode(false);
+            entity.Property(e => e.AddlSpec3).IsUnicode(false);
+            entity.Property(e => e.AlternatorNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Brand).IsUnicode(false);
+            entity.Property(e => e.BuyingOtratePerHour)
+                .HasColumnType("money")
+                .HasColumnName("BuyingOTRatePerHour");
+            entity.Property(e => e.BuyingRatePerDay).HasColumnType("money");
+            entity.Property(e => e.BuyingRatePerHour).HasColumnType("money");
+            entity.Property(e => e.BuyingRatePerMonth).HasColumnType("money");
+            entity.Property(e => e.BuyingRatePerWeek).HasColumnType("money");
+            entity.Property(e => e.Capacity).IsUnicode(false);
+            entity.Property(e => e.ChassisNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ClientOvertimeRatePerHour).HasColumnType("money");
+            entity.Property(e => e.ClientRatePerHour).HasColumnType("money");
+            entity.Property(e => e.ClientSite).IsUnicode(false);
+            entity.Property(e => e.ClientUnitMethod).HasMaxLength(200);
+            entity.Property(e => e.Color).IsUnicode(false);
+            entity.Property(e => e.CordinatorName).IsUnicode(false);
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+            entity.Property(e => e.CurrentStatus)
+                .HasMaxLength(9)
+                .IsUnicode(false);
+            entity.Property(e => e.DeliveryNoteDemobilizationRate).HasColumnType("money");
+            entity.Property(e => e.DeliveryNoteMobilizationRate).HasColumnType("money");
+            entity.Property(e => e.DepreciationMethod)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.DiscontinuedOn).HasColumnType("datetime");
+            entity.Property(e => e.DiscontinuedRemarks).IsUnicode(false);
+            entity.Property(e => e.DoorNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EngineNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EquipmentOperatorId).HasColumnName("EquipmentOperatorID");
+            entity.Property(e => e.FinalInstallment).HasColumnType("money");
+            entity.Property(e => e.FinancedBy2).IsUnicode(false);
+            entity.Property(e => e.FinancingCompanyName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.GatePassNo).IsUnicode(false);
+            entity.Property(e => e.HiredOn).HasColumnType("datetime");
+            entity.Property(e => e.HiringMode)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InitialDocCharges).HasColumnType("money");
+            entity.Property(e => e.InitialDownPayment).HasColumnType("money");
+            entity.Property(e => e.InstallmentEndDate).HasColumnType("date");
+            entity.Property(e => e.InstallmentStartDate).HasColumnType("date");
+            entity.Property(e => e.IsNeededTimesheet).IsUnicode(false);
+            entity.Property(e => e.KvaorKw)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("KVAorKW");
+            entity.Property(e => e.Location)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.LxWxH).IsUnicode(false);
+            entity.Property(e => e.MobilizedOn).HasColumnType("datetime");
+            entity.Property(e => e.MobilizedTo).IsUnicode(false);
+            entity.Property(e => e.Model).IsUnicode(false);
+            entity.Property(e => e.ModelType).IsUnicode(false);
+            entity.Property(e => e.ModifiedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.MonthlyInstallment).HasColumnType("money");
+            entity.Property(e => e.OperatingCapacity).IsUnicode(false);
+            entity.Property(e => e.OperatingWeight).IsUnicode(false);
+            entity.Property(e => e.Operator)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.OperatorContactMobile)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.OperatorContactMobile2)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.OperatorName).IsUnicode(false);
+            entity.Property(e => e.OperatorNationalId)
+                .HasMaxLength(12)
+                .IsUnicode(false)
+                .HasColumnName("OperatorNationalID");
+            entity.Property(e => e.OperatorRate).HasColumnType("money");
+            entity.Property(e => e.OwnershipText).IsUnicode(false);
+            entity.Property(e => e.PlateNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.PlatformHeight).IsUnicode(false);
+            entity.Property(e => e.ProjectDescription).IsUnicode(false);
+            entity.Property(e => e.ProjectMasterCode)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+            entity.Property(e => e.PropertyAttachment).IsUnicode(false);
+            entity.Property(e => e.PropertyCategoryName).IsUnicode(false);
+            entity.Property(e => e.PropertyCertification).IsUnicode(false);
+            entity.Property(e => e.PropertyCondition2)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.PropertyDescription).IsUnicode(false);
+            entity.Property(e => e.PropertyGroup)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.PropertyGroupCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.PropertyNo)
+                .IsRequired()
+                .HasMaxLength(25)
+                .IsUnicode(false);
+            entity.Property(e => e.PropertyPwas)
+                .IsUnicode(false)
+                .HasColumnName("PropertyPWAS");
+            entity.Property(e => e.PropertyRemarks).IsUnicode(false);
+            entity.Property(e => e.PropertySuppliedBy).IsUnicode(false);
+            entity.Property(e => e.PropertyType).IsUnicode(false);
+            entity.Property(e => e.PropertyTypeId).HasColumnName("PropertyTypeID");
+            entity.Property(e => e.PurchaseDate).HasColumnType("date");
+            entity.Property(e => e.PurchasedAs2)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.PurchasedFrom).IsUnicode(false);
+            entity.Property(e => e.ReturnedOn).HasColumnType("datetime");
+            entity.Property(e => e.ReturnedRemarks).IsUnicode(false);
+            entity.Property(e => e.ScrapValueOfProperty).HasColumnType("money");
+            entity.Property(e => e.SellingRatePerDay).HasColumnType("money");
+            entity.Property(e => e.SellingRatePerHour).HasColumnType("money");
+            entity.Property(e => e.SellingRatePerMonth).HasColumnType("money");
+            entity.Property(e => e.Specifications).IsUnicode(false);
+            entity.Property(e => e.SupplierAccountLedgerNo)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.SupplierCode)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+            entity.Property(e => e.SupplierDemobRate).HasColumnType("money");
+            entity.Property(e => e.SupplierMobRate).HasColumnType("money");
+            entity.Property(e => e.SupplierName).IsUnicode(false);
+            entity.Property(e => e.SupplierPono)
+                .IsUnicode(false)
+                .HasColumnName("SupplierPONo");
+            entity.Property(e => e.SupplierRefNo).IsUnicode(false);
+            entity.Property(e => e.UnitRate).HasColumnType("money");
+            entity.Property(e => e.ValueOfProperty).HasColumnType("money");
+            entity.Property(e => e.Weight).IsUnicode(false);
+            entity.Property(e => e.Year).IsUnicode(false);
+        });
+
         modelBuilder.Entity<Qry70002projectsViewMaster>(entity =>
         {
             entity
@@ -1540,6 +1713,68 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.NotificationRemarks).IsUnicode(false);
             entity.Property(e => e.NotifiedOn).HasColumnType("datetime");
             entity.Property(e => e.NotifiedTo).IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl20117AssetCostAllocationMaster>(entity =>
+        {
+            entity.HasKey(e => e.AssetCostAllocationId);
+
+            entity.ToTable("tbl20117AssetCostAllocationMaster");
+
+            entity.Property(e => e.AssetCostAllocationId).HasColumnName("AssetCostAllocationID");
+            entity.Property(e => e.AmountAllocated).HasColumnType("money");
+            entity.Property(e => e.ApprovedBy).IsUnicode(false);
+            entity.Property(e => e.ApprovedOn).HasColumnType("datetime");
+            entity.Property(e => e.AssetCostAllocDrCr)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.AssetCostAllocRemarks).IsUnicode(false);
+            entity.Property(e => e.AssetNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EffectiveDate).HasColumnType("datetime");
+            entity.Property(e => e.EnteredBy).IsUnicode(false);
+            entity.Property(e => e.EnteredOn).HasColumnType("datetime");
+            entity.Property(e => e.LedgerAccountNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.VoucherEntryId).HasColumnName("VoucherEntryID");
+            entity.Property(e => e.VoucherNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl20122PropertyAllocationMaster>(entity =>
+        {
+            entity.HasKey(e => e.PropertyAllocationId).HasName("PK_tbl20122PropertyAllocationMaster_1");
+
+            entity.ToTable("tbl20122PropertyAllocationMaster");
+
+            entity.Property(e => e.PropertyAllocationId).HasColumnName("PropertyAllocationID");
+            entity.Property(e => e.AmountAllocated).HasColumnType("money");
+            entity.Property(e => e.ApprovedBy).IsUnicode(false);
+            entity.Property(e => e.ApprovedOn).HasColumnType("datetime");
+            entity.Property(e => e.EffectiveDate).HasColumnType("datetime");
+            entity.Property(e => e.EnteredBy).IsUnicode(false);
+            entity.Property(e => e.EnteredOn).HasColumnType("datetime");
+            entity.Property(e => e.LedgerAccountNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.PropertyAllocDrCr)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.PropertyAllocRemarks).IsUnicode(false);
+            entity.Property(e => e.PropertyNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherEntryId).HasColumnName("VoucherEntryID");
+            entity.Property(e => e.VoucherNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Tbl20123LedgerSubGroup>(entity =>

@@ -367,18 +367,13 @@
 		.ValueExpr("AccountId") // Field in the API response for the value of the dropdown
 		.DisplayExpr("AccountHead") // Field in the API response to be displayed in the dropdown
 		); *@
-					columns.AddFor(m => m.DrAmount)
-			.Caption("Debit")
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText(
-			"function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"
-			);
+					columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
+			"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-					columns.AddFor(m => m.CrAmount)
-					.Caption("Credit")
-					.Alignment(HorizontalAlignment.Right)
-					.CustomizeText(
-					"function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"
+			);
+					columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
+					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
 					);
 					columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
 					columns.AddFor(m => m.SysRemarks).Caption("Remarks");
@@ -1053,7 +1048,6 @@
 	// 	}
 	// }
 
-
 	function addVoucherEntry() {
 		var accountHead = $("#ddAccountHead").dxDropDownBox("instance");
 		var SupplierName = $("#SupplierNameDropDown").dxDropDownBox("instance");
@@ -1176,7 +1170,6 @@
 			}
 		}
 	}
-
 
 
 
@@ -1414,10 +1407,10 @@
 			Swal.fire({
 				title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
 				html: `
-							<textarea id="swal-field-editor"
-									  style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
-									  placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
-						`,
+								<textarea id="swal-field-editor"
+										  style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+										  placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
+							`,
 				showCancelButton: true,
 				confirmButtonText: 'OK',
 				cancelButtonText: 'Cancel',

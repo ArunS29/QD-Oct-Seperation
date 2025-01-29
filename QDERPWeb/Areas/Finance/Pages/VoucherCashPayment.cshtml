@@ -1481,6 +1481,23 @@
         </div>
     </div>
 </div>
+<!-- Modal for Property Allocation -->
+<div id="PropertyAllocationModal" class="modal fade show" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Property Allocation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be loaded dynamically -->
+                <div id="PropertyAllocationContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 
     let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName;
@@ -2066,6 +2083,45 @@
                     DevExpress.ui.repaintFloatingActionButton();
                 });
             }
+            else if (accheadname) {
+                $.ajax({
+                    type: "GET",
+                    url: `/api/PropertyAllocation/CheckPropertyAllocation`,
+                    data: {
+                        AccountHead: accheadname,
+                        AccountID: accheadid
+                    },
+                    success: function (response) {
+                        if (response.isAllocated) {
+                            const params = {
+                                AccountHeadVal: encodeURIComponent(accheadname),
+                                VoucherAmount: encodeURIComponent(amount),
+                                DrCr: encodeURIComponent(sbDrCr),
+                                AccountID: encodeURIComponent(accheadid),
+                                VoucherNo: encodeURIComponent(voucherNo)
+                            };
+
+                            const queryString = Object.keys(params)
+                                .map(key => `${key}=${params[key]}`)
+                                .join('&');
+
+                            $("#PropertyAllocationContent").load(`/Finance/PropertyAllocation?${queryString}`, function () {
+                                $("#PropertyAllocationModal").modal('show');
+                                $(".close").on("click", function () {
+                                    $("#PropertyAllocationModal").modal('hide');
+                                });
+                                $("#btnPropertyBack").on("click", function () {
+                                    $("#PropertyAllocationModal").modal('hide');
+                                });
+                                DevExpress.ui.repaintFloatingActionButton();
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error checking property allocation:", error);
+                    }
+                });
+            }
         }
     }
 
@@ -2316,47 +2372,6 @@
     }
 
 
-    //        function onVerifyButtonClick() {
-    //         // Set VerifiedBy checkbox to true
-    //         $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-
-    //         // Prepare data for verification
-    //         // Set current date to the dxTextBox
-    //          const currentDate = new Date(); // Get the current date
-
-    // // Format the date as "dd-MMM-yyyy"
-    //          const formattedDate = currentDate.toLocaleDateString("en-GB", {
-    //                           day: "2-digit",
-    //                          month: "short",
-    //                           year: "numeric"
-    //                        }).replace(/ /g, '-');
-    //         const data = {
-    //             voucherNo:$("#VoucherNo").dxTextBox("instance").option("value") ,
-    //           //  $("#VoucherNo").dxTextBox("instance").option("value")
-    //             verifiedBy: "Admin",
-    //             verifiedOn: new Date().toISOString() // Current date in ISO format
-    //         };
-    //         console.log(data);
-    //         // Send verification data to the server
-    //         $.ajax({
-    //             //   url: `/api/VoucherMaster/VerifyVoucher?voucherNo=${encodeURIComponent(vno)}`,
-    //             // type: 'POST',
-    //             // contentType: 'application/json',
-    //             data: JSON.stringify(data),
-    //             success: function (response) {
-    //                 alert("Voucher has been verified.");
-    //                 // Optionally update UI with verification details
-    //                $("#VerifiedBytext").dxTextBox("instance").option("value","Admin");
-    //                 $("#VerifiedOnDate").dxTextBox("instance").option("value",formattedDate);
-
-    //                // $("#VerifiedOn").text(`Verified On: ${new Date(data.verifiedOn).toLocaleString()}`);
-    //             },
-    //             error: function () {
-    //                 alert("Please save the transactions after proceeding!!");
-    //             }
-    //         });
-    //     }
-
     function onVerifyButtonClick() {
 
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -2481,40 +2496,7 @@
         });
     }
 
-    //      function onApproveButtonClick() {
-    //         // Check if already approved
-    //         // if (isVoucherApproved) {
-    //         //     alert("This voucher is already approved.");
-    //         //     return;
-    //         // }
-    //         const currentDate = new Date(); // Get the current date
-
-    // // Format the date as "dd-MMM-yyyy"
-    //          const formattedDate = currentDate.toLocaleDateString("en-GB", {
-    //                           day: "2-digit",
-    //                          month: "short",
-    //                           year: "numeric"
-    //                        }).replace(/ /g, '-');
-
-    //         // Perform approval logic (e.g., update database via API)
-    //         // Simulate approval with an AJAX call
-    //          $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-
-    //         $.ajax({
-
-    //             success: function (response) {
-    //                 alert("Voucher has been approved.");
-    //                 isVoucherApproved = true;
-    //                 disableEditing();
-    //                 $("#ApprovedBytext").dxTextBox("instance").option("value","Admin");
-    //                 $("#ApprovedOntext").dxTextBox("instance").option("value",formattedDate);
-
-    //             },
-    //             error: function () {
-    //                  alert("Please save the transactions after proceeding!");
-    //             }
-    //         });
-    //     }
+   
 
     function onApproveButtonClick() {
 
@@ -2642,22 +2624,7 @@
         }
     }
 
-    // $("#btncancel").on("click", function (e) {
-    //        e.preventDefault();
-
-    //     // Get the instance of the SalaryPaidEntryPopup
-    //    const salaryPaidEntryPopup = $("#SalaryPaidEntryPopup").dxPopup("instance");
-
-    //    // Hide the popup
-    //    if (salaryPaidEntryPopup) {
-    //          const content = salaryPaidEntryPopup.content(); // Get the popup content
-    //         //  dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [""] });
-    //           dataGridEmployeeSelectionChanged({ selectedRowKeys: [""] });
-    //           dataGridAgainstPayableSelectionChanged({ selectedRowKeys: [""] });
-    //            $("#txtVoucherAmount1").dxNumberBox("instance").option("value","0.00")
-    //        salaryPaidEntryPopup.hide();
-    //    }
-    //    });
+   
     $("#btncancel").on("click", function (e) {
         e.preventDefault();
 
@@ -2678,17 +2645,7 @@
 
 
 
-            // Reset all fields to their default state
-            // $(content).find("input, textarea, select").each(function () {
-            //     if ($(this).is("input[type='checkbox'], input[type='radio']")) {
-            //         $(this).prop("checked", false); // Uncheck checkboxes and radio buttons
-            //     } else if ($(this).is("select")) {
-            //         $(this).val(null).trigger("change"); // Reset dropdowns
-            //     } else {
-            //         $(this).val(""); // Clear text inputs
-            //     }
-            // });
-
+            
             // Reset the number box value to "0.00"
             const voucherAmountBox = $("#txtVoucherAmount1").dxNumberBox("instance");
             if (voucherAmountBox) {

@@ -264,6 +264,109 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> AddBPVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName, int Gridcount)
+        {
+            if (voucherEntries == null || !voucherEntries.Any())
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                // Add entries to the database
+                _context.Tbl201VoucherEntries.AddRange(voucherEntries);
+                await _context.SaveChangesAsync();
+
+
+                var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+                var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+                    .Where(p => voucherNos.Contains(p.VoucherNo))
+                    .OrderBy(i => i.DrCr == "Cr") // Order by Dr first (DrCr != "Cr"), then Cr (DrCr == "Cr")
+                    .Select(i => new VoucherEntryDisplayDTO
+                    {
+                        VoucherNo = i.VoucherNo,
+                        VoucherEntryNo = i.VoucherEntryNo,
+                        DrCr = i.DrCr,
+                        DrAmount = i.DrAmount,
+                        CrAmount = i.CrAmount,
+                        EntryNarration = i.EntryNarration,
+                        AccountHead = i.AccountHead,
+                        SysRemarks = i.SysRemarks
+                    });
+
+
+
+                var resultList = await qryListOfAccountlists.ToListAsync();
+
+                int debitamt = 0; // Initialize debit amount
+
+                var pettycashshabbir = "";
+                foreach (var petty in voucherEntries)
+                {
+                    pettycashshabbir = petty.AccountHead;
+                }
+
+                foreach (var entry in resultList)
+                {
+                    if (!string.IsNullOrEmpty(entry.AccountHead))
+                    {
+
+                        var accountHead = _context.Qry201ListOfAccounts
+                                                  .Where(a => a.AccountId == entry.AccountHead)
+                                                  .Select(a => a.AccountHead)
+                                                  .FirstOrDefault();
+
+
+
+                        if (Gridcount != 0)
+                        {
+                            // Calculate Debit Amount (DrAmount)
+
+                            debitamt = (int)(debitamt + entry.DrAmount);
+
+                            // If Dr/Cr is Credit ("Cr"), perform specific logic
+                            if (entry.DrCr == "Cr" & PaymentAccoutHeadName == "Riyadh Bank")
+                            {
+                                // Check if an existing entry matches
+                                var existingEntry = _context.Tbl201VoucherEntries
+                                                            .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                                              && v.DrCr == "Cr"
+                                                                              && v.VoucherNo == entry.VoucherNo);
+
+                                if (existingEntry != null)
+                                {
+                                    // Update CrAmount by adding the calculated debit amount
+                                    entry.CrAmount = debitamt;
+
+                                    // Optionally update the existing entry in the database
+                                    existingEntry.VoucherAmount = entry.CrAmount;
+                                    _context.Tbl201VoucherEntries.Update(existingEntry);
+                                    _context.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    // If no existing entry, assign CrAmount as debitamt
+                                    entry.CrAmount = debitamt;
+                                }
+                            }
+
+
+                        }
+                        entry.AccountHead = accountHead;
+                    }
+
+                }
+
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
 
 
 
@@ -336,47 +439,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
-        //[HttpGet]
-        //public async Task<ActionResult> GetNewCPVoucherNo(DataSourceLoadOptions loadOptions)
-        //{
-        //    // Get the voucher No. string and Get the next serial of the voucher No.
-        //    DateTime currentDate = DateTime.Now;
-        //    string currentYear = currentDate.Year.ToString();
-        //    string currentMonth = currentDate.Month.ToString("00");
-        //    string voucherString = "CP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth.Substring(currentMonth.Length - 2, 2) + "-";
-        //    string strNewReceiptNo;
 
-        //    // SQL query to get the max voucher number
-
-
-        //    string sql = "SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo " +
-        //                  "FROM tbl201VoucherMaster " +
-        //                  "WHERE VoucherNo LIKE {0}";
-
-        //    try
-        //    {
-        //        var result = await _context.SqlQueryAsync<VoucherResult>(sql, new object[] { voucherString + "%" });
-
-        //        int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0; // Handle null result
-
-
-        //        int newVoucherNo = maxVoucherNo + 1;
-
-        //        // Format the new voucher number with leading zeros
-        //        strNewReceiptNo = "000" + newVoucherNo.ToString();
-        //        strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
-
-        //        // Concatenate with the voucher string
-        //        strNewReceiptNo = voucherString + strNewReceiptNo;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        // Handle cases where there's no existing voucher number
-        //        strNewReceiptNo = voucherString + "001";
-        //    }
-
-        //    return Json(strNewReceiptNo);
-        //}
 
         [HttpGet]
         public async Task<ActionResult> GetNewBPVoucherNo(DataSourceLoadOptions loadOptions)
@@ -697,6 +760,116 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         }
+
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteBPVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo, string PaymentAccoutHeadName)
+        {
+            try
+            {
+                int debitamt = 0; // Initialize debit amount
+                // Find the record to delete
+                var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                if (record == null)
+                {
+                    return NotFound(new { message = "Record not found!" });
+                }
+
+                if (record.DrCr != "Cr")
+                {
+                    // Remove the record
+                    _context.Tbl201VoucherEntries.Remove(record);
+                    await _context.SaveChangesAsync();
+
+                }
+
+                // Get the list of updated vouchers
+                var voucherEntries = _context.Tbl201VoucherEntries
+                                              .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
+                                              .ToList();
+
+                var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+
+                // Query the display list
+                var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
+                                                    .Where(p => voucherNos.Contains(p.VoucherNo))
+                                                    .OrderBy(i => i.DrCr == "Cr")
+                                                    .Select(i => new VoucherEntryDisplayDTO
+                                                    {
+                                                        VoucherNo = i.VoucherNo,
+                                                        VoucherEntryNo = i.VoucherEntryNo,
+                                                        DrCr = i.DrCr,
+                                                        DrAmount = i.DrAmount,
+                                                        CrAmount = i.CrAmount,
+                                                        EntryNarration = i.EntryNarration,
+                                                        AccountHead = i.AccountHead,
+                                                        SysRemarks = i.SysRemarks
+                                                    });
+
+                var resultList = await qryListOfAccountLists.ToListAsync();
+
+                // Update the fields in the result list
+                foreach (var entry in resultList)
+                {
+                    debitamt = (int)(debitamt + entry.DrAmount);
+
+                    // If Dr/Cr is Credit ("Cr"), perform specific logic
+                    if (entry.DrCr == "Cr" & PaymentAccoutHeadName == "Riyadh Bank")
+                    {
+                        // Check if an existing entry matches
+                        var existingEntry = _context.Tbl201VoucherEntries
+                                                    .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                                      && v.DrCr == "Cr"
+                                                                      && v.VoucherNo == entry.VoucherNo);
+
+                        if (existingEntry != null)
+                        {
+                            // Update CrAmount by adding the calculated debit amount
+                            entry.CrAmount = debitamt;
+
+                            // Optionally update the existing entry in the database
+                            existingEntry.VoucherAmount = entry.CrAmount;
+                            _context.Tbl201VoucherEntries.Update(existingEntry);
+                            _context.SaveChanges();
+
+                        }
+                        else
+                        {
+                            // If no existing entry, assign CrAmount as debitamt
+                            entry.CrAmount = debitamt;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(entry.AccountHead))
+                    {
+                        // Find the account head
+                        var accountHead = _context.Qry201ListOfAccounts
+                                                  .Where(a => a.AccountId == entry.AccountHead)
+                                                  .Select(a => a.AccountHead)
+                                                  .FirstOrDefault();
+
+                        // Update AccountHead and SysRemarks
+                        entry.AccountHead = accountHead ?? PaymentAccoutHeadName;
+                        if (resultList.Count == 1)
+                        {
+                            entry.DrAmount = 0;
+                            entry.CrAmount = 0;
+                        }
+
+                        //entry.SysRemarks = PaymentAccoutHeadName;
+                    }
+                }
+
+                // Return the modified list for DataSourceLoader
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                // Return a detailed error response
+                return StatusCode(500, new { message = "An error occurred while deleting the record.", error = ex.Message });
+            }
+        }
+
 
 
 
