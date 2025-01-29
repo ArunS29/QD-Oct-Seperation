@@ -174,7 +174,11 @@
                             .DisplayFormat("dd-MMM-yyyy")
                             .Value("") //Specifies the type as a date picker
                             .ID("accountMasterDropDownBoxExpiry")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Expiry date must be entered,Please check again.");
 
+                            })
                             .ShowClearButton(true)
                             .Value(DateTime.Now)
                             .Width("100%"))
@@ -197,7 +201,11 @@
                             .DisplayFormat("dd-MMM-yyyy")
                             .Value("") //Specifies the type as a date picker
                             .ID("accountMasterDropDownBoxNotification")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Notification date must be entered,Please check again.");
 
+                            })
                             .ShowClearButton(true)
                             .Value(DateTime.Now)
                             .Width("100%"))
@@ -389,9 +397,15 @@
         // Get the validator instance for the dropdown
         var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
         var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
+        var accountMasterDropDownBoxNotificationValidator = $("#accountMasterDropDownBoxNotification").dxValidator("instance");
+        var accountMasterDropDownBoxNotificationValidation = accountMasterDropDownBoxNotificationValidator.validate();
+        var accountMasterDropDownBoxExpiryValidator = $("#accountMasterDropDownBoxExpiry").dxValidator("instance");
+        var accountMasterDropDownBoxNotificationValidation = accountMasterDropDownBoxExpiryValidator.validate();
+        // accountMasterDropDownBoxNotification
+        // accountMasterDropDownBoxExpiry
 
         // Validate input fields
-        if (accountMasterDropDownBoxValidation.isValid) {
+        if (accountMasterDropDownBoxValidation.isValid && accountMasterDropDownBoxNotificationValidation.isValid && accountMasterDropDownBoxNotificationValidation.isValid) {
             // Prepare the VM (View Model) for the API call
             var VM = {
                 "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
@@ -428,7 +442,9 @@
 
                     // Notify the user of successful operation
                     DevExpress.ui.notify("Document details added successfully!", "success", 2000);
-
+                    accountMasterDropDownBoxValidator.reset();
+                    accountMasterDropDownBoxNotificationValidator.reset();
+                    accountMasterDropDownBoxExpiryValidator.reset();
                     // Reset form fields
                     resetFormFields();
 
@@ -441,14 +457,16 @@
                 }
             });
         } else {
-            DevExpress.ui.notify("Please fill the required details!", "error", 2000);
+            DevExpress.ui.notify("Cannot save while the entry have errors,Please clear the errors to continue.", "error", 2000);
         }
     }
 
 
     // Function to reset form fields
     function resetFormFields() {
-        $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value", "-");
+
+        // Reset validation states
+        // $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value", "-");
         $("#Remarks").dxTextBox("instance").option("value", "");
         $("#accountMasterDropDownBoxExpiry").dxDateBox("instance").option("value", null);
         $("#accountMasterDropDownBoxNotification").dxDateBox("instance").option("value", null);
@@ -703,7 +721,7 @@
 
     function redirecttoledgersubgroup() {
         const masterFormWindow = window.open(
-            '/Finance/LedgerSubGroupMaster',
+            '/Finance/AssetsDocTypeMaster',
             'popupWindow',
             'width=800,height=600,scrollbars=yes,resizable=yes'
         );
