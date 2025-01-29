@@ -550,10 +550,11 @@
 
         <!-- Breadcrumb above Sidebar 2 -->
         <div class="breadcrumb" id="breadcrumb">
-        
+          @*   <button class="prev-btn" onclick="goBack()">&#60;</button> *@
+            <span onclick="resetBreadcrumb()">Home</span>
         </div>
         <!-- Main Content -->
-        
+        <!-- Main Content -->
         <div class="main-content" id="mainContent">
             <iframe id="contentIframe"
                     src=""
@@ -561,13 +562,16 @@
         </div>
 
     </div>
-
+                    @*   <div id="loader" class="loader">
+    <img src="~/images/Loading.gif" alt="Loading..." />
+    </div>
+    <iframe id="contentIframe" onload="hideLoader()" style="display: none;"></iframe *@
 
 
 
 
     <script>
-        // Function for Bell icon click - show notifications popup
+               // Function for Bell icon click - show notifications popup
         function handleBellClick() {
             const notificationPopup = document.getElementById('notificationPopup');
             if (notificationPopup) {
@@ -602,7 +606,7 @@
         const breadcrumbTrail = []; // Tracks the breadcrumb trail
 
       function navigate(name) {
-      const sidebar2 = document.getElementById('sidebar2');
+    const sidebar2 = document.getElementById('sidebar2');
     
     // Toggle sidebar2 visibility based on whether it's already visible or not
     if (sidebar2.style.display === 'block') {
@@ -620,7 +624,7 @@
 
     // Ensure the first breadcrumb is always from Sidebar 1
     breadcrumbTrail[0] = name;
-   
+    breadcrumbTrail.length = 1; // Reset subsequent breadcrumbs
     updateBreadcrumb();
 }
 
@@ -723,117 +727,123 @@
 
                     `;
         }
-          function loadAccountLedger() {
-           // Set the iframe source to load Accounting Ledgers content
+
+        // Function to toggle visibility of nested submenus
+        function toggleSubmenu(submenuId) {
+            const submenu = document.getElementById(submenuId);
+            if (submenu.style.display === 'none') {
+                submenu.style.display = 'block';
+            } else {
+                submenu.style.display = 'none';
+            }
+        }
+
+        // Function to toggle visibility of nested submenus
+        function toggleSubmenu(submenuId) {
+            const submenu = document.getElementById(submenuId);
+            if (submenu.style.display === 'none') {
+                submenu.style.display = 'block';
+            } else {
+                submenu.style.display = 'none';
+            }
+        }
+
+
+               function loadAccountLedger() {
+            // Set the iframe source to load Accounting Ledgers content
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AccountingLedgers";
-           // Update the breadcrumb (same as the anchor tag in the menu)
+            // Update the breadcrumb (same as the anchor tag in the menu)
             updateBreadcrumbFromSidebar2('/ Accounting Ledgers');
         }
 
-          function loadAccountRegister() {
+
+
+        function loadAccountRegister() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AccountingRegister";
             updateBreadcrumbFromSidebar2('/ Accounting Registers');
         }
-           function loadVoucherVerification() {
-             const iframe = document.getElementById("contentIframe");
-             iframe.src = "/Finance/VoucherApproval";
-             updateBreadcrumbFromSidebar2('/ Voucher Verification');
+                function loadVoucherVerification() {
+                            const iframe = document.getElementById("contentIframe");
+                                    iframe.src = "/Finance/VoucherApproval";
+                            updateBreadcrumbFromSidebar2('/ Voucher Verification');
+                        }
+                function loadBillsReceivable() {
+                    const iframe = document.getElementById("contentIframe");
+                            iframe.src = "/Finance/BillsReceivable";
+                    updateBreadcrumbFromSidebar2('/ Bills Receivable');
+                }
+                           function loadBillsPayable() {
+                            const iframe = document.getElementById("contentIframe");
+                                    iframe.src = "/Finance/BillsPayable";
+                            updateBreadcrumbFromSidebar2('/ Bills Payable');
+                        }
+                                   function loadCostAnalysis() {
+                            const iframe = document.getElementById("contentIframe");
+                                    iframe.src = "/Finance/CostAnalysis";
+                            updateBreadcrumbFromSidebar2('/ Cost Analysis');
+                        }
+                                   function loadBillsReceivable() {
+                            const iframe = document.getElementById("contentIframe");
+                                    iframe.src = "/Finance/BillsReceivable";
+                            updateBreadcrumbFromSidebar2('/ Bills Receivable');
+                        }
+                        //             function loadSalaryPayable() {
+                        //     const iframe = document.getElementById("contentIframe");
+                        //             iframe.src = "/Finance/SalaryPayable";
+                        //     updateBreadcrumbFromSidebar2('/ Salary Payable');
+                        // }
+                         function loadFinancialReports() {
+                                    const iframe = document.getElementById("contentIframe");
+                                            iframe.src = "/Finance/TrialBalance";
+                                    updateBreadcrumbFromSidebar2('/ Financial Reports');
+                                }
+                                 function loadAssestRegister() {
+                                   const iframe = document.getElementById("contentIframe");
+                                            iframe.src = "/Finance/AssetView";
+                                    updateBreadcrumbFromSidebar2('/ Asset Register');
+                                }
+        function loadChartOfAccounts() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/ChartOfAccounts";
+            updateBreadcrumbFromSidebar2('/ Chart Of Accounts');
         }
-           function loadBillsReceivable() {
-             const iframe = document.getElementById("contentIframe");
-             iframe.src = "/Finance/BillsReceivable";
-             updateBreadcrumbFromSidebar2('/ Bills Receivable');
+         function loadChartofCostCenters() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/ChartOfCostCenters";
+            updateBreadcrumbFromSidebar2('/ Chart Of Cost Centers');
         }
-           function loadBillsPayable() {
-             const iframe = document.getElementById("contentIframe");
-             iframe.src = "/Finance/BillsPayable";
-             updateBreadcrumbFromSidebar2('/ Bills Payable');
-        }
-           function loadCostAnalysis() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/CostAnalysis";
-              updateBreadcrumbFromSidebar2('/ Cost Analysis');
-        }
-            function loadBillsReceivable() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/BillsReceivable";
-              updateBreadcrumbFromSidebar2('/ Bills Receivable');
-        }
-            function loadFinancialReports() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/TrialBalance";
-              updateBreadcrumbFromSidebar2('/ Financial Reports');
-        }
-            function loadAssestRegister() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/AssetView";
-              updateBreadcrumbFromSidebar2('/ Asset Register');
-        }
-             function loadChartOfAccounts() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/ChartOfAccounts";
-              updateBreadcrumbFromSidebar2('/ Chart Of Accounts');
-          }
-           function loadChartofCostCenters() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/ChartOfCostCenters";
-              updateBreadcrumbFromSidebar2('/ Chart Of Cost Centers');
-          }
-           function loadCashReceipt() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/VoucherEntryCashReceipts";
-              updateBreadcrumbFromSidebar2('/ Cash Receipt');
-          }
-            function loadBankReceipt() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/VoucherEntryReceipts";
-              updateBreadcrumbFromSidebar2('/ Bank Receipt');
-          }
-            function loadBankPayment() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/VoucherBankPayment";
-              updateBreadcrumbFromSidebar2('/ Bank Payment');
-          }
-            function loadCashPayment() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/VoucherCashPayment";
-              updateBreadcrumbFromSidebar2('/ Cash Payment');
-          }
-            function loadExpenseClaim() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/ExpensesClaim";
-              updateBreadcrumbFromSidebar2('/ Expense Claim');
-          }
-            function loadJournelRegister() {
-              const iframe = document.getElementById("contentIframe");
-              iframe.src = "/Finance/JournalRegister";
-              updateBreadcrumbFromSidebar2('/ Journel Register');
-          }
-
-        // Function to toggle visibility of nested submenus
-        function toggleSubmenu(submenuId) {
-            const submenu = document.getElementById(submenuId);
-            if (submenu.style.display === 'none') {
-                submenu.style.display = 'block';
-            } else {
-                submenu.style.display = 'none';
-            }
-        }
-
-        // Function to toggle visibility of nested submenus
-        function toggleSubmenu(submenuId) {
-            const submenu = document.getElementById(submenuId);
-            if (submenu.style.display === 'none') {
-                submenu.style.display = 'block';
-            } else {
-                submenu.style.display = 'none';
-            }
-        }
-
-
-      
+                         function loadCashReceipt() {
+                    const iframe = document.getElementById("contentIframe");
+                            iframe.src = "/Finance/VoucherEntryCashReceipts";
+                    updateBreadcrumbFromSidebar2('/ Cash Receipt');
+                }
+                        function loadBankReceipt() {
+                            const iframe = document.getElementById("contentIframe");
+                                            iframe.src = "/Finance/VoucherEntryReceipts";
+                            updateBreadcrumbFromSidebar2('/ Bank Receipt');
+                        }
+                                                        function loadBankPayment() {
+                                    const iframe = document.getElementById("contentIframe");
+                                                    iframe.src = "/Finance/VoucherBankPayment";
+                                    updateBreadcrumbFromSidebar2('/ Bank Payment');
+                                }
+                                                                function loadCashPayment() {
+                                    const iframe = document.getElementById("contentIframe");
+                                                    iframe.src = "/Finance/VoucherCashPayment";
+                                    updateBreadcrumbFromSidebar2('/ Cash Payment');
+                                }
+                                                                     function loadExpenseClaim() {
+                                            const iframe = document.getElementById("contentIframe");
+                                                            iframe.src = "/Finance/ExpensesClaim";
+                                            updateBreadcrumbFromSidebar2('/ Expense Claim');
+                                        }
+                                                                             function loadJournelRegister() {
+                                            const iframe = document.getElementById("contentIframe");
+                                                            iframe.src = "/Finance/JournalRegister";
+                                            updateBreadcrumbFromSidebar2('/ Journel Register');
+                                        }
 
 
         function updateBreadcrumbFromSidebar2(submenuItem) {
