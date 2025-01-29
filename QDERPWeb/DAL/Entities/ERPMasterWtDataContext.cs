@@ -54,6 +54,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl20101SalesPersonMaster> Tbl20101SalesPersonMasters { get; set; }
 
+    public virtual DbSet<Tbl20104EmployeeAllocationMaster> Tbl20104EmployeeAllocationMasters { get; set; }
+
     public virtual DbSet<Tbl20105AssetMaster> Tbl20105AssetMasters { get; set; }
 
     public virtual DbSet<Tbl20106AssetCategory> Tbl20106AssetCategories { get; set; }
@@ -1250,6 +1252,38 @@ public partial class ERPMasterWtDataContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.SalesPersonName).IsUnicode(false);
             entity.Property(e => e.SalespersonOldCode)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl20104EmployeeAllocationMaster>(entity =>
+        {
+            entity.HasKey(e => e.EmployeeAllocationId);
+
+            entity.ToTable("tbl20104EmployeeAllocationMaster");
+
+            entity.Property(e => e.EmployeeAllocationId).HasColumnName("EmployeeAllocationID");
+            entity.Property(e => e.AmountAllocated).HasColumnType("money");
+            entity.Property(e => e.ApprovedBy).IsUnicode(false);
+            entity.Property(e => e.ApprovedOn).HasColumnType("datetime");
+            entity.Property(e => e.CostAllocRemarks).IsUnicode(false);
+            entity.Property(e => e.EffectiveDate).HasColumnType("datetime");
+            entity.Property(e => e.EmpAllocDrCr)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.EmployeeNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.EnteredBy).IsUnicode(false);
+            entity.Property(e => e.EnteredOn).HasColumnType("datetime");
+            entity.Property(e => e.LedgerAccountNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.LoanId).HasColumnName("LoanID");
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.VoucherEntryId).HasColumnName("VoucherEntryID");
+            entity.Property(e => e.VoucherNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });

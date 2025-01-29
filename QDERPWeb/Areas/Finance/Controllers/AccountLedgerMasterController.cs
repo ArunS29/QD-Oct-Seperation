@@ -14,6 +14,7 @@ using QD.ERP.Web.DAL.Entities;
 using Microsoft.Identity.Client;
 using System.Xml.Linq;
 using System.Linq;
+using System.Data;
 
 
 
@@ -40,6 +41,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			{
 				var qryListOfAccountlists = _context.Tbl201AccountGroups.Select(i => new
 				{
+					AccountGroupUnder = i.AccountGroupUnder,
 					AccountGroupId = i.AccountGroupId,
 					AccountGroup = i.AccountGroup
 				});
@@ -274,6 +276,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 		}
 
 
+
 		#region "CRUD Operation"
 
 		[HttpPost("InsertLedgerAccount")]
@@ -403,7 +406,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 				// Update the existing record
 				existingAccount.ReferenceNo = chartAccount.ReferenceNo;
 				existingAccount.AccountHead = chartAccount.AccountHead;
-
 				existingAccount.AccountGroupId = AccountGroupID;
 				existingAccount.OpeningBalance = chartAccount.OpeningBalance;
 				existingAccount.OpeningBalanceDrCr = chartAccount.OpeningBalanceDrCr;
@@ -426,33 +428,52 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 				existingAccount.BankAccountName = chartAccount.BankAccountName;
 				existingAccount.AccountHeadArabic = chartAccount.AccountHeadArabic;
 				existingAccount.BankName = chartAccount.BankName;
+				existingAccount.BankNameAr = chartAccount.BankNameAr;
+				existingAccount.BankAccountNameAr = chartAccount.BankAccountNameAr;
 				existingAccount.BankBranch = chartAccount.BankBranch;
+				existingAccount.BankBranchAr = chartAccount.BankBranchAr;
 				existingAccount.BankAccountNo = chartAccount.BankAccountNo;
 				existingAccount.BankIban = chartAccount.BankIban;
 				existingAccount.BankSwiftCode = chartAccount.BankSwiftCode;
 				existingAccount.BillingName = chartAccount.BillingName;
+				existingAccount.BillingNameAr = chartAccount.BillingNameAr;
 				existingAccount.VatregistrationNo = chartAccount.VatregistrationNo;
 				existingAccount.ClientGroupVatnumber = chartAccount.ClientGroupVatnumber;
 				existingAccount.ClientOtherIdtype = chartAccount.ClientOtherIdtype;
 				existingAccount.ClientOtherId = chartAccount.ClientOtherId;
 				existingAccount.ClientAddressStreet = chartAccount.ClientAddressStreet;
+				existingAccount.ClientAddressStreetAr = chartAccount.ClientAddressStreetAr;
 				existingAccount.ClientAdditionalStreet = chartAccount.ClientAdditionalStreet;
+				existingAccount.ClientAdditionalStreetAr = chartAccount.ClientAdditionalStreetAr;
 				existingAccount.ClientBuildingNumber = chartAccount.ClientBuildingNumber;
 				existingAccount.ClientCity = chartAccount.ClientCity;
+				existingAccount.ClientCityAr = chartAccount.ClientCityAr;
+				existingAccount.ClientAdditionalNumber = chartAccount.ClientAdditionalNumber;
 				existingAccount.ClientProvince = chartAccount.ClientProvince;
+				existingAccount.ClientProvinceAr = chartAccount.ClientProvinceAr;
+
 				existingAccount.ClientPostalCode = chartAccount.ClientPostalCode;
 				existingAccount.ClientNeighborhood = chartAccount.ClientNeighborhood;
 				existingAccount.SupplierName = chartAccount.SupplierName;
+				existingAccount.SupplierNameAr = chartAccount.SupplierNameAr;
 				existingAccount.SupplierVatno = chartAccount.SupplierVatno;
 				existingAccount.SupplierGroupVatnumber = chartAccount.SupplierGroupVatnumber;
 				existingAccount.SupplierAddressStreet = chartAccount.SupplierAddressStreet;
+				existingAccount.SupplierAddressStreetAr = chartAccount.SupplierAddressStreetAr;
 				existingAccount.SupplierAdditionalStreet = chartAccount.SupplierAdditionalStreet;
+				existingAccount.SupplierAdditionalStreetAr = chartAccount.SupplierAdditionalStreetAr;
 				existingAccount.SupplierBuildingNumber = chartAccount.SupplierBuildingNumber;
 				existingAccount.SupplierCity = chartAccount.SupplierCity;
+				existingAccount.SupplierCityAr = chartAccount.SupplierCityAr;
+				existingAccount.SupplierAdditionalNumber = chartAccount.SupplierAdditionalNumber;
+
 				existingAccount.SupplierProvince = chartAccount.SupplierProvince;
+				existingAccount.SupplierProvinceAr = chartAccount.SupplierProvinceAr;
 				existingAccount.SupplierPostalCode = chartAccount.SupplierPostalCode;
 				existingAccount.SupplierNeighborhood = chartAccount.SupplierNeighborhood;
+				existingAccount.SupplierNeighborhoodAr = chartAccount.SupplierNeighborhoodAr;
 				existingAccount.BillingAddress = chartAccount.BillingAddress;
+				existingAccount.BillingAddressAr = chartAccount.BillingAddressAr;
 				existingAccount.ClientTin = chartAccount.ClientTin;
 				existingAccount.BillingContactPerson = chartAccount.BillingContactPerson;
 				existingAccount.BillingPhoneNo = chartAccount.BillingPhoneNo;
@@ -494,35 +515,53 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 					EmailAddress = chartAccount.EmailAddress,
 					LedgerRemarks = chartAccount.LedgerRemarks,
 					BankAccountName = chartAccount.BankAccountName,
+					BankAccountNameAr = chartAccount.BankAccountNameAr,
 					AccountHeadArabic = chartAccount.AccountHeadArabic,
 					BankName = chartAccount.BankName,
+					BankNameAr = chartAccount.BankNameAr,
 					BankBranch = chartAccount.BankBranch,
+					BankBranchAr = chartAccount.BankBranchAr,
 					BankAccountNo = chartAccount.BankAccountNo,
 					BankIban = chartAccount.BankIban,
 					BankSwiftCode = chartAccount.BankSwiftCode,
 					BillingName = chartAccount.BillingName,
+					BillingNameAr = chartAccount.BillingNameAr,
 					VatregistrationNo = chartAccount.VatregistrationNo,
 					ClientGroupVatnumber = chartAccount.ClientGroupVatnumber,
 					ClientOtherIdtype = chartAccount.ClientOtherIdtype,
 					ClientOtherId = chartAccount.ClientOtherId,
 					ClientAddressStreet = chartAccount.ClientAddressStreet,
+					ClientAddressStreetAr = chartAccount.ClientAddressStreetAr,
 					ClientAdditionalStreet = chartAccount.ClientAdditionalStreet,
+					ClientAdditionalStreetAr = chartAccount.ClientAdditionalStreetAr,
 					ClientBuildingNumber = chartAccount.ClientBuildingNumber,
 					ClientCity = chartAccount.ClientCity,
+					ClientCityAr = chartAccount.ClientCityAr,
+					ClientAdditionalNumber = chartAccount.ClientAdditionalNumber,
 					ClientProvince = chartAccount.ClientProvince,
+					ClientProvinceAr = chartAccount.ClientProvinceAr,
 					ClientPostalCode = chartAccount.ClientPostalCode,
 					ClientNeighborhood = chartAccount.ClientNeighborhood,
 					SupplierName = chartAccount.SupplierName,
+					SupplierNameAr = chartAccount.SupplierNameAr,
 					SupplierVatno = chartAccount.SupplierVatno,
 					SupplierGroupVatnumber = chartAccount.SupplierGroupVatnumber,
 					SupplierAddressStreet = chartAccount.SupplierAddressStreet,
+					SupplierAddressStreetAr = chartAccount.SupplierAddressStreetAr,
 					SupplierAdditionalStreet = chartAccount.SupplierAdditionalStreet,
+					SupplierAdditionalStreetAr = chartAccount.SupplierAdditionalStreetAr,
 					SupplierBuildingNumber = chartAccount.SupplierBuildingNumber,
 					SupplierCity = chartAccount.SupplierCity,
+					SupplierCityAr = chartAccount.SupplierCityAr,
+					SupplierAdditionalNumber = chartAccount.SupplierAdditionalNumber,
 					SupplierProvince = chartAccount.SupplierProvince,
+					SupplierProvinceAr = chartAccount.SupplierProvinceAr,
+
 					SupplierPostalCode = chartAccount.SupplierPostalCode,
 					SupplierNeighborhood = chartAccount.SupplierNeighborhood,
+					SupplierNeighborhoodAr = chartAccount.SupplierNeighborhoodAr,
 					BillingAddress = chartAccount.BillingAddress,
+					BillingAddressAr = chartAccount.BillingAddressAr,
 					ClientTin = chartAccount.ClientTin,
 					BillingContactPerson = chartAccount.BillingContactPerson,
 					BillingPhoneNo = chartAccount.BillingPhoneNo,
@@ -536,6 +575,119 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 				_context.Tbl201ChartOfAccounts.Add(newAccount);
 				_context.SaveChanges();
 				return Json(new { success = true, message = "Ledger account inserted successfully" });
+			}
+		}
+
+		[HttpGet("GetAccountDetails")]
+		public async Task<ActionResult> GetAccountDetails(string accountID)
+		{
+			try
+			{
+				// Validate the input
+				if (string.IsNullOrEmpty(accountID))
+				{
+					return BadRequest(new { Message = "AccountID cannot be null or empty." });
+				}
+
+				// Fetch account details
+				var accountDetails = await _context.Tbl201ChartOfAccounts
+					.Where(p => p.AccountId == accountID) // Fixed the incorrect condition
+					.Select(i => new
+					{
+						i.ReferenceNo,
+						i.AccountHead,
+						i.AccountGroupId,
+						i.OpeningBalance,
+						i.OpeningBalanceDrCr,
+						i.IsDefaultForCash,
+						i.VoucherAbbr,
+						i.IsMaintainBillByBill,
+						i.NoOfDaysCreditPeriod,
+						i.IsEmployeeAllocated,
+						i.IsPropertyAllocated,
+						i.IsEmployeePaymentAc,
+						i.IsLedgerObselete,
+						i.AccountBranch,
+						i.AccountSubGroup,
+						i.SalesPersonCode,
+						i.AccountsContactName,
+						i.AccountsContactTitle,
+						i.AccountsContactMobile,
+						i.EmailAddress,
+						i.LedgerRemarks,
+						i.BankAccountName,
+						i.BankAccountNameAr,
+						i.AccountHeadArabic,
+						i.BankName,
+						i.BankNameAr,
+						i.BankBranch,
+						i.BankBranchAr,
+						i.BankAccountNo,
+						i.BankIban,
+						i.BankSwiftCode,
+						i.BillingName,
+						i.BillingNameAr,
+						i.VatregistrationNo,
+						i.ClientGroupVatnumber,
+						i.ClientOtherIdtype,
+						i.ClientOtherId,
+						i.ClientAddressStreet,
+						i.ClientAddressStreetAr,
+						i.ClientAdditionalStreet,
+						i.ClientAdditionalStreetAr,
+						i.ClientBuildingNumber,
+						i.ClientCity,
+						i.ClientCityAr,
+						i.ClientAdditionalNumber,
+						i.ClientProvince,
+						i.ClientProvinceAr,
+						i.ClientPostalCode,
+						i.ClientNeighborhood,
+						i.SupplierName,
+						i.SupplierNameAr,
+						i.SupplierVatno,
+						i.SupplierGroupVatnumber,
+						i.SupplierAddressStreet,
+						i.SupplierAddressStreetAr,
+						i.SupplierAdditionalStreet,
+						i.SupplierAdditionalStreetAr,
+						i.SupplierBuildingNumber,
+						i.SupplierCity,
+						i.SupplierCityAr,
+						i.SupplierAdditionalNumber,
+						i.SupplierProvince,
+						i.SupplierProvinceAr,
+						i.SupplierPostalCode,
+						i.SupplierNeighborhood,
+						i.SupplierNeighborhoodAr,
+						i.BillingAddress,
+						i.BillingAddressAr,
+						i.ClientTin,
+						i.BillingContactPerson,
+						i.BillingPhoneNo,
+						i.BillingFaxNo,
+						i.ClientVendorNo,
+						i.BillingContactPersonTitle,
+						i.BillingBankAccount,
+						i.SupplierAddress
+					})
+					.ToListAsync(); // Use async to improve performance
+
+				// Check if no data was found
+				if (!accountDetails.Any())
+				{
+					return NotFound(new { Message = "No account details found for the provided AccountID." });
+				}
+
+				return Json(new { accountDetails });
+
+			}
+			catch (Exception ex)
+			{
+				// Log the error for debugging (if logging is configured)
+				// Example: _logger.LogError(ex, "Error occurred while fetching account details.");
+
+				return StatusCode(500, new { Message = "An unexpected error occurred.", Error = ex.Message });
 			}
 		}
 

@@ -293,38 +293,38 @@
 @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
-					.ID("ledgeraccount-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AccountingLedgers")
-					.LoadAction("GetLedgerAccounts")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("AccountId")
+						.ID("ledgeraccount-datagrid")
+						.DataSource(d => d.WebApi()
+						.Controller("AccountingLedgers")
+						.LoadAction("GetLedgerAccounts")
+						.LoadMode(DataSourceLoadMode.Raw)
+						.Key("AccountId")
+						)
+						.WordWrapEnabled(true)
+						.ShowBorders(true)
+						.SearchPanel(sp => sp.HighlightSearchText(true))
+						.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+						.OnSelectionChanged("dataGridSelectionChanged")
+						.OnInitialized("dataGridInitialized")
+						.HeaderFilter(p => p.Visible(true))
+						.ShowBorders(true)
+						.HoverStateEnabled(true)
+						.Paging(p => p.PageSize(15))
+						.FilterRow(f => f.Visible(true))
+						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+						.Height(345)
+						.Selection(s => s.Mode(SelectionMode.Single))
+						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+						.Columns(columns =>
+						{
+							columns.Add().DataField("AccountId");
+							columns.Add().DataField("AccountHead");
+							columns.Add().DataField("MasterGroup");
+							columns.Add().DataField("AccountGroup");
+							columns.Add().DataField("ReferenceNo");
+							columns.Add().DataField("IsLedgerObselete");
+						})
 					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.SearchPanel(sp => sp.HighlightSearchText(true))
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-					.OnSelectionChanged("dataGridSelectionChanged")
-					.OnInitialized("dataGridInitialized")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("AccountId");
-						columns.Add().DataField("AccountHead");
-						columns.Add().DataField("MasterGroup");
-						columns.Add().DataField("AccountGroup");
-						columns.Add().DataField("ReferenceNo");
-						columns.Add().DataField("IsLedgerObselete");
-					})
-				)
 }
 <script>
 	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar;
@@ -535,7 +535,9 @@
 		}
 		else if (accheadar == null || accheadar == undefined) {
 			accheadar = "";
+
 		}
+
 
 
 
@@ -690,7 +692,7 @@
 
 	function redirectToLedgerAccount() {
 		//DevExpress.ui.notify("Working on Progress", "success", 2000);
-		window.open('/Finance/LedgerAccount', 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
+		window.open('/Finance/LedgerAccount', 'popupWindow1', 'width=1300,height=600,scrollbars=yes,resizable=yes');
 	}
 
 	//    function btnEditAccount_click() {

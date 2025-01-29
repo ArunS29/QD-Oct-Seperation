@@ -32,7 +32,7 @@
 	}
 
 	.backgroundcolor {
-		background-color:white;
+		background-color: white;
 	}
 
 	.button-alignment-down {
@@ -72,6 +72,12 @@
 				)
 	</div>
 </div>
+<div class="card-header" style=" color: slategrey; font-weight:bolder; font-size: 24px;background-color:  aliceblue;">
+
+	SalesVoucher:
+</div>
+
+
 <div class="content-container-top">
 	<div class="container">
 		<div class="row g-4">
@@ -120,7 +126,7 @@
 			<div class="col-md-3">
 				<div class="form-group">
 					<div class="button-alignment-down">
-						<label for="UseSubmittedDate">Submitted Date</label>
+						<label for="UseSubmittedDate">Received Date</label>
 						@(Html.DevExtreme().CheckBox()
 													.ID("UseSubmittedDate")
 													.OnValueChanged("updateDueDate")
@@ -133,11 +139,11 @@
 												.Type(DateBoxType.Date)
 												.DisplayFormat("dd-MMM-yyyy")
 												.Value(DateTime.Now)
+												@* .OnValueChanged("onDateChange") *@
 												)
 				</div>
 
 			</div>
-
 		</div>
 	</div>
 	<div class="clear"></div>
@@ -1193,111 +1199,83 @@
 			});
 		}
 		function updateDueDate() {
-
+			// Get checkbox value and "No of Days"
 			const useSubmittedDate = $("#UseSubmittedDate").dxCheckBox("instance").option("value");
-			if (!useSubmittedDate) {
-				onDateChange();
-				return;
-			}
 			const noOfDays = $("#InvoiceNoOfDays").dxNumberBox("instance").option("value");
-			let baseDate;
-			if (useSubmittedDate) {
 
-				baseDate = $("#InvoiceSubmittedDate").dxDateBox("instance").option("value");
-			} else {
+			// Determine the base date (Submitted Date or Voucher Date)
+			const baseDate = useSubmittedDate
+				? $("#InvoiceSubmittedDate").dxDateBox("instance").option("value")
+				: $("#VoucherDate").dxDateBox("instance").option("value");
 
-				baseDate = $("#VoucherDate").dxDateBox("instance").option("value");
-			}
-
+			// Validate the base date
 			if (!baseDate) {
 				alert("Please select a valid base date!");
 				return;
 			}
+
+			// Calculate the Due Date
 			const calculatedDate = new Date(baseDate);
 			calculatedDate.setDate(calculatedDate.getDate() + noOfDays);
+
+			// Update Due Date
 			$("#InvoiceDueDate").dxDateBox("instance").option("value", calculatedDate);
-			if (useSubmittedDate) {
-				const submittedDate = new Date($("#InvoiceSubmittedDate").dxDateBox("instance").option("value"));
-				const dueDate = new Date($("#InvoiceDueDate").dxDateBox("instance").option("value"));
-
-				const timeDiff = dueDate - submittedDate;
-				const daysDifference = timeDiff / (1000 * 3600 * 24);
-
-
-				const roundedDays = Math.floor(daysDifference);
-
-
-				$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", roundedDays);
-			} else {
-
-				onDateChange();
-			}
 		}
 
 		function onDateChange() {
+			// Get Voucher Date and Due Date
 			const voucherDate = new Date($("#VoucherDate").dxDateBox("instance").option("value"));
 			const dueDate = new Date($("#InvoiceDueDate").dxDateBox("instance").option("value"));
 
-
+			// Validate that Due Date is not earlier than Voucher Date
 			if (dueDate < voucherDate) {
 				alert("Due Date cannot be earlier than Voucher Date.");
-				$("#InvoiceDueDate").dxDateBox("instance").option("value", voucherDate);
+				$("#InvoiceDueDate").dxDateBox("instance").option("value", voucherDate); // Reset Due Date to Voucher Date
 				return;
 			}
 
-
-			const diffTime = Math.abs(dueDate - voucherDate);
+			// Calculate the difference in days and update "No of Days"
+			const diffTime = dueDate - voucherDate;
 			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-
 			$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", diffDays);
 		}
 
+		// Initialize the event handlers
 		$(function () {
-
 			$("#InvoiceSubmittedDate").dxDateBox({
-				onValueChanged: function () {
-					updateDueDate();
-				}
+				onValueChanged: updateDueDate, // Recalculate Due Date on change
 			});
-
 
 			$("#VoucherDate").dxDateBox({
-				onValueChanged: function () {
-					updateDueDate();
-				}
+				onValueChanged: updateDueDate, // Recalculate Due Date on change
 			});
-
 
 			$("#InvoiceNoOfDays").dxNumberBox({
 				onValueChanged: function () {
 					const noOfDays = $("#InvoiceNoOfDays").dxNumberBox("instance").option("value");
 					const useSubmittedDate = $("#UseSubmittedDate").dxCheckBox("instance").option("value");
-					let baseDate;
 
-					if (useSubmittedDate) {
-
-						baseDate = $("#InvoiceSubmittedDate").dxDateBox("instance").option("value");
-					} else {
-
-						baseDate = $("#VoucherDate").dxDateBox("instance").option("value");
-					}
+					const baseDate = useSubmittedDate
+						? $("#InvoiceSubmittedDate").dxDateBox("instance").option("value")
+						: $("#VoucherDate").dxDateBox("instance").option("value");
 
 					if (baseDate) {
 						const calculatedDate = new Date(baseDate);
 						calculatedDate.setDate(calculatedDate.getDate() + noOfDays);
 						$("#InvoiceDueDate").dxDateBox("instance").option("value", calculatedDate);
 					}
-				}
+				},
 			});
-
 
 			$("#UseSubmittedDate").dxCheckBox({
+				value: true, // Default: Checked
 				onValueChanged: function () {
-					updateDueDate();
-				}
+					updateDueDate(); // Recalculate Due Date when checkbox is toggled
+				},
 			});
 		});
+
+
 
 		document.addEventListener("DOMContentLoaded", function () {
 			const grid = document.getElementById("dataGrid");

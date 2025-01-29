@@ -160,91 +160,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl201VoucherEntry VE)
-        //{
-        //    if (VE == null)
-        //    {
-        //        return BadRequest(new { success = false, message = "Invalid data received." });
-        //    }
 
-        //    try
-        //    {
-        //        _context.Tbl201VoucherEntries.Add(VE);
-        //        await _context.SaveChangesAsync();
-        //        var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays.Where(p => p.VoucherNo == VE.VoucherNo).Select(i => new
-        //        {
-        //            i.VoucherNo,
-        //            i.DrCr,
-        //            i.DrAmount,
-        //            i.CrAmount,
-        //            i.EntryNarration,
-        //            i.AccountHead,
-        //            i.SysRemarks,
-        //        });
-
-        //        return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-        //        //return Json(new { VoucherEntryNo = VE.VoucherNo });
-        //        //return Ok(new { success = true, message = "Data inserted successfully!" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //    }
-
-
-        //}
-
-        //[HttpPost]
-        //public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName)
-        //{
-        //    if (voucherEntries == null || !voucherEntries.Any())
-        //    {
-        //        return BadRequest(new { success = false, message = "Invalid data received." });
-        //    }
-
-        //    try
-        //    {
-        //        // Add entries to the database
-        //        _context.Tbl201VoucherEntries.AddRange(voucherEntries);
-        //        await _context.SaveChangesAsync();
-
-        //        // Retrieve updated data for the submitted vouchers
-        //        var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
-        //        var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
-        //            .Where(p => voucherNos.Contains(p.VoucherNo))
-        //            .Select(i => new
-        //            {
-        //                i.VoucherNo,
-        //                i.DrCr,
-        //                i.DrAmount,
-        //                i.CrAmount,
-        //                i.EntryNarration,
-        //                AccountHead,
-        //                i.SysRemarks,
-        //            });
-
-        //        // Materialize the query into a list *only for the second element check*
-        //        var listForProcessing = await qryListOfAccountlists.Take(2).ToListAsync(); // Fetch only the first 2 records asynchronously
-        //        if (listForProcessing.Count >= 2)
-        //        {
-        //            var secondAccountHead = listForProcessing[1].AccountHead; // Get the 2nd AccountHead
-        //            if (!string.IsNullOrEmpty(secondAccountHead))
-        //            {
-        //                secondAccountHead = PaymentAccoutHeadName;
-        //                listForProcessing[1].AccountHead = secondAccountHead;// Update PaymentAccoutHeadName with the 2nd AccountHead value
-        //            }
-        //        }
-
-        //        // Pass the original IQueryable to DataSourceLoader for proper async processing
-        //        return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //    }
-        //}
 
         [HttpPost]
         public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName, int Gridcount)
@@ -602,7 +518,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     if (entry.DrCr == "Dr")
                     {
                         entry.VoucherAmount = 0; // Reset DrAmount
-                    }   
+                    }
                     else if (entry.DrCr == "Cr")
                     {
                         entry.VoucherAmount = 0; // Reset CrAmount
@@ -734,6 +650,53 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+
+        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string effectiveDate)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.EffectiveDate = effectiveDate;
+
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult GetEmployeeName()
+        {
+            var data = _context.Tbl101Employees
+                .Select(c => new
+                {
+                    c.EmployeeId,
+                    c.EmployeeName,
+                    c.NationalId
+
+                }).ToList();
+
+            return Ok(data);
+        }
+        [HttpPost]
+        public async Task<ActionResult> SaveCostAllocation([FromBody] Tbl20104EmployeeAllocationMaster EM)
+        {
+
+            try
+            {
+                _context.Tbl20104EmployeeAllocationMasters.Add(EM);
+                await _context.SaveChangesAsync();
+                //return Json(new { VoucherEntryNo = VE.VoucherNo });
+                return Ok(new { success = true, message = "Data inserted successfully!" });
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+
+
+        }
 
 
 

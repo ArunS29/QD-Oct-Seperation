@@ -69,6 +69,16 @@
             max-height: 650px; /* Adjust the height */
             overflow-y: auto; /* Enable scrolling */
         }
+
+        .context-menu {
+            display: none;
+            position: absolute;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 1000;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -182,7 +192,7 @@
         <!-- Submenu-->
         <div id="submenuContainer1" class="context-menu" style="display:none;">
             <div class="context-menu-item1">
-                <div onclick="ChangeRowHeight(70)">
+                <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
                     <span>Receivables Ageing Report</span>
                 </div>
@@ -194,7 +204,7 @@
                     <i class="fa fa-th-list"></i>
                     <span>Receivables Ageing Report (Customizable)</span>
                 </div>
-                <div onclick="ChangeRowHeight(70)">
+                <div id="RptReceivableAgeingSummary" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
                     <span>Receivables Ageing Summary</span>
                 </div>

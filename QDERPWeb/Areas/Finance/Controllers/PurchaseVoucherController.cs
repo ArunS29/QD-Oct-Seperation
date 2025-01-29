@@ -20,72 +20,62 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			_context = context;
 		}
 		[HttpGet]
-
 		public async Task<ActionResult> GetNewVoucherNo(DataSourceLoadOptions loadOptions)
-
 		{
-
 			DateTime currentDate = DateTime.Now;
-
 			string currentYear = currentDate.Year.ToString();
-
 			string currentMonth = currentDate.Month.ToString("00");
-
 			string voucherString = "PUR-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
 
 			string strNewReceiptNo;
-
-			// SQL query with interpolated string
-
 			string likePattern = voucherString + "%";
 
 			try
-
 			{
+				// Use a database transaction to ensure data integrity
+				using (var transaction = await _context.Database.BeginTransactionAsync())
+				{
+					// Fetch the maximum voucher number
+					var result = await _context.VoucherResults
+						.FromSqlInterpolated($@"
+                    SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+                    FROM Tbl201VoucherEntry
+                    WHERE VoucherNo LIKE {likePattern}")
+						.ToListAsync();
 
-				// Use raw SQL query to fetch the maximum voucher number
+					int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
+					int newVoucherNo = maxVoucherNo + 1;
 
-				var result = await _context.VoucherResults
+					// Format the new voucher number with leading zeros
+					strNewReceiptNo = "000" + newVoucherNo.ToString();
+					strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
 
-					.FromSqlInterpolated($@"
+					// Concatenate with the voucher string
+					strNewReceiptNo = voucherString + strNewReceiptNo;
 
-        SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+					// Insert the new voucher number into the database
+					var newVoucher = new Tbl201VoucherEntry
+					{
+						VoucherNo = strNewReceiptNo,
+						// Add other necessary fields
+					};
 
-        FROM Tbl201VoucherEntry
+					_context.Tbl201VoucherEntries.Add(newVoucher);
+					await _context.SaveChangesAsync();
 
-        WHERE VoucherNo LIKE {likePattern}")
-
-					.ToListAsync();
-
-				int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-
-				int newVoucherNo = maxVoucherNo + 1;
-
-				// Format the new voucher number with leading zeros
-
-				strNewReceiptNo = "000" + newVoucherNo.ToString();
-
-				strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
-
-				// Concatenate with the voucher string
-
-				strNewReceiptNo = voucherString + strNewReceiptNo;
-
+					// Commit the transaction
+					await transaction.CommitAsync();
+				}
 			}
-
 			catch (Exception)
-
 			{
-
-				// Handle cases where there's no existing voucher number
-
+				// Handle errors gracefully
 				strNewReceiptNo = voucherString + "001";
-
 			}
 
 			return Json(strNewReceiptNo);
-
 		}
+
 		[HttpGet]
 		public async Task<ActionResult> GetSupplierName(DataSourceLoadOptions loadOptions)
 		{
@@ -265,20 +255,36 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 				var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+				//var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+				//	.Where(p => voucherNos.Contains(p.VoucherNo))
+				//	.OrderBy(i => i.DrCr == "Cr") // Order by Dr first (DrCr != "Cr"), then Cr (DrCr == "Cr")
+				//	.Select(i => new VoucherEntryDisplayDTO
+				//	{
+				//		VoucherNo = i.VoucherNo,
+				//		VoucherEntryNo = i.VoucherEntryNo,
+				//		DrCr = i.DrCr,
+				//		DrAmount = i.DrAmount,
+				//		CrAmount = i.CrAmount,
+				//		EntryNarration = i.EntryNarration,
+				//		AccountHead = i.AccountHead,
+				//		SysRemarks = i.SysRemarks
+				//	});
+
 				var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
-					.Where(p => voucherNos.Contains(p.VoucherNo))
-					.OrderBy(i => i.DrCr == "Cr") // Order by Dr first (DrCr != "Cr"), then Cr (DrCr == "Cr")
-					.Select(i => new VoucherEntryDisplayDTO
-					{
-						VoucherNo = i.VoucherNo,
-						VoucherEntryNo = i.VoucherEntryNo,
-						DrCr = i.DrCr,
-						DrAmount = i.DrAmount,
-						CrAmount = i.CrAmount,
-						EntryNarration = i.EntryNarration,
-						AccountHead = i.AccountHead,
-						SysRemarks = i.SysRemarks
-					});
+	.Where(p => voucherNos.Contains(p.VoucherNo) && !string.IsNullOrEmpty(p.DrCr)) // Filter out empty or null DrCr
+	.OrderBy(i => i.DrCr == "Cr") // Order by Dr first (DrCr != "Cr"), then Cr (DrCr == "Cr")
+	.Select(i => new VoucherEntryDisplayDTO
+	{
+		VoucherNo = i.VoucherNo,
+		VoucherEntryNo = i.VoucherEntryNo,
+		DrCr = i.DrCr,
+		DrAmount = i.DrAmount,
+		CrAmount = i.CrAmount,
+		EntryNarration = i.EntryNarration,
+		AccountHead = i.AccountHead,
+		SysRemarks = i.SysRemarks
+	});
+
 
 
 
@@ -375,25 +381,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 		}
-
 		[HttpPost]
 		public async Task<ActionResult> DeleteVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo)
 		{
 			try
 			{
 				int debitamt = 0; // Initialize debit amount
-								  // Find the record to delete
+
+				// Find the record to delete
 				var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
 				if (record == null)
 				{
 					return NotFound(new { message = "Record not found!" });
 				}
 
-
 				// Remove the record
 				_context.Tbl201VoucherEntries.Remove(record);
 				await _context.SaveChangesAsync();
-
 
 				// Get the list of updated vouchers
 				var voucherEntries = _context.Tbl201VoucherEntries
@@ -443,7 +447,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 							existingEntry.VoucherAmount = entry.CrAmount;
 							_context.Tbl201VoucherEntries.Update(existingEntry);
 							_context.SaveChanges();
-
 						}
 						else
 						{
@@ -452,6 +455,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 						}
 					}
 
+					// Ensure only SysRemarks is cleared, AccountHead is untouched
 					if (!string.IsNullOrEmpty(entry.AccountHead))
 					{
 						// Find the account head
@@ -460,19 +464,22 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 												  .Select(a => a.AccountHead)
 												  .FirstOrDefault();
 
-						// Update AccountHead and SysRemarks
+						// Update AccountHead but do not modify
 						entry.AccountHead = accountHead;
-						if (resultList.Count == 1)
+					}
+
+					// Clear SysRemarks field only
+					entry.SysRemarks = null;
+
+					if (resultList.Count == 1)
+					{
+						entry.DrAmount = 0;
+						entry.CrAmount = 0;
+						if (entry.DrCr == "Dr")
 						{
 							entry.DrAmount = 0;
 							entry.CrAmount = 0;
-							if (entry.DrCr == "Dr")
-							{
-								entry.DrAmount = 0;
-								entry.CrAmount = 0;
-							}
 						}
-
 					}
 				}
 

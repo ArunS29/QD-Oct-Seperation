@@ -70,15 +70,15 @@
     }
 
     /*     .dx-editor-outlined .dx-label span {
-                           font-weight:bold !important;
-                        } */
+        font-weight:bold !important;
+        } */
 
     .custom-textbox input {
         background-color: aliceblue;
         font-weight: bold !important;
         color: black !important; /* Use !important to override DevExtreme styles */
         /*   border: 3px solid #282222;
-                          border-radius: 8px !important; */
+        border-radius: 8px !important; */
     }
 
     .custom-textbox1 input {
@@ -90,6 +90,7 @@
         border: 3px solid #282222 !important;
         /*  border-radius: 8px !important; */
     }
+
 </style>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 
@@ -198,61 +199,122 @@
                 .ID("btnAddAccount")
                 .Icon("plus")
                 .ElementAttr("class", "button-alignment-up button-group")
-                .OnClick("redirectAccoutledgerMaster")
+                .OnClick("redirectledgerAccountMaster")
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnEditAccount")
                 .Icon("edit")
                 .ElementAttr("class", "button-alignment-up button-group")
-                .OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectAccoutledgerMaster() }")
+                .OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectledgerAccountMaster() }")
                 )
         </div>
     </div>
     <br />
+    @* <div class="dx-fieldset horizontal-container">
+    @(Html.DevExtreme().Tabs()
+    .Items(items =>
+    {
+    items.Add()
+    .Icon("optionsgear")
+    .Text("Settings")
+    .ID("tab-content-1");
+
+
+    items.Add()
+    .Icon("accountbox")
+    .Text("Contact Details")
+    .ID("tab-content-2");
+
+
+    items.Add()
+    .Icon("description")
+    .Text("Bank Details")
+    .ID("tab-content-3");
+
+    items.Add()
+    .Icon("card")
+    .Text("Client Details")
+    .ID("tab-content-4");
+
+    items.Add()
+    .Icon("group")
+    .Text("Supplier Details")
+    .ID("tab-content-5");
+
+    items.Add()
+    .Icon("attach")
+    .Text("Attachments")
+    .ID("tab-content-6");
+
+    items.Add()
+    .Icon("file")
+    .Text("Billing Details")
+    .ID("tab-content-7");
+
+    items.Add()
+    .Icon("description")
+    .Text("Obselete(for Old Version)")
+    .ID("tab-content-8");
+    })
+    .SelectedIndex(0)  // Default selected tab is 0 (first tab)
+    .OnSelectionChanged("onTabSelectionChanged")  // Event handler for tab selection change
+
+    )
+
+
+    </div> *@
     <div class="dx-fieldset horizontal-container">
-        @(Html.DevExtreme().Tabs()
+        @(
+            Html.DevExtreme().Tabs()
             .Items(items =>
             {
+                //tab-content-1
                 items.Add()
                 .Icon("optionsgear")
                 .Text("Settings");
+                //  .Disabled(false);
 
+                //tab-content-2
                 items.Add()
                 .Icon("accountbox")
                 .Text("Contact Details");
-
-
+                // .Disabled(false);
+                //tab-content-3
                 items.Add()
                 .Icon("description")
                 .Text("Bank Details");
-
+                // .Disabled(false);
+                //tab-content-4
                 items.Add()
                 .Icon("card")
                 .Text("Client Details");
-
+                //.Disabled(false);
+                //tab-content-5
                 items.Add()
                 .Icon("group")
                 .Text("Supplier Details");
-
+                // .Disabled(false);
+                //tab-content-6
                 items.Add()
                 .Icon("attach")
                 .Text("Attachments");
-
+                //   .Disabled(false);
+                //tab-content-7
                 items.Add()
                 .Icon("file")
                 .Text("Billing Details");
-
+                //.Disabled(false);
+                //tab-content-8
                 items.Add()
                 .Icon("description")
-                .Text("Obselete(for Old Version)");
+                .Text("Obsolete (for Old Version)");
+                //.Disabled(false);
             })
-            .SelectedIndex(0)  // Default selected tab is 0 (first tab)
-            .OnSelectionChanged("onTabSelectionChanged")  // Event handler for tab selection change
-
+            .SelectedIndex(0) // Default selected tab is the first one
+            .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
             )
-
-
     </div>
+
 
     <!-- Tab Content -->
     <div class="dx-fieldset">
@@ -778,7 +840,7 @@
             </div>
         </div>
 
-        <div id="tab-content-4" class="tab-content" style="display: none;">
+        <div id="tab-content-4" class="tab-content">
             <div style="background-color:aliceblue;">
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                     <tr>
@@ -824,7 +886,7 @@
                                     .ID("txtClientBillingAr")
                                     .Width("100%")
                                     .InputAttr("aria-label", "Client Billing")
-                                    .ValidationRules(rules => rules.AddRequired())
+
                                     )
                             </div>
                         </td>
@@ -842,9 +904,7 @@
                                 .ID("txtClientVATNo")
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtClientVATNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
+
                                 )
                         </td>
                         <td>
@@ -924,9 +984,7 @@
                                 .ID("txtClientAddress")
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtClientAddress")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
+
                                 )
                         </td>
                         <td>
@@ -1046,9 +1104,7 @@
                                 .ID("txtAdditionalNo")
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtAdditionalNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
+
                                 )
                         </td>
                         <td>
@@ -1138,7 +1194,7 @@
             </div>
         </div>
 
-        <div id="tab-content-5" class="tab-content" style="display: none;">
+        <div id="tab-content-5" class="tab-content">
             <div style="background-color:aliceblue;">
 
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
@@ -1348,9 +1404,7 @@
                                 .ID("txtSupAdditionalNo")
                                 .Width("100%")
                                 .InputAttr("aria-label", "txtSupAdditionalNo")
-                                .ValidationRules(rules => rules
-                                .AddRequired()  // This adds the required validation rule
-                                )
+
                                 )
                         </td>
                         <td>
@@ -1435,7 +1489,7 @@
             </div>
         </div>
 
-        <div id="tab-content-6" class="tab-content" style="display: none;">
+        <div id="tab-content-6" class="tab-content">
             <div style="background-color:#c0dceb;">
                 <table width="100%" style="border-color:skyblue; border-radius:3px; font-size:14px;">
                     <tr>
@@ -1531,6 +1585,7 @@
                                     )
                             </div>
                         </td>
+
                         <td>
                             <lable>Client Billing Address</lable>
                         </td>
@@ -1706,7 +1761,7 @@
             </div>
         </div>
 
-        <div id="tab-content-8" class="tab-content" style="display: none;">
+        <div id="tab-content-8" class="tab-content">
             <div style="background-color:#c0dceb;">
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                     <tr>
@@ -1798,225 +1853,225 @@
 @using (Html.DevExtreme().NamedTemplate("AccountGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("ledgeraccount-datagrid")
-                        .DataSource(d => d.WebApi()
-                            .Controller("AccountLedgerMaster")
-                        .LoadAction("getAccountingLedger")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("AccountGroupId")
+                            .ID("ledgeraccount-datagrid")
+                            .DataSource(d => d.WebApi()
+                                .Controller("AccountLedgerMaster")
+                            .LoadAction("getAccountingLedger")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("AccountGroupId")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("dataGridSelectionChanged")
+                            .OnInitialized("dataGridInitialized")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(false))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("AccountGroup");
+                            })
                         )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-                        .SearchPanel(sp => sp.HighlightSearchText(true))
-                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                        .OnSelectionChanged("dataGridSelectionChanged")
-                        .OnInitialized("dataGridInitialized")
-                        .HeaderFilter(p => p.Visible(true))
-                        .ShowBorders(true)
-                        .HoverStateEnabled(true)
-                        .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(false))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(345)
-                        .Selection(s => s.Mode(SelectionMode.Single))
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
-                            columns.Add().DataField("AccountGroup");
-                        })
-                    )
 }
 
 @using (Html.DevExtreme().NamedTemplate("DrCrContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("DrCraccount-datagrid")
-                        .DataSource(d => d.WebApi()
-                        .Controller("AccountLedgerMaster")
-                            .LoadAction("getCreditDebit")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("OpeningBalanceDrCr")
+                            .ID("DrCraccount-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AccountLedgerMaster")
+                                .LoadAction("getCreditDebit")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("OpeningBalanceDrCr")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .ShowColumnHeaders(false)
+                             .FilterRow(f => f.Visible(false))
+                             .SearchPanel(sp => sp.HighlightSearchText(false))
+                            .Selection(sl => sl.Mode(SelectionMode.Single))
+                            .OnSelectionChanged("DrCrdataGridSelectionChanged")
+                            .OnInitialized("DrCrdataGridInitialized")
+                                 .HeaderFilter(p => p.Visible(false))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(130)
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("OpeningBalanceDrCr");
+                            })
                         )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-                        .ShowColumnHeaders(false)
-                         .FilterRow(f => f.Visible(false))
-                         .SearchPanel(sp => sp.HighlightSearchText(false))
-                        .Selection(sl => sl.Mode(SelectionMode.Single))
-                        .OnSelectionChanged("DrCrdataGridSelectionChanged")
-                        .OnInitialized("DrCrdataGridInitialized")
-                             .HeaderFilter(p => p.Visible(false))
-            .ShowBorders(true)
-            .HoverStateEnabled(true)
-            .Paging(p => p.PageSize(15))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(130)
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
-                            columns.Add().DataField("OpeningBalanceDrCr");
-                        })
-                    )
 }
 
 @using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("branch-datagrid")
-                        .DataSource(d => d.WebApi()
-                        .Controller("AccountLedgerMaster")
-                        .LoadAction("getAccountBranch")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("BranchCode")
-                        )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-
-                        @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                        .OnSelectionChanged("branchdataGridSelectionChanged")
-                        .OnInitialized("branchdataGridInitialized")
-                        @*.HeaderFilter(p => p.Visible(true))
-    .ShowBorders(true)
-    .HoverStateEnabled(true)
-    .Paging(p => p.PageSize(15))*@
-                        .FilterRow(f => f.Visible(false))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(200)
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
-                            columns.Add().DataField("BranchName");
-                        })
-                        )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                        .ID("subgroup-datagrid")
-                        .DataSource(d => d.WebApi()
-                        .Controller("AccountLedgerMaster")
-                        .LoadAction("getSubGroup")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("LedgerSubGroupCode")
-                        )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-                        @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                        .OnSelectionChanged("subgroupdataGridSelectionChanged")
-                            .OnInitialized("subgroupdataGridInitialized")
-                 @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                 .FilterRow(f => f.Visible(false))
-                        //.FilterRow(f => f.Visible(true))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(200)
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
-                            columns.Add().DataField("SubGroupName");
-                        })
-                    )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                        .ID("sales-datagrid")
-                        .DataSource(d => d.WebApi()
-                        .Controller("AccountLedgerMaster")
-                        .LoadAction("getSalesPersonList")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("SalesPersonCode")
-                        )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-                             .FilterRow(f => f.Visible(false))
-                        @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                        .OnSelectionChanged("salesdataGridSelectionChanged")
-                            .OnInitialized("salesdataGridInitialized")
-                        @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                        // .FilterRow(f => f.Visible(true))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(200)
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
-                            columns.Add().DataField("SalesPersonName");
-                        })
-                    )
-}
-
-@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                            .ID("othertype-datagrid")
+                            .ID("branch-datagrid")
                             .DataSource(d => d.WebApi()
                             .Controller("AccountLedgerMaster")
-                                .LoadAction("getOtherIDTypes")
+                            .LoadAction("getAccountBranch")
                             .LoadMode(DataSourceLoadMode.Raw)
-                                 .Key("BuyerOtherIDType")
+                                .Key("BranchCode")
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
+
                             @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                .OnSelectionChanged("othertypedataGridSelectionChanged")
-                                .OnInitialized("othertypedataGridInitialized")
-                                @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                                .FilterRow(f => f.Visible(true))
+                            .OnSelectionChanged("branchdataGridSelectionChanged")
+                            .OnInitialized("branchdataGridInitialized")
+                            @*.HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+                            .FilterRow(f => f.Visible(false))
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Height(200)
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("BuyerIDTypeName");
+                                columns.Add().DataField("BranchName");
+                            })
+                            )
+}
+
+@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("subgroup-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AccountLedgerMaster")
+                            .LoadAction("getSubGroup")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("LedgerSubGroupCode")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("subgroupdataGridSelectionChanged")
+                                .OnInitialized("subgroupdataGridInitialized")
+                     @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                     .FilterRow(f => f.Visible(false))
+                            //.FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(200)
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("SubGroupName");
                             })
                         )
 }
 
-@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                                .ID("billingpayment-datagrid")
+                            .ID("sales-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AccountLedgerMaster")
+                            .LoadAction("getSalesPersonList")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("SalesPersonCode")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                                 .FilterRow(f => f.Visible(false))
+                            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("salesdataGridSelectionChanged")
+                                .OnInitialized("salesdataGridInitialized")
+                            @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                            // .FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(200)
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("SalesPersonName");
+                            })
+                        )
+}
+
+@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                .ID("othertype-datagrid")
                                 .DataSource(d => d.WebApi()
                                 .Controller("AccountLedgerMaster")
-                                    .LoadAction("getBillingPayments")
+                                    .LoadAction("getOtherIDTypes")
                                 .LoadMode(DataSourceLoadMode.Raw)
-                                     .Key("BillingAccountID")
+                                     .Key("BuyerOtherIDType")
                                 )
                                 .WordWrapEnabled(true)
                                 .ShowBorders(true)
                                 @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                                 .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                    .OnSelectionChanged("billingdataGridSelectionChanged")
-                                    .OnInitialized("billingdataGridInitialized")
+                                    .OnSelectionChanged("othertypedataGridSelectionChanged")
+                                    .OnInitialized("othertypedataGridInitialized")
+                                    @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
                                     .FilterRow(f => f.Visible(true))
                                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                 .Height(200)
                                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                 .Columns(columns =>
                                 {
-                                    columns.Add().DataField("BillingAccountHead");
+                                    columns.Add().DataField("BuyerIDTypeName");
                                 })
                             )
+}
+
+@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                    .ID("billingpayment-datagrid")
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                        .LoadAction("getBillingPayments")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                         .Key("BillingAccountID")
+                                    )
+                                    .WordWrapEnabled(true)
+                                    .ShowBorders(true)
+                                    @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                        .OnSelectionChanged("billingdataGridSelectionChanged")
+                                        .OnInitialized("billingdataGridInitialized")
+                                        .FilterRow(f => f.Visible(true))
+                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                    .Height(200)
+                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                    .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("BillingAccountHead");
+                                    })
+                                )
 }
 
 
 <script>
     //Tab events
-    let acgid;
+    let acgid, accgrp = null, accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = null;
 
     $(document).ready(function () {
         var urlParams = new URLSearchParams(window.location.search);
@@ -2025,9 +2080,12 @@
         var refno = urlParams.get('ReferenceNo') || " ";
         var accheadname = urlParams.get('AccountHeadName') || "";
         var accgroup = urlParams.get('AccountGroup') || "";
+        accountgroup = accgroup;
         var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
         var accgroupid = urlParams.get('AccountGroupID') || "";
         acgid = accgroupid;
+
+
         var accheadar = urlParams.get('AccountHeadAr') || "";
 
         // alert(accountheadid)
@@ -2062,6 +2120,419 @@
         var txtAccountHeadAr = $("#txtAccountHeadAr").dxTextBox("instance");
         if (txtAccountHeadAr) txtAccountHeadAr.option("value", accheadar);
 
+        $.ajax({
+            url: `/api/AccountLedgerMaster/GetAccountDetails?accountID=${encodeURIComponent(accountheadid)}`,
+            type: 'GET',
+            dataType: 'json',  // Expecting JSON response
+            success: function (response) {
+                if (response && response.accountDetails && response.accountDetails.length > 0) {
+                    // Extract the first item from the accountDetails array
+                    var account = response.accountDetails[0];
+                    console.log(account)
+
+                    //Settings Tab
+                    var txtOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance");
+                    if (txtOpeningBalance) {
+                        txtOpeningBalance.option("value", account.OpeningBalance);
+
+                    }
+                    DrCrdataGridSelectionChanged({ selectedRowKeys: [account.OpeningBalanceDrCr] });
+                    var chkDefaultEntry = $("#chkDefaultEntry").dxCheckBox("instance");
+                    if (chkDefaultEntry) {
+                        chkDefaultEntry.option("value", account.IsDefaultForCash);
+                    }
+                    var txtVoucherNoAbbr = $('#txtVoucherNoAbbr').dxTextBox("instance");
+                    if (txtVoucherNoAbbr) {
+                        txtVoucherNoAbbr.option("value", account.VoucherAbbr);
+
+                    }
+
+                    var chkMaintainBillEntry = $("#chkMaintainBillEntry").dxCheckBox("instance");
+                    if (chkMaintainBillEntry) {
+                        chkMaintainBillEntry.option("value", account.IsMaintainBillByBill);
+                    }
+                    var txtNoDays = $('#txtNoDays').dxNumberBox("instance");
+                    if (txtNoDays) {
+                        txtNoDays.option("value", account.NoOfDaysCreditPeriod);
+
+                    }
+
+                    var chkEmployeeDBEntry = $("#chkEmployeeDBEntry").dxCheckBox("instance");
+                    if (chkEmployeeDBEntry) {
+                        chkEmployeeDBEntry.option("value", account.IsEmployeeAllocated);
+                    }
+
+                    var chkPropertyDBEntry = $("#chkPropertyDBEntry").dxCheckBox("instance");
+                    if (chkPropertyDBEntry) {
+                        chkPropertyDBEntry.option("value", account.IsPropertyAllocated);
+                    }
+
+                    var chkLoanAccountEntry = $("#chkLoanAccountEntry").dxCheckBox("instance");
+                    if (chkLoanAccountEntry) {
+                        chkLoanAccountEntry.option("value", account.IsEmployeePaymentAc);
+                    }
+
+
+
+                    //ContactDetails tab
+                    branchdataGridSelectionChanged({ selectedRowKeys: [account.AccountBranch] });
+                    subgroupdataGridSelectionChanged({ selectedRowKeys: [account.AccountSubGroup] });
+                    salesdataGridSelectionChanged({ selectedRowKeys: [account.SalesPersonCode] });
+
+                    var txtContactPerson = $('#txtContactPerson').dxTextBox("instance");
+                    if (txtContactPerson) {
+                        txtContactPerson.option("value", account.AccountsContactName);
+
+                    }
+
+                    var txtPersonTitle = $('#txtPersonTitle').dxTextBox("instance");
+                    if (txtPersonTitle) {
+                        txtPersonTitle.option("value", account.AccountsContactTitle);
+
+                    }
+                    var txtPersonTitle = $('#txtPersonTitle').dxTextBox("instance");
+                    if (txtPersonTitle) {
+                        txtPersonTitle.option("value", account.AccountsContactTitle);
+
+                    }
+                    var txtPersonMobile = $('#txtPersonMobile').dxTextBox("instance");
+                    if (txtPersonMobile) {
+                        txtPersonMobile.option("value", account.AccountsContactMobile);
+
+                    }
+                    var txtEmail = $('#txtEmail').dxTextBox("instance");
+                    if (txtEmail) {
+                        txtEmail.option("value", account.EmailAddress);
+
+                    }
+                    var txtRemarks = $('#txtRemarks').dxTextBox("instance");
+                    if (txtRemarks) {
+                        txtRemarks.option("value", account.LedgerRemarks);
+
+                    }
+
+                    //BankDetails tab
+                    var txtBankAccountName = $('#txtBankAccountName').dxTextBox("instance");
+                    if (txtBankAccountName) {
+                        txtBankAccountName.option("value", account.BankAccountName);
+
+                    }
+                    var txtBankAccountNameAr = $('#txtBankAccountNameAr').dxTextBox("instance");
+                    if (txtBankAccountNameAr) {
+                        txtBankAccountNameAr.option("value", account.BankAccountNameAr);
+
+                    }
+                    var txtBankName = $('#txtBankName').dxTextBox("instance");
+                    if (txtBankName) {
+                        txtBankName.option("value", account.BankName);
+
+                    }
+                    var txtBankNameAr = $('#txtBankNameAr').dxTextBox("instance");
+                    if (txtBankNameAr) {
+                        txtBankNameAr.option("value", account.BankNameAr);
+
+                    }
+                    var txtBankNameAr = $('#txtBankNameAr').dxTextBox("instance");
+                    if (txtBankNameAr) {
+                        txtBankNameAr.option("value", account.BankNameAr);
+
+                    }
+                    var txtBankBranch = $('#txtBankBranch').dxTextBox("instance");
+                    if (txtBankBranch) {
+                        txtBankBranch.option("value", account.BankBranch);
+
+                    }
+                    var txtBankBranchAr = $('#txtBankBranchAr').dxTextBox("instance");
+                    if (txtBankBranchAr) {
+                        txtBankBranchAr.option("value", account.BankBranchAr);
+
+                    }
+                    var txtBankAccountNo = $('#txtBankAccountNo').dxTextBox("instance");
+                    if (txtBankAccountNo) {
+                        txtBankAccountNo.option("value", account.BankAccountNo);
+
+                    }
+                    var txtBankAccountNo = $('#txtBankAccountNo').dxTextBox("instance");
+                    if (txtBankAccountNo) {
+                        txtBankAccountNo.option("value", account.BankAccountNo);
+
+                    }
+                    var txtBankIBAN = $('#txtBankIBAN').dxTextBox("instance");
+                    if (txtBankIBAN) {
+                        txtBankIBAN.option("value", account.BankIban);
+
+                    }
+                    var txtSwiftCode = $('#txtSwiftCode').dxTextBox("instance");
+                    if (txtSwiftCode) {
+                        txtSwiftCode.option("value", account.BankSwiftCode);
+
+                    }
+
+                    //ClientDetails Tab
+                    var txtClientBilling = $('#txtClientBilling').dxTextBox("instance");
+                    if (txtClientBilling) {
+                        txtClientBilling.option("value", account.BillingName);
+
+                    }
+                    var txtClientBillingAr = $('#txtClientBillingAr').dxTextBox("instance");
+                    if (txtClientBillingAr) {
+                        txtClientBillingAr.option("value", account.BillingNameAr);
+
+                    }
+
+                    var txtClientVATNo = $('#txtClientVATNo').dxTextBox("instance");
+                    if (txtClientVATNo) {
+                        txtClientVATNo.option("value", account.VatregistrationNo);
+
+                    }
+                    var txtGrouptVATNo = $('#txtGrouptVATNo').dxTextBox("instance");
+                    if (txtGrouptVATNo) {
+                        txtGrouptVATNo.option("value", account.ClientGroupVatnumber);
+
+                    }
+                    othertypedataGridSelectionChanged({ selectedRowKeys: [account.ClientOtherIdtype] });
+                    var txtOtherId = $('#txtOtherId').dxTextBox("instance");
+                    if (txtOtherId) {
+                        txtOtherId.option("value", account.ClientOtherId);
+
+                    }
+                    var txtClientAddress = $('#txtClientAddress').dxTextBox("instance");
+                    if (txtClientAddress) {
+                        txtClientAddress.option("value", account.ClientAddressStreet);
+
+                    }
+                    var txtClientAddressAr = $('#txtClientAddressAr').dxTextBox("instance");
+                    if (txtClientAddressAr) {
+                        txtClientAddressAr.option("value", account.ClientAddressStreetAr);
+
+                    }
+                    var txtClientAdditionalAddress = $('#txtClientAdditionalAddress').dxTextBox("instance");
+                    if (txtClientAdditionalAddress) {
+                        txtClientAdditionalAddress.option("value", account.ClientAdditionalStreet);
+
+                    }
+                    var txtClientAdditionalAddressAr = $('#txtClientAdditionalAddressAr').dxTextBox("instance");
+                    if (txtClientAdditionalAddressAr) {
+                        txtClientAdditionalAddressAr.option("value", account.ClientAdditionalStreetAr);
+
+                    }
+                    var txtBuildingNo = $('#txtBuildingNo').dxTextBox("instance");
+                    if (txtBuildingNo) {
+                        txtBuildingNo.option("value", account.ClientBuildingNumber);
+
+                    }
+                    var txtClientCity = $('#txtClientCity').dxTextBox("instance");
+                    if (txtClientCity) {
+                        txtClientCity.option("value", account.ClientCity);
+
+                    }
+                    var txtClientCityAr = $('#txtClientCityAr').dxTextBox("instance");
+                    if (txtClientCityAr) {
+                        txtClientCityAr.option("value", account.ClientCityAr);
+
+                    }
+                    var txtAdditionalNo = $('#txtAdditionalNo').dxTextBox("instance");
+                    if (txtAdditionalNo) {
+                        txtAdditionalNo.option("value", account.ClientAdditionalNumber);
+
+                    }
+                    var txtState = $('#txtState').dxTextBox("instance");
+                    if (txtState) {
+                        txtState.option("value", account.ClientProvince);
+
+                    }
+                    var txtStateAr = $('#txtStateAr').dxTextBox("instance");
+                    if (txtStateAr) {
+                        txtStateAr.option("value", account.ClientProvinceAr);
+
+                    }
+                    var txtPostalCode = $('#txtPostalCode').dxTextBox("instance");
+                    if (txtPostalCode) {
+                        txtPostalCode.option("value", account.ClientPostalCode);
+
+                    }
+                    var txtDistrict = $('#txtDistrict').dxTextBox("instance");
+                    if (txtDistrict) {
+                        txtDistrict.option("value", account.ClientNeighborhood);
+
+                    }
+
+                    //SupplierDetails Tab
+
+                    var txtSupBilling = $('#txtSupBilling').dxTextBox("instance");
+                    if (txtSupBilling) {
+                        txtSupBilling.option("value", account.SupplierName);
+
+                    }
+                    var txtSupBillingAr = $('#txtSupBillingAr').dxTextBox("instance");
+                    if (txtSupBillingAr) {
+                        txtSupBillingAr.option("value", account.SupplierNameAr);
+
+                    }
+                    var txtSupVATNo = $('#txtSupVATNo').dxTextBox("instance");
+                    if (txtSupVATNo) {
+                        txtSupVATNo.option("value", account.SupplierVatno);
+
+                    }
+                    var txtSupGroupVATNo = $('#txtSupGroupVATNo').dxTextBox("instance");
+                    if (txtSupGroupVATNo) {
+                        txtSupGroupVATNo.option("value", account.SupplierGroupVATNumber);
+
+                    }
+                    var txtSupAddress = $('#txtSupAddress').dxTextBox("instance");
+                    if (txtSupAddress) {
+                        txtSupAddress.option("value", account.SupplierAddressStreet);
+
+                    }
+                    var txtSupAddressAr1 = $('#txtSupAddressAr1').dxTextBox("instance");
+                    if (txtSupAddressAr1) {
+                        txtSupAddressAr1.option("value", account.SupplierAddressStreetAr);
+
+                    }
+                    var txtSupAdditionalAddress = $('#txtSupAdditionalAddress').dxTextBox("instance");
+                    if (txtSupAdditionalAddress) {
+                        txtSupAdditionalAddress.option("value", account.SupplierAdditionalStreet);
+
+                    }
+                    var txtSupAdditionalAddressAr1 = $('#txtSupAdditionalAddressAr1').dxTextBox("instance");
+                    if (txtSupAdditionalAddressAr1) {
+                        txtSupAdditionalAddressAr1.option("value", account.SupplierAdditionalStreetAr);
+
+                    }
+                    var txtSupBuildingNo = $('#txtSupBuildingNo').dxTextBox("instance");
+                    if (txtSupBuildingNo) {
+                        txtSupBuildingNo.option("value", account.SupplierBuildingNumber);
+
+                    }
+                    var txtSupCity = $('#txtSupCity').dxTextBox("instance");
+                    if (txtSupCity) {
+                        txtSupCity.option("value", account.SupplierCity);
+
+                    }
+                    var txtSupCityAr1 = $('#txtSupCityAr1').dxTextBox("instance");
+                    if (txtSupCityAr1) {
+                        txtSupCityAr1.option("value", account.SupplierCityAr);
+
+                    }
+                    var txtSupAdditionalNo = $('#txtSupAdditionalNo').dxTextBox("instance");
+                    if (txtSupAdditionalNo) {
+                        txtSupAdditionalNo.option("value", account.SupplierAdditionalNumber);
+
+                    }
+                    var txtSupState = $('#txtSupState').dxTextBox("instance");
+                    if (txtSupState) {
+                        txtSupState.option("value", account.SupplierProvince);
+
+                    }
+                    var txtSupStateAr1 = $('#txtSupStateAr1').dxTextBox("instance");
+                    if (txtSupStateAr1) {
+                        txtSupStateAr1.option("value", account.SupplierProvinceAr);
+
+                    }
+                    var txtSupPostalCode = $('#txtSupPostalCode').dxTextBox("instance");
+                    if (txtSupPostalCode) {
+                        txtSupPostalCode.option("value", account.SupplierPostalCode);
+
+                    }
+                    var txtSupDistrict = $('#txtSupDistrict').dxTextBox("instance");
+                    if (txtSupDistrict) {
+                        txtSupDistrict.option("value", account.SupplierNeighborhood);
+
+                    }
+                    var txtSupDistrictAr1 = $('#txtSupDistrictAr1').dxTextBox("instance");
+                    if (txtSupDistrictAr1) {
+                        txtSupDistrictAr1.option("value", account.SupplierNeighborhoodAr);
+
+                    }
+                    //BillingDetails tab
+                    var txtClientBillingName = $('#txtClientBillingName').dxTextBox("instance");
+                    if (txtClientBillingName) {
+                        txtClientBillingName.option("value", account.BillingName);
+
+                    }
+
+                    var txtClientBillingNameAr = $('#txtClientBillingNameAr').dxTextBox("instance");
+                    if (txtClientBillingNameAr) {
+                        txtClientBillingNameAr.option("value", account.BillingNameAr);
+
+                    }
+
+
+
+                    var txtBillingAddress = $('#txtBillingAddress').dxTextArea("instance");
+                    if (txtBillingAddress) {
+                        txtBillingAddress.option("value", account.BillingAddress);
+
+                    }
+                    var txtBillingAddress = $('#txtBillingAddressAr').dxTextArea("instance");
+                    if (txtBillingAddress) {
+                        txtBillingAddress.option("value", account.BillingAddressAr);
+
+                    }
+                    var txtBillingVATRegNo = $('#txtBillingVATRegNo').dxTextBox("instance");
+                    if (txtBillingVATRegNo) {
+                        txtBillingVATRegNo.option("value", account.VATRegistrationNo);
+
+                    }
+                    var txtBillingTIN = $('#txtBillingTIN').dxTextBox("instance");
+                    if (txtBillingTIN) {
+                        txtBillingTIN.option("value", account.ClientTin);
+
+                    }
+                    var txtBillingContactPerson = $('#txtBillingContactPerson').dxTextBox("instance");
+                    if (txtBillingContactPerson) {
+                        txtBillingContactPerson.option("value", account.BillingContactPerson);
+
+                    }
+                    billingdataGridSelectionChanged({ selectedRowKeys: [account.BillingContactPersonTitle] });
+                    var txtBillingVendorNo = $('#txtBillingVendorNo').dxTextArea("instance");
+                    if (txtBillingVendorNo) {
+                        txtBillingVendorNo.option("value", account.ClientVendorNo);
+
+                    }
+                    var txtBillingFaxNo = $('#txtBillingFaxNo').dxTextBox("instance");
+                    if (txtBillingFaxNo) {
+                        txtBillingFaxNo.option("value", account.BillingFaxNo);
+
+                    }
+                    var txtBillingContactNumber = $('#txtBillingContactNumber').dxTextBox("instance");
+                    if (txtBillingContactNumber) {
+                        txtBillingContactNumber.option("value", account.BillingPhoneNo);
+
+                    }
+                    var txtObsSupAddress = $('#txtObsSupAddress').dxTextBox("instance");
+                    if (txtObsSupAddress) {
+                        txtObsSupAddress.option("value", account.SupplierAddress);
+
+                    }
+                    var txtObsSupRegNo = $('#txtObsSupRegNo').dxTextBox("instance");
+                    if (txtObsSupRegNo) {
+                        txtObsSupRegNo.option("value", account.SupplierVatno);
+
+                    }
+
+
+
+
+                    //    var txtBillingVATRegNo = $('#txtBillingVATRegNo').dxTextArea("instance");
+                    // if (txtBillingVATRegNo) {
+                    //     txtBillingVATRegNo.option("value", account.VatregistrationNo);
+
+                    // }
+
+
+
+
+                } else {
+                    console.warn("No account details found in the response.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching Account ID:", error);
+            }
+        });
+
+
 
 
         dataGridSelectionChanged({ selectedRowKeys: [accgroup] });
@@ -2069,8 +2540,6 @@
         var selectedTabIndex = 0;
         $("#tab-content-" + (selectedTabIndex + 1)).show();
 
-        var button = $("#btnSave").dxButton("instance");
-        button.option("text", "Update");
 
         if (!isedit) {
 
@@ -2079,6 +2548,8 @@
             if (AccountHeadNameValidator) {
                 AccountHeadNameValidator.reset();
             }
+            IsAccGrp = true;
+
 
             // AJAX call to fetch the next Account ID
             $.ajax({
@@ -2101,8 +2572,7 @@
                 }
             });
 
-            var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Save");
+
 
         }
     });
@@ -2125,6 +2595,7 @@
             }
         }, 500);
     }
+
     function refreshBranchmasterSelectBox() {
         const assetBranchSelectBox = $("#ddlassetlocation").dxSelectBox("instance"); // Ensure ID matches Razor
 
@@ -2239,6 +2710,57 @@
             }
         }, 500);
     }
+
+
+
+    function redirectledgerAccountMaster() {
+        // Check the AccountGroupUnder value and disable the tab contents
+        if (["M5", "M6", "M7", "M8", "M2", "M9", "M4", "M1"].includes(accgrpunder)) {
+            disableTabs(["tab-content-1", "tab-content-2", "tab-content-3", "tab-content-7"]);
+        }
+        else if (["M3"].includes(accgrpunder)) {
+            disableTabs(["tab-content-3", "tab-content-7"]);
+        }
+        // alert("redirectledgerAccountMaster")
+
+        const masterFormWindow = window.open(
+            `/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`,
+            'popupWindow2',
+            'width=1300,height=600,scrollbars=yes,resizable=yes'
+        );
+
+        const interval = setInterval(() => {
+            if (masterFormWindow.closed) {
+                clearInterval(interval);
+                refreshaccountledgerSelectBox();
+            }
+        }, 500);
+    }
+    //Disable Tabs
+    function disableTabs(tabIds) {
+        tabIds.forEach(tabId => {
+            const tabElement = document.getElementById(tabId);
+
+            if (tabElement) {
+                console.log(`Disabling tab: ${tabId}`);
+
+                // Hide the tab content
+                //tabElement.style.display = 'none';
+
+                tabElement.style.backgroundColor = '#d3d3d3'; // Light gray background
+                tabElement.style.color = '#a0a0a0'; // Gray text
+                tabElement.style.pointerEvents = 'none'; // Disable all pointer events (makes it non-clickable)
+                tabElement.style.opacity = '0.6'; // Make it look disabled
+
+
+            } else {
+                console.error(`Tab with ID "${tabId}" not found.`);
+            }
+        });
+    }
+
+
+
 
     async function onDownArrowClick() {
         // Get the TextBox instances
@@ -2390,7 +2912,7 @@
     }
 
     function onPostButtonClick(e) {
-        alert("Data posted successfully");
+        alert("Opening Balance Entry Posted successfully");
     }
 
     function txtAccountHeadFocusOut(e) {
@@ -2484,6 +3006,60 @@
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
         }
+    }
+    function dataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddlAccountGroup").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            if (IsAccGrp == true) {
+
+                ddbInstance.option("value", selectedKey);
+                var selectedRowData = $("#ledgeraccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+
+                // Get ReferenceNo from selected row
+                if (selectedRowData.length > 0) {
+
+                    accgrp = selectedRowData[0].AccountGroup;
+                    accgrpunder = selectedRowData[0].AccountGroupUnder;
+
+                } else {
+                    DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+                    return;
+                }
+            }
+            else {
+
+                ddbInstance.option("value", selectedKey);
+                accgrp = accountgroup;
+                //getAccountingLedger   accunderid
+                // AJAX call to fetch the next Account ID
+                $.ajax({
+                    url: `/api/LedgerAccountMaster/GetAccountGroupUnderID?id=${encodeURIComponent(acgid)}`,
+                    type: 'GET',
+                    dataType: 'json',  // Expecting JSON response
+                    success: function (response) {
+                        // Check if response has the expected structure
+                        if (response) {
+                            console.log(response.Result)
+                            accgrpunder = response.Result;
+
+
+                        } else {
+                            console.log("No account ID returned.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching Account ID:", error);
+                    }
+                });
+
+
+
+            }
+
+        }
+
     }
 
     function dataGridInitialized(e) {
@@ -2847,42 +3423,62 @@
         var cdRemarks = $('#txtRemarks').dxTextBox("instance").option("value");
         // Bank Details
         var bdAccountName = $('#txtBankAccountName').dxTextBox("instance").option("value");
+        var bdAccountNamear = $('#txtBankAccountNameAr').dxTextBox("instance").option("value");
         var bdBankName = $('#txtBankName').dxTextBox("instance").option("value");
+        var bdBankNamear = $('#txtBankNameAr').dxTextBox("instance").option("value");
         var bdBankBranch = $('#txtBankBranch').dxTextBox("instance").option("value");
+        var bdBankBranchar = $('#txtBankBranchAr').dxTextBox("instance").option("value");
+
         var bdBankAccountNo = $('#txtBankAccountNo').dxTextBox("instance").option("value");
         var bdIBAN = $('#txtBankIBAN').dxTextBox("instance").option("value");
         var bdSwiftCode = $('#txtSwiftCode').dxTextBox("instance").option("value");
         //Client Details Tab
         var cntBillingName = $('#txtClientBilling').dxTextBox('option', 'value');
+        var cntBillingNamear = $('#txtClientBillingAr').dxTextBox('option', 'value');
         var cntVATNo = $('#txtClientVATNo').dxTextBox('option', 'value');
         var cntGroupVATNo = $('#txtGrouptVATNo').dxTextBox('option', 'value');
         var cntOtherType = $('#ddlOtherType').dxDropDownBox('option', 'value');
         var cntOtherID = $('#txtOtherId').dxTextBox('option', 'value');
         var cntAddress = $('#txtClientAddress').dxTextBox('option', 'value');
+        var cntAddressar = $('#txtClientAddressAr').dxTextBox('option', 'value');
         var cntAdditionalAddress = $('#txtClientAdditionalAddress').dxTextBox('option', 'value');
+        var cntAdditionalAddressar = $('#txtClientAdditionalAddressAr').dxTextBox('option', 'value');
         var cntBuildingNo = $('#txtBuildingNo').dxTextBox('option', 'value');
         var cntCity = $('#txtClientCity').dxTextBox('option', 'value');
+        var cntCityar = $('#txtClientCityAr').dxTextBox('option', 'value');
         var cntAdditionalNo = $('#txtAdditionalNo').dxTextBox('option', 'value');
         var cntState = $('#txtState').dxTextBox('option', 'value');
+        var cntStatear = $('#txtStateAr').dxTextBox('option', 'value');
         var cntPostalCode = $('#txtPostalCode').dxTextBox('option', 'value');
         var cntDistrict = $('#txtDistrict').dxTextBox('option', 'value');
         //SupplierDetails Tab
         var supBillingName = $('#txtSupBilling').dxTextBox('option', 'value');
+        var supBillingNamear = $('#txtSupBillingAr').dxTextBox('option', 'value');
         var supVATNo = $('#txtSupVATNo').dxTextBox('option', 'value');
         var supGroupVATNo = $('#txtSupGroupVATNo').dxTextBox('option', 'value');
         var supAddress = $('#txtSupAddress').dxTextBox('option', 'value');
+        var supAddressAr = $('#txtSupAddressAr1').dxTextBox('option', 'value');
+
         var supAdditionalAddress = $('#txtSupAdditionalAddress').dxTextBox('option', 'value');
+        var supAdditionalAddressAr = $('#txtSupAdditionalAddressAr1').dxTextBox('option', 'value');
+
         var supBuildingNo = $('#txtSupBuildingNo').dxTextBox('option', 'value');
         var supCity = $('#txtSupCity').dxTextBox('option', 'value');
+        var supCityAr = $('#txtSupCityAr').dxTextBox('option', 'value');
         var supAdditionalNo = $('#txtSupAdditionalNo').dxTextBox('option', 'value');
         var supState = $('#txtSupState').dxTextBox('option', 'value');
+        var supStateAr = $('#txtSupStateAr1').dxTextBox('option', 'value');
         var supPostalCode = $('#txtSupPostalCode').dxTextBox('option', 'value');
         var supDistrict = $('#txtSupDistrict').dxTextBox('option', 'value');
+        var supDistrictAr = $('#txtSupDistrictAr1').dxTextBox('option', 'value');
+
         // AttachmentTab
         // --Right now Attachment details values is not completed.
         //Billing Details tab
         var bClientBillingName = $('#txtClientBillingName').dxTextBox('option', 'value');
+
         var bBillingAddress = $('#txtBillingAddress').dxTextArea('option', 'value');
+        var bBillingAddressAr = $('#txtBillingAddressAr').dxTextArea('option', 'value');
         var bVATNO = $('#txtBillingVATRegNo').dxTextBox('option', 'value');
         var bTIN = $('#txtBillingTIN').dxTextBox('option', 'value');
         var bContactPerson = $('#txtBillingContactPerson').dxTextBox('option', 'value');
@@ -2893,6 +3489,8 @@
         var bBillingPayment = $('#ddlBillingPayment').dxDropDownBox('option', 'value');
         //Obselte (Old Version)
         var obAddress = $('#txtObsSupAddress').dxTextBox('option', 'value');
+        //   var obAddressar = $('#txtObsSupAddressAr').dxTextBox('option', 'value');
+
         var obVATNo = $('#txtObsSupRegNo').dxTextBox('option', 'value');
 
         // if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
@@ -2924,7 +3522,7 @@
                 IsDefaultForCash: isDefaultEntryChecked,
                 VoucherAbbr: sVoucherAbbr,
                 IsMaintainBillByBill: isMaintainBillEntryChecked,
-                NoDays: sNodays,
+                NoOfDaysCreditPeriod: sNodays,
                 IsEmployeeAllocated: chkEmployeeDBEntryChecked,
                 IsPropertyAllocated: chkPropertyDBEntryChecked,
                 IsEmployeePaymentAc: chkLoanAccountEntryChecked,
@@ -2938,38 +3536,55 @@
                 EmailAddress: cdEmail,
                 LedgerRemarks: cdRemarks,
                 BankAccountName: bdAccountName,
+                BankAccountNameAr: bdAccountNamear,
                 AccountHeadArabic: sAcccountHeadAr,
                 BankName: bdBankName,
+                BankNameAr: bdBankNamear,
                 BankBranch: bdBankBranch,
+                BankBranchAr: bdBankBranchar,
+
                 BankAccountNo: bdBankAccountNo,
                 BankIBAN: bdIBAN,
                 BankSwiftCode: bdSwiftCode,
                 BillingName: cntBillingName,
+                BillingNameAr: cntBillingNamear,
+
                 VATRegistrationNo: cntVATNo,
                 ClientGroupVATNumber: cntGroupVATNo,
                 ClientOtherIDType: cntOtherType,
                 ClientOtherID: cntOtherID,
                 ClientAddressStreet: cntAddress,
+                ClientAddressStreetAr: cntAddressar,
                 ClientAdditionalStreet: cntAdditionalAddress,
+                ClientAdditionalStreetAr: cntAdditionalAddressar,
                 ClientBuildingNumber: cntBuildingNo,
                 ClientCity: cntCity,
+                ClientCityAr: cntCityar,
                 ClientAdditionalNumber: cntAdditionalNo,
                 ClientProvince: cntState,
+                ClientProvinceAr: cntStatear,
                 ClientPostalCode: cntPostalCode,
                 ClientNeighborhood: cntDistrict,
                 SupplierName: supBillingName,
+                SupplierNameAr: supBillingNamear,
                 SupplierVATNo: supVATNo,
                 SupplierGroupVATNumber: supGroupVATNo,
                 SupplierAddressStreet: supAddress,
+                SupplierAddressStreetAr: supAddressAr,
                 SupplierAdditionalStreet: supAdditionalAddress,
+                SupplierAdditionalStreetAr: supAdditionalAddressAr,
                 SupplierBuildingNumber: supBuildingNo,
                 SupplierCity: supCity,
+                SupplierCityAr: supCityAr,
                 SupplierAdditionalNumber: supAdditionalNo,
                 SupplierProvince: supState,
+                SupplierProvinceAr: supStateAr,
                 SupplierPostalCode: supPostalCode,
                 SupplierNeighborhood: supDistrict,
+                SupplierNeighborhoodAr: supDistrictAr,
                 BillingName: bClientBillingName,
                 BillingAddress: bBillingAddress,
+                BillingAddressAr: bBillingAddressAr,
                 VATRegistrationNo: bVATNO,
                 ClientTIN: bTIN,
                 BillingContactPerson: bContactPerson,

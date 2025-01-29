@@ -31,6 +31,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl20104EmployeeAllocationMaster]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl20105AssetMaster]",
          "ObjectType": 0
       },
