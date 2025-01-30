@@ -1036,7 +1036,7 @@
     }
     function DeleteAsset(e) {
         const assetLedgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
-        alert(assetLedgerNo);
+      //  alert(assetLedgerNo);
         if (!assetLedgerNo) {
             DevExpress.ui.notify("Please provide an Asset Ledger No.", "error", 2000);
             return;
@@ -1463,7 +1463,7 @@
     function updateAsset() {
 
         var purchaseDate = $("#txtPurchasedDate").dxDateBox("instance").option("value");
-        alert(purchaseDate);
+      //  alert(purchaseDate);
         if (purchaseDate) {
             var dateParts = purchaseDate.split("/");
             if (dateParts.length === 3) {
