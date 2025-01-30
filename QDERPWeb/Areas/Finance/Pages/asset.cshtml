@@ -569,7 +569,7 @@
                     item.Add().Title("Depreciation").Text("Depreciation").Template(@<text>
 
 
-            <div class="cards-container">
+            <div class="form-container">
                 @*    <h2>@ViewData["Title"]</h2> *@
 
                 <!-- Card 1: General Account Group Information -->
@@ -718,7 +718,7 @@
 
 
                     item.Add().Text("Documents").Title("Documents").Template(@<text>
-            <div class="cards-container">
+            <div class="form-container">
 
                 <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                     @(Html.DevExtreme().Button()
@@ -776,16 +776,16 @@
 
                     item.Add().Text("Maintenance").Title("Maintenance").Template(@<text>
 
-            <div class="cards-container">
+            <div class="form-container">
 
-                <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
-                    <!-- Depreciation Method -->
+                <div class="form-row" >
+                    <!-- Depreciation Method    style="display: flex; align-items: flex-end; gap: 10px; width: 100%;"-->
                     <div class="form-group">
 
                         <label for="" class="button-alignment-down">Latest Meter Reading:</label>
                         @(Html.DevExtreme().NumberBox()
                         .ID("txtMaintenanceScarpValue")
-                        .Width(350)
+                      //  .Width(350)
                         .Value(0)
                         .ShowSpinButtons(true)
                         .Min(0)//                        .Max(1000)
@@ -807,7 +807,7 @@
                         .SearchEnabled(true)
                         .ShowClearButton(true)
                         .Placeholder("Select Maintenance Type")
-                        .Width(400)
+                      //  .Width(400)
                         )
                     </div>
 
