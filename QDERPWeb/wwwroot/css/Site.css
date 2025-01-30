@@ -4,6 +4,7 @@
     border-top-right-radius: 10px; /* Radius for top-right corner */
     padding: 5px;
     font-family: "Inter", Helvetica, Arial, sans-serif;
+    width:1400px;
 }
 .card-header{
     background-color:aliceblue;
