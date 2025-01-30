@@ -49,6 +49,7 @@
     .form-label {
         color: black;
         padding: 5px;
+        font-weight: bold;
         width: 200px;
         text-align: Left;
         display: flex;
@@ -321,8 +322,7 @@
                         <div class="form-label">
                             <label for="PurchasedDate">Purchased Date</label>
                         </div>
-                        @(Html.DevExtreme().DateBox().ID("txtPurchasedDate").DisplayFormat("dd-MMM-yyyy")
-                        .Value(DateTime.Now.ToString("yyyy-MM-dd")) )
+                        @(Html.DevExtreme().DateBox().ID("txtPurchasedDate").DisplayFormat("dd-MMM-yyyy").Value("") )
                     </div>
 
                     <div class="col-md-3">
@@ -431,14 +431,14 @@
                         <div class="form-label">
                             <label for="StartDate">Start Date</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("txtStartDate").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy")
+                        @(Html.DevExtreme().DateBox().ID("txtStartDate").DisplayFormat("dd-MMM-yyyy").Value("") )
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-label">
                             <label for="EndDate">End Date</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("txtEndDate").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy")
+                        @Html.DevExtreme().DateBox().ID("txtEndDate").Value("").DisplayFormat("dd-MMM-yyyy")
                     </div>
                     <div class="col-md-3">
                     </div>
@@ -531,6 +531,36 @@
                 </div>
 
             </div>
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-label">
+                            <label for="StartDate">Entered By</label>
+                        </div>
+                        @Html.DevExtreme().TextBox().ID("txtenteredby").Value("").ReadOnly(true)
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-label">
+                            <label for="StartDate">Modified By</label>
+                        </div>
+                        @Html.DevExtreme().TextBox().ID("txtmodifiedby").Value("").ReadOnly(true)
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-label">
+                            <label for="StartDate">Entered on</label>
+                        </div>
+                        @Html.DevExtreme().DateBox().ID("txtenteredon").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy").ReadOnly(true)
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-label">
+                            <label for="StartDate">Modified on</label>
+                        </div>
+                        @Html.DevExtreme().DateBox().ID("txtmodifiedon").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy").ReadOnly(true)
+                    </div>
+                </div>
+            </div>
         </text>);
 
 
@@ -590,12 +620,15 @@
                         @(Html.DevExtreme().NumberBox()
                         .ID("txtDepPercentage")
                         .Width(100)
-                        .Value(0)
+                        .Value(0.0)
                         .ShowSpinButtons(true)
-                        .Min(0)
-                        .Max(1000)
-                        .Step(1))
+                        .Min(0.0)
+                        // .Max(100)
+                        .Step(0.1)
+
+                        )
                     </div>
+
 
                     <!-- Schedule Button -->
                     <div class="form-group" style="margin-left: auto;">
@@ -612,7 +645,6 @@
 
 
 
-                <!-- Card 2 -->
                 <div class="card">
                     <div class="dx-field ledgerResult">
 
@@ -622,10 +654,7 @@
                         .RemoteOperations(false)
                         .Columns(columns =>
                         {
-
                         columns.AddFor(m => m.DepreciationDocNo).Caption("Depreciation Doc No");
-
-
                         columns.AddFor(m => m.DeprStartDate).Caption("Depr Start Date");
                         columns.AddFor(m => m.DeprEndDate).Caption("Depr End Date");
                         columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance");
@@ -637,7 +666,6 @@
                         columns.AddFor(m => m.AccumulatedAdjusted).Caption("Accumulated Adjusted");
                         columns.AddFor(m => m.BookValueAsOnDate).Caption("Book Value As On Date");
                         })
-                        //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
                         .AllowColumnReordering(true) // Enable column reordering
                         .AllowColumnResizing(true)   // Enable column resizing
                         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
@@ -648,11 +676,39 @@
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                         .ShowBorders(true)
                         .Width("100%")
+                        .Summary(summary => summary
+                        .TotalItems(items =>
+                        {
+                        items.Add()  // Summary for Opening Balance
+                        .Column("OpeningBalance")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+
+                        items.Add()  // Summary for Debit Transaction
+                        .Column("DebitTransaction")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+
+                        items.Add()  // Summary for Credit Transaction
+                        .Column("CreditTransaction")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+
+                        items.Add()  // Summary for Closing Balance
+                        .Column("ClosingBalance")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+
+                        items.Add()  // Summary for Depreciation Amount
+                        .Column("DepreciationAmount")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+                        })
+                        )
                         )
                     </div>
                 </div>
 
-                @* </div> *@
 
 
             </div>
@@ -671,10 +727,10 @@
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("save")
-                    .OnClick("function() { attachMultipleFiles(); $('#attachOptionsPopup').dxPopup('instance').hide(); }")
+                    .OnClick("function() { alert('This feature is currently in progress. Please check back later.'); }")
                     )
-                </div>
 
+                </div>
 
                 <div class="card">
                     <div class="dx-field ledgerResult">
@@ -812,7 +868,7 @@
         </text>);
                 })
             )
-        <div id="attachOptionsPopup"></div>
+
     </div>
 
     <div class="form-container">
@@ -1003,173 +1059,7 @@
         });
     }
 
-    function populateFields(assetData) {
 
-        $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo);
-        $("#ddassetCategory").dxSelectBox("instance").option("value", assetData.AssetCategory);
-
-        if (assetData.PlateNo && assetData.PlateNo !== "null") {
-            $("#txtplatno").dxTextBox("instance").option("value", assetData.PlateNo);
-        } else {
-            $("#txtplatno").dxTextBox("instance").option("value", "");
-        }
-
-        $("#txtAssetDescription").dxTextBox("instance").option("value", assetData.AssetDescription);
-        $("#ddlassetlocation").dxSelectBox("instance").option("value", assetData.AssetLocation);
-        $("#txtspecifications").dxTextArea("instance").option("value", assetData.Specifications);
-        $("#PurchasedAssetValue").dxNumberBox("instance").option("value", assetData.ValueOfProperty);
-        $("#txtPurchasedDate").dxDateBox("instance").option("value", assetData.PurchaseDate);
-        $("#txtPurchasedFrom").dxTextBox("instance").option("value", assetData.PurchasedFrom);
-        $("#ddlPurchasedAs").dxSelectBox("instance").option("value", assetData.PurchasedAs);
-        $("#txtCurrentCondition").dxSelectBox("instance").option("value", assetData.CurrentCondition);
-        $("#txtAssetType").dxTextBox("instance").option("value", assetData.AssetType);
-        $("#txtBrand").dxTextBox("instance").option("value", assetData.Brand);
-        $("#txtYear").dxTextBox("instance").option("value", assetData.Year);
-        $("#txtModel").dxTextBox("instance").option("value", assetData.Model);
-
-        if (assetData && assetData.FMV !== undefined) {
-            const fmvValue = assetData.FMV || 0; // Default to 0 if null/undefined
-            const fmvInstance = $("#txtFMV").dxNumberBox("instance");
-
-            if (fmvInstance) {
-                fmvInstance.option("value", fmvValue);
-            }
-            else {
-                console.error("NumberBox instance not found for #txtFMV.");
-            }
-        }
-        else {
-            console.warn("FMV data not found in assetData.");
-        }
-
-        if (assetData && assetData.BMV !== undefined) {
-            const bmvValue = assetData.BMV || 0; // Default to 0 if null/undefined
-            const bmvInstance = $("#txtBMV").dxNumberBox("instance");
-            if (bmvInstance) {
-                bmvInstance.option("value", bmvValue);
-            } else {
-                console.error("NumberBox instance not found for #txtBMV.");
-            }
-        } else {
-            console.warn("BMV data not found in assetData.");
-        }
-
-        if (assetData && assetData.NoOfInstallments !== undefined) {
-            const NoOfInstallmentsvalue = assetData.NoOfInstallments || 0; // Default to 0 if null/undefined
-            const NoOfInstallmentsinstance = $("#txtNoOfInstallments").dxNumberBox("instance");
-            if (NoOfInstallmentsinstance) {
-                NoOfInstallmentsinstance.option("value", NoOfInstallmentsvalue);
-            } else {
-                console.error("NumberBox instance not found for #txtNoOfInstallments.");
-            }
-        } else {
-            console.warn("NoOfInstallments data not found in assetData.");
-        }
-        if (assetData && assetData.InitialDownPayment !== undefined) {
-            const InitialDownPaymentvalue = assetData.InitialDownPayment || 0; // Default to 0 if null/undefined
-            const InitialDownPaymentinstance = $("#txtDownpayment").dxNumberBox("instance");
-            if (InitialDownPaymentinstance) {
-                InitialDownPaymentinstance.option("value", InitialDownPaymentvalue);
-            } else {
-                console.error("NumberBox instance not found for #txtDownpayment.");
-            }
-        } else {
-            console.warn("InitialDownPayment data not found in assetData.");
-
-        }
-        if (assetData && assetData.MonthlyInstallment !== undefined) {
-            const monthlyInstallmentvalue = assetData.MonthlyInstallment || 0; // Default to 0 if null/undefined
-            const monthlyInstallmentinstance = $("#txtMonthlyInstallment").dxNumberBox("instance");
-            if (monthlyInstallmentinstance) {
-                monthlyInstallmentinstance.option("value", monthlyInstallmentvalue);
-            } else {
-                console.error("NumberBox instance not found for #txtMonthlyInstallment.");
-            }
-        } else {
-            console.warn("monthlyInstallment data not found in assetData.");
-        }
-        if (assetData && assetData.FinalInstallment !== undefined) {
-            const FinalInstallmentvalue = assetData.FinalInstallment || 0; // Default to 0 if null/undefined
-            const FinalInstallmentinstance = $("#txtFinalPayment").dxNumberBox("instance");
-            if (FinalInstallmentinstance) {
-                FinalInstallmentinstance.option("value", FinalInstallmentvalue);
-            } else {
-                console.error("NumberBox instance not found for #txtFinalPayment.");
-            }
-        } else {
-            console.warn("FinalInstallment data not found in assetData.");
-        }
-
-
-        $("#txtStartDate").dxDateBox("instance").option("value", assetData.InstallmentStartDate);
-
-        $("#txtEndDate").dxDateBox("instance").option("value", assetData.InstallmentEndDate);
-        // alert(assetData.FinancedBy);
-        $("#txtFinanceBy").dxTextBox("instance").option("value", assetData.FinancedBy);
-
-        if (assetData.PropertyNo && assetData.PropertyNo !== "null") {
-            $("#ddlpropertyno").dxDropDownBox("instance").option("value", assetData.PropertyNo);
-        } else {
-            $("#ddlpropertyno").dxDropDownBox("instance").option("value", "");
-        }
-
-        if (assetData && typeof assetData.IsFinanced !== 'undefined') {
-            const isPropertyCheckbox = $("#Ispropertychk").dxCheckBox("instance");
-            if (isPropertyCheckbox) {
-                // Set the checkbox value: true = checked, false = unchecked
-                isPropertyCheckbox.option("value", !!assetData.IsFinanced);
-            } else {
-                console.error("Checkbox instance not found for #Ispropertychk.");
-            }
-        } else {
-            console.warn("IsFinanced property is not defined in assetData.");
-        }
-
-        //  alert(assetData.DepreciationMethod);
-        // New fields to be added
-        //  $("#txtDepreciationMethod").dxSelectBox("instance").option("value", assetData.DepreciationMethod);
-
-
-        if (assetData && assetData.ScrapValueOfProperty !== undefined) {
-            const ScrapValueOfPropertyValue = assetData.ScrapValueOfProperty || 0; // Default to 0 if null/undefined
-            const ScrapValueOfPropertyinstance = $("#txtScarpValue").dxNumberBox("instance");
-            if (ScrapValueOfPropertyinstance) {
-                ScrapValueOfPropertyinstance.option("value", ScrapValueOfPropertyValue);
-            } else {
-                console.error("NumberBox instance not found for #txtScarpValue.");
-            }
-        } else {
-            console.warn("ScrapValueOfProperty data not found in assetData.");
-        }
-
-        // $("#txtScarpValue").dxNumberBox("instance").option("value", assetData.ScrapValueOfProperty || 0);
-        $("#txtLifeinyears").dxNumberBox("instance").option("value", assetData.LifeSpanOfProperty);
-        $("#txtDepPercentage").dxNumberBox("instance").option("value", assetData.DepPercentage);
-        $("#txtMaintenanceScarpValue").dxNumberBox("instance").option("value", assetData.CurrentReading);
-
-
-        $("#txtDepreciationMethod").val(assetData.DepreciationMethod);
-        $("#scrapValueOfProperty").val(assetData.ScrapValueOfProperty);
-        $("#lifeSpanOfProperty").val(assetData.LifeSpanOfProperty);
-        $("#depreciationPercentage").val(assetData.DepreciationPercentage);
-        $("#openingTotal").val(assetData.OpeningTotal);
-        $("#totalDebit").val(assetData.TotalDebit);
-        $("#totalCredit").val(assetData.TotalCredit);
-        $("#closingBalance").val(assetData.ClosingBalance);
-        $("#totalDepreciatedAmount").val(assetData.TotalDepreciatedAmount);
-        $("#netBookValue").val(assetData.NetBookValue);
-
-        $("#year").val(assetData.Year);
-        $("#ownership").val(assetData.Ownership);
-        $("#purchaseDate").val(assetData.PurchaseDate);
-        $("#valueOfProperty").val(assetData.ValueOfProperty);
-        $("#purchasedAs").val(assetData.PurchasedAs);
-        $("#isFinanced").prop("checked", assetData.IsFinanced);
-        $("#financedFrom").val(assetData.FinancedFrom);
-        $("#initialDocCharges").val(assetData.InitialDocCharges);
-        $("#finalInstallment").val(assetData.FinalInstallment)
-
-    }
 
     function dataGridSelectionChanged(e) {
         const selectedRow = e.selectedRowsData[0]; // Get the selected row
@@ -1187,21 +1077,21 @@
             if (ModelBox) {
                 ModelBox.option("value", selectedRow.Model || "");
             }
-       @*      var Platnotxtbox = $("#txtplatno").dxTextBox("instance");
-            if (Platnotxtbox) {
-                Platnotxtbox.option("value", selectedRow.PlateNo || "");
-            }
-            // console.log(selectedRow.PropertyDescription);
-            var assetdesctextbox = $("#txtAssetDescription").dxTextBox("instance");
+    @*   var Platnotxtbox = $("#txtplatno").dxTextBox("instance");
+                if(Platnotxtbox) {
+                Platnotxtbox.option("value",selectedRow.PlateNo || "");
+                }
+                // console.log(selectedRow.PropertyDescription);
+                var assetdesctextbox = $("#txtAssetDescription").dxTextBox("instance");
 
-            if (assetdesctextbox) {
+                if (assetdesctextbox) {
                 assetdesctextbox.option("value", selectedRow.PropertyDescription || "");
-            } else {
+                } else {
                 console.error("AssetDescription TextBox instance not found!");
-            } *@
+                } *@
 
 
-        }
+                   }
     }
 
     $("#txtScarpValue").on("dxready", function () {
@@ -1395,56 +1285,291 @@
         console.log("Dropdown value changed:", e.value);
         }
         *@
-        function updateAsset() {
-            var updatedAsset = {
-                "AssetLedgerNo": $("#txtacctledno").dxTextBox("instance").option("value"),
-                "AssetCategory": $("#ddassetCategory").dxSelectBox("instance").option("value"),
-                "PlateNo": $("#txtplatno").dxTextBox("instance").option("value"),
-                "AssetDescription": $("#txtAssetDescription").dxTextBox("instance").option("value"),
-                "AssetLocation": $("#ddlassetlocation").dxSelectBox("instance").option("value"),
-                "Specifications": $("#txtspecifications").dxTextArea("instance").option("value") || "",
-                "ValueOfProperty": $("#PurchasedAssetValue").dxNumberBox("instance").option("value"),
 
-                //  "PurchaseDate": $("#txtPurchasedDate").dxDateBox("instance").option("value"),
+        function populateFields(assetData) {
 
+            $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo);
+            $("#ddassetCategory").dxSelectBox("instance").option("value", assetData.AssetCategory);
 
-                "PurchasedFrom": $("#txtPurchasedFrom").dxTextBox("instance").option("value"),
-                "PurchasedAs": $("#ddlPurchasedAs").dxSelectBox("instance").option("value"),
-                "CurrentCondition": $("#txtCurrentCondition").dxSelectBox("instance").option("value"),
-                "AssetType": $("#txtAssetType").dxTextBox("instance").option("value"),
-                "Brand": $("#txtBrand").dxTextBox("instance").option("value"),
-                "Year": $("#txtYear").dxTextBox("instance").option("value"),
-                "Model": $("#txtModel").dxTextBox("instance").option("value"),
-                "FMV": $("#txtFMV").dxNumberBox("instance")?.option("value") || 0,
-                "BMV": $("#txtBMV").dxNumberBox("instance")?.option("value") || 0,
-                "NoOfInstallments": $("#txtNoOfInstallments").dxNumberBox("instance")?.option("value") || 0,
-                "InitialDownPayment": $("#txtDownpayment").dxNumberBox("instance")?.option("value") || 0,
-                "MonthlyInstallment": $("#txtMonthlyInstallment").dxNumberBox("instance")?.option("value") || 0,
-                "FinalInstallment": $("#txtFinalPayment").dxNumberBox("instance")?.option("value") || 0,
-                "FinancedBy": $("#txtFinanceBy").dxTextBox("instance").option("value"),
-                "PropertyNo": $("#ddlpropertyno").dxDropDownBox("instance")?.option("value"),
-                "IsFinanced": $("#Ispropertychk").dxCheckBox("instance")?.option("value") || false,
-                "ScrapValueOfProperty": $("#txtScarpValue").dxNumberBox("instance")?.option("value") || 0,
-                "DepreciationMethod": $("#txtDepreciationMethod").dxSelectBox("instance").option("value")
-            };
+            if (assetData.PlateNo && assetData.PlateNo !== "null") {
+                $("#txtplatno").dxTextBox("instance").option("value", assetData.PlateNo);
+            } else {
+                $("#txtplatno").dxTextBox("instance").option("value", "");
+            }
 
-            console.log("Updated Asset Data:", updatedAsset);
-
-            // Perform AJAX request to update asset
-            $.ajax({
-                url: "/api/assetview/updateAsset",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(updatedAsset),
-                success: function (response) {
-                    alert(response.message || "Asset updated successfully!");
-                },
-                error: function (xhr) {
-                    console.error("Error Response:", xhr);
-                    alert(xhr.responseJSON?.message || "An error occurred during the update process.");
+            $("#txtAssetDescription").dxTextBox("instance").option("value", assetData.AssetDescription);
+            $("#ddlassetlocation").dxSelectBox("instance").option("value", assetData.AssetLocation);
+            $("#txtspecifications").dxTextArea("instance").option("value", assetData.Specifications);
+            $("#PurchasedAssetValue").dxNumberBox("instance").option("value", assetData.ValueOfProperty);
+            $("#txtPurchasedDate").dxDateBox("instance").option("value", assetData.PurchaseDate);
+            $("#txtPurchasedFrom").dxTextBox("instance").option("value", assetData.PurchasedFrom);
+            $("#ddlPurchasedAs").dxSelectBox("instance").option("value", assetData.PurchasedAs);
+            $("#txtCurrentCondition").dxSelectBox("instance").option("value", assetData.CurrentCondition);
+            $("#txtAssetType").dxTextBox("instance").option("value", assetData.AssetType);
+            $("#txtBrand").dxTextBox("instance").option("value", assetData.Brand);
+            $("#txtYear").dxTextBox("instance").option("value", assetData.Year);
+            $("#txtModel").dxTextBox("instance").option("value", assetData.Model);
+            $("#txtFMV").dxNumberBox("instance").option("value", assetData.Fmv);
+            $("#txtBMV").dxNumberBox("instance").option("value", assetData.Bmv);
+    @*                 if (assetData.FMV !== undefined) {
+                var fmvValue = assetData.FMV || 0; // Default to 0 if null/undefined
+                var fmvInstance = $("#txtFMV").dxNumberBox("instance");
+                alert(fmvValue);
+                alert(fmvInstance);
+                if (fmvInstance) {
+                fmvInstance.option("value", fmvValue);
                 }
-            });
+                else {
+                console.error("NumberBox instance not found for #txtFMV.");
+                }
+                }
+                else {
+                console.warn("FMV data not found in assetData.");
+                }
+                alert(assetData.BMV)
+                if (assetData && assetData.BMV !== undefined) {
+                const bmvValue = assetData.BMV || 0; // Default to 0 if null/undefined
+                const bmvInstance = $("#txtBMV").dxNumberBox("instance");
+                if (bmvInstance) {
+                bmvInstance.option("value", bmvValue);
+                } else {
+                console.error("NumberBox instance not found for #txtBMV.");
+                }
+                } else {
+                console.warn("BMV data not found in assetData.");
+                } *@
+
+                     if (assetData && assetData.NoOfInstallments !== undefined) {
+                const NoOfInstallmentsvalue = assetData.NoOfInstallments || 0; // Default to 0 if null/undefined
+                const NoOfInstallmentsinstance = $("#txtNoOfInstallments").dxNumberBox("instance");
+                if (NoOfInstallmentsinstance) {
+                    NoOfInstallmentsinstance.option("value", NoOfInstallmentsvalue);
+                } else {
+                    console.error("NumberBox instance not found for #txtNoOfInstallments.");
+                }
+            } else {
+                console.warn("NoOfInstallments data not found in assetData.");
+            }
+            if (assetData && assetData.InitialDownPayment !== undefined) {
+                const InitialDownPaymentvalue = assetData.InitialDownPayment || 0; // Default to 0 if null/undefined
+                const InitialDownPaymentinstance = $("#txtDownpayment").dxNumberBox("instance");
+                if (InitialDownPaymentinstance) {
+                    InitialDownPaymentinstance.option("value", InitialDownPaymentvalue);
+                } else {
+                    console.error("NumberBox instance not found for #txtDownpayment.");
+                }
+            } else {
+                console.warn("InitialDownPayment data not found in assetData.");
+
+            }
+            if (assetData && assetData.MonthlyInstallment !== undefined) {
+                const monthlyInstallmentvalue = assetData.MonthlyInstallment || 0; // Default to 0 if null/undefined
+                const monthlyInstallmentinstance = $("#txtMonthlyInstallment").dxNumberBox("instance");
+                if (monthlyInstallmentinstance) {
+                    monthlyInstallmentinstance.option("value", monthlyInstallmentvalue);
+                } else {
+                    console.error("NumberBox instance not found for #txtMonthlyInstallment.");
+                }
+            } else {
+                console.warn("monthlyInstallment data not found in assetData.");
+            }
+            if (assetData && assetData.FinalInstallment !== undefined) {
+                const FinalInstallmentvalue = assetData.FinalInstallment || 0; // Default to 0 if null/undefined
+                const FinalInstallmentinstance = $("#txtFinalPayment").dxNumberBox("instance");
+                if (FinalInstallmentinstance) {
+                    FinalInstallmentinstance.option("value", FinalInstallmentvalue);
+                } else {
+                    console.error("NumberBox instance not found for #txtFinalPayment.");
+                }
+            } else {
+                console.warn("FinalInstallment data not found in assetData.");
+            }
+
+
+            $("#txtStartDate").dxDateBox("instance").option("value", assetData.InstallmentStartDate);
+
+            $("#txtEndDate").dxDateBox("instance").option("value", assetData.InstallmentEndDate);
+            // alert(assetData.FinancedBy);
+            $("#txtFinanceBy").dxTextBox("instance").option("value", assetData.FinancedBy);
+
+            if (assetData.PropertyNo && assetData.PropertyNo !== "null") {
+                $("#ddlpropertyno").dxDropDownBox("instance").option("value", assetData.PropertyNo);
+            } else {
+                $("#ddlpropertyno").dxDropDownBox("instance").option("value", "");
+            }
+
+            if (assetData && typeof assetData.IsFinanced !== 'undefined') {
+                const isPropertyCheckbox = $("#Ispropertychk").dxCheckBox("instance");
+                if (isPropertyCheckbox) {
+                    // Set the checkbox value: true = checked, false = unchecked
+                    isPropertyCheckbox.option("value", !!assetData.IsFinanced);
+                } else {
+                    console.error("Checkbox instance not found for #Ispropertychk.");
+                }
+            } else {
+                console.warn("IsFinanced property is not defined in assetData.");
+            }
+
+            //  alert(assetData.DepreciationMethod);
+            // New fields to be added
+            //  $("#txtDepreciationMethod").dxSelectBox("instance").option("value", assetData.DepreciationMethod);
+
+
+            if (assetData && assetData.ScrapValueOfProperty !== undefined) {
+                const ScrapValueOfPropertyValue = assetData.ScrapValueOfProperty || 0; // Default to 0 if null/undefined
+                const ScrapValueOfPropertyinstance = $("#txtScarpValue").dxNumberBox("instance");
+                if (ScrapValueOfPropertyinstance) {
+                    ScrapValueOfPropertyinstance.option("value", ScrapValueOfPropertyValue);
+                } else {
+                    console.error("NumberBox instance not found for #txtScarpValue.");
+                }
+            } else {
+                console.warn("ScrapValueOfProperty data not found in assetData.");
+            }
+
+            // $("#txtScarpValue").dxNumberBox("instance").option("value", assetData.ScrapValueOfProperty || 0);
+            $("#txtLifeinyears").dxNumberBox("instance").option("value", assetData.LifeSpanOfProperty);
+            $("#txtDepPercentage").dxNumberBox("instance").option("value", assetData.DepPercentage);
+            $("#txtMaintenanceScarpValue").dxNumberBox("instance").option("value", assetData.CurrentReading);
+
+            $("#txtenteredby").dxTextBox("instance").option("value", assetData.AddedBy);
+            $("#txtenteredon").dxDateBox("instance").option("value", assetData.AddedOn);
+            $("#txtmodifiedby").dxTextBox("instance").option("value", assetData.ModifiedBy);
+            $("#txtenteredon").dxDateBox("instance").option("value", assetData.ModifiedOn);
+
+            $("#txtDepreciationMethod").val(assetData.DepreciationMethod);
+            $("#scrapValueOfProperty").val(assetData.ScrapValueOfProperty);
+            $("#lifeSpanOfProperty").val(assetData.LifeSpanOfProperty);
+            //  $("#depreciationPercentage").val(assetData.DepreciationPercentage);
+            $("#openingTotal").val(assetData.OpeningTotal);
+            $("#totalDebit").val(assetData.TotalDebit);
+            $("#totalCredit").val(assetData.TotalCredit);
+            $("#closingBalance").val(assetData.ClosingBalance);
+            $("#totalDepreciatedAmount").val(assetData.TotalDepreciatedAmount);
+            $("#netBookValue").val(assetData.NetBookValue);
+
+            $("#year").val(assetData.Year);
+            $("#ownership").val(assetData.Ownership);
+            //$("#purchaseDate").val(assetData.PurchaseDate);
+            $("#valueOfProperty").val(assetData.ValueOfProperty);
+            $("#purchasedAs").val(assetData.PurchasedAs);
+            $("#isFinanced").prop("checked", assetData.IsFinanced);
+            $("#financedFrom").val(assetData.FinancedFrom);
+            $("#initialDocCharges").val(assetData.InitialDocCharges);
+            $("#finalInstallment").val(assetData.FinalInstallment)
+
         }
+
+    function updateAsset() {
+
+        var purchaseDate = $("#txtPurchasedDate").dxDateBox("instance").option("value");
+        alert(purchaseDate);
+        if (purchaseDate) {
+            var dateParts = purchaseDate.split("/");
+            if (dateParts.length === 3) {
+                var validDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+
+                if (!isNaN(validDate.getTime())) {
+                    var formattedpurchaseDate = validDate.toLocaleDateString('en-CA');
+
+                } else {
+                    console.log("Invalid date");
+                }
+            } else {
+                console.log("Invalid date format");
+            }
+        } else {
+            console.log("No date selected");
+        }
+        var StartDate = $("#txtStartDate").dxDateBox("instance").option("value");
+        console.log(StartDate);
+        if (StartDate) {
+            // Ensure StartDate is a Date object
+            var validDate = new Date(StartDate);
+
+            if (!isNaN(validDate.getTime())) {
+                // Format the date as yyyy-mm-dd
+                var formattedStartDate = validDate.getFullYear() + '-' +
+                    ('0' + (validDate.getMonth() + 1)).slice(-2) + '-' +
+                    ('0' + validDate.getDate()).slice(-2);
+
+                console.log(formattedStartDate);  // Example output: 2025-01-02
+            } else {
+                console.log("Invalid date");
+            }
+        } else {
+            console.log("No date selected");
+        }
+        var EndDate = $("#txtEndDate").dxDateBox("instance").option("value");
+
+        if (EndDate) {
+            // Ensure EndDate is a Date object
+            var validEndDate = new Date(EndDate);
+
+            if (!isNaN(validEndDate.getTime())) {
+                // Format the date as yyyy-mm-dd
+                var formattedEndDate = validEndDate.getFullYear() + '-' +
+                    ('0' + (validEndDate.getMonth() + 1)).slice(-2) + '-' +
+                    ('0' + validEndDate.getDate()).slice(-2);
+
+                console.log(formattedEndDate);  // Example output: 2025-01-02
+            } else {
+                console.log("Invalid date");
+            }
+        } else {
+            console.log("No date selected");
+        }
+
+
+        var updatedAsset = {
+            "AssetLedgerNo": $("#txtacctledno").dxTextBox("instance").option("value"),
+            "AssetCategory": $("#ddassetCategory").dxSelectBox("instance").option("value"),
+            "PlateNo": $("#txtplatno").dxTextBox("instance").option("value"),
+            "AssetDescription": $("#txtAssetDescription").dxTextBox("instance").option("value"),
+            "AssetLocation": $("#ddlassetlocation").dxSelectBox("instance").option("value"),
+            "Specifications": $("#txtspecifications").dxTextArea("instance").option("value") || "",
+            "ValueOfProperty": $("#PurchasedAssetValue").dxNumberBox("instance").option("value"),
+            "PurchaseDate": formattedpurchaseDate,
+            "InstallmentStartDate": formattedStartDate,
+            "InstallmentEndDate": formattedEndDate,
+            "PurchasedFrom": $("#txtPurchasedFrom").dxTextBox("instance").option("value"),
+            "PurchasedAs": $("#ddlPurchasedAs").dxSelectBox("instance").option("value"),
+            "CurrentCondition": $("#txtCurrentCondition").dxSelectBox("instance").option("value"),
+            "AssetType": $("#txtAssetType").dxTextBox("instance").option("value"),
+            "Brand": $("#txtBrand").dxTextBox("instance").option("value"),
+            "Year": $("#txtYear").dxTextBox("instance").option("value"),
+            "Model": $("#txtModel").dxTextBox("instance").option("value"),
+            "FMV": $("#txtFMV").dxNumberBox("instance").option("value"),
+            "BMV": $("#txtBMV").dxNumberBox("instance").option("value"),
+            "NoOfInstallments": $("#txtNoOfInstallments").dxNumberBox("instance")?.option("value") || 0,
+            "InitialDownPayment": $("#txtDownpayment").dxNumberBox("instance")?.option("value") || 0,
+            "MonthlyInstallment": $("#txtMonthlyInstallment").dxNumberBox("instance")?.option("value") || 0,
+            "FinalInstallment": $("#txtFinalPayment").dxNumberBox("instance")?.option("value") || 0,
+            "FinancedBy": $("#txtFinanceBy").dxTextBox("instance").option("value"),
+            "PropertyNo": $("#ddlpropertyno").dxDropDownBox("instance")?.option("value"),
+            "IsFinanced": $("#Ispropertychk").dxCheckBox("instance")?.option("value") || false,
+            "ScrapValueOfProperty": $("#txtScarpValue").dxNumberBox("instance")?.option("value") || 0,
+            "DepreciationMethod": $("#txtDepreciationMethod").dxSelectBox("instance").option("value"),
+            "DepPercentage": $("#txtDepPercentage").dxNumberBox("instance").option("value")
+        };
+
+        console.log("Updated Asset Data:", updatedAsset);
+
+        // Perform AJAX request to update asset
+        $.ajax({
+            url: "/api/assetview/updateAsset",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(updatedAsset),
+            success: function (response) {
+                alert(response.message || "Asset updated successfully!");
+            },
+            error: function (xhr) {
+                console.error("Error Response:", xhr);
+                alert(xhr.responseJSON?.message || "An error occurred during the update process.");
+            }
+        });
+    }
 
     function formatDate(date) {
         if (date instanceof Date && !isNaN(date)) {
@@ -1452,22 +1577,12 @@
         }
         return null; // If the date is invalid, return null
     }
-    function onAttachButtonClick() {
-        $("#attachOptionsPopup").dxPopup("instance").show();
-    }
 
 
-       
 
 
-  
-     
 
-    
-    function attachMultipleFiles() {
-        // Logic for attaching multiple files
-      //  DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
-        window.location.href = `/Finance/frm20112AssetDocuments`;
-    }
+
+
 
 </script>

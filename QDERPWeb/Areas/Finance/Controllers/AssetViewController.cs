@@ -200,7 +200,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existingAsset.Ownership = updatedAsset.Ownership;
                 existingAsset.ValueOfProperty = updatedAsset.ValueOfProperty;
                 existingAsset.PurchasedAs = updatedAsset.PurchasedAs;
-                //existingAsset.PurchaseDate = updatedAsset.PurchaseDate;
+                existingAsset.PurchaseDate = updatedAsset.PurchaseDate;
                 existingAsset.IsFinanced = updatedAsset.IsFinanced;
                 existingAsset.FinancedFrom = updatedAsset.FinancedFrom;
                 existingAsset.NoOfInstallments = updatedAsset.NoOfInstallments;
@@ -208,8 +208,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existingAsset.InitialDocCharges = updatedAsset.InitialDocCharges;
                 existingAsset.MonthlyInstallment = updatedAsset.MonthlyInstallment;
                 existingAsset.FinalInstallment = updatedAsset.FinalInstallment;
-                //existingAsset.InstallmentStartDate = updatedAsset.InstallmentStartDate;
-                //existingAsset.InstallmentEndDate = updatedAsset.InstallmentEndDate;
+                existingAsset.InstallmentStartDate = updatedAsset.InstallmentStartDate;
+                existingAsset.InstallmentEndDate = updatedAsset.InstallmentEndDate;
                 existingAsset.PurchasedFrom = updatedAsset.PurchasedFrom;
                 existingAsset.CurrentCondition = updatedAsset.CurrentCondition;
                 existingAsset.CurrentReading = updatedAsset.CurrentReading;
