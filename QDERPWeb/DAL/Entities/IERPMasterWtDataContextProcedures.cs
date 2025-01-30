@@ -28,5 +28,6 @@ namespace QD.ERP.Web.DAL.Entities
         Task<List<sp90122GetUserLedgerAccessResult>> sp90122GetUserLedgerAccessAsync(int? UserID, string LedgerNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StProAccountLedgerResult>> StProAccountLedgerAsync(string ParamAccountNo, DateTime? StartDate, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StProAccountLedgerByVoucherTypeResult>> StProAccountLedgerByVoucherTypeAsync(string VoucherType, DateTime? StartDate, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<StProTrialBalanceResult>> StProTrialBalanceAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
     }
 }

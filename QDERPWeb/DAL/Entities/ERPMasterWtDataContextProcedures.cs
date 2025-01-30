@@ -43,7 +43,7 @@ namespace QD.ERP.Web.DAL.Entities
             modelBuilder.Entity<StProAccountLedgerByVoucherTypeResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<sp20157AssetRegisterViewResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<sp20101TrialBalanceReportResult>().HasNoKey().ToView(null);
-        }
+    }
     }
 
     public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextProcedures
@@ -543,6 +543,44 @@ namespace QD.ERP.Web.DAL.Entities
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<StProAccountLedgerByVoucherTypeResult>("EXEC @returnValue = [dbo].[StProAccountLedgerByVoucherType] @VoucherType = @VoucherType, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<StProTrialBalanceResult>> StProTrialBalanceAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "StartDate",
+                    Value = StartDate ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.DateTime,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "EndDate",
+                    Value = EndDate ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.DateTime,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "IsUseEffectiveDate",
+                    Value = IsUseEffectiveDate ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Bit,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<StProTrialBalanceResult>("EXEC @returnValue = [dbo].[StProTrialBalance] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

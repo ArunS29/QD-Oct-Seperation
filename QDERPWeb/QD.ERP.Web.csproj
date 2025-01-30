@@ -19,8 +19,6 @@
 
     <ItemGroup>
       <Folder Include="Areas\Finance\Data\" />
-      <Folder Include="Areas\Finance\NewFolder1\" />
-      <Folder Include="Areas\Finance\NewFolder\" />
       <Folder Include="Areas\Finance\Views\" />
     </ItemGroup>
 

@@ -1,0 +1,175 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Trial Balance";
+}
+
+<h7>@ViewData["Title"]</h7>
+<div class="container">
+    <!-- Input Controls -->
+    <div class="dx-fieldset horizontal-container">
+        <!-- SelectBox for Account Group -->
+        @(Html.DevExtreme().SelectBox()
+            .ID("requestedBy")
+            .DataSource(d => d.Mvc().Controller("TrialBalance").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
+            .Width(300)
+            .ElementAttr("class", "button-alignment-down")
+            .Label("Select Account Group")
+            .LabelMode(EditorLabelMode.Outside)
+            .SearchEnabled(true)
+            .DisplayExpr("AccountGroup")
+            .Value(null)
+            .ShowClearButton(true)
+            .OnValueChanged("onRequestedByChanged")
+            )
+
+        <!-- Start Date Picker -->
+        @(Html.DevExtreme().DateBox()
+            .ID("frmdateBox")
+            .Label("Start Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .InputAttr("aria-label", "Date")
+            .Type(DateBoxType.Date)
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+            .DisplayFormat("dd-MMM-yyyy")
+            .TabIndex(2)
+            )
+
+        <!-- End Date Picker -->
+        @(Html.DevExtreme().DateBox()
+            .ID("todateBox")
+            .Label("End Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .InputAttr("aria-label", "Date")
+            .Type(DateBoxType.Date)
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+            .DisplayFormat("dd-MMM-yyyy")
+            .TabIndex(3)
+            )
+
+        <!-- Dropdown Button to Show Records -->
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down")
+            .TabIndex(4)
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+            })
+            )
+    </div>
+
+    <!-- Pivot Grid Container -->
+    <div id="pivotGridContainer"></div>
+
+    <!-- Grid Footer Partial -->
+    @await Html.PartialAsync("_GridFooter")
+</div>
+
+<script type="text/javascript">
+    // Function to handle changes in the Account Group selection
+    function onRequestedByChanged(e) {
+        var selectedValue = e.value; // Get the selected value from the SelectBox
+
+        var selectBox = $("#requestedBy").dxSelectBox("instance");
+        var dataSource = selectBox.option("dataSource");
+
+        if (dataSource && dataSource.store) {
+            var store = dataSource.store;
+
+            if (store instanceof DevExpress.data.DataSource) {
+                // Apply a filter to the DataSource store
+                if (selectedValue) {
+                    store.filter(["AccountGroup", "=", selectedValue]);
+                } else {
+                    store.filter(null); // Remove the filter if no value is selected
+                }
+
+                // Reload the data to reflect the filter change
+                store.load();
+            } else if (Array.isArray(store)) {
+                // Apply filtering manually for array-based store
+                var filteredData = store.filter(item => item.AccountGroup === selectedValue);
+                selectBox.option("dataSource", filteredData);
+            } else {
+                console.error("The store is neither a DevExpress.data.DataSource nor an array:", store);
+            }
+        } else {
+            console.error("The dataSource does not have a store or is not structured as expected:", dataSource);
+        }
+    }
+
+    function ddBtnShowRecords_click(e) {
+        // Get the start and end dates
+        var startDate = $("#frmdateBox").dxDateBox("instance").option("value");
+        var endDate = $("#todateBox").dxDateBox("instance").option("value");
+
+        // Get the selected AccountGroup object from the select box
+        var getaccountGroup = $("#requestedBy").dxSelectBox("instance").option("value");
+
+        // Log the AccountGroup value (to help with debugging)
+        console.log("Selected Account Group: ", getaccountGroup);
+
+        // Extract the AccountGroup value (assuming it's an object)
+        var accountGroup = getaccountGroup ? getaccountGroup.AccountGroup : null;
+
+        // If start or end date is not selected, show an alert and return
+        if (!startDate || !endDate) {
+            alert("Please select both start date and end date.");
+            return;
+        }
+
+        // Format the dates in 'yyyy-MM-dd' format for the backend
+        var formattedStartDate = startDate.toISOString().split('T')[0];
+        var formattedEndDate = endDate.toISOString().split('T')[0];
+
+        // Trigger the AJAX request with the necessary parameters
+        $.ajax({
+            url: '/api/TrialBalance/GetTrialBalance',
+            type: 'GET',
+            data: {
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
+                accountGroup: accountGroup // Pass accountGroup, which can be null
+            },
+            success: function (data) {
+                // Initialize or update the PivotGrid with the received data
+                var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
+                    dataSource: {
+                        store: {
+                            type: "array",
+                            data: data
+                        },
+                        fields: [
+
+                            { dataField: "AccountGroup", area: "row", caption: "Master Group" },
+                            { dataField: "AccountHeadName", area: "row", caption: "Ledger Account" },
+                            { dataField: "DrAmount", area: "data", caption: "Debit Amount" },
+                            { dataField: "CrAmount", area: "data", caption: "Credit Amount" },
+                            { dataField: "MonthYear", area: "column", caption: "Month/Year" }
+                        ]
+                    },
+                    height: 500,
+                    showBorders: true
+                }).dxPivotGrid('instance');
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data: ", error);
+            }
+        });
+    }
+
+</script>

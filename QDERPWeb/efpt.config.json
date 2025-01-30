@@ -269,6 +269,10 @@
       {
          "Name": "[dbo].[StProAccountLedgerByVoucherType]",
          "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StProTrialBalance]",
+         "ObjectType": 1
       }
    ],
    "UiHint": null,
