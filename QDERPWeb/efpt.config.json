@@ -143,6 +143,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[qry201_114AccountLedgersWtAdvances]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry201_205DepreciationMasterView]",
          "ObjectType": 3
       },
@@ -184,6 +188,10 @@
       },
       {
          "Name": "[dbo].[qry20167SalaryLedgerPayableBalance]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry20191SalaryPayableMasterMapped02]",
          "ObjectType": 3
       },
       {

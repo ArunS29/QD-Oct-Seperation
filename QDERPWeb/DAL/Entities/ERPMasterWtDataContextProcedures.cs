@@ -43,7 +43,8 @@ namespace QD.ERP.Web.DAL.Entities
             modelBuilder.Entity<StProAccountLedgerByVoucherTypeResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<sp20157AssetRegisterViewResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<sp20101TrialBalanceReportResult>().HasNoKey().ToView(null);
-    }
+			modelBuilder.Entity<StProTrialBalanceResult>().HasNoKey().ToView(null);
+		}
     }
 
     public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextProcedures

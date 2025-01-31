@@ -2,13 +2,48 @@
 @using DevExtreme.AspNet.Mvc
 
 <style type="text/css">
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5); /* Transparent background */
 
+		z-index: 1000;
+	}
 
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: white;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
 
 </style>
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div id="inputPopupContainer"></div>
-<div class="content-container-top"style="width:1400px">
+<div class="content-container-top">
 	<!-- Context Menu -->
 	<div class="context-menu" id="contextMenu">
 		<div id="contextMenuContent"></div>
@@ -285,6 +320,12 @@
 				.OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }") // Recalculate on sorting change
 				)
 	</div>
+	<div id="overlay" class="overlay">
+		<div class="overlay-content">
+			<span class="close-btn" onclick="closeOverlay()">×</span>
+			<iframe id="overlay-frame" src="" frameborder="0"></iframe>
+		</div>
+	</div>
 	<div>
 		@await Html.PartialAsync("_GridFooter")
 	</div>
@@ -327,7 +368,7 @@
 					)
 }
 <script>
-	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar;
+	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid;
 
 	var inputPopupInstance
 	$(function () {
@@ -595,6 +636,7 @@
 		var frmDate = new Date(frmDateBox.option("value"));
 		var toDate = new Date(toDateBox.option("value"));
 		var currentDate = new Date();
+		accid = accountId;
 		switch (duration) {
 			case 'today':
 				frmDate = toDate = currentDate;
@@ -656,6 +698,10 @@
 			month: '2-digit',
 			day: '2-digit'
 		});
+		FromDate = frmDate;
+		ToDate = toDate;
+		//alert(FromDate)
+
 		frmDateBox.option("value", frmDate);  // Set frmDateBox value
 		toDateBox.option("value", toDate);    // Set toDateBox value
 		$.ajax({
@@ -676,6 +722,8 @@
 			}
 		});
 	}
+
+
 	// Function to format date in required format
 	function formatDate(date) {
 		var d = new Date(date),
@@ -695,18 +743,6 @@
 		window.open('/Finance/LedgerAccount', 'popupWindow1', 'width=1300,height=600,scrollbars=yes,resizable=yes');
 	}
 
-	//    function btnEditAccount_click() {
-	// IsEdit = true;
-	// if(refno==null)
-	// 	   {
-	// 		   refno="";
 
-	// 	   }
-
-	//    const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}`;
-
-	//    // Open the popup window
-	//    window.open(url, 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
-	//    }
 
 </script>
