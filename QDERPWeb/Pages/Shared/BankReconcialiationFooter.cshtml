@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -6,7 +6,6 @@
 
     #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         text-align: center !important;
-        background-color: aliceblue;
     }
 
     .dx-button {
@@ -34,7 +33,6 @@
 
     .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc; /* Border between rows */
-        margin-bottom: 50px;
     }
     /* Custom styles for context menu */
     .context-menu {
@@ -66,11 +64,12 @@
 
     @* <div id="ddButtonLayout"></div> *@
 
+
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
         .Text("Layout")
         .Icon("smalliconslayout")
-        .Width(50)
+        .Width(180)
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -87,74 +86,86 @@
         )
     @(Html.DevExtreme().Button()
         .ID("btnPrint")
+        .Text("Print")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("print")
-        .Width(50)
-        )
+        .Icon("print") // Correct icon for printing
+        .Width(180)
+    )
+
+    @(Html.DevExtreme().Button()
+        .ID("btnPrintGrid")
+        .Text("Print Grid")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("print") // Correct icon for printing
+        .Width(180)
+    )
+
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")
+        .Text("Search")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("search")
-        .Width(50)
+        .Icon("search") // Correct icon for search functionality
+        .Width(180)
         .OnClick("function() { toggleFilterRow(); }")
-        )
+    )
+
     @(Html.DevExtreme().Button()
         .ID("btntoggleGroupPanel")
+        .Text("Group")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("hierarchy")
-        .Width(50)
+        .Icon("hierarchy") // Correct icon for grouping
+        .Width(180)
         .OnClick("toggleGroupPanel")
-        )
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonReceipts")
-        .Icon("add")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Cash Receipts").Icon("money");
-            items.Add().Text("Add Bank Receipts").Icon("product");
-        })
-        .OnItemClick("addRecipitsButton_click")
-        )
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonPayment")
-        .Icon("add")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Cash Payment").Icon("money");
-            items.Add().Text("Add Bank Payment").Icon("product");
-        })
-        .OnItemClick("addPaymentButton_click")
-        )
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddOtherVouchers")
-        .Icon("add")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Purchase Voucher").Icon("add");
-            items.Add().Text("Add Sales Voucher").Icon("add");
-            items.Add().Text("Add Journal Voucher").Icon("add");
-        }).OnItemClick("otherVoucherButton_click")
-        )
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddReports")
-        .Icon("doc")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Account Satements").Icon("file");
-            items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
-            items.Add().Text("Account Ledger to Recievables/Payable Mapping").Icon("product");
-            items.Add().Text("Bank Reconciliation").Icon("product");
+    )
 
-        })
-        .OnItemClick("addReportsButton_click")
-        )
+    @(Html.DevExtreme().Button()
+        .ID("btnRefresh")
+        .Text("Refresh")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("refresh") // Correct icon for refresh
+        .Width(220)
+    )
+
+    @(Html.DevExtreme().Button()
+        .ID("btnShowReconciled")
+        .Text("Show Reconciled Items")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("check") // Suggested icon for showing reconciled items
+        .Width(220)
+    )
+
+    @(Html.DevExtreme().Button()
+        .ID("btnUpdate")
+        .Text("Update")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("save") // Correct icon for update
+        .Width(220)
+    )
+
+    @(Html.DevExtreme().Button()
+        .ID("btnUpdateandClose")
+        .Text("Update & Close")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("save") // Correct icon for update & close
+        .Width(220)
+    )
+
+    @(Html.DevExtreme().Button()
+        .ID("btnBack")
+        .Text("Back")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("arrowleft") // Correct icon for back navigation
+        .Width(220)
+    )
 
 </div>
 
@@ -307,131 +318,8 @@
 
     // Footer Recipits button event
     function addRecipitsButton_click(e) {
-        switch (e.itemData.text) {
-            case 'Add Cash Receipts':
-                window.open('/Finance/VoucherEntryCashReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-            case 'Add Bank Receipts':
-                window.open('/Finance/VoucherEntryReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-            // You can handle other cases here if needed
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-        }
+        DevExpress.ui.notify(e.itemData, "success", 600);
     }
-
-    function addReportsButton_click(e) {
-        let pageUrl = '';
-
-        switch (e.itemData.text) {
-            case 'Ledger to Salary Payable Mapping':
-                // Ensure acchedid and accheadname have values before appending them
-                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-                break;
-            case 'Add Bank Receipts':
-                pageUrl = '/Finance/VoucherEntryReceipts';
-                break;
-
-            case 'Account Ledger to Recievables/Payable Mapping':
-                // Ensure acchedid and accheadname have values before appending them
-
-                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-                break;
-
-            case 'Bank Reconciliation':
-                // Ensure acchedid and accheadname have values before appending them
-
-                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-                break;
-
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-                return;
-        }
-
-        // Set the iframe source and show overlay
-        $("#overlay-frame").attr("src", pageUrl);
-        $("#overlay").fadeIn();
-    }
-
-
-    // Function to close the overlay
-    function closeOverlay() {
-        $("#overlay").fadeOut();
-        $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
-    }
-
-
-
-    function addPaymentButton_click(e) {
-        switch (e.itemData.text) {
-
-            case 'Add Cash Payment':
-                window.open('/Finance/VoucherCashPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            case 'Add Bank Payment':
-                window.open('/Finance/VoucherBankPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            // You can handle other cases here if needed
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-        }
-    }
-    function otherVoucherButton_click(e) {
-        switch (e.itemData.text) {
-
-            case 'Add Purchase Voucher':
-                window.open('/Finance/Purchasevoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            case 'Add Sales Voucher':
-                window.open('/Finance/Salesvoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            case 'Add Journal Voucher':
-                window.open('/Finance/Voucherjournal', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            // You can handle other cases here if needed
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-        }
-    }
-
-
-
     function ChangeRowHeight(newHeight) {
         // Update the row height
         $("#dataGrid .dx-data-row").css("height", newHeight + "px");
@@ -468,10 +356,10 @@
 
             reader.onload = function (e) {
                 try {
-
+                    // Parse the JSON string from the file
                     const layout = JSON.parse(e.target.result);
 
-
+                    // Restore the grid state
                     dataGrid.state(layout);
                 } catch (error) {
                     console.error("Error parsing JSON:", error);
@@ -479,8 +367,16 @@
                 }
             };
 
-
+            // Read the file as text
             reader.readAsText(file);
         }
     });
+    function refreshPage() {
+        // Logic to refresh the current page or reload data in a specific grid
+        location.reload(); // Reloads the entire page
+        // Or refresh a specific grid, for example:
+        // $("#YourGridID").dxDataGrid("instance").refresh();
+    }
+
 </script>
+

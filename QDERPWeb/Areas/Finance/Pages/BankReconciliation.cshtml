@@ -1,0 +1,258 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc;
+@using DevExtreme.AspNet.Data;
+<style type="text/css">
+    .card {
+        margin: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #F0F8FF;
+        color: black;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 15px;
+        background-color: #ffffff;
+        border-radius: 5px;
+    }
+
+    .dx-fieldset.horizontal-container {
+        margin-bottom: 0px;
+    }
+
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px;
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+    #AccountHeadName {
+        width: 250px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        Bank Reconciliation
+    </div>
+    <div class="card-body">
+        <div class="dx-fieldset horizontal-container">
+            <div style="padding-top: 15px" id="titleHeader"></div>
+        </div>
+
+      <div class="dx-field ledgerResult">
+            @(
+                    Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl201VoucherEntry>()
+                    .ID("dataGrid")
+                    .KeyExpr("AccountHeadNo")
+                    .RemoteOperations(false)
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("SalaryPayableMapping")
+                        .LoadAction("GetBankReconciliation")
+                        .LoadParams(new { accid = "0" })
+                    )
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("VoucherNo").Caption("Voucher No");
+                            columns.Add().DataField("VoucherRefNo").Caption("Ref No");
+                            columns.Add().DataField("VoucherDate").Caption("Voucher Date");
+                        columns.Add().DataField("SysRemarks").Caption("Sys Remarks");
+                        columns.Add().DataField("DrCr").Caption("Dr/Cr");
+
+                        // Add Button Column
+                        columns.Add()
+                            .Caption("...")
+                            .Width(50) // Adjust width for button
+                            .CellTemplate(@<text>
+                    <div style="text-align: center;">
+                        <div class="dx-button dx-button-mode-contained dx-widget" onclick="onNextButtonClick()">
+                            <i class="dx-icon dx-icon-chevronright"></i>
+                        </div>
+                    </div>
+                </text>);
+
+                        columns.Add().DataField("BankClearedOn").Caption("Cleared On");
+                        columns.Add().DataField("PaymentStatus").Caption("Status");
+                            columns.Add().DataField("PaymentStatus").Caption("Receipts");
+                        columns.Add().DataField("VoucherAmount").Caption("Payments");
+                    })
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnFixing(fixing => fixing.Enabled(true))
+                    .HeaderFilter(filter => filter.Visible(true))
+                    .Height(300)
+                    .ColumnAutoWidth(true)
+                    .FilterRow(filterRow => filterRow.Visible(false))
+                    .GroupPanel(groupPanel => groupPanel.Visible(false))
+                    .ShowBorders(true)
+                    .Width("100%")
+                )
+</div>
+
+      @*   <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: aliceblue; padding: 10px; margin-top: -11px; font-size: 14px; max-width: 1245px; position: relative; left: 17px;">
+            <div style="flex: 8;"></div>
+            <div style="flex: 8;"></div>
+
+            <div style="flex: none; text-align: right; position: relative; right: 25px;">
+                @(Html.DevExtreme().TextBox()
+                        .ID("totalDebitTextbox")
+                        .Value("0.00")
+                        .ReadOnly(true)
+                        .Width("60%")
+                        .RtlEnabled(true)
+                    )
+            </div>
+
+            <div style="flex: none; text-align: right; position: relative; right: 80px;">
+                @(Html.DevExtreme().TextBox()
+                        .ID("totalCreditTextbox")
+                        .Value("0.00")
+                        .ReadOnly(true)
+                        .Width("60%")
+                        .RtlEnabled(true)
+                    )
+            </div>
+
+            <div style="flex: 8;"></div>
+        </div> *@
+
+        <div id="footerTotals" style="display: flex; justify-content: flex-end; background-color: aliceblue; padding: 10px; margin-top: -11px; font-size: 14px; max-width: 1245px;">
+    <!-- Total Debit -->
+    <div style="text-align: right; margin-right: 20px;">
+       @*  <label style="font-weight: bold; margin-right: 5px;">Total Debit:</label> *@
+                @(Html.DevExtreme().TextBox()
+                            .ID("totalDebitTextbox")
+                            .Value("0.00")
+                            .ReadOnly(true)
+                            .Width(100)
+                            .RtlEnabled(true)
+                        )
+    </div>
+
+    <!-- Total Credit -->
+    <div style="text-align: right;">
+       @*  <label style="font-weight: bold; margin-right: 5px;">Total Credit:</label> *@
+                @(Html.DevExtreme().TextBox()
+                            .ID("totalCreditTextbox")
+                            .Value("0.00")
+                            .ReadOnly(true)
+                            .Width(100)
+                            .RtlEnabled(true)
+                        )
+    </div>
+</div>
+
+
+       <div class="dx-fieldset vertical-container" style="display: flex; flex-direction: column; align-items: flex-end; margin-right: 20px;">
+    <div>
+                @(Html.DevExtreme().TextBox()
+                            .ID("BalanceAsPerOurBooks")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Label("Balance as per our Books:")
+                            .Width(250)
+                        )
+    </div>
+
+    <div>
+                @(Html.DevExtreme().TextBox()
+                            .ID("AmountNotReflectedinBank")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Label("Amount not reflected in Bank:")
+                            .Width(250) 
+                        )
+    </div>
+
+    <div>
+                @(Html.DevExtreme().TextBox()
+                            .ID("BalanceAsPerBankStatement")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Label("Balance as per Bank Statement:")
+                            .Width(250) 
+                        )
+    </div>
+</div>
+
+
+        <div>
+            @await Html.PartialAsync("BankReconcialiationFooter")
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        const acchedid = getQueryParam("acchedid");
+        const accheadname = getQueryParam("accheadname");
+        const accid = getQueryParam("accid");
+        const FromDate = getQueryParam("FromDate");
+        const ToDate = getQueryParam("ToDate");
+
+
+        if (accheadname && ToDate) {
+            $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
+        }
+
+        let dataGrid = $("#dataGrid").dxDataGrid("instance");
+        dataGrid.option("dataSource", {
+            load: function () {
+                return $.getJSON("/api/SalaryPayableMapping/GetBankReconciliation", { accid: accid });
+            }
+        });
+        dataGrid.refresh();
+    });
+
+    function ddBtnShowRecords_click(filterType) {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        const today = new Date();
+        let startDate = new Date(today);
+        startDate.setMonth(today.getMonth() - 1);
+        let endDate = today;
+
+        dataGrid.option("dataSource", {
+            load: function () {
+                return $.ajax({
+                    url: `/api/SalaryPayableMapping/GetBankReconciliation?accid=${encodeURIComponent(getQueryParam("accid"))}`,
+                    data: { startDate: startDate.toISOString(), endDate: endDate.toISOString() },
+                    type: "GET"
+                }).then(data => data.map(item => ({ ...item, dateField: new Date(item.dateField).toLocaleDateString("en-GB") })));
+            }
+        });
+    }
+
+     function onNextButtonClick() {
+        alert("Next button clicked! Implement navigation logic here.");
+    }
+</script>
