@@ -1,37 +1,17 @@
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿
+
 <style type="text/css">
-    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
+    #DepreciationdataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
 
-    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+    #DepreciationdataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         text-align: center !important;
-        background-color: aliceblue;
     }
 
     .dx-button {
-        background: none !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 5px !important;
-        min-width: auto !important;
+        background-color: whitesmoke;
     }
-
-    .dx-icon {
-        font-size: 20px !important; /* Adjust size if needed */
-        color: gray !important; /* Adjust color if needed */
-    }
-
-    .dx-button-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .dx-dropdownbutton .dx-button-content {
-        padding: 0 !important;
-    }
-
 
 
 
@@ -53,8 +33,7 @@
     }
 
     .dx-datagrid .dx-row {
-     
-        margin-bottom: 50px;
+        border-bottom: 1px solid #ccc; /* Border between rows */
     }
     /* Custom styles for context menu */
     .context-menu {
@@ -81,104 +60,138 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
+
+    .custom-button-icon .dx-icon {
+        color: #ff5733; /* Set the color of the icon (you can use any color) */
+    }
+
 </style>
 <div class="dx-fieldset horizontal-container">
 
+    @* <div id="ddButtonLayout"></div> *@
+    @(Html.DevExtreme().Button()
+        .ID("btnRefresh")
+        .Text("Refresh")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("refresh") // Use the "refresh" icon
+        .Width(180)
+        .OnClick("function() { refreshPage(); }") // Define a JavaScript function for the click event
+        )
+
+
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
+        .Text("Layout")
         .Icon("smalliconslayout")
-        .Width(30) /* Adjust size for icon only */
+        .Width(180)
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu");
+            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu"); ;
             items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
             items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
             items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
             items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
         })
-        .ShowArrowIcon(false) /* Hide dropdown arrow */
-        )
+        .ShowArrowIcon(true)
 
+        @* .OnItemClick("addRecipitsButton_click") *@
+
+        )
     @(Html.DevExtreme().Button()
         .ID("btnPrint")
+        .Text("Print")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
         .Icon("print")
-        .Width(30) /* Adjust size */
+        .Width(180)
         )
-
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")
+        .Text("Search")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
         .Icon("search")
-        .Width(30)
-        .OnClick("toggleFilterRow")
+        .Width(180)
+        .OnClick("function() { toggleFilterRow(); }")
         )
-
     @(Html.DevExtreme().Button()
-        .ID("btntoggleGroupPanel")
+        .ID("btndepreciationtoggleGroupPanel")
+        .Text("Group")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
         .Icon("hierarchy")
-        .Width(30)
-        .OnClick("toggleGroupPanel")
+        .Width(180)
+        .OnClick("toggledepreciationGroupPanel")
         )
+    @*     @(Html.DevExtreme().Button()
+    .ID("btnChooseVoucher")
+    .Text("Choose Voucher")
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+    .Icon("fa fa-clipboard") // You can use FontAwesome icons here too
+    .Width(180)
+    .OnClick("function() { chooseVoucher(); }")
+    ) *@
+    @*   @(Html.DevExtreme().Button()
+    .ID("btnDepreciationSchedule") // Unique ID for the new button
+    .Text("Depreciation Schedule") // Text for the button
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+    .Icon("fa fa-calendar-alt") // You can choose any relevant FontAwesome icon
+    .Width(200) // Adjust width as needed
+    .OnClick("function() { showDepreciationSchedule(); }") // New function to handle click
+    ) *@
 
+    @*    @(Html.DevExtreme().DropDownButton()
+    .ID("ddButtonReceipts")
+    .Text("Add Receipts")
+    .Icon("add")
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+    items.Add().Text("Add Cash Receipts").Icon("money");
+    items.Add().Text("Add Bank Receipts").Icon("product");
+    })
+    .OnItemClick("addRecipitsButton_click")
+    )
     @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonReceipts")
-        .Icon("add")
-        .Width(30)
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Cash Receipts").Icon("money");
-            items.Add().Text("Add Bank Receipts").Icon("product");
-        })
-        .OnItemClick("addRecipitsButton_click")
-        .ShowArrowIcon(false)
-        )
-
+    .ID("ddButtonPayment")
+    .Text("Add Payment")
+    .Icon("add")
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+    items.Add().Text("Add Cash Payment").Icon("money");
+    items.Add().Text("Add Bank Payment").Icon("product");
+    })
+    .OnItemClick("addRecipitsButton_click")
+    )
     @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonPayment")
-        .Icon("add")
-        .Width(30)
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Cash Payment").Icon("money");
-            items.Add().Text("Add Bank Payment").Icon("product");
-        })
-        .OnItemClick("addPaymentButton_click")
-        .ShowArrowIcon(false)
-        )
-
+    .ID("ddOtherVouchers")
+    .Text("Other Vouchers")
+    .Icon("add")
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+    items.Add().Text("Add Purchase Voucher").Icon("add").OnClick("function() { addVoucher_click('Purchase'); }"); ;
+    items.Add().Text("Add Sales Voucher").Icon("add").OnClick("function() { addVoucher_click('Sales'); }"); ; ;
+    items.Add().Text("Add Journal Voucher").Icon("add").OnClick("function() { addVoucher_click('Journal'); }"); ; ;
+    })
+    )
     @(Html.DevExtreme().DropDownButton()
-        .ID("ddOtherVouchers")
-        .Icon("add")
-        .Width(30)
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Purchase Voucher").Icon("add");
-            items.Add().Text("Add Sales Voucher").Icon("add");
-            items.Add().Text("Add Journal Voucher").Icon("add");
-        })
-        .OnItemClick("otherVoucherButton_click")
-        .ShowArrowIcon(false)
-        )
-
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddReports")
-        .Icon("doc")
-        .Width(30)
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Account Statements").Icon("file");
-            items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
-            items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
-            items.Add().Text("Bank Reconciliation").Icon("product");
-        })
-        .OnItemClick("addReportsButton_click")
-        .ShowArrowIcon(false)
-        )
-
+    .ID("ddReports")
+    .Text("Reports")
+    .Icon("doc")
+    .DropDownOptions(options => options.Width(230))
+    .Items(items =>
+    {
+    items.Add().Text("Reportss").Icon("money");
+    items.Add().Text("Add Sales Voucher").Icon("product");
+    })
+    .OnItemClick("addRecipitsButton_click")
+    ) *@
 </div>
 
 <script type="text/javascript">
@@ -192,7 +205,7 @@
 
     // Handle the file selection
     $("#loadLayoutInput").on("change", function (event) {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
         const file = event.target.files[0];
 
         if (file) {
@@ -216,7 +229,7 @@
         }
     });
     function saveLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
         //console.log(layoutJson);
@@ -252,7 +265,7 @@
             },
             success: function (response) {
                 // Get the DataGrid instance
-                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                var dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
 
                 // Load the state into the DataGrid
                 if (response) {
@@ -274,7 +287,7 @@
         });
     }
     function setDefaultLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var form = $('#formId').val();
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2);
@@ -296,7 +309,7 @@
         });
     }
     function resetLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var form = $('#formId').val();
         $.ajax({
             url: '/api/Utility/SaveLayout',  // API endpoint
@@ -315,14 +328,21 @@
         });
     }
     // Footer Group Pannel button click event
-    function toggleGroupPanel() {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+    function toggledepreciationGroupPanel() {
+        var dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var isVisible = dataGrid.option("groupPanel.visible");
+
+        // Toggle visibility
         dataGrid.option("groupPanel.visible", !isVisible);
+
+        // If making visible, set DepreciationDocNo as default group
+        if (!isVisible) {
+            dataGrid.columnOption("DepreciationDocNo", "groupIndex", 0);
+        }
     }
     // Footer Filter row button click event
     function toggleFilterRow() {
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var currentVisibility = grid.option("filterRow.visible");
 
         grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
@@ -330,134 +350,11 @@
 
     // Footer Recipits button event
     function addRecipitsButton_click(e) {
-        switch (e.itemData.text) {
-            case 'Add Cash Receipts':
-                window.open('/Finance/VoucherEntryCashReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-            case 'Add Bank Receipts':
-                window.open('/Finance/VoucherEntryReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-            // You can handle other cases here if needed
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-        }
+        DevExpress.ui.notify(e.itemData, "success", 600);
     }
-
-    function addReportsButton_click(e) {
-        let pageUrl = '';
-
-        switch (e.itemData.text) {
-            case 'Ledger to Salary Payable Mapping':
-                // Ensure acchedid and accheadname have values before appending them
-                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-                break;
-            case 'Add Bank Receipts':
-                pageUrl = '/Finance/VoucherEntryReceipts';
-                break;
-
-            case 'Account Ledger to Recievables/Payable Mapping':
-                // Ensure acchedid and accheadname have values before appending them
-
-                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-                break;
-
-            case 'Bank Reconciliation':
-                // Ensure acchedid and accheadname have values before appending them
-
-                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-                break;
-
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-                return;
-        }
-
-        // Set the iframe source and show overlay
-        $("#overlay-frame").attr("src", pageUrl);
-        $("#overlay").fadeIn();
-    }
-
-
-    // Function to close the overlay
-    function closeOverlay() {
-        $("#overlay").fadeOut();
-        $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
-    }
-
-
-
-    function addPaymentButton_click(e) {
-        switch (e.itemData.text) {
-
-            case 'Add Cash Payment':
-                window.open('/Finance/VoucherCashPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            case 'Add Bank Payment':
-                window.open('/Finance/VoucherBankPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            // You can handle other cases here if needed
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-        }
-    }
-    function otherVoucherButton_click(e) {
-        switch (e.itemData.text) {
-
-            case 'Add Purchase Voucher':
-                window.open('/Finance/Purchasevoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            case 'Add Sales Voucher':
-                window.open('/Finance/Salesvoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            case 'Add Journal Voucher':
-                window.open('/Finance/Voucherjournal', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-
-            // You can handle other cases here if needed
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-        }
-    }
-
-
-
     function ChangeRowHeight(newHeight) {
         // Update the row height
-        $("#dataGrid .dx-data-row").css("height", newHeight + "px");
+        $("#DepreciationdataGrid .dx-data-row").css("height", newHeight + "px");
         closeSubmenu();
     }
     function showSubmenu(e) {
@@ -483,7 +380,7 @@
     }
     // Handle the file selection
     $("#loadLayoutInput").on("change", function (event) {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
         const file = event.target.files[0];
 
         if (file) {
@@ -491,10 +388,10 @@
 
             reader.onload = function (e) {
                 try {
-
+                    // Parse the JSON string from the file
                     const layout = JSON.parse(e.target.result);
 
-
+                    // Restore the grid state
                     dataGrid.state(layout);
                 } catch (error) {
                     console.error("Error parsing JSON:", error);
@@ -502,8 +399,15 @@
                 }
             };
 
-
+            // Read the file as text
             reader.readAsText(file);
         }
     });
+    function refreshPage() {
+        // Logic to refresh the current page or reload data in a specific grid
+        location.reload(); // Reloads the entire page
+        // Or refresh a specific grid, for example:
+        // $("#YourGridID").dxDataGrid("instance").refresh();
+    }
+
 </script>

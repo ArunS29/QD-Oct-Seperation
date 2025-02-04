@@ -42,13 +42,14 @@
             flex-direction: column; /* Stack breadcrumb and main content */
         }
 
-        /* Main container to hold sidebars and content */
         .container {
             display: flex;
             flex-grow: 1;
-            width: 100%;
-           
+            padding:0px;
+            margin-left:0px;
+            margin-right:0px;
         }
+
         /* Sidebar 1 styles */
         .sidebar {
             width: 250px;
@@ -438,6 +439,19 @@
             right: 5%;
         }
 
+
+
+
+
+        /* Ensure iframe takes full size */
+        #contentIframe {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+
+
+
         /* Add any other profile styling as needed */
 
 
@@ -548,7 +562,6 @@
             <span onclick="resetBreadcrumb()">Home</span>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content" id="mainContent">
             <iframe id="contentIframe"
                     src=""
@@ -556,6 +569,8 @@
         </div>
 
     </div>
+    <!-- Main Content -->
+
  
                     @*   <div id="loader" class="loader">
     <img src="~/images/Loading.gif" alt="Loading..." />
