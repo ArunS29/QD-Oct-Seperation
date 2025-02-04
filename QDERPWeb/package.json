@@ -3,9 +3,12 @@
     "name": "asp.net",
     "private": true,
     "dependencies": {
-        "bootstrap": "^4.3.1",
-        "devextreme-dist": "24.1-stable",
         "@devexpress/analytics-core": "24.1-stable",
-        "devexpress-reporting": "24.1-stable"
+        "bootstrap": "^4.3.1",
+        "devexpress-reporting": "24.1-stable",
+        "devextreme-dist": "24.1-stable"
+    },
+    "devDependencies": {
+        "eslint": "^9.19.0"
     }
 }

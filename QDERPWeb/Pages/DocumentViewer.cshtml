@@ -5,7 +5,7 @@
     ViewData["Title"] = "Document Viewer";
 }
 
-<link rel="stylesheet" href="~/css/viewer.part.bundle.css" />
-<script src="~/js/viewer.part.bundle.js"></script>
+<link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
+<script src="~/js/reporting.designer.part.bundle.js"></script>
 
-@Html.DevExpress().WebDocumentViewer("DocumentViewer").Height("1000px").Bind(Model.Report)
+@(Html.DevExpress().ReportDesigner("reportDesigner").Height("1000px").Bind(Model.Report))

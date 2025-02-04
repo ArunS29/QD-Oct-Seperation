@@ -209,21 +209,21 @@
 				.ID("btnAddAccount")
 				.Icon("plus")
 				.ElementAttr("class", "button-alignment-down button-group")
-				.OnClick("showLedgerAccountPopup") 
+				.OnClick("showLedgerAccountPopup")
 				)
 
 		<!-- DevExtreme Popup -->
 		@(Html.DevExtreme().Popup()
 				.ID("ledgerAccountPopup")
-				.Width(1000)
-				.Height(600)
+				.Width("90%") 
+				.Height("81%")
 				.Title("Add Ledger Account")
 				.ShowTitle(true)
 				.CloseOnOutsideClick(true)
 				.Visible(false)
+				.ResizeEnabled(true) 
 				.ContentTemplate(@<text>
-			<div id="popupContent">
-
+			<div id="popupContent" style="width:100%; height:100%;">
 				<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
 			</div>
 		</text>)
@@ -233,8 +233,27 @@
 				.ID("btnEditAccount")
 				.Icon("edit")
 				.ElementAttr("class", "button-alignment-down button-group")
-				.OnClick("btnEditAccount_click")
+				.OnClick("showLedgerAccountEditPopup")
 				)
+		@(Html.DevExtreme().Popup()
+				.ID("ledgerAccountPopup")
+				.Width("90%")
+				.Height("81%")
+				.Title("Edit Ledger Account")
+				.ShowTitle(true)
+				.CloseOnOutsideClick(true)
+				.Visible(false)  // Ensure it doesn't show on page load
+				.ResizeEnabled(true)
+				.ContentTemplate(@<text>
+			<div id="popupContent" style="width:100%; height:100%;">
+				<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+			</div>
+		</text>)
+				)
+
+
+
+
 
 		@(Html.DevExtreme().DateBox()
 				.ID("frmdateBox")
@@ -673,8 +692,8 @@
 		if (selectionChangedArgs.selectedRowKeys.length > 0) {
 			component.close();
 		}
-	}
-	function btnEditAccount_click() {
+			}
+		function showLedgerAccountEditPopup() {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {
 			alert("Please Select the Account to Edit.");
@@ -684,22 +703,36 @@
 		IsEdit = true;
 		if (refno == null) {
 			refno = "";
-		}
-		else if (accheadar == null || accheadar == undefined) {
+		} else if (accheadar == null || accheadar == undefined) {
 			accheadar = "";
-
 		}
-
-
-
 
 		const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
-		// Open the popup window
-		window.open(url, 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
-		//DevExpress.ui.notify("Working on Progress", "success", 2000);
-		//  window.open('/Finance/LedgerAccount', 'popupWindow', 'width=1300,height=600,scrollbars=yes,resizable=yes');
+		var iframe = $("#ledgerAccountFrame")[0];
+
+		// Reset iframe src to force reload
+		iframe.src = "";
+
+		// Prevent multiple triggers by removing old event
+		iframe.onload = null;
+
+		// Set new onload event
+		iframe.onload = function() {
+			// Show popup only when iframe has loaded completely
+			$("#ledgerAccountPopup").dxPopup("instance").show();
+		};
+
+		// Set the iframe src dynamically
+		iframe.src = url;
 	}
+
+
+
+
+
+
+
 	function addVoucher_click(form) {
 		let url = "";
 		if (form === "Purchase") {
@@ -856,7 +889,7 @@
 		popup.show();
 
 		// Correct URL to your LedgerAccount view
-		$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount.cshtml");
+		$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
 	}
 
 </script>
