@@ -1,20 +1,16 @@
-﻿@page
-@model QDWEB.Pages.Shared.GridforAssetViewModel
-@{
-}
+﻿
 
 <style type="text/css">
-    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
+    #DepreciationdataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
 
-    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+    #DepreciationdataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         text-align: center !important;
     }
 
     .dx-button {
-        background-color: aliceblue;
-        border-color:aliceblue;
+        background-color: whitesmoke;
     }
 
 
@@ -26,7 +22,6 @@
         align-items: center; /* Vertically centers the buttons */
         margin: 15px;
         margin-top: 0px;
-        background-color:aliceblue;
     }
 
     .button-alignment-down {
@@ -122,32 +117,32 @@
         .OnClick("function() { toggleFilterRow(); }")
         )
     @(Html.DevExtreme().Button()
-        .ID("btntoggleGroupPanel")
+        .ID("btndepreciationtoggleGroupPanel")
         .Text("Group")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("hierarchy")
         .Width(180)
-        .OnClick("toggleGroupPanel")
+        .OnClick("toggledepreciationGroupPanel")
         )
-@*     @(Html.DevExtreme().Button()
-        .ID("btnChooseVoucher")
-        .Text("Choose Voucher")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("fa fa-clipboard") // You can use FontAwesome icons here too
-        .Width(180)
-        .OnClick("function() { chooseVoucher(); }")
-        ) *@
-    @(Html.DevExtreme().Button()
-        .ID("btnDepreciationSchedule") // Unique ID for the button
-        .Text("Depreciation Schedule") // Text for the button
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("fa fa-calendar-alt") // Relevant FontAwesome icon
-        .Width(200) // Adjust width as needed
-        .OnClick("function() { showDepreciationSchedule(); }") // Call the JS function
-        )
+    @*     @(Html.DevExtreme().Button()
+    .ID("btnChooseVoucher")
+    .Text("Choose Voucher")
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+    .Icon("fa fa-clipboard") // You can use FontAwesome icons here too
+    .Width(180)
+    .OnClick("function() { chooseVoucher(); }")
+    ) *@
+    @*   @(Html.DevExtreme().Button()
+    .ID("btnDepreciationSchedule") // Unique ID for the new button
+    .Text("Depreciation Schedule") // Text for the button
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+    .Icon("fa fa-calendar-alt") // You can choose any relevant FontAwesome icon
+    .Width(200) // Adjust width as needed
+    .OnClick("function() { showDepreciationSchedule(); }") // New function to handle click
+    ) *@
 
     @*    @(Html.DevExtreme().DropDownButton()
     .ID("ddButtonReceipts")
@@ -210,7 +205,7 @@
 
     // Handle the file selection
     $("#loadLayoutInput").on("change", function (event) {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
         const file = event.target.files[0];
 
         if (file) {
@@ -234,7 +229,7 @@
         }
     });
     function saveLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
         //console.log(layoutJson);
@@ -270,7 +265,7 @@
             },
             success: function (response) {
                 // Get the DataGrid instance
-                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                var dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
 
                 // Load the state into the DataGrid
                 if (response) {
@@ -292,7 +287,7 @@
         });
     }
     function setDefaultLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var form = $('#formId').val();
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2);
@@ -314,7 +309,7 @@
         });
     }
     function resetLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var form = $('#formId').val();
         $.ajax({
             url: '/api/Utility/SaveLayout',  // API endpoint
@@ -333,15 +328,21 @@
         });
     }
     // Footer Group Pannel button click event
-    function toggleGroupPanel() {
-        debugger;
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+    function toggledepreciationGroupPanel() {
+        var dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var isVisible = dataGrid.option("groupPanel.visible");
+
+        // Toggle visibility
         dataGrid.option("groupPanel.visible", !isVisible);
+
+        // If making visible, set DepreciationDocNo as default group
+        if (!isVisible) {
+            dataGrid.columnOption("DepreciationDocNo", "groupIndex", 0);
+        }
     }
     // Footer Filter row button click event
     function toggleFilterRow() {
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#DepreciationdataGrid").dxDataGrid("instance");
         var currentVisibility = grid.option("filterRow.visible");
 
         grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
@@ -353,7 +354,7 @@
     }
     function ChangeRowHeight(newHeight) {
         // Update the row height
-        $("#dataGrid .dx-data-row").css("height", newHeight + "px");
+        $("#DepreciationdataGrid .dx-data-row").css("height", newHeight + "px");
         closeSubmenu();
     }
     function showSubmenu(e) {
@@ -379,7 +380,7 @@
     }
     // Handle the file selection
     $("#loadLayoutInput").on("change", function (event) {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const dataGrid = $("#DepreciationdataGrid").dxDataGrid("instance");
         const file = event.target.files[0];
 
         if (file) {

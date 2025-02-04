@@ -66,6 +66,10 @@
         font-weight: bold;
         color: black;
     }
+    .highlight-row {
+        background-color: blue !important;
+        color: white !important;
+    }
 </style>
 <div class="card">
     <div class="card-header">
@@ -126,13 +130,20 @@
                 .DataSource(ds => ds.Mvc()
                 .Controller("DepreciationMaster")
                 .LoadAction("GetExpenseClaims"))
+                    
+
+                   
                 .Columns(columns =>
                 {
 
                     columns.Add().Caption("Depreciation Register Details").Columns(band =>
                     {
 
-                        band.Add().DataField("Postedon").Caption("Posted");
+                        band.Add().DataField("Postedon").Caption("Posted")
+                    .CellTemplate(@<text>
+                <input type="checkbox" class="row-checkbox" data-claimrefno="<%= data.ClaimRefNo %>" onclick="highlightRow(this)" />
+            </text>);
+
                         band.Add().DataField("JournalVoucherNo").Caption("Voucher No");
                         band.Add().DataField("DepreciationDocNo").Caption("Depreciation Doc No");
                         band.Add().DataField("DeprStartDate").Caption("Start Date").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
@@ -161,80 +172,7 @@
                     });
                 })
 
-                @*
-            .Summary(summary =>
-            {
-
-            summary.GroupItems(items =>
-            {
-            items.Add()
-            .Column("PaymentVoucherNo")
-            .SummaryType(SummaryType.Count)
-            .ShowInGroupFooter(true)
-            .DisplayFormat("No of items: {0}");
-
-            items.Add()
-            .Column("ClaimedAmount")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .DisplayFormat("Total Claimed: {0}")
-            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-            items.Add()
-            .Column("ApprovedAmount")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .DisplayFormat("Total Approved: {0}")
-            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-            items.Add()
-            .Column("TaxAmount")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .DisplayFormat("Total Tax: {0}")
-            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-            items.Add()
-            .Column("RoundOff")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .DisplayFormat("Round Off: {0}")
-            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-            });
-
-
-            summary.TotalItems(items =>
-            {
-            items.Add()
-            .Column("PaymentVoucherNo")
-            .SummaryType(SummaryType.Count)
-            .DisplayFormat("Total: {0}");
-
-            items.Add()
-            .Column("ClaimedAmount")
-            .SummaryType(SummaryType.Sum)
-            .DisplayFormat("Total Claimed Amount: {0}")
-            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-            items.Add()
-            .Column("ApprovedAmount")
-            .SummaryType(SummaryType.Sum)
-            .DisplayFormat("Total Approved Amount: {0}")
-            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-            items.Add()
-            .Column("TaxAmount")
-            .SummaryType(SummaryType.Sum)
-            .DisplayFormat("Total Tax Amount: {0}")
-            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-            items.Add()
-            .Column("RoundOff")
-            .SummaryType(SummaryType.Sum)
-            .DisplayFormat("Total Round Off: {0}")
-            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-            });
-            }) *@
+                
 
                 .Paging(paging => paging.Enabled(false))
                 .AllowColumnReordering(true)
@@ -244,6 +182,9 @@
                 .Height(300)
                 .ColumnAutoWidth(true)
                 .FilterRow(filterRow => filterRow.Visible(false))
+                // Group Panel Configuration
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .Grouping(grouping => grouping.AutoExpandAll(true))
                 .ShowBorders(true)
                 .Width("100%"))
         </div>
@@ -251,7 +192,7 @@
 
 
         <div>
-            @await Html.PartialAsync("GridFooterExpenses")
+            @await Html.PartialAsync("DepreciationFooter")
         </div>
     </div>
     </div>
@@ -359,5 +300,30 @@
                 dataGrid.refresh();
             }
         }
+
+    function highlightRow(checkbox) {
+        var row = $(checkbox).closest('.dx-data-row');
+        if (checkbox.checked) {
+            row.css("background-color", 'rgb(192, 255, 192)');
+        } else {
+            row.css("background-color", "");
+        }
+    }
+
+
+    // Remove previous click event handlers to avoid duplicates
+    $(document).off("click", ".dx-data-row").on("click", ".dx-data-row", function (e) {
+        $("#voucherPopup").dxPopup("instance").show();
+    });
+
+    // Remove previous document click event and reattach
+    $(document).off("click").on("click", function (e) {
+        if (
+            !$(e.target).closest("#voucherPopup").length &&
+            !$(e.target).closest(".dx-data-row").length
+        ) {
+            $("#voucherPopup").dxPopup("instance").hide();
+        }
+    });
 
     </script>
