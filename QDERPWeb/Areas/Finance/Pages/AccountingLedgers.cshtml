@@ -40,8 +40,70 @@
 		cursor: pointer;
 	}
 
+	/* Target the toolbar container */
+	.dx-toolbar.dx-widget.dx-visibility-change-handler.dx-collection {
+		height: 0px !important;
+		margin: 0px !important;
+		padding: 0px !important;
+
+		bottom: 0px !important;
+		
+	
+	}
+	.dx-toolbar-items-container{
+		bottom:50px;
+		width:0px !important;
+		left:1360px !important;
+	}
+
+	.Head {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 1400px;
+		padding: 10px;
+		margin-left:10px;
+		height:20px;
+		padding-top:25px;
+		margin-bottom:10px;
+	}
+
+	.header-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+	}
+
+	.title {
+		font-size: 20px; /* Adjust size if needed */
+		font-weight: bold;
+	}
+
+	.footer {
+		display: flex;
+		align-items: center;
+		height: 0px;
+		margin-left: auto; /* Pushes it fully to the right */
+		margin-top:15px;
+		padding-top:22px;
+
+
+	}
+
+
+
+
 </style>
+
 <input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="Head">
+	<div class="header-container">
+		<div class="title">Accounting Ledgers</div>
+		<div class="footer">@await Html.PartialAsync("_GridFooter")</div>
+	</div>
+</div>
+
 <div id="inputPopupContainer"></div>
 <div class="content-container-top">
 	<!-- Context Menu -->
@@ -97,7 +159,7 @@
 				.Key("AccountId")
 				)
 				.LabelMode(EditorLabelMode.Outside)
-				.Label("Please Select the Account to Edit")
+				.Label("Select Ledger Account")
 				.ID("accountDropDownBox")
 				.ShowClearButton(true)
 				.AcceptCustomValue(true)
@@ -108,10 +170,10 @@
 				.DisplayExpr("AccountHead")
 				.OnInput("dropDownBoxOnInput")
 				.OnOpened("onOpened")
-				.Width(300)
+				.Width(500)
 				.TabIndex(1)
 				.DropDownOptions(o => o
-				.Width(1000) // Set the desired width for the dropdown content
+				.Width(1400) // Set the desired width for the dropdown content
 				)
 				.OnKeyDown("onKeyDown")
 				.OnValueChanged("dropDownBoxValueChanged")
@@ -142,12 +204,31 @@
 		.ContentTemplate(new TemplateName("LedgerContentTemplate"))
 
 		) *@
+		<!-- Button to Open Modal -->
 		@(Html.DevExtreme().Button()
 				.ID("btnAddAccount")
 				.Icon("plus")
 				.ElementAttr("class", "button-alignment-down button-group")
-				.OnClick("redirectToLedgerAccount")
+				.OnClick("showLedgerAccountPopup") 
 				)
+
+		<!-- DevExtreme Popup -->
+		@(Html.DevExtreme().Popup()
+				.ID("ledgerAccountPopup")
+				.Width(1000)
+				.Height(600)
+				.Title("Add Ledger Account")
+				.ShowTitle(true)
+				.CloseOnOutsideClick(true)
+				.Visible(false)
+				.ContentTemplate(@<text>
+			<div id="popupContent">
+
+				<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+			</div>
+		</text>)
+				)
+
 		@(Html.DevExtreme().Button()
 				.ID("btnEditAccount")
 				.Icon("edit")
@@ -276,7 +357,7 @@
 				.AllowColumnResizing(true)   // Enable column resizing
 				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
 				.HeaderFilter(filter => filter.Visible(true))
-				.Height(240)
+				.Height(350)
 				.ColumnAutoWidth(true)
 				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
 				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -326,9 +407,7 @@
 			<iframe id="overlay-frame" src="" frameborder="0"></iframe>
 		</div>
 	</div>
-	<div>
-		@await Html.PartialAsync("_GridFooter")
-	</div>
+
 </div>
 <!-- Drop Down Grid Template -->
 @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
@@ -353,13 +432,13 @@
 						.Paging(p => p.PageSize(15))
 						.FilterRow(f => f.Visible(true))
 						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-						.Height(345)
+						.Height(400)
 						.Selection(s => s.Mode(SelectionMode.Single))
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 						.Columns(columns =>
 						{
 							columns.Add().DataField("AccountId");
-							columns.Add().DataField("AccountHead");
+							columns.Add().DataField("AccountHead").Width(400);
 							columns.Add().DataField("MasterGroup");
 							columns.Add().DataField("AccountGroup");
 							columns.Add().DataField("ReferenceNo");
@@ -395,6 +474,38 @@
 		$(document).on("click", function () {
 			contextMenu.hide();
 		});
+
+			$("#gridContainer").dxDataGrid({
+		columnChooser: {
+			enabled: true,
+			mode: "select",  // or 'dragAndDrop'
+			allowSearch: true, // Enables search
+			height: 400,
+			width: 300,
+			position: {
+				my: "left top",
+				at: "left bottom",
+				of: "#gridContainer"
+			}
+		},
+		toolbar: {
+			items: [
+				{
+					location: "before",
+					widget: "dxButton",
+					options: {
+						text: "Column Chooser",
+						icon: "columnchooser",
+						onClick: function () {
+							var grid = $("#gridContainer").dxDataGrid("instance");
+							grid.showColumnChooser();
+						}
+					}
+				}
+			]
+		}
+	});
+
 		// Apply the custom context menu plugin
 		$("#dataGrid").customizeGridContextMenu();
 
@@ -738,11 +849,14 @@
 		return [day, strmonth, year].join('-');
 	}
 
-	function redirectToLedgerAccount() {
-		//DevExpress.ui.notify("Working on Progress", "success", 2000);
-		window.open('/Finance/LedgerAccount', 'popupWindow1', 'width=1300,height=600,scrollbars=yes,resizable=yes');
+
+
+	function showLedgerAccountPopup() {
+		var popup = $("#ledgerAccountPopup").dxPopup("instance");
+		popup.show();
+
+		// Correct URL to your LedgerAccount view
+		$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount.cshtml");
 	}
-
-
 
 </script>

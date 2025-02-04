@@ -4,7 +4,10 @@
     border-top-right-radius: 10px; /* Radius for top-right corner */
     padding: 5px;
     font-family: "Inter", Helvetica, Arial, sans-serif;
-    width:1400px;
+    width:1420px;
+    margin:0px;
+    padding-top:25px;
+  
 }
 .card-header{
     background-color:aliceblue;
@@ -59,3 +62,4 @@
     height: 35px;
     line-height: 35px; /* Align text vertically */
 }
+
