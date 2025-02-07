@@ -616,6 +616,7 @@
         const breadcrumbTrail = []; // Tracks the breadcrumb trail
 
       function navigate(name) {
+        
     const sidebar2 = document.getElementById('sidebar2');
     
     // Toggle sidebar2 visibility based on whether it's already visible or not
@@ -774,6 +775,18 @@
             iframe.src = "/Finance/AccountingLedgers";
             // Update the breadcrumb (same as the anchor tag in the menu)
             updateBreadcrumbFromSidebar2('/ Accounting Ledgers');
+
+            const sidebar2 = document.getElementById('sidebar2');
+
+
+                            sidebar2.style.display = 'none'; // Hide sidebar2
+
+
+
+                             
+
+                             autocollaps ();
+                                            
         }
 
 
@@ -965,7 +978,25 @@
             updateBreadcrumbFromSidebar2(parent); // Update second level
             updateBreadcrumbFromSidebar2(child); // Add/update the third level
         }
+        function autocollaps () {
+           
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebar2 = document.getElementById('sidebar2');
+                    const toggleBtn = document.querySelector('.toggle-btn');
+                    const root = document.documentElement; // Access CSS custom properties
 
+                    // Toggle visibility of Sidebar 1
+                    sidebar.classList.toggle('hidden');
+                    sidebar2.classList.toggle('expanded');
+
+                        root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
+                        sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+                               
+                  
+
+                           
+                    toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
+        }
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const sidebar2 = document.getElementById('sidebar2');
@@ -978,15 +1009,19 @@
 
             // Update the CSS variable based on the sidebar state
             if (sidebar.classList.contains('hidden') && sidebar2.classList.contains('expanded')) {
+               
                 root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
                 sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
             } else if (sidebar.classList.contains('hidden')) {
+                       
                 root.style.setProperty('--sidebar-width', '0px'); // No sidebar
                 sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+                       
             } else {
                 root.style.setProperty('--sidebar-width', '256px'); // Sidebar 1 width
                 sidebar2.style.marginTop = '70px'; // Keep Sidebar 2 margin
                 sidebar.style.marginTop = '45px'; // Adjust Sidebar 1 margin
+                     
             }
 
             // Adjust the toggle button symbol
