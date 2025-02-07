@@ -37,17 +37,23 @@ namespace QD.ERP.Web.DAL.Entities
         public byte? PurchasedAs { get; set; }
         public bool? IsFinanced { get; set; }
         public short? FinancedFrom { get; set; }
+        [Column("ValueOfProperty", TypeName = "money")]
         public decimal? ValueOfProperty { get; set; }
+        [Column("InitialDownPayment", TypeName = "money")]
         public decimal? InitialDownPayment { get; set; }
+        [Column("InitialDocCharges", TypeName = "money")]
         public decimal? InitialDocCharges { get; set; }
+        [Column("MonthlyInstallment", TypeName = "money")]
         public decimal? MonthlyInstallment { get; set; }
         public byte? NoOfInstallments { get; set; }
         public DateTime? InstallmentStartDate { get; set; }
         public DateTime? InstallmentEndDate { get; set; }
+        [Column("FinalInstallment", TypeName = "money")]
         public decimal? FinalInstallment { get; set; }
         [StringLength(50)]
         public string DepreciationMethod { get; set; }
         public byte? LifeSpanOfProperty { get; set; }
+        [Column("ScrapValueOfProperty", TypeName = "money")]
         public decimal? ScrapValueOfProperty { get; set; }
         [StringLength(50)]
         public string AddedBy { get; set; }
@@ -63,18 +69,28 @@ namespace QD.ERP.Web.DAL.Entities
         public string AssetCategory { get; set; }
         [StringLength(2147483647)]
         public string AssetLocation { get; set; }
+        [Column("ValueAfterScrap", TypeName = "money")]
         public decimal? ValueAfterScrap { get; set; }
+        [Column("MonthlyDepreciation", TypeName = "money")]
         public decimal? MonthlyDepreciation { get; set; }
+        [Column("YearlyDepreciation", TypeName = "money")]
         public decimal? YearlyDepreciation { get; set; }
         public int? NoOfMonthsOld { get; set; }
+        [Column("DepAsOnDate", TypeName = "money")]
         public decimal? DepAsOnDate { get; set; }
+        [Column("CurrentValueOfAsset", TypeName = "money")]
         public decimal? CurrentValueOfAsset { get; set; }
+        [Column("OpeningTotal", TypeName = "money")]
         public decimal? OpeningTotal { get; set; }
+        [Column("TotalDebit", TypeName = "money")]
         public decimal? TotalDebit { get; set; }
+        [Column("TotalCredit", TypeName = "money")]
         public decimal? TotalCredit { get; set; }
+        [Column("ClosingBalance", TypeName = "money")]
         public decimal? ClosingBalance { get; set; }
         [Column("DepreciationPercentage", TypeName = "decimal(6,2)")]
         public decimal? DepreciationPercentage { get; set; }
+        [Column("TotalDepreciatedAmount", TypeName = "money")]
         public decimal? TotalDepreciatedAmount { get; set; }
         [Column("CalculatedDepreciationAmount", TypeName = "decimal(38,7)")]
         public decimal? CalculatedDepreciationAmount { get; set; }
@@ -100,10 +116,13 @@ namespace QD.ERP.Web.DAL.Entities
         public string CurrentReading { get; set; }
         [StringLength(100)]
         public string AssetType { get; set; }
+        [Column("FMV", TypeName = "money")]
         public decimal? FMV { get; set; }
+        [Column("BMV", TypeName = "money")]
         public decimal? BMV { get; set; }
         [StringLength(25)]
         public string PropertyNo { get; set; }
+        [Column("NetBookValue", TypeName = "money")]
         public decimal? NetBookValue { get; set; }
         [StringLength(50)]
         public string EquipmentSerialNo { get; set; }
@@ -115,6 +134,7 @@ namespace QD.ERP.Web.DAL.Entities
         public string EquipmentMobilizedTo { get; set; }
         [StringLength(2147483647)]
         public string EquipmentClientSite { get; set; }
+        [Column("EquipmentClientRatePerHour", TypeName = "money")]
         public decimal? EquipmentClientRatePerHour { get; set; }
         [StringLength(2147483647)]
         public string EquipmentCertification { get; set; }

@@ -21,7 +21,7 @@
 		transform: translate(-50%, -50%);
 		width: 100%;
 		height: 80%;
-		background: white;
+		background: #909ead00;
 		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 		border-radius: 8px;
 		overflow: hidden;
@@ -32,6 +32,10 @@
 		height: 100%;
 	}
 
+	.Maincontainer.Maincontainer {
+		background-color: #909ead00;
+	}
+
 	.close-btn {
 		position: absolute;
 		top: 10px;
@@ -40,32 +44,19 @@
 		cursor: pointer;
 	}
 
-	/* Target the toolbar container */
-	.dx-toolbar.dx-widget.dx-visibility-change-handler.dx-collection {
-		height: 0px !important;
-		margin: 0px !important;
-		padding: 0px !important;
 
-		bottom: 0px !important;
-		
-	
-	}
-	.dx-toolbar-items-container{
-		bottom:50px;
-		width:0px !important;
-		left:1360px !important;
-	}
 
 	.Head {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		width: 1400px;
+		width: 1415px;
 		padding: 10px;
 		margin-left:10px;
 		height:20px;
 		padding-top:25px;
-		margin-bottom:10px;
+		margin-bottom:25px;
+		margin-top:50px;
 	}
 
 	.header-container {
@@ -90,22 +81,145 @@
 
 
 	}
+	.dx-popup-content.dx-popup-content-scrollable{
+		padding-top:20px;
+		padding-right:0px;
+		padding-left:25px;
+	}
 
 
 
 
 </style>
+<style>
+	.dx-datagrid {
+		border-radius: 15px; /* Oval Shape */
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft Shadow */
+		overflow: hidden;
+	}
+
+	.dx-datagrid-rowsview .dx-row {
+		font-family: 'Inter', sans-serif;
+		font-size: 14px; /* Smaller, more modern font */
+	}
+
+		.dx-datagrid-rowsview .dx-row .dx-command-edit,
+		.dx-datagrid-rowsview .dx-row td {
+			padding: 8px;
+		}
+
+			/* Highlight Debit & Credit */
+			.dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
+				color: red; /* Debit */
+				font-weight: bold;
+			}
+
+			.dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
+				color: green; /* Credit */
+				font-weight: bold;
+			}
+
+			/* Dynamic Balance Highlighting */
+			.dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
+				font-weight: bold;
+			}
+
+	/* Toolbar Styling */
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	/* Text Editor Styling */
+	.dx-texteditor {
+		background-color: #909ead00 !important; /* Light background */
+		border: 1px solid #d6e4f0 !important; /* Soft border */
+		border-radius: 4px !important; /* Smaller rounded corners */
+		
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+		font-size: 14px !important; /* Slightly smaller font */
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important; /* Fixed height */
+	}
+
+		/* Hover and Focus States */
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+			border-color: #86b7fe !important; /* Highlight border */
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+			border-color: #508ae1 !important;
+		}
+
+	/* Button Styling */
+	.dx-button {
+		background-color: #909ead00 !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		padding: 6px 12px !important; /* Reduced button padding */
+		font-size: 14px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important; /* Fixed height */
+	}
+
+		/* Hover Effect for Button */
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+			border-color: #86b7fe !important; /* Highlight border */
+		}
+
+	.dx-datagrid-header-panel{
+		background-color: #909ead00;
+	}
+
+
+
+</style>
+
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="Head">
-	<div class="header-container">
-		<div class="title">Accounting Ledgers</div>
-		<div class="footer">@await Html.PartialAsync("_GridFooter")</div>
+	<div class="Head">
+		<div class="header-container">
+			<div class="title">Accounting Ledgers</div>
+			<div class="footer">@await Html.PartialAsync("_GridFooter")</div>
+		</div>
+	</div>
+
+<div id="errorPopup">
+	<div style="text-align: center; padding: 20px;">
+		<img src="https://i.gifer.com/origin/f7/f748a43312487000f282968b97aa60fe_w200.gif" alt="Doll Error" style="width: 100px; height: 100px;" />
+		<h5 style="margin-top: 10px; color: #ff5f5f;">Please Select AccountID</h5>
+		
+		<div style="margin-top: 20px;">
+			<button id="errorCloseBtn" class="dx-button dx-button-danger"></button>
+		</div>
 	</div>
 </div>
 
+
+
 <div id="inputPopupContainer"></div>
-<div class="content-container-top">
+<div class="content-container-top" style="background-color:#909ead00;">
 	<!-- Context Menu -->
 	<div class="context-menu" id="contextMenu">
 		<div id="contextMenuContent"></div>
@@ -236,20 +350,21 @@
 				.OnClick("showLedgerAccountEditPopup")
 				)
 		@(Html.DevExtreme().Popup()
-				.ID("ledgerAccountPopup")
+				.ID("ledgerEditAccountPopup")
 				.Width("90%")
 				.Height("81%")
 				.Title("Edit Ledger Account")
 				.ShowTitle(true)
 				.CloseOnOutsideClick(true)
-				.Visible(false)  // Ensure it doesn't show on page load
+				.Visible(false)  // Hidden by default
 				.ResizeEnabled(true)
 				.ContentTemplate(@<text>
 			<div id="popupContent" style="width:100%; height:100%;">
-				<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+				<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
 			</div>
 		</text>)
 				)
+
 
 
 
@@ -302,7 +417,16 @@
 				)
 	</div>
 	<!-- Result Grid -->
+
+
+
 	<div class="dx-field ledgerResult">
+		<!-- Toolbar for Column Chooser and Filter -->
+		<div class="custom-toolbar">
+			<div id="columnChooser"></div>
+			
+		</div>
+
 		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
 					.ID("dataGrid")
 					.RemoteOperations(false)
@@ -311,115 +435,95 @@
 						columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Alignment(HorizontalAlignment.Center)
 					.CellTemplate(@<text>
 			<div>
-				<a href="javascript:void(0);"><%-data.VoucherNo%></a>
+				<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;">
+					<%- data.VoucherNo %>
+				</a>
 			</div>
 		</text>)
 				.Visible(true);
-						columns.AddFor(m => m.VoucherDate).Caption("Voucher Date").Alignment(HorizontalAlignment.Center).Format(format => format
-			.Type(Format.ShortDate)    // Custom type format
-			.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
-						columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On").Alignment(HorizontalAlignment.Center).Format(format => format
-			.Type(Format.ShortDate)
-			.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }")).Visible(true);
-						columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger").Alignment(HorizontalAlignment.Left).Visible(true);
-						columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
-			"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-			)
-			.Visible(true);
-						columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
-			"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-			).Visible(true);
-						columns.AddFor(m => m.VoucherAmountFormatted).Caption("VoucherAmountFormatted").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.Add().Caption("Balance").Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number).CalculateCellValue("function(rowData) { " +
+						columns.AddFor(m => m.VoucherDate).Caption("Voucher Date")
+			.Alignment(HorizontalAlignment.Center)
+			.Format(format => format.Type(Format.ShortDate)
+			.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
+			.Visible(true);
+
+						columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On")
+			.Alignment(HorizontalAlignment.Center)
+			.Format(format => format.Type(Format.ShortDate)
+			.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }"))
+			.Visible(true);
+
+						columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger")
+			.Alignment(HorizontalAlignment.Left)
+			.Visible(true);
+
+						columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+			.Visible(true);
+
+						columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+			.Visible(true);
+
+						columns.Add().Caption("Balance").Alignment(HorizontalAlignment.Right).DataType(GridColumnDataType.Number)
+			.CalculateCellValue("function(rowData) { " +
 			"    let balance = 0;" +
-			"    const dataSource = $('#dataGrid').dxDataGrid('instance').option('dataSource');" + // Access data source
+			"    const dataSource = $('#dataGrid').dxDataGrid('instance').option('dataSource');" +
 			"    dataSource.forEach((item, index) => { " +
 			"        if (index <= dataSource.indexOf(rowData)) { " +
-			"            let debit = parseFloat(item.DrAmount ? item.DrAmount.toString().replace(/,/g, '') : 0);" + // Parse DrAmount
-			"            let credit = parseFloat(item.CrAmount ? item.CrAmount.toString().replace(/,/g, '') : 0);" + // Parse CrAmount
-			"            if (!isNaN(debit)) balance = debit;" + // Subtract DrAmount
-			"            if (!isNaN(credit)) balance += credit;" + // Add CrAmount
+			"            let debit = parseFloat(item.DrAmount ? item.DrAmount.toString().replace(/,/g, '') : 0);" +
+			"            let credit = parseFloat(item.CrAmount ? item.CrAmount.toString().replace(/,/g, '') : 0);" +
+			"            if (!isNaN(debit)) balance += debit;" +
+			"            if (!isNaN(credit)) balance -= credit;" +
 			"        }" +
 			"    });" +
 			"    let formattedBalance = balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
-			"    return balance >= 0 ? `${formattedBalance} Cr` : `${formattedBalance} Dr`;" + // Append Cr/Dr with sign
-			"}").Visible(true);
-						columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left).Visible(true);
-						// Enable custom inline editing for "BillRemarks" with a multiline TextArea
-						columns.AddFor(m => m.BillRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
-						columns.AddFor(m => m.VoucherType).Visible(false);
-						columns.AddFor(m => m.VoucherRefNo).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherEnteredBy).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherEnteredOn).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherVerifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherVerifiedOn).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherApprovedBy).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherApprovedOn).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherEntryNo).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHead).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.EntryNarration).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountGroup).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.MasterGroup).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherModifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherModifiedOn).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillNo).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillDate).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillPaidTo).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHeadArabic).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.ReferenceNote).Alignment(HorizontalAlignment.Left).Visible(false);
+			"    return balance >= 0 ? `<span style='color:green'>${formattedBalance} Cr</span>` : `<span style='color:red'>${formattedBalance} Dr</span>`;" +
+			"}")
+			.Visible(true);
 
+						columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left).Visible(true);
+						columns.AddFor(m => m.BillRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
 					})
-				.OnCellClick("function(e) {handleCellClick(e);}")
+				.OnCellClick("function(e) { handleCellClick(e); }")
 				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
-				.AllowColumnReordering(true) // Enable column reordering
-				.AllowColumnResizing(true)   // Enable column resizing
-				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-				.HeaderFilter(filter => filter.Visible(true))
-				.Height(350)
+				.AllowColumnReordering(true)
+				.AllowColumnResizing(true)
+				.ColumnFixing(fixing => fixing.Enabled(true))
+				.HeaderFilter(filter => filter.Visible(false)) /* Removed filter on headings */
+				.Height(420)
 				.ColumnAutoWidth(true)
-				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-				.ShowBorders(true)
+				.FilterRow(filterRow => filterRow.Visible(false)) /* Initially hidden, toggled via button */
+				.GroupPanel(groupPanel => groupPanel.Visible(true))
+				.ShowBorders(false)
 				.Width("100%")
 				.Summary(summary =>
 				{
 					summary.TotalItems(totalItems =>
 					{
-						totalItems.Add()
-					.Column("VoucherNo") // Count of VoucherNo
-					.SummaryType(SummaryType.Count)
-					.DisplayFormat("Count: {0}"); // Customize the display format
+						totalItems.Add().Column("VoucherNo").SummaryType(SummaryType.Count)
+					.DisplayFormat("Count: {0}");
 
-						totalItems.Add()
-					.Column("DrAmount") // Sum of DrAmount
-					.SummaryType(SummaryType.Sum)
-					.CustomizeText(
-					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+						totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
+					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-					);   // Customize the display format to currency
-
-						totalItems.Add()
-					.Column("CrAmount") // Sum of CrAmount
-					.SummaryType(SummaryType.Sum)
-					.CustomizeText(
-					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
-					);       // Customize the display format to currency
-
+						totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
+					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 					});
 				})
 				.StateStoring(stateStoring =>
 				{
 					stateStoring
-					.Enabled(true)                       // Enable state storing
-					.Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
-					.StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
+					.Enabled(true)
+					.Type(StateStoringType.LocalStorage)
+					.StorageKey("gridContainerState");
 				})
 				.OnInitialized("function(e) { loadGridState(); }")
-				.OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }") // Recalculate on sorting change
+				.OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }")
 				)
 	</div>
+
 	<div id="overlay" class="overlay">
 		<div class="overlay-content">
 			<span class="close-btn" onclick="closeOverlay()">×</span>
@@ -466,6 +570,11 @@
 					)
 }
 <script>
+		function toggleFilterRow() {
+		var grid = $("#dataGrid").dxDataGrid("instance");
+		var isVisible = grid.option("filterRow.visible");
+		grid.option("filterRow.visible", !isVisible);
+	}
 	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid;
 
 	var inputPopupInstance
@@ -693,39 +802,43 @@
 			component.close();
 		}
 			}
-		function showLedgerAccountEditPopup() {
+
+	function showLedgerAccountEditPopup() {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		if (dropDownBox.option("value") === null) {
-			alert("Please Select the Account to Edit.");
+			$("#errorPopup").dxPopup("instance").show();
 			return;
 		}
 
 		IsEdit = true;
-		if (refno == null) {
-			refno = "";
-		} else if (accheadar == null || accheadar == undefined) {
-			accheadar = "";
-		}
+		if (!refno) refno = "";
+		if (!accheadar) accheadar = "";
 
 		const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
-		var iframe = $("#ledgerAccountFrame")[0];
+		// Show the popup first
+		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popupInstance.show();
 
-		// Reset iframe src to force reload
-		iframe.src = "";
+		// Wait for the popup to render before getting the iframe
+		setTimeout(function () {
+			var iframe = document.getElementById("ledgerEditAccountFrame");
 
-		// Prevent multiple triggers by removing old event
-		iframe.onload = null;
+			if (!iframe) {
+				console.error("Error: ledgerEditAccountFrame not found!");
+				return;
+			}
 
-		// Set new onload event
-		iframe.onload = function() {
-			// Show popup only when iframe has loaded completely
-			$("#ledgerAccountPopup").dxPopup("instance").show();
-		};
+			// Set iframe src after popup is visible
+			iframe.onload = function () {
+				console.log("Iframe loaded successfully.");
+			};
 
-		// Set the iframe src dynamically
-		iframe.src = url;
+			iframe.src = url;
+		}, 300); // Wait 300ms to ensure rendering
 	}
+
+
 
 
 
@@ -891,5 +1004,25 @@
 		// Correct URL to your LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
 	}
+		$(document).ready(function () {
+		$("#errorPopup").dxPopup({
+			width: 350,
+			height: 300,
+			title: "⚠ Error",
+			visible: false,
+			showCloseButton: true,
+			dragEnabled: false,
+			closeOnOutsideClick: true
+		});
+
+		$("#errorCloseBtn").dxButton({
+			text: "Close",
+			type: "danger",
+			onClick: function () {
+				$("#errorPopup").dxPopup("instance").hide();
+			}
+		});
+	});
+
 
 </script>

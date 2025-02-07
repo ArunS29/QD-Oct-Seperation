@@ -28,8 +28,8 @@
             font-family: "Inter", Helvetica, Arial, sans-serif;
             --highlight-color: #0f6cbd;
             --text-color: #525252;
-            --hover-bg: #ebf3fc;
-            --sidebar-bg: #fff;
+            --hover-bg: darkblue;
+            --sidebar-bg: #909ead00;
             --breadcrumb-color: #808080;
         }
 
@@ -48,6 +48,7 @@
             padding:0px;
             margin-left:0px;
             margin-right:0px;
+            background-color: #909ead00;
         }
 
         /* Sidebar 1 styles */
@@ -61,7 +62,7 @@
             padding: 16px;
             padding-left: 10px;
             padding-right: 10px;
-            padding-top: 37px;
+            padding-top: 50px;
             margin-top: 47px;
             transition: width 0.3s ease;
             height: 690px;
@@ -70,7 +71,8 @@
         /* Sidebar 2 styles */
         .sidebar2 {
             margin-top: 45px;
-            margin-left: 0px transition: margin-left 0.3s ease;
+            margin-left: 0px; 
+            transition: margin-left 0.3s ease;
             padding: 20px;
         }
 
@@ -105,6 +107,11 @@
             background-color: var(--hover-bg);
             border-radius: 4px;
         }
+
+            /* Change text color to white on hover */
+            .menu-item:hover .text {
+                color: palegoldenrod;
+            }
 
         .menu-item i {
             width: 22.5px;
@@ -169,7 +176,7 @@
             border-left: 1px solid #ddd;
             border-right: 1px solid #ddd; /* Right side border */
             padding: 8px 16px; /* Reduced padding */
-            padding-top: 19px;
+            padding-top: 50px;
             margin-top: 75px; /* Adjust to align with the rest of your layout */
             height: calc(100vh - 75px); /* Sidebar takes full height minus the top margin */
             overflow-y: auto; /* Enable vertical scrolling */
@@ -223,7 +230,7 @@
             top: 65px; /* Align it to the top */
             left: calc(var(--sidebar-width, 256px)); /* Dynamically adjusts based on sidebars */
             right: 0; /* Stretches to full width of the screen */
-            background-color: #fff;
+            background-color: #f8f9fa;
             z-index: 10;
             flex-wrap: nowrap;
             border: 1px solid #ddd;
@@ -266,6 +273,10 @@
                 border-radius: 4px;
             }
 
+        .submenu-item:hover .text {
+                    color: palegoldenrod;
+        }
+
             .submenu-item i {
                 font-size: 14px;
                 width: 14px;
@@ -298,7 +309,7 @@
         .prev-btn {
             background-color: transparent;
             color: #ebf3fc;
-            border:;
+            
             border-radius: 50%;
             width: 20px;
             height: 20px;
@@ -321,7 +332,7 @@
             width: 100%; /* Occupy the full width of the screen */
             padding: 10px; /* Add some spacing */
             padding-bottom: 0px;
-            background-color: white; /* Optional background color */
+            background-color: #f8f9fa; /* Optional background color */
             position: fixed; /* Make it fixed to stay visible on scroll */
             top: 0; /* Position at the top */
             left: 0; /* Start from the very left */
@@ -343,7 +354,7 @@
             .frame .avatar {
                 width: 20px;
                 height: 20px;
-                background-color: #ccc; /* Placeholder color */
+                background-color: #f8f9fa; /* Placeholder color */
                 border-radius: 50%; /* Make it circular */
                 border: 2px solid #333; /* Optional border */
                 margin-left: 10px;
@@ -768,17 +779,47 @@
         }
 
 
-               function loadAccountLedger() {
+                function loadAccountLedger() {
             // Set the iframe source to load Accounting Ledgers content
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AccountingLedgers";
             // Update the breadcrumb (same as the anchor tag in the menu)
             updateBreadcrumbFromSidebar2('/ Accounting Ledgers');
+
+            const sidebar2 = document.getElementById('sidebar2');
+
+
+                            sidebar2.style.display = 'none'; // Hide sidebar2
+
+
+
+
+                             autocollaps ();
+        }
+
+
+        function autocollaps () {
+                    const sidebar = document.getElementById('sidebar');
+                    const sidebar2 = document.getElementById('sidebar2');
+                    const toggleBtn = document.querySelector('.toggle-btn');
+                    const root = document.documentElement; // Access CSS custom properties
+
+                    // Toggle visibility of Sidebar 1
+                    sidebar.classList.toggle('hidden');
+                    sidebar2.classList.toggle('expanded');
+
+                        root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
+                        sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+
+
+
+                    toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
         }
 
 
 
-        function loadAccountRegister() {
+
+                function loadAccountRegister() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AccountingRegister";
             updateBreadcrumbFromSidebar2('/ Accounting Registers');

@@ -1,11 +1,45 @@
 ﻿@page
 @using QD.ERP.Web.Areas.Finance.Reports
+@using QD.ERP.Web.Reports
 @model QD.ERP.Web.Pages.DocumentViewerModel
 @{
-    ViewData["Title"] = "Document Viewer";
+    ViewData["Title"] = "Report Designer";
 }
 
 <link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
 <script src="~/js/reporting.designer.part.bundle.js"></script>
 
-@(Html.DevExpress().ReportDesigner("reportDesigner").Height("1000px").Bind(Model.Report))
+@(Html.DevExpress().ReportDesigner("reportDesigner")
+    .Height("1000px")
+    .Bind(new AccountReport())
+)
+<script>
+    $(document).ready(function () {
+        var designerElement = $("#reportDesigner");
+        if (designerElement.length) {
+            var designerInstance = designerElement.data("dxReportDesigner");
+            if (designerInstance) {
+                // Listen for the click event on the Save button
+                var saveButton = designerInstance.element().find(".dxrd-save-button");
+
+                // Check if the save button exists
+                if (saveButton.length > 0) {
+                    saveButton.on("click", function (e) {
+                        // Trigger the default save functionality
+                        designerInstance.saveReport(); // This triggers the save function
+
+                        // Optional: You can add additional logic here if needed
+                        console.log("Report saved.");
+                    });
+                } else {
+                    console.error("Save button not found.");
+                }
+            } else {
+                console.error("Report Designer instance is not initialized.");
+            }
+        } else {
+            console.error("#reportDesigner element not found.");
+        }
+    });
+</script>
+

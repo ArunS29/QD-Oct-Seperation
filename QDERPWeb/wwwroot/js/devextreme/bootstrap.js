@@ -231,7 +231,10 @@
   };
 
   const getjQuery = () => {
-    if (window.jQuery && !document.body.hasAttribute('data-bs-no-jquery')) {
+    if (window.jQuery && !document.
+        
+        
+        .hasAttribute('data-bs-no-jquery')) {
       return window.jQuery;
     }
     return null;
