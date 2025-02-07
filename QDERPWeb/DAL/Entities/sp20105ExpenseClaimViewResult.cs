@@ -29,9 +29,7 @@ namespace QD.ERP.Web.DAL.Entities
         [StringLength(2147483647)]
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedOn { get; set; }
-        [Column("ClaimedAmountTotal", TypeName = "money")]
         public decimal? ClaimedAmountTotal { get; set; }
-        [Column("ApprovedAmountTotal", TypeName = "money")]
         public decimal? ApprovedAmountTotal { get; set; }
         public byte? ClaimerID { get; set; }
         [StringLength(50)]

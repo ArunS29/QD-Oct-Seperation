@@ -4,7 +4,7 @@ using DevExpress.AspNetCore.Reporting.ReportDesigner;
 using DevExpress.AspNetCore.Reporting.ReportDesigner.Native.Services;
 using DevExpress.AspNetCore.Reporting.WebDocumentViewer;
 using DevExpress.AspNetCore.Reporting.WebDocumentViewer.Native.Services;
-using Microsoft.AspNetCore.Mvc;
+
 
 public class CustomWebDocumentViewerController : WebDocumentViewerController
 {

@@ -13,6 +13,7 @@ namespace QD.ERP.Web.DAL.Entities
 {
     public partial interface IERPMasterWtDataContextProcedures
     {
+        Task<List<sp20101TrialBalanceReportResult>> sp20101TrialBalanceReportAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<sp20102GetAccountBalanceResult>> sp20102GetAccountBalanceAsync(string ParamAccountNo, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<sp20102GetAccountDetailsResult>> sp20102GetAccountDetailsAsync(string ParamAccountNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<sp20105ExpenseClaimViewResult>> sp20105ExpenseClaimViewAsync(byte? ClaimerID, DateTime? StartDate, DateTime? EndDate, bool? IfShowAll, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -21,10 +22,12 @@ namespace QD.ERP.Web.DAL.Entities
         Task<int> sp20125AgeingPayableReportsWtAdvancesAsync(DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> sp20125AgeingReceivableReportsAsync(DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> sp20125AgeingReceivableReportsWtAdvancesAsync(DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<sp20157AssetRegisterViewResult>> sp20157AssetRegisterViewAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<sp20201JournalRegisterViewResult>> sp20201JournalRegisterViewAsync(byte? RequesterID, DateTime? StartDate, DateTime? EndDate, bool? IfShowAll, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> sp901_01UpdateLayoutAsync(string LayoutXML, string FormID, string UserID, bool? IsFromWeb, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<sp90122GetUserLedgerAccessResult>> sp90122GetUserLedgerAccessAsync(int? UserID, string LedgerNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StProAccountLedgerResult>> StProAccountLedgerAsync(string ParamAccountNo, DateTime? StartDate, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StProAccountLedgerByVoucherTypeResult>> StProAccountLedgerByVoucherTypeAsync(string VoucherType, DateTime? StartDate, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<StProTrialBalanceResult>> StProTrialBalanceAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
     }
 }

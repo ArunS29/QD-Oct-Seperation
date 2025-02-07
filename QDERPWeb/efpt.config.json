@@ -139,10 +139,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[tbl90112ReportAttributes]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[tblUserMaster]",
          "ObjectType": 0
       },
@@ -300,7 +296,6 @@
    "UseHandleBars": false,
    "UseHierarchyId": false,
    "UseInflector": true,
-   "UseInternalAccessModifiersForSprocsAndFunctions": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,

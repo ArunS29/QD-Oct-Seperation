@@ -1,12 +1,35 @@
+using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QD.ERP.Web.Areas.Finance.Reports; // Ensure this includes your reports
 
 namespace QD.ERP.Web.Pages
 {
     public class DocumentViewerModel : PageModel
     {
-        public void OnGet()
+        public XtraReport Report { get; private set; }
+
+        public IActionResult OnGet(string reportName)
         {
+            if (string.IsNullOrEmpty(reportName))
+            {
+                return BadRequest("Invalid report name.");
+            }
+
+            // Ensure reportName matches exactly what the controller sends
+            switch (reportName)
+            {
+                case "XtraReportBillsReceivableAgeingReport":
+                    Report = new XtraReportBillsReceivableAgeingReport();
+                    break;
+                case "XtraReportAgeingreportsummary":
+                    Report = new XtraReportAgeingreportsummary();
+                    break;
+                default:
+                    return NotFound("Report not found."); // Handle invalid report names
+            }
+
+            return Page(); // Continue loading the page with the selected report
         }
     }
 }

@@ -32,6 +32,19 @@ namespace QD.ERP.Web.DAL.Entities
         {
             return Procedures;
         }
+        protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<sp20102GetAccountBalanceResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<sp20102GetAccountDetailsResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<sp20105ExpenseClaimViewResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<sp20201JournalRegisterViewResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<sp90122GetUserLedgerAccessResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<StProAccountLedgerResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<StProAccountLedgerByVoucherTypeResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<sp20157AssetRegisterViewResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<sp20101TrialBalanceReportResult>().HasNoKey().ToView(null);
+			modelBuilder.Entity<StProTrialBalanceResult>().HasNoKey().ToView(null);
+		}
     }
 
     public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextProcedures
@@ -43,7 +56,7 @@ namespace QD.ERP.Web.DAL.Entities
             _context = context;
         }
 
-        public virtual async Task<List<sp20101TrialBalanceReportResult>> sp20101TrialBalanceReportAsync(string LayoutXML,DateTime? startDate, DateTime? endDate, bool? isUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<sp20101TrialBalanceReportResult>> sp20101TrialBalanceReportAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -57,19 +70,19 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "StartDate",
-                    Value = startDate ?? Convert.DBNull,
+                    Value = StartDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 new SqlParameter
                 {
                     ParameterName = "IsUseEffectiveDate",
-                    Value = isUseEffectiveDate ?? Convert.DBNull,
+                    Value = IsUseEffectiveDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Bit,
                 },
                 parameterreturnValue,
@@ -81,7 +94,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<List<sp20102GetAccountBalanceResult>> sp20102GetAccountBalanceAsync(string paramAccountNo, DateTime? endDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<sp20102GetAccountBalanceResult>> sp20102GetAccountBalanceAsync(string ParamAccountNo, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -96,13 +109,13 @@ namespace QD.ERP.Web.DAL.Entities
                 {
                     ParameterName = "ParamAccountNo",
                     Size = 50,
-                    Value = paramAccountNo ?? Convert.DBNull,
+                    Value = ParamAccountNo ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 parameterreturnValue,
@@ -114,7 +127,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<List<sp20102GetAccountDetailsResult>> sp20102GetAccountDetailsAsync(string paramAccountNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<sp20102GetAccountDetailsResult>> sp20102GetAccountDetailsAsync(string ParamAccountNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -129,7 +142,7 @@ namespace QD.ERP.Web.DAL.Entities
                 {
                     ParameterName = "ParamAccountNo",
                     Size = 50,
-                    Value = paramAccountNo ?? Convert.DBNull,
+                    Value = ParamAccountNo ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 parameterreturnValue,
@@ -141,7 +154,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<List<sp20105ExpenseClaimViewResult>> sp20105ExpenseClaimViewAsync(byte? claimerID, DateTime? startDate, DateTime? endDate, bool? ifShowAll, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<sp20105ExpenseClaimViewResult>> sp20105ExpenseClaimViewAsync(byte? ClaimerID, DateTime? StartDate, DateTime? EndDate, bool? IfShowAll, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -155,25 +168,25 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "ClaimerID",
-                    Value = claimerID ?? Convert.DBNull,
+                    Value = ClaimerID ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.TinyInt,
                 },
                 new SqlParameter
                 {
                     ParameterName = "StartDate",
-                    Value = startDate ?? Convert.DBNull,
+                    Value = StartDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 new SqlParameter
                 {
                     ParameterName = "IfShowAll",
-                    Value = ifShowAll ?? Convert.DBNull,
+                    Value = IfShowAll ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Bit,
                 },
                 parameterreturnValue,
@@ -185,7 +198,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<int> sp20124AgeingReportsAsync(DateTime? endDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> sp20124AgeingReportsAsync(DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -199,7 +212,7 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 parameterreturnValue,
@@ -211,7 +224,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<int> sp20125AgeingPayableReportsAsync(DateTime? endDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> sp20125AgeingPayableReportsAsync(DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -225,7 +238,7 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 parameterreturnValue,
@@ -237,7 +250,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<int> sp20125AgeingPayableReportsWtAdvancesAsync(DateTime? endDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> sp20125AgeingPayableReportsWtAdvancesAsync(DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -251,7 +264,7 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 parameterreturnValue,
@@ -263,7 +276,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<int> sp20125AgeingReceivableReportsAsync(DateTime? endDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> sp20125AgeingReceivableReportsAsync(DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -277,7 +290,7 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 parameterreturnValue,
@@ -289,7 +302,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<int> sp20125AgeingReceivableReportsWtAdvancesAsync(DateTime? endDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> sp20125AgeingReceivableReportsWtAdvancesAsync(DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -303,7 +316,7 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 parameterreturnValue,
@@ -335,7 +348,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<List<sp20201JournalRegisterViewResult>> sp20201JournalRegisterViewAsync(byte? requesterID, DateTime? startDate, DateTime? endDate, bool? ifShowAll, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<sp20201JournalRegisterViewResult>> sp20201JournalRegisterViewAsync(byte? RequesterID, DateTime? StartDate, DateTime? EndDate, bool? IfShowAll, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -349,25 +362,25 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "RequesterID",
-                    Value = requesterID ?? Convert.DBNull,
+                    Value = RequesterID ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.TinyInt,
                 },
                 new SqlParameter
                 {
                     ParameterName = "StartDate",
-                    Value = startDate ?? Convert.DBNull,
+                    Value = StartDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Date,
                 },
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Date,
                 },
                 new SqlParameter
                 {
                     ParameterName = "IfShowAll",
-                    Value = ifShowAll ?? Convert.DBNull,
+                    Value = IfShowAll ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Bit,
                 },
                 parameterreturnValue,
@@ -379,7 +392,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<int> sp901_01UpdateLayoutAsync(string layoutXML, string formID, string userID,bool? IsFromWeb, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> sp901_01UpdateLayoutAsync(string LayoutXML, string FormID, string UserID, bool? IsFromWeb, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -394,33 +407,39 @@ namespace QD.ERP.Web.DAL.Entities
                 {
                     ParameterName = "LayoutXML",
                     Size = -1,
-                    Value = layoutXML ?? Convert.DBNull,
+                    Value = LayoutXML ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.NVarChar,
                 },
                 new SqlParameter
                 {
                     ParameterName = "FormID",
                     Size = -1,
-                    Value = formID ?? Convert.DBNull,
+                    Value = FormID ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
                 {
                     ParameterName = "UserID",
                     Size = 50,
-                    Value = userID ?? Convert.DBNull,
+                    Value = UserID ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "IsFromWeb",
+                    Value = IsFromWeb ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Bit,
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp901_01UpdateLayout] @LayoutXML = @LayoutXML, @FormID = @FormID, @UserID = @UserID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp901_01UpdateLayout] @LayoutXML = @LayoutXML, @FormID = @FormID, @UserID = @UserID, @IsFromWeb = @IsFromWeb", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
             return _;
         }
 
-        public virtual async Task<List<sp90122GetUserLedgerAccessResult>> sp90122GetUserLedgerAccessAsync(int? userID, string ledgerNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<sp90122GetUserLedgerAccessResult>> sp90122GetUserLedgerAccessAsync(int? UserID, string LedgerNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -434,14 +453,14 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "UserID",
-                    Value = userID ?? Convert.DBNull,
+                    Value = UserID ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Int,
                 },
                 new SqlParameter
                 {
                     ParameterName = "LedgerNo",
                     Size = 10,
-                    Value = ledgerNo ?? Convert.DBNull,
+                    Value = LedgerNo ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 parameterreturnValue,
@@ -453,7 +472,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<List<StProAccountLedgerResult>> StProAccountLedgerAsync(string paramAccountNo, DateTime? startDate, DateTime? endDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<StProAccountLedgerResult>> StProAccountLedgerAsync(string ParamAccountNo, DateTime? StartDate, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -468,19 +487,19 @@ namespace QD.ERP.Web.DAL.Entities
                 {
                     ParameterName = "ParamAccountNo",
                     Size = 50,
-                    Value = paramAccountNo ?? Convert.DBNull,
+                    Value = ParamAccountNo ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
                 {
                     ParameterName = "StartDate",
-                    Value = startDate ?? Convert.DBNull,
+                    Value = StartDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 parameterreturnValue,
@@ -492,7 +511,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<List<StProAccountLedgerByVoucherTypeResult>> StProAccountLedgerByVoucherTypeAsync(string voucherType, DateTime? startDate, DateTime? endDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<StProAccountLedgerByVoucherTypeResult>> StProAccountLedgerByVoucherTypeAsync(string VoucherType, DateTime? StartDate, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -507,19 +526,19 @@ namespace QD.ERP.Web.DAL.Entities
                 {
                     ParameterName = "VoucherType",
                     Size = 50,
-                    Value = voucherType ?? Convert.DBNull,
+                    Value = VoucherType ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
                 {
                     ParameterName = "StartDate",
-                    Value = startDate ?? Convert.DBNull,
+                    Value = StartDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 parameterreturnValue,
@@ -531,7 +550,7 @@ namespace QD.ERP.Web.DAL.Entities
             return _;
         }
 
-        public virtual async Task<List<StProTrialBalanceResult>> StProTrialBalanceAsync(DateTime? startDate, DateTime? endDate, bool? isUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<StProTrialBalanceResult>> StProTrialBalanceAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -545,19 +564,19 @@ namespace QD.ERP.Web.DAL.Entities
                 new SqlParameter
                 {
                     ParameterName = "StartDate",
-                    Value = startDate ?? Convert.DBNull,
+                    Value = StartDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 new SqlParameter
                 {
                     ParameterName = "EndDate",
-                    Value = endDate ?? Convert.DBNull,
+                    Value = EndDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.DateTime,
                 },
                 new SqlParameter
                 {
                     ParameterName = "IsUseEffectiveDate",
-                    Value = isUseEffectiveDate ?? Convert.DBNull,
+                    Value = IsUseEffectiveDate ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Bit,
                 },
                 parameterreturnValue,

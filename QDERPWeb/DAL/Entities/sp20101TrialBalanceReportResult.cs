@@ -16,11 +16,8 @@ namespace QD.ERP.Web.DAL.Entities
         public string AccountGroup { get; set; }
         [StringLength(2147483647)]
         public string MasterGroup { get; set; }
-        [Column("Op_Bal", TypeName = "money")]
         public decimal? Op_Bal { get; set; }
-        [Column("TransDebit", TypeName = "money")]
         public decimal? TransDebit { get; set; }
-        [Column("TransCredit", TypeName = "money")]
         public decimal? TransCredit { get; set; }
         [StringLength(2147483647)]
         public string AccountHeadArabic { get; set; }

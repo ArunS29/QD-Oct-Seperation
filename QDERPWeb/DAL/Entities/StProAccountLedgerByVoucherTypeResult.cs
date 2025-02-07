@@ -31,11 +31,8 @@ namespace QD.ERP.Web.DAL.Entities
         public string AccountHeadName { get; set; }
         [StringLength(50)]
         public string DrCr { get; set; }
-        [Column("DrAmount", TypeName = "money")]
         public decimal? DrAmount { get; set; }
-        [Column("CrAmount", TypeName = "money")]
         public decimal? CrAmount { get; set; }
-        [Column("VoucherAmountFormatted", TypeName = "money")]
         public decimal? VoucherAmountFormatted { get; set; }
         [StringLength(2147483647)]
         public string EntryNarration { get; set; }
