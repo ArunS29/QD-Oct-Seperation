@@ -39,8 +39,11 @@ namespace QD.ERP.Web.DAL.Entities
         public DateTime? PostedOn { get; set; }
         public DateTime? JournalEffectiveDate { get; set; }
         public byte? RequesterID { get; set; }
+        [Column("DrAmountTotal", TypeName = "money")]
         public decimal? DrAmountTotal { get; set; }
+        [Column("CrAmountTotal", TypeName = "money")]
         public decimal? CrAmountTotal { get; set; }
+        [Column("Difference", TypeName = "money")]
         public decimal? Difference { get; set; }
     }
 }

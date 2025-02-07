@@ -23,11 +23,8 @@ namespace QD.ERP.Web.DAL.Entities
 
             if (typeof(T).GetProperties().Any())
             {
-                //return await db.Database
-                //    .SqlQueryRaw<T>(sql, parameters)
-                //    .ToListAsync(cancellationToken);
-                return await db.Set<T>() // Use DbSet for the type
-                       .FromSqlRaw(sql, parameters)
+                return await db.Database
+                    .SqlQueryRaw<T>(sql, parameters)
                     .ToListAsync(cancellationToken);
             }
             else

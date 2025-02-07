@@ -175,9 +175,10 @@
             items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
             items.Add().Text("Bank Reconciliation").Icon("product");
         })
-        .OnItemClick("addReportsButton_click")
+        .OnItemClick("addReportsButton_click") // Calls JavaScript function
         .ShowArrowIcon(false)
         )
+
 
 </div>
 
@@ -506,4 +507,12 @@
             reader.readAsText(file);
         }
     });
+        function addReportsButton_click(e) {
+        var selectedText = e.itemData.text; // Get selected item text
+
+        if (selectedText === "Account Statements") {
+            window.location.href = "/DocumentViewer"; // Redirect to the Razor Page
+        }
+    }
+
 </script>

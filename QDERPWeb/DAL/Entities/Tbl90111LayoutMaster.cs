@@ -18,6 +18,5 @@ public partial class Tbl90111LayoutMaster
     public bool? IsDefault { get; set; }
 
     public int LayoutNo { get; set; }
-
     public string LayoutJson { get; set; }
 }
