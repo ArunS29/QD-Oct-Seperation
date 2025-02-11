@@ -11,7 +11,7 @@
 
 @(Html.DevExpress().ReportDesigner("reportDesigner")
     .Height("1000px")
-    .Bind(new AccountReport())
+    .Bind(Model.Report)
 )
 <script>
     $(document).ready(function () {

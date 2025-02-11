@@ -511,8 +511,10 @@
         var selectedText = e.itemData.text; // Get selected item text
 
         if (selectedText === "Account Statements") {
-            window.location.href = "/DocumentViewer"; // Redirect to the Razor Page
+            window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
         }
     }
+
+
 
 </script>
