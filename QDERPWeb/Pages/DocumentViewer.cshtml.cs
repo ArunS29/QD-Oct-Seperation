@@ -17,21 +17,24 @@ namespace QD.ERP.Web.Pages
 				return BadRequest("Invalid report name.");
 			}
 
-			// Ensure reportName matches exactly what the controller sends
-			switch (reportName)
-			{
-				case "XtraReportBillsReceivableAgeingReport":
-					Report = new XtraReportBillsReceivableAgeingReport();
-					break;
-				case "XtraReportAgeingreportsummary":
-					Report = new XtraReportAgeingreportsummary();
-					break;
-				case "AccountReport":
-					Report = new AccountReport();
-					break;
-				default:
-					return NotFound("Report not found."); 
-			}
+            // Ensure reportName matches exactly what the controller sends
+            switch (reportName)
+            {
+                case "XtraReportBillsReceivableAgeingReport":
+                    Report = new XtraReportBillsReceivableAgeingReport();
+                    break;
+                case "XtraReportAgeingreportsummary":
+                    Report = new XtraReportAgeingreportsummary();
+                    break;
+                case "AccountReport":
+                    Report = new AccountReport();
+                    break;
+                case "AccountWithNarration":
+                    Report = new AccountWithNarration();
+                    break;
+                default:
+                    return NotFound("Report not found."); // Handle invalid report names
+            }
 
 			return Page(); // Continue loading the page with the selected report
 		}

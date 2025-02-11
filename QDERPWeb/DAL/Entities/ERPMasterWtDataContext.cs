@@ -13,6 +13,7 @@ public partial class ERPMasterWtDataContext : DbContext
         : base(options)
     {
     }
+    public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
 
     public virtual DbSet<Qry20105BillsReceivableAgeingView> Qry20105BillsReceivableAgeingViews { get; set; }
 
@@ -118,14 +119,15 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<TblUserMaster> TblUserMasters { get; set; }
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
-    public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
         modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
    modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
-   modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
+        modelBuilder.Entity<AccountLedger>().HasNoKey(); // Mark as keyless
+        modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
    modelBuilder.Entity<AccountMasterAR>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountLedger>().HasNoKey(); // Mark as keyless
 
