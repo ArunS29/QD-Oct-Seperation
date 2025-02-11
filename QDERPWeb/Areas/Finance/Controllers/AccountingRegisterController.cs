@@ -5,6 +5,7 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
+using System.Globalization;
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
@@ -31,11 +32,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetVouchers(string voucherType, string frmDate, string toDate)
         {
-            var from = DateTime.Parse(frmDate);
-            var to = DateTime.Parse(toDate);
-            ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(_context);
-            var ledgerData = await _procedures.StProAccountLedgerByVoucherTypeAsync(voucherType, from, to);
-            return Json(ledgerData);
+            try
+            {
+                if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                {
+                    return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+                }
+
+                if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                {
+                    return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+                }
+                ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(_context);
+                var ledgerData = await _procedures.StProAccountLedgerByVoucherTypeAsync(voucherType, from, to);
+                return Json(ledgerData);
+            }
+            catch(Exception ex)
+            {
+                return Json(ex.Message);
+            }
         }
     }
 }

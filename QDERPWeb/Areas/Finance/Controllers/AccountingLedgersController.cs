@@ -9,6 +9,7 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 //using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
+using DevExpress.CodeParser;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -46,21 +47,27 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetLedgerAccounts(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountId != null).Select(i => new
-            {
-                i.MasterGroupId,
-                i.MasterGroup,
-                i.AccountGroup,
-                i.AccountGroupId,
-                i.AccountId,
-                i.AccountHead,
-                i.AccountHeadArabic,
-                i.ReferenceNo,
-                i.IsLedgerObselete
-            });
+            try {
+                var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountId != null).Select(i => new
+                {
+                    i.MasterGroupId,
+                    i.MasterGroup,
+                    i.AccountGroup,
+                    i.AccountGroupId,
+                    i.AccountId,
+                    i.AccountHead,
+                    i.AccountHeadArabic,
+                    i.ReferenceNo,
+                    i.IsLedgerObselete
+                });
 
-            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-        }
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,$"{ ex.Message}");
+            }
+            }
         [HttpGet]
         public async Task<ActionResult> GetVouchers(string accountId, string frmDate, string toDate)
         {

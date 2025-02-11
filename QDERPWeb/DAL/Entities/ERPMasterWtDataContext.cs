@@ -123,11 +123,14 @@ public partial class ERPMasterWtDataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
    modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountLedger>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
    modelBuilder.Entity<AccountMasterAR>().HasNoKey(); // Mark as keyless
+        modelBuilder.Entity<AccountLedger>().HasNoKey(); // Mark as keyless
+
 
         modelBuilder.Entity<Qry20105BillsReceivableAgeingView>(entity =>
         {
@@ -2591,7 +2594,7 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.UserName).HasMaxLength(50);
             entity.Property(e => e.UserPicture).HasColumnType("image");
         });
-
+        OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
     }
 

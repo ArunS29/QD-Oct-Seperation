@@ -74,7 +74,6 @@
             margin-left: 0px; 
             transition: margin-left 0.3s ease;
             padding: 20px;
-            padding-top:33px;
         }
 
         /* Hidden state of sidebar */
@@ -177,7 +176,7 @@
             border-left: 1px solid #ddd;
             border-right: 1px solid #ddd; /* Right side border */
             padding: 8px 16px; /* Reduced padding */
-            padding-top: 33px;
+            padding-top: 50px;
             margin-top: 75px; /* Adjust to align with the rest of your layout */
             height: calc(100vh - 75px); /* Sidebar takes full height minus the top margin */
             overflow-y: auto; /* Enable vertical scrolling */
@@ -627,29 +626,52 @@
 
         const breadcrumbTrail = []; // Tracks the breadcrumb trail
 
-      function navigate(name) {
-        
-    const sidebar2 = document.getElementById('sidebar2');
-    
-    // Toggle sidebar2 visibility based on whether it's already visible or not
-    if (sidebar2.style.display === 'block') {
-        sidebar2.style.display = 'none'; // Hide sidebar2
-    } else {
-        sidebar2.style.display = 'block'; // Show sidebar2
-    }
+        function navigate(name) {
+            const sidebar2 = document.getElementById('sidebar2');
 
-    // Dynamically load submenu items for the first sidebar menu
-    if (name === 'Finance') {
-        showFinanceSubmenu();
-    } else {
-      /*   sidebar2.innerHTML = ''; */ // Clear sidebar2 for other menus
-    }
-
-    // Ensure the first breadcrumb is always from Sidebar 1
-    breadcrumbTrail[0] = name;
-   /*  breadcrumbTrail.length = 1; */ // Reset subsequent breadcrumbs
-    updateBreadcrumb();
-}
+            // Toggle sidebar2 visibility based on whether it's already visible or not
+            if (sidebar2.style.display === 'block') {
+                sidebar2.style.display = 'none'; // Hide sidebar2
+            } else {
+                sidebar2.style.display = 'block'; // Show sidebar2
+            }
+            // Dynamically load submenu items for the first sidebar menu
+            if (name === 'Finance') {
+                showFinanceSubmenu();
+                breadcrumbTrail[0] = name;
+                updateBreadcrumb();
+            } else if (name === 'Human Resources') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'VAT Modules') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'Equipment Rentals') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'Camp Management') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'Inventory Management') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'Projects Control') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            }
+        }
 
 
         function showFinanceSubmenu() {
@@ -660,7 +682,7 @@
             <div class="text">Finance Dashboard</div>
         </div>
          <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-         <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2('/ My Dashboard')">
+         <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2(' My Dashboard')">
                 <div class="text">My Dashboard</div>
             </div>
             <div class="submenu-item" onclick="loadVoucherVerification()">
@@ -785,71 +807,69 @@
             // Set the iframe source to load Accounting Ledgers content
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AccountingLedgers";
+                            hideSidebars();
             // Update the breadcrumb (same as the anchor tag in the menu)
-            updateBreadcrumbFromSidebar2('/ Accounting Ledgers');
+            updateBreadcrumbFromSidebar2('Accounting Ledgers');
 
+        }
+
+
+             function hideSidebars() {
+            const sidebar = document.getElementById('sidebar');
             const sidebar2 = document.getElementById('sidebar2');
+            const root = document.documentElement; // Access CSS custom properties
 
+            // Hide Sidebar 1 and Sidebar 2
+            sidebar.classList.add('hidden');
+            sidebar2.classList.add('hidden');
+            sidebar2.style.display = 'none'; // Set display to none for sidebar2
 
-                            sidebar2.style.display = 'none'; // Hide sidebar2
+            // Update the CSS variable based on the sidebar state
+            root.style.setProperty('--sidebar-width', '0px'); // No sidebar
+            sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
 
-
-
-
-                             autocollaps ();
+            // Adjust the toggle button symbol
+            const toggleBtn = document.querySelector('.toggle-btn');
+            toggleBtn.innerHTML = '&gt;';
         }
-
-
-        function autocollaps () {
-                    const sidebar = document.getElementById('sidebar');
-                    const sidebar2 = document.getElementById('sidebar2');
-                    const toggleBtn = document.querySelector('.toggle-btn');
-                    const root = document.documentElement; // Access CSS custom properties
-
-                    // Toggle visibility of Sidebar 1
-                    sidebar.classList.toggle('hidden');
-                    sidebar2.classList.toggle('expanded');
-
-                        root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
-                        sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
-
-
-
-                    toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
-        }
-
 
 
 
                 function loadAccountRegister() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AccountingRegister";
-            updateBreadcrumbFromSidebar2('/ Accounting Registers');
+                    hideSidebars();
+            updateBreadcrumbFromSidebar2('Accounting Registers');
         }
                 function loadVoucherVerification() {
                             const iframe = document.getElementById("contentIframe");
                                     iframe.src = "/Finance/VoucherApproval";
-                            updateBreadcrumbFromSidebar2('/ Voucher Verification');
+                                            hideSidebars();
+                            updateBreadcrumbFromSidebar2('Voucher Verification');
                         }
                 function loadBillsReceivable() {
                     const iframe = document.getElementById("contentIframe");
                             iframe.src = "/Finance/BillsReceivable";
-                    updateBreadcrumbFromSidebar2('/ Bills Receivable');
+                                     hideSidebars();
+                    updateBreadcrumbFromSidebar2('Bills Receivable');
                 }
                            function loadBillsPayable() {
                             const iframe = document.getElementById("contentIframe");
                                     iframe.src = "/Finance/BillsPayable";
-                            updateBreadcrumbFromSidebar2('/ Bills Payable');
+                                             hideSidebars();
+                            updateBreadcrumbFromSidebar2('Bills Payable');
                         }
                                    function loadCostAnalysis() {
                             const iframe = document.getElementById("contentIframe");
                                     iframe.src = "/Finance/CostAnalysis";
-                            updateBreadcrumbFromSidebar2('/ Cost Analysis');
+                                     hideSidebars();
+                            updateBreadcrumbFromSidebar2('Cost Analysis');
                         }
                                    function loadBillsReceivable() {
                             const iframe = document.getElementById("contentIframe");
                                     iframe.src = "/Finance/BillsReceivable";
-                            updateBreadcrumbFromSidebar2('/ Bills Receivable');
+                                     hideSidebars();
+                            updateBreadcrumbFromSidebar2('Bills Receivable');
                         }
                         //             function loadSalaryPayable() {
                         //     const iframe = document.getElementById("contentIframe");
@@ -862,129 +882,121 @@
                          function loadFinancialReports() {
                                     const iframe = document.getElementById("contentIframe");
                                     iframe.src = "/Finance/uc20106TrialBalance";
-                                    updateBreadcrumbFromSidebar2('/ Financial Reports');
+                                             hideSidebars();
+                                    updateBreadcrumbFromSidebar2('Financial Reports');
                                 }
                                  function loadAssestRegister() {
                                    const iframe = document.getElementById("contentIframe");
                                             iframe.src = "/Finance/AssetView";
-                                    updateBreadcrumbFromSidebar2('/ Asset Register');
+                                                     hideSidebars();
+                                    updateBreadcrumbFromSidebar2('Finance Dashbord /Asset Register');
                                 }
         function assetallocation() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AssetAllocation";
-            updateBreadcrumbFromSidebar2('/ Asset Allocation');
+                     hideSidebars();
+            updateBreadcrumbFromSidebar2('Asset Allocation');
         }
         function loadChartOfAccounts() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/ChartOfAccounts";
-            updateBreadcrumbFromSidebar2('/ Chart Of Accounts');
+             hideSidebars();
+            updateBreadcrumbFromSidebar2('Chart Of Accounts');
         }
          function loadChartofCostCenters() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/ChartOfCostCenters";
-            updateBreadcrumbFromSidebar2('/ Chart Of Cost Centers');
+             hideSidebars();
+            updateBreadcrumbFromSidebar2('Chart Of Cost Centers');
         }
                          function loadCashReceipt() {
                     const iframe = document.getElementById("contentIframe");
                             iframe.src = "/Finance/VoucherEntryCashReceipts";
-                    updateBreadcrumbFromSidebar2('/ Cash Receipt');
+                             hideSidebars();
+                    updateBreadcrumbFromSidebar2('Cash Receipt');
                 }
                         function loadBankReceipt() {
                             const iframe = document.getElementById("contentIframe");
                                             iframe.src = "/Finance/VoucherEntryReceipts";
-                            updateBreadcrumbFromSidebar2('/ Bank Receipt');
+                                             hideSidebars();
+                            updateBreadcrumbFromSidebar2('Bank Receipt');
                         }
         function loadsalesvoucher() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/salesVoucher";
-            updateBreadcrumbFromSidebar2('/ sales voucher');
+             hideSidebars();
+            updateBreadcrumbFromSidebar2('sales voucher');
         }
 
         function loadPurchaseVoucher() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/purchasevoucher";
-            updateBreadcrumbFromSidebar2('/ Purchase voucher');
+            updateBreadcrumbFromSidebar2('Purchase voucher');
+             hideSidebars();
         }
         function loadBankPayment() {
                                     const iframe = document.getElementById("contentIframe");
                                                     iframe.src = "/Finance/VoucherBankPayment";
-                                    updateBreadcrumbFromSidebar2('/ Bank Payment');
+                                                             hideSidebars();
+                                    updateBreadcrumbFromSidebar2('Bank Payment');
                                 }
                                                                 function loadCashPayment() {
                                     const iframe = document.getElementById("contentIframe");
                                                     iframe.src = "/Finance/VoucherCashPayment";
-                                    updateBreadcrumbFromSidebar2('/ Cash Payment');
+                                                             hideSidebars();
+                                    updateBreadcrumbFromSidebar2('Cash Payment');
                                 }
                                                                      function loadExpenseClaim() {
                                             const iframe = document.getElementById("contentIframe");
                                                             iframe.src = "/Finance/ExpensesClaims";
-                                            updateBreadcrumbFromSidebar2('/ Expense Claim');
+                                                                     hideSidebars();
+                                            updateBreadcrumbFromSidebar2('Expense Claim');
                                         }
                                                                              function loadJournelRegister() {
                                             const iframe = document.getElementById("contentIframe");
                                                             iframe.src = "/Finance/JournalRegister";
-                                            updateBreadcrumbFromSidebar2('/ Journel Register');
+                                                                     hideSidebars();
+                                            updateBreadcrumbFromSidebar2('Journel Register');
                                         }
         function loadJournelVoucher() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/Voucherjournal";
-            updateBreadcrumbFromSidebar2('/ Journel Voucher');
+                     hideSidebars();
+            updateBreadcrumbFromSidebar2('Journel Voucher');
         }
 
 
-        function updateBreadcrumbFromSidebar2(submenuItem) {
-            // Ensure submenuItem is added to the correct position
-            if (!breadcrumbTrail.includes(submenuItem)) {
-                breadcrumbTrail.push(submenuItem); // Add if it doesn't already exist
-            } else {
-                // Update the breadcrumb trail to reflect the current selection
-                const itemIndex = breadcrumbTrail.indexOf(submenuItem);
-                breadcrumbTrail = breadcrumbTrail.slice(0, itemIndex + 1); // Truncate to selected item
-            }
+             function updateBreadcrumbFromSidebar2(submenuItem) {
+            // Clear the breadcrumb trail before adding the new item
+            breadcrumbTrail.length = 1;
+            breadcrumbTrail.push(submenuItem); // Add the new breadcrumb item
             updateBreadcrumb(); // Re-render the breadcrumb trail
         }
 
-               function updateBreadcrumb() {
-            const breadcrumbContainer = document.getElementById("breadcrumb");
 
-            // Get existing breadcrumb items
-            const existingBreadcrumbItems = breadcrumbContainer.getElementsByTagName("span");
+                     function updateBreadcrumb() {
+                const breadcrumbContainer = document.getElementById("breadcrumb");
 
-            breadcrumbTrail.forEach((name, index) => {
-                // Check if the breadcrumb item already exists
-                let breadcrumbItem = existingBreadcrumbItems[index];
+                // Clear existing breadcrumb items
+                breadcrumbContainer.innerHTML = '';
 
-                // If the breadcrumb item doesn't exist, create a new one
-                if (!breadcrumbItem) {
-                    breadcrumbItem = document.createElement("span");
+                breadcrumbTrail.forEach((name, index) => {
+                    // Create breadcrumb item
+                    const breadcrumbItem = document.createElement("span");
+                    breadcrumbItem.textContent = name;
+                    breadcrumbItem.onclick = () => goToLevel(index);
                     breadcrumbContainer.appendChild(breadcrumbItem);
-                }
 
-                // Update the breadcrumb item's text
-                breadcrumbItem.textContent = name;
-
-                // Allow navigation to a level
-                breadcrumbItem.onclick = () => goToLevel(index);
-
-                // Add a separator if not the last item
-                if (index < breadcrumbTrail.length - 1) {
-                    // Check if separator exists and create it if not
-                    let separator = breadcrumbContainer.querySelector(`.separator[data-index="${index}"]`);
-                    if (!separator) {
-                        separator = document.createElement("span");
+                    // Add a separator if not the last item
+                    if (index < breadcrumbTrail.length - 1) {
+                        const separator = document.createElement("span");
                         separator.textContent = " / ";
                         separator.className = "separator";
-                        separator.setAttribute('data-index', index);
                         breadcrumbContainer.appendChild(separator);
                     }
-                }
-            });
-
-            // Remove extra items if the breadcrumb trail is shorter
-            for (let i = breadcrumbTrail.length; i < existingBreadcrumbItems.length; i++) {
-                breadcrumbContainer.removeChild(existingBreadcrumbItems[i]);
+                });
             }
-        }
+
 
         function goBack() {
             if (breadcrumbTrail.length > 1) {
@@ -1008,25 +1020,7 @@
             updateBreadcrumbFromSidebar2(parent); // Update second level
             updateBreadcrumbFromSidebar2(child); // Add/update the third level
         }
-        function autocollaps () {
-           
-                    const sidebar = document.getElementById('sidebar');
-                    const sidebar2 = document.getElementById('sidebar2');
-                    const toggleBtn = document.querySelector('.toggle-btn');
-                    const root = document.documentElement; // Access CSS custom properties
 
-                    // Toggle visibility of Sidebar 1
-                    sidebar.classList.toggle('hidden');
-                    sidebar2.classList.toggle('expanded');
-
-                        root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
-                        sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
-                               
-                  
-
-                           
-                    toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
-        }
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const sidebar2 = document.getElementById('sidebar2');
@@ -1039,19 +1033,15 @@
 
             // Update the CSS variable based on the sidebar state
             if (sidebar.classList.contains('hidden') && sidebar2.classList.contains('expanded')) {
-               
                 root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
                 sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
             } else if (sidebar.classList.contains('hidden')) {
-                       
                 root.style.setProperty('--sidebar-width', '0px'); // No sidebar
                 sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
-                       
             } else {
                 root.style.setProperty('--sidebar-width', '256px'); // Sidebar 1 width
                 sidebar2.style.marginTop = '70px'; // Keep Sidebar 2 margin
                 sidebar.style.marginTop = '45px'; // Adjust Sidebar 1 margin
-                     
             }
 
             // Adjust the toggle button symbol

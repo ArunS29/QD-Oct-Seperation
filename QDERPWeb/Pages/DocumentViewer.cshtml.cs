@@ -6,16 +6,16 @@ using QD.ERP.Web.Reports; // Ensure this includes your reports
 
 namespace QD.ERP.Web.Pages
 {
-    public class DocumentViewerModel : PageModel
-    {
-        public XtraReport Report { get; private set; }
+	public class DocumentViewerModel : PageModel
+	{
+		public XtraReport Report { get; private set; }
 
-        public IActionResult OnGet(string reportName)
-        {
-            if (string.IsNullOrEmpty(reportName))
-            {
-                return BadRequest("Invalid report name.");
-            }
+		public IActionResult OnGet(string reportName)
+		{
+			if (string.IsNullOrEmpty(reportName))
+			{
+				return BadRequest("Invalid report name.");
+			}
 
             // Ensure reportName matches exactly what the controller sends
             switch (reportName)
@@ -36,7 +36,7 @@ namespace QD.ERP.Web.Pages
                     return NotFound("Report not found."); // Handle invalid report names
             }
 
-            return Page(); // Continue loading the page with the selected report
-        }
-    }
+			return Page(); // Continue loading the page with the selected report
+		}
+	}
 }

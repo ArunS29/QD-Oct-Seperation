@@ -59,3 +59,22 @@
     line-height: 35px; /* Align text vertically */
 }
 
+.horizontal-container {
+    display: flex;
+    gap: 10px; /* Adds spacing between buttons */
+    justify-content: start; /* Aligns buttons to the left */
+    align-items: center; /* Vertically centers the buttons */
+    margin: 15px;
+}
+.Head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 1415px;
+    padding: 10px;
+    margin-left: 10px;
+    height: 20px;
+    padding-top: 25px;
+    margin-bottom: 25px;
+    margin-top: 50px;
+}
