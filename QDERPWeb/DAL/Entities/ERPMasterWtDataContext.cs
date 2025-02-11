@@ -114,16 +114,19 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl90111LayoutMaster> Tbl90111LayoutMasters { get; set; }
 
+    public virtual DbSet<Tbl90112ReportAttribute> Tbl90112ReportAttributes { get; set; }
+
     public virtual DbSet<TblUserMaster> TblUserMasters { get; set; }
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
         modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
-        modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
-        modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
-        modelBuilder.Entity<AccountMasterAR>().HasNoKey(); // Mark as keyless
+   modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
+   modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
+   modelBuilder.Entity<AccountMasterAR>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountLedger>().HasNoKey(); // Mark as keyless
 
 
@@ -2493,6 +2496,71 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.LayoutDescription).IsUnicode(false);
             entity.Property(e => e.LayoutXml).HasColumnType("xml");
             entity.Property(e => e.UserId).HasColumnName("UserID");
+        });
+
+        modelBuilder.Entity<Tbl90112ReportAttribute>(entity =>
+        {
+            entity.HasKey(e => e.ReportNo);
+
+            entity.ToTable("tbl90112ReportAttributes");
+
+            entity.Property(e => e.ReportNo)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.AddedBy).IsUnicode(false);
+            entity.Property(e => e.AddedOn).HasColumnType("datetime");
+            entity.Property(e => e.ApprovedByText)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BaseReportCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.ButtonText)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CustomReportCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.DocumentNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.FooterImageHeight).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.FooterImageWidth).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.HeaderImageHeight).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.HeaderImageWidth).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.IsShowCc).HasColumnName("IsShowCC");
+            entity.Property(e => e.LogoSizeHeight).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.LogoSizeWidth).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ModifiedBy).IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.PreparedByText)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ReportApprovedBy).IsUnicode(false);
+            entity.Property(e => e.ReportCheckedBy).IsUnicode(false);
+            entity.Property(e => e.ReportDescription).IsUnicode(false);
+            entity.Property(e => e.ReportName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ReportSet)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ReportSetDetail).IsUnicode(false);
+            entity.Property(e => e.ReportVerifiedBy).IsUnicode(false);
+            entity.Property(e => e.ReportXml)
+                .HasColumnType("xml")
+                .HasColumnName("ReportXML");
+            entity.Property(e => e.SealLocationX).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.SealLocationY).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.SecondSignLocationX).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.SecondSignLocationY).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.SignLocationX).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.SignLocationY).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ThirdSignLocationX).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ThirdSignLocationY).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.VerifiedByText)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<TblUserMaster>(entity =>

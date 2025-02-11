@@ -10,6 +10,7 @@ namespace QD.ERP.Web.DAL.Entities
     {
         [StringLength(10)]
         public string AccountHead { get; set; }
+        [Column("Amount", TypeName = "money")]
         public decimal? Amount { get; set; }
     }
 }

@@ -81,13 +81,19 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
+
+    .dx-button:hover {
+        background-color: skyblue !important;
+        color: black !important; /* Optional: Set text color on hover */
+    }
 </style>
 <div class="dx-fieldset horizontal-container">
 
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
         .Icon("smalliconslayout")
-        .Width(30) /* Adjust size for icon only */
+        .Width("100px")
+        .Text("Layout")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -103,27 +109,31 @@
     @(Html.DevExtreme().Button()
         .ID("btnPrint")
         .Icon("print")
-        .Width(30) /* Adjust size */
+        .Width("100px") /* Adjust size */
+        .Text("Print")
         )
 
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")
         .Icon("search")
-        .Width(30)
+        .Width("100px")
+        .Text("Search")
         .OnClick("toggleFilterRow")
         )
 
     @(Html.DevExtreme().Button()
         .ID("btntoggleGroupPanel")
         .Icon("hierarchy")
-        .Width(30)
+        .Width("100px")
+        .Text("Group")
         .OnClick("toggleGroupPanel")
         )
 
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonReceipts")
         .Icon("add")
-        .Width(30)
+        .Width("100px")
+        .Text("Receipts")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -137,7 +147,8 @@
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonPayment")
         .Icon("add")
-        .Width(30)
+        .Width("100px")
+        .Text("Payments")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -151,7 +162,8 @@
     @(Html.DevExtreme().DropDownButton()
         .ID("ddOtherVouchers")
         .Icon("add")
-        .Width(30)
+        .Width("100px")
+        .Text("Vouchers")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -166,7 +178,8 @@
     @(Html.DevExtreme().DropDownButton()
         .ID("ddReports")
         .Icon("doc")
-        .Width(30)
+        .Width("100px")
+        .Text("Reports")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -175,9 +188,10 @@
             items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
             items.Add().Text("Bank Reconciliation").Icon("product");
         })
-        .OnItemClick("addReportsButton_click")
+        .OnItemClick("addReportsButton_click") // Calls JavaScript function
         .ShowArrowIcon(false)
         )
+
 
 </div>
 
@@ -506,4 +520,12 @@
             reader.readAsText(file);
         }
     });
+        function addReportsButton_click(e) {
+        var selectedText = e.itemData.text; // Get selected item text
+
+        if (selectedText === "Account Statements") {
+            window.location.href = "/DocumentViewer"; // Redirect to the Razor Page
+        }
+    }
+
 </script>

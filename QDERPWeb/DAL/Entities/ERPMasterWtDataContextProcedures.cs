@@ -43,8 +43,8 @@ namespace QD.ERP.Web.DAL.Entities
             modelBuilder.Entity<StProAccountLedgerByVoucherTypeResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<sp20157AssetRegisterViewResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<sp20101TrialBalanceReportResult>().HasNoKey().ToView(null);
-			modelBuilder.Entity<StProTrialBalanceResult>().HasNoKey().ToView(null);
-		}
+            modelBuilder.Entity<StProTrialBalanceResult>().HasNoKey().ToView(null);
+        }
     }
 
     public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextProcedures
@@ -65,7 +65,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -103,7 +103,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -136,7 +136,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -163,7 +163,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -207,7 +207,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -233,7 +233,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -259,7 +259,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -285,7 +285,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -311,7 +311,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -337,7 +337,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 parameterreturnValue,
             };
@@ -357,7 +357,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -401,7 +401,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -448,7 +448,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -481,7 +481,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -520,7 +520,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -559,7 +559,7 @@ namespace QD.ERP.Web.DAL.Entities
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
