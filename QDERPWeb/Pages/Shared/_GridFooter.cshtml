@@ -171,6 +171,7 @@
         .Items(items =>
         {
             items.Add().Text("Account Statements").Icon("file");
+            items.Add().Text("Statement Of Account With Narration").Icon("file");
             items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
             items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
             items.Add().Text("Bank Reconciliation").Icon("product");
@@ -514,6 +515,14 @@
             window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
         }
     }
+            function addReportsButton_click(e) {
+        var selectedText = e.itemData.text; // Get selected item text
+
+        if (selectedText === "Statement Of Account With Narration") {
+            window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
+        }
+    }
+
 
 
 

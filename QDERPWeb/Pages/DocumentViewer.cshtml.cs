@@ -29,6 +29,9 @@ namespace QD.ERP.Web.Pages
                 case "AccountReport":
                     Report = new AccountReport();
                     break;
+                case "AccountWithNarration":
+                    Report = new AccountWithNarration();
+                    break;
                 default:
                     return NotFound("Report not found."); // Handle invalid report names
             }
