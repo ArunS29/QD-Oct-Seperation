@@ -155,17 +155,18 @@
 
                     )
             </div>
-
             <div class="form-group" style="margin-top:56px;margin-left:-10px">
                 @(Html.DevExtreme().Button()
                     .ID("btnAddAHead")
                     .Icon("plus")
+                    .OnClick("navigateToLedger")
                     )
             </div>
             <div class="form-group" style="margin-top:56px;margin-left:-10px">
                 @(Html.DevExtreme().Button()
                     .ID("btnEditAHead")
                     .Icon("edit")
+                    .OnClick("editAccountingLedger")
                     )
             </div>
             <div class="form-group">
@@ -454,6 +455,30 @@
             </div>
 
             <script>
+                function navigateToLedger() {
+                    // Show a notification
+                    DevExpress.ui.notify("Navigating to Accounting Ledgers page...", "success", 2000);
+
+                    // Redirect to the Accounting Ledgers page in the same window
+                    window.location.href = "/Finance/AccountingLedgers";
+                }
+                function editAccountingLedger() {
+                    // Get the selected account ID from the dropdown
+                    var accountId = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+
+                    if (!accountId) {
+                        DevExpress.ui.notify("Please select an account to edit.", "warning", 2000);
+                        return;
+                    }
+
+                    // Show a notification
+                    DevExpress.ui.notify("Opening Account Ledger for editing...", "success", 2000);
+
+                    // Redirect to the Accounting Ledger edit page with Account ID as a query parameter
+                    window.location.href = "/Finance/AccountingLedgers/GetVouchers?accountId=" + encodeURIComponent(accountId);
+                }
+
+
                 var lastDrCr = "Dr"; // Default value for the first entry (Dr)
                 let isUpdatingCell;
                 function addVoucherEntry() {
@@ -750,25 +775,37 @@
                     dataGrid = e.component;
                 }
                 function onRowRemoved(e) {
-                    $.ajax({
-                        url: "/api/VoucherJournal/Delete",
-                        type: 'GET',
-                        data: { VoucherEntryNo: e.data.VoucherEntryNo },
-                        success: function (response) {
-                            if (response.success) {
-
-                                showToast("Item deleted successfully!", "success");
-                            } else {
-
-                                showToast("Failed to delete the item. " + response.message, "error");
-                            }
-                        },
-                        error: function () {
-                            // Show an error message using a toast notification
-                            showToast("An error occurred while deleting the item.", "error");
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You are about to delete the Voucher Entry from the database. You cannot revert the changes.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: "/api/VoucherJournal/Delete",
+                                type: 'GET',
+                                data: { VoucherEntryNo: e.data.VoucherEntryNo },
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire("Deleted!", "Line Entry has been successfully removed from the database.", "success");
+                                    } else {
+                                        Swal.fire("Error!", "Failed to delete the item. " + response.message, "error");
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire("Error!", "An error occurred while deleting the item.", "error");
+                                }
+                            });
                         }
                     });
                 }
+
+
 
                 // Function to display a toast notification
                 function showToast(message, type) {
@@ -979,10 +1016,10 @@
                         Swal.fire({
                             title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit Entry Narration`,
                             html: `
-                                                    <textarea id="swal-field-editor"
-                                                              style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
-                                                              placeholder="Enter Entry Narration...">${initialValue}</textarea>
-                                                `,
+                                                                    <textarea id="swal-field-editor"
+                                                                              style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+                                                                              placeholder="Enter Entry Narration...">${initialValue}</textarea>
+                                                                `,
                             showCancelButton: true,
                             confirmButtonText: 'OK',
                             cancelButtonText: 'Cancel',
@@ -1015,5 +1052,11 @@
                         });
                     }
                 }
+                function showLedgerAccountPopup() {
+                    var popup = $("#ledgerAccountPopup").dxPopup("instance");
+                    popup.show();
 
+                    // Correct URL to your LedgerAccount view
+                    $("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
+                }
             </script>
