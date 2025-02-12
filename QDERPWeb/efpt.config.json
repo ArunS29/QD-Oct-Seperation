@@ -325,6 +325,6 @@
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
    "UseT4": false,
-   "UseT4Split": false,
-   "UseT4": false
+   "UseT4Split": false
+  
 }
