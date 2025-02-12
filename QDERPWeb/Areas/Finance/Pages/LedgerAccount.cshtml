@@ -5,14 +5,16 @@
 }
 
 <style>
-    .body{
-        padding-top:0px;
+    .body {
+        padding-top: 0px;
     }
-    .content{
-        margin:0px;
+
+    .content {
+        margin: 0px;
     }
-    .content-container-top{
-        width:1100px;
+
+    .content-container-top {
+        width: 1100px;
     }
     /* Custom CSS to adjust the height of tab headers */
     .dx-tabpanel .dx-tab {
@@ -42,10 +44,7 @@
 
 <style>
     .tab-content {
-        background-color: #FEFCFF;
-        border: 5px solid white;
-        border-radius: 5px;
-        margin-top: 10px;
+        background-color: aliceblue;
         display: none;
     }
 
@@ -67,7 +66,7 @@
     }
 
     .button-group {
-        margin-left: 0px !important;
+        margin-left: 1px !important;
     }
 
     .button-alignment-up {
@@ -79,15 +78,15 @@
     }
 
     /*     .dx-editor-outlined .dx-label span {
-        font-weight:bold !important;
-        } */
+            font-weight:bold !important;
+            } */
 
     .custom-textbox input {
         background-color: aliceblue;
         font-weight: bold !important;
         color: black !important; /* Use !important to override DevExtreme styles */
         /*   border: 3px solid #282222;
-        border-radius: 8px !important; */
+            border-radius: 8px !important; */
     }
 
     .custom-textbox1 input {
@@ -99,7 +98,42 @@
         border: 3px solid #282222 !important;
         /*  border-radius: 8px !important; */
     }
+    /* Modal Styles */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    }
 
+    .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 1200px;
+        position: relative;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
 </style>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 
@@ -115,7 +149,7 @@
             .LabelMode(EditorLabelMode.Outside)
             .InputAttr("aria-label", "Text")
             .ElementAttr(new { @class = "custom-textbox" })
-            .Width("10%")
+            .Width("20%")
             .TabIndex(1)
             )
         @(Html.DevExtreme().TextBox()
@@ -139,7 +173,7 @@
             .OnFocusOut("txtAccountHeadFocusOut")
             )
         <!-- Container for txtAccountHeadAr and button -->
-        <div style="display: flex; align-items: center; width: 100%;">
+        <div style="display: flex; align-items: center; width: 100%;gap:5px;">
 
 
             @(Html.DevExtreme().TextBox()
@@ -171,53 +205,51 @@
         </div>
 
     </div>
-    <div class="col-md-12">
-        <!-- Create a wrapper div for the row layout -->
-        <div class="d-flex align-items-center">
-            @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi()
-                .Controller("AccountLedgerMaster")
-                .LoadAction("getAccountingLedger")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountGroupId") // This is the unique key for the data source
-                )
-                .LabelMode(EditorLabelMode.Outside)
-                .Label("Account Group")
-                .ID("ddlAccountGroup")
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("input")
-                .HoverStateEnabled(true)
-                .ValueExpr("AccountGroupId")
-                .DisplayExpr("AccountGroup")
-                .OnInput("ddlAccountGroupOnInput")
-                .OnOpened("ddlAccountGrouponOpened")
-                .Width("100%")
-                .TabIndex(4)
-                .ValidationRules(value => value.AddRequired().Message("Account Group cannot be empty"))
-                .ValidationMessageMode(ValidationMessageMode.Auto)
-                .DropDownOptions(o => o
-                .Width("100%")
-                )
-                .OnKeyDown("ddlAccountGrouponKeyDown")
-                .OnValueChanged("ddlAccountGroupValueChanged")
-                .ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
-                )
+    <!-- Create a wrapper div for the row layout -->
+    <div class="d-flex align-items-center">
+        @(Html.DevExtreme().DropDownBox()
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getAccountingLedger")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountGroupId") // This is the unique key for the data source
+            )
+            .LabelMode(EditorLabelMode.Outside)
+            .Label("Account Group")
+            .ID("ddlAccountGroup")
+            .ShowClearButton(true)
+            .AcceptCustomValue(true)
+            .OpenOnFieldClick(false)
+            .ValueChangeEvent("input")
+            .HoverStateEnabled(true)
+            .ValueExpr("AccountGroupId")
+            .DisplayExpr("AccountGroup")
+            .OnInput("ddlAccountGroupOnInput")
+            .OnOpened("ddlAccountGrouponOpened")
+            .Width("100%")
+            .TabIndex(4)
+            .ValidationRules(value => value.AddRequired().Message("Account Group cannot be empty"))
+            .ValidationMessageMode(ValidationMessageMode.Auto)
+            .DropDownOptions(o => o
+            .Width("100%")
+            )
+            .OnKeyDown("ddlAccountGrouponKeyDown")
+            .OnValueChanged("ddlAccountGroupValueChanged")
+            .ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
+            )
 
-            @(Html.DevExtreme().Button()
-                .ID("btnAddAccount")
-                .Icon("plus")
-                .ElementAttr("class", "button-alignment-up button-group")
-                .OnClick("redirectledgerAccountMaster")
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btnEditAccount")
-                .Icon("edit")
-                .ElementAttr("class", "button-alignment-up button-group")
-                .OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectledgerAccountMaster() }")
-                )
-        </div>
+        @(Html.DevExtreme().Button()
+            .ID("btnAddAccount")
+            .Icon("plus")
+            .ElementAttr("class", "button-alignment-up button-group")
+            .OnClick("redirectledgerAccountMaster")
+            )
+        @(Html.DevExtreme().Button()
+            .ID("btnEditAccount")
+            .Icon("edit")
+            .ElementAttr("class", "button-alignment-up button-group")
+            .OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectledgerAccountMaster() }")
+            )
     </div>
     <br />
     @* <div class="dx-fieldset horizontal-container">
@@ -728,7 +760,7 @@
                         <td style="width: 15%;">
                             <label>اسم الحساب المصرفي:</label>
                         </td>
-                        <td style="display: flex; align-items: center;">
+                        <td style="display: flex; align-items: center;gap: 5px;">
                             @(Html.DevExtreme().Button()
                                 .ID("btnConvertAccountName")
                                 .Width(40)
@@ -761,7 +793,7 @@
                         <td>
                             <label>اسم البنك:</label>
                         </td>
-                        <td style="display: flex; align-items: center;">
+                        <td style="display: flex; align-items: center;gap: 5px;">
                             @(Html.DevExtreme().Button()
                                 .ID("btnConvertBankName")
                                 .Width(40)
@@ -793,7 +825,7 @@
                         <td>
                             <label>اسم الفوترة:</label>
                         </td>
-                        <td style="display: flex; align-items: center;">
+                        <td style="display: flex; align-items: center;gap: 5px;">
                             @(Html.DevExtreme().Button()
                                 .ID("btnConvertBankBranch")
                                 .Width(40)
@@ -864,7 +896,7 @@
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
                                     .ID("dwnarrow")
-                                    .Width("auto")
+                                    .Width("40")
                                     .Icon("fas fa-chevron-down")
                                     .OnClick("onDownArrowClick")
 
@@ -884,11 +916,11 @@
                             <label>اسم الفوترة:</label>
                         </td>
                         <td colspan="3">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnClientBillingAr")
                                     // .Text("Action")
-                                    .Width("auto")
+                                    .Width("40")
                                     .Icon("fas fa-language")
                                     .OnClick("onClientBillingArClick") // Add your JavaScript handler here
                                     )
@@ -1001,10 +1033,10 @@
                             <label>Client Address - Street Name (Arabic):</label>
                         </td>
                         <td colspan="3">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnClientAddressAr")
-                                    .Width("auto")
+                                    .Width("40")
                                     .Icon("fas fa-language")
                                     .OnClick("onClientAddressArClick")
                                     )
@@ -1033,11 +1065,11 @@
                             <label>Client Address - Additional Address (Arabic):</label>
                         </td>
                         <td colspan="3">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnClientAdditionalAddressAr")
                                     .Icon("fas fa-language")
-                                    .Width("auto")
+                                    .Width("40")
                                     .OnClick("onClientAdditionalAddressArClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1086,11 +1118,11 @@
                             <label>Client City(Arabic):</label>
                         </td>
                         <td colspan="3">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnClientCityAr")
                                     .Icon("fas fa-language")
-                                    .Width("auto")
+                                    .Width("40")
                                     .OnClick("onClientCityArClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1131,11 +1163,11 @@
                             <label>Province/State(Arabic):</label>
                         </td>
                         <td colspan="3">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnStateAr")
                                     .Icon("fas fa-language")
-                                    .Width("auto")
+                                    .Width("40")
                                     .OnClick("onClientProvinceStateArClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1184,11 +1216,11 @@
                             <label>District/Neighborhood (Arabic):</label>
                         </td>
                         <td colspan="3">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnDistrictAr")
                                     .Icon("fas fa-language")
-                                    .Width("auto")
+                                    .Width("40")
                                     .OnClick("onDistrictArClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1220,7 +1252,7 @@
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
                                     .ID("dwnarrowsup")
-                                    .Width("auto")
+                                    .Width("40")
                                     .Icon("fas fa-chevron-down")
                                     .OnClick("onDownArrowSupClick")
 
@@ -1244,7 +1276,7 @@
                             @(Html.DevExtreme().Button()
                                 .ID("btnSupBillingAr")
                                 .Icon("fas fa-language")
-                                .Width("auto")
+                                .Width("40")
                                 .OnClick("onSupplierNameArabicClick")
                                 )
                             @(Html.DevExtreme().TextBox()
@@ -1306,12 +1338,12 @@
                         <td>
                             <label for="AddressStreetArabic2" class="form-label text-dark-skyblue">Address-Street Name (Arabic):</label>
                         </td>
-                        <td style="display: flex; align-items: center;">
+                        <td style="display: flex; align-items: center;gap: 5px;">
 
                             @(Html.DevExtreme().Button()
                                 .ID("btnSupAddress1")
                                 .Icon("fas fa-language")
-                                .Width("auto")
+                                .Width("40")
                                 .OnClick("onSupAddressClick")
                                 )
                             @(Html.DevExtreme().TextBox()
@@ -1336,11 +1368,11 @@
                         <td>
                             <label for="AddressAdditionalArabic2" class="form-label text-dark-skyblue">Address-Additional Address (Arabic):</label>
                         </td>
-                        <td style="display: flex; align-items: center;">
+                        <td style="display: flex; align-items: center;gap: 5px;">
                             @(Html.DevExtreme().Button()
                                 .ID("btnSupAdditionalAddress1")
                                 .Icon("fas fa-language")
-                                .Width("auto")
+                                .Width("40")
                                 .OnClick("onSupAddressAdditionalClick")
                                 )
                             @(Html.DevExtreme().TextBox()
@@ -1387,11 +1419,11 @@
                         <td>
                             <label for="ClientCityArabic2" class="form-label text-dark-skyblue">Client City (Arabic):</label>
                         </td>
-                        <td style="display: flex; align-items: center;">
+                        <td style="display: flex; align-items: center;gap: 5px;">
                             @(Html.DevExtreme().Button()
                                 .ID("btnSupCity1")
                                 .Icon("fas fa-language")
-                                .Width("auto")
+                                .Width("40")
                                 .OnClick("onSupCityClick")
                                 )
                             @(Html.DevExtreme().TextBox()
@@ -1430,11 +1462,11 @@
                         <td>
                             <label for="Province/stateArabic2" class="form-label text-dark-skyblue">Province / State (Arabic):</label>
                         </td>
-                        <td style="display: flex; align-items: center;">
+                        <td style="display: flex; align-items: center;gap: 5px;">
                             @(Html.DevExtreme().Button()
                                 .ID("btnSupState1")
                                 .Icon("fas fa-language")
-                                .Width("auto")
+                                .Width("40")
                                 .OnClick("onSupStateClick")
                                 )
                             @(Html.DevExtreme().TextBox()
@@ -1481,11 +1513,11 @@
                         <td>
                             <label for="Neighborhood2" class="form-label text-dark-skyblue">Neighborhood (Arabic):</label>
                         </td>
-                        <td style="display: flex; align-items: center;">
+                        <td style="display: flex; align-items: center;gap: 5px;">
                             @(Html.DevExtreme().Button()
                                 .ID("btnSupDistrict1")
                                 .Icon("fas fa-language")
-                                .Width("auto")
+                                .Width("40")
                                 .OnClick("onSupDistrictClick")
                                 )
                             @(Html.DevExtreme().TextBox()
@@ -1500,7 +1532,7 @@
         </div>
 
         <div id="tab-content-6" class="tab-content">
-            <div style="background-color:#c0dceb;">
+            <div style="background-color:aliceblue;">
                 <table width="100%" style="border-color:skyblue; border-radius:3px; font-size:14px;">
                     <tr>
                         <td>
@@ -1541,7 +1573,7 @@
         </div>
 
         <div id="tab-content-7" class="tab-content" style="display: none;">
-            <div style="background-color:#c0dceb;">
+            <div style="background-color:aliceblue;">
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                     <tr>
                         <td>
@@ -1554,11 +1586,11 @@
                                 .InputAttr("aria-label", "txtClientBillingName")
                                 )
                         </td>
-                        <td colspan="3">
+                        <td>
                             <div style="display: flex; align-items: center;">
                                 @(Html.DevExtreme().Button()
                                     .ID("dwnarrowbill")
-                                    .Width("auto")
+                                    .Width("40")
                                     .Icon("fas fa-chevron-down")
                                     .OnClick("onDownArrowBillClick")
 
@@ -1578,13 +1610,12 @@
                             <label>اسم العميل للفوترة</label>
                         </td>
                         <td>
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnClientBillingNameArabic")
                                     .Icon("fas fa-language")
-                                    .Width(35) // Adjust width as needed
                                     .Height(30) // Adjust height as needed
-                                    .ElementAttr(new { style = "margin-right: 5px;" }) // Add space between button and text box
+                                    .ElementAttr(new { style = "margin-right: 5px;width: 50px;" })
                                     .OnClick("onClientBillingNameArabicButtonClick") // JavaScript function for button click
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1615,13 +1646,12 @@
                             <label>عنوان العميل للفوترة</label>
                         </td>
                         <td colspan="2">
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnBillingAddressArabic")
                                     .Icon("fas fa-language")
-                                    .Width(35) // Adjust width as needed
                                     .Height(30) // Adjust height as needed
-                                    .ElementAttr(new { style = "margin-right: 5px;" }) // Add space between button and text box
+                                    .ElementAttr(new { style = "margin-right: 5px;width: 50px;" })
                                     .OnClick("onBillingAddressArabicButtonClick") // JavaScript function for button click
                                     )
                                 @(Html.DevExtreme().TextArea()
@@ -1772,7 +1802,7 @@
         </div>
 
         <div id="tab-content-8" class="tab-content">
-            <div style="background-color:#c0dceb;">
+            <div style="background-color:aliceblue;">
                 <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                     <tr>
                         <td>
@@ -1789,11 +1819,11 @@
                             <label>عنوان المورد</label>
                         </td>
                         <td>
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnArabObsSupAddress")
                                     // .Text("Action")
-                                    .Width("auto")
+                                    .Width("40")
                                     .Icon("fas fa-language")
                                     .OnClick("onArabObsSupAddressClick")
                                     )
@@ -1819,11 +1849,11 @@
                             <label>رقم تسجيل ضريبة القيمة المضافة للموردين</label>
                         </td>
                         <td>
-                            <div style="display: flex; align-items: center;">
+                            <div style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnObsSupRegNoArabic")
                                     //     .Text("Action")
-                                    .Width("auto")
+                                    .Width("40")
                                     .Icon("fas fa-language")
                                     .OnClick("onObsSupRegNoArabicClick")
                                     )
@@ -1863,222 +1893,228 @@
 @using (Html.DevExtreme().NamedTemplate("AccountGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                            .ID("ledgeraccount-datagrid")
-                            .DataSource(d => d.WebApi()
-                                .Controller("AccountLedgerMaster")
-                            .LoadAction("getAccountingLedger")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("AccountGroupId")
+                                .ID("ledgeraccount-datagrid")
+                                .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                .LoadAction("getAccountingLedger")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("AccountGroupId")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                .SearchPanel(sp => sp.HighlightSearchText(true))
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                .OnSelectionChanged("dataGridSelectionChanged")
+                                .OnInitialized("dataGridInitialized")
+                                .HeaderFilter(p => p.Visible(true))
+                                .ShowBorders(true)
+                                .HoverStateEnabled(true)
+                                .Paging(p => p.PageSize(15))
+                                .FilterRow(f => f.Visible(false))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(345)
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("AccountGroup");
+                                })
                             )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
-                            .SearchPanel(sp => sp.HighlightSearchText(true))
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("dataGridSelectionChanged")
-                            .OnInitialized("dataGridInitialized")
-                            .HeaderFilter(p => p.Visible(true))
-                            .ShowBorders(true)
-                            .HoverStateEnabled(true)
-                            .Paging(p => p.PageSize(15))
-                            .FilterRow(f => f.Visible(false))
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(345)
-                            .Selection(s => s.Mode(SelectionMode.Single))
-                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                            .Columns(columns =>
-                            {
-                                columns.Add().DataField("AccountGroup");
-                            })
-                        )
 }
 
 @using (Html.DevExtreme().NamedTemplate("DrCrContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                            .ID("DrCraccount-datagrid")
-                            .DataSource(d => d.WebApi()
-                            .Controller("AccountLedgerMaster")
-                                .LoadAction("getCreditDebit")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("OpeningBalanceDrCr")
+                                .ID("DrCraccount-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("AccountLedgerMaster")
+                                    .LoadAction("getCreditDebit")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("OpeningBalanceDrCr")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                .ShowColumnHeaders(false)
+                                 .FilterRow(f => f.Visible(false))
+                                 .SearchPanel(sp => sp.HighlightSearchText(false))
+                                .Selection(sl => sl.Mode(SelectionMode.Single))
+                                .OnSelectionChanged("DrCrdataGridSelectionChanged")
+                                .OnInitialized("DrCrdataGridInitialized")
+                                     .HeaderFilter(p => p.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(130)
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("OpeningBalanceDrCr");
+                                })
                             )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
-                            .ShowColumnHeaders(false)
-                             .FilterRow(f => f.Visible(false))
-                             .SearchPanel(sp => sp.HighlightSearchText(false))
-                            .Selection(sl => sl.Mode(SelectionMode.Single))
-                            .OnSelectionChanged("DrCrdataGridSelectionChanged")
-                            .OnInitialized("DrCrdataGridInitialized")
-                                 .HeaderFilter(p => p.Visible(false))
-                .ShowBorders(true)
-                .HoverStateEnabled(true)
-                .Paging(p => p.PageSize(15))
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(130)
-                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                            .Columns(columns =>
-                            {
-                                columns.Add().DataField("OpeningBalanceDrCr");
-                            })
-                        )
 }
 
 @using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                            .ID("branch-datagrid")
-                            .DataSource(d => d.WebApi()
-                            .Controller("AccountLedgerMaster")
-                            .LoadAction("getAccountBranch")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("BranchCode")
-                            )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
-
-                            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("branchdataGridSelectionChanged")
-                            .OnInitialized("branchdataGridInitialized")
-                            @*.HeaderFilter(p => p.Visible(true))
-    .ShowBorders(true)
-    .HoverStateEnabled(true)
-    .Paging(p => p.PageSize(15))*@
-                            .FilterRow(f => f.Visible(false))
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(200)
-                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                            .Columns(columns =>
-                            {
-                                columns.Add().DataField("BranchName");
-                            })
-                            )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                            .ID("subgroup-datagrid")
-                            .DataSource(d => d.WebApi()
-                            .Controller("AccountLedgerMaster")
-                            .LoadAction("getSubGroup")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("LedgerSubGroupCode")
-                            )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
-                            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("subgroupdataGridSelectionChanged")
-                                .OnInitialized("subgroupdataGridInitialized")
-                     @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                     .FilterRow(f => f.Visible(false))
-                            //.FilterRow(f => f.Visible(true))
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(200)
-                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                            .Columns(columns =>
-                            {
-                                columns.Add().DataField("SubGroupName");
-                            })
-                        )
-}
-
-@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                            .ID("sales-datagrid")
-                            .DataSource(d => d.WebApi()
-                            .Controller("AccountLedgerMaster")
-                            .LoadAction("getSalesPersonList")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                                        .Key("SalesPersonCode")
-                            )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
-                                 .FilterRow(f => f.Visible(false))
-                            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("salesdataGridSelectionChanged")
-                                .OnInitialized("salesdataGridInitialized")
-                            @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                            // .FilterRow(f => f.Visible(true))
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(200)
-                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                            .Columns(columns =>
-                            {
-                                columns.Add().DataField("SalesPersonName");
-                            })
-                        )
-}
-
-@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                                .ID("othertype-datagrid")
+                                .ID("branch-datagrid")
                                 .DataSource(d => d.WebApi()
                                 .Controller("AccountLedgerMaster")
-                                    .LoadAction("getOtherIDTypes")
+                                .LoadAction("getAccountBranch")
                                 .LoadMode(DataSourceLoadMode.Raw)
-                                     .Key("BuyerOtherIDType")
+                                    .Key("BranchCode")
                                 )
                                 .WordWrapEnabled(true)
                                 .ShowBorders(true)
+
                                 @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                                 .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                    .OnSelectionChanged("othertypedataGridSelectionChanged")
-                                    .OnInitialized("othertypedataGridInitialized")
-                                    @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
-                                    .FilterRow(f => f.Visible(true))
+                                .OnSelectionChanged("branchdataGridSelectionChanged")
+                                .OnInitialized("branchdataGridInitialized")
+                                @*.HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+                                .FilterRow(f => f.Visible(false))
                                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                 .Height(200)
                                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                 .Columns(columns =>
                                 {
-                                    columns.Add().DataField("BuyerIDTypeName");
+                                    columns.Add().DataField("BranchName");
+                                })
+                                )
+}
+
+@using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                .ID("subgroup-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("AccountLedgerMaster")
+                                .LoadAction("getSubGroup")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("LedgerSubGroupCode")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                .OnSelectionChanged("subgroupdataGridSelectionChanged")
+                                    .OnInitialized("subgroupdataGridInitialized")
+                         @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                         .FilterRow(f => f.Visible(false))
+                                //.FilterRow(f => f.Visible(true))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(200)
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("SubGroupName");
                                 })
                             )
 }
 
-@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+@using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                                    .ID("billingpayment-datagrid")
+                                .ID("sales-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("AccountLedgerMaster")
+                                .LoadAction("getSalesPersonList")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("SalesPersonCode")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                     .FilterRow(f => f.Visible(false))
+                                @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                .OnSelectionChanged("salesdataGridSelectionChanged")
+                                    .OnInitialized("salesdataGridInitialized")
+                                @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
+                                // .FilterRow(f => f.Visible(true))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(200)
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("SalesPersonName");
+                                })
+                            )
+}
+
+@using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                    .ID("othertype-datagrid")
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
-                                        .LoadAction("getBillingPayments")
+                                        .LoadAction("getOtherIDTypes")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                         .Key("BillingAccountID")
+                                         .Key("BuyerOtherIDType")
                                     )
                                     .WordWrapEnabled(true)
                                     .ShowBorders(true)
                                     @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                        .OnSelectionChanged("billingdataGridSelectionChanged")
-                                        .OnInitialized("billingdataGridInitialized")
+                                        .OnSelectionChanged("othertypedataGridSelectionChanged")
+                                        .OnInitialized("othertypedataGridInitialized")
+                                        @* .HeaderFilter(p => p.Visible(true))
+.ShowBorders(true)
+.HoverStateEnabled(true)
+.Paging(p => p.PageSize(15))*@
                                         .FilterRow(f => f.Visible(true))
                                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                     .Height(200)
                                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                     .Columns(columns =>
                                     {
-                                        columns.Add().DataField("BillingAccountHead");
+                                        columns.Add().DataField("BuyerIDTypeName");
                                     })
                                 )
 }
 
+@using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                        .ID("billingpayment-datagrid")
+                                        .DataSource(d => d.WebApi()
+                                        .Controller("AccountLedgerMaster")
+                                            .LoadAction("getBillingPayments")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                             .Key("BillingAccountID")
+                                        )
+                                        .WordWrapEnabled(true)
+                                        .ShowBorders(true)
+                                        @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                            .OnSelectionChanged("billingdataGridSelectionChanged")
+                                            .OnInitialized("billingdataGridInitialized")
+                                            .FilterRow(f => f.Visible(true))
+                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                        .Height(200)
+                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                        .Columns(columns =>
+                                        {
+                                            columns.Add().DataField("BillingAccountHead");
+                                        })
+                                    )
+}
 
+<!-- Modal Structure -->
+<div id="ledgerAccountMasterModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <iframe id="ledgerAccountMasterIframe" src="" width="100%" height="500px" frameborder="0"></iframe>
+    </div>
+</div>
 <script>
     //Tab events
     let acgid, accgrp = null, accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = null;
@@ -2588,22 +2624,27 @@
     });
 
 
-
     function redirectToBranchMaster() {
 
-        const masterFormWindow = window.open(
-            '/Finance/Divmaster',
-            'popupWindow',
-            'width=800,height=600,scrollbars=yes,resizable=yes'
-        );
+        const modal = document.getElementById("ledgerAccountMasterModal");
+        const iframe = document.getElementById("ledgerAccountMasterIframe");
 
+        iframe.src = `/Finance/Divmaster`;
 
-        const interval = setInterval(() => {
-            if (masterFormWindow.closed) {
-                clearInterval(interval);
-                refreshBranchmasterSelectBox();
+        modal.style.display = "block";
+
+        const closeBtn = modal.querySelector(".close");
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+            refreshaccountledgerSelectBox();
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+                refreshaccountledgerSelectBox();
             }
-        }, 500);
+        };
     }
 
     function refreshBranchmasterSelectBox() {
@@ -2630,19 +2671,28 @@
     }
 
     function redirecttoledgersubgroup() {
-        const masterFormWindow = window.open(
-            '/Finance/LedgerSubGroupMaster',
-            'popupWindow',
-            'width=800,height=600,scrollbars=yes,resizable=yes'
-        );
 
-        const interval = setInterval(() => {
-            if (masterFormWindow.closed) {
-                clearInterval(interval);
-                refreshLedgerSubGroupSelectBox();
+        const modal = document.getElementById("ledgerAccountMasterModal");
+        const iframe = document.getElementById("ledgerAccountMasterIframe");
+
+        iframe.src = `/Finance/LedgerSubGroupMaster`;
+
+        modal.style.display = "block";
+
+        const closeBtn = modal.querySelector(".close");
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+            refreshaccountledgerSelectBox();
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+                refreshaccountledgerSelectBox();
             }
-        }, 500);
+        };
     }
+
     function refreshLedgerSubGroupSelectBox() {
         const ledgersubgroupSelectBox = $("#ddlSubgroup").dxSelectBox("instance"); // Ensure ID matches Razor
 
@@ -2668,19 +2718,27 @@
 
     function redirecttosalespersonmaster() {
 
-        const masterFormWindow = window.open(
-            '/Finance/SalesPersonMaster',
-            'popupWindow',
-            'width=800,height=600,scrollbars=yes,resizable=yes'
-        );
+        const modal = document.getElementById("ledgerAccountMasterModal");
+        const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        const interval = setInterval(() => {
-            if (masterFormWindow.closed) {
-                clearInterval(interval);
-                refreshsalespersonSelectBox();
+        iframe.src = `/Finance/SalesPersonMaster`;
+
+        modal.style.display = "block";
+
+        const closeBtn = modal.querySelector(".close");
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+            refreshaccountledgerSelectBox();
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+                refreshaccountledgerSelectBox();
             }
-        }, 500);
+        };
     }
+
     function refreshsalespersonSelectBox() {
         const ledgersubgroupSelectBox = $("#ddlSales").dxSelectBox("instance"); // Ensure ID matches Razor
 
@@ -2721,30 +2779,32 @@
         }, 500);
     }
 
-
-
     function redirectledgerAccountMaster() {
-        // Check the AccountGroupUnder value and disable the tab contents
         if (["M5", "M6", "M7", "M8", "M2", "M9", "M4", "M1"].includes(accgrpunder)) {
             disableTabs(["tab-content-1", "tab-content-2", "tab-content-3", "tab-content-7"]);
-        }
-        else if (["M3"].includes(accgrpunder)) {
+        } else if (["M3"].includes(accgrpunder)) {
             disableTabs(["tab-content-3", "tab-content-7"]);
         }
-        // alert("redirectledgerAccountMaster")
 
-        const masterFormWindow = window.open(
-            `/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`,
-            'popupWindow2',
-            'width=1300,height=600,scrollbars=yes,resizable=yes'
-        );
+        const modal = document.getElementById("ledgerAccountMasterModal");
+        const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        const interval = setInterval(() => {
-            if (masterFormWindow.closed) {
-                clearInterval(interval);
+        iframe.src = `/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
+
+        modal.style.display = "block";
+
+        const closeBtn = modal.querySelector(".close");
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+            refreshaccountledgerSelectBox();
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
                 refreshaccountledgerSelectBox();
             }
-        }, 500);
+        };
     }
     //Disable Tabs
     function disableTabs(tabIds) {

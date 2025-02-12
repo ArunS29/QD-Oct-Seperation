@@ -3,88 +3,88 @@
 
 <style type="text/css">
 	.overlay {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5); /* Transparent background */
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5); /* Transparent background */
 
-	z-index: 1000;
+		z-index: 1000;
 	}
 
 	.overlay-content {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 100%;
-	height: 80%;
-	background: #909ead00;
-	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-	border-radius: 8px;
-	overflow: hidden;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
 	}
 
 	#overlay-frame {
-	width: 100%;
-	height: 100%;
+		width: 100%;
+		height: 100%;
 	}
 
 	.Maincontainer.Maincontainer {
-	background-color: white;
-	margin-top: 1.5rem;padding-top: 10px;
+		background-color: white;
 	}
 
 	.close-btn {
-	position: absolute;
-	top: 10px;
-	right: 20px;
-	font-size: 30px;
-	cursor: pointer;
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
 	}
 
 
 
 	.Head {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 1415px;
-	padding: 10px;
-	margin-left:10px;
-	height:20px;
-	padding-top:25px;
-	margin-bottom:25px;
-	margin-top:50px;
+		display: flex;
+		justify-content: end;
+		align-items: center;
+		margin-top: 0px;
+		padding-top: 50px;
+		height: 70px;
+		margin-left: 0px;
+		padding-bottom: 0px;
+		padding-right: 0px;
+		padding-left: 0px;
+		width:100%;
 	}
 
 	.header-container {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
+		display: flex;
+		justify-content: start;
+		align-items: center;
 	}
 
 	.title {
-	font-size: 20px; /* Adjust size if needed */
-	font-weight: bold;
+		font-size: 20px; /* Adjust size if needed */
+		font-weight: bold;
 	}
 
 	.footer {
-	display: flex;
-	align-items: center;
-	height: 40px;
-	margin-left: auto; /* Pushes it fully to the right */
-	margin-top:15px;
-	padding-top:22px;
-	background-color:aliceblue;
+		display: flex;
+		align-items: center;
+		height: 0px;
+		margin-left: auto; /* Pushes it fully to the right */
+		margin-top: 15px;
+		padding-top: 22px;
 	}
-	.dx-popup-content.dx-popup-content-scrollable{
-	padding-top:20px;
-	padding-right:0px;
-	padding-left:25px;
+
+	.dx-popup-content.dx-popup-content-scrollable {
+		padding-top: 20px;
+		padding-right: 0px;
+		padding-left: 25px;
+		background-color: aliceblue;
 	}
 
 	/* Hover effect for DataGrid rows */
@@ -103,121 +103,108 @@
 	}
 
 	.dx-datagrid {
-	border-radius: 15px; /* Oval Shape */
-	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft Shadow */
-	overflow: hidden;
+		border-radius: 15px; /* Oval Shape */
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft Shadow */
+		/* 	overflow: hidden; */
+		height: 60vh;
 	}
 
 	.dx-datagrid-rowsview .dx-row {
-	font-family: 'Inter', sans-serif;
-	font-size: 14px; /* Smaller, more modern font */
+		font-family: 'Inter', sans-serif;
+		font-size: 14px; /* Smaller, more modern font */
 	}
 
-	.dx-datagrid-rowsview .dx-row .dx-command-edit,
-	.dx-datagrid-rowsview .dx-row td {
-	padding: 8px;
-	}
+		.dx-datagrid-rowsview .dx-row .dx-command-edit,
+		.dx-datagrid-rowsview .dx-row td {
+			padding: 8px;
+		}
 
-	/* Highlight Debit & Credit */
-	.dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
-	color: red; /* Debit */
-	font-weight: bold;
-	}
+			/* Highlight Debit & Credit */
+			.dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
+				color: red; /* Debit */
+				font-weight: bold;
+			}
 
-	.dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
-	color: green; /* Credit */
-	font-weight: bold;
-	}
+			.dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
+				color: green; /* Credit */
+				font-weight: bold;
+			}
 
-	/* Dynamic Balance Highlighting */
-	.dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
-	font-weight: bold;
-	}
+			/* Dynamic Balance Highlighting */
+			.dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
+				font-weight: bold;
+			}
 
 	/* Toolbar Styling */
 	.custom-toolbar {
-	display: flex;
-	align-items: center;
-	gap: 10px;
+		display: flex;
+		align-items: center;
+		gap: 10px;
 	}
 
 	.filter-btn {
-	background-color: #007bff;
-	color: white;
-	border: none;
-	padding: 6px 12px;
-	border-radius: 5px;
-	cursor: pointer;
-	font-family: 'Inter', sans-serif;
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
 	}
 
-	.filter-btn:hover {
-	background-color: #0056b3;
-	}
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
 
 	/* Text Editor Styling */
 	.dx-texteditor {
-	background-color: #909ead00 !important; /* Light background */
-	border: 1px solid #d6e4f0 !important; /* Soft border */
-	border-radius: 4px !important; /* Smaller rounded corners */
+		background-color: #909ead00 !important; /* Light background */
+		border: 1px solid #d6e4f0 !important; /* Soft border */
+		border-radius: 4px !important; /* Smaller rounded corners */
 
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
-	font-size: 14px !important; /* Slightly smaller font */
-	transition: all 0.2s ease-in-out !important;
-	height: 39px !important; /* Fixed height */
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+		font-size: 14px !important; /* Slightly smaller font */
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important; /* Fixed height */
 	}
 
-	/* Hover and Focus States */
-	.dx-texteditor:hover,
-	.dx-texteditor.dx-state-hover,
-	.dx-button:hover {
-	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-	border-color: #86b7fe !important; /* Highlight border */
-	}
+		/* Hover and Focus States */
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+			border-color: #86b7fe !important; /* Highlight border */
+		}
 
-	.dx-texteditor.dx-state-focused {
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
-	border-color: #508ae1 !important;
-	}
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+			border-color: #508ae1 !important;
+		}
 
-	/* Button Styling */
-	.dx-button {
-	background-color: #909ead00 !important;
-	border: 1px solid #d6e4f0 !important;
-	border-radius: 4px !important;
-	padding: 6px 12px !important; /* Reduced button padding */
-	font-size: 14px !important;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-	transition: all 0.2s ease-in-out !important;
-	height: 39px !important; /* Fixed height */
-	}
 
-	/* Hover Effect for Button */
-	.dx-button:hover {
-	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-	border-color: #86b7fe !important; /* Highlight border */
-	}
 
-	.dx-datagrid-header-panel{
-	background-color: #909ead00;
+	.dx-datagrid-header-panel {
+		background-color: #909ead00;
 	}
-
-	/* Hide filter icons in header cells */
-	.dx-header-filter {
-		display: none;
+	/* arun */
+	.title {
+		padding-bottom: 5px;
 	}
-
 </style>
 
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="Head">
 	<div class="header-container">
-		<div class="title">Accounting Ledgers</div>
-		
+
+		<div class="footer">@await Html.PartialAsync("_GridFooter")</div>
 	</div>
 </div>
-
+<div class="title">
+	<div class="header-container">
+		<div class="title">Accounting Ledgers</div>
+	</div>
+</div>
 <div id="errorPopup">
 	<div style="text-align: center; padding: 20px;">
 		<img src="https://i.gifer.com/origin/f7/f748a43312487000f282968b97aa60fe_w200.gif" alt="Doll Error" style="width: 100px; height: 100px;" />
@@ -232,20 +219,20 @@
 
 
 <div id="inputPopupContainer"></div>
-<div class="content-container-top" style="background-color:#909ead00;">
+<div class="content-container-top" ;>
 	<!-- Context Menu -->
 	<div class="context-menu" id="contextMenu">
 		<div id="contextMenuContent"></div>
 		<div class="context-menu-item">
 			@(Html.DevExtreme().Button()
-									.ID("btnEditVoucher")
-									.Text("Edit Voucher")
-									.Type(ButtonType.Normal)
-									.StylingMode(ButtonStylingMode.Outlined)
-									.Icon("edit")
-									.Width(180)
-									.OnClick("function() { editRow(); }")
-									)
+						.ID("btnEditVoucher")
+						.Text("Edit Voucher")
+						.Type(ButtonType.Normal)
+						.StylingMode(ButtonStylingMode.Outlined)
+						.Icon("edit")
+						.Width(180)
+						.OnClick("function() { editRow(); }")
+						)
 		</div>
 	</div>
 	<!-- Context Control -->
@@ -265,47 +252,48 @@
 			<strong>Voucher Type:</strong> <span id="popupVoucherNarration"></span><br />
 		</div>
 		@(Html.DevExtreme().Button()
-						.ID("btnShowVoucher")
-						.Text("Show Voucher")
-						.Type(ButtonType.Normal)
-						.StylingMode(ButtonStylingMode.Outlined)
-						.Icon("paste")
-						.Width(180)
-						.OnClick("function() { showVoucher(); }")
-						)
+				.ID("btnShowVoucher")
+				.Text("Show Voucher")
+				.Type(ButtonType.Normal)
+				.StylingMode(ButtonStylingMode.Outlined)
+				.Icon("paste")
+				.Width(180)
+				.OnClick("function() { showVoucher(); }")
+				)
 	</div>
 
 
 	<!-- Input Controlls -->
 	<div class="dx-fieldset horizontal-container ">
+
 		@(Html.DevExtreme().DropDownBox()
-						.DataSource(d => d.WebApi()
-						.Controller("AccountingLedgers")
-						.LoadAction("GetLedgerAccounts")
-						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("AccountId")
-						)
-						.LabelMode(EditorLabelMode.Outside)
-						.Label("Select Ledger Account")
-						.ID("accountDropDownBox")
-						.ShowClearButton(true)
-						.AcceptCustomValue(true)
-						.OpenOnFieldClick(false)
-						.ValueChangeEvent("input")
-						.HoverStateEnabled(true)
-						.ValueExpr("AccountId")
-						.DisplayExpr("AccountHead")
-						.OnInput("dropDownBoxOnInput")
-						.OnOpened("onOpened")
-						.Width(500)
-						.TabIndex(1)
-						.DropDownOptions(o => o
-						.Width(1400) // Set the desired width for the dropdown content
-						)
-						.OnKeyDown("onKeyDown")
-						.OnValueChanged("dropDownBoxValueChanged")
-						.ContentTemplate(new TemplateName("LedgerContentTemplate"))
-						)
+				.DataSource(d => d.WebApi()
+				.Controller("AccountingLedgers")
+				.LoadAction("GetLedgerAccounts")
+				.LoadMode(DataSourceLoadMode.Raw)
+				.Key("AccountId")
+				)
+				.LabelMode(EditorLabelMode.Outside)
+				.Label("Select Ledger Account")
+				.ID("accountDropDownBox")
+				.ShowClearButton(true)
+				.AcceptCustomValue(true)
+				.OpenOnFieldClick(false)
+				.ValueChangeEvent("input")
+				.HoverStateEnabled(true)
+				.ValueExpr("AccountId")
+				.DisplayExpr("AccountHead")
+				.OnInput("dropDownBoxOnInput")
+				.OnOpened("onOpened")
+				.Width(500)
+				.TabIndex(1)
+				.DropDownOptions(o => o
+				.Width(1400) // Set the desired width for the dropdown content
+				)
+				.OnKeyDown("onKeyDown")
+				.OnValueChanged("dropDownBoxValueChanged")
+				.ContentTemplate(new TemplateName("LedgerContentTemplate"))
+				)
 		@* @(Html.DevExtreme().DropDownBox()
 		.ID("accountDropDownBox")
 		.LabelMode(EditorLabelMode.Outside)
@@ -333,50 +321,50 @@
 		) *@
 		<!-- Button to Open Modal -->
 		@(Html.DevExtreme().Button()
-						.ID("btnAddAccount")
-						.Icon("plus")
-						.ElementAttr("class", "button-alignment-down button-group")
-						.OnClick("showLedgerAccountPopup")
-						)
+				.ID("btnAddAccount")
+				.Icon("plus")
+				.ElementAttr("class", "button-alignment-down button-group")
+				.OnClick("showLedgerAccountPopup")
+				)
 
 		<!-- DevExtreme Popup -->
 		@(Html.DevExtreme().Popup()
-						.ID("ledgerAccountPopup")
-						.Width("90%") 
-						.Height("81%")
-						.Title("Add Ledger Account")
-						.ShowTitle(true)
-						.CloseOnOutsideClick(true)
-						.Visible(false)
-						.ResizeEnabled(true) 
-						.ContentTemplate(@<text>
-			<div id="popupContent" style="width:100%; height:100%;">
-				<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+				.ID("ledgerAccountPopup")
+				.Width("93%")
+				.Height("85%")
+				.Title("Add Ledger Account")
+				.ShowTitle(true)
+				.CloseOnOutsideClick(true)
+				.Visible(false)
+				.ResizeEnabled(true)
+				.ContentTemplate(@<text>
+			<div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
+				<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
 			</div>
 		</text>)
-						)
+				)
 
 		@(Html.DevExtreme().Button()
-						.ID("btnEditAccount")
-						.Icon("edit")
-						.ElementAttr("class", "button-alignment-down button-group")
-						.OnClick("showLedgerAccountEditPopup")
-						)
+				.ID("btnEditAccount")
+				.Icon("edit")
+				.ElementAttr("class", "button-alignment-down button-group")
+				.OnClick("showLedgerAccountEditPopup")
+				)
 		@(Html.DevExtreme().Popup()
-						.ID("ledgerEditAccountPopup")
-						.Width("90%")
-						.Height("81%")
-						.Title("Edit Ledger Account")
-						.ShowTitle(true)
-						.CloseOnOutsideClick(true)
-						.Visible(false)  // Hidden by default
-						.ResizeEnabled(true)
-						.ContentTemplate(@<text>
+				.ID("ledgerEditAccountPopup")
+				.Width("93%")
+				.Height("85%")
+				.Title("Edit Ledger Account")
+				.ShowTitle(true)
+				.CloseOnOutsideClick(true)
+				.Visible(false)  // Hidden by default
+				.ResizeEnabled(true)
+				.ContentTemplate(@<text>
 			<div id="popupContent" style="width:100%; height:100%;">
 				<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
 			</div>
 		</text>)
-						)
+				)
 
 
 
@@ -384,50 +372,50 @@
 
 
 		@(Html.DevExtreme().DateBox()
-						.ID("frmdateBox")
-						.Label("StartDate")
-						.LabelMode(EditorLabelMode.Outside)
-						.InputAttr("aria-label", "Date")
-						.Type(DateBoxType.Date)
-						.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-						.DisplayFormat("dd-MMM-yyyy")
-						.TabIndex(2)
-						)
+				.ID("frmdateBox")
+				.Label("StartDate")
+				.LabelMode(EditorLabelMode.Outside)
+				.InputAttr("aria-label", "Date")
+				.Type(DateBoxType.Date)
+				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+				.DisplayFormat("dd-MMM-yyyy")
+				.TabIndex(2)
+				)
 
 
 		@(Html.DevExtreme().DateBox()
-						.ID("todateBox")
-						.Label("End Date")
-						.LabelMode(EditorLabelMode.Outside)
-						.InputAttr("aria-label", "Time")
-						.Type(DateBoxType.Date)
-						.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-						.DisplayFormat("dd-MMM-yyyy")
-						.TabIndex(3)
-						)
+				.ID("todateBox")
+				.Label("End Date")
+				.LabelMode(EditorLabelMode.Outside)
+				.InputAttr("aria-label", "Time")
+				.Type(DateBoxType.Date)
+				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+				.DisplayFormat("dd-MMM-yyyy")
+				.TabIndex(3)
+				)
 		@(Html.DevExtreme().DropDownButton()
-						.ID("ddBtnShowRecords")
-						.Text("Show Records")
-						.Icon("smalliconslayout")
-						.Width(180)
-						.ElementAttr("class", "button-alignment-down")
-						.TabIndex(4)
-						.DropDownOptions(options => options.Width(230))
-						.Items(items =>
-						{
-							items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-							items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-							items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-							items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-							items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-							items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-							items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-							items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-							items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-							items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				.ID("ddBtnShowRecords")
+				.Text("Show Records")
+				.Icon("smalliconslayout")
+				.Width(180)
+				.ElementAttr("class", "button-alignment-down")
+				.TabIndex(4)
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 
-						})
-						)
+				})
+				)
 	</div>
 	<!-- Result Grid -->
 
@@ -435,117 +423,120 @@
 
 	<div class="dx-field ledgerResult">
 		<!-- Toolbar for Column Chooser and Filter -->
-        <div class="custom-toolbar">
-									<div id="columnChooser"></div>
-        </div>
+		<div class="custom-toolbar">
+			<div id="columnChooser"></div>
+		</div>
 
-        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
-									.ID("dataGrid")
-									.RemoteOperations(false)
-									//.ColumnChooser(columnChooser => columnChooser.Enabled(false)) // Disable column chooser
-									.Columns(columns =>
-									{
-										columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Alignment(HorizontalAlignment.Center)
-											.CellTemplate(@<text>
-												<div>
-													<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;">
-														<%- data.VoucherNo %>
-													</a>
-												</div>
-											</text>)
-											.Visible(true);
+		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
+					.ID("dataGrid")
+					.RemoteOperations(false)
+					.ColumnChooser(columnChooser => columnChooser.Enabled(false)) // Disable column chooser initially
+					.Columns(columns =>
+					{
+						columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Alignment(HorizontalAlignment.Center)
+					.CellTemplate(@<text>
+			<div>
+				<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;">
+					<%- data.VoucherNo %>
+				</a>
+			</div>
+		</text>)
+					.Visible(true);
 
-										columns.AddFor(m => m.VoucherDate).Caption("Voucher Date")
-											.Alignment(HorizontalAlignment.Center)
-											.Format(format => format.Type(Format.ShortDate)
-											.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
-											.Visible(true);
+						columns.AddFor(m => m.VoucherDate).Caption("Voucher Date")
+					.Alignment(HorizontalAlignment.Center)
+					.Format(format => format.Type(Format.ShortDate)
+					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
+					.Visible(true);
 
-										columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On")
-											.Alignment(HorizontalAlignment.Center)
-											.Format(format => format.Type(Format.ShortDate)
-											.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }"))
-											.Visible(true);
+						columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On")
+					.Alignment(HorizontalAlignment.Center)
+					.Format(format => format.Type(Format.ShortDate)
+					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }"))
+					.Visible(true);
 
-										columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger")
-											.Alignment(HorizontalAlignment.Left)
-											.Visible(true);
+						columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger")
+					.Alignment(HorizontalAlignment.Left)
+					.Visible(true);
 
-										columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right)
-											.CellTemplate(@<text>
-												<div style="color: red; font-weight: bold;">
-													<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-												</div>
-											</text>)
-											.Visible(true);
+						columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right)
+					.CellTemplate(@<text>
+			<div style="color: red; font-weight: bold;">
+				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+			</div>
+		</text>)
+					.Visible(true);
 
-										columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right)
-											.CellTemplate(@<text>
-												<div style="color: green; font-weight: bold;">
-													<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-												</div>
-											</text>)
-											.Visible(true);
+						columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right)
+					.CellTemplate(@<text>
+			<div style="color: green; font-weight: bold;">
+				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+			</div>
+		</text>)
+				.Visible(true);
+
+						columns.AddFor(m => m.VoucherAmountFormatted).Caption("VoucherAmountFormatted").Alignment(HorizontalAlignment.Left).Visible(true);
+
 						columns.Add()
 			.Caption("Balance")
 			.Alignment(HorizontalAlignment.Right)
 			.DataType(GridColumnDataType.Number)
 			.CalculateCellValue("function(rowData) { " +
 			"let balance = 0;" +
-			"const dataSource = $('#dataGrid').dxDataGrid('instance').option('dataSource');" + // Access data source
-			"dataSource.forEach((item, index) => { " +
-			"if (index <= dataSource.indexOf(rowData)) { " +
-			"let debit = parseFloat(item.DrAmount ? item.DrAmount.toString().replace(/,/g, '') : 0);" + // Parse DrAmount
-			"let credit = parseFloat(item.CrAmount ? item.CrAmount.toString().replace(/,/g, '') : 0);" + // Parse CrAmount
-			"if (!isNaN(debit)) balance -= debit;" + // Subtract DrAmount
-			"if (!isNaN(credit)) balance += credit;" + // Add CrAmount
+			"let gridInstance = $('#dataGrid').dxDataGrid('instance');" +
+			"if (!gridInstance) return '0.00 Dr'; " +
+			"let dataSource = gridInstance.option('dataSource');" +
+			"if (!dataSource) return '0.00 Dr';" +
+			"for (let i = 0; i <= dataSource.indexOf(rowData); i++) {" +
+			"let item = dataSource[i];" +
+			" let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);" +
+			"  balance += voucherAmount" +
 			"}" +
-			"});" +
-			"let formattedBalance = balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
-			"let balanceWithSuffix = balance < 0 ? `${formattedBalance} Cr` : `${formattedBalance} Dr`;" + // Append Cr/Dr with sign
-			"return balanceWithSuffix;" +
+			"let formattedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
+			"let balanceType = balance >= 0 ? 'Dr' : 'Cr'; " +
+			" return `${formattedBalance} ${balanceType}`;" +
 			"}").Visible(true);
 
-										columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left).Visible(true);
-										columns.AddFor(m => m.BillRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
-									})
-									.OnCellClick("function(e) { handleCellClick(e); }")
-									.AllowColumnReordering(true)
-									.AllowColumnResizing(true)
-									.ColumnFixing(fixing => fixing.Enabled(true))
-									.HeaderFilter(filter => filter.Visible(false)) /* Removed filter on headings */
-									.Height(420)
-									.ColumnAutoWidth(true)
-									.FilterRow(filterRow => filterRow.Visible(false)) /* Initially hidden, toggled via button */
-									.GroupPanel(groupPanel => groupPanel.Visible(true))
-									.ShowBorders(false)
-									.Width("100%")
-									.Summary(summary =>
-									{
-										summary.TotalItems(totalItems =>
-										{
-											totalItems.Add().Column("VoucherNo").SummaryType(SummaryType.Count)
-												.DisplayFormat("Count: {0}");
+						columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left).Visible(true);
+						columns.AddFor(m => m.BillRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
+					})
+				.OnCellClick("function(e) { handleCellClick(e); }")
+				.AllowColumnReordering(true)
+				.AllowColumnResizing(true)
+				.ColumnFixing(fixing => fixing.Enabled(true))
+				.HeaderFilter(filter => filter.Visible(false)) /* Removed filter on headings */
+				.Height(420)
+				.ColumnAutoWidth(true)
+				.FilterRow(filterRow => filterRow.Visible(false)) /* Initially hidden, toggled via button */
+				.GroupPanel(groupPanel => groupPanel.Visible(true))
+				.ShowBorders(false)
+				.Width("100%")
+				.Summary(summary =>
+				{
+					summary.TotalItems(totalItems =>
+					{
+						totalItems.Add().Column("VoucherNo").SummaryType(SummaryType.Count)
+					.DisplayFormat("Count: {0}");
 
-											totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
-												.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+						totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
+					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-											totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
-												.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-										});
-									})
-									.StateStoring(stateStoring =>
-									{
-										stateStoring
-											.Enabled(true)
-											.Type(StateStoringType.LocalStorage)
-											.StorageKey("gridContainerState");
-									})
-									.OnInitialized("function(e) { loadGridState(); }")
-									.OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }")
-        )
+						totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
+					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+					});
+				})
+				.StateStoring(stateStoring =>
+				{
+					stateStoring
+					.Enabled(true)
+					.Type(StateStoringType.LocalStorage)
+					.StorageKey("gridContainerState");
+				})
+				.OnInitialized("function(e) { loadGridState(); }")
+				.OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }")
+				)
 
-		
+
 
 
 	</div>
@@ -556,50 +547,49 @@
 			<iframe id="overlay-frame" src="" frameborder="0"></iframe>
 		</div>
 	</div>
-	<div class="footer">@await Html.PartialAsync("_GridFooter")</div>
+
 </div>
 
 @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
-						.ID("ledgeraccount-datagrid")
-						.DataSource(d => d.WebApi()
-						.Controller("AccountingLedgers")
-						.LoadAction("GetLedgerAccounts")
-						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("AccountId")
+							.ID("ledgeraccount-datagrid")
+							.DataSource(d => d.WebApi()
+							.Controller("AccountingLedgers")
+							.LoadAction("GetLedgerAccounts")
+							.LoadMode(DataSourceLoadMode.Raw)
+							.Key("AccountId")
+							)
+							.WordWrapEnabled(false)
+							.ShowBorders(true)
+							.SearchPanel(sp => sp.HighlightSearchText(true))
+							.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+							.OnSelectionChanged("dataGridSelectionChanged")
+							.OnInitialized("dataGridInitialized")
+							.HeaderFilter(p => p.Visible(false))
+							.ShowBorders(true)
+							.HoverStateEnabled(true)
+							//.Paging(p => p.PageSize(15))
+							.FilterRow(f => f.Visible(true))
+							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+							.Height(400)
+							.Selection(s => s.Mode(SelectionMode.Single))
+							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+							.Columns(columns =>
+							{
+								columns.Add().DataField("AccountId");
+								columns.Add().DataField("AccountHead").Width(400);
+								columns.Add().DataField("MasterGroup");
+								columns.Add().DataField("AccountGroup");
+								columns.Add().DataField("ReferenceNo");
+								columns.Add().DataField("IsLedgerObselete");
+							})
 						)
-						.WordWrapEnabled(true)
-						.ShowBorders(true)
-						.SearchPanel(sp => sp.HighlightSearchText(true))
-						.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-						.OnSelectionChanged("dataGridSelectionChanged")
-						.OnInitialized("dataGridInitialized")
-						.HeaderFilter(p => p.Visible(true))
-						.ShowBorders(true)
-						.HoverStateEnabled(true)
-						.Paging(p => p.PageSize(15))
-						//.FilterRow(f => f.Visible(true))
-						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-						.Height(400)
-						.Selection(s => s.Mode(SelectionMode.Single))
-						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-								.ColumnAutoWidth(true) // Ensure columns do not grow
-									.FilterRow(filterRow => filterRow.Visible(false)) // Disable the filter row
-								.Columns(columns =>
-						{
-							columns.Add().DataField("AccountId");
-							columns.Add().DataField("AccountHead").Width(400);
-							columns.Add().DataField("MasterGroup");
-							columns.Add().DataField("AccountGroup");
-							columns.Add().DataField("ReferenceNo");
-							columns.Add().DataField("IsLedgerObselete");
-						})
-					)
 }
 
 <script>
-		function toggleFilterRow() {
+
+	function toggleFilterRow() {
 		var grid = $("#dataGrid").dxDataGrid("instance");
 		var isVisible = grid.option("filterRow.visible");
 		grid.option("filterRow.visible", !isVisible);
@@ -632,36 +622,36 @@
 			contextMenu.hide();
 		});
 
-			$("#gridContainer").dxDataGrid({
-		columnChooser: {
-			enabled: true,
-			mode: "select",  // or 'dragAndDrop'
-			allowSearch: true, // Enables search
-			height: 400,
-			width: 300,
-			position: {
-				my: "left top",
-				at: "left bottom",
-				of: "#gridContainer"
-			}
-		},
-		toolbar: {
-			items: [
-				{
-					location: "before",
-					widget: "dxButton",
-					options: {
-						text: "Column Chooser",
-						icon: "columnchooser",
-						onClick: function () {
-							var grid = $("#gridContainer").dxDataGrid("instance");
-							grid.showColumnChooser();
+		$("#gridContainer").dxDataGrid({
+			columnChooser: {
+				enabled: true,
+				mode: "select",  // or 'dragAndDrop'
+				allowSearch: true, // Enables search
+				height: 400,
+				width: 300,
+				position: {
+					my: "left top",
+					at: "left bottom",
+					of: "#gridContainer"
+				}
+			},
+			toolbar: {
+				items: [
+					{
+						location: "before",
+						widget: "dxButton",
+						options: {
+							text: "Column Chooser",
+							icon: "columnchooser",
+							onClick: function () {
+								var grid = $("#gridContainer").dxDataGrid("instance");
+								grid.showColumnChooser();
+							}
 						}
 					}
-				}
-			]
-		}
-	});
+				]
+			}
+		});
 
 		// Apply the custom context menu plugin
 		$("#dataGrid").customizeGridContextMenu();
@@ -830,7 +820,7 @@
 		if (selectionChangedArgs.selectedRowKeys.length > 0) {
 			component.close();
 		}
-			}
+	}
 
 	function showLedgerAccountEditPopup() {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
@@ -1025,8 +1015,8 @@
 		// Correct URL to your LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
 	}
-		$(document).ready(function () {
-			$("#btntoggleGroupPanel").click();
+	$(document).ready(function () {
+		$("#btntoggleGroupPanel").click();
 
 		$("#errorPopup").dxPopup({
 			width: 350,

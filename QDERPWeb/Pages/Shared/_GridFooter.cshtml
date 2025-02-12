@@ -6,16 +6,25 @@
 
     #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         text-align: center !important;
-        background-color: aliceblue;
+        /* background-color: aliceblue; */
+    }
+    /* Button Styling */
+    .dx-button {
+        background-color: #909ead00 !important;
+        border: 1px solid #d6e4f0 !important;
+        border-radius: 4px !important;
+        padding: 6px 12px !important; /* Reduced button padding */
+        font-size: 14px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
     }
 
-    .dx-button {
-        background: none !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 5px !important;
-        min-width: auto !important;
-    }
+        /* Hover Effect for Button */
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
 
     .dx-icon {
         font-size: 20px !important; /* Adjust size if needed */
@@ -49,11 +58,10 @@
     }
 
     .button-group {
-        margin-left: -10px !important;
+        margin-left: 1px !important;
     }
 
     .dx-datagrid .dx-row {
-     
         margin-bottom: 50px;
     }
     /* Custom styles for context menu */
@@ -82,17 +90,13 @@
         display: none; /* Keep it hidden until needed */
     }
 
-    .dx-button:hover {
-        background-color: skyblue !important;
-        color: black !important; /* Optional: Set text color on hover */
-    }
 </style>
 <div class="dx-fieldset horizontal-container">
 
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
         .Icon("smalliconslayout")
-        .Width("100px")
+        .Width("100px") /* Adjust size for icon only */
         .Text("Layout")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
@@ -109,15 +113,15 @@
     @(Html.DevExtreme().Button()
         .ID("btnPrint")
         .Icon("print")
-        .Width("100px") /* Adjust size */
         .Text("Print")
+        .Width("100px") /* Adjust size */
         )
 
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")
         .Icon("search")
-        .Width("100px")
         .Text("Search")
+        .Width("100px")
         .OnClick("toggleFilterRow")
         )
 
@@ -128,12 +132,19 @@
         .Text("Group")
         .OnClick("toggleGroupPanel")
         )
+    @(Html.DevExtreme().Button()
+        .ID("btnColumnChooser")
+        .Icon("columnchooser")
+        .Width("100px")
+        .Text("Column")
+        .OnClick("showColumnChooser")
+        )
 
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonReceipts")
         .Icon("add")
         .Width("100px")
-        .Text("Receipts")
+        .Text("Receipt")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -148,7 +159,7 @@
         .ID("ddButtonPayment")
         .Icon("add")
         .Width("100px")
-        .Text("Payments")
+        .Text("Payment")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -163,7 +174,7 @@
         .ID("ddOtherVouchers")
         .Icon("add")
         .Width("100px")
-        .Text("Vouchers")
+        .Text("Voucher")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -178,12 +189,11 @@
     @(Html.DevExtreme().DropDownButton()
         .ID("ddReports")
         .Icon("doc")
-        .Width(30)
+        .Width("100px").Text("Report")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
             items.Add().Text("Account Statements").Icon("file");
-            items.Add().Text("Statement Of Account With Narration").Icon("file");
             items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
             items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
             items.Add().Text("Bank Reconciliation").Icon("product");
@@ -334,6 +344,19 @@
         var isVisible = dataGrid.option("groupPanel.visible");
         dataGrid.option("groupPanel.visible", !isVisible);
     }
+    function showColumnChooser() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+        if (isColumnChooserVisible) {
+            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+        } else {
+            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+            dataGrid.showColumnChooser(); // Show the column chooser
+        }
+    }
+
+
     // Footer Filter row button click event
     function toggleFilterRow() {
         var grid = $("#dataGrid").dxDataGrid("instance");
@@ -524,14 +547,7 @@
         var selectedText = e.itemData.text; // Get selected item text
 
         if (selectedText === "Account Statements") {
-            window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
-        }
-    }
-            function addReportsButton_click(e) {
-        var selectedText = e.itemData.text; // Get selected item text
-
-        if (selectedText === "Statement Of Account With Narration") {
-            window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
+            window.location.href = "/DocumentViewer"; // Redirect to the Razor Page
         }
     }
 
