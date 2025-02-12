@@ -414,6 +414,20 @@
 					items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
 					items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 
+						})
+						)
+		@(Html.DevExtreme().DropDownButton()
+				.ID("ddBtnGenerateReport")
+				.Text("Generate Report")
+				.Icon("report")  // You can change the icon as needed
+				.Width(180)
+				.ElementAttr("class", "button-alignment-down")
+				.TabIndex(5)
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					// Different report options
+					items.Add().Text("Generate Report").Icon("event").OnClick("function() { ddBtnGenerateReport_click('range'); }");
 				})
 				)
 	</div>
@@ -1026,8 +1040,8 @@ if (dataSource && dataSource.length > 0) {
 		// Correct URL to your LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
 	}
-	$(document).ready(function () {
-		$("#btntoggleGroupPanel").click();
+		$(document).ready(function () {
+			$("#btntoggleGroupPanel").click();
 
 		$("#errorPopup").dxPopup({
 			width: 350,
@@ -1061,5 +1075,113 @@ function updateBankReconciliationState(accheadname) {
 		dropdown.option("items", items); // Update the dropdown options
 	}
 }
+		function ddBtnGenerateReport_click(duration) {
+		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+		if (dropDownBox.option("value") === null) {
+			alert("Please select a ledger account.");
+			return;
+		}
+		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+		var toDateBox = $("#todateBox").dxDateBox("instance");
+		var accountId = $("#accountDropDownBox").dxDropDownBox("instance").option("value");
+		var frmDate = new Date(frmDateBox.option("value"));
+		var toDate = new Date(toDateBox.option("value"));
+		var currentDate = new Date();
+
+		accid = accountId;
+
+		switch (duration) {
+			case 'today':
+				frmDate = toDate = currentDate;
+				break;
+			case 'yesterday':
+				var dateObj = new Date();
+				dateObj.setDate(dateObj.getDate() - 1);
+				frmDate = toDate = dateObj;
+				break;
+		}
+
+		frmDate = frmDate.toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit'
+		});
+		toDate = toDate.toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit'
+		});
+
+		FromDate = frmDate;
+		ToDate = toDate;
+
+		frmDateBox.option("value", frmDate);  // Set frmDateBox value
+		toDateBox.option("value", toDate);    // Set toDateBox value
+
+		// Call API to generate the report
+		$.ajax({
+			url: '/api/AccountingLedgers/GenerateReport',  // API endpoint to generate the report
+			type: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify({
+				accountId: accountId,
+				frmDate: frmDate,
+				toDate: toDate
+			}),
+			success: function (response) {
+				// Open the generated report in a new tab
+				window.open(response, '_blank');
+			},
+			error: function () {
+				DevExpress.ui.notify("Error while generating the report", "error", 2000);
+			}
+		});
+	}
+
+
+		// Function to format date in required format
+		function formatDate(date) {
+			var d = new Date(date),
+				month = '' + (d.getMonth() + 1),
+				day = '' + d.getDate(),
+				year = d.getFullYear();
+
+			var strmonth = d.toLocaleString('default', { month: 'short' });
+			if (day.length < 2)
+				day = '0' + day;
+
+			return [day, strmonth, year].join('-');
+		}
+
+
+		function showLedgerAccountPopup() {
+			var popup = $("#ledgerAccountPopup").dxPopup("instance");
+			popup.show();
+
+			// Correct URL to your LedgerAccount view
+			$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
+		}
+			$(document).ready(function () {
+				$("#btntoggleGroupPanel").click();
+
+			$("#errorPopup").dxPopup({
+				width: 350,
+				height: 300,
+				title: "⚠ Error",
+				visible: false,
+				showCloseButton: true,
+				dragEnabled: false,
+				closeOnOutsideClick: true
+			});
+
+			$("#errorCloseBtn").dxButton({
+				text: "Close",
+				type: "danger",
+				onClick: function () {
+					$("#errorPopup").dxPopup("instance").hide();
+				}
+			});
+		});
+
 
 </script>

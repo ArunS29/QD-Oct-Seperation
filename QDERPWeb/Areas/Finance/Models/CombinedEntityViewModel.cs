@@ -57,6 +57,13 @@
         public DateTime? VoucherEffectiveDate { get; set; }
         public string AccountHeadArabic { get; set; }
         public string ReferenceNote { get; set; }
+     
+    }
+    public class ReportRequest
+    {
+        public string accountId { get; set; }
+        public string frmDate { get; set; }
+        public string toDate { get; set; }
     }
 
 }
