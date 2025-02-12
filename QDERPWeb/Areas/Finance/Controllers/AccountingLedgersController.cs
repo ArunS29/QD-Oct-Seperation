@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 //using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
 using DevExpress.CodeParser;
+using DevExpress.XtraReports.UI;
+using QD.ERP.Web.Reports;
+using QD.ERP.Web.Areas.Finance.Models;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -100,34 +103,55 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
-        //    [HttpGet]
-        //    public async Task<ActionResult> GetVouchers(string accountId, string frmDate, string toDate)
-        //    {
-        //        try
-        //        {
-        //            var from = DateTime.Parse(frmDate);
-        //            var to= DateTime.UtcNow;
-        //            //var to = DateTime.Parse(toDate);
-        //            ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(_context);
-        //            //var ledgerData = await _procedures.StProAccountLedgerAsync(accountId, from, to);
-        //            var ledgerData = await _context.StProAccountLedgerResults
-        //.FromSqlRaw("EXEC StProAccountLedger @p0, @p1, @p2", accountId, from, to)
-        //.ToListAsync();
+        [HttpPost]
+        public IActionResult GenerateReport([FromBody] ReportRequest request)
+        {
+            try
+            {
+                // Initialize the report
+                AccountReport report = new AccountReport();
 
+                // Ensure parameters exist and set values
+                if (report.Parameters["AccountId"] != null)
+                    report.Parameters["AccountId"].Value = request.accountId;
+                if (report.Parameters["FromDate"] != null)
+                    report.Parameters["FromDate"].Value = request.frmDate;
+                if (report.Parameters["ToDate"] != null)
+                    report.Parameters["ToDate"].Value = request.toDate;
 
-        //            // Return the data in a format suitable for DevExtreme DataGrid
-        //            // return Json(DataSourceLoader.Load(ledgerData));
+                // Disable request parameter validation
+                report.RequestParameters = false;
 
+                // Assign data source dynamically (if applicable)
+                report.DataSource = GetVouchers(request.accountId, request.frmDate, request.toDate);
 
-        //            //var stProAccountLedgerList = await _contextProcedure.StProAccountLedgerAsync("L00567", from,to);
-        //            return Json(ledgerData);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            throw ex;
+                // Export the report to a PDF
+                using (MemoryStream reportStream = new MemoryStream())
+                {
+                    report.ExportToPdf(reportStream);
+                    reportStream.Seek(0, SeekOrigin.Begin);
 
-        //        }
-        //    }
+                    // Generate a unique file name
+                    string fileName = $"AccountReport_{Guid.NewGuid()}.pdf";
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", fileName);
+
+                    // Save the report file to the server
+                    using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        reportStream.CopyTo(fileStream);
+                    }
+
+                    // Return the file URL to the client
+                    string fileUrl = $"/reports/{fileName}";
+                    return Ok(new { fileUrl });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while generating the report", error = ex.Message });
+            }
+        }
+
 
     }
 }

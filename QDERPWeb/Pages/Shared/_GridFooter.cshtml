@@ -185,6 +185,8 @@
         {
             items.Add().Text("Account Statements").Icon("file");
             items.Add().Text("Statement Of Account With Narration").Icon("file");
+            items.Add().Text("Statement Of Account Export Formate").Icon("file");
+            items.Add().Text("Statement Of Account Export Formate[Landscape]").Icon("file");
             items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
             items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
             items.Add().Text("Bank Reconciliation").Icon("product");
@@ -526,15 +528,15 @@
 
         if (selectedText === "Account Statements") {
             window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
-        }
-    }
-            function addReportsButton_click(e) {
-        var selectedText = e.itemData.text; // Get selected item text
-
-        if (selectedText === "Statement Of Account With Narration") {
+        } else if (selectedText === "Statement Of Account With Narration") {
             window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
+        } else if (selectedText === "Statement Of Account Export Formate") {
+            window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
+        } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
+            window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
         }
     }
+
 
 
 </script>

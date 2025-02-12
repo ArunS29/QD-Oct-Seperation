@@ -5,6 +5,7 @@ using System.IO;
 using System;
 using QD.ERP.Web.Areas.Finance.Reports;
 using DevExpress.AspNetCore.Reporting.WebDocumentViewer.Native.Services;
+using QD.ERP.Web.Pages;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -23,7 +24,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         public IActionResult Viewer()
         {
             // Initialize the WebDocumentViewerModel with the report parameters
-            var viewerModel = new DocumentViewerModel
+            var viewerModel = new Reports.DocumentViewerModel
             {
                 ReportName = "Report1",  // Define the report name
                 ReportUrl = Url.Action("GetReport")  // Link to the GetReport action for fetching report data
