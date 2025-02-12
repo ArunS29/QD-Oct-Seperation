@@ -476,27 +476,28 @@
 				.Visible(true);
 
 						columns.AddFor(m => m.VoucherAmountFormatted).Caption("VoucherAmountFormatted").Alignment(HorizontalAlignment.Left).Visible(true);
-
-						columns.Add()
-			.Caption("Balance")
-			.Alignment(HorizontalAlignment.Right)
-			.DataType(GridColumnDataType.Number)
-			.CalculateCellValue("function(rowData) { " +
-			"let balance = 0;" +
-			"let gridInstance = $('#dataGrid').dxDataGrid('instance');" +
-			"if (!gridInstance) return '0.00 Dr'; " +
-			"let dataSource = gridInstance.option('dataSource');" +
-			"if (!dataSource) return '0.00 Dr';" +
-			"for (let i = 0; i <= dataSource.indexOf(rowData); i++) {" +
-			"let item = dataSource[i];" +
-			" let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);" +
-			"  balance += voucherAmount" +
-			"}" +
-			"let formattedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
-			"let balanceType = balance >= 0 ? 'Dr' : 'Cr'; " +
-			" return `${formattedBalance} ${balanceType}`;" +
-			"}").Visible(true);
-
+ columns.Add()
+              .Caption("Balance")
+              .Alignment(HorizontalAlignment.Right)
+              .DataType(GridColumnDataType.Number)
+              .CalculateCellValue("function(rowData) { "+
+                "let balance = 0;"+
+                 "let gridInstance = $('#dataGrid').dxDataGrid('instance');"+
+                  "if (!gridInstance) return '0.00 Dr'; "+
+                  "let dataSource = gridInstance.option('dataSource');"+ 
+                  "if (!dataSource) return '0.00 Dr';"+
+ 
+                  "for (let i = 0; i <= dataSource.indexOf(rowData); i++) {"+
+                     "let item = dataSource[i];"+
+                     " let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);"+
+                    "  balance += voucherAmount"+
+                 "}"+
+             //  "let formattedBalance = balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });"+
+         "let formattedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });"+
+ 
+                   "let balanceType = balance >= 0 ? 'Dr' : 'Cr'; "+
+                 " return `${formattedBalance} ${balanceType}`;"+
+"}").Visible(true);
 						columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left).Visible(true);
 						columns.AddFor(m => m.BillRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
 					})
@@ -588,13 +589,14 @@
 }
 
 <script>
+    let acchedid,accheadname,refno,accgroup,IsEdit=false,accgroupid,accheadar,FromDate,ToDate,accid,VoucherAmountFormatted,firstrowVoucherAmountFormatted;
 
 	function toggleFilterRow() {
 		var grid = $("#dataGrid").dxDataGrid("instance");
 		var isVisible = grid.option("filterRow.visible");
 		grid.option("filterRow.visible", !isVisible);
 	}
-	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid;
+	
 
 	var inputPopupInstance
 	$(function () {
@@ -737,6 +739,7 @@
 			accgroup = selectedRowData[0].AccountGroup;
 			accgroupid = selectedRowData[0].AccountGroupId;
 			accheadar = selectedRowData[0].AccountHeadArabic;
+			updateBankReconciliationState(accheadname);
 
 		}
 
@@ -981,10 +984,18 @@
 				toDate: toDate
 			},
 			success: function (data) {
-				// Bind the data to the DataGrid
-				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
-			},
+		   // Bind the data to the DataGrid
+		   $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+			   var dataGrid = $("#dataGrid").dxDataGrid("instance");
+      var dataSource = dataGrid.option("dataSource");
+if (dataSource && dataSource.length > 0) {
+   	var lastRow = dataSource[dataSource.length - 1]; // Get the last row
+	 VoucherAmountFormatted = lastRow.VoucherAmountFormatted; // Return the value
+			 var firstRow = dataSource[0]; // Get the first row
+		   firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
+  }
+		   // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
@@ -1036,6 +1047,19 @@
 			}
 		});
 	});
-
+function updateBankReconciliationState(accheadname) {
+	let dropdown = $("#ddReports").dxDropDownButton("instance");
+	let items = dropdown.option("items");
+ 
+	if (items && items.length > 3) { // Ensure index exists before modifying
+		if (accheadname.includes("Bank") || accheadname.includes("BANK")) {  
+	items[3] = { ...items[3], disabled: false }; // Enable item if accheadname contains "Bank"
+      } else {  
+	items[3] = { ...items[3], disabled: true }; // Disable otherwise
+     }
+ 
+		dropdown.option("items", items); // Update the dropdown options
+	}
+}
 
 </script>

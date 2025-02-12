@@ -13,6 +13,7 @@ namespace QD.ERP.Web.DAL.Entities
 {
     public partial interface IERPMasterWtDataContextProcedures
     {
+        Task<List<sp20101TrialBalanceResult>> sp20101TrialBalanceAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<sp20101TrialBalanceReportResult>> sp20101TrialBalanceReportAsync(DateTime? StartDate, DateTime? EndDate, bool? IsUseEffectiveDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<sp20102GetAccountBalanceResult>> sp20102GetAccountBalanceAsync(string ParamAccountNo, DateTime? EndDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<sp20102GetAccountDetailsResult>> sp20102GetAccountDetailsAsync(string ParamAccountNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

@@ -67,7 +67,7 @@
             <div style="padding-top: 15px" id="titleHeader"></div>
         </div>
 
-      <div class="dx-field ledgerResult">
+  <div class="dx-field ledgerResult">
             @(
                     Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl201VoucherEntry>()
                     .ID("dataGrid")
@@ -80,19 +80,33 @@
                     )
                     .Columns(columns =>
                     {
+                      columns.Add().DataField("VoucherEntryNo").Caption("Voucher Entry No").Visible(false);
                         columns.Add().DataField("VoucherNo").Caption("Voucher No");
-                            columns.Add().DataField("VoucherRefNo").Caption("Ref No");
-                            columns.Add().DataField("VoucherDate").Caption("Voucher Date");
+                        columns.Add().DataField("VoucherRefNo").Caption("Ref No");
+                        columns.Add()
+                            .DataField("VoucherDate")
+                            .Caption("Voucher Date")
+                            .DataType(GridColumnDataType.Date)
+                            .Format("dd-MMM-yyyy");
+
                         columns.Add().DataField("SysRemarks").Caption("Sys Remarks");
-                        columns.Add().DataField("DrCr").Caption("Dr/Cr");
+                      //  columns.Add().DataField("DrCr").Caption("Dr/Cr");
+                              columns.Add().DataField("DrCr").Caption("Dr/Cr")
+      .CellTemplate(@<text>
+        <div style="text-align: center; padding: 5px; font-weight: bold;" class="drcr-cell">
+            <%- value %>
+        </div>
+    </text>);
+                          
+
 
                         // Add Button Column
                         columns.Add()
                             .Caption("...")
-                            .Width(50) // Adjust width for button
+                            .Width(50)
                             .CellTemplate(@<text>
                     <div style="text-align: center;">
-                        <div class="dx-button dx-button-mode-contained dx-widget" onclick="onNextButtonClick()">
+                        <div class="dx-button dx-button-mode-contained dx-widget" onclick="onNextButtonClick(this)">
                             <i class="dx-icon dx-icon-chevronright"></i>
                         </div>
                     </div>
@@ -100,8 +114,10 @@
 
                         columns.Add().DataField("BankClearedOn").Caption("Cleared On");
                         columns.Add().DataField("PaymentStatus").Caption("Status");
-                            columns.Add().DataField("PaymentStatus").Caption("Receipts");
-                        columns.Add().DataField("VoucherAmount").Caption("Payments");
+                      columns.Add().DataField("DrAmount").Caption("Receipts");
+                      columns.Add().DataField("CrAmount").Caption("Payments");
+
+              
                     })
                     .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
@@ -113,35 +129,11 @@
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
                     .Width("100%")
-                )
+                    .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+                    .OnSelectionChanged("getSelectedVoucherEntryNo")
+                    )
 </div>
 
-      @*   <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: aliceblue; padding: 10px; margin-top: -11px; font-size: 14px; max-width: 1245px; position: relative; left: 17px;">
-            <div style="flex: 8;"></div>
-            <div style="flex: 8;"></div>
-
-            <div style="flex: none; text-align: right; position: relative; right: 25px;">
-                @(Html.DevExtreme().TextBox()
-                        .ID("totalDebitTextbox")
-                        .Value("0.00")
-                        .ReadOnly(true)
-                        .Width("60%")
-                        .RtlEnabled(true)
-                    )
-            </div>
-
-            <div style="flex: none; text-align: right; position: relative; right: 80px;">
-                @(Html.DevExtreme().TextBox()
-                        .ID("totalCreditTextbox")
-                        .Value("0.00")
-                        .ReadOnly(true)
-                        .Width("60%")
-                        .RtlEnabled(true)
-                    )
-            </div>
-
-            <div style="flex: 8;"></div>
-        </div> *@
 
         <div id="footerTotals" style="display: flex; justify-content: flex-end; background-color: aliceblue; padding: 10px; margin-top: -11px; font-size: 14px; max-width: 1245px;">
     <!-- Total Debit -->
@@ -207,6 +199,73 @@
 </div>
 
 <script>
+
+     let voucherEntryNo,bankclearedOn,selectedVoucherEntryNo=[],selectedVoucherDate=[];
+
+
+      function getSelectedVoucherEntryNo() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var selectedRows = dataGrid.getSelectedRowsData();
+
+        if (selectedRows.length > 0) {
+             selectedVoucherEntryNo = selectedRows.map(row => row.VoucherEntryNo);
+             selectedVoucherDate = selectedRows.map(row => row.VoucherDate);
+           
+        } else {
+           // alert("No rows selected.");
+        }
+    }
+
+function onNextButtonClick(button) {
+    var dataGrid = $("#dataGrid").dxDataGrid("instance");  // Get DataGrid instance
+    var rowIndex = $(button).closest("tr").index(); // Get row index
+
+       // Find the clicked row's data
+   // var ClickedrowIndex = $(element).closest(".dx-row").index();
+    var ClickedrowData = dataGrid.getVisibleRows()[rowIndex].data;
+     voucherEntryNo = ClickedrowData.VoucherEntryNo;
+     var formattedDate1 = formatDate(ClickedrowData.VoucherDate);
+ 
+     bankclearedOn = formattedDate1;
+  
+
+    if (rowIndex === -1) {
+        console.error("Row index not found.");
+        return;
+    }
+    var rowData = dataGrid.getVisibleRows()[rowIndex].data; // Get row data
+
+
+
+    if (rowData) {
+        var voucherDate = rowData.VoucherDate;  // Get raw date
+        if (voucherDate) {
+            var formattedDate = formatDate(voucherDate);
+            console.log("Formatted Voucher Date: ", formattedDate);
+            console.log("Row Data:", rowData);
+
+           // alert("Row Index: " + rowIndex); // Show correct row index
+
+            // Update the BankClearedOn column at the same row index
+            dataGrid.cellValue(rowIndex, "BankClearedOn", formattedDate);
+
+            // Refresh the grid to reflect the changes
+            dataGrid.refresh();
+        }
+    }
+}
+
+// Function to format date as dd-MMM-yyyy
+function formatDate(date) {
+    var d = new Date(date);
+    if (isNaN(d.getTime())) return ""; // Handle invalid date
+
+    var day = d.getDate().toString().padStart(2, '0'); // Get day and ensure 2 digits
+    var month = d.toLocaleString('en-US', { month: 'short' }); // Get short month name (e.g., Feb)
+    var year = d.getFullYear(); // Get full year
+
+    return `${day}-${month}-${year}`;
+}
     $(document).ready(function () {
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -218,8 +277,30 @@
         const accid = getQueryParam("accid");
         const FromDate = getQueryParam("FromDate");
         const ToDate = getQueryParam("ToDate");
+        const VoucherAmtFormatted = parseFloat(getQueryParam("VoucherAmountFormatted")) || 0;
+        const firstrowVoucherAmountFormatted = parseFloat(getQueryParam("firstrowVoucherAmountFormatted")) || 0;
 
+    // Ensure the textboxes are properly initialized before setting values
+    const balanceOurBooksInstance = $("#BalanceAsPerOurBooks").dxTextBox("instance");
+    const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
+    const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
 
+    if (balanceOurBooksInstance) {
+        balanceOurBooksInstance.option("value", VoucherAmtFormatted);
+    }
+    if (balanceBankStatementInstance) {
+        balanceBankStatementInstance.option("value", firstrowVoucherAmountFormatted);
+    }
+
+    const AmountNotReflectedinBank = VoucherAmtFormatted - firstrowVoucherAmountFormatted;
+    if (amountNotReflectedInstance) {
+        amountNotReflectedInstance.option("value", AmountNotReflectedinBank);
+    }
+
+    if (accheadname && ToDate) {
+        $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
+    }
+       
         if (accheadname && ToDate) {
             $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
         }
@@ -252,7 +333,153 @@
         });
     }
 
-     function onNextButtonClick() {
-        alert("Next button clicked! Implement navigation logic here.");
+    function customizeDrCrColors() {
+    $(".dx-datagrid-rowsview").find("td").each(function () {
+        let cell = $(this);
+        let columnIndex = cell.index();
+        let row = cell.closest("tr");
+        let drCrValue = cell.text().trim();
+
+        if (drCrValue === "Cr") {
+            cell.css("background-color", "green").css("color", "white"); 
+        } else if (drCrValue === "Dr") {
+            cell.css("background-color", "red").css("color", "white"); 
+        }
+    });
+}
+
+// Call this function after the DataGrid is rendered
+$(document).ready(function () {
+    setTimeout(customizeDrCrColors, 500);
+
+    // Reapply colors after DataGrid updates
+    $("#dataGrid").dxDataGrid("instance").on("contentReady", function () {
+        customizeDrCrColors();
+    });
+});
+
+$(document).ready(function () {
+    $("#dataGrid").dxDataGrid({
+        onContextMenuPreparing: function (e) {
+            if (e.row && e.target === "content") {
+                e.event.preventDefault();
+
+                e.items = [
+                    {
+                        text: "Clear All Selected Voucher",
+                        onItemClick: function () {
+                            if (selectedVoucherEntryNo.length === 0 || selectedVoucherDate.length === 0) {
+                                alert("Please select at least one row.");
+                                return;
+                            }
+
+                            // Pick the first date if all entries should have the same BankClearedOn value
+                            let formattedDate = encodeURIComponent(selectedVoucherDate[0]); 
+
+                            // Construct query parameters
+                            let queryParams = selectedVoucherEntryNo.map(v => `VoucherEntryNo=${encodeURIComponent(v)}`).join("&");
+                            let url = `/api/SalaryPayableMapping/UpdateClearSelectedVoucher?${queryParams}&BankClearedOn=${formattedDate}`;
+
+                            //alert("Cost Allocation clicked for rows: " + selectedVoucherEntryNo.join(", "));
+
+                            $.ajax({
+                                url: url,
+                                type: "POST",
+                                success: function (response) {
+                                    alert("All selected vouchers hss been set as reconciled.");
+                                    alert("Bank Reconciliation updated Successfully!");
+                                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                                    dataGrid.refresh();
+                                },
+                                error: function (xhr) {
+                                    alert("Error updating BankClearedOn: " + xhr.responseText);
+                                }
+                            });
+                        }
+                    }
+                ];
+            }
+        }
+    });
+});
+
+
+
+
+ $(function () {
+     let totatReceipts;
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
+
+    const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+
+    function calculateTotals() {
+
+        const data = dataGrid.getVisibleRows().map(row => row.data);
+
+        const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
+
+        $("#AmountNotReflectedinBank").dxTextBox("instance").option("value",totalDebit);
+
+
+        const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
+
+        // Update TextBox values dynamically
+
+        totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
     }
+
+    // Recalculate totals on content changes
+
+    dataGrid.on("contentReady", calculateTotals);
+
+    dataGrid.on("dataSourceChanged", calculateTotals);
+
+    
+
+
+});
+
+
+function onUpdateClick() {
+    // Validate the inputs
+    if (!voucherEntryNo || !bankclearedOn) {
+        alert("Please provide both Voucher Entry No. and Bank Cleared On date.");
+        return;
+    }
+
+    // Convert the bankclearedOn value to a Date object if it's a string
+    let bankClearedDate = new Date(bankclearedOn);
+    if (isNaN(bankClearedDate.getTime())) {
+        alert("Invalid BankClearedOn date.");
+        return;
+    }
+
+    // Convert to ISO 8601 format
+    let formattedDate = bankClearedDate.toISOString(); // e.g., "2024-10-30T18:30:00.000Z"
+
+    // Send AJAX request to update the BankClearedOn field
+    $.ajax({
+        url: `/api/SalaryPayableMapping/UpdateBankClearedOn?VoucherEntryNo=${encodeURIComponent(voucherEntryNo)}&BankClearedOn=${encodeURIComponent(formattedDate)}`,
+        type: "POST",
+        success: function (response) {
+            alert("BankClearedOn updated successfully!");
+            // Refresh the DataGrid after a successful update
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            dataGrid.refresh();
+        },
+        error: function (xhr) {
+            alert("Error updating BankClearedOn: " + xhr.responseText);
+        }
+    });
+}
+
+
+
+    
+    
 </script>

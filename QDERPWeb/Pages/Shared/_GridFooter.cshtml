@@ -197,6 +197,8 @@
             items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
             items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
             items.Add().Text("Bank Reconciliation").Icon("product");
+            items.Add().Text("Detailed Transaction Report").Icon("product");
+            
         })
         .OnItemClick("addReportsButton_click") // Calls JavaScript function
         .ShowArrowIcon(false)
@@ -382,7 +384,7 @@
 
     function addReportsButton_click(e) {
         let pageUrl = '';
-
+       
         switch (e.itemData.text) {
             case 'Ledger to Salary Payable Mapping':
                 // Ensure acchedid and accheadname have values before appending them
@@ -419,10 +421,12 @@
                 break;
 
             case 'Bank Reconciliation':
+              
                 // Ensure acchedid and accheadname have values before appending them
 
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
+                    pageUrl = `/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&VoucherAmountFormatted=${encodeURIComponent(VoucherAmountFormatted)}&firstrowVoucherAmountFormatted=${encodeURIComponent(firstrowVoucherAmountFormatted)}`;
+
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -432,6 +436,25 @@
                     });
                     return;
                 }
+                break;
+
+            case 'Detailed Transaction Report':
+           
+                // Ensure acchedid and accheadname have values before appending them
+
+             
+                    window.open('/Finance/TransactionDetails', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                  
+
+                //  else {
+                //     Swal.fire({
+                //         icon: 'warning',
+                //         title: 'Select Account to Review',
+                //         text: 'Please select an account before proceeding.',
+                //         confirmButtonText: 'OK'
+                //     });
+                //     return;
+                // }
                 break;
 
             default:
@@ -543,13 +566,13 @@
             reader.readAsText(file);
         }
     });
-    function addReportsButton_click(e) {
-        var selectedText = e.itemData.text; // Get selected item text
+    // function addReportsButton_click(e) {
+    //     var selectedText = e.itemData.text; // Get selected item text
 
-        if (selectedText === "Account Statements") {
-            window.location.href = "/DocumentViewer"; // Redirect to the Razor Page
-        }
-    }
+    //     if (selectedText === "Account Statements") {
+    //         window.location.href = "/DocumentViewer"; // Redirect to the Razor Page
+    //     }
+    // }
 
 
 </script>
