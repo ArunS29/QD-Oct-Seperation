@@ -45,10 +45,11 @@
         .container {
             display: flex;
             flex-grow: 1;
-            padding:0px;
-            margin-left:0px;
-            margin-right:0px;
+            padding: 0px;
+            margin-left: 0px;
+            margin-right: 0px;
             background-color: #909ead00;
+            height: 100vh;
         }
 
         /* Sidebar 1 styles */
@@ -65,13 +66,13 @@
             padding-top: 50px;
             margin-top: 47px;
             transition: width 0.3s ease;
-            height: 690px;
+            /*  height: 100vh; */
         }
 
         /* Sidebar 2 styles */
         .sidebar2 {
             margin-top: 45px;
-            margin-left: 0px; 
+            margin-left: 0px;
             transition: margin-left 0.3s ease;
             padding: 20px;
         }
@@ -79,7 +80,10 @@
         /* Hidden state of sidebar */
         .sidebar.hidden {
             width: 60px; /* Minimized width to show icons only */
+            background-color: white;
         }
+
+
 
         /* Expanded state of sidebar 2 */
         .sidebar2.expanded {
@@ -151,7 +155,6 @@
             cursor: pointer;
             z-index: 1000;
             transition: left 0.3s ease; /* Smooth transition */
-          
         }
 
             .toggle-btn:hover {
@@ -273,9 +276,9 @@
                 border-radius: 4px;
             }
 
-        .submenu-item:hover .text {
+                .submenu-item:hover .text {
                     color: palegoldenrod;
-        }
+                }
 
             .submenu-item i {
                 font-size: 14px;
@@ -287,20 +290,19 @@
         .main-content {
             display: flex;
             flex-grow: 1;
-            height: 100%; /* Full height */
+            height: 100vh; /* Full height */
             position: relative;
             overflow: hidden;
             transition: width 0.3s ease; /* Smooth width transition */
             margin-top: 26px;
-           
         }
 
         iframe {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%; /* Occupy full width of parent */
-            height: 100%; /* Occupy full height of parent */
+            width: 100vw; /* Full viewport width */
+            height: 100vh; /* Full viewport height */
             border: none;
         }
 
@@ -309,7 +311,6 @@
         .prev-btn {
             background-color: transparent;
             color: #ebf3fc;
-            
             border-radius: 50%;
             width: 20px;
             height: 20px;
@@ -467,7 +468,7 @@
 
 
 
-    
+
     </style>
 </head>
 <body>
@@ -569,7 +570,7 @@
 
         <!-- Breadcrumb above Sidebar 2 -->
         <div class="breadcrumb" id="breadcrumb">
-          @*   <button class="prev-btn" onclick="goBack()">&#60;</button> *@
+            @*   <button class="prev-btn" onclick="goBack()">&#60;</button> *@
             <span onclick="resetBreadcrumb()">Home</span>
         </div>
 
@@ -581,9 +582,7 @@
 
     </div>
     <!-- Main Content -->
-
- 
-                    @*   <div id="loader" class="loader">
+    @*   <div id="loader" class="loader">
     <img src="~/images/Loading.gif" alt="Loading..." />
     </div>
     <iframe id="contentIframe" onload="hideLoader()" style="display: none;"></iframe *@
@@ -592,7 +591,7 @@
 
 
     <script>
-               // Function for Bell icon click - show notifications popup
+        // Function for Bell icon click - show notifications popup
         function handleBellClick() {
             const notificationPopup = document.getElementById('notificationPopup');
             if (notificationPopup) {
@@ -677,109 +676,109 @@
         function showFinanceSubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
             sidebar2.innerHTML = `
-                      <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
-            <i class="fas fa-book-open"></i> <!-- Font Awesome icon -->
-            <div class="text">Finance Dashboard</div>
-        </div>
-         <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-         <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2(' My Dashboard')">
-                <div class="text">My Dashboard</div>
-            </div>
-            <div class="submenu-item" onclick="loadVoucherVerification()">
-                <div class="text">Voucher Verification</div>
-            </div>
-            <div class="submenu-item" onclick="loadBillsReceivable()">
-                <div class="text">Bills Receivable</div>
-            </div>
-            <div class="submenu-item" onclick="loadBillsPayable()">
-                <div class="text">Bills Payable</div>
-            </div>
-            <div class="submenu-item" onclick="loadCostAnalysis()">
-                <div class="text">Cost Analysis</div>
-            </div>
-            <div class="submenu-item" onclick="loadSalaryPayable()">
-                <div class="text">Salary Payable</div>
-            </div>
-            <div class="submenu-item" onclick="loadCostReportsByBranch()">
-                <div class="text">Cost Report By Branch</div>
-            </div>
-            <div class="submenu-item" onclick="loadChartOfAccounts()">
-                <div class="text">Chart Of Accounts</div>
-            </div>
-            <div class="submenu-item" onclick="loadChartofCostCenters()">
-                <div class="text">Chart of Cost Centers</div>
-            </div>
-            <div class="submenu-item" onclick="loadFinancialReports()">
-                <div class="text">Financial Reports</div>
-            </div>
-            <div class="submenu-item" onclick="loadAssestRegister()">
-                <div class="text">Asset Register</div>
-            </div>
-                       <div class="submenu-item" onclick="assetallocation()">
-                        <div class="text">Asset Allocation</div>
+                              <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                    <i class="fas fa-book-open"></i> <!-- Font Awesome icon -->
+                    <div class="text">Finance Dashboard</div>
+                </div>
+                 <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                 <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2(' My Dashboard')">
+                        <div class="text">My Dashboard</div>
                     </div>
-        </div>
-                   
-              
-                   
-                     @**@
-        <div class="submenu-item" onclick="loadAccountLedger()">
-            <i class="fas fa-book"></i>
-            <div class="text">Accounting Ledgers</div>
-        </div>
-        <div class="submenu-item" onclick="loadAccountRegister()">
-        <i class="fas fa-book"></i>
-        <div class="text">Accounting Register</div>
-        </div>
-        <div class="submenu-item" onclick="loadBankPayment('Bank Payment')">
-            <i class="fas fa-university"></i>
-            <div class="text">Bank Payment</div>
-        </div>
-                 <div class="submenu-item" onclick="loadChartOfAccounts('/ Chart of Accounts')">
-        <i class="fas fa-chart-pie"></i>
-        <div class="text">Chart of Accounts</div>
-        </div>
-        <div class="submenu-item" onclick="loadChartofCostCenters('/ Chart of Cost Centers')">
-        <i class="fas fa-chart-pie"></i>
-        <div class="text">Chart of Cost Centers</div>
-        </div>
-        <div class="submenu-item" onclick="loadCashPayment('Cash Payment')">
-            <i class="fas fa-money-bill-wave"></i>
-            <div class="text">Cash Payment</div>
-        </div>
-        <div class="submenu-item" onclick="loadCashReceipt()">
-            <i class="fas fa-dollar-sign"></i>
-            <div class="text">Cash Receipt</div>
-        </div>
-        <div class="submenu-item" onclick="loadBankReceipt()">
-            <i class="fas fa-receipt"></i>
-            <div class="text">Bank Receipt</div>
-        </div>
-                        <div class="submenu-item" onclick="loadsalesvoucher()">
-            <i class="fas fa-tags"></i>
-            <div class="text">Sales Voucher</div>
-        </div>
-        <div class="submenu-item" onclick="loadPurchaseVoucher()">
-            <i class="fas fa-shopping-cart"></i>
-            <div class="text">Purchase Voucher</div>
-        </div>
-        <div class="submenu-item" onclick="loadJournelVoucher()">
-            <i class="fas fa-book-open"></i>
-            <div class="text">Journel Voucher</div>
-        </div>
-        <div class="submenu-item" onclick="loadExpenseClaim()">
-            <i class="fas fa-file-invoice-dollar"></i>
-            <div class="text">Expense Claim</div>
-        </div>
-        <div class="submenu-item" onclick="loadJournelRegister()">
-            <i class="fas fa-newspaper"></i>
-            <div class="text">Journel Register</div>
-        </div>
-
-      
+                    <div class="submenu-item" onclick="loadVoucherVerification()">
+                        <div class="text">Voucher Verification</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadBillsReceivable()">
+                        <div class="text">Bills Receivable</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadBillsPayable()">
+                        <div class="text">Bills Payable</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadCostAnalysis()">
+                        <div class="text">Cost Analysis</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadSalaryPayable()">
+                        <div class="text">Salary Payable</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadCostReportsByBranch()">
+                        <div class="text">Cost Report By Branch</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadChartOfAccounts()">
+                        <div class="text">Chart Of Accounts</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadChartofCostCenters()">
+                        <div class="text">Chart of Cost Centers</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadFinancialReports()">
+                        <div class="text">Financial Reports</div>
+                    </div>
+                    <div class="submenu-item" onclick="loadAssestRegister()">
+                        <div class="text">Asset Register</div>
+                    </div>
+                               <div class="submenu-item" onclick="assetallocation()">
+                                <div class="text">Asset Allocation</div>
+                            </div>
+                </div>
 
 
-                    `;
+
+        @**@
+                <div class="submenu-item" onclick="loadAccountLedger()">
+                    <i class="fas fa-book"></i>
+                    <div class="text">Accounting Ledgers</div>
+                </div>
+                <div class="submenu-item" onclick="loadAccountRegister()">
+                <i class="fas fa-book"></i>
+                <div class="text">Accounting Register</div>
+                </div>
+                <div class="submenu-item" onclick="loadBankPayment('Bank Payment')">
+                    <i class="fas fa-university"></i>
+                    <div class="text">Bank Payment</div>
+                </div>
+                         <div class="submenu-item" onclick="loadChartOfAccounts('/ Chart of Accounts')">
+                <i class="fas fa-chart-pie"></i>
+                <div class="text">Chart of Accounts</div>
+                </div>
+                <div class="submenu-item" onclick="loadChartofCostCenters('/ Chart of Cost Centers')">
+                <i class="fas fa-chart-pie"></i>
+                <div class="text">Chart of Cost Centers</div>
+                </div>
+                <div class="submenu-item" onclick="loadCashPayment('Cash Payment')">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div class="text">Cash Payment</div>
+                </div>
+                <div class="submenu-item" onclick="loadCashReceipt()">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="text">Cash Receipt</div>
+                </div>
+                <div class="submenu-item" onclick="loadBankReceipt()">
+                    <i class="fas fa-receipt"></i>
+                    <div class="text">Bank Receipt</div>
+                </div>
+                                <div class="submenu-item" onclick="loadsalesvoucher()">
+                    <i class="fas fa-tags"></i>
+                    <div class="text">Sales Voucher</div>
+                </div>
+                <div class="submenu-item" onclick="loadPurchaseVoucher()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <div class="text">Purchase Voucher</div>
+                </div>
+                <div class="submenu-item" onclick="loadJournelVoucher()">
+                    <i class="fas fa-book-open"></i>
+                    <div class="text">Journel Voucher</div>
+                </div>
+                <div class="submenu-item" onclick="loadExpenseClaim()">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <div class="text">Expense Claim</div>
+                </div>
+                <div class="submenu-item" onclick="loadJournelRegister()">
+                    <i class="fas fa-newspaper"></i>
+                    <div class="text">Journel Register</div>
+                </div>
+
+
+
+
+                            `;
         }
 
         // Function to toggle visibility of nested submenus
@@ -803,18 +802,18 @@
         }
 
 
-                function loadAccountLedger() {
+        function loadAccountLedger() {
             // Set the iframe source to load Accounting Ledgers content
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AccountingLedgers";
-                            hideSidebars();
+            hideSidebars();
             // Update the breadcrumb (same as the anchor tag in the menu)
             updateBreadcrumbFromSidebar2('Accounting Ledgers');
 
         }
 
 
-             function hideSidebars() {
+        function hideSidebars() {
             const sidebar = document.getElementById('sidebar');
             const sidebar2 = document.getElementById('sidebar2');
             const root = document.documentElement; // Access CSS custom properties
@@ -835,96 +834,96 @@
 
 
 
-                function loadAccountRegister() {
+        function loadAccountRegister() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AccountingRegister";
-                    hideSidebars();
+            hideSidebars();
             updateBreadcrumbFromSidebar2('Accounting Registers');
         }
-                function loadVoucherVerification() {
-                            const iframe = document.getElementById("contentIframe");
-                                    iframe.src = "/Finance/VoucherApproval";
-                                            hideSidebars();
-                            updateBreadcrumbFromSidebar2('Voucher Verification');
-                        }
-                function loadBillsReceivable() {
-                    const iframe = document.getElementById("contentIframe");
-                            iframe.src = "/Finance/BillsReceivable";
-                                     hideSidebars();
-                    updateBreadcrumbFromSidebar2('Bills Receivable');
-                }
-                           function loadBillsPayable() {
-                            const iframe = document.getElementById("contentIframe");
-                                    iframe.src = "/Finance/BillsPayable";
-                                             hideSidebars();
-                            updateBreadcrumbFromSidebar2('Bills Payable');
-                        }
-                                   function loadCostAnalysis() {
-                            const iframe = document.getElementById("contentIframe");
-                                    iframe.src = "/Finance/CostAnalysis";
-                                     hideSidebars();
-                            updateBreadcrumbFromSidebar2('Cost Analysis');
-                        }
-                                   function loadBillsReceivable() {
-                            const iframe = document.getElementById("contentIframe");
-                                    iframe.src = "/Finance/BillsReceivable";
-                                     hideSidebars();
-                            updateBreadcrumbFromSidebar2('Bills Receivable');
-                        }
-                        //             function loadSalaryPayable() {
-                        //     const iframe = document.getElementById("contentIframe");
-                        //             iframe.src = "/Finance/SalaryPayable";
-                        //     updateBreadcrumbFromSidebar2('/ Salary Payable');
-                        // }
- 
-                         
+        function loadVoucherVerification() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/VoucherApproval";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Voucher Verification');
+        }
+        function loadBillsReceivable() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/BillsReceivable";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Bills Receivable');
+        }
+        function loadBillsPayable() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/BillsPayable";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Bills Payable');
+        }
+        function loadCostAnalysis() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/CostAnalysis";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Cost Analysis');
+        }
+        function loadBillsReceivable() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/BillsReceivable";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Bills Receivable');
+        }
+        //             function loadSalaryPayable() {
+        //     const iframe = document.getElementById("contentIframe");
+        //             iframe.src = "/Finance/SalaryPayable";
+        //     updateBreadcrumbFromSidebar2('/ Salary Payable');
+        // }
 
-                         function loadFinancialReports() {
-                                    const iframe = document.getElementById("contentIframe");
-                                    iframe.src = "/Finance/uc20106TrialBalance";
-                                             hideSidebars();
-                                    updateBreadcrumbFromSidebar2('Financial Reports');
-                                }
-                                 function loadAssestRegister() {
-                                   const iframe = document.getElementById("contentIframe");
-                                            iframe.src = "/Finance/AssetView";
-                                                     hideSidebars();
-                                    updateBreadcrumbFromSidebar2('Finance Dashbord /Asset Register');
-                                }
+
+
+        function loadFinancialReports() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/uc20106TrialBalance";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Financial Reports');
+        }
+        function loadAssestRegister() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/AssetView";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Finance Dashbord /Asset Register');
+        }
         function assetallocation() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/AssetAllocation";
-                     hideSidebars();
+            hideSidebars();
             updateBreadcrumbFromSidebar2('Asset Allocation');
         }
         function loadChartOfAccounts() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/ChartOfAccounts";
-             hideSidebars();
+            hideSidebars();
             updateBreadcrumbFromSidebar2('Chart Of Accounts');
         }
-         function loadChartofCostCenters() {
+        function loadChartofCostCenters() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/ChartOfCostCenters";
-             hideSidebars();
+            hideSidebars();
             updateBreadcrumbFromSidebar2('Chart Of Cost Centers');
         }
-                         function loadCashReceipt() {
-                    const iframe = document.getElementById("contentIframe");
-                            iframe.src = "/Finance/VoucherEntryCashReceipts";
-                             hideSidebars();
-                    updateBreadcrumbFromSidebar2('Cash Receipt');
-                }
-                        function loadBankReceipt() {
-                            const iframe = document.getElementById("contentIframe");
-                                            iframe.src = "/Finance/VoucherEntryReceipts";
-                                             hideSidebars();
-                            updateBreadcrumbFromSidebar2('Bank Receipt');
-                        }
+        function loadCashReceipt() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/VoucherEntryCashReceipts";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Cash Receipt');
+        }
+        function loadBankReceipt() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/VoucherEntryReceipts";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Bank Receipt');
+        }
         function loadsalesvoucher() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/salesVoucher";
-             hideSidebars();
+            hideSidebars();
             updateBreadcrumbFromSidebar2('sales voucher');
         }
 
@@ -932,41 +931,41 @@
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/purchasevoucher";
             updateBreadcrumbFromSidebar2('Purchase voucher');
-             hideSidebars();
+            hideSidebars();
         }
         function loadBankPayment() {
-                                    const iframe = document.getElementById("contentIframe");
-                                                    iframe.src = "/Finance/VoucherBankPayment";
-                                                             hideSidebars();
-                                    updateBreadcrumbFromSidebar2('Bank Payment');
-                                }
-                                                                function loadCashPayment() {
-                                    const iframe = document.getElementById("contentIframe");
-                                                    iframe.src = "/Finance/VoucherCashPayment";
-                                                             hideSidebars();
-                                    updateBreadcrumbFromSidebar2('Cash Payment');
-                                }
-                                                                     function loadExpenseClaim() {
-                                            const iframe = document.getElementById("contentIframe");
-                                                            iframe.src = "/Finance/ExpensesClaims";
-                                                                     hideSidebars();
-                                            updateBreadcrumbFromSidebar2('Expense Claim');
-                                        }
-                                                                             function loadJournelRegister() {
-                                            const iframe = document.getElementById("contentIframe");
-                                                            iframe.src = "/Finance/JournalRegister";
-                                                                     hideSidebars();
-                                            updateBreadcrumbFromSidebar2('Journel Register');
-                                        }
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/VoucherBankPayment";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Bank Payment');
+        }
+        function loadCashPayment() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/VoucherCashPayment";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Cash Payment');
+        }
+        function loadExpenseClaim() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/ExpensesClaims";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Expense Claim');
+        }
+        function loadJournelRegister() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/JournalRegister";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Journel Register');
+        }
         function loadJournelVoucher() {
             const iframe = document.getElementById("contentIframe");
             iframe.src = "/Finance/Voucherjournal";
-                     hideSidebars();
+            hideSidebars();
             updateBreadcrumbFromSidebar2('Journel Voucher');
         }
 
 
-             function updateBreadcrumbFromSidebar2(submenuItem) {
+        function updateBreadcrumbFromSidebar2(submenuItem) {
             // Clear the breadcrumb trail before adding the new item
             breadcrumbTrail.length = 1;
             breadcrumbTrail.push(submenuItem); // Add the new breadcrumb item
@@ -974,28 +973,28 @@
         }
 
 
-                     function updateBreadcrumb() {
-                const breadcrumbContainer = document.getElementById("breadcrumb");
+        function updateBreadcrumb() {
+            const breadcrumbContainer = document.getElementById("breadcrumb");
 
-                // Clear existing breadcrumb items
-                breadcrumbContainer.innerHTML = '';
+            // Clear existing breadcrumb items
+            breadcrumbContainer.innerHTML = '';
 
-                breadcrumbTrail.forEach((name, index) => {
-                    // Create breadcrumb item
-                    const breadcrumbItem = document.createElement("span");
-                    breadcrumbItem.textContent = name;
-                    breadcrumbItem.onclick = () => goToLevel(index);
-                    breadcrumbContainer.appendChild(breadcrumbItem);
+            breadcrumbTrail.forEach((name, index) => {
+                // Create breadcrumb item
+                const breadcrumbItem = document.createElement("span");
+                breadcrumbItem.textContent = name;
+                breadcrumbItem.onclick = () => goToLevel(index);
+                breadcrumbContainer.appendChild(breadcrumbItem);
 
-                    // Add a separator if not the last item
-                    if (index < breadcrumbTrail.length - 1) {
-                        const separator = document.createElement("span");
-                        separator.textContent = " / ";
-                        separator.className = "separator";
-                        breadcrumbContainer.appendChild(separator);
-                    }
-                });
-            }
+                // Add a separator if not the last item
+                if (index < breadcrumbTrail.length - 1) {
+                    const separator = document.createElement("span");
+                    separator.textContent = " / ";
+                    separator.className = "separator";
+                    breadcrumbContainer.appendChild(separator);
+                }
+            });
+        }
 
 
         function goBack() {
@@ -1050,7 +1049,7 @@
 
 
 
-                        
+
     </script>
 
 </body>

@@ -8,30 +8,110 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 <style type="text/css">
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; /* Border between rows */
+    /* General body background and text color */
+    body {
+        background-color: aliceblue; /* Light and soft background */
+        color: navy; /* Navy for text to ensure readability */
     }
 
+    /* DataGrid styling */
+    .dx-datagrid {
+        background-color: white; /* Keep the grid background white for contrast */
+        border: 1px solid navy; /* Navy border for the grid */
+    }
+
+        .dx-datagrid .dx-row {
+            border-bottom: 1px solid #ccc; /* Keep the row borders subtle */
+        }
+
+        .dx-datagrid .dx-header-row {
+            background-color: navy; /* Navy for header background */
+            color: white; /* White text for headers */
+        }
+
+    /* Cards container and cards styling */
     .cards-container {
         display: flex;
-        flex-wrap: wrap; /* Allows wrapping to a new row for responsive design */
-        gap: 5px; /* Adds spacing between cards */
+        flex-wrap: wrap;
+        gap: 5px;
         justify-content: space-between;
-        max-width: 1300px;
-        /*  background-color: #B4E1F5; */
-        margin: 0 auto; /* Centers the container */
-        padding: 20px; /* Adds padding around the container */
     }
 
     .card {
-        border: 1px solid #ddd;
+        border: 1px solid navy; /* Navy border for cards */
         border-radius: 8px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 15px;
-        /*  background-color: #f5f5f5; */
-        width: 49.5%; /* Adjust width to fit two cards side by side */
-        box-sizing: border-box; /* Includes padding and border in width */
+        background-color: aliceblue; /* Alice Blue background for cards */
+        width: 49%;
+        box-sizing: border-box;
     }
+
+    /* Form group styling */
+    .form-group label {
+        color: navy; /* Navy for labels */
+    }
+
+    .form-group-row {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Title styling */
+    .cards-container-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: navy; /* Navy for the title */
+    }
+
+    /* Content container styling */
+    .content-container {
+        width: 100%;
+    }
+
+    /* Button styling */
+    .dx-button {
+        background-color: navy; /* Navy for buttons */
+        color: black; /* White text for buttons */
+        border: 1px solid navy;
+        border-radius: 4px;
+        padding: 8px 16px;
+    }
+
+        .dx-button:hover {
+            background-color: #003366;
+            color: white;
+        }
+
+    /* Checkbox styling */
+    .dx-checkbox-icon {
+        border-color: navy; /* Navy for checkbox borders */
+    }
+
+    .dx-checkbox-checked .dx-checkbox-icon {
+        background-color: navy; /* Navy for checked checkboxes */
+    }
+
+    /* Dropdown box styling */
+    .dx-dropdownbox {
+        border-color: navy; /* Navy for dropdown borders */
+    }
+
+        .dx-dropdownbox .dx-texteditor-input {
+            color: navy; /* Navy for dropdown text */
+        }
+
+    /* Textbox styling */
+    .dx-textbox {
+        border-color: navy; /* Navy for textbox borders */
+    }
+
+        .dx-textbox .dx-texteditor-input {
+            color: navy; /* Navy for textbox text */
+        }
+
 
     .vertical-container {
         display: flex;
@@ -67,17 +147,15 @@
 
     .cards-container-title {
         text-align: center; /* Centers the title */
-        font-size: 2.5rem; /* Adjust font size */
-        margin-bottom: 30px; /* Adds spacing between title and the container */
+        font-size: 1.5rem; /* Adjust font size */
         color: black; /* Optional: sets the color */
         /*  background-color: blue; */
         position: relative;
-        top: 30px;
     }
 
     .content-container {
         width: 100%; /* Full width for responsiveness */
-        max-width: 1500px; /* Matches the max-width of cards-container */
+        max-width: 100%; /* Matches the max-width of cards-container */
         margin: 20px auto; /* Center align the container */
         padding: 20px; /* Adds some inner spacing */
         /* background-color: #f5f5f5; /* Optional background color */ */ box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for aesthetics */
@@ -89,7 +167,7 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        gap: 200px; /* Space between sections */
+        gap: 6em; /* Space between sections */
     }
 
     .form-group1 {
@@ -105,7 +183,7 @@
 
 <div class="cards-container">
     @*    <h2>@ViewData["Title"]</h2> *@
-    <h2 class="cards-container-title">Accounting Ledger Groups//مجموعات الدفاتر المحاسبية</h2>
+    <h5 class="cards-container-title">Accounting Ledger Groups//مجموعات الدفاتر المحاسبية</h5>
     <!-- Card 1: General Account Group Information -->
     <div class="card">
         <div class="dx-fieldset vertical-container">
@@ -126,7 +204,7 @@
                     Html.DevExtreme().TextBox()
                     .ID("AccountGroup")
                     .Value(null)
-                    .Width(530)
+                    .Width(250)
                     .ValidationRules(rules =>
                     {
                         rules.AddRequired()
@@ -163,7 +241,7 @@
                     .DisplayExpr("MasterGroup")
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
-                    .Width(530)
+                    .Width(250)
                     .TabIndex(1)
                     .DropDownOptions(o => o
                     .Width(500)
@@ -198,12 +276,11 @@
             </div>
             <div class="form-group" style="display: flex;">
                 <label style="float: right; margin-right: 15px;">اسم مجموعة الحساب</label>
-                <div class="input-group" style="display: flex; align-items: center; width: 100%;">
+                <div class="input-group" style="display: flex; align-items: center; width: 100%;justify-content: end;">
                     <span class="input-group-prepend" style="margin-right: 10px;">
                         @(
                             Html.DevExtreme().Button()
                             .ID("convertToArabic1")
-                            .Width(39)
                             .Height(35)
                             .Icon("fas fa-language") // Ensure Font Awesome class is correct
                             .ElementAttr(new { @class = "input-button" })
@@ -214,7 +291,7 @@
                         Html.DevExtreme().TextBox()
                         .ID("AccountGroup1")
                         .Value(null)
-                        .Width(500)
+                        .Width(250)
                         .RtlEnabled(true)
                         )
                 </div>
@@ -241,7 +318,7 @@
                     .DisplayExpr("MasterGroupAr")
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
-                    .Width(530)
+                    .Width(250)
                     .TabIndex(1)
                     .RtlEnabled(true)
                     .DropDownOptions(o => o
@@ -279,7 +356,7 @@
                 <div class="form-group">
                     <label>Sales Group</label>
                 </div>
-                <div class="form-group" style="position:relative;left:70px;">
+                <div class="form-group" style="position:relative;left:11px;">
                     <div class="col-md-12">
                         <div>
                             @(Html.DevExtreme().CheckBox()
@@ -296,14 +373,14 @@
                 <div class="form-group">
                     <label>Purchase Group</label>
                 </div>
-                <div class="form-group" style="position:relative;left:42px;">
+                <div class="form-group" style="position:relative;">
                     <div class="col-md-12">
                         @(Html.DevExtreme().CheckBox()
                             .ID("ChooseifthisgrouptobeunderPurchases")
                             .Value(true)
                             .OnValueChanged("syncCard4")
                             )
-                        <span style="margin-left: 5px;">Choose if this group to be under Purchases.</span>
+                        <span style="margin-left: 0px;">Choose if this group to be under Purchases.</span>
                     </div>
                 </div>
             </div>
@@ -318,7 +395,7 @@
                             .Value(true)
                             .OnValueChanged("syncCard4")
                             )
-                        <span style="margin-left: 5px;">Choose if this group to be under Salary Payable.</span>
+                        <span style="margin-left: 0px;">Choose if this group to be under Salary Payable.</span>
                     </div>
                 </div>
             </div>
@@ -326,14 +403,14 @@
                 <div class="form-group">
                     <label>Bank Reconciliation</strong></label>
                 </div>
-                <div class="form-group" style="position:relative;left:18px;">
+                <div class="form-group" style="position:relative;left:0px;">
                     <div class="col-md-12">
                         @(Html.DevExtreme().CheckBox()
                             .ID("ChooseifthisgroupwanttobeReconcilied")
                             .Value(true)
                             .OnValueChanged("syncCard4")
                             )
-                        <span style="margin-left: 5px;">Choose if this group wants to be Reconciled.</span>
+                        <span style="margin-left: 0px;">Choose if this group wants to be Reconciled.</span>
                     </div>
                 </div>
             </div>
@@ -742,11 +819,11 @@
             DevExpress.ui.dialog.custom({
                 title: "Validation Errors", // Title of the popup
                 messageHtml: `
-                <div style="display: flex; align-items: center;">
-                    <i class="dx-icon-warning" style="font-size: 24px; margin-right: 10px; color: #e74c3c;"></i>
-                    <span>Cannot save while the entry has errors. Please clear the errors to continue.</span>
-                </div>
-            `, // Content with an icon and message
+                    <div style="display: flex; align-items: center;">
+                        <i class="dx-icon-warning" style="font-size: 24px; margin-right: 10px; color: #e74c3c;"></i>
+                        <span>Cannot save while the entry has errors. Please clear the errors to continue.</span>
+                    </div>
+                `, // Content with an icon and message
                 buttons: [
                     {
                         text: "OK",

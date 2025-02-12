@@ -1,83 +1,146 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
-@{
-    ViewData["Title"] = "Trial Balance";
-}
+@using QD.ERP.Web.DAL.Entities;
+<style>
+    #pivotGridContainer {
+        flex-grow: 1; /* Allow the pivot grid to grow and fill available space */
+        width: 100%; /* Ensure the grid stretches to full width */
+        min-height: 400px; /* Set a minimum height to avoid small grid sizes */
+        max-height: 600px; /* Optional, set a max height to control grid overflow */
+        overflow: auto; /* Add scrollbars if the content overflows */
+    }
 
-<h7>@ViewData["Title"]</h7>
+    .container {
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px;
+        background-color: #f9f9f9;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        height: auto; /* Ensure the container height adjusts based on content */
+    }
+
+    .horizontal-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Four equal columns */
+        gap: 10px; /* Spacing between fields */
+        align-items: center; /* Align items properly */
+        width: 100%;
+    }
+
+    .dx-field {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    #check{
+        margin:50px;
+    }
+    /* Ensure the fourth column contains both "Use Effective Date" & "Show Records" */
+    .dx-field-4 {
+        display: flex;
+        flex-direction: column; /* Stack the checkbox and button */
+        gap: 10px; /* Add space between elements */
+    }
+</style>
+
+
 <div class="container">
-    <!-- Input Controls -->
+    <!-- Input Controls --> <div class="card-header" style=" color:black; font-weight: bold;">
+        UcCostAnalysis
+    </div>
     <div class="dx-fieldset horizontal-container">
-        <!-- SelectBox for Account Group -->
-        @(Html.DevExtreme().SelectBox()
-            .ID("requestedBy")
-            .DataSource(d => d.Mvc().Controller("ucCostAnalysis").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
-            .Width(300)
-            .ElementAttr("class", "button-alignment-down")
-            .Label("Select Account Group")
-            .LabelMode(EditorLabelMode.Outside)
-            .SearchEnabled(true)
-           // .DisplayExpr("CostAllocationUnit")
-            .DisplayExpr("CostAllocationGroup")
-            .Value(null)
-            .ShowClearButton(true)
-            .OnValueChanged("onRequestedByChanged")
-            )
+        <div class="dx-field">
+            <!-- SelectBox for Account Group -->
+            @(Html.DevExtreme().SelectBox()
+                .ID("requestedBy")
+                .DataSource(d => d.Mvc().Controller("UCCostAnalysis").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
+                .Width(300)
+                .ElementAttr("class", "button-alignment-down")
+                .Label("Select Cost Allocation Group")
+                .LabelMode(EditorLabelMode.Outside)
+                .SearchEnabled(true)
+                .DisplayExpr("CostAllocationUnit")
+                .Value(null)
+                .ShowClearButton(true)
+                .OnValueChanged("onRequestedByChanged")
+                )
+        </div>
 
-        <!-- Start Date Picker -->
-        @(Html.DevExtreme().DateBox()
-            .ID("frmdateBox")
-            .Label("Start Date")
-            .LabelMode(EditorLabelMode.Outside)
-            .InputAttr("aria-label", "Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(2)
-            )
+        <div class="dx-field">
+            <!-- Start Date Picker -->
+            @(Html.DevExtreme().DateBox()
+                .ID("frmdateBox")
+                .Label("Start Date")
+                .LabelMode(EditorLabelMode.Outside)
+                .InputAttr("aria-label", "Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                .DisplayFormat("dd-MMM-yyyy")
+                .TabIndex(2)
+                )
+        </div>
 
-        <!-- End Date Picker -->
-        @(Html.DevExtreme().DateBox()
-            .ID("todateBox")
-            .Label("End Date")
-            .LabelMode(EditorLabelMode.Outside)
-            .InputAttr("aria-label", "Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(3)
-            )
+        <div class="dx-field">
+            <!-- End Date Picker -->
+            @(Html.DevExtreme().DateBox()
+                .ID("todateBox")
+                .Label("End Date")
+                .LabelMode(EditorLabelMode.Outside)
+                .InputAttr("aria-label", "Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+                .DisplayFormat("dd-MMM-yyyy")
+                .TabIndex(3)
+                )
+        </div>
 
-        <!-- Dropdown Button to Show Records -->
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddBtnShowRecords")
-            .Text("Show Records")
-            .Icon("smalliconslayout")
-            .Width(180)
-            .ElementAttr("class", "button-alignment-down")
-            .TabIndex(4)
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-            })
-            )
+        <div class="dx-field dx-field-4"id="check">
+            <!-- Use Effective Date Checkbox -->
+            @(Html.DevExtreme().CheckBox()
+                .ID("useEffectiveDate")
+                .Text("Use Effective Date")
+                .Value(false)
+                )
+
+            <!-- Dropdown Button to Show Records -->
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ddBtnShowRecords")
+                .Text("Show Records")
+                .Icon("smalliconslayout")
+                .Width(180)
+                .ElementAttr("class", "button-alignment-down")
+                .TabIndex(4)
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                    items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                    items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                    items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                })
+                )
+        </div>
     </div>
 
-    <!-- Pivot Grid Container -->
-    <div id="pivotGridContainer"></div>
 
+    <!-- Pivot Grid Container --><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <div id="pivotGridContainer"></div>
+    </br>
     <!-- Grid Footer Partial -->
-    @await Html.PartialAsync("_GridFooter")
+    @await Html.PartialAsync("_GridFooterUCCA")
 </div>
 
 <script type="text/javascript">
@@ -94,8 +157,7 @@
             if (store instanceof DevExpress.data.DataSource) {
                 // Apply a filter to the DataSource store
                 if (selectedValue) {
-                    store.filter(["CostAllocationGroup", "=", selectedValue]);
-                  // store.filter(["CostAllocationUnit", "=", selectedValue]);
+                    store.filter(["CostAllocationUnit", "=", selectedValue]);
                 } else {
                     store.filter(null); // Remove the filter if no value is selected
                 }
@@ -104,8 +166,7 @@
                 store.load();
             } else if (Array.isArray(store)) {
                 // Apply filtering manually for array-based store
-                var filteredData = store.filter(item => item.CostAllocationGroup === selectedValue);
-              // var filteredData = store.filter(item => item.CostAllocationUnit === selectedValue);
+                var filteredData = store.filter(item => item.CostAllocationUnit === selectedValue);
                 selectBox.option("dataSource", filteredData);
             } else {
                 console.error("The store is neither a DevExpress.data.DataSource nor an array:", store);
@@ -127,7 +188,7 @@
         console.log("Selected Account Group: ", getaccountGroup);
 
         // Extract the AccountGroup value (assuming it's an object)
-        var accountGroup = getaccountGroup ? getaccountGroup.CostAllocationGroup : null;
+        var accountGroup = getaccountGroup ? getaccountGroup.CostAllocationUnit : null;
 
         // If start or end date is not selected, show an alert and return
         if (!startDate || !endDate) {
@@ -141,12 +202,12 @@
 
         // Trigger the AJAX request with the necessary parameters
         $.ajax({
-            url: '/api/TrialBalance/GetTrialBalance',
+            url: '/api/UCCostAnalysis/GetTrialBalance',
             type: 'GET',
             data: {
                 startDate: formattedStartDate,
                 endDate: formattedEndDate,
-                accountGroup: CostAllocationGroup // Pass accountGroup, which can be null
+                accountGroup: accountGroup // Pass accountGroup, which can be null
             },
             success: function (data) {
                 // Initialize or update the PivotGrid with the received data
@@ -157,22 +218,99 @@
                             data: data
                         },
                         fields: [
-
                             { dataField: "CostAllocationMasterGroup", area: "row", caption: "CostAllocationMasterGroup" },
                             { dataField: "CostAllocationGroup", area: "row", caption: "CostAllocationGroup" },
-                            { dataField: "Income", area: "data", caption: "Income" },
-                            { dataField: "Expenses", area: "data", caption: "Expenses" },
-                            { dataField: "CostAmount", area: "data", caption: "CostAmount" },
+                            { dataField: "CostAllocationUnit", area: "row", caption: "CostAllocationUnit" },
+                            { dataField: "Income", area: "row", caption: "Income",  expanded: true },
+                            { dataField: "Expenses", area: "row", caption: "Expenses",  expanded: true },
+
+                            // ✅ Ensure column headers are visible
+                            { dataField: "VoucherNo", area: "column", caption: "Voucher No", width: 50 },
+
+                            { dataField: "CostAmount", area: "data", caption: "CostAmount", summaryType: "sum", width: 50 },
+                            
+                            { dataField: "CostAllocationID", area: "column", caption: "Cost Allocation ID" },
+                             { dataField: "VoucherEntryID", area: "column", caption: "Voucher Entry ID" },
+                             { dataField: "CostAllocationUnitID", area: "column", caption: "Cost Allocation Unit ID" },
+                            { dataField: "CostAllocDrCr", area: "column", caption: "Cost Alloc Dr/Cr" },
+                            { dataField: "AmountAllocated", area: "column", caption: "Amount Allocated", summaryType: "sum" },
+                            { dataField: "EffectiveDate", area: "column", caption: "Effective Date", dataType: "date" },
+                            { dataField: "CostAllocRemarks", area: "column", caption: "Cost Alloc Remarks" },
+                            { dataField: "AccountHead", area: "column", caption: "Account Head" },
+                            { dataField: "AccountGroup", area: "column", caption: "Account Group" },
+                            { dataField: "MasterGroup", area: "column", caption: "Master Group" },
+                            { dataField: "AccountID", area: "column", caption: "Account ID" },
+                            { dataField: "VoucherType", area: "column", caption: "Voucher Type" },
+                            { dataField: "VoucherTypeAndNo", area: "column", caption: "Voucher Type & No" },
+                            { dataField: "CostCenterIncharge", area: "column", caption: "Cost Center Incharge" },
+                            { dataField: "EntryNarration", area: "column", caption: "Entry Narration" },
+                            { dataField: "SysRemarks", area: "column", caption: "System Remarks" },
+                            { dataField: "VoucherDate", area: "column", caption: "Voucher Date", dataType: "date" },
+                            { dataField: "VoucherMonth", area: "column", caption: "Voucher Month" },
+                            { dataField: "VoucherYear", area: "column", caption: "Voucher Year" },
+                            { dataField: "EffectiveMonth", area: "column", caption: "Effective Month" },
+                            { dataField: "EffectiveYear", area: "column", caption: "Effective Year" },
+                            { dataField: "AllocationEffectiveDate", area: "column", caption: "Allocation Effective Date", dataType: "date" },
+                            { dataField: "AllocationEffectiveMonth", area: "column", caption: "Allocation Effective Month" },
+                            { dataField: "AllocationEffectiveYear", area: "column", caption: "Allocation Effective Year" },
+                            { dataField: "ProjectMasterCode", area: "column", caption: "Project Master Code" },
+                            { dataField: "BranchCode", area: "column", caption: "Branch Code" },
+                            { dataField: "BranchName", area: "column", caption: "Branch Name" },
+                            { dataField: "VoucherNarration", area: "column", caption: "Voucher Narration" },
+                            { dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No" }
+
                         ]
                     },
+                    allowSortingBySummary: true,
+                    allowSorting: true,
+                    allowFiltering: true,
+                    showBorders: true,
                     height: 500,
-                    showBorders: true
+                    allowExpandAll: true,
+
+                    // ✅ Show column headers
+                    showColumnHeaders: true,
+
+                    // ✅ Enable Drag-and-Drop for Rearranging Fields
+                    fieldChooser: {
+                        enabled: true,  // Allows moving fields
+                        allowSearch: true
+                    },
+
+                    // ✅ Enable rearranging fields via drag-and-drop
+                    fieldPanel: {
+                        visible: true,
+                        allowFieldDragging: true,
+                        showRowFields: true,
+                        showColumnFields: true,
+                        showDataFields: true,
+                        showFilterFields: true
+                    },
+
+
+                    // ✅ Ensure column totals and grand totals appear
+                    showColumnTotals: true,
+                    showColumnGrandTotals: true,
+                    showDataHeaders: true,
+                    showRowTotals: true,
+                    showRowGrandTotals: true
                 }).dxPivotGrid('instance');
+ 
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching data: ", error);
+
             }
         });
+    }
+    function onEffectiveDateChanged(e) {
+        if (e.value) {
+            console.log("Use Effective Date enabled");
+            // Implement logic when checked
+        } else {
+            console.log("Use Effective Date disabled");
+            // Implement logic when unchecked
+        }
     }
 
 </script>

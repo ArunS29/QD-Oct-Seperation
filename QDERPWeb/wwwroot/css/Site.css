@@ -5,8 +5,9 @@
     padding: 0.1px;
     font-family: "Inter", Helvetica, Arial, sans-serif;
 }
-.card-header{
-    background-color:aliceblue;
+
+.card-header {
+    background-color: aliceblue;
 }
 
 .content-container-Middle {
@@ -65,16 +66,4 @@
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
     margin: 15px;
-}
-.Head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 1415px;
-    padding: 10px;
-    margin-left: 10px;
-    height: 20px;
-    padding-top: 25px;
-    margin-bottom: 25px;
-    margin-top: 50px;
 }
