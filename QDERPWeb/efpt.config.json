@@ -23,6 +23,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[qry20106CostAnalysis]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[tbl101Employees]",
          "ObjectType": 0
       },
@@ -313,5 +317,6 @@
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
    "UseT4": false,
-   "UseT4Split": false
+   "UseT4Split": false,
+   "UseT4": false
 }

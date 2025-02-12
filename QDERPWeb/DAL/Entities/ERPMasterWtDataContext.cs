@@ -13,6 +13,8 @@ public partial class ERPMasterWtDataContext : DbContext
         : base(options)
     {
     }
+    
+    public virtual DbSet<Qry20106CostAnalysis> Qry20106CostAnalyses { get; set; }
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
 
     public virtual DbSet<Qry20105BillsReceivableAgeingView> Qry20105BillsReceivableAgeingViews { get; set; }
@@ -190,7 +192,75 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VoucherDate).HasColumnType("datetime");
             entity.Property(e => e.VoucherRefNo).IsUnicode(false);
         });
+        modelBuilder.Entity<Qry20106CostAnalysis>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry20106CostAnalysis");
 
+            entity.Property(e => e.AccountGroup)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.AccountHead)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.AccountId)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AccountID");
+            entity.Property(e => e.AllocationEffectiveDate).HasColumnType("datetime");
+            entity.Property(e => e.AllocationEffectiveMonth).HasColumnType("datetime");
+            entity.Property(e => e.AllocationEffectiveYear).HasColumnType("datetime");
+            entity.Property(e => e.AmountAllocated).HasColumnType("money");
+            entity.Property(e => e.BranchCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.BranchName).IsUnicode(false);
+            entity.Property(e => e.CostAllocDrCr)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CostAllocRemarks).IsUnicode(false);
+            entity.Property(e => e.CostAllocationGroup).IsUnicode(false);
+            entity.Property(e => e.CostAllocationId).HasColumnName("CostAllocationID");
+            entity.Property(e => e.CostAllocationMasterGroup).IsUnicode(false);
+            entity.Property(e => e.CostAllocationUnit).IsUnicode(false);
+            entity.Property(e => e.CostAllocationUnitId)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("CostAllocationUnitID");
+            entity.Property(e => e.CostAmount).HasColumnType("money");
+            entity.Property(e => e.CostCenterIncharge).IsUnicode(false);
+            entity.Property(e => e.EffectiveDate).HasColumnType("datetime");
+            entity.Property(e => e.EffectiveMonth).HasColumnType("datetime");
+            entity.Property(e => e.EffectiveYear).HasColumnType("datetime");
+            entity.Property(e => e.Expenses).HasColumnType("money");
+            entity.Property(e => e.Income).HasColumnType("money");
+            entity.Property(e => e.MasterGroup)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Pl)
+                .IsRequired()
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("PL");
+            entity.Property(e => e.ProjectMasterCode)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherDate).HasColumnType("datetime");
+            entity.Property(e => e.VoucherEntryId).HasColumnName("VoucherEntryID");
+            entity.Property(e => e.VoucherMonth).HasColumnType("datetime");
+            entity.Property(e => e.VoucherNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherRefNo).IsUnicode(false);
+            entity.Property(e => e.VoucherType)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherTypeAndNo)
+                .HasMaxLength(102)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherYear).HasColumnType("datetime");
+        });
         modelBuilder.Entity<Qry20107ChartOfAccount>(entity =>
         {
             entity
