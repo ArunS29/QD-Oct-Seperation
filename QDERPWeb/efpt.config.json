@@ -91,6 +91,22 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl20126JournalRegisterMaster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20128JournalRegisterCostAllocation]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20129JournalRegisterEmployeeAllocation]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbl20130JournalRegisterPropertyAllocation]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl201AccountGroups]",
          "ObjectType": 0
       },
@@ -163,6 +179,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[qry201_207AccountGroupOrdering]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry20105BillsReceivableAgeingView]",
          "ObjectType": 3
       },
@@ -203,6 +223,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[qry20172LedgersForClaim]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry20176VouchersForAudit]",
          "ObjectType": 3
       },
@@ -224,6 +248,10 @@
       },
       {
          "Name": "[dbo].[qry201VoucherEntryScreenDisplay]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry202_101JournalRegisterChild]",
          "ObjectType": 3
       },
       {

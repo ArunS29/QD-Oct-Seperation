@@ -2,11 +2,11 @@
 @using DevExtreme.AspNet.Mvc
 @using QD.ERP.Web.DAL.Entities
 @{
-	Layout = null;
+	// Layout = null;
 	string voucherNo = Request.Query["voucherNo"];
 	string drCr = Request.Query["DrCr"];
-	string accountHead = Request.Query["AccountHeadVal"];
-	string voucherAmount = Request.Query["VoucherAmount"];
+	string accountHead = Request.Query["AccountHead"];
+	string voucherAmount = Request.Query["Amount"];
 	string effectiveDate = Request.Query["EffectiveDate"];
 	string accountId = Request.Query["AccountID"];
 	double? voucherAmountParsed = null;
@@ -33,7 +33,7 @@
 
 
 <style type="text/css">
-	#propertydataGrid .dx-row {
+	.dx-datagrid .dx-row {
 		border-bottom: 1px solid #ccc; /* Border between rows */
 	}
 
@@ -100,7 +100,7 @@
 		font-size: 25px; /* Font size for text */
 	}
 
-	#PropertyAllocationModal .modal-dialog.fullscreen {
+	#contextModal .modal-dialog.fullscreen {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -114,20 +114,20 @@
 		overflow: hidden;
 	}
 
-	#PropertyAllocationModal .modal-content {
+	#contextModal .modal-content {
 		height: 100%;
 		display: flex;
 		flex-direction: column;
 	}
 
-	#PropertyAllocationModal .modal-body {
+	#contextModal .modal-body {
 		flex: 1; /* Takes up remaining space */
 		overflow-y: auto; /* Enables vertical scrolling */
 		overflow-x: hidden; /* Disables horizontal scrolling */
 		padding: 15px; /* Optional: Adjust padding to make it visually better */
 	}
 
-	#PropertyAllocationModal .card {
+	#contextModal .card {
 		background-color: #ffffff !important;
 		color: #fff;
 		border: none;
@@ -143,7 +143,7 @@
 
 	<br />
 	<div class="container">
-		<div class="row" style="padding:5px">
+		<div class="row align-items-center">
 			<!-- Align items vertically -->
 			<!-- Dr/Cr Dropdown -->
 			<div class="col-md-1">
@@ -156,7 +156,7 @@
 												.DataSource(new[] { drCr })
 												.Value(drCr)
 												.ReadOnly(true)
-												
+
 												.Width(90)
 												)
 				</div>
@@ -210,7 +210,7 @@
 			<!-- VoucherNo and VoucherNo1 -->
 			<div class="col-md-3">
 				<div class="form-group">
-					
+
 					<div>
 						@(
 													Html.DevExtreme().TextBox()
@@ -239,7 +239,7 @@
 	<!-- Ledger Result -->
 	<div class="dx-field ledgerResult">
 		@(
-				Html.DevExtreme().DataGrid<Tbl20122PropertyAllocationMaster>()
+					Html.DevExtreme().DataGrid<Tbl20122PropertyAllocationMaster>()
 					.ID("propertydataGrid")
 					.RemoteOperations(false)
 					.RowAlternationEnabled(true)
@@ -264,14 +264,14 @@
 					.Icon("plus")
 					@* .OnClick("onAddCost") *@
 					.Hint("Add property Allocation")
-					.Width(50)
+					.Width(40)
 					)
 					@(Html.DevExtreme().Button()
 					.ID("btnEditproperty_" + new JS("data.rowIndex"))
 					.Icon("edit")
 					@* .OnClick("onEditCost") *@
 					.Hint("Edit property Allocation")
-					.Width(50)
+					.Width(40)
 					)
 				</div>
 			</div>
@@ -280,7 +280,7 @@
 				.EditCellTemplate(@<text>
 			<div style="display: flex; justify-content: space-between; align-items: center;">
 				@(Html.DevExtreme().DropDownBox()
-				.DataSource(d => d.WebApi().Controller("PropertyAllocation")
+				.DataSource(d => d.WebApi().Controller("JournalEntryPropertyAllocation")
 				.LoadAction("GetPropertyAllocationUnits")
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("PropertyNo"))
@@ -294,7 +294,7 @@
 				.ValueExpr("PropertyNo")
 				.DisplayExpr("PropertyDescription")
 				.Placeholder("Select Property Allocation")
-				.Width(400)
+				.Width(350)
 				.DropDownOptions(o => o.Width(800))
 				.Value(new JS("data.PropertyDescription"))
 				.ContentTemplate(new TemplateName("JournalPropertyAllocationDropdownContentTemplate"))
@@ -306,14 +306,14 @@
 					.Icon("plus")
 					@* .OnClick("onAddCost") *@
 					.Hint("Add property Allocation")
-					.Width(50)
+					.Width(40)
 					)
 					@(Html.DevExtreme().Button()
 					.ID("btnEditproperty_" + new JS("data.rowIndex"))
 					.Icon("edit")
 					@* .OnClick("onEditCost") *@
 					.Hint("Edit property Allocation")
-					.Width(50)
+					.Width(40)
 					)
 				</div>
 			</div>
@@ -400,7 +400,7 @@
 								.ID("btnPropertyBack")
 								.Text("Back")
 								.Icon("arrowleft")
-								
+
 								)
 				@(Html.DevExtreme().Button()
 								.ID("btnpropertyDelete")
@@ -418,7 +418,7 @@
 			Html.DevExtreme().DataGrid()
 			.ID("propertyAllocationDropdownGrid")
 			.DataSource(d => d.WebApi()
-			.Controller("PropertyAllocation")
+			.Controller("JournalEntryPropertyAllocation")
 			.LoadAction("GetPropertyAllocationUnits")
 			.LoadMode(DataSourceLoadMode.Raw)
 			.Key("PropertyDescription")
@@ -438,21 +438,21 @@
 	</text>)
 
 
-				.HeaderFilter(p => p.Visible(true))
-				.ShowBorders(true)
-				.HoverStateEnabled(true)
-				.Paging(p => p.PageSize(15))
-				.FilterRow(f => f.Visible(true))
-				.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-				.Height(345)
-				.Selection(s => s.Mode(SelectionMode.Single))
-				.Columns(columns =>
-				{
-					columns.Add().Caption("Property No").DataField("PropertyNo");
-					columns.Add().Caption("Property Description").DataField("PropertyDescription");
-					columns.Add().Caption("Property Type").DataField("PropertyType");
-					columns.Add().Caption("Plate No").DataField("PlateNo");
-				})
+			.HeaderFilter(p => p.Visible(true))
+			.ShowBorders(true)
+			.HoverStateEnabled(true)
+			.Paging(p => p.PageSize(15))
+			.FilterRow(f => f.Visible(true))
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Height(345)
+			.Selection(s => s.Mode(SelectionMode.Single))
+			.Columns(columns =>
+			{
+				columns.Add().Caption("Property No").DataField("PropertyNo");
+				columns.Add().Caption("Property Description").DataField("PropertyDescription");
+				columns.Add().Caption("Property Type").DataField("PropertyType");
+				columns.Add().Caption("Plate No").DataField("PlateNo");
+			})
 			)
 	}
 
@@ -549,10 +549,10 @@
 			PropertyNo: propertyno || null,
 			EffectiveDate: new Date().toISOString().split('T')[0],
 			AmountAllocated: parseFloat('@(voucherAmountParsed ?? 0)').toFixed(2),
-			PropertyAllocRemarks: "",
+			PropertyAllocRemarks: "" || null,
 			VoucherNo: '@voucherNo',
 			PropertyAllocDrCr: '@drCr',
-			LedgerAccountNo: '@accountId'
+			LedgerAccountNo: '@accountId' || null
 		};
 
 		console.log("Saving Data:", VM);
@@ -560,14 +560,21 @@
 		// AJAX Call
 		$.ajax({
 			type: "POST",
-			url: "/api/PropertyAllocation/SavePropertyAllocation",
+			url: "/api/JournalEntryPropertyAllocation/SaveJournalPropertyAllocation",
 			contentType: "application/json",
 			data: JSON.stringify(VM),
 			dataType: "json",
 			success: function (response) {
 				if (response.success) {
-					DevExpress.ui.notify("Cost Allocation Details updated Successfully.", "success", 2000);
-					$("#PropertyAllocationModal").modal('hide');
+					// Close the modal from the parent window
+					if (window.parent && window.parent.$("#contextModal").length) {
+						window.parent.$("#contextModal").modal("hide");
+
+						// Show notification in the parent page (JournalEntryEdit.cshtml)
+						setTimeout(function () {
+							window.parent.DevExpress.ui.notify("Journal Entry Property Allocation Details updated Successfully.", "success", 2000);
+						}, 500); // Delay to ensure modal hides before notification appears
+					}
 				} else {
 					DevExpress.ui.notify("Update failed: " + response.message, "error", 2000);
 				}

@@ -774,6 +774,10 @@
                     <i class="fas fa-newspaper"></i>
                     <div class="text">Journel Register</div>
                 </div>
+                             <div class="submenu-item" onclick="loadJournelEntryEdit()">
+                                    <i class="fas fa-newspaper"></i>
+                                    <div class="text">Journel EntryEdit</div>
+                                </div>
 
 
 
@@ -962,6 +966,12 @@
             iframe.src = "/Finance/Voucherjournal";
             hideSidebars();
             updateBreadcrumbFromSidebar2('Journel Voucher');
+        }
+        function loadJournelEntryEdit() {
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/JournalEntryEdit";
+            hideSidebars();
+            updateBreadcrumbFromSidebar2('Journel EntryEdit');
         }
 
 

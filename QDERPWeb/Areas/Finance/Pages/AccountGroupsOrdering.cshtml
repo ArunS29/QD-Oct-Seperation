@@ -1,0 +1,262 @@
+﻿@page
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px;
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    .dx-datagrid {
+        color: #000000;
+    }
+
+    .center-checkbox {
+        display: block;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .dx-datagrid .dx-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+</style>
+
+<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+        Account Groups Ordering
+    </div>
+    <div class="card-body" style="padding: 20px; background-color: #c0dceb; border-radius: 5px;">
+        <div class="dx-field ledgerResult">
+            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201207accountGroupOrdering>()
+                .ID("dataGrid")
+                .KeyExpr("AccountGroupId") // Ensure this field is unique
+                .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("AccountGroupsOrdering")
+                .LoadAction("GetAccountGroupsOrdering")
+              //.UpdateAction("UpdateAccountGroupOrder") // Add update action
+                )
+                .Columns(columns =>
+                {
+                    columns.Add().Caption("Account Groups Ordering").Columns(group =>
+                    {
+                        group.Add().DataField("ChartOfAccountsOrder").Caption("Chart Of Accounts Order").GroupIndex(0);
+                        group.Add().DataField("MasterGroup").Caption("Master Group").GroupIndex(1);
+                        group.Add().DataField("AccountGroupId").Caption("Account Group Id").Alignment(HorizontalAlignment.Center).AllowEditing(false);
+                        group.Add().DataField("AccountGroup").Caption("Account Group").AllowEditing(false);
+                        group.Add()
+                    .DataField("AccountGroupOrderNo")
+                    .Caption("Account Group Order No")
+                    .SortOrder(SortOrder.Asc)
+                    .Alignment(HorizontalAlignment.Center)
+                    .AllowEditing(true); // Allow editing this column
+                    });
+                })
+                .Selection(selection => selection.Mode(SelectionMode.Single))
+               .Editing(editing => editing
+    .Mode(GridEditMode.Cell) // ✅ Ensure inline cell editing is enabled
+    .AllowUpdating(true) // ✅ Enable editing
+)
+                 .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(500)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .Grouping(grouping => grouping.AutoExpandAll(true))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%")
+             
+                
+
+               // .FocusedRowEnabled(true)
+                //.FocusedRowKey(0) // Remove or dynamically set this
+                )
+
+        </div>
+
+       @*  @(Html.DevExtreme().Button()
+            .Text("Move Up")
+            .Icon("arrowup")
+            .OnClick("moveRowUp")
+            )
+
+        @(Html.DevExtreme().Button()
+            .Text("Move Down")
+            .Icon("arrowdown")
+            .OnClick("moveRowDown")
+            ) *@
+        <div class="card-footer">
+            @await Html.PartialAsync("ADOFooter")
+        </div>
+    </div>
+   
+</div>
+
+<script>
+
+    
+    
+    $("#btnSave").click(function () {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        console.log("Save function triggered");
+
+        // ✅ Get only the edited/changed rows
+        var changes = dataGrid.option("editing.changes") || [];
+
+        if (changes.length === 0) {
+            alert("No changes to save.");
+            return;
+        }
+
+        console.log(changes);
+
+        var updatedRows = changes.map(change => {
+            let accountGroupId = change.key?.AccountGroupId; // ✅ Extract AccountGroupId from the object
+            let accountGroupOrderNo = change.data ? change.data.AccountGroupOrderNo : null;
+
+            console.log("Extracted AccountGroupId:", accountGroupId); // ✅ Log the correct ID
+
+            return {
+                AccountGroupId: accountGroupId,
+                AccountGroupOrderNo: accountGroupOrderNo
+            };
+        });
+
+        console.log("Updated rows:", updatedRows);
+
+        // ✅ Send updated rows to the server via AJAX
+        $.ajax({
+            url: "api/AccountGroupsOrdering/UpdateAccountGroupOrder", // Ensure this is the correct API endpoint
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(updatedRows),
+            success: function (response) {
+                alert("Changes saved successfully!");
+                dataGrid.refresh(); // ✅ Refresh grid after save
+            },
+            error: function () {
+                alert("Error saving data.");
+            }
+        });
+    });
+
+
+
+
+    //MoveupDown functionality
+
+
+
+    var selectedRow = null; // ✅ Global variable for selected row
+
+    $(document).ready(function () {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        // ✅ Detect row selection and store selected row
+        dataGrid.option("onSelectionChanged", function (e) {
+            if (e.selectedRowsData.length > 0) {
+                selectedRow = e.selectedRowsData[0];
+                console.log("Selected Row:", selectedRow);
+            } else {
+                selectedRow = null;
+            }
+        });
+
+        // ✅ Handle cell value change
+        dataGrid.option("onCellValueChanged", function (e) {
+            if (e.column.dataField === "AccountGroupOrderNo") {
+                console.log("Edited AccountGroupOrderNo Value:", e.value);
+            }
+        });
+    });
+    // ✅ Function to move row up/down within the same MasterGroup
+    function moveRow(direction) {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        if (!selectedRow) {
+            alert("Please select a row to move.");
+            return;
+        }
+
+        var dataSource = dataGrid.getDataSource();
+        var store = dataSource.store();
+
+        // ✅ Load data properly from the store
+        dataSource.load().done(function (data) {
+            var currentIndex = data.findIndex(row => row.AccountGroupId === selectedRow.AccountGroupId);
+            var newIndex = currentIndex + direction;
+
+            // ✅ Ensure newIndex is within valid bounds
+            if (newIndex >= 0 && newIndex < data.length) {
+                // ✅ Check if the new row belongs to the same MasterGroup
+                if (data[newIndex].MasterGroup === selectedRow.MasterGroup) {
+                    // ✅ Swap positions within the group
+                    [data[currentIndex], data[newIndex]] = [data[newIndex], data[currentIndex]];
+
+                    // ✅ Swap AccountGroupOrderNo values to maintain correct order
+                    let tempOrderNo = data[currentIndex].AccountGroupOrderNo;
+                    data[currentIndex].AccountGroupOrderNo = data[newIndex].AccountGroupOrderNo;
+                    data[newIndex].AccountGroupOrderNo = tempOrderNo;
+
+                    // ✅ Update the store with new values
+                    store.update(data[currentIndex].AccountGroupId, data[currentIndex]);
+                    store.update(data[newIndex].AccountGroupId, data[newIndex]);
+
+                    // ✅ Reload and refresh the DataGrid
+                    dataSource.reload();
+                    dataGrid.refresh();
+
+                    // ✅ Keep the moved row selected
+                    selectedRow = data[newIndex];
+                    dataGrid.option("focusedRowKey", selectedRow.AccountGroupId);  // ✅ Ensure key field is used
+                } else {
+                    alert("Cannot move outside the group.");
+                }
+            }
+        }).fail(function (error) {
+            console.error("Error loading data:", error);
+        });
+    }
+
+    // ✅ Button click handlers
+    function moveRowUp() {
+        moveRow(-1);
+    }
+
+    function moveRowDown() {
+        moveRow(1);
+    }
+
+
+</script>

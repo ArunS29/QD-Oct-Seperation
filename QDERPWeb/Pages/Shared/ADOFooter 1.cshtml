@@ -8,15 +8,14 @@
     }
 
     .dx-button {
-        background-color: aliceblue;
-        border-color: aliceblue
+        background-color: whitesmoke;
     }
 
 
 
     .horizontal-container {
         display: flex;
-        gap: 40px; /* Adds spacing between buttons */
+        gap: 10px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
         align-items: center; /* Vertically centers the buttons */
         margin: 15px;
@@ -32,7 +31,7 @@
     }
 
     .dx-datagrid .dx-row {
-        border-bottom: 1px solid aliceblue; /* Border between rows */
+        border-bottom: 1px solid #ccc; /* Border between rows */
     }
     /* Custom styles for context menu */
     .context-menu {
@@ -59,92 +58,42 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
-
-    #previewModal {
-        border: 1px solid aliceblue;
-    }
-
-    .bold-button .dx-button-text {
-        font-weight: bold;
-    }
 </style>
-<div class="dx-fieldset horizontal-container mt-2" style="background-color:aliceblue">
+<div class="dx-fieldset horizontal-container mt-2">
 
 
-
+     @(Html.DevExtreme().Button()
+    .ID("btnMoveUp")
+    .Text("Move Up")
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("arrowup")
+    )
     @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text("Save")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "bold-button" })
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text("Save & Close")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "bold-button" })
-        )
+    .ID("btnMoveDown")
+    .Text("Move Down")
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("arrowdown")
+    )
+      @(Html.DevExtreme().Button()
+    .ID("btnSave")
+    .Text("Save")
+    .Type(ButtonType.Normal)
+    .StylingMode(ButtonStylingMode.Outlined)
+    .Icon("save")
+    // .OnClick("function() { UpdateVoucherEntry(); }")
+    )
+
     @(Html.DevExtreme().Button()
         .ID("btnPrint")
         .Text("Print")
         .Icon("print")
-        .ElementAttr(new { @class = "bold-button" })
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text("Delete")
-        .Icon("close")
-        .ElementAttr(new { @class = "bold-button" })
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnBack")
-        .Text("Back")
-        .Icon("arrowleft")
-        .ElementAttr(new { @class = "bold-button" })
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnAddLine")
-        .Text("Add Line")
-        .Icon("add")
-        .ElementAttr(new { @class = "bold-button" })
-        .OnClick("addRow")
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnSubmit")
-        .Text("Submit")
-        .Icon("upload")
-        .ElementAttr(new { @class = "bold-button" })
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnVerify")
-        .Text("Verify")
-        .Icon("check")
-        @*   .OnClick("onVerifyButtonClick") *@
-        .ElementAttr(new { @class = "bold-button" })
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnApprove")
-        .Text("Approve")
-        .Icon("exportselected")
-        @*   .OnClick("onApproveButtonClick") *@
-        .ElementAttr(new { @class = "bold-button" })
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text("Attach")
-        .Icon("link")
-        @*   .OnClick("onAttachButtonClick") *@
-        .ElementAttr(new { @class = "bold-button" })
         )
 
 
 </div>
 <script type="text/javascript">
-
     // Hide context menu on click outside
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");
@@ -345,37 +294,4 @@
             reader.readAsText(file);
         }
     });
-    //     $(document).ready(function() {
-    //     // Attach a click event to the Save button
-    //     $('#btnSave').dxButton({
-    //         onClick: function(e) {
-    //             // Call your save function here
-    //             saveData();
-    //         }
-    //     });
-
-    //     // Define your save function
-    //     function saveData() {
-    //         // Example action - could be form submission, AJAX call, etc.
-    //         alert('Save button clicked!');
-
-    //         // You can replace this with actual logic to save the data, like an AJAX request
-    //         // Example AJAX call:
-    //         /*
-    //         $.ajax({
-    //             url: '/your-api-endpoint',
-    //             method: 'POST',
-    //             data: { /* your data here * / },
-    //             success: function(response) {
-    //                 // Handle successful save
-    //                 alert('Data saved successfully');
-    //             },
-    //             error: function(error) {
-    //                 // Handle error
-    //                 alert('Error saving data');
-    //             }
-    //         });
-    //         */
-    //     }
-    // });
 </script>

@@ -1,0 +1,445 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.JournalEntryEditModel
+@{
+}
+<style>
+    #dataGrid .dx-data-row {
+        border-bottom: 1px solid lightgrey;
+    }
+
+    #dataGrid .dx-header-row {
+        border-bottom: 2px solid lightgrey;
+    }
+
+
+    .dx-dropdownbox {
+        display: none;
+    }
+
+    /* Show dropdown on hover */
+    .hovered-cell .dx-dropdownbox {
+        display: inline-block !important;
+    }
+
+    .custom-modal .modal-dialog {
+        max-width: 90%; /* Adjust width */
+        max-height: 90vh; /* Adjust height */
+    }
+
+    .custom-modal .modal-body iframe {
+        height: 500px; /* Adjust iframe height */
+    }
+
+
+</style>
+
+<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="card-header" style="color:black;">JournalVoucherEdit</div>
+
+    <div class="container-fluid">
+        <div class="d-flex align-items-center justify-content-between flex-wrap">
+            <div class="form-group me-3">
+                <label for="VoucherNo" class="form-label">Journal Reference No</label>
+                @(Html.DevExtreme().TextBox()
+                    .ID("VoucherNo")
+                    .Placeholder("Generating...")
+                    .ReadOnly(true)
+                    )
+            </div>
+
+            <div class="form-group me-3">
+                <label for="VoucherDate" class="form-label">Voucher Date</label>
+                @(Html.DevExtreme().DateBox()
+                    .ID("VoucherDate")
+                    .Value(DateTime.Now)
+                    .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
+                    .UseMaskBehavior(true) // Ensures proper date input handling
+                    )
+            </div>
+
+            <div class="form-group me-3">
+                <label for="EffectiveDate" class="form-label">Effective Date</label>
+                @(Html.DevExtreme().DateBox()
+                    .ID("EffectiveDate")
+                    .Value(DateTime.Now)
+                    .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
+                    .UseMaskBehavior(true)
+                    )
+            </div>
+
+            <div class="form-group flex-grow-1">
+                <label for="VoucherNarration" class="form-label">Voucher Narration</label>
+                @(Html.DevExtreme().TextArea()
+                    .ID("VoucherNarration")
+                    .MaxLength(500)
+                    )
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="ClaimName" class="form-label">Claim Name</label>
+            <div class="col-md-5">
+                @(
+                    Html.DevExtreme().DropDownBox()
+                    .ID("ClaimNameDropdown")
+                    .ValueExpr("CostAllocationDescription")
+                    .DisplayExpr("CostAllocationDescription")
+                    .DataSource(ds => ds.Mvc().Key("JournalChildNo"))
+                    .ContentTemplate(@<text>
+                    @* @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202111costAllocationDescription>() *@
+                    .ID("ClaimNameGrid")
+                    .Columns(columns =>
+                    {
+                    columns.Add().DataField("JournalChildNo").Caption("Journal Child No");
+                    columns.Add().DataField("CostAllocationUnitId").Caption("Unit ID");
+                    })
+                    )
+                </text>)
+                    .Width("100%")
+                    )
+            </div>
+        </div>
+
+        <div id="customModal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Allocation Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Dynamic content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="dx-field ledgerResult">
+            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202101journalRegisterChild>()
+                    .ID("dataGrid")
+                    .KeyExpr("VoucherEntryNo")
+                    .Columns(columns =>
+                    {
+                        columns.Add().Caption("#").Width(50).Alignment(HorizontalAlignment.Center)
+                    .CellTemplate(@<text>
+                <div>
+                    <%= row.rowIndex + 1 %>
+                </div>
+            </text>);
+
+
+
+                        columns.Add().DataField("select").Caption("Select").CellTemplate(@<text>
+                <input type="checkbox" class="dx-checkbox" />
+            </text>).Width(50).AllowEditing(false);
+
+
+                        columns.Add().DataField("AccountHead").Caption("Account Ledger").Width(300).AllowEditing(true)
+                    .EditCellTemplate(@<text>
+                <div class="account-ledger-dropdown">
+                    @(Html.DevExtreme().DropDownBox()
+                    .DataSource(d => d.WebApi().Controller("JournalEntryEdit").LoadAction("GetCostAllocationUnits").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("AccountLedgerDropdown_{rowIndex}")
+                    .ShowClearButton(false)
+                    .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .OnInput("dropDownBoxOnInput")
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("AccountHead")
+                    .DisplayExpr("AccountHead")
+                    .Placeholder("Select Cost Allocation")
+                    .Width(280)
+                    .TabIndex(1)
+                    .DropDownOptions(o => o.Width(800))
+                    .ContentTemplate(new TemplateName("costAllocationDropdownContentTemplate"))
+                    )
+                </div>
+            </text>);
+
+
+
+                        columns.Add().DataField("EntryNarration").Caption("Entry Narration").Width(200);
+                        columns.Add().DataField("DrCr").Caption("Dr/Cr").Width(80).Alignment(HorizontalAlignment.Center);
+                        columns.Add().DataField("DrAmount").Caption("Dr Amount").Format("currency").Width(120).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("CrAmount").Caption("Cr Amount").Format("currency").Width(120).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
+                        columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150);
+                        columns.Add().DataField("EmpAllocated").Caption("Employees Allocation").Width(150);
+                        columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150);
+                    })
+                .DataSource(new List<object>())
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .Height(300)
+                .ColumnAutoWidth(true)
+                .ShowBorders(true)
+                .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
+                )
+        </div>
+
+        @using (Html.DevExtreme().NamedTemplate("costAllocationDropdownContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+                    .ID("costAllocationDropdownGrid")
+                    .DataSource(d => d.WebApi().Controller("JournalEntryEdit").LoadAction("GetCostAllocationUnits").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+                    .ShowBorders(true)
+                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                    .OnSelectionChanged("dataGridSelectionChanged")
+                    .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Columns(columns =>
+                    {
+                        columns.Add().Caption("AccountId").DataField("AccountId");
+                        columns.Add().Caption("AccountHead").DataField("AccountHead");
+                        columns.Add().Caption("ReferenceNo").DataField("ReferenceNo");
+                        columns.Add().Caption("AccountGroup").DataField("AccountGroup");
+                        columns.Add().Caption("AccountHeadArabic").DataField("AccountHeadArabic");
+                        columns.Add().Caption("IsLedgerObselete").DataField("IsLedgerObselete")
+                    .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsDisabled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>);
+                    })
+                )
+        }
+
+
+        <div>
+            @await Html.PartialAsync("_FormFooter1")
+        </div>
+    </div>
+</div>
+
+<script>
+    function addRow() {
+        var gridInstance = $("#dataGrid").dxDataGrid("instance");
+        gridInstance.getDataSource().store().insert({
+            AccountId: '',
+            EntryNarration: '',
+            DrCr: 'Dr',
+            DrAmount: '0.00Dr',
+            CrAmount: '0.00Cr',
+            CostAllocationDescription: '',
+            TotalCostAllocated: '',
+            EmpAllocated: '',
+            TotalEmpAllocated: ''
+        }).then(function () {
+            gridInstance.refresh();
+        }).catch(function (error) {
+            console.error("Error adding row:", error);
+        });
+    }
+
+    $(function () {
+        $("#btnAddLine").dxButton({
+            text: "Add Line",
+            icon: "add",
+            onClick: function () {
+                addRow();
+            }
+        });
+
+
+        $("#dataGrid").dxDataGrid({
+            onCellPrepared: function (e) {
+                if (e.rowType === "data" && e.column.caption === "Account Ledger") {
+                    $(e.cellElement).hover(
+                        function () {
+                            $(this).addClass("hovered-cell");
+                        },
+                        function () {
+                            $(this).removeClass("hovered-cell");
+                        }
+                    );
+                }
+            },
+            onEditorPreparing: function (e) {
+                if (e.parentType === "dataRow" && e.dataField === "Account Ledger") {
+                    e.editorOptions.visible = true;
+                }
+            }
+        });
+    });
+
+    function dataGridSelectionChanged(e) {
+        var selectedData = e.selectedRowsData[0];
+        if (!selectedData) return;
+
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var focusedRowIndex = dataGrid.option("focusedRowIndex");
+
+
+        dataGrid.cellValue(focusedRowIndex, "AccountHead", selectedData.AccountHead);
+
+
+        var dropdownBox = $("#AccountLedgerDropdown_" + focusedRowIndex).dxDropDownBox("instance");
+        if (dropdownBox) {
+            dropdownBox.close();
+        }
+    }
+
+    $(document).ready(function () {
+        $("#ClaimNameDropdown").closest(".dx-dropdownbox").show();
+    });
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("GetNewVoucherNo", "JournalEntryEdit")',
+            type: 'GET',
+            success: function (data) {
+                const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                voucherNoField.option("value", data);
+                updateTemporaryNo({ value: data });
+            },
+            error: function () {
+                alert("Error generating voucher number.");
+            }
+        });
+    });
+    function saveJournalEntry() {
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        var voucherDate = $("#VoucherDate").dxDateBox("instance").option("value");
+        var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
+        var voucherNarration = $("#VoucherNarration").dxTextArea("instance").option("value");
+        var claimName = $("#ClaimNameDropdown").dxDropDownBox("instance").option("value");
+
+        var gridInstance = $("#dataGrid").dxDataGrid("instance");
+        var gridData = gridInstance.getDataSource().items();
+
+        var requestData = {
+            VoucherNo: voucherNo,
+            VoucherDate: voucherDate,
+            EffectiveDate: effectiveDate,
+            VoucherNarration: voucherNarration,
+            ClaimName: claimName,
+            Entries: gridData
+        };
+
+        $.ajax({
+            url: '@Url.Action("SaveJournalEntry", "JournalEntryEdit")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(requestData),
+            success: function (response) {
+                DevExpress.ui.notify("Journal Entry saved successfully!", "success", 3000);
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify("Error saving Journal Entry: " + error, "error", 3000);
+            }
+        });
+    }
+
+   
+    $(document).ready(function () {
+        let dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        dataGrid.option("onContextMenuPreparing", function (e) {
+            if (e.row && e.row.rowType === "data") {
+                e.event.preventDefault();
+
+                // Get selected row data
+                let rowData = e.row.data;
+                let selectedAccountHead = rowData.AccountHead;
+                let selectedAccountId = rowData.AccountId;
+                let selectedDrCr = rowData.DrCr;
+                let selectedAmount = selectedDrCr === "Dr" ? rowData.DrAmount : rowData.CrAmount;
+                selectedAmount = parseFloat(selectedAmount).toFixed(2); // Ensuring numeric format
+                var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
+                if (effectiveDate) {
+                    var formattedDate = new Date(effectiveDate).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }).replace(",", ""); // Remove comma if present
+
+
+                } // Fetch from input field
+                let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                // Define context menu options
+                let menuItems = [
+                    {
+                        text: "Cost Allocation",
+                        onItemClick: function () {
+                            openModalPopup(`/Finance/JournalEntryCostAllocation?DrCr=${selectedDrCr}&Amount=${selectedAmount}&AccountId=${selectedAccountId}&AccountHead=${selectedAccountHead}&EffectiveDate=${effectiveDate}&VoucherNo=${voucherNo}`);
+                        }
+                    },
+                    {
+                        text: "Property Allocation",
+                        onItemClick: function () {
+                            openModalPopup(`/Finance/JournalEntryPropertyAllocation?DrCr=${selectedDrCr}&Amount=${selectedAmount}&AccountId=${selectedAccountId}&AccountHead=${selectedAccountHead}&EffectiveDate=${effectiveDate}&VoucherNo=${voucherNo}`);
+                        }
+                    },
+                    {
+                        text: "Employee Allocation",
+                        onItemClick: function () {
+                            openModalPopup(`/Finance/JournalEntryEmployeeAllocation?DrCr=${selectedDrCr}&Amount=${selectedAmount}&AccountId=${selectedAccountId}&AccountHead=${selectedAccountHead}&EffectiveDate=${effectiveDate}&VoucherNo=${voucherNo}`);
+                        }
+                    }
+                ];
+                debugger;
+                // Create context menu and attach it to the clicked cell
+                let contextMenu = $("<div>").appendTo("body").dxContextMenu({
+                    dataSource: menuItems,
+                    target: e.cellElement,
+                    showEvent: "dxcontextmenu",
+                    onItemClick: function (itemData) {
+                        itemData.itemData.onItemClick();
+                    },
+                    onHidden: function () {
+                        if (contextMenu) {
+                            contextMenu.dispose();  // Properly dispose of the instance
+                            // contextMenuElement.remove();  // Remove the element from the DOM
+                        }
+                    }
+                }).dxContextMenu("instance");
+
+                contextMenu.show();
+            }
+        });
+    });
+
+    // Function to open modal and load the URL with passed data
+    function openModalPopup(url) {
+        let modalHtml = `
+                 <div class="modal fade custom-modal" id="contextModal" tabindex="-1" aria-labelledby="contextModalLabel" aria-hidden="true">
+                     <div class="modal-dialog modal-fullscreen">
+                         <div class="modal-content">
+                             <div class="modal-header">
+                                 <h5 class="modal-title" id="contextModalLabel">Allocation Details</h5>
+                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                             </div>
+                             <div class="modal-body">
+                                 <iframe src="${url}" width="100%" height="100%" frameborder="0"></iframe>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             `;
+
+        // Remove existing modal if it exists
+        $("#contextModal").remove();
+
+        // Append modal to body and show it
+        $("body").append(modalHtml);
+        $("#contextModal").modal("show");
+    }
+
+
+
+</script>
