@@ -387,10 +387,9 @@
 
     function addReportsButton_click(e) {
         let pageUrl = '';
-       
+
         switch (e.itemData.text) {
             case 'Ledger to Salary Payable Mapping':
-                // Ensure acchedid and accheadname have values before appending them
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                     pageUrl = `/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
                 } else {
@@ -403,13 +402,12 @@
                     return;
                 }
                 break;
+
             case 'Add Bank Receipts':
                 pageUrl = '/Finance/VoucherEntryReceipts';
                 break;
 
             case 'Account Ledger to Recievables/Payable Mapping':
-                // Ensure acchedid and accheadname have values before appending them
-
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                     pageUrl = `/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
                 } else {
@@ -424,12 +422,8 @@
                 break;
 
             case 'Bank Reconciliation':
-              
-                // Ensure acchedid and accheadname have values before appending them
-
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                     pageUrl = `/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&VoucherAmountFormatted=${encodeURIComponent(VoucherAmountFormatted)}&firstrowVoucherAmountFormatted=${encodeURIComponent(firstrowVoucherAmountFormatted)}`;
-
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -442,33 +436,28 @@
                 break;
 
             case 'Detailed Transaction Report':
-           
-                // Ensure acchedid and accheadname have values before appending them
-
-             
-                    window.open('/Finance/TransactionDetails', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                  
-
-                //  else {
-                //     Swal.fire({
-                //         icon: 'warning',
-                //         title: 'Select Account to Review',
-                //         text: 'Please select an account before proceeding.',
-                //         confirmButtonText: 'OK'
-                //     });
-                //     return;
-                // }
-                break;
-
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-                return;
+                window.open('/Finance/TransactionDetails', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                return;  // No need to set pageUrl for new window
         }
 
-        // Set the iframe source and show overlay
-        $("#overlay-frame").attr("src", pageUrl);
-        $("#overlay").fadeIn();
+        // Handle Account Statement cases separately
+        let selectedText = e.itemData.text;
+
+        if (selectedText === "Account Statements") {
+            window.location.href = "/DocumentViewer?reportName=AccountReport";
+        } else if (selectedText === "Statement Of Account With Narration") {
+            window.location.href = "/DocumentViewer?reportName=AccountWithNarration";
+        } else if (selectedText === "Statement Of Account Export Formate") {
+            window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport";
+        } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
+            window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport";
+        } else if (pageUrl !== '') {
+            // Set the iframe source and show overlay only if pageUrl is valid
+            $("#overlay-frame").attr("src", pageUrl);
+            $("#overlay").fadeIn();
+        }
     }
+
 
 
     // Function to close the overlay
@@ -569,20 +558,20 @@
             reader.readAsText(file);
         }
     });
-    function addReportsButton_click(e) {
-        var selectedText = e.itemData.text; // Get selected item text
+    // function addReportsButton_click(e) {
+    //     var selectedText = e.itemData.text; // Get selected item text
 
 
-        if (selectedText === "Account Statements") {
-            window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
-        } else if (selectedText === "Statement Of Account With Narration") {
-            window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
-        } else if (selectedText === "Statement Of Account Export Formate") {
-            window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
-        } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
-            window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
-        }
-    }
+    //     if (selectedText === "Account Statements") {
+    //         window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
+    //     } else if (selectedText === "Statement Of Account With Narration") {
+    //         window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
+    //     } else if (selectedText === "Statement Of Account Export Formate") {
+    //         window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
+    //     } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
+    //         window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
+    //     }
+    // }
     
 
 

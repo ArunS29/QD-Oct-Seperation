@@ -1067,9 +1067,9 @@ function updateBankReconciliationState(accheadname) {
  
 	if (items && items.length > 3) { // Ensure index exists before modifying
 		if (accheadname.includes("Bank") || accheadname.includes("BANK")) {  
-	items[3] = { ...items[3], disabled: false }; // Enable item if accheadname contains "Bank"
+	items[6] = { ...items[6], disabled: false }; // Enable item if accheadname contains "Bank"
       } else {  
-	items[3] = { ...items[3], disabled: true }; // Disable otherwise
+	items[6] = { ...items[6], disabled: true }; // Disable otherwise
      }
  
 		dropdown.option("items", items); // Update the dropdown options
