@@ -569,13 +569,10 @@
             reader.readAsText(file);
         }
     });
-    // function addReportsButton_click(e) {
-    //     var selectedText = e.itemData.text; // Get selected item text
+    function addReportsButton_click(e) {
+        var selectedText = e.itemData.text; // Get selected item text
 
-    //     if (selectedText === "Account Statements") {
-    //         window.location.href = "/DocumentViewer"; // Redirect to the Razor Page
-    //     }
-    // }
+
         if (selectedText === "Account Statements") {
             window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
         } else if (selectedText === "Statement Of Account With Narration") {
@@ -586,7 +583,6 @@
             window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
         }
     }
-
 
 
 </script>
