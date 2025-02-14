@@ -132,7 +132,7 @@
         {
             items.Add().Text("Bils Payable").Icon("search");
              items.Add().Text("Payable Summary").Icon("search");
-              items.Add().Text("Report by Supplier").Icon("search");
+            items.Add().Text("Report by Supplier").Icon("search").OnClick("ReportsBySupplier");
             items.Add().Text("Bills Payable with Unmapped Vouchers").Icon("smalliconslayout");
         
         })
@@ -392,6 +392,8 @@
  //Refresh button function
         function refreshPage() {
     location.reload();  // This reloads the current page
-}
+    } function ReportsBySupplier() {
+        window.location.href = "/Finance/ReportsBySupplier";
+    }
 
 </script>

@@ -199,6 +199,14 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[qry20110SundryCreditors]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[qry20110SundryDebtors]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[qry20121ExpenseClaimForm]",
          "ObjectType": 3
       },

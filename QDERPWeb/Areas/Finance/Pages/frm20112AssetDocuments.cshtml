@@ -32,7 +32,7 @@
         max-width: 65%;
         padding: 20px;
         margin: 0 auto;
-        background-color: #B4E1F5;
+    /*     background-color: #B4E1F5; */
     }
     /* Apply bold text to all DevExtreme buttons */
     .dx-button .dx-button-text {
@@ -237,15 +237,87 @@
                         .Columns(columns =>
                         {
                             columns.AddFor(m => m.DocumentNo)
-                        .Caption("DocumentNo")
-                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
-                        .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>)
-                        //  .DataType(DevExtreme.AspNet.Mvc.Builders.DataType.String) // Specify the column data type
-                        .AllowEditing(true); // Allow editing for this column
+                        .Caption("Document No")
+                        .HeaderCellTemplate(@<div style="font-weight: bold;">Document No</div>)
+                    .AllowEditing(true);
+
+                            @*      columns.AddFor(m => m.DocumentType)
+                .Caption("Document Type")
+                .Width(400)
+                .AllowEditing(true)
+                .CellTemplate(@<text>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="cost-allocation-text" data-cost-allocation="<%- data.DocumentType %>">
+                <%- data.DocumentType %>
+                </span>
+
+                </div>
+                </text>)
+                .EditCellTemplate(@<text>
+                <div class="account-ledger-dropdown">
+                @(Html.DevExtreme().DropDownBox()
+                .DataSource(d => d.WebApi()
+                .Controller("LedgerAccountMaster")
+                .LoadAction("GetDocumentType")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("DocumentTypeId"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("DocumentTypeDropdown_" + new JS("row.rowIndex"))
+                .ShowClearButton(false)
+                .AcceptCustomValue(true)
+                .OpenOnFieldClick(false)
+                .HoverStateEnabled(true)
+                .OnValueChanged("gridBox_valueChanged")
+                .ValueExpr("DocumentTypeId")
+                .DisplayExpr("DocumentType")
+                .Placeholder("")
+                .Width(280)
+                .TabIndex(1)
+                .DropDownOptions(o => o.Width(800))
+                .Value(new JS("row.data.DocumentType"))
+                .ContentTemplate(new TemplateName("DocumentTypeDropdownContentTemplate"))
+                )
+                </div>
+                </text>); *@
 
                             columns.AddFor(m => m.DocumentType)
-                        .Caption("DocumentType")
-                        .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
+                                .Caption("Document Type")
+                                .Width(400)
+                                .AllowEditing(true)
+                                .CellTemplate(@<text>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="cost-allocation-text" data-cost-allocation="<%- data.DocumentType %>">
+                            <%- data.DocumentType %>
+                        </span>
+                    </div>
+                </text>)
+                            .EditCellTemplate(@<text>
+                    <div class="account-ledger-dropdown">
+                        @(Html.DevExtreme().DropDownBox()
+                        .DataSource(d => d.WebApi()
+                        .Controller("LedgerAccountMaster")
+                        .LoadAction("GetDocumentType")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("DocumentTypeId"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID(new JS("'DocumentTypeDropdown_' + row.rowIndex"))
+                        .ShowClearButton(false)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .HoverStateEnabled(true)
+                        .OnValueChanged("gridBox_valueChanged")
+                        .ValueExpr("DocumentTypeId")
+                        .DisplayExpr("DocumentType")
+                        .Placeholder("")
+                        .Width(280)
+                        .TabIndex(1)
+                        .DropDownOptions(o => o.Width(800))
+                        .Value(new JS("row.data.DocumentTypeId"))
+                        .ContentTemplate(new TemplateName("DocumentTypeDropdownContentTemplate"))
+                        )
+                    </div>
+                </text>);
+
 
                             columns.AddFor(m => m.DocumentRefNo)
                         .Caption("Document Ref No")
@@ -276,7 +348,7 @@
                     .HeaderFilter(filter => filter.Visible(true))
                     .Editing(editing => editing
                     .Mode(GridEditMode.Cell)
-                    .AllowUpdating(true)   // Enable editing of existing rows
+                    .AllowUpdating(true) // Enable editing of existing rows
                     )
                     .Height(250)
                     .ColumnAutoWidth(true)
@@ -284,10 +356,11 @@
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
                     .Width("100%")
-                    .OnCellClick("onDocumentNoClick") // Add the click event
+                    .OnCellClick("onDocumentNoClick") // Event for clicking on a cell
                     .OnRowUpdated("onRowUpdated") // Event for saving edited data
                     )
             </div>
+
 
         </div>
 
@@ -344,6 +417,45 @@
                 )
         }
 
+
+        @using (Html.DevExtreme().NamedTemplate("DocumentTypeDropdownContentTemplate"))
+        {
+            @(
+                Html.DevExtreme().DataGrid()
+                .ID("DocumentTypeDropdownGrid")
+                .DataSource(d => d.WebApi()
+                .Controller("LedgerAccountMaster")
+                .LoadAction("GetDocumentType")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("DocumentType")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Ensure Single selection mode is set correctly
+                .SelectedRowKeys(new JS("component.option('value')")) // Fixed JS syntax
+                .OnSelectionChanged(@<text>
+            function(selectedItems) {
+            var keys = selectedItems.selectedRowKeys;
+            component.option("value", keys);
+            console.log(keys);
+            }
+        </text>)
+                .HeaderFilter(p => p.Visible(true))
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("DocumentTypeId");
+                    columns.Add().DataField("DocumentType");
+                })
+                )
+        }
+
+
     </div>
 </div>
 
@@ -353,7 +465,7 @@
 <script>
 
     var mARkey = null;
-    let mARresponse = null, DocNo = null;
+    let mARresponse = null, DocNo = null, DocType = null;
 
 
     $(document).ready(function () {
@@ -538,6 +650,20 @@
     function dataGridSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#accountMasterDropDownBox").dxDropDownBox("instance");
+        DocType = selectedKey;
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+
+    }
+
+    function dataDTGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#DocumentTypeDropdown").dxDropDownBox("instance");
 
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
@@ -737,7 +863,7 @@
     function onRowUpdated(e) {
         const updatedData = e.data; // The updated row data
         DocNo = updatedData.DocumentNo; // Retrieve the DocumentNo from the updated row
-        alert(DocNo)
+
 
         if (!DocNo) {
             DevExpress.ui.notify("DocumentNo is missing in the updated row.", "error", 2000);
@@ -749,53 +875,194 @@
         // Pass the DocumentNo to the UpdateVoucherEntry function
         UpdateVoucherEntry(DocNo);
     }
-    function UpdateVoucherEntry(DocNo) {
+    //  function UpdateVoucherEntry(DocNo) {
 
+    //     if (!DocNo) {
+    //         DevExpress.ui.notify("Asset Documents List has been Successfuly updated.", "success", 2000);
+    //         return;
+    //     }
+
+    //     // Get the DataGrid instance
+    //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    //     // Get all rows from the DataGrid
+    //     const allData = dataGrid.getDataSource().items();
+
+    //     // Find the specific row using the provided DocNo
+    //     const updatedRow = allData.find(row => row.DocumentNo === DocNo);
+
+    //     if (!updatedRow) {
+    //         DevExpress.ui.notify("Document number not found in grid data.", "error", 2000);
+    //         return;
+    //     }
+
+    //     // Prepare the data to send to the server
+    //     const documentData = { DocumentNo: updatedRow.DocumentNo };
+
+    //     console.log("Document to send:", documentData);
+
+    //     // Send the `DocumentNo` to the server
+    //     $.ajax({
+    //         url: "/api/LedgerAccountMaster/UpdateAssetDocument", // API endpoint
+    //         method: "POST", // HTTP method
+    //         contentType: "application/json", // Data format
+    //         data: JSON.stringify(documentData), // Serialize the data
+    //         success: function (response) {
+    //             dataGrid.refresh();
+    //             // Notify user on success
+    //            // DevExpress.ui.notify("Document updated successfully!", "success", 2000);
+    //         },
+    //         error: function (xhr, status, error) {
+    //             // Handle error and notify user
+    //             const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+    //             DevExpress.ui.notify(`Failed to update document: ${errorMessage}`, "error", 4000);
+    //         },
+    //     });
+    // }
+
+
+    function UpdateVoucherEntry(DocNo) {
         if (!DocNo) {
-            DevExpress.ui.notify("No document number provided to update.", "info", 2000);
+            DevExpress.ui.notify("Asset Documents List has been successfully updated.", "success", 2000);
             return;
         }
 
         // Get the DataGrid instance
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-        // Get all rows from the DataGrid
-        const allData = dataGrid.getDataSource().items();
-
-        // Find the specific row using the provided DocNo
-        const updatedRow = allData.find(row => row.DocumentNo === DocNo);
-
-        if (!updatedRow) {
-            DevExpress.ui.notify("Document number not found in grid data.", "error", 2000);
+        if (!dataGrid) {
+            DevExpress.ui.notify("Error: DataGrid instance not found.", "error", 3000);
             return;
         }
 
-        // Prepare the data to send to the server
-        const documentData = { DocumentNo: updatedRow.DocumentNo };
+        // Fetch all data asynchronously to ensure we have the correct dataset
+        dataGrid.getDataSource().store().load().done(function (allData) {
+            if (!allData || allData.length === 0) {
+                DevExpress.ui.notify("No data found in the grid.", "error", 3000);
+                return;
+            }
 
-        console.log("Document to send:", documentData);
+            // Find the specific row using the provided DocNo
+            const updatedRow = allData.find(row => row.DocumentNo === DocNo);
 
-        // Send the `DocumentNo` to the server
-        $.ajax({
-            url: "/api/LedgerAccountMaster/UpdateAssetDocument", // API endpoint
-            method: "POST", // HTTP method
-            contentType: "application/json", // Data format
-            data: JSON.stringify(documentData), // Serialize the data
-            success: function (response) {
-                // Notify user on success
-                DevExpress.ui.notify("Document updated successfully!", "success", 2000);
-            },
-            error: function (xhr, status, error) {
-                // Handle error and notify user
-                const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
-                DevExpress.ui.notify(`Failed to update document: ${errorMessage}`, "error", 4000);
-            },
+            if (!updatedRow) {
+                DevExpress.ui.notify("Document number not found in grid data.", "error", 3000);
+                return;
+            }
+
+            // Prepare the data to send to the server
+            const documentData = { DocumentNo: updatedRow.DocumentNo };
+
+            console.log("Document to send:", documentData);
+
+            // Send the `DocumentNo` to the server
+            $.ajax({
+                url: "/api/LedgerAccountMaster/UpdateAssetDocument", // API endpoint
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(documentData),
+                success: function (response) {
+                    //dataGrid.refresh(); // Refresh the grid after successful update
+                    //   DevExpress.ui.notify("Document updated successfully!", "success", 2000);
+                },
+                error: function (xhr, status, error) {
+                    // Handle error and notify user
+                    const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+                    DevExpress.ui.notify(`Failed to update document: ${errorMessage}`, "error", 4000);
+                }
+            });
+        }).fail(function (error) {
+            DevExpress.ui.notify("Error loading data from DataGrid.", "error", 3000);
+            console.error("Data load error:", error);
         });
     }
 
 
 
+    function onDropDownBoxValueChanged(e) {
+        const selectedDropDownValue = e.value; // Update the selected value
 
+        // Update the DataGrid selection to match the DropDownBox value
+        const dataGrid = $("#DocumentTypeDropdownGrid").dxDataGrid("instance");
+        if (dataGrid) {
+            const items = dataGrid.getDataSource().items();
+            const selectedItem = items.find(item => item.DocumentType === selectedDropDownValue);
+            if (selectedItem) {
+                selectedDocumentTypeIdID = selectedItem.DocumentTypeId; // Store the ID
+                dataGrid.selectRows([selectedDocumentTypeIdID]);
+            } else {
+                selectedDocumentTypeIdID = null; // Clear the ID if no match
+                dataGrid.clearSelection();
+            }
+        }
+    }
+
+
+    function onDataGridContentReady(e) {
+        const dataGrid = e.component;
+
+        // Ensure the DataGrid selection reflects the DropDownBox value
+        const items = dataGrid.getDataSource().items();
+        const selectedItem = items.find(item => item.DocumentType === selectedDropDownValue);
+        if (selectedItem) {
+            selectedDocumentTypeIdID = selectedItem.DocumentTypeId; // Update the ID
+            dataGrid.selectRows([selectedDocumentTypeIdID]);
+        } else {
+            selectedDocumentTypeIdID = null; // Clear the ID if no match
+            dataGrid.clearSelection();
+        }
+    }
+
+
+    function gridBox_valueChanged(e) {
+        var grid = $("#dataGrid").dxDataGrid("instance");
+        var rowIndex = e.element.closest("tr").index(); // Get the edited row index
+        var rowData = grid.getVisibleRows()[rowIndex].data;
+
+        let DocumentTypeDropdownGrid = $("#DocumentTypeDropdownGrid").dxDataGrid("instance");
+        let selectedRowData = DocumentTypeDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
+
+        if (selectedRowData) {
+            rowData.DocumentTypeId = selectedRowData.DocumentTypeId; // Store ID
+            rowData.DocumentType = selectedRowData.DocumentType; // Store text
+
+            // Update grid cell values to reflect selection
+            grid.cellValue(rowIndex, "DocumentTypeId", selectedRowData.DocumentTypeId);
+            grid.cellValue(rowIndex, "DocumentType", selectedRowData.DocumentType);
+        }
+
+        grid.refresh(); // Ensure UI updates properly
+    }
+
+
+
+    // function gridBox_valueChanged(e) {
+    //     var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    //     if (dataGrid) {
+    //         dataGrid.selectRows(e.value, false);
+    //     }
+
+    //     if (e.value) {
+    //         let rowIndex = dataGrid.getRowIndexByKey(e.value); // Get row index safely
+    //         if (rowIndex === -1) return; // Ensure row exists
+
+    //         let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
+    //         if (!rowData) return; // Prevent errors if rowData is undefined
+
+    //         let DocumentTypeDropdownGrid = $("#DocumentTypeDropdownGrid").dxDataGrid("instance");
+    //         let selectedRowData = DocumentTypeDropdownGrid?.getSelectedRowsData()[0]; // Get first selected row safely
+
+    //         if (selectedRowData) {
+    //             rowData.DocumentTypeId = selectedRowData.DocumentTypeId; // Store correct ID
+    //         }
+
+    //         rowData.DocumentType = e.value; // Update the row data
+    //         dataGrid.cellValue(rowIndex, "DocumentType", e.value); // Ensure it reflects in the grid
+    //     }
+
+    //     // Close the dropdown after selection
+    //     e.component.option("opened", false);
+    // }
 
 
 </script>

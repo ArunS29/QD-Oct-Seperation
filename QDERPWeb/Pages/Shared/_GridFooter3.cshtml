@@ -137,7 +137,7 @@
             items.Add().Text("Receivables Reports(with Effective Date").Icon("textdocument");
             items.Add().Text("Ageing Reports").Icon("textdocument").OnClick("showSubmenu1");
             items.Add().Text("Receivables Summary Reports").Icon("textdocument");
-            items.Add().Text("Receivables By Client").Icon("taskcomplete");
+            items.Add().Text("Receivables By Client").Icon("taskcomplete").OnClick("ReportsByClient");
             items.Add().Text("Receivables By Sales Person").Icon("taskcomplete");
             items.Add().Text("Receivables By Branch/ Division").Icon("taskcomplete");
             items.Add().Text("Invoice Collection Report").Icon("event");
@@ -409,6 +409,9 @@
     //Refresh button function
     function refreshPage() {
         location.reload();  // This reloads the current page
+    }
+    function ReportsByClient() {
+        window.location.href = "/Finance/ReportsByClients";
     }
 
 

@@ -25,6 +25,10 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Qry20108ChartOfCostCenter> Qry20108ChartOfCostCenters { get; set; }
 
+    public virtual DbSet<Qry20110SundryCreditor> Qry20110SundryCreditors { get; set; }
+
+    public virtual DbSet<Qry20110SundryDebtor> Qry20110SundryDebtors { get; set; }
+
     public virtual DbSet<Qry201114accountLedgersWtAdvance> Qry201114accountLedgersWtAdvances { get; set; }
 
     public virtual DbSet<Qry201205depreciationMasterView> Qry201205depreciationMasterViews { get; set; }
@@ -139,7 +143,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<TblUserMaster> TblUserMasters { get; set; }
 
-  
+
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -507,6 +511,54 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.ProjectMasterCode)
                 .HasMaxLength(25)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Qry20110SundryCreditor>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry20110SundryCreditors");
+
+            entity.Property(e => e.AccountGroup)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.AccountHead)
+                .IsRequired()
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.AccountId)
+                .IsRequired()
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AccountID");
+            entity.Property(e => e.MasterGroupId)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("MasterGroupID");
+        });
+
+        modelBuilder.Entity<Qry20110SundryDebtor>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("qry20110SundryDebtors");
+
+            entity.Property(e => e.AccountGroup)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.AccountHead)
+                .IsRequired()
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.AccountId)
+                .IsRequired()
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("AccountID");
+            entity.Property(e => e.MasterGroupId)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("MasterGroupID");
         });
 
         modelBuilder.Entity<Qry201114accountLedgersWtAdvance>(entity =>

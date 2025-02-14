@@ -720,7 +720,7 @@
                     item.Add().Text("Documents").Title("Documents").Template(@<text>
             <div class="form-container">
 
-                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                @* <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                     @(Html.DevExtreme().Button()
                     .ID("docbtnAttach")
                     .Text("Add & Attach Files")
@@ -730,7 +730,20 @@
                     .OnClick("function() { alert('This feature is currently in progress. Please check back later.'); }")
                     )
 
+                </div> *@
+
+
+                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                    @(Html.DevExtreme().Button()
+                    .ID("docbtnAttach")
+                    .Text("Add & Attach Files")
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("save")
+                    .OnClick("function() { window.location.href = 'frm20112AssetDocuments' }")
+                    )
                 </div>
+
 
                 <div class="card">
                     <div class="dx-field ledgerResult">
