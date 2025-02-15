@@ -277,25 +277,35 @@ function formatDate(date) {
         const accid = getQueryParam("accid");
         const FromDate = getQueryParam("FromDate");
         const ToDate = getQueryParam("ToDate");
-        const VoucherAmtFormatted = parseFloat(getQueryParam("VoucherAmountFormatted")) || 0;
-        const firstrowVoucherAmountFormatted = parseFloat(getQueryParam("firstrowVoucherAmountFormatted")) || 0;
+        const lastRowBalance = getQueryParam("lastRowBalance") || "0";
+        const cleanedBalanceLR = lastRowBalance.replace(/[^0-9.-]/g, ""); // Remove commas and non-numeric characters
+        const lastRowBalanceVal = parseFloat(cleanedBalanceLR) || 0;
 
-    // Ensure the textboxes are properly initialized before setting values
-    const balanceOurBooksInstance = $("#BalanceAsPerOurBooks").dxTextBox("instance");
-    const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
-    const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
+        const firstRowBalance = getQueryParam("firstRowBalance") || "0";
+        const cleanedBalanceFR = firstRowBalance.replace(/[^0-9.-]/g, ""); // Remove commas and non-numeric characters
+        const firstRowBalanceVal = parseFloat(cleanedBalanceFR) || 0;
 
-    if (balanceOurBooksInstance) {
-        balanceOurBooksInstance.option("value", VoucherAmtFormatted);
-    }
-    if (balanceBankStatementInstance) {
-        balanceBankStatementInstance.option("value", firstrowVoucherAmountFormatted);
-    }
 
-    const AmountNotReflectedinBank = VoucherAmtFormatted - firstrowVoucherAmountFormatted;
-    if (amountNotReflectedInstance) {
-        amountNotReflectedInstance.option("value", AmountNotReflectedinBank);
-    }
+        // Ensure the textboxes are properly initialized before setting values
+        const balanceOurBooksInstance = $("#BalanceAsPerOurBooks").dxTextBox("instance");
+        const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
+        const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
+
+        if (balanceOurBooksInstance) {
+            const LastAmt = Math.abs(lastRowBalanceVal);
+            //alert(lastRowBalance);
+            balanceOurBooksInstance.option("value", LastAmt);
+        }
+        if (balanceBankStatementInstance) {
+            const FirstAmt = Math.abs(firstRowBalanceVal);
+            balanceBankStatementInstance.option("value", FirstAmt);
+        }
+
+
+    // const AmountNotReflectedinBank = VoucherAmtFormatted - firstrowVoucherAmountFormatted;
+    // if (amountNotReflectedInstance) {
+    //     amountNotReflectedInstance.option("value", AmountNotReflectedinBank);
+    // }
 
     if (accheadname && ToDate) {
         $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
@@ -405,47 +415,50 @@ $(document).ready(function () {
 
 
 
+    $(function () {
 
- $(function () {
-     let totatReceipts;
-    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        let totatReceipts;
 
-    const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-    const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+        const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
 
-    function calculateTotals() {
+        const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
 
-        const data = dataGrid.getVisibleRows().map(row => row.data);
+        function calculateTotals() {
 
-        const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
+            const data = dataGrid.getVisibleRows().map(row => row.data);
 
-        $("#AmountNotReflectedinBank").dxTextBox("instance").option("value",totalDebit);
+            const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
 
+            const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
 
-        const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
+            const balance = totalDebit - totalCredit;
 
-        // Update TextBox values dynamically
+            const TotalAmtNotReflectedInBank = Math.abs(balance);
 
-        totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            $("#AmountNotReflectedinBank").dxTextBox("instance").option("value", TotalAmtNotReflectedInBank);
 
-        totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            // Update TextBox values dynamically
 
-    }
+            totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
-    // Recalculate totals on content changes
+            totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
-    dataGrid.on("contentReady", calculateTotals);
+        }
 
-    dataGrid.on("dataSourceChanged", calculateTotals);
+        // Recalculate totals on content changes
 
-    
+        dataGrid.on("contentReady", calculateTotals);
 
-
-});
+        dataGrid.on("dataSourceChanged", calculateTotals);
 
 
-function onUpdateClick() {
+
+    });
+
+
+    function onUpdateClick() {
     // Validate the inputs
     if (!voucherEntryNo || !bankclearedOn) {
         alert("Please provide both Voucher Entry No. and Bank Cleared On date.");

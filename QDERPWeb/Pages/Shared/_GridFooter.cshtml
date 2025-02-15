@@ -425,7 +425,7 @@
 
             case 'Bank Reconciliation':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&VoucherAmountFormatted=${encodeURIComponent(VoucherAmountFormatted)}&firstrowVoucherAmountFormatted=${encodeURIComponent(firstrowVoucherAmountFormatted)}`;
+                    pageUrl = `/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',

@@ -548,6 +548,7 @@
 					.StorageKey("gridContainerState");
 				})
 				.OnInitialized("function(e) { loadGridState(); }")
+				.OnContentReady("function(e) { handleGridContentReady(e); }")
 				.OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }")
 				)
 
@@ -603,7 +604,8 @@
 }
 
 <script>
-    let acchedid,accheadname,refno,accgroup,IsEdit=false,accgroupid,accheadar,FromDate,ToDate,accid,VoucherAmountFormatted,firstrowVoucherAmountFormatted;
+	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid, firstRowBalance, lastRowBalance;
+
 
 	function toggleFilterRow() {
 		var grid = $("#dataGrid").dxDataGrid("instance");
@@ -1182,6 +1184,73 @@ function updateBankReconciliationState(accheadname) {
 				}
 			});
 		});
+
+
+
+	function handleGridContentReady(e) {
+
+		let gridInstance = $('#dataGrid').dxDataGrid('instance');
+
+		if (!gridInstance) return;
+
+		let dataSource = gridInstance.option('dataSource');
+
+		if (!dataSource || !Array.isArray(dataSource)) return;
+
+		// Check if balance is already calculated to avoid redundant updates
+
+		if (dataSource.length > 0 && dataSource[0].CalculatedBalance !== undefined) {
+
+			return; // Prevent infinite loop
+
+		}
+
+		let balance = 0;
+
+		dataSource.forEach((item) => {
+
+			let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);
+
+			balance += voucherAmount;
+
+			// Assign balance to a new property in the data source
+
+			item.CalculatedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + (balance >= 0 ? "Dr" : "Cr");
+
+		});
+
+		// Refresh grid without resetting dataSource to avoid infinite loop
+
+		gridInstance.refresh();
+
+		// Get the visible rows
+
+		let visibleRows = gridInstance.getVisibleRows();
+
+		if (visibleRows && visibleRows.length > 0) {
+
+			let firstRow = visibleRows[0].data;
+
+			let lastRow = visibleRows[visibleRows.length - 1].data;
+
+			firstRowBalance = firstRow ? firstRow.CalculatedBalance : null;
+
+			lastRowBalance = lastRow ? lastRow.CalculatedBalance : null;
+
+			// alert(lastRowBalance)
+
+			console.log("First Row Balance: ", firstRowBalance);
+
+			console.log("Last Row Balance: ", lastRowBalance);
+
+		} else {
+
+			console.log("No visible rows available.");
+
+		}
+
+	}
+
 
 
 </script>
