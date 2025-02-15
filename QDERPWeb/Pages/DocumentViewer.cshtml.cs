@@ -38,6 +38,11 @@ namespace QD.ERP.Web.Pages
                 case "AccountExportLandscapeReport":
                     Report = new AccountExportLandscapeReport();
                     break;
+                case "AccountStatementFormat2Report":
+                   
+                    Report = new AccountStatementFormat2Report(); break;
+                case "AccountOrderbyVchNoWONarrationReport":
+                    Report = new AccountOrderbyVchNoWONarrationReport(); break;
                 default:
                     return NotFound("Report not found."); // Handle invalid report names
             }

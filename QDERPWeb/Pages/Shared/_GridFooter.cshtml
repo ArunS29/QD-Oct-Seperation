@@ -201,7 +201,9 @@
             items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
             items.Add().Text("Bank Reconciliation").Icon("product");
             items.Add().Text("Detailed Transaction Report").Icon("product");
-           
+            items.Add().Text("Statement of Account Export [Formate2]").Icon("product");
+            items.Add().Text("Statement of Account [OrderByVoucerNo9 (Without Narration)]").Icon("product");
+
         })
         .OnItemClick("addReportsButton_click") // Calls JavaScript function
         .ShowArrowIcon(false)
@@ -451,6 +453,10 @@
             window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport";
         } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
             window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport";
+        } else if (selectedText === "Statement of Account Export [Formate2]") {
+            window.location.href = "/DocumentViewer?reportName=AccountStatementFormat2Report";
+        } else if (selectedText === "Statement of Account [OrderByVoucerNo9 (Without Narration)]") {
+            window.location.href = "/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport";
         } else if (pageUrl !== '') {
             // Set the iframe source and show overlay only if pageUrl is valid
             $("#overlay-frame").attr("src", pageUrl);
@@ -458,7 +464,7 @@
         }
     }
 
-
+      
 
     // Function to close the overlay
     function closeOverlay() {
