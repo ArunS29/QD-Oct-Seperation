@@ -285,15 +285,20 @@
                 </text>);
                             columns.Add()
                         .Caption("Effective Date")
-                        .DataField("EffectiveDate")
-                        .DataType(GridColumnDataType.Date)
-                        .Format("dd-MMM-yyyy")
+                        .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                         .AllowEditing(true)
-                        .EditCellTemplate(@<text>
+                        // Normal Grid Mode
+                        .CellTemplate(@<text>
+                    <span>
+                        <%- data.EffectiveDate ? DevExpress.localization.formatDate(new Date(data.EffectiveDate), "dd-MMM-yyyy") : DevExpress.localization.formatDate(new Date(), "dd-MMM-yyyy") %>
+                    </span>
+                </text>)
+                    // Edit Mode
+                    .EditCellTemplate(@<text>
                     @(Html.DevExtreme().DateBox()
                     .Type(DateBoxType.Date)
-                    .Value(new JS("data && data.value ? new Date(data.value) : null")) // Ensure valid date
-                    .OnValueChanged("function(e) { setEffectiveDate(e, data.rowIndex); }") // Pass row index
+                    .Value(new JS("data.EffectiveDate ? new Date(data.EffectiveDate) : new Date()")) // Default to today
+                    .OnValueChanged("setEffectiveDate") // Pass full data object
                     .DisplayFormat("dd-MMM-yyyy")
                     )
                 </text>);
@@ -378,6 +383,7 @@
                 .Text("Back")
                 .Icon("arrowleft")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .OnClick("closeParentModal")
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnaddcost")
@@ -728,30 +734,85 @@
     //     }
     // }
 
+    // $(document).ready(function () {
+    //     // Bind the click event to the Delete button
+    //     $("#btnDelete").dxButton("instance").on("click", function () {
+    //         // Show Swal confirmation dialog
+    //         Swal.fire({
+    //             title: "Are you sure?",
+    //             text: "You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?",
+    //             icon: "warning",
+    //             showCancelButton: true,
+    //             confirmButtonText: "Yes",
+    //             cancelButtonText: "No",
+    //             reverseButtons: true
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+    //                 // If confirmed, reset the dropdown value to "Common Overheads"
+    //                 // const dropDownBoxInstance = $("#Costgriddropdown").dxDropDownBox("instance");
+    //                 // dropDownBoxInstance.option("value", "Common Overheads");
+    //                 // Execute the grid reset
+    //                 resetCostDataGrid();
+    //                 // // Optionally, you can perform additional actions here (e.g., server call, logging, etc.)
+    //                 // Swal.fire("Reset!", "Cost allocation details have been reset.", "success");
+    //             }
+    //         });
+    //     });
+    // });
+
+
     $(document).ready(function () {
         // Bind the click event to the Delete button
         $("#btnDelete").dxButton("instance").on("click", function () {
-            // Show Swal confirmation dialog
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No",
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // If confirmed, reset the dropdown value to "Common Overheads"
-                    const dropDownBoxInstance = $("#Costgriddropdown").dxDropDownBox("instance");
-                    dropDownBoxInstance.option("value", "Common Overheads");
-
-                    // // Optionally, you can perform additional actions here (e.g., server call, logging, etc.)
-                    // Swal.fire("Reset!", "Cost allocation details have been reset.", "success");
-                }
-            });
+            // Show DevExpress confirmation dialog
+            DevExpress.ui.dialog.confirm("You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
+                .done(function (result) {
+                    if (result) {
+                        resetCostDataGrid();
+                    }
+                });
         });
     });
+
+
+
+
+    // Function to reset the DataGrid and reinitialize it
+    function resetCostDataGrid() {
+        debugger;
+        const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+
+        if (costdataGrid) {
+            costdataGrid.option('dataSource', []); // Clear the grid data
+        }
+
+        // Re-execute the script to reset the grid
+        reinitializeGrid();
+    }
+
+    // Function to reinitialize the grid with default data
+    function reinitializeGrid() {
+        const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+
+        const costData = [
+            {
+                DrCr: '@drCr',
+                EffectiveDate: new Date().toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                }),
+                VoucherAmount: initialVoucherAmount.toFixed(2),
+                Remarks: ''
+            }
+        ];
+
+        const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+
+        if (costdataGrid) {
+            costdataGrid.option('dataSource', costData); // Reload initial data
+        }
+    }
 
 
     function confirmDelete() {
@@ -790,60 +851,65 @@
         });
     });
 
-    function setEffectiveDate(e, rowIndex) {
-        var grid = $("#costdataGrid").dxDataGrid("instance");
+    function setEffectiveDate(e) {
+        var $dataGrid = $("#costdataGrid");
 
-        if (rowIndex >= 0) {
-            grid.cellValue(rowIndex, "EffectiveDate", e.value); // Update the EffectiveDate cell in the grid
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+        }
+        if (e.value) {
+            debugger;
+            let grid = $("#costdataGrid").dxDataGrid("instance");
+            let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+            let rowData = grid.getVisibleRows()[rowIndex].data;
+
+
+
+
+            rowData.EffectiveDate = e.value; // Update the row data
+            grid.cellValue(rowIndex, "EffectiveDate", e.value); // Ensure it reflects in the grid
+
         }
     }
 
+    function closeParentModal() {
+        if (window.parent && window.parent.$("#contextModal").length) {
+            window.parent.$("#contextModal").modal("hide");
+        }
+    }
 
     $(document).ready(function () {
         var costDataGrid = $("#costdataGrid").dxDataGrid({
             onRowUpdating: function (e) {
                 let costAmount = $("#CostAmount").dxNumberBox("instance").option("value"); // Get CostAmount value
                 let newAmount = e.newData.VoucherAmount; // New value entered in the grid
+                let oldAmount = e.oldData.VoucherAmount; // Previously loaded value
                 let dataSource = $("#costdataGrid").dxDataGrid("instance").option("dataSource");
-                let totalAmountInGrid = 0; // To track the sum of all Amounts in the grid
 
-                // Calculate the current total amount in the grid
-                dataSource.forEach(row => {
-                    totalAmountInGrid += row.VoucherAmount;
-                });
+                if (newAmount > oldAmount) {
+                    // Prevent increasing the amount, reset to old value
+                    e.newData.VoucherAmount = oldAmount;
+                    e.cancel = true;
+                    // DevExpress.ui.notify("Amount cannot be increased! Resetting to " + oldAmount, "error", 2000);
+                    return;
+                }
 
-                // Check if the new Amount exceeds CostAmount
-                if (newAmount > costAmount) {
-                    e.newData.VoucherAmount = costAmount; // Prevent updating the cell
-                    DevExpress.ui.notify("Amount cannot be greater than Cost Amount! Resetting to " + costAmount, "error", 2000);
-                } else if (newAmount < costAmount) {
-                    let balanceAmount = costAmount - newAmount; // Calculate the remaining balance
+                if (newAmount < oldAmount) {
+                    let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
 
                     // Add new row with the balance amount
-                    let newRow = { ...e.oldData, VoucherAmount: balanceAmount };
+                    let newRow = { ...e.oldData, CostAllocationUnit:"Common Overheads", VoucherAmount: balanceAmount };
 
                     // Add the new row to the grid
-                    dataSource.push(newRow); // Add new row with the balance amount
-                    $("#costdataGrid").dxDataGrid("instance").option("dataSource", dataSource); // Update grid
-                    DevExpress.ui.notify("Balance amount of " + balanceAmount + " added as a new row.", "success", 2000);
+                    dataSource.push(newRow);
+                    $("#costdataGrid").dxDataGrid("instance").option("dataSource", dataSource);
+                    // DevExpress.ui.notify("Balance amount of " + balanceAmount + " added as a new row.", "success", 2000);
                 }
-
-                // After any row edit, ensure that the total amount of all rows doesn't exceed the CostAmount
-                if (totalAmountInGrid > costAmount) {
-                    e.cancel = true; // Prevent the update
-                    DevExpress.ui.notify("Total amount in the grid cannot exceed the Cost Amount!", "error", 2000);
-                }
-
-                // Ensure that the grid's summary reflects the updated value
-                let gridInstance = $("#costdataGrid").dxDataGrid("instance");
-                let summary = gridInstance.option("summary");
-                let updatedSummary = summary.totalItems[0];
-                updatedSummary.value = totalAmountInGrid;
-
-                gridInstance.option("summary", summary); // Update summary
             }
         }).dxDataGrid("instance");
     });
+
 
 
 
