@@ -201,19 +201,24 @@
         background-color: #909ead00;
     }
 
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
 </style>
 <input id="formId" value="frm201LedgerViewByVoucherType" type="hidden" />
 <div class="Head">
     <div class="header-container">
         <div class="title">Accounting Register</div>
-        <div class="footer">@await Html.PartialAsync("_GridFooter")</div>
+        <div class="footer">@await Html.PartialAsync("AssetRegisterFooter")</div>
     </div>
 </div>
 
 
 
     <!-- Context Menu -->
-    <div class="context-menu" id="contextMenu">
+@*     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
         <div class="context-menu-item">
             @(Html.DevExtreme().Button()
@@ -226,7 +231,7 @@
                 .OnClick("function() { editRow(); }")
                 )
         </div>
-    </div>
+    </div> *@
     <!-- Context Control -->
     <div class="context-menu" id="contextControl">
         <div id="contextControlContent"></div>
@@ -328,8 +333,9 @@
     <!-- Result Grid -->
     <div class="dx-field ledgerResult">
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerByVoucherTypeResult>()
-                .ID("dataGrid")
-                .RemoteOperations(false)
+            .ID("dataGrid")
+            .RemoteOperations(false)
+            .DataSource(new JS("[]"))
                 .Columns(columns =>
                 {
                     columns.AddFor(m => m.VoucherNo).Caption("Voucher No").MinWidth(150).Alignment(HorizontalAlignment.Center)
@@ -443,9 +449,7 @@
             .OnInitialized("function(e) { loadGridState(); }")
             )
     </div>
-    <div>
-      
-    </div>
+  
 
 <script>
  
@@ -536,12 +540,12 @@
         alert("Show Voucher button clicked");
         // Implement logic for showing the voucher details page
     }
-    // Edit Voucher button click event
-    function editRow() {
-        // Implement edit logic
-        alert("Edit voucher functionality");
-        $("#contextMenu").hide();
-    }
+    // // Edit Voucher button click event
+    // function editRow() {
+    //     // Implement edit logic
+    //     alert("Edit voucher functionality");
+    //     $("#contextMenu").hide();
+    // }
 
     // This function us used to get slected row from grid and set value of dropdown
     function onSelectionChanged(selectionChangedArgs, component) {
@@ -662,4 +666,34 @@
 
         return [day, strmonth, year].join('-');
     }
+    function loadAllVouchers() {
+        $.ajax({
+            url: "/api/AccountingRegister/GetVouchers",
+            type: "GET",
+            data: { voucherType: "", frmDate: "", toDate: "" }, // Empty values to fetch all records
+            dataType: "json",
+            success: function (data) {
+                console.log("API Response:", data); // Check the response in console
+
+                if (!data || data.length === 0) {
+                    DevExpress.ui.notify("No records found", "warning", 2000);
+                    return;
+                }
+
+                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                if (dataGrid) {
+                    dataGrid.option("dataSource", data);
+                    DevExpress.ui.notify("Data loaded successfully", "success", 2000);
+                } else {
+                    console.error("DataGrid instance not found!");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data:", xhr.responseText);
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+
 </script>

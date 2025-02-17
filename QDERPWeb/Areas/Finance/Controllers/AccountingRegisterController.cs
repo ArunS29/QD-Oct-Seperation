@@ -34,23 +34,40 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             try
             {
-                if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                DateTime from = new DateTime(2000, 1, 1); // Default from date
+                DateTime to = DateTime.Now;
+
+                if (!string.IsNullOrEmpty(frmDate) && DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedFrom))
                 {
-                    return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+                    from = parsedFrom;
                 }
 
-                if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                if (!string.IsNullOrEmpty(toDate) && DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedTo))
                 {
-                    return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+                    to = parsedTo;
                 }
+
                 ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(_context);
-                var ledgerData = await _procedures.StProAccountLedgerByVoucherTypeAsync(voucherType, from, to);
+
+                List<QD.ERP.Web.DAL.Entities.StProAccountLedgerByVoucherTypeResult> ledgerData;
+
+                // If voucherType is null or empty, fetch all records
+                if (string.IsNullOrEmpty(voucherType))
+                {
+                    ledgerData = await _procedures.StProAccountLedgerByVoucherTypeAsync(null, from, to);
+                }
+                else
+                {
+                    ledgerData = await _procedures.StProAccountLedgerByVoucherTypeAsync(voucherType, from, to);
+                }
+
                 return Json(ledgerData);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Json(ex.Message);
+                return Json(new { error = ex.Message });
             }
         }
+
     }
 }
