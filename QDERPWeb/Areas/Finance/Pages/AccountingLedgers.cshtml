@@ -13,7 +13,26 @@
 
 		z-index: 1000;
 	}
+	/* Ensure word wrap and center alignment for grid headers */
+	.header-wrap {
+		white-space: normal !important; /* Enable word wrap */
+		text-align: center !important; /* Center align text */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+	}
 
+	/* Ensure text in grid headers is always centered */
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		white-space: normal !important;
+		text-align: center !important;
+	}
+
+	/* Ensure column headers text aligns to center */
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+		text-align: center !important;
+	}
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -79,14 +98,14 @@
 		margin-top: 15px;
 		padding-top: 22px;
 	}
-
+/* 
 	.dx-popup-content.dx-popup-content-scrollable {
 		padding-top: 20px;
 		padding-right: 0px;
 		padding-left: 25px;
 		background-color: aliceblue;
 	}
-
+ */
 	/* Hover effect for DataGrid rows */
 	.dx-datagrid-rowsview .dx-row:hover {
 		background-color: #f5f5f5; /* Light gray background */
@@ -181,6 +200,10 @@
 			border-color: #508ae1 !important;
 		}
 
+	#dataGrid .dx-header-row .dx-datagrid-text-content {
+		font-weight: bold;
+		color: black;
+	}
 
 
 	.dx-datagrid-header-panel {
@@ -235,7 +258,7 @@
 						)
 		</div>
 	</div>
-	<!-- Context Control -->
+@* 	<!-- Context Control -->
 	<div class="context-menu" id="contextControl">
 		<div id="contextControlContent"></div>
 		<div class="context-menu-item">
@@ -260,7 +283,7 @@
 				.Width(180)
 				.OnClick("function() { showVoucher(); }")
 				)
-	</div>
+	</div> *@
 
 
 	<!-- Input Controlls -->
@@ -444,18 +467,22 @@
 		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
 					.ID("dataGrid")
 					.RemoteOperations(false)
+					.ColumnAutoWidth(true) // Ensures columns adjust to content
+					.WordWrapEnabled(true)
 					.ColumnChooser(columnChooser => columnChooser.Enabled(false)) // Disable column chooser initially
 					.Columns(columns =>
 					{
-						columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Alignment(HorizontalAlignment.Center)
-					.CellTemplate(@<text>
+		columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Alignment(HorizontalAlignment.Center)
+				.CellTemplate(@<text>
 			<div>
-				<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;">
+				<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
+				   onclick="navigateToVoucherPage('<%- data.VoucherNo %>')">
 					<%- data.VoucherNo %>
 				</a>
 			</div>
 		</text>)
 					.Visible(true);
+				
 
 						columns.AddFor(m => m.VoucherDate).Caption("Voucher Date")
 					.Alignment(HorizontalAlignment.Center)
@@ -525,6 +552,12 @@
 				.FilterRow(filterRow => filterRow.Visible(false)) /* Initially hidden, toggled via button */
 				.GroupPanel(groupPanel => groupPanel.Visible(true))
 				.ShowBorders(false)
+				 .HeaderFilter(filter => filter.Visible(true))
+            .ColumnChooser(columnChooser => columnChooser
+            .Enabled(false) // Enable the column chooser for hiding and showing columns
+            .Title("Column Chooser") // Optional: Set a custom title
+            .Mode(GridColumnChooserMode.Select)
+            )
 				.Width("100%")
 				.Summary(summary =>
 				{
@@ -817,17 +850,17 @@
 		var contextControl = $("#contextControl");
 		contextControl.hide();
 	}
-	// Show voucher button click event
-	function showVoucher() {
-		alert("Show Voucher button clicked");
-		// Implement logic for showing the voucher details page
-	}
-	// Edit Voucher button click event
-	function editRow() {
-		// Implement edit logic
-		alert("Edit voucher functionality");
-		$("#contextMenu").hide();
-	}
+	// // Show voucher button click event
+	// function showVoucher() {
+	// 	alert("Show Voucher button clicked");
+	// 	// Implement logic for showing the voucher details page
+	// }
+	// // Edit Voucher button click event
+	// function editRow() {
+	// 	// Implement edit logic
+	// 	alert("Edit voucher functionality");
+	// 	$("#contextMenu").hide();
+	// }
 
 	// This function us used to get slected row from grid and set value of dropdown
 	function onSelectionChanged(selectionChangedArgs, component) {
@@ -1067,11 +1100,11 @@ function updateBankReconciliationState(accheadname) {
 	let dropdown = $("#ddReports").dxDropDownButton("instance");
 	let items = dropdown.option("items");
  
-	if (items && items.length > 3) { // Ensure index exists before modifying
+	if (items && items.length > 4) { // Ensure index exists before modifying
 		if (accheadname.includes("Bank") || accheadname.includes("BANK")) {  
-	items[6] = { ...items[6], disabled: false }; // Enable item if accheadname contains "Bank"
+	items[4] = { ...items[4], disabled: false }; // Enable item if accheadname contains "Bank"
       } else {  
-	items[6] = { ...items[6], disabled: true }; // Disable otherwise
+	items[4] = { ...items[4], disabled: true }; // Disable otherwise
      }
  
 		dropdown.option("items", items); // Update the dropdown options
@@ -1249,6 +1282,40 @@ function updateBankReconciliationState(accheadname) {
 
 		}
 
+	}
+	function navigateToVoucherPage(voucherNo) {
+		console.log("Original VoucherNo:", voucherNo); // Debugging
+
+		if (!voucherNo) {
+			alert("Invalid voucher number.");
+			return;
+		}
+
+		let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
+
+		console.log("Formatted VoucherNo:", formattedVoucher); // Debugging
+
+		// Define routes based on prefixes
+		const voucherRoutes = {
+			"BP-": "/finance/VoucherBankPayment",  // Bank Payment
+			"CP-": "/finance/VoucherCashPayment",  // Cash Payment
+			"BR-": "/finance/VoucherEntryReceipts", // Bank Receipt
+			"CR-": "/finance/VoucherEntryCashReceipts", // Cash Receipt
+			"SAL-": "/finance/SalesVoucher", // Sales
+			"PUR-": "/finance/PurchaseVoucher", // Purchase
+			
+			"JV-": "/finance/Voucherjournal" // Journal Voucher
+		};
+
+		// Match by prefix
+		for (let prefix in voucherRoutes) {
+			if (formattedVoucher.startsWith(prefix)) {
+				window.location.href = voucherRoutes[prefix];
+				return;
+			}
+		}
+
+		alert("No matching voucher page found: " + formattedVoucher);
 	}
 
 

@@ -185,13 +185,27 @@
         .OnItemClick("otherVoucherButton_click")
         .ShowArrowIcon(false)
         ) *@
-    @(Html.DevExtreme().Button()
-        .ID("Report")
-        .Icon("doc") // You can change the icon if needed
-        .Width("150px")
-        .Text("Report")
-        // Ensure you have a JavaScript function named 'internalAudit'
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddReports")
+        .Icon("doc")
+        .Width("100px").Text("Report")
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text("Preview Register").Icon("file");
+            items.Add().Text("Preview Register (Order By VoucherNo)").Icon("file");
+            items.Add().Text("Preview Register (With Line Entry Narration)").Icon("file");
+            items.Add().Text("Preview Register (With Line Entry Narration Order by VoucherNo)").Icon("file");
+            items.Add().Text("Preview Register (With Voucher Narration)").Icon("product");
+            items.Add().Text("Preview Register (With Voucher Narration - Order by Voucher No)").Icon("product");
+           
+
+
+        })
+    @*     .OnItemClick("addReportsButton_click")  *@// Calls JavaScript function
+        .ShowArrowIcon(false)
         )
+
     @(Html.DevExtreme().Button()
         .ID("btnShowDayBooks")
         .Icon("bookmark") // You can change the icon if needed
@@ -276,28 +290,33 @@
             reader.readAsText(file);
         }
     });
-    function saveLayoutClick(e) {
+    function saveLayoutClick() {
         var grid = $("#dataGrid").dxDataGrid("instance");
-        var layout = grid.state();
+        var layout = grid.option("columns"); // Get current column configuration
+
+        if (!layout) {
+            DevExpress.ui.notify("No layout to save!", "error", 2000);
+            return;
+        }
+
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-        //console.log(layoutJson);
+
         // Create a Blob from the JSON string
         const blob = new Blob([layoutJson], { type: "application/json" });
-        // Create a URL for the Blob
         const url = URL.createObjectURL(blob);
-        // Create a link element
+
+        // Create a download link
         const a = document.createElement("a");
         a.href = url;
-        a.download = "grid-layout.json"; // Set the file name for download
-        // Append the link to the body (needed for Firefox)
+        a.download = "grid-layout.json";
         document.body.appendChild(a);
-        // Programmatically click the link to trigger the download
         a.click();
-        // Clean up by removing the link and revoking the Object URL
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        //DevExpress.ui.notify("Layout", "success", 600);
+
+        DevExpress.ui.notify("Layout saved successfully!", "success", 2000);
     }
+
     function openLayoutClick(e) {
         $("#loadLayoutInput").click();
     }
@@ -610,5 +629,37 @@
     // }
     
 
+    // function addReportsButton_click(e) {
+    //     var selectedItem = e.itemData.text;
+
+    //     switch (selectedItem) {
+    //         case "Preview Register":
+    //             previewReport("previewRegister");
+    //             break;
+    //         case "Preview Register (Order By VoucherNo)":
+    //             previewReport("previewRegisterOrderByVoucherNo");
+    //             break;
+    //         case "Preview Register (With Line Entry Narration)":
+    //             previewReport("previewRegisterWithLineEntryNarration");
+    //             break;
+    //         case "Preview Register (With Line Entry Narration Order by VoucherNo)":
+    //             previewReport("previewRegisterWithLineEntryNarrationOrderByVoucherNo");
+    //             break;
+    //         case "Preview Register (With Voucher Narration)":
+    //             previewReport("previewRegisterWithVoucherNarration");
+    //             break;
+    //         case "Preview Register (With Voucher Narration - Order by Voucher No)":
+    //             previewReport("previewRegisterWithVoucherNarrationOrderByVoucherNo");
+    //             break;
+    //         default:
+    //             console.log("Unknown report selected");
+    //     }
+    // }
+
+    // function previewReport(reportType) {
+    //     // Example: You can redirect to a report page or call an API
+    //     console.log("Generating report:", reportType);
+    //     window.location.href = "/Reports/Generate?reportType=" + reportType;
+    // }
 
 </script>

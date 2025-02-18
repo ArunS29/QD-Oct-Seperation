@@ -4,6 +4,33 @@
         text-align: center !important;
     }
 
+    .context-menu {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    .submenu-item {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        cursor: pointer;
+        border-bottom: 1px solid #ddd;
+    }
+
+        .submenu-item:last-child {
+            border-bottom: none;
+        }
+
+        .submenu-item:hover {
+            background: #f0f0f0;
+        }
+
+        .submenu-item i {
+            margin-right: 10px;
+        }
+
     #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         text-align: center !important;
         /* background-color: aliceblue; */
@@ -155,6 +182,7 @@
         .OnClick("showColumnChooser")
         )
 
+
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonReceipts")
         .Icon("add")
@@ -208,16 +236,14 @@
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("Account Statements").Icon("file");
-            items.Add().Text("Statement Of Account With Narration").Icon("file");
-            items.Add().Text("Statement Of Account Export Formate").Icon("file");
-            items.Add().Text("Statement Of Account Export Formate[Landscape]").Icon("file");
-            items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
-            items.Add().Text("Account Ledger to Receivables/Payable Mapping").Icon("product");
+            items.Add().Text("Account Statements").Icon("file").OnClick("showSubmenu4");
+            items.Add().Text("Receivable Statements").Icon("file").OnClick("showSubmenu5");
+            items.Add().Text("Payable Statments").Icon("file").OnClick("showSubmenu6");
+            items.Add().Text("Cost Reports").Icon("file").OnClick("showSubmenu7");
             items.Add().Text("Bank Reconciliation").Icon("product");
-            items.Add().Text("Detailed Transaction Report").Icon("product");
-            items.Add().Text("Statement of Account Export [Formate2]").Icon("product");
-            items.Add().Text("Statement of Account [OrderByVoucerNo9 (Without Narration)]").Icon("product");
+            items.Add().Text("Ledger to Receivable/Payable Mapping").Icon("product");
+            items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
+           
 
         })
         .OnItemClick("addReportsButton_click") // Calls JavaScript function
@@ -379,6 +405,7 @@
     }
 
 
+
     // Footer Filter row button click event
     function toggleFilterRow() {
         var grid = $("#dataGrid").dxDataGrid("instance");
@@ -536,23 +563,22 @@
     function showSubmenu(e) {
         e.event.stopPropagation();
         var $submenu = $('#submenuContainer');
-        var $target = $(e.event.target).closest('.dx-item-content'); // Target the content of the item
+        var $target = $(e.event.target).closest('.dx-item-content');
         var offset = $target.offset();
         var elementWidth = $target.outerWidth();
-        var elementHeight = $target.outerHeight();
 
-        // Position the submenu to the right of the dropdown item
+        // Position submenu with a slight margin (e.g., 5px)
         $submenu.css({
             'width': 180,
             'position': 'absolute',
             'top': offset.top,
-            'left': offset.left + elementWidth, // Position to the right of the item
-            'display': 'block' // Show the submenu
+            'left': offset.left + elementWidth + 5, // Add margin
+            'display': 'block'
         });
     }
+
     function closeSubmenu() {
-        var $submenu = $('#submenuContainer');
-        $submenu.hide(); // Hide the submenu popup
+        $("#submenuContainer").hide();
     }
     // Handle the file selection
     $("#loadLayoutInput").on("change", function (event) {
@@ -600,4 +626,164 @@
         window.location.href = "/Finance/AccountGroupsOrdering";
 
     }
+    function showSubmenu4(e) {
+        e.event.stopPropagation();
+        hideAllSubmenus(); // Hide all submenus before showing the selected one
+        var $submenu = $('#submenuContainer4');
+        var $target = $(e.event.target).closest('.dx-item-content');
+        var offset = $target.offset();
+        var submenuWidth = $submenu.outerWidth();
+
+        // Calculate left-side positioning
+        var leftPos = offset.left - submenuWidth - 5;
+
+        // Prevent submenu from going off-screen on the left
+        if (leftPos < 0) {
+            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+        }
+
+        // Position submenu
+        $submenu.css({
+            'width': 250,
+            'position': 'absolute',
+            'top': offset.top,
+            'left': leftPos,
+            'display': 'block',
+            'background': '#fff',
+            'border': '1px solid #ccc',
+            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+            'padding': '5px'
+        });
+
+        // Click outside to close
+        $(document).on("click", function (event) {
+            if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+                $submenu.hide();
+                $(document).off("click");
+            }
+        });
+    }
+
+    function showSubmenu5(e) {
+        e.event.stopPropagation();
+        hideAllSubmenus(); // Hide all submenus before showing the selected one
+        var $submenu = $('#submenuContainer5');
+        var $target = $(e.event.target).closest('.dx-item-content');
+        var offset = $target.offset();
+        var submenuWidth = $submenu.outerWidth();
+
+        // Calculate left-side positioning
+        var leftPos = offset.left - submenuWidth - 5;
+
+        // Prevent submenu from going off-screen on the left
+        if (leftPos < 0) {
+            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+        }
+
+        // Position submenu
+        $submenu.css({
+            'width': 250,
+            'position': 'absolute',
+            'top': offset.top,
+            'left': leftPos,
+            'display': 'block',
+            'background': '#fff',
+            'border': '1px solid #ccc',
+            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+            'padding': '5px'
+        });
+
+        // Click outside to close
+        $(document).on("click", function (event) {
+            if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
+                $submenu.hide();
+                $(document).off("click");
+            }
+        });
+    }
+
+    function showSubmenu6(e) {
+        e.event.stopPropagation();
+        hideAllSubmenus(); // Hide all submenus before showing the selected one
+        var $submenu = $('#submenuContainer6');
+        var $target = $(e.event.target).closest('.dx-item-content');
+        var offset = $target.offset();
+        var submenuWidth = $submenu.outerWidth();
+
+        // Calculate left-side positioning
+        var leftPos = offset.left - submenuWidth - 5;
+
+        // Prevent submenu from going off-screen on the left
+        if (leftPos < 0) {
+            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+        }
+
+        // Position submenu
+        $submenu.css({
+            'width': 250,
+            'position': 'absolute',
+            'top': offset.top,
+            'left': leftPos,
+            'display': 'block',
+            'background': '#fff',
+            'border': '1px solid #ccc',
+            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+            'padding': '5px'
+        });
+
+        // Click outside to close
+        $(document).on("click", function (event) {
+            if (!$(event.target).closest('#submenuContainer6, .dx-item-content').length) {
+                $submenu.hide();
+                $(document).off("click");
+            }
+        });
+    }
+
+    function showSubmenu7(e) {
+        e.event.stopPropagation();
+        hideAllSubmenus(); // Hide all submenus before showing the selected one
+        var $submenu = $('#submenuContainer7');
+        var $target = $(e.event.target).closest('.dx-item-content');
+        var offset = $target.offset();
+        var submenuWidth = $submenu.outerWidth();
+
+        // Calculate left-side positioning
+        var leftPos = offset.left - submenuWidth - 5;
+
+        // Prevent submenu from going off-screen on the left
+        if (leftPos < 0) {
+            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+        }
+
+        // Position submenu
+        $submenu.css({
+            'width': 250,
+            'position': 'absolute',
+            'top': offset.top,
+            'left': leftPos,
+            'display': 'block',
+            'background': '#fff',
+            'border': '1px solid #ccc',
+            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+            'padding': '5px'
+        });
+
+        // Click outside to close
+        $(document).on("click", function (event) {
+            if (!$(event.target).closest('#submenuContainer7, .dx-item-content').length) {
+                $submenu.hide();
+                $(document).off("click");
+            }
+        });
+    }
+
+    // Helper function to hide all submenus
+    function hideAllSubmenus() {
+        $('#submenuContainer4').hide();
+        $('#submenuContainer5').hide();
+        $('#submenuContainer6').hide();
+        $('#submenuContainer7').hide();
+    }
+
 </script>
