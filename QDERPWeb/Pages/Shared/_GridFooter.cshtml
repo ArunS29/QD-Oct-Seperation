@@ -117,139 +117,184 @@
         display: none; /* Keep it hidden until needed */
     }
 
+   
+    .btn-container {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Initially, buttons have a small width (showing only the icon) */
+    .btn-container .dx-button,
+    .btn-container .dx-dropdownbutton {
+        width: 50px !important; /* Small width for icons */
+        transition: width 0.3s ease-in-out;
+    }
+
+    /* Expand button width when hovered */
+    .btn-container:hover .dx-button,
+    .btn-container:hover .dx-dropdownbutton {
+        width: 200px !important; /* Expand width for full text */
+    }
+
+    /* Hide text initially */
+    .btn-container .dx-button .dx-button-text,
+    .btn-container .dx-dropdownbutton .dx-button-text {
+        display: none;
+    }
+
+    /* Show text on hover */
+    .btn-container:hover .dx-button .dx-button-text,
+    .btn-container:hover .dx-dropdownbutton .dx-button-text {
+        display: inline-block;
+    }
+
 </style>
 <div class="dx-fieldset horizontal-container">
 
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonLayout")
-        .Icon("smalliconslayout")
-        .Width("100px") /* Adjust size for icon only */
-        .Text("Layout")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu");
-            items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
-            items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
-            items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
-            items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
-        })
-        .ShowArrowIcon(false) /* Hide dropdown arrow */
-        )
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonLayout")
+            .Icon("smalliconslayout")
+            .Width(50)
+            .Text("Layout")
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu");
+                items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
+                items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
+                items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
+                items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
+            })
+            .ShowArrowIcon(false)
+            )
+    </div>
 
-    @(Html.DevExtreme().Button()
-        .ID("btnPrint")
-        .Icon("print")
-        .Text("Print")
-        .Width("100px") /* Adjust size */
-        )
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPrint")
+            .Icon("print")
+            .Text("Print")
+            .Width(50)
+            )
+    </div>
 
-    @(Html.DevExtreme().Button()
-        .ID("btnToggleSearch")
-        .Icon("search")
-        .Text("Search")
-        .Width("100px")
-        .OnClick("toggleFilterRow")
-        )
-    @(Html.DevExtreme().Button()
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnToggleSearch")
+            .Icon("search")
+            .Text("Search")
+            .Width(50)
+            .OnClick("toggleFilterRow")
+            )
+    </div>
 
-        .ID("btntoggleGroupPanel1")
+   @*  <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btntoggleGroupPanel1")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("hierarchy")
+            .Width(50)
+            .Text("Group")
+            .OnClick("AccountGroupsOrdering")
+            )
+    </div> *@
 
-        .Type(ButtonType.Normal)
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btntoggleGroupPanel")
+            .Icon("hierarchy")
+            .Width(50)
+            .Text("Group")
+            .OnClick("toggleGroupPanel")
+            )
+    </div>
 
-        .StylingMode(ButtonStylingMode.Outlined)
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnColumnChooser")
+            .Icon("columnchooser")
+            .Width(50)
+            .Text("Column Chooser")
+            .OnClick("showColumnChooser")
+            )
+    </div>
 
-        .Icon("hierarchy")
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonReceipts")
+            .Icon("add")
+            .Width(50)
+            .Text("Add Receipt")
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Add Cash Receipts").Icon("money");
+                items.Add().Text("Add Bank Receipts").Icon("product");
+            })
+            .OnItemClick("addRecipitsButton_click")
+            .ShowArrowIcon(false)
+            )
+    </div>
 
-        .Width(50)
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonPayment")
+            .Icon("add")
+            .Width(50)
+            .Text("Add Payment")
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Add Cash Payment").Icon("money");
+                items.Add().Text("Add Bank Payment").Icon("product");
+            })
+            .OnItemClick("addPaymentButton_click")
+            .ShowArrowIcon(false)
+            )
+    </div>
 
-        .OnClick("AccountGroupsOrdering")
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddOtherVouchers")
+            .Icon("add")
+            .Width(50)
+            .Text("Other Vouchers")
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Add Purchase Voucher").Icon("add");
+                items.Add().Text("Add Sales Voucher").Icon("add");
+                items.Add().Text("Add Journal Voucher").Icon("add");
+            })
+            .OnItemClick("otherVoucherButton_click")
+            .ShowArrowIcon(false)
+            )
+    </div>
 
-        )    
-
-    @(Html.DevExtreme().Button()
-        .ID("btntoggleGroupPanel")
-        .Icon("hierarchy")
-        .Width("100px")
-        .Text("Group")
-        .OnClick("toggleGroupPanel")
-        )
-    @(Html.DevExtreme().Button()
-        .ID("btnColumnChooser")
-        .Icon("columnchooser")
-        .Width("100px")
-        .Text("Column")
-        .OnClick("showColumnChooser")
-        )
-
-
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonReceipts")
-        .Icon("add")
-        .Width("100px")
-        .Text("Receipt")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Cash Receipts").Icon("money");
-            items.Add().Text("Add Bank Receipts").Icon("product");
-        })
-        .OnItemClick("addRecipitsButton_click")
-        .ShowArrowIcon(false)
-        )
-
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonPayment")
-        .Icon("add")
-        .Width("100px")
-        .Text("Payment")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Cash Payment").Icon("money");
-            items.Add().Text("Add Bank Payment").Icon("product");
-        })
-        .OnItemClick("addPaymentButton_click")
-        .ShowArrowIcon(false)
-        )
-
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddOtherVouchers")
-        .Icon("add")
-        .Width("100px")
-        .Text("Voucher")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Add Purchase Voucher").Icon("add");
-            items.Add().Text("Add Sales Voucher").Icon("add");
-            items.Add().Text("Add Journal Voucher").Icon("add");
-        })
-        .OnItemClick("otherVoucherButton_click")
-        .ShowArrowIcon(false)
-        )
-
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddReports")
-        .Icon("doc")
-        .Width("100px").Text("Report")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text("Account Statements").Icon("file").OnClick("showSubmenu4");
-            items.Add().Text("Receivable Statements").Icon("file").OnClick("showSubmenu5");
-            items.Add().Text("Payable Statments").Icon("file").OnClick("showSubmenu6");
-            items.Add().Text("Cost Reports").Icon("file").OnClick("showSubmenu7");
-            items.Add().Text("Bank Reconciliation").Icon("product");
-            items.Add().Text("Ledger to Receivable/Payable Mapping").Icon("product");
-            items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
-           
-
-        })
-        .OnItemClick("addReportsButton_click") // Calls JavaScript function
-        .ShowArrowIcon(false)
-        )
-
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReports")
+            .Icon("doc")
+            .Width(50)
+            .Text("Report")
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Account Statements").Icon("file").OnClick("showSubmenu4");
+                items.Add().Text("Receivable Statements").Icon("file").OnClick("showSubmenu5");
+                items.Add().Text("Payable Statements").Icon("file").OnClick("showSubmenu6");
+                items.Add().Text("Cost Reports").Icon("file").OnClick("showSubmenu7");
+                items.Add().Text("Bank Reconciliation").Icon("product");
+                items.Add().Text("Ledger to Receivable/Payable Mapping").Icon("product");
+                items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
+            })
+            .OnItemClick("addReportsButton_click")
+            .ShowArrowIcon(false)
+            )
+    </div>
 
 </div>
 
