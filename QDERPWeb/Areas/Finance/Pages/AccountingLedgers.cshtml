@@ -439,7 +439,7 @@
 
 						})
 						)
-		@(Html.DevExtreme().DropDownButton()
+		@* @(Html.DevExtreme().DropDownButton()
 				.ID("ddBtnGenerateReport")
 				.Text("Generate Report")
 				.Icon("report")  // You can change the icon as needed
@@ -452,7 +452,7 @@
 					// Different report options
 					items.Add().Text("Generate Report").Icon("event").OnClick("function() { ddBtnGenerateReport_click('range'); }");
 				})
-				)
+				) *@
 	</div>
 	<!-- Result Grid -->
 
@@ -516,7 +516,7 @@
 		</text>)
 				.Visible(true);
 
-						columns.AddFor(m => m.VoucherAmountFormatted).Caption("VoucherAmountFormatted").Alignment(HorizontalAlignment.Left).Visible(true);
+						columns.AddFor(m => m.VoucherAmountFormatted).Caption("VoucherAmountFormatted").Alignment(HorizontalAlignment.Left).Visible(false);
  columns.Add()
               .Caption("Balance")
               .Alignment(HorizontalAlignment.Right)
