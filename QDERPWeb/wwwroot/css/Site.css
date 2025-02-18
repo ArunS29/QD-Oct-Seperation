@@ -67,3 +67,40 @@
     align-items: center; /* Vertically centers the buttons */
     margin: 15px;
 }
+* {
+    /*    color: #525252;*/
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+:root {
+    --highlight-color: #0f6cbd;
+    --text-color: #525252;
+    --hover-bg: darkblue;
+    --sidebar-bg: #909ead00;
+    --breadcrumb-color: #808080;
+    --text-hover-color: #ffffff;
+}
+
+a {
+    color: black;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    background-color: #f9f9f9;
+    display: flex;
+    height: 100vh;
+    flex-direction: column; /* Stack breadcrumb and main content */
+}

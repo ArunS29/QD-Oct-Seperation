@@ -35,7 +35,7 @@ namespace QD.ERP.Web.Controllers
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity));
 
-                return RedirectToAction("Dashboard", "Home");
+                return RedirectToAction("Index", "Finance");
             }
             else
             {

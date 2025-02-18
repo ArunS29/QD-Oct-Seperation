@@ -1,633 +1,944 @@
 ﻿<!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="">
+    <meta name="description" content="QD ERP">
     <meta name="author" content="">
 
     <title>QD ERP</title>
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
-    @* Uncomment to use the HtmlEditor control *@
-    @* <script src="https://unpkg.com/devextreme-quill@23_2/dist/dx-quill.min.js"></script> *@
-
-    @* Uncomment to use the Gantt control *@
-    @*<link href="~/css/devextreme/dx-gantt.css" rel="stylesheet" />*@
-
-    @* Uncomment to use the Diagram control *@
-    @*<link href="~/css/devextreme/dx-diagram.css" rel="stylesheet" />*@
+    <!-- Stylesheets -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
 
     <link href="~/css/devextreme/bootstrap.css" rel="stylesheet" />
-
-    @* Predefined themes: https://js.devexpress.com/DevExtreme/Guide/Themes_and_Styles/Predefined_Themes/ *@
     <link href="~/css/devextreme/dx.light.css" rel="stylesheet" />
-
     <link rel="stylesheet" href="~/css/Site.css" />
 
-    @* Uncomment to use the Gantt control *@
-    @*<script src="~/js/devextreme/dx-gantt.js"></script>*@
-
-    @* Uncomment to use the Diagram control *@
-    @*<script src="~/js/devextreme/dx-diagram.js"></script>*@
-
-   @*  <script src="~/js/devextreme/jquery.js"></script> *@
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
-    @* <script src="~/js/devextreme/bootstrap.js"></script> *@
-
-    @* Uncomment to use Globalize for localization *@
-    @* Docs: https://docs.devexpress.com/AspNetCore/400577#globalize *@
-    @*<script src="~/js/devextreme/cldr.js"></script>*@
-    @*<script src="~/js/devextreme/cldr/event.js"></script>*@
-    @*<script src="~/js/devextreme/cldr/supplemental.js"></script>*@
-    @*<script src="~/js/devextreme/cldr/unresolved.js"></script>*@
-    @*<script src="~/js/devextreme/globalize.js"></script>*@
-    @*<script src="~/js/devextreme/globalize/message.js"></script>*@
-    @*<script src="~/js/devextreme/globalize/number.js"></script>*@
-    @*<script src="~/js/devextreme/globalize/currency.js"></script>*@
-    @*<script src="~/js/devextreme/globalize/date.js"></script>*@
-
-    @* Uncomment to enable client-side export *@
-    @*<script src="~/js/devextreme/jszip.js"></script>*@
-
-   @*  <script src="~/js/devextreme/dx.all.js"></script>
- *@
-    @* Uncomment to provide geo-data for the VectorMap control *@
-    @* Docs: https://js.devexpress.com/DevExtreme/Guide/Widgets/VectorMap/Providing_Data/#Data_for_Areas *@
-    @*<script src="~/js/devextreme/vectormap-data/world.js"></script>*@
     <script src="~/js/thirdparty.bundle.js"></script>
     <script src="~/js/devextreme/aspnet/dx.aspnet.mvc.js"></script>
     <script src="~/js/devextreme/aspnet/dx.aspnet.data.js"></script>
     <script src="~/js/custom/datagrid-dynamic-conditional-formatting.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 
-    <link rel="stylesheet" href="~/css/thirdparty.bundle.css" />
-    
 
     <style>
-        .nav-item .dropdown-menu {
-            max-height: 650px; /* Adjust the height */
-            overflow-y: auto; /* Enable scrolling */
+        <style >
+        /* Apply Inter Regular 400 Italic globally */
+        * {
+            color: var(--Global-Color-Grey-32, #525252); /* Default color */
+            font-family: var(--Font-family-Base, 'Inter', sans-serif); /* Font family */
+            font-size: var(--Font-size-300, 14px); /* Font size */
+            font-style: normal; /* Font style */
+            font-weight: 500; /* Font weight */
+            line-height: var(--Line-height-300, 20px); /* Line height */
+            -webkit-font-smoothing: antialiased; /* Smoothing for WebKit browsers */
+            -moz-osx-font-smoothing: grayscale; /* Font smoothing for Firefox on macOS */
         }
 
-        .context-menu {
-            display: none;
+        :root {
+            font-family: "Inter", Helvetica, Arial, sans-serif;
+            --highlight-color: #0f6cbd;
+            --text-color: #525252;
+            --hover-bg: darkblue;
+            --sidebar-bg: #909ead00;
+            --breadcrumb-color: #808080;
+        }
+
+        
+
+        .container {
+            display: flex;
+            flex-grow: 1;
+            padding: 0px;
+            margin-left: 0px;
+            margin-right: 0px;
+            background-color: #909ead00;
+            /* height: 100vh; */
+        }
+
+        /* Sidebar 1 styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ddd;
+            /* padding: 16px; */
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 6.5em;
+            transition: width 0.3s ease;
+            height: 105vh;
+        }
+
+     
+        /* Hidden state of sidebar */
+        .sidebar.hidden {
+            width: 60px; /* Minimized width to show icons only */
+            background-color: white;
+            height: 100vh;
+        }
+
+
+
+        /* Expanded state of sidebar 2 */
+        .sidebar2.expanded {
+            margin-left: 0px; /* Sidebar 2 moves left when sidebar1 is collapsed */
+            /* margin-top: 45px; */
+        }
+
+        /* Menu items */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 8px;
+            gap: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hide text when sidebar is hidden */
+        .sidebar.hidden .menu-item .text {
+            display: none; /* Hide text */
+        }
+
+        /* Menu item hover effect */
+        .menu-item:hover {
+            background-color: var(--hover-bg);
+            border-radius: 4px;
+        }
+
+            /* Change text color to white on hover */
+            .menu-item:hover {
+                color: white;
+                i{
+                color: white;
+                }
+            }
+
+        .menu-item i {
+            width: 22.5px;
+            height: 18.4px;
+            font-size: 18px; /* Adjust as needed for consistent sizing */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .menu-item  {
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Active menu item */
+        .menu-item.active .text {
+            color: var(--highlight-color);
+        }
+
+        /* Toggle button */
+        .toggle-btn {
+            /* display: none !important; */
             position: absolute;
-            background: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 10px;
+            top: 65px;
+            /* left: calc(var(--sidebar-width, 17em)); /* Use the sidebar width */
+            width: 30px;
+            height: 30px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
             z-index: 1000;
-            border-radius: 5px;
+            transition: left 0.3s ease; /* Smooth transition */
+        }
+
+            .toggle-btn:hover {
+                background-color: #e9ecef;
+            }
+
+        /* Sidebar hidden state */
+        .sidebar.hidden ~ .toggle-btn {
+            left: calc(var(--sidebar-width, 60px)); /* Adjust position dynamically */
+        }
+
+
+
+        /* Sidebar 2 styles */
+        .sidebar2 {
+            transition: background-color 0.3s ease;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            /* padding-top: 50px; */
+            margin-top: 75px; /* Adjust to align with the rest of your layout */
+            height: calc(100vh - 75px); /* Sidebar takes full height minus the top margin */
+            overflow-y: auto; /* Enable vertical scrolling */
+            scrollbar-width: thin; /* For Firefox: thin scrollbar */
+            scrollbar-color: #ccc #f9f9f9; /* For Firefox: color */
+            /* padding:10px; */
+            margin-left: 0px;
+            transition: margin-left 0.3s ease;
+            color:black;
+        }
+
+            /* Scrollbar styles for Webkit-based browsers */
+            .sidebar2::-webkit-scrollbar {
+                width: 8px; /* Set the width of the scrollbar */
+            }
+
+            .sidebar2::-webkit-scrollbar-thumb {
+                background-color: #ccc; /* Color of the scrollbar thumb */
+                border-radius: 4px; /* Round edges */
+            }
+
+                .sidebar2::-webkit-scrollbar-thumb:hover {
+                    background-color: #aaa; /* Darker color on hover */
+                }
+
+            .sidebar2::-webkit-scrollbar-track {
+                background-color: #f9f9f9; /* Background color of the scrollbar track */
+                border-radius: 4px;
+            }
+
+
+            /* Make the inner elements unbold */
+            .sidebar2 .submenu-item {
+                font-weight: normal;
+                font-size: 15px;
+                color: black;
+            }
+
+            .sidebar2 .text {
+                text-align: left;
+                font-weight: normal;
+                width: max-content;
+            }
+
+        /* Breadcrumb styles */
+        .breadcrumb {
+            display:none;
+            /* margin-left: 10px; */
+            font-size: 14px;
+            color: var(--breadcrumb-color);
+            padding-left: 35px; /* Add some left padding */
+            /* display: flex; */
+            justify-content: flex-start;
+            align-items: center;
+            gap: 8px;
+            height: 30.5px;
+            position: absolute;
+            top: 65px; /* Align it to the top */
+            left: calc(var(--sidebar-width, 17em)); /* Dynamically adjusts based on sidebars */
+            right: 0; /* Stretches to full width of the screen */
+            background-color: #f8f9fa;
+            z-index: 10;
+            flex-wrap: nowrap;
+            border: 1px solid #ddd;
+            transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+        }
+
+            /* Breadcrumb item styles */
+            .breadcrumb span {
+                cursor: pointer;
+                font-weight: 500;
+                color: var(--text-color);
+            }
+
+            .breadcrumb .separator {
+                color: #aaa;
+                font-size: 14px;
+            }
+
+            .breadcrumb span:hover {
+                color: var(--highlight-color);
+                text-decoration: underline;
+            }
+
+
+
+
+        /* Submenu styles */
+        .submenu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 10px;
+            gap: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .submenu-item:hover {
+                background-color: var(--hover-bg);
+                border-radius: 4px;
+            }
+
+                .submenu-item:hover {
+                    color: white;
+                }
+
+            .submenu-item i {
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+            }
+
+
+        .main-content {
+            display: flex;
+            flex-grow: 1;
+            height: 100vh; /* Full height */
+            position: relative;
+            overflow: hidden;
+            transition: width 0.3s ease; /* Smooth width transition */
+            margin-top: 26px;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw; /* Full viewport width */
+            height: 100vh; /* Full viewport height */
+            border: none;
+        }
+
+
+        /* Previous Button Style */
+        .prev-btn {
+            background-color: transparent;
+            color: #ebf3fc;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .prev-btn:hover {
+                background-color: lightslategrey;
+            }
+
+        .frame {
+            display: flex; /* Use flexbox to align items */
+            align-items: center; /* Vertically align items */
+            justify-content: flex-end; /* Push items to the right */
+            width: 100%; /* Occupy the full width of the screen */
+            padding: 10px; /* Add some spacing */
+            padding-bottom: 0px;
+            background-color: #ffffff; /* Optional background color */
+            position: fixed; /* Make it fixed to stay visible on scroll */
+            top: 0; /* Position at the top */
+            left: 0; /* Start from the very left */
+            z-index: 100; /* Ensure it stays above other elements */
+            height: 5em;
+            border-bottom: 1px solid #ddd;
+        }
+
+
+            /* Style for the icons */
+            .frame .img {
+                font-size: 20px; /* Set size of icons */
+                margin: 0 5px; /* Add spacing between icons */
+                color: #333; /* Set icon color */
+                cursor: pointer; /* Add pointer cursor for hover effect */
+            }
+
+            /* Style for the avatar */
+            .frame .avatar {
+                width: 20px;
+                height: 20px;
+                background-color: #f8f9fa; /* Placeholder color */
+                border-radius: 50%; /* Make it circular */
+                border: 2px solid #333; /* Optional border */
+                margin-left: 10px;
+                margin-right: 15px; /* Spacing from the last icon */
+            }
+            /* Logo styling inside the frame */
+            .frame .image {
+                display: flex; /* Flex container for logo */
+                align-items: center; /* Center-align vertically */
+                margin-right: auto; /* Push other elements to the right */
+                margin-bottom: 10px;
+                padding-left: 30px;
+            }
+
+                .frame .image img {
+                    width: 140px; /* Adjust logo size */
+                    height: 50px; /* Maintain aspect ratio */
+                }
+        /*  /* Loader styling */
+        .loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000; /* Ensure it's above all elements */
+            display: none; /* Hidden by default */
+        }
+
+            .loader img {
+                width: 500px; /* Adjust size as needed */
+                height: 500px;
+            }
+
+        .menu i {
+            color: darkgrey;
+        }
+
+        .financeDashboardSubmenu {
+            height: 20px;
+            width: 114px;
+        }
+        /* Base styling for all popups */
+        .popup {
+            display: none; /* Hidden by default */
+            position: absolute; /* Make it float above the content */
+            top: 10%;
+            right: 10%;
+            width: 300px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .popup-header {
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .popup-close {
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+        }
+
+            .popup-close:hover {
+                color: #333;
+            }
+
+        .popup-content {
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Styling for the avatar (User Profile Button) */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Special styling for the Profile Popup */
+        .profile-popup {
+            width: 350px;
+            top: 15%;
+            right: 5%;
+        }
+
+
+
+
+
+        /* Ensure iframe takes full size */
+        #contentIframe {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+
+
+
+        /* Main Content */
+        .mainContainer {
+            margin-top: 7em;
+            /* width: 85%; */
+            /* padding: 20px; */
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .bodyContainer{
+            display:flex;
         }
     </style>
 </head>
+<body>
+    <div class="bodyContainer">
+    <div class="frame">
+        <div class="image">
+            <img src="~/images/Pulse.png" alt="Pulse Logo" />
+        </div>
+        <div>
+                @(Html.DevExtreme().SelectBox()
+                    .Label(new JS("formatMessage('Language')"))
+                    .ID("selectBox")
+                    .InputAttr("id", "selectInput")
+                    .DataSource(new JS("locales"))
+                    .DisplayExpr("name")
+                    .Width("200px")
+                    .ValueExpr("value")
+                    .Value(new JS("locale"))
+                    .OnValueChanged("changeLocale")
+                    )
+
+        </div>
+        <i class="fas fa-bell img" onclick="handleBellClick()"></i> <!-- Bell icon -->
+        <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
+        <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->
+        <div class="avatar" onclick="handleAvatarClick()"></div> <!-- Avatar -->
+
+    </div>
+    <!-- Notification Popup -->
+    <div id="notificationPopup" class="popup">
+        <div class="popup-header">
+            Notifications
+            <span class="popup-close" onclick="closePopup('notificationPopup')">X</span>
+        </div>
+        <div class="popup-content">
+            <!-- Add notification content here -->
+            <p>You have new notifications!</p>
+        </div>
+    </div>
+
+    <!-- Settings Popup -->
+    <div id="settingsPopup" class="popup">
+        <div class="popup-header">
+            Settings
+            <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
+        </div>
+        <div class="popup-content">
+            <!-- Add settings content here -->
+            <p>Adjust your preferences here.</p>
+        </div>
+    </div>
+
+    <!-- Profile Popup -->
+    <div id="profilePopup" class="popup profile-popup">
+        <div class="popup-header">
+            User Profile
+            <span class="popup-close" onclick="closePopup('profilePopup')">X</span>
+        </div>
+        <div class="popup-content">
+            <!-- Add user profile content here -->
+            <p>Profile details go here...</p>
+        </div>
+    </div>
 
 
-<body style="background-color:#909ead00;">
-@* 
-    <nav class="navbar navbar-dark  fixed-top navbar-expand-md" style="padding:0px;color:white">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">DemoPOC</a>
-
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a href="/" class="nav-link active">Home</a></li>
-                    <li class="nav-item"><a href="/#about" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="/#contact" class="nav-link">Contact</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Finance
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="financeDropdown">
-                            <!-- Your dropdown items go here -->
-                            <li><a href="/Finance/AccountingLedgers" class="dropdown-item">Accounting Ledgers</a></li>
-                            <li><a href="/Finance/AccountingRegister" class="dropdown-item">Accounting Registers</a></li>
-                            <li><a href="/Finance/Assetview" class="dropdown-item">Asset View</a></li>
-                            <li><a href="/Finance/Voucherjournal" class="dropdown-item">Voucher journal</a></li>
-                            <li><a href="/Finance/VoucherApproval" class="dropdown-item">Voucher Approval</a></li>
-                            <li><a href="/Finance/ChartOfAccounts" class="dropdown-item">Chart Of Accounts</a></li>
-                            <li><a href="/Finance/ExpensesClaims" class="dropdown-item">Expenses Claims</a></li>
-                            <li><a href="/Finance/ExpensesClaim" class="dropdown-item">Expenses Claim With Detail</a></li>
-                            <li><a href="/Finance/JournalRegister" class="dropdown-item">Journal Register</a></li>
-                            <li><a href="/Finance/PurchaseVoucher" class="dropdown-item">Purchase Voucher</a></li>
-                            <li><a href="/Finance/SalesVoucher" class="dropdown-item">Sales Voucher</a></li>
-                            <li><a href="/Finance/VoucherEntryCashReceipts" class="dropdown-item">CashReceipts</a></li>
-                            <li><a href="/Finance/VoucherEntryReceipts" class="dropdown-item">Bank Receipts</a></li>
-                            <li><a href="/Finance/VoucherCashPayment" class="dropdown-item">Voucher Cash Payment</a></li>
-                            <li><a href="/Finance/VoucherBankPayment" class="dropdown-item">Voucher Bank Payment</a></li>
-                            <li><a href="/Finance/LedgerAccountMaster" class="dropdown-item">LedgerAccountMaster</a></li>
-                            <li><a href="/Finance/LedgerAccount" class="dropdown-item">Ledger Account Entry</a></li>
-                            <li><a href="/Finance/divmaster" class="dropdown-item">Branch Master</a></li>
-                            <li><a href="/Finance/AssetCategoryView" class="dropdown-item">Asset Category Master</a></li>
-                            <li><a href="/Finance/AssetLocation" class="dropdown-item">Assets Location Master</a></li>
-                            <li><a href="/Finance/AssetMaintanenceMaster" class="dropdown-item">Asset Maintanence Master</a></li>
-                            <li><a href="/Finance/Salespersonmaster" class="dropdown-item">Sales Person Master</a></li>
-                            <li><a href="/Finance/LedgerSubGroupMaster" class="dropdown-item">Ledger Sub Group Master</a></li>
-                            <li><a href="/Finance/AssetsDocTypeMaster" class="dropdown-item">Assets DocType Master</a></li>
-@*                             @* <li><a href="/Finance/Asset" class="dropdown-item">Asset</a></li> *@
-             @*                <li><a href="/Finance/BillsPayable" class="dropdown-item">Bills Payable</a></li>
-                            <li><a href="/Finance/BillsReceivable" class="dropdown-item">Bills Receiveable</a></li>
-                            <li><a href="/Finance/SalaryPayableDetails" class="dropdown-item">Salary Payable Details</a></li>
-                            <li><a href="/Finance/salarypayable" class="dropdown-item">Salary Payable By Date</a></li>
-                            <li><a href="/Finance/CostCenterMaster" class="dropdown-item">Cost Center Master</a></li>
-                            <li><a href="/Finance/SupplierPaymentRequest" class="dropdown-item">Supplier Payment Request</a></li>
-                            <li><a href="/Finance/TrialBalanceCustom" class="dropdown-item">Trial Balance Custom</a></li>
-
-                        </ul>
-                    </li> *@ 
-                    @*  <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Master
-                        </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="\Finance\divmaster">Division</a></li>
-                        <li><a class="dropdown-item" href="\Finance\AssetCategoryView">AssetCategory</a></li>
-                        <li><a class="dropdown-item" href="\Finance\AssetLocation">AssetLocation</a></li>
-                        <li><a class="dropdown-item" href="\Finance\AssetMaintanenceMaster">AssetMaintanence</a></li>
-                        <li><a class="dropdown-item" href="\Finance\Salespersonmaster">Salespersonmaster</a></li>
-                        <li><a class="dropdown-item" href="\Finance\LedgerSubGroupMaster">Subgroup</a></li>
-                        <li><a class="dropdown-item" href="\Finance\AssetsDocTypeMaster">AssetsDocType</a></li>
-                        <li><a class="dropdown-item" href="\Finance\Asset">Asset Entry</a></li>
-
-                    </ul>
-                    </li> *@
 
 
-    <main class="Maincontainer" style="margin-top:4em;">
-        <input type="file" id="loadLayoutInput" accept=".json" style="display: none;" />
-        <div id="rowHeightMenu"></div>
-        <!-- Submenu-->
-        <div id="submenuContainer" class="context-menu" style="display:none;">
-            <div class="context-menu-item">
-                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(40)">
-                    <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Short</span>
-                    </i>
+    <!-- Main container to hold sidebars and content -->
+    <div class="container">
+        <!-- Sidebar 1 Section -->
+        <!-- Sidebar Header with Logo -->
+
+        <div id="sidebar" class="sidebar hidden">
+            <div class="menu">
+                <div class="menu-item" onclick="navigate('Human Resources')">
+                    <i class="fas fa-users"></i>
+                    <div class="text">Human Resources</div>
                 </div>
-                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(50)">
-                    <i style="color:black" class="fa fa-th-list">
-                        <span>Medium</span>
-                    </i>
+                <div class="menu-item" onclick="navigate('Finance')">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="text">Finance</div>
                 </div>
-                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(60)">
-                    <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Tall</span>
-                    </i>
+                <div class="menu-item" onclick="navigate('VAT Modules')">
+                    <i class="fas fa-certificate"></i>
+                    <div class="text">VAT Modules</div>
                 </div>
-                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(70)">
-                    <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Extra Tall</span>
-                    </i>
+                <div class="menu-item" onclick="navigate('Equipment Rentals')">
+                    <i class="fas fa-truck"></i>
+                    <div class="text">Equipment Rentals</div>
+                </div>
+                <div class="menu-item" onclick="navigate('Camp Management')">
+                    <i class="fas fa-campground"></i>
+                    <div class="text">Camp Management</div>
+                </div>
+                <div class="menu-item" onclick="navigate('Inventory Management')">
+                    <i class="fas fa-cogs"></i>
+                    <div class="text">Inventory Management</div>
+                </div>
+                <div class="menu-item" onclick="navigate('Projects Control')">
+                    <i class="fas fa-project-diagram"></i>
+                    <div class="text">Projects Control</div>
                 </div>
             </div>
         </div>
 
-        <!-- Submenu-->
-        <div id="submenuContainer1" class="context-menu" style="display:none;">
-            <div class="context-menu-item1">
-                <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report</span>
-                </div>
-                <div onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report (By Sales Person)</span>
-                </div>
-                <div onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report (Customizable)</span>
-                </div>
-                <div id="RptReceivableAgeingSummary" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Summary</span>
-                </div>
-                <div onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Summary (Customizable)</span>
-                </div>
-            </div>
-        </div>
-        <div id="submenuContainer2" class="context-menu" style="display:none;">
-<div class="context-menu-item2">
-<div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Summary Report</span>
-</div>
-<div onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Summary Report(By Date)</span>
-</div>
-<div onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Cost Center Report</span>
-</div>
-<div id="RptCostCenterReport" onclick="ChangeRowHeight(70)">
-<i class="fa fa-th-list"></i>
-<span>Cost Center Report(By Date)</span>
-</div>
-    <div onclick="ChangeRowHeight(70)">
-    <i class="fa fa-th-list"></i>
-    <span>Cost Center Group Report</span>
-    </div>
-    <div id="RptCostCenterGroupReport" onclick="ChangeRowHeight(70)">
-    <i class="fa fa-th-list"></i>
-    <span>Cost Center Group Report(By Date)</span>
-    </div>
-    </div>
-    </div>
-    <div id="submenuContainer3" class="context-menu" style="display:none;">
-    <div class="context-menu-item2">
-    <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
-    <i class="fa fa-th-list"></i>
-    <span>Detailed Report</span>
-    </div>
-    <div onclick="ChangeRowHeight(70)">
-    <i class="fa fa-th-list"></i>
-    <span>Detailed Report(By Date)</span>
-    </div>
-    <div onclick="ChangeRowHeight(70)">
-    <i class="fa fa-th-list"></i>
-    <span>Detailed Group Report</span>
-    </div>
-    <div id="RptCostCenterReport" onclick="ChangeRowHeight(70)">
-    <i class="fa fa-th-list"></i>
-    <span>Detailed Group Repor(By Date)</span>
-    </div>
-    <div onclick="ChangeRowHeight(70)">
-    <i class="fa fa-th-list"></i>
-    <span>Cost Center Master Report</span>
-    </div>
-    <div id="RptCostCenterGroupReport" onclick="ChangeRowHeight(70)">
-    <i class="fa fa-th-list"></i>
-    <span>Cost Center Master Report(By Date)</span>
-    </div>
-    </div>
-    </div>
-        <div id="submenuContainer4" class="context-menu" style="display:none; width: 300px;">
-            <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger - Statement of Accounts</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger - Statement of Accounts (With Narration)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger - Statement of Accounts (With Details)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger - Statement of Accounts (Export Format)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger - Statement of Accounts (Export Format - Landscape)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger - Statement of Accounts (Format 2)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger (Order By VoucherNo)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger (Order By Voucher No W/Narration)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Confirmation Letter (Debtors)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Cash Imprest Account Confirmation Letter</span>
-                </div>
-            </div>
-        </div>
-        <div id="submenuContainer5" class="context-menu" style="display:none; width: 300px;">
-            <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (All)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (By Account)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (Ageing as on Today)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (Ageing By End Date)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (With Retention)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (Landscape Format)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (Ageing as per Ledger Balance)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (Format 2)</span>
-                </div>
-            </div>
-        </div>
-        <div id="submenuContainer6" class="context-menu" style="display:none; width: 300px;">
-            <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Payables (With Reference No)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Payables (With Voucher No)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Payables (Ageing as on Today)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Payables (Ageing as on End Date)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Payables (With Retention)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Payables (Landscape Format)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Payables (Ageing as per Ledger Balance)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Payables (All Including Paid)</span>
-                </div>
-            </div>
-        </div>
-        <div id="submenuContainer7" class="context-menu" style="display:none; width: 300px;">
-            <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Cost Allocation Report - Detailed</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Cost Allocation Report - Summary</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Employee Allocation Report - Detailed</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Employee Allocation Report - Summary</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Property Cost Allocation Report - Detailed</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Property Cost Allocation Report - Summary</span>
-                </div>
-            </div>
+        <div id="sidebar2" class="sidebar2">
+            <!-- Content for Sidebar 2 -->
         </div>
 
+        <div>
+            <button class="toggle-btn" onclick="toggleSidebar()">&#x3e;</button>
+        </div>
 
-        @RenderBody()
-        @*  <footer class="footer mt-auto content-container-bottom">
+        <!-- Breadcrumb above Sidebar 2 -->
+        <div class="breadcrumb" id="breadcrumb">
+            @*   <button class="prev-btn" onclick="goBack()">&#60;</button> *@
+            <span onclick="resetBreadcrumb()">Home</span>
+        </div>
 
-            <div class="container">
-                <span class="text-muted">© 2024 My Application. All rights reserved.</span>
-                <a href="/privacy" class="text-muted">Privacy Policy</a>
-                <a href="/terms" class="text-muted">Terms of Service</a>
-            </div>
-        </footer> *@
-    </main>
-    @*   <script type="text/javascript">
-         // Hide context menu on click outside
-         $(document).on("click", function () {
-             var contextMenu = $("#contextMenu");
-             contextMenu.hide();
-             var $submenu = $('#submenuContainer');
-             $submenu.hide(); // Hide the submenu popup
-         });
+        @* <div class="main-content" id="mainContent"> *@
+        @*     <iframe id="contentIframe" *@
+        @*             src="" *@
+        @*             frameborder="0"></iframe> *@
+        @* </div> *@
 
-         // Handle the file selection
-         $("#loadLayoutInput").on("change", function (event) {
-             const dataGrid = $("#dataGrid").dxDataGrid("instance");
-             const file = event.target.files[0];
+    </div>
+    <!-- Main Content -->
+        <div class="mainContainer">
+            <main>
+                @RenderBody()
+                @RenderSection("Scripts", required: false)
 
-             if (file) {
-                 const reader = new FileReader();
+            </main>
+        </div>
+    </div>
+    <footer class="text-center py-3">
+        <p><b>&copy; @DateTime.Now.Year Pulse InfoTech.</b> All rights reserved.</p>
+    </footer>
+        <script src="~/js/localization.js" asp-append-version="true"></script>
 
-                 reader.onload = function (e) {
-                     try {
-                         // Parse the JSON string from the file
-                         const layout = JSON.parse(e.target.result);
+    <script>
+        // Function for Bell icon click - show notifications popup
+        function handleBellClick() {
+            const notificationPopup = document.getElementById('notificationPopup');
+            if (notificationPopup) {
+                notificationPopup.style.display = 'block';
+            }
+        }
 
-                         // Restore the grid state
-                         dataGrid.state(layout);
-                     } catch (error) {
-                         console.error("Error parsing JSON:", error);
-                         alert("Failed to load layout. Please ensure the file is valid JSON.");
-                     }
-                 };
+        // Function for Gear icon click - show settings popup
+        function handleGearClick() {
+            const settingsPopup = document.getElementById('settingsPopup');
+            if (settingsPopup) {
+                settingsPopup.style.display = 'block';
+            }
+        }
 
-                 // Read the file as text
-                 reader.readAsText(file);
-             }
-         });
-         function saveLayoutClick(e) {
-             var grid = $("#dataGrid").dxDataGrid("instance");
-             var layout = grid.state();
-             const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-             //console.log(layoutJson);
-             // Create a Blob from the JSON string
-             const blob = new Blob([layoutJson], { type: "application/json" });
-             // Create a URL for the Blob
-             const url = URL.createObjectURL(blob);
-             // Create a link element
-             const a = document.createElement("a");
-             a.href = url;
-             a.download = "grid-layout.json"; // Set the file name for download
-             // Append the link to the body (needed for Firefox)
-             document.body.appendChild(a);
-             // Programmatically click the link to trigger the download
-             a.click();
-             // Clean up by removing the link and revoking the Object URL
-             document.body.removeChild(a);
-             URL.revokeObjectURL(url);
-             //DevExpress.ui.notify("Layout", "success", 600);
-         }
-         function openLayoutClick(e) {
-             $("#loadLayoutInput").click();
-         }
+        // Function for Avatar click - show user profile
+        function handleAvatarClick() {
+            const profilePopup = document.getElementById('profilePopup');
+            if (profilePopup) {
+                profilePopup.style.display = 'block';
+            }
+        }
+        function closePopup(popupId) {
+            const popup = document.getElementById(popupId);
+            if (popup) {
+                popup.style.display = 'none';
+            }
+        }
+        const breadcrumbTrail = []; 
+        function navigate(name) {
+            const sidebar2 = document.getElementById('sidebar2');
+            if (sidebar2.style.display === 'block') {
+                sidebar2.style.display = 'none'; 
+            } else {
+                sidebar2.style.display = 'block'; // Show sidebar2
+            }
+            // Dynamically load submenu items for the first sidebar menu
+            if (name === 'Finance') {
+                showFinanceSubmenu();
+                breadcrumbTrail[0] = name;
+                updateBreadcrumb();
+            } else if (name === 'Human Resources') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'VAT Modules') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'Equipment Rentals') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'Camp Management') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'Inventory Management') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            } else if (name === 'Projects Control') {
+                breadcrumbTrail.length = 0;
+                updateBreadcrumb();
+                updateBreadcrumbFromSidebar2('');
+                sidebar2.style.display = 'none';
+            }
+        }
 
-         function loadGridState() {
-             var form = $('#formId').val();
-             // Call the API to get the grid state
-             $.ajax({
-                 url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-                 method: 'GET',
-                 data:{
-                     form: form
-                 },
-                 success: function (response) {
-                     // Get the DataGrid instance
-                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-                     // Load the state into the DataGrid
-                     if (response) {
-                         try {
-                             // Parse the JSON string from the file
-                             const layout = JSON.parse(response);
+        function showFinanceSubmenu() {
+            const sidebar2 = document.getElementById('sidebar2');
+            sidebar2.innerHTML = `
+                              <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                    <i class="fas fa-book-open"></i>
+                    <div class="text">Finance Dashboard</div>
+                </div>
+                 <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                 <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2(' My Dashboard')">
+                        <div class="text">My Dashboard</div>
+                    </div>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/VoucherApproval">
+                        <div class="text">Voucher Verification</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/BillsReceivable">
+                        <div class="text">Bills Receivable</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" onclick="loadBillsPayable()">
+                        <div class="text">Bills Payable</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/BillsPayable">
+                        <div class="text">Cost Analysis</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/SalaryPayable">
+                        <div class="text">Salary Payable</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/ChartOfAccounts">
+                        <div class="text">Chart Of Accounts</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/ChartOfCostCenters">
+                        <div class="text">Chart of Cost Centers</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/uc20106TrialBalance">
+                        <div class="text">Financial Reports</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/AssetView">
+                        <div class="text">Asset Register</div>
+                    </a>
+                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/AssetAllocation">
+                        <div class="text">Asset Allocation</div>
+                    </a>
+                </div>
 
-                             // Restore the grid state
-                             dataGrid.state(layout);
-                         } catch (error) {
-                             console.error("Error parsing JSON:", error);
-                             alert("Failed to load layout. Please ensure the JSON is valid.");
-                         }
-                     }
-                 },
-                 error: function (xhr, status, error) {
-                     console.error("Error loading grid state:", error);
-                 }
-             });
-         }
-         function setDefaultLayoutClick(e) {
-             var grid = $("#dataGrid").dxDataGrid("instance");
-             var form = $('#formId').val();
-             var layout = grid.state();
-             const layoutJson = JSON.stringify(layout, null, 2);
-             console.log(layoutJson);
 
-             $.ajax({
-                 url: '/api/Utility/SaveLayout',  // API endpoint
-                 type: 'POST',
-                 data: {
-                     layout: layoutJson,
-                     form: form
-                 },
-                 success: function (data) {
-                     DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-                 },
-                 error: function () {
-                     DevExpress.ui.notify("Error while saving data", "error", 2000);
-                 }
-             });
-         }
-         function resetLayoutClick(e) {
-             var grid = $("#dataGrid").dxDataGrid("instance");
-             var form = $('#formId').val();
-             $.ajax({
-                 url: '/api/Utility/SaveLayout',  // API endpoint
-                 type: 'POST',
-                 data: {
-                     layout: null,
-                     form:form
-                 },
-                 success: function (data) {
-                     DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                     grid.state({});
-                 },
-                 error: function () {
-                     DevExpress.ui.notify("Error while saving data", "error", 2000);
-                 }
-             });
-         }
-         // Footer Group Pannel button click event
-         function toggleGroupPanel() {
-             var dataGrid = $("#dataGrid").dxDataGrid("instance");
-             var isVisible = dataGrid.option("groupPanel.visible");
-             dataGrid.option("groupPanel.visible", !isVisible);
-         }
-         // Footer Filter row button click event
-         function toggleFilterRow() {
-             var grid = $("#dataGrid").dxDataGrid("instance");
-             var currentVisibility = grid.option("filterRow.visible");
 
-             grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
-         }
-         // Footer Recipits button event
-         function addRecipitsButton_click(e) {
-             DevExpress.ui.notify(e.itemData, "success", 600);
-         }
-         function ChangeRowHeight(newHeight) {
-             // Update the row height
-             $("#dataGrid .dx-data-row").css("height", newHeight + "px");
-             closeSubmenu();
-         }
-         function showSubmenu(e) {
-             e.event.stopPropagation();
-             var $submenu = $('#submenuContainer');
-             var $target = $(e.event.target).closest('.dx-item-content'); // Target the content of the item
-             var offset = $target.offset();
-             var elementWidth = $target.outerWidth();
-             var elementHeight = $target.outerHeight();
+        @**@
+                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/AccountingLedgers">
+                    <i class="fas fa-book"></i>
+                    <div class="text">Accounting Ledgers</div>
+                </a>
+                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/AccountingRegister">
+                    <i class="fas fa-book"></i>
+                    <div class="text">Accounting Register</div>
+                </a>
+                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/VoucherBankPayment">
+                    <i class="fas fa-university"></i>
+                    <div class="text">Bank Payment</div>
+                </a>
+                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/ChartOfAccounts">
+                    <i class="fas fa-chart-pie"></i>
+                    <div class="text">Chart Of Accounts</div>
+                </a>
+                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/ChartOfCostCenters">
+                    <i class="fas fa-chart-pie"></i>
+                    <div class="text">Chart of Cost Centers</div>
+                </a>
+                <a class="submenu-item" href="/Finance/VoucherCashPayment">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div class="text">Cash Payment</div>
+                </a>
+                <a class="submenu-item" href="/Finance/VoucherEntryCashReceipts">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="text">Cash Receipt</div>
+                </a>
+                <a class="submenu-item" href="/Finance/VoucherEntryReceipts">
+                    <i class="fas fa-receipt"></i>
+                    <div class="text">Bank Receipt</div>
+                </a>
+                <a class="submenu-item" href="/Finance/salesVoucher">
+                    <i class="fas fa-tags"></i>
+                    <div class="text">Sales Voucher</div>
+                </a>
+                <a class="submenu-item" href="/Finance/purchasevoucher">
+                    <i class="fas fa-shopping-cart"></i>
+                    <div class="text">Purchase Voucher</div>
+                </a>
+                <a class="submenu-item" href="/Finance/ExpensesClaims">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <div class="text">Expense Claim</div>
+                </a>
+                <a class="submenu-item" href="/Finance/Voucherjournal">
+                    <i class="fas fa-book-open"></i>
+                    <div class="text">Journel Voucher</div>
+                </a>
+                <a class="submenu-item" href="/Finance/JournalRegister">
+                    <i class="fas fa-newspaper"></i>
+                    <div class="text">Journel Register</div>
+                </a>`;
+        }
 
-             // Position the submenu to the right of the dropdown item
-             $submenu.css({
-                 'width': 180,
-                 'position': 'absolute',
-                 'top': offset.top,
-                 'left': offset.left + elementWidth, // Position to the right of the item
-                 'display': 'block' // Show the submenu
-             });
-         }
-         function closeSubmenu() {
-             var $submenu = $('#submenuContainer');
-             $submenu.hide(); // Hide the submenu popup
-         }
-         // Handle the file selection
-         $("#loadLayoutInput").on("change", function (event) {
-             const dataGrid = $("#dataGrid").dxDataGrid("instance");
-             const file = event.target.files[0];
+        // Function to toggle visibility of nested submenus
+        function toggleSubmenu(submenuId) {
+            const submenu = document.getElementById(submenuId);
+            if (submenu.style.display === 'none') {
+                submenu.style.display = 'block';
+            } else {
+                submenu.style.display = 'none';
+            }
+        }
 
-             if (file) {
-                 const reader = new FileReader();
+        // Function to toggle visibility of nested submenus
+        function toggleSubmenu(submenuId) {
+            const submenu = document.getElementById(submenuId);
+            if (submenu.style.display === 'none') {
+                submenu.style.display = 'block';
+            } else {
+                submenu.style.display = 'none';
+            }
+        }
 
-                 reader.onload = function (e) {
-                     try {
-                         // Parse the JSON string from the file
-                         const layout = JSON.parse(e.target.result);
 
-                         // Restore the grid state
-                         dataGrid.state(layout);
-                     } catch (error) {
-                         console.error("Error parsing JSON:", error);
-                         alert("Failed to load layout. Please ensure the file is valid JSON.");
-                     }
-                 };
+        function loadAccountLedger() {
+            // Set the iframe source to load Accounting Ledgers content
+            const iframe = document.getElementById("contentIframe");
+            iframe.src = "/Finance/AccountingLedgers";
+            hideSidebars();
+            // Update the breadcrumb (same as the anchor tag in the menu)
+            updateBreadcrumbFromSidebar2('Accounting Ledgers');
 
-                 // Read the file as text
-                 reader.readAsText(file);
-             }
-         });
-     </script> *@
+        }
+
+
+        function hideSidebars() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebar2 = document.getElementById('sidebar2');
+            const root = document.documentElement; // Access CSS custom properties
+
+            // Hide Sidebar 1 and Sidebar 2
+            sidebar.classList.add('hidden');
+            sidebar2.classList.add('hidden');
+            sidebar2.style.display = 'none'; // Set display to none for sidebar2
+
+            // Update the CSS variable based on the sidebar state
+            root.style.setProperty('--sidebar-width', '0px'); // No sidebar
+            sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+
+            // Adjust the toggle button symbol
+            const toggleBtn = document.querySelector('.toggle-btn');
+            toggleBtn.innerHTML = '&gt;';
+        }
+
+
+        function updateBreadcrumbFromSidebar2(submenuItem) {
+            // Clear the breadcrumb trail before adding the new item
+            breadcrumbTrail.length = 1;
+            breadcrumbTrail.push(submenuItem); // Add the new breadcrumb item
+            updateBreadcrumb(); // Re-render the breadcrumb trail
+        }
+
+
+        function updateBreadcrumb() {
+            const breadcrumbContainer = document.getElementById("breadcrumb");
+
+            // Clear existing breadcrumb items
+            breadcrumbContainer.innerHTML = '';
+
+            breadcrumbTrail.forEach((name, index) => {
+                // Create breadcrumb item
+                const breadcrumbItem = document.createElement("span");
+                breadcrumbItem.textContent = name;
+                breadcrumbItem.onclick = () => goToLevel(index);
+                breadcrumbContainer.appendChild(breadcrumbItem);
+
+                // Add a separator if not the last item
+                if (index < breadcrumbTrail.length - 1) {
+                    const separator = document.createElement("span");
+                    separator.textContent = " / ";
+                    separator.className = "separator";
+                    breadcrumbContainer.appendChild(separator);
+                }
+            });
+        }
+
+
+        function goBack() {
+            if (breadcrumbTrail.length > 1) {
+                breadcrumbTrail.pop(); // Remove the last breadcrumb
+                updateBreadcrumb();
+            }
+        }
+
+        function goToLevel(level) {
+            breadcrumbTrail = breadcrumbTrail.slice(0, level + 1); // Keep up to the selected level
+            updateBreadcrumb();
+        }
+
+        function resetBreadcrumb() {
+            breadcrumbTrail = ["Home"]; // Reset to the initial state
+            updateBreadcrumb();
+        }
+
+        // Example usage to ensure Sidebar2 interactions don't interfere with the trail
+        function selectNestedSubmenu(parent, child) {
+            updateBreadcrumbFromSidebar2(parent); // Update second level
+            updateBreadcrumbFromSidebar2(child); // Add/update the third level
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebar2 = document.getElementById('sidebar2');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            const root = document.documentElement; // Access CSS custom properties
+
+            // Toggle visibility of Sidebar 1
+            sidebar.classList.toggle('hidden');
+            sidebar2.classList.toggle('expanded');
+
+            // Update the CSS variable based on the sidebar state
+            if (sidebar.classList.contains('hidden') && sidebar2.classList.contains('expanded')) {
+                root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
+                //sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+            } else if (sidebar.classList.contains('hidden')) {
+                root.style.setProperty('--sidebar-width', '0px'); // No sidebar
+              //  sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+            } else {
+                root.style.setProperty('--sidebar-width', '256px'); // Sidebar 1 width
+                //sidebar2.style.marginTop = '70px'; // Keep Sidebar 2 margin
+                //sidebar.style.marginTop = '45px'; // Adjust Sidebar 1 margin
+            }
+
+            // Adjust the toggle button symbol
+            toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
+        }
+
+    </script>
 </body>
-
 </html>
