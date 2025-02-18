@@ -188,8 +188,9 @@
     @(Html.DevExtreme().DropDownButton()
         .ID("ddReports")
         .Icon("doc")
-        .Width("100px").Text("Report")
-        .DropDownOptions(options => options.Width(230))
+        .Width(100) // Increase button width if needed
+        .Text("Report")
+        .DropDownOptions(options => options.Width(400)) // Increase dropdown width
         .Items(items =>
         {
             items.Add().Text("Preview Register").Icon("file");
@@ -197,12 +198,8 @@
             items.Add().Text("Preview Register (With Line Entry Narration)").Icon("file");
             items.Add().Text("Preview Register (With Line Entry Narration Order by VoucherNo)").Icon("file");
             items.Add().Text("Preview Register (With Voucher Narration)").Icon("product");
-            items.Add().Text("Preview Register (With Voucher Narration - Order by Voucher No)").Icon("product");
-           
-
-
+            items.Add().Text("Preview Register (With Voucher Narration - Order by Voucher No)").Icon("product");
         })
-    @*     .OnItemClick("addReportsButton_click")  *@// Calls JavaScript function
         .ShowArrowIcon(false)
         )
 
