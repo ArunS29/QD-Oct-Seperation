@@ -82,18 +82,18 @@
             <div>
                 @(Html.DevExtreme().TextBox()
                             .ID("AccountLedgerNo")
-                            .Placeholder(new JS("formatMessage('Enter Account Ledger No')"))
+                            .Placeholder("Enter Account Ledger No")
                             .LabelMode(EditorLabelMode.Outside)
-                            .Label(new JS("formatMessage('Account Ledger No:')"))
+                            .Label("Account Ledger No:")
                             )
             </div>
 
             <div>
                 @(Html.DevExtreme().TextBox()
                             .ID("AccountHeadName")
-                    .Placeholder(new JS("formatMessage('Enter Account Head Name')"))
+                            .Placeholder("Enter Account Head Name")
                             .LabelMode(EditorLabelMode.Outside)
-                    .Label(new JS("formatMessage('Account Head Name:')"))
+                            .Label("Account Head Name:")
                             )
             </div>
 
@@ -102,23 +102,23 @@
             <div style="padding-top:15px">
                 @(Html.DevExtreme().DropDownButton()
                             .ID("ddBtnShowRecords")
-                    .Text(new JS("formatMessage('Show Records')"))
+                            .Text("Show Records")
                             .Icon("smalliconslayout")
                             .Width(180)
                             .TabIndex(4)
                             .DropDownOptions(options => options.Width(230))
                             @*  .Items(items =>
                         {
-                            items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                            items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                            items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                            items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                            items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                            items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                            items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                            items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                            items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                            items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                            items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                            items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                            items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                            items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                            items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                            items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                            items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                            items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                            items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                            items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
                         }) *@
                             )
             </div>
@@ -136,15 +136,15 @@
                         )
                         .Columns(columns =>
                         {
-                                columns.Add().DataField("AccountNoInVoucher").Caption(new JS("formatMessage('Account No')"));
-                columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('LegerName')"));
+                                columns.Add().DataField("AccountNoInVoucher").Caption("Account No");
+                                columns.Add().DataField("AccountHead").Caption("LegerName");
 
-                columns.Add().DataField("VoucherNoInVoucher").Caption(new JS("formatMessage('Voucher No')"));
+                                columns.Add().DataField("VoucherNoInVoucher").Caption("Voucher No");
 
-                columns.Add().DataField("AmountInVoucherFormatted").Caption(new JS("formatMessage('Voucher Amount')"));
-                columns.Add().DataField("AmountInSubLedgerFormatted").Caption(new JS("formatMessage('Adjusted/Mapped')"));
-                columns.Add().DataField("BalanceInVoucher").Caption(new JS("formatMessage('Balance Amount')"));
-                columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping Status')"));
+                                columns.Add().DataField("AmountInVoucherFormatted").Caption("Voucher Amount");
+                                columns.Add().DataField("AmountInSubLedgerFormatted").Caption("Adjusted/Mapped");
+                                columns.Add().DataField("BalanceInVoucher").Caption("Balance Amount");
+                                columns.Add().DataField("Mapping").Caption("Mapping Status");
 
                         })
                         .AllowColumnReordering(true)

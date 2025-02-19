@@ -61,7 +61,6 @@
                     <div class="col-12 col-md-4">
                         <label><strong>Document No:</strong></label>
                         @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Document No')"))
                                         .ID("DocumentNo")
                                         .Value(null)
                                         .Width("100%")
@@ -72,7 +71,6 @@
                     <div class="col-12 col-md-6">
                         <label><strong>Type of the Document Attached:</strong></label>
                         @(Html.DevExtreme().DropDownBox()
-                            .Label(new JS("formatMessage('Type of the Document Attached')"))
                                         .DataSource(d => d.WebApi()
                                             .Controller("LedgerAccountMaster")
                                                 .LoadAction("GetDocumentType")
@@ -124,7 +122,6 @@
                     <div class="col-12 col-md-4">
                         <label><strong>Reference No:</strong></label>
                         @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Reference No')"))
                                         .ID("ReferenceNo")
                                         .Value(null)
                                                  .ValidationRules(rules =>
@@ -139,7 +136,6 @@
                     <div class="col-12 col-md-6">
                         <label><strong>Remarks/Notes:</strong></label>
                         @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Remarks/Notes')"))
                                         .ID("Remarks")
                                         .Value(null)
                                         .Width("100%"))
@@ -172,7 +168,7 @@
                     <div class="col-12 col-md-4">
     <label><strong>Document Expiry Date:</strong></label>
                         @(Html.DevExtreme().DateBox()
-                            .Label(new JS("formatMessage('Document Expiry Date')"))
+
                                        .LabelMode(EditorLabelMode.Outside)
                                     .Type(DateBoxType.Date)
                                     .DisplayFormat("dd-MMM-yyyy")
@@ -188,7 +184,6 @@
                     <div class="col-10 col-md-3">
                         <label><strong>Expiry Date (Hijri):</strong></label>
                         @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Expiry Date (Hijri)')"))
                                         .ID("ExpiryDate")
                                         .Value(null)
                                         .Width("100%"))
@@ -196,7 +191,7 @@
                     <div class="col-10 col-md-3">
                         <label><strong>Notification Date:</strong></label>
                         @(Html.DevExtreme().DateBox()
-                            .Label(new JS("formatMessage('Notification Date')"))
+
                                           .LabelMode(EditorLabelMode.Outside)
                                        .Type(DateBoxType.Date)
                                        .DisplayFormat("dd-MMM-yyyy")
@@ -210,7 +205,7 @@
                     <div class="col-6 col-md-2">
                         @(Html.DevExtreme().Button()
                                             .ID("btnVoucherEntry")
-                                            .Text(new JS("formatMessage('ADD')"))
+                                            .Text("ADD")
                                             .Height(50)
                                             .Width("100%")
                                             .Icon("plus")
@@ -232,23 +227,23 @@
                             .RemoteOperations(false)
                             .Columns(columns =>
                             {
-                                columns.AddFor(m => m.DocumentNo).Caption(new JS("formatMessage('DocumentNo')"))
+                                columns.AddFor(m => m.DocumentNo).Caption("DocumentNo")
                                      .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
                                     .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>);
-                                columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
-                                columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref No')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
-                                columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formtMessge('Document Remarks')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
+                                columns.AddFor(m => m.DocumentType).Caption("DocumentType").HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
+                                columns.AddFor(m => m.DocumentRefNo).Caption("Document Ref No").HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
+                                columns.AddFor(m => m.DocumentRemarks).Caption("Document Remarks").HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
 
                                 columns.AddFor(m => m.DocumentExpDate)
-                                    .Caption(new JS("formatMessage('Expiry On')"))
+                                    .Caption("Expiry On")
                                             .Format("dd-MMM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry On</div>); // Format date as DD-MM-YYYY
 
                                 columns.AddFor(m => m.DocumentExpDateAr)
-                                    .Caption(new JS("formatMessage('Expiry Arabic')"))
+                                    .Caption("Expiry Arabic")
                                             .Format("dd-MMM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Expiry Arabic</div>);  // Format date as DD-MM-YYYY
 
                                 columns.AddFor(m => m.NotifiedOn)
-                                    .Caption(new JS("formatMessage('Notify On')"))
+                                    .Caption("Notify On")
                                             .Format("dd-MMM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Notify On</div>);  // Format date as DD-MM-YYYY
                             })
                                 .AllowColumnReordering(true)
@@ -269,13 +264,13 @@
 <div class="dx-fieldset horizontal-container mt-2">
             @(Html.DevExtreme().Button()
                         .ID("btnUpdate")
-                        .Text(new JS("formatMessage('Update')"))
+                        .Text("Update")
                         .Icon("save")
                         .OnClick("function() { UpdateVoucherEntry(); }")
                     )
             @(Html.DevExtreme().Button()
                         .ID("btnAllAttachments")
-                        .Text(new JS("formatMessage('Show All Documents')"))
+                        .Text("Show All Documents")
                         .Icon("save")
                     )
             @(Html.DevExtreme().Button()
