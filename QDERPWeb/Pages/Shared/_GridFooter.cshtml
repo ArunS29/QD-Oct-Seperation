@@ -85,6 +85,7 @@
     }
 
     .dx-datagrid .dx-row {
+     
         margin-bottom: 50px;
     }
     /* Custom styles for context menu */
@@ -113,7 +114,7 @@
         display: none; /* Keep it hidden until needed */
     }
 
-   
+  
     .btn-container {
         display: inline-block;
         position: relative;
@@ -149,41 +150,41 @@
 <div class="dx-fieldset horizontal-container">
 
     <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text("Layout")
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu");
-                items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
-            })
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddButtonLayout")
+        .Icon("smalliconslayout")
+        .Width(50) /* Adjust size for icon only */
+        .Text(new JS("formatMessage('Layout')"))
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+            items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+            items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+            items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+            items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+        })
             .ShowArrowIcon(false)
             )
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnPrint")
-            .Icon("print")
-            .Text("Print")
-            .Width(50)
-            )
+    @(Html.DevExtreme().Button()
+        .ID("btnPrint")
+        .Icon("print")
+        .Text(new JS("formatMessage('Print')"))
+        .Width(50) /* Adjust size */
+        )
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnToggleSearch")
-            .Icon("search")
-            .Text("Search")
-            .Width(50)
-            .OnClick("toggleFilterRow")
-            )
+    @(Html.DevExtreme().Button()
+        .ID("btnToggleSearch")
+        .Icon("search")
+        .Text(new JS("formatMessage('Search')"))
+        .Width(50)
+        .OnClick("toggleFilterRow")
+        )
     </div>
 
    @*  <div class="btn-container">
@@ -199,97 +200,93 @@
     </div> *@
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btntoggleGroupPanel")
-            .Icon("hierarchy")
-            .Width(50)
-            .Text("Group")
-            .OnClick("toggleGroupPanel")
-            )
+    @(Html.DevExtreme().Button()
+        .ID("btntoggleGroupPanel")
+        .Icon("hierarchy")
+        .Width(50)
+        .Text(new JS("formatMessage('Group')"))
+        .OnClick("toggleGroupPanel")
+        )
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnColumnChooser")
-            .Icon("columnchooser")
-            .Width(50)
-            .Text("Column Chooser")
-            .OnClick("showColumnChooser")
-            )
+    @(Html.DevExtreme().Button()
+        .ID("btnColumnChooser")
+        .Icon("columnchooser")
+        .Width(50)
+        .Text(new JS("formatMessage('Column')"))
+        .OnClick("showColumnChooser")
+        )
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonReceipts")
-            .Icon("add")
-            .Width(50)
-            .Text("Add Receipt")
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Add Cash Receipts").Icon("money");
-                items.Add().Text("Add Bank Receipts").Icon("product");
-            })
-            .OnItemClick("addRecipitsButton_click")
-            .ShowArrowIcon(false)
-            )
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddButtonReceipts")
+        .Icon("add")
+        .Width(50)
+        .Text(new JS("formatMessage('Receipt')"))
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Add Cash Receipts')")).Icon("money");
+            items.Add().Text(new JS("formatMessage('Add Bank Receipts')")).Icon("product");
+        })
+        .OnItemClick("addRecipitsButton_click")
+        .ShowArrowIcon(false)
+        )
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonPayment")
-            .Icon("add")
-            .Width(50)
-            .Text("Add Payment")
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Add Cash Payment").Icon("money");
-                items.Add().Text("Add Bank Payment").Icon("product");
-            })
-            .OnItemClick("addPaymentButton_click")
-            .ShowArrowIcon(false)
-            )
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddButtonPayment")
+        .Icon("add")
+        .Width(50)
+        .Text(new JS("formatMessage('Payment')"))
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Add Cash Payment')")).Icon("money");
+            items.Add().Text(new JS("formatMessage('Add Bank Payment')")).Icon("product");
+        })
+        .OnItemClick("addPaymentButton_click")
+        .ShowArrowIcon(false)
+        )
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddOtherVouchers")
-            .Icon("add")
-            .Width(50)
-            .Text("Other Vouchers")
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Add Purchase Voucher").Icon("add");
-                items.Add().Text("Add Sales Voucher").Icon("add");
-                items.Add().Text("Add Journal Voucher").Icon("add");
-            })
-            .OnItemClick("otherVoucherButton_click")
-            .ShowArrowIcon(false)
-            )
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddOtherVouchers")
+        .Icon("add")
+        .Width(50)
+        .Text(new JS("formatMessage('Voucher')"))
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Add Purchase Voucher')")).Icon("add");
+            items.Add().Text(new JS("formatMessage('Add Sales Voucher')")).Icon("add");
+            items.Add().Text(new JS("formatMessage('Add Journal Voucher')")).Icon("add");
+        })
+        .OnItemClick("otherVoucherButton_click")
+        .ShowArrowIcon(false)
+        )
     </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddReports")
-            .Icon("doc")
-            .Width(50)
-            .Text("Report")
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Account Statements").Icon("file").OnClick("showSubmenu4");
-                items.Add().Text("Receivable Statements").Icon("file").OnClick("showSubmenu5");
-                items.Add().Text("Payable Statements").Icon("file").OnClick("showSubmenu6");
-                items.Add().Text("Cost Reports").Icon("file").OnClick("showSubmenu7");
-                items.Add().Text("Bank Reconciliation").Icon("product");
-                items.Add().Text("Ledger to Receivable/Payable Mapping").Icon("product");
-                items.Add().Text("Ledger to Salary Payable Mapping").Icon("product");
-            })
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddReports")
+        .Icon("doc")
+        .Width(50)
+        .Text(new JS("formatMessage('Report')"))
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Account Statements')")).Icon("file");
+            items.Add().Text(new JS("formatMessage('Ledger to Salary Payable Mapping')")).Icon("product");
+            items.Add().Text(new JS("formatMessage('Account Ledger to Receivables/Payable Mapping')")).Icon("product");
+            items.Add().Text(new JS("formatMessage('Bank Reconciliation')")).Icon("product");
+        })
             .OnItemClick("addReportsButton_click")
-            .ShowArrowIcon(false)
-            )
+        .ShowArrowIcon(false)
+        )
     </div>
 
 </div>
@@ -433,7 +430,7 @@
         var isVisible = dataGrid.option("groupPanel.visible");
         dataGrid.option("groupPanel.visible", !isVisible);
     }
-    function showColumnChooser() {
+       function showColumnChooser() {
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
 
@@ -542,12 +539,12 @@
             window.location.href = "/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport";
         } else if (pageUrl !== '') {
             // Set the iframe source and show overlay only if pageUrl is valid
-            $("#overlay-frame").attr("src", pageUrl);
-            $("#overlay").fadeIn();
-        }
+        $("#overlay-frame").attr("src", pageUrl);
+        $("#overlay").fadeIn();
+    }
     }
 
-      
+
 
     // Function to close the overlay
     function closeOverlay() {

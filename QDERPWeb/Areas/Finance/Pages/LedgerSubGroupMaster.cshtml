@@ -80,6 +80,7 @@
                         <label for="SubGroupName" class="button-alignment-down">Enter New Sub Group & Add to the Existing List</label>
                         @(
                             Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Enter New Sub Group & Add to the Existing List')"))
                             .ID("txtSubGroupName")
                             .Value(null)
                             )
@@ -93,6 +94,7 @@
                         <label for="SubGroupNameAr" class="button-alignment-down">Sub Group Name (Arabic)</label>
                         @(
                             Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Sub Group Name (Arabic)')"))
                             .ID("txtSubGroupNameAr")
                             .Value(null)
                             )
@@ -102,7 +104,7 @@
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
                             .ID("btnAdd")
-                            .Text("ADD")
+                            .Text(new JS("formatMessage('ADD')"))
                             .Height(70)
                             .Width(178)
                             .Icon("plus")
