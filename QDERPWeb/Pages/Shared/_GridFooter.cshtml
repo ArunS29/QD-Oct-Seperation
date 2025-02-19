@@ -29,7 +29,7 @@
 
     #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         text-align: center !important;
-        /* background-color: aliceblue; */
+        background-color: aliceblue;
     }
     /* Button Styling */
     .dx-button {
@@ -69,11 +69,8 @@
 
     .horizontal-container {
         display: flex;
-        gap: 10px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
+        align-items: center;
     }
 
     .button-alignment-down {
@@ -123,14 +120,14 @@
     /* Initially, buttons have a small width (showing only the icon) */
     .btn-container .dx-button,
     .btn-container .dx-dropdownbutton {
-        width: 50px !important; /* Small width for icons */
+        width: 55px !important; /* Small width for icons */
         transition: width 0.3s ease-in-out;
     }
 
     /* Expand button width when hovered */
     .btn-container:hover .dx-button,
     .btn-container:hover .dx-dropdownbutton {
-        width: 200px !important; /* Expand width for full text */
+        width: 180px !important; /* Expand width for full text */
     }
 
     /* Hide text initially */

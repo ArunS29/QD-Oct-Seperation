@@ -67,11 +67,9 @@
 
 	.Head {
 		display: flex;
-		justify-content: end;
+		justify-content: start;
 		align-items: center;
 		margin-top: 0px;
-		padding-top: 50px;
-		height: 70px;
 		margin-left: 0px;
 		padding-bottom: 0px;
 		padding-right: 0px;
@@ -85,74 +83,6 @@
 		align-items: center;
 	}
 
-	.title {
-		font-size: 20px; /* Adjust size if needed */
-		font-weight: bold;
-	}
-
-	.footer {
-		display: flex;
-		align-items: center;
-		height: 0px;
-		margin-left: auto; /* Pushes it fully to the right */
-		margin-top: 15px;
-		padding-top: 22px;
-	}
-/* 
-	.dx-popup-content.dx-popup-content-scrollable {
-		padding-top: 20px;
-		padding-right: 0px;
-		padding-left: 25px;
-		background-color: aliceblue;
-	}
- */
-	/* Hover effect for DataGrid rows */
-	.dx-datagrid-rowsview .dx-row:hover {
-		background-color: #f5f5f5; /* Light gray background */
-	}
-
-	/* Hover effect for DataGrid cells */
-	.dx-datagrid-rowsview .dx-row td:hover {
-		background-color: #e0e0e0; /* Slightly darker gray background */
-	}
-
-	/* Bold header text for DataGrid */
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		font-weight: bold;
-	}
-
-	.dx-datagrid {
-		border-radius: 15px; /* Oval Shape */
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft Shadow */
-		/* 	overflow: hidden; */
-		height: 60vh;
-	}
-
-	.dx-datagrid-rowsview .dx-row {
-		font-family: 'Inter', sans-serif;
-		font-size: 14px; /* Smaller, more modern font */
-	}
-
-		.dx-datagrid-rowsview .dx-row .dx-command-edit,
-		.dx-datagrid-rowsview .dx-row td {
-			padding: 8px;
-		}
-
-			/* Highlight Debit & Credit */
-			.dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
-				color: red; /* Debit */
-				font-weight: bold;
-			}
-
-			.dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
-				color: green; /* Credit */
-				font-weight: bold;
-			}
-
-			/* Dynamic Balance Highlighting */
-			.dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
-				font-weight: bold;
-			}
 
 	/* Toolbar Styling */
 	.custom-toolbar {
@@ -209,23 +139,18 @@
 	.dx-datagrid-header-panel {
 		background-color: #909ead00;
 	}
-	/* arun */
-	.title {
-		padding-bottom: 5px;
-	}
 </style>
 
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
+	<div class="title">
+		<div class="header-container">
+			<div class="title">Accounting Ledgers</div>
+		</div>
+	</div>
 <div class="Head">
 	<div class="header-container">
-
 		<div class="footer">@await Html.PartialAsync("_GridFooter")</div>
-	</div>
-</div>
-<div class="title">
-	<div class="header-container">
-		<div class="title">Accounting Ledgers</div>
 	</div>
 </div>
 <div id="errorPopup">
@@ -297,7 +222,7 @@
 				.Key("AccountId")
 				)
 				.LabelMode(EditorLabelMode.Outside)
-				.Label(new JS("formatMessage('Please Select the Account to Edit')"))
+				.Label(new JS("formatMessage('Select Ledger Account')"))
 				.ID("accountDropDownBox")
 				.ShowClearButton(true)
 				.AcceptCustomValue(true)
@@ -388,12 +313,6 @@
 			</div>
 		</text>)
 				)
-
-
-
-
-
-
 		@(Html.DevExtreme().DateBox()
 				.ID("frmdateBox")
 				.Label(new JS("formatMessage('Start Date')"))
@@ -437,8 +356,8 @@
 					items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
 					items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 
-						})
-						)
+				})
+				)
 		@* @(Html.DevExtreme().DropDownButton()
 				.ID("ddBtnGenerateReport")
 				.Text("Generate Report")
@@ -516,10 +435,10 @@
 				.Visible(true);
 
 						columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('VoucherAmountFormatted')")).Alignment(HorizontalAlignment.Left).Visible(false);
- columns.Add()
+						columns.Add()
 			.Caption(new JS("formatMessage('Balance')"))
-              .Alignment(HorizontalAlignment.Right)
-              .DataType(GridColumnDataType.Number)
+			.Alignment(HorizontalAlignment.Right)
+			.DataType(GridColumnDataType.Number)
               .CalculateCellValue("function(rowData) { "+
                 "let balance = 0;"+
                  "let gridInstance = $('#dataGrid').dxDataGrid('instance');"+
@@ -537,7 +456,7 @@
  
                    "let balanceType = balance >= 0 ? 'Dr' : 'Cr'; "+
                  " return `${formattedBalance} ${balanceType}`;"+
-"}").Visible(true);
+			"}").Visible(true);
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
 						columns.AddFor(m => m.BillRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(true);
 			
@@ -564,13 +483,13 @@
 				.AllowColumnReordering(true)
 				.AllowColumnResizing(true)
 				.ColumnFixing(fixing => fixing.Enabled(true))
-				.HeaderFilter(filter => filter.Visible(false)) /* Removed filter on headings */
+				@* .HeaderFilter(filter => filter.Visible(false)) /* Removed filter on headings */ *@
 				.Height(420)
 				.ColumnAutoWidth(true)
 				.FilterRow(filterRow => filterRow.Visible(false)) /* Initially hidden, toggled via button */
 				.GroupPanel(groupPanel => groupPanel.Visible(true))
 				.ShowBorders(false)
-				 .HeaderFilter(filter => filter.Visible(false))
+				 @* .HeaderFilter(filter => filter.Visible(true)) *@
             .ColumnChooser(columnChooser => columnChooser
             .Enabled(false) // Enable the column chooser for hiding and showing columns
             .Title("Column Chooser") // Optional: Set a custom title
@@ -701,14 +620,14 @@
 
 
 
-
-	function toggleFilterRow() {
+	 
+		function toggleFilterRow() {
 		var grid = $("#dataGrid").dxDataGrid("instance");
 		var isVisible = grid.option("filterRow.visible");
 		grid.option("filterRow.visible", !isVisible);
 	}
-	
 
+	
 	var inputPopupInstance
 	$(function () {
 		// Initialize the DevExtreme Popup
@@ -735,36 +654,36 @@
 			contextMenu.hide();
 		});
 
-		$("#gridContainer").dxDataGrid({
-			columnChooser: {
-				enabled: true,
-				mode: "select",  // or 'dragAndDrop'
-				allowSearch: true, // Enables search
-				height: 400,
-				width: 300,
-				position: {
-					my: "left top",
-					at: "left bottom",
-					of: "#gridContainer"
-				}
-			},
-			toolbar: {
-				items: [
-					{
-						location: "before",
-						widget: "dxButton",
-						options: {
-							text: "Column Chooser",
-							icon: "columnchooser",
-							onClick: function () {
-								var grid = $("#gridContainer").dxDataGrid("instance");
-								grid.showColumnChooser();
-							}
+			$("#gridContainer").dxDataGrid({
+		columnChooser: {
+			enabled: true,
+			mode: "select",  // or 'dragAndDrop'
+			allowSearch: true, // Enables search
+			height: 400,
+			width: 300,
+			position: {
+				my: "left top",
+				at: "left bottom",
+				of: "#gridContainer"
+			}
+		},
+		toolbar: {
+			items: [
+				{
+					location: "before",
+					widget: "dxButton",
+					options: {
+						text: "Column Chooser",
+						icon: "columnchooser",
+						onClick: function () {
+							var grid = $("#gridContainer").dxDataGrid("instance");
+							grid.showColumnChooser();
 						}
 					}
-				]
-			}
-		});
+				}
+			]
+		}
+	});
 
 		// Apply the custom context menu plugin
 		$("#dataGrid").customizeGridContextMenu();
@@ -934,7 +853,7 @@
 		if (selectionChangedArgs.selectedRowKeys.length > 0) {
 			component.close();
 		}
-	}
+			}
 	function showLedgerAccountEditPopup() {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		var selectedValue = dropDownBox.option("value");
@@ -1098,8 +1017,8 @@
 				toDate: toDate
 			},
 			success: function (data) {
-		   // Bind the data to the DataGrid
-		   $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+				// Bind the data to the DataGrid
+				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
 			   var dataGrid = $("#dataGrid").dxDataGrid("instance");
       var dataSource = dataGrid.option("dataSource");
 if (dataSource && dataSource.length > 0) {
@@ -1108,8 +1027,8 @@ if (dataSource && dataSource.length > 0) {
 			 var firstRow = dataSource[0]; // Get the first row
 		   firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
   }
-		   // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
-},
+				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
@@ -1377,7 +1296,7 @@ function updateBankReconciliationState(accheadname) {
 			if (formattedVoucher.startsWith(prefix)) {
 				window.location.href = voucherRoutes[prefix];
 				return;
-		}
+			}
 		}
 
 		alert("No matching voucher page found: " + formattedVoucher);

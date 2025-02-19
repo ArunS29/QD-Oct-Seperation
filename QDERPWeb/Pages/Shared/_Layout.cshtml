@@ -83,7 +83,7 @@
         .sidebar.hidden {
             width: 60px; /* Minimized width to show icons only */
             background-color: white;
-            height: 100vh;
+            height: inherit;
         }
 
 
@@ -192,6 +192,7 @@
             margin-left: 0px;
             transition: margin-left 0.3s ease;
             color:black;
+            height:inherit;
         }
 
             /* Scrollbar styles for Webkit-based browsers */
@@ -295,46 +296,8 @@
                 height: 14px;
             }
 
-
-        .main-content {
-            display: flex;
-            flex-grow: 1;
-            height: 100vh; /* Full height */
-            position: relative;
-            overflow: hidden;
-            transition: width 0.3s ease; /* Smooth width transition */
-            margin-top: 26px;
-        }
-
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw; /* Full viewport width */
-            height: 100vh; /* Full viewport height */
-            border: none;
-        }
-
-
         /* Previous Button Style */
-        .prev-btn {
-            background-color: transparent;
-            color: #ebf3fc;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-            .prev-btn:hover {
-                background-color: lightslategrey;
-            }
-
+       
         .frame {
             display: flex; /* Use flexbox to align items */
             align-items: center; /* Vertically align items */
@@ -475,7 +438,7 @@
 
         /* Main Content */
         .mainContainer {
-            margin-top: 7em;
+            margin-top: 6em;
             /* width: 85%; */
             /* padding: 20px; */
         }
@@ -807,7 +770,6 @@
 
         <!-- Breadcrumb above Sidebar 2 -->
         <div class="breadcrumb" id="breadcrumb">
-            @*   <button class="prev-btn" onclick="goBack()">&#60;</button> *@
             <span onclick="resetBreadcrumb()">Home</span>
         </div>
 
@@ -1092,13 +1054,6 @@
             });
         }
 
-
-        function goBack() {
-            if (breadcrumbTrail.length > 1) {
-                breadcrumbTrail.pop(); // Remove the last breadcrumb
-                updateBreadcrumb();
-            }
-        }
 
         function goToLevel(level) {
             breadcrumbTrail = breadcrumbTrail.slice(0, level + 1); // Keep up to the selected level

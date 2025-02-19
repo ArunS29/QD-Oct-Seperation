@@ -46,30 +46,6 @@
 
 
 
-    .Head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 1415px;
-        padding: 10px;
-        margin-left: 10px;
-        height: 20px;
-        padding-top: 25px;
-        margin-bottom: 25px;
-        margin-top: 50px;
-    }
-
-    .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-
-    .title {
-        font-size: 20px; /* Adjust size if needed */
-        font-weight: bold;
-    }
 
     .footer {
         display: flex;
@@ -80,59 +56,7 @@
         padding-top: 22px;
     }
 
-    .dx-popup-content.dx-popup-content-scrollable {
-        padding-top: 20px;
-        padding-right: 0px;
-        padding-left: 25px;
-    }
-
-    /* Hover effect for DataGrid rows */
-    .dx-datagrid-rowsview .dx-row:hover {
-        background-color: #f5f5f5; /* Light gray background */
-    }
-
-    /* Hover effect for DataGrid cells */
-    .dx-datagrid-rowsview .dx-row td:hover {
-        background-color: #e0e0e0; /* Slightly darker gray background */
-    }
-
-    /* Bold header text for DataGrid */
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
-    }
-
-    .dx-datagrid {
-        border-radius: 15px; /* Oval Shape */
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft Shadow */
-        overflow: hidden;
-    }
-
-    .dx-datagrid-rowsview .dx-row {
-        font-family: 'Inter', sans-serif;
-        font-size: 14px; /* Smaller, more modern font */
-    }
-
-        .dx-datagrid-rowsview .dx-row .dx-command-edit,
-        .dx-datagrid-rowsview .dx-row td {
-            padding: 8px;
-        }
-
-            /* Highlight Debit & Credit */
-            .dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
-                color: red; /* Debit */
-                font-weight: bold;
-            }
-
-            .dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
-                color: green; /* Credit */
-                font-weight: bold;
-            }
-
-            /* Dynamic Balance Highlighting */
-            .dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
-                font-weight: bold;
-            }
-
+   
     /* Toolbar Styling */
     .custom-toolbar {
         display: flex;
@@ -184,11 +108,11 @@
         background-color: #909ead00 !important;
         border: 1px solid #d6e4f0 !important;
         border-radius: 4px !important;
-        padding: 6px 12px !important; /* Reduced button padding */
+        /* padding: 6px 12px !important; /* Reduced button padding */ */
         font-size: 14px !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
         transition: all 0.2s ease-in-out !important;
-        height: 39px !important; /* Fixed height */
+        height:40px !important; /* Fixed height */
     }
 
         /* Hover Effect for Button */
@@ -208,9 +132,9 @@
 
 </style>
 <input id="formId" value="frm201LedgerViewByVoucherType" type="hidden" />
+<div class="title">Accounting Register</div>
 <div class="Head">
     <div class="header-container">
-        <div class="title">Accounting Register</div>
         <div class="footer">@await Html.PartialAsync("AssetRegisterFooter")</div>
     </div>
 </div>
@@ -395,7 +319,7 @@
                     columns.AddFor(m => m.VoucherType).Visible(false);
                 })
             .OnCellClick("function(e) {handleCellClick(e);}")
-        .HeaderFilter(filter => filter.Visible(false))
+            @* .HeaderFilter(filter => filter.Visible(true)) *@
             .ColumnChooser(columnChooser => columnChooser
             .Enabled(false) // Enable the column chooser for hiding and showing columns
             .Title("Column Chooser") // Optional: Set a custom title
