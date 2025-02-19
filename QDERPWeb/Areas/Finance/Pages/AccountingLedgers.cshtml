@@ -515,7 +515,7 @@
 		</text>)
 				.Visible(true);
 
-						columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('VoucherAmountFormatted')")).Alignment(HorizontalAlignment.Left).Visible(true);
+						columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('VoucherAmountFormatted')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.Add()
 			.Caption(new JS("formatMessage('Balance')"))
 			.Alignment(HorizontalAlignment.Right)
@@ -540,6 +540,25 @@
 			"}").Visible(true);
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
 						columns.AddFor(m => m.BillRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(true);
+			
+						columns.AddFor(m => m.ReferenceNote).Caption("ReferenceNote").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountHeadArabic).Caption("AccountHeadArabic").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.BillPaidTo).Caption("BillPaidTo").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.BillDate).Caption("BillDate").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.BillNo).Caption("BillNo").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherModifiedOn).Caption("VoucherModifiedOn").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherModifiedBy).Caption("VoucherModifiedBy").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.SysRemarks).Caption("SysRemarks").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherType).Caption("VoucherType").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.MasterGroup).Caption("MasterGroup").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountGroup).Caption("AccountGroup").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.EntryNarration).Caption("EntryNarration").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountHead).Caption("AccountHead").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherEntryNo).Caption("VoucherEntryNo").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherApprovedOn).Caption("VoucherApprovedOn").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherVerifiedOn).Caption("VoucherVerifiedOn").Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherVerifiedBy).Caption("VoucherVerifiedBy").Alignment(HorizontalAlignment.Left).Visible(false);
 					})
 				.OnCellClick("function(e) { handleCellClick(e); }")
 				.AllowColumnReordering(true)
@@ -551,7 +570,7 @@
 				.FilterRow(filterRow => filterRow.Visible(false)) /* Initially hidden, toggled via button */
 				.GroupPanel(groupPanel => groupPanel.Visible(true))
 				.ShowBorders(false)
-				 .HeaderFilter(filter => filter.Visible(true))
+				 .HeaderFilter(filter => filter.Visible(false))
             .ColumnChooser(columnChooser => columnChooser
             .Enabled(false) // Enable the column chooser for hiding and showing columns
             .Title("Column Chooser") // Optional: Set a custom title
@@ -872,11 +891,13 @@
 			component.close();
 		}
 			}
-
 	function showLedgerAccountEditPopup() {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
-		if (dropDownBox.option("value") === null) {
-			$("#errorPopup").dxPopup("instance").show();
+		var selectedValue = dropDownBox.option("value");
+
+		// Check if a value is selected
+		if (!selectedValue) {
+			DevExpress.ui.notify("Please select an account ledger before editing.", "error", 2000);
 			return;
 		}
 
@@ -907,6 +928,7 @@
 			iframe.src = url;
 		}, 300); // Wait 300ms to ensure rendering
 	}
+
 
 	function addVoucher_click(form) {
 		let url = "";

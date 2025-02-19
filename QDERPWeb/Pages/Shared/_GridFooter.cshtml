@@ -469,37 +469,33 @@
                 console.log("Clicked item: ", e.itemData.text);
         }
     }
-
     function addReportsButton_click(e) {
         let pageUrl = '';
+        let selectedText = e.itemData.text;
 
-        switch (e.itemData.text) {
+        switch (selectedText) {
             case 'Ledger to Salary Payable Mapping':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                     pageUrl = `/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
+                        title: 'Please select the Account to Review',
+                        text: 'You need to select an account before proceeding.',
                         confirmButtonText: 'OK'
                     });
                     return;
                 }
                 break;
 
-            case 'Add Bank Receipts':
-                pageUrl = '/Finance/VoucherEntryReceipts';
-                break;
-
-            case 'Account Ledger to Recievables/Payable Mapping':
+            case 'Ledger to Receivable/Payable Mapping':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                     pageUrl = `/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
+                        title: 'Please select the Account to Review',
+                        text: 'You need to select an account before proceeding.',
                         confirmButtonText: 'OK'
                     });
                     return;
@@ -512,8 +508,8 @@
                 } else {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Select Account to Review',
-                        text: 'Please select an account before proceeding.',
+                        title: 'Please Select the Account to Reconcile',
+                        text: 'You need to select an account before proceeding.',
                         confirmButtonText: 'OK'
                     });
                     return;
@@ -525,27 +521,24 @@
                 return;  // No need to set pageUrl for new window
         }
 
-        // Handle Account Statement cases separately
-        let selectedText = e.itemData.text;
+        // Handle Account Statement Cases
+        const reportMapping = {
+            "Account Statements": "AccountReport",
+            "Statement Of Account With Narration": "AccountWithNarration",
+            "Statement Of Account Export Formate": "AccountExportFormatReport",
+            "Statement Of Account Export Formate[Landscape]": "AccountExportLandscapeReport",
+            "Statement of Account Export [Formate2]": "AccountStatementFormat2Report",
+            "Statement of Account [OrderByVoucerNo9 (Without Narration)]": "AccountOrderbyVchNoWONarrationReport"
+        };
 
-        if (selectedText === "Account Statements") {
-            window.location.href = "/DocumentViewer?reportName=AccountReport";
-        } else if (selectedText === "Statement Of Account With Narration") {
-            window.location.href = "/DocumentViewer?reportName=AccountWithNarration";
-        } else if (selectedText === "Statement Of Account Export Formate") {
-            window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport";
-        } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
-            window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport";
-        } else if (selectedText === "Statement of Account Export [Formate2]") {
-            window.location.href = "/DocumentViewer?reportName=AccountStatementFormat2Report";
-        } else if (selectedText === "Statement of Account [OrderByVoucerNo9 (Without Narration)]") {
-            window.location.href = "/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport";
+        if (reportMapping[selectedText]) {
+            window.location.href = `/DocumentViewer?reportName=${reportMapping[selectedText]}`;
         } else if (pageUrl !== '') {
-            // Set the iframe source and show overlay only if pageUrl is valid
             $("#overlay-frame").attr("src", pageUrl);
             $("#overlay").fadeIn();
         }
     }
+
 
       
 

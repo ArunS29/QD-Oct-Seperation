@@ -395,7 +395,7 @@
                     columns.AddFor(m => m.VoucherType).Visible(false);
                 })
             .OnCellClick("function(e) {handleCellClick(e);}")
-            .HeaderFilter(filter => filter.Visible(true))
+        .HeaderFilter(filter => filter.Visible(false))
             .ColumnChooser(columnChooser => columnChooser
             .Enabled(false) // Enable the column chooser for hiding and showing columns
             .Title("Column Chooser") // Optional: Set a custom title
