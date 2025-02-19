@@ -146,9 +146,8 @@
 
         /* Toggle button */
         .toggle-btn {
-            /* display: none !important; */
             position: absolute;
-            top: 65px;
+            top: 70px;
             /* left: calc(var(--sidebar-width, 17em)); /* Use the sidebar width */
             width: 30px;
             height: 30px;
@@ -160,7 +159,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 1000;
+            /* z-index: 1000; */
             transition: left 0.3s ease; /* Smooth transition */
         }
 
@@ -178,7 +177,7 @@
         /* Sidebar 2 styles */
         .sidebar2 {
             transition: background-color 0.3s ease;
-            background-color: var(--sidebar-bg);
+            background-color: #fff;
             display: flex;
             flex-direction: column;
             border-left: 1px solid #ddd;
@@ -488,6 +487,13 @@
         .bodyContainer{
             display:flex;
         }
+        .footerContainer{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background-color:#fff;
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -510,12 +516,210 @@
                     )
 
         </div>
+
         <i class="fas fa-bell img" onclick="handleBellClick()"></i> <!-- Bell icon -->
         <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
         <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->
         <div class="avatar" onclick="handleAvatarClick()"></div> <!-- Avatar -->
 
     </div>
+        <!-- Submenu-->
+        <div id="submenuContainer1" class="context-menu" style="display:none;">
+            <div class="context-menu-item1">
+                <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Receivables Ageing Report</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Receivables Ageing Report (By Sales Person)</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Receivables Ageing Report (Customizable)</span>
+                </div>
+                <div id="RptReceivableAgeingSummary" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Receivables Ageing Summary</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Receivables Ageing Summary (Customizable)</span>
+                </div>
+            </div>
+        </div>
+        <div id="submenuContainer2" class="context-menu" style="display:none;">
+            <div class="context-menu-item2">
+                <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Summary Report</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Summary Report(By Date)</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Cost Center Report</span>
+                </div>
+                <div id="RptCostCenterReport" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Cost Center Report(By Date)</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Cost Center Group Report</span>
+                </div>
+                <div id="RptCostCenterGroupReport" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Cost Center Group Report(By Date)</span>
+                </div>
+            </div>
+        </div>
+        <div id="submenuContainer3" class="context-menu" style="display:none;">
+            <div class="context-menu-item2">
+                <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Detailed Report</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Detailed Report(By Date)</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Detailed Group Report</span>
+                </div>
+                <div id="RptCostCenterReport" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Detailed Group Repor(By Date)</span>
+                </div>
+                <div onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-th-list"></i>
+                    <span>Cost Center Master Report</span>
+                </div>
+             </div>
+        </div>
+        <div id="submenuContainer4" class="context-menu" style="display:none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-search"></i>
+                    <span>Account Ledger - Statement of Accounts</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-search"></i>
+                    <span>Account Ledger - Statement of Accounts (With Narration)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-search"></i>
+                    <span>Account Ledger - Statement of Accounts (With Details)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-search"></i>
+                    <span>Account Ledger - Statement of Accounts (Export Format)</span>
+                </div>
+            </div>
+         </div>
+        <div id="submenuContainer5" class="context-menu" style="display:none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Receivable (All)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Receivable (By Account)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Receivable (Ageing as on Today)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Receivable (Ageing By End Date)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Receivable (With Retention)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Receivable (Landscape Format)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Receivable (Ageing as per Ledger Balance)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Receivable (Format 2)</span>
+                </div>
+            </div>
+         </div>
+        <div id="submenuContainer6" class="context-menu" style="display:none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Payables (With Reference No)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Payables (With Voucher No)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Payables (Ageing as on Today)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Payables (Ageing as on End Date)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Payables (With Retention)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Payables (Landscape Format)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Payables (Ageing as per Ledger Balance)</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Bills Payables (All Including Paid)</span>
+                </div>
+            </div>
+        </div>
+        <div id="submenuContainer7" class="context-menu" style="display:none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Cost Allocation Report - Detailed</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Cost Allocation Report - Summary</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Employee Allocation Report - Detailed</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Employee Allocation Report - Summary</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Property Cost Allocation Report - Detailed</span>
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                    <i class="fa fa-file"></i>
+                    <span>Property Cost Allocation Report - Summary</span>
+                </div>
+            </div>
+            </div>
     <!-- Notification Popup -->
     <div id="notificationPopup" class="popup">
         <div class="popup-header">
@@ -623,7 +827,7 @@
             </main>
         </div>
     </div>
-    <footer class="text-center py-3">
+    <footer class="text-center py-3 footerContainer">
         <p><b>&copy; @DateTime.Now.Year Pulse InfoTech.</b> All rights reserved.</p>
     </footer>
         <script src="~/js/localization.js" asp-append-version="true"></script>
