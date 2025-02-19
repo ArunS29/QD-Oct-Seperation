@@ -152,6 +152,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+		[HttpGet]
+		public IActionResult GetAccountId(string id)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(id))
+				{
+					return Json(new { success = false, message = "Invalid Cost Center ID." });
+				}
 
-    }
+				var costCenter = _context.Tbl201ChartOfAccounts.FirstOrDefault(c => c.AccountId == id);
+				if (costCenter == null)
+				{
+					return Json(new { success = false, message = "Cost Center not found." });
+				}
+
+				return Json(new { success = true, data = costCenter });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
+	}
 }

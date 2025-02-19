@@ -55,10 +55,20 @@
         font-weight: bold;
         color: black;
     }
+
+    a {
+        color: #2eb7e6 !important;
+        text-decoration: underline;
+    }
 </style>
 
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
 <div class="content-container-top">
+   <div style="color:black; font-weight: bold;  width: 100%;font-size:20px;">
+    Chart Of Accounts
+</div>
+<div id="popupContainer"></div>
+
     <div class="dx-field chartOfAccount">
         @(
                 Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20107ChartOfAccount>()
@@ -72,14 +82,30 @@
                 .ShowBorders(true)
                 .Columns(columns =>
                 {
-                    columns.AddFor(m => m.AccountId).Caption("Account ID").Alignment(HorizontalAlignment.Center).Visible(true);
+           
+          columns.AddFor(m => m.AccountId).Caption("Account ID").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(@<text>
+    <a href="javascript:void(0);" onclick="openPopup('<%-data.AccountId%>')">
+        <%-data.AccountId%>
+    </a>
+</text>);
+
                     columns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true);
                     columns.AddFor(m => m.MasterGroup).Caption("Account Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
                     columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head (Ar)").Alignment(HorizontalAlignment.Right).Visible(true);
                     columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center).GroupIndex(1);
                     columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Alignment(HorizontalAlignment.Center).Visible(true);
-                    columns.AddFor(m => m.OpeningBalanceDrCr).Caption("Dr/Cr").Alignment(HorizontalAlignment.Right).Visible(true);
+                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Ensure positive values
+        return positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }");
+                    columns.AddFor(m => m.OpeningBalanceDrCr).Caption("Dr/Cr").Alignment(HorizontalAlignment.Center).Visible(true);
                     columns.AddFor(m => m.IsLedgerObselete).Caption("Is Ledger Obsolete").Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
@@ -102,7 +128,7 @@
             )
     </div>
     <div>
-        @await Html.PartialAsync("_GridFooter")
+        @await Html.PartialAsync("_chartofaccounts")
     </div>
 </div>
 
@@ -120,6 +146,29 @@
 </div>
 
 <script type="text/javascript">
+function openPopup(accountId) {
+    $("#popupContainer").dxPopup({
+        contentTemplate: function(contentElement) {
+            $("<iframe>")
+                .attr("src", "/Finance/LedgerAccount?AccountId=" + accountId)
+                .css({ width: "100%", height: "500px", border: "none" })
+                .appendTo(contentElement);
+        },
+        width: 1200,
+        height: 600,
+        title: "Ledger Account Details",
+        showCloseButton: true,  // ✅ Displays the (X) close button
+        visible: true,
+        closeOnOutsideClick: true,  // ✅ Allows closing when clicking outside the popup
+        onHiding: function() { 
+            $("#popupContainer").dxPopup("instance").dispose(); // ✅ Cleanup
+        }
+    }).dxPopup("instance").show();
+}
+
+
+
+
     $(function () {
         var contextMenu = $("#contextMenu");
 
@@ -154,9 +203,10 @@
     // Function to handle Edit Ledger Account action
     function editLedger() {
         var rowData = window.selectedRowData;
-        if (rowData && rowData.AccountId) {
+        if (rowData && rowData.AccountId) {   
             // Navigate to frm201LedgerAccount with Edit mode
-            window.location.href = `/frm201LedgerAccount?mode=edit&accountId=${rowData.AccountId}`;
+           // window.location.href = `/frm201LedgerAccount?mode=edit&accountId=${rowData.AccountId}`;
+             window.location.href = `/Finance/LedgerAccount?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
         } else {
             alert("No valid row selected for editing.");
         }
@@ -167,7 +217,9 @@
         var rowData = window.selectedRowData;
         if (rowData && rowData.AccountId) {
             // Navigate to frm201LedgerAccount with View Transactions mode
-            window.location.href = `/frm201LedgerAccount?mode=view&accountId=${rowData.AccountId}`;
+          window.location.href = `/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+
+           // window.location.href = `/frm201LedgerAccount?mode=view&accountId=${rowData.AccountId}`;
         } else {
             alert("No valid row selected to view transactions.");
         }
@@ -189,7 +241,7 @@
             console.log("Delete URL:", deleteUrl);
 
             // Confirmation dialog
-            if (confirm("Are you sure you want to delete this ledger account?")) {
+            if (confirm("You are about to delete the Ledger Account from the database")) {
                 $.ajax({
                     url: deleteUrl,
                     type: 'POST', // Ensure the correct HTTP method

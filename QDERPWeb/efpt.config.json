@@ -107,6 +107,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl20161VATInvoiceMaster]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl201AccountGroups]",
          "ObjectType": 0
       },

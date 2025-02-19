@@ -113,6 +113,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl20130JournalRegisterPropertyAllocation> Tbl20130JournalRegisterPropertyAllocations { get; set; }
 
+    public virtual DbSet<Tbl20161VatinvoiceMaster> Tbl20161VatinvoiceMasters { get; set; }
+
     public virtual DbSet<Tbl201AccountGroup> Tbl201AccountGroups { get; set; }
 
     public virtual DbSet<Tbl201ChartOfAccount> Tbl201ChartOfAccounts { get; set; }
@@ -2323,6 +2325,246 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VoucherNo)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl20161VatinvoiceMaster>(entity =>
+        {
+            entity.HasKey(e => e.InvoiceNo);
+
+            entity.ToTable("tbl20161VATInvoiceMaster");
+
+            entity.Property(e => e.InvoiceNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.AddedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.AddedOn).HasColumnType("datetime");
+            entity.Property(e => e.AdvanceAmount).HasColumnType("money");
+            entity.Property(e => e.ApprovedBy).IsUnicode(false);
+            entity.Property(e => e.ApprovedOn).HasColumnType("datetime");
+            entity.Property(e => e.BadgeNo).HasMaxLength(100);
+            entity.Property(e => e.BranchCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerAdditionalNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerAdditionalStreet).IsUnicode(false);
+            entity.Property(e => e.BuyerAddressStreet).IsUnicode(false);
+            entity.Property(e => e.BuyerBuildingNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerCity)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerCityAr).HasMaxLength(50);
+            entity.Property(e => e.BuyerCountryCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerGroupVatnumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("BuyerGroupVATNumber");
+            entity.Property(e => e.BuyerName)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerNameAr).HasMaxLength(200);
+            entity.Property(e => e.BuyerNeighborhood)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerNeighborhoodAr).HasMaxLength(50);
+            entity.Property(e => e.BuyerOtherId)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("BuyerOtherID");
+            entity.Property(e => e.BuyerOtherIdtype)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("BuyerOtherIDType");
+            entity.Property(e => e.BuyerPostalCode)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerProvince)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.BuyerProvinceAr).HasMaxLength(50);
+            entity.Property(e => e.BuyerVatnumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("BuyerVATNumber");
+            entity.Property(e => e.ClientCcno)
+                .IsUnicode(false)
+                .HasColumnName("ClientCCNo");
+            entity.Property(e => e.ClientCode)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.ClientContactNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ClientEmail)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ClientGrnreferenceNo).HasColumnName("ClientGRNReferenceNo");
+            entity.Property(e => e.ClientNameInCash).IsUnicode(false);
+            entity.Property(e => e.ClientReferenceName)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.ClientVatinCash)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("ClientVATInCash");
+            entity.Property(e => e.CogsVoucherNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
+            entity.Property(e => e.CostCenterCode)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Discount).HasColumnType("money");
+            entity.Property(e => e.DiscountText)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.DiscountTextArabic).HasMaxLength(100);
+            entity.Property(e => e.Drssno)
+                .HasMaxLength(100)
+                .HasColumnName("DRSSNo");
+            entity.Property(e => e.Dthno)
+                .HasMaxLength(100)
+                .HasColumnName("DTHNo");
+            entity.Property(e => e.EmployeeNo)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.ExchangeRate).HasColumnType("money");
+            entity.Property(e => e.InvAdditionsText).HasMaxLength(50);
+            entity.Property(e => e.InvDeductionText).HasMaxLength(50);
+            entity.Property(e => e.InventoryEffectiveDate).HasColumnType("datetime");
+            entity.Property(e => e.InvoiceCurrencyCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.InvoiceDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.InvoiceDateWtTime).HasColumnType("datetime");
+            entity.Property(e => e.InvoiceDeliveryDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.InvoiceDueDate).HasColumnType("datetime");
+            entity.Property(e => e.InvoiceEffectiveDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.InvoiceEndDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.InvoiceIntro).IsUnicode(false);
+            entity.Property(e => e.InvoicePeriod)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InvoiceSalesPerson)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InvoiceStartDate).HasColumnType("smalldatetime");
+            entity.Property(e => e.InvoiceSubmittedOn).HasColumnType("datetime");
+            entity.Property(e => e.InvoiceSummNo).IsUnicode(false);
+            entity.Property(e => e.InvoiceSummary).IsUnicode(false);
+            entity.Property(e => e.InvoiceTransactionCode)
+                .HasMaxLength(7)
+                .IsUnicode(false);
+            entity.Property(e => e.InvoiceTypeCodeSubType)
+                .HasMaxLength(2)
+                .IsUnicode(false);
+            entity.Property(e => e.InvoiceUuid)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("InvoiceUUID");
+            entity.Property(e => e.IsCogsPostedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.IsCogsPostedOn).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ModifiedOn).HasColumnType("datetime");
+            entity.Property(e => e.OtherDeductionAmount).HasColumnType("money");
+            entity.Property(e => e.PaymentTerms).IsUnicode(false);
+            entity.Property(e => e.PaymentTerms1).IsUnicode(false);
+            entity.Property(e => e.Podate)
+                .HasColumnType("datetime")
+                .HasColumnName("PODate");
+            entity.Property(e => e.PodateAr).HasColumnName("PODateAr");
+            entity.Property(e => e.Pono).HasColumnName("PONo");
+            entity.Property(e => e.PostedBy).IsUnicode(false);
+            entity.Property(e => e.PostedOn).HasColumnType("datetime");
+            entity.Property(e => e.ProformaInvoiceNo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.ReasonforIssuanceOfCrn)
+                .IsUnicode(false)
+                .HasColumnName("ReasonforIssuanceOfCRN");
+            entity.Property(e => e.ReasonforIssuanceOfCrnar).HasColumnName("ReasonforIssuanceOfCRNAr");
+            entity.Property(e => e.RemarksInEn).IsUnicode(false);
+            entity.Property(e => e.RetentionAmount).HasColumnType("money");
+            entity.Property(e => e.RevenueAccount)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.SalesOrderNo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerAdditionalNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerAdditionalStreet).IsUnicode(false);
+            entity.Property(e => e.SellerAddressStreet).IsUnicode(false);
+            entity.Property(e => e.SellerBuildingNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerCity)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerCityAr).HasMaxLength(50);
+            entity.Property(e => e.SellerCountryCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerGroupVatnumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("SellerGroupVATNumber");
+            entity.Property(e => e.SellerName)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerNameAr).HasMaxLength(200);
+            entity.Property(e => e.SellerNeighborhood)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerNeighborhoodAr).HasMaxLength(50);
+            entity.Property(e => e.SellerOtherIdtype)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("SellerOtherIDType");
+            entity.Property(e => e.SellerOtherSellerId)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("SellerOtherSellerID");
+            entity.Property(e => e.SellerPostalCode)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerProvince)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SellerProvinceAr).HasMaxLength(50);
+            entity.Property(e => e.SellerVatnumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("SellerVATNumber");
+            entity.Property(e => e.SesreferenceNo)
+                .HasMaxLength(100)
+                .HasColumnName("SESReferenceNo");
+            entity.Property(e => e.SosreferenceNo).HasColumnName("SOSReferenceNo");
+            entity.Property(e => e.SubjectTitle).IsUnicode(false);
+            entity.Property(e => e.SubmittedBy).IsUnicode(false);
+            entity.Property(e => e.SubmittedOn).HasColumnType("datetime");
+            entity.Property(e => e.TaxCategoryId).HasColumnName("TaxCategoryID");
+            entity.Property(e => e.TaxCurrencyCode)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.VatledgerAccount)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("VATLedgerAccount");
+            entity.Property(e => e.VerifiedBy).IsUnicode(false);
+            entity.Property(e => e.VerifiedOn).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Tbl201AccountGroup>(entity =>

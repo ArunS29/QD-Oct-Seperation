@@ -1,0 +1,543 @@
+﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style type="text/css">
+    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
+        text-align: center !important;
+    }
+
+    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+        text-align: center !important;
+        /* background-color: aliceblue; */
+    }
+    /* Button Styling */
+    .dx-button {
+        background-color: #909ead00 !important;
+        border: 1px solid #d6e4f0 !important;
+        border-radius: 4px !important;
+        padding: 6px 12px !important; /* Reduced button padding */
+        font-size: 14px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
+    }
+
+        /* Hover Effect for Button */
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
+
+    .dx-icon {
+        font-size: 20px !important; /* Adjust size if needed */
+        color: gray !important; /* Adjust color if needed */
+    }
+
+    .dx-button-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .dx-dropdownbutton .dx-button-content {
+        padding: 0 !important;
+    }
+
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+        margin-top: 0px;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: 1px !important;
+    }
+
+    .dx-datagrid .dx-row {
+        margin-bottom: 50px;
+    }
+    /* Custom styles for context menu */
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 0px, 15px,10px 15px;
+        cursor: pointer;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+
+    #rowHeightMenu {
+        position: absolute;
+        top: 100px; /* Adjust positioning as per your design */
+        left: 300px; /* Adjust positioning as per your design */
+        display: none; /* Keep it hidden until needed */
+    }
+
+</style>
+<div class="dx-fieldset horizontal-container">
+
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddButtonLayout")
+        .Icon("smalliconslayout")
+        .Width("100px") /* Adjust size for icon only */
+        .Text("Layout")
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu");
+            items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
+            items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
+            items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
+            items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
+        })
+        .ShowArrowIcon(false) /* Hide dropdown arrow */
+        )
+
+    @(Html.DevExtreme().Button()
+        .ID("btnPrint")
+        .Icon("print")
+        .Text("Print")
+        .Width("100px") /* Adjust size */
+        )
+
+    @(Html.DevExtreme().Button()
+        .ID("btnToggleSearch")
+        .Icon("search")
+        .Text("Search")
+        .Width("100px")
+        .OnClick("toggleFilterRow")
+        )
+   
+
+    @(Html.DevExtreme().Button()
+        .ID("btntoggleGroupPanel")
+        .Icon("hierarchy")
+        .Width("100px")
+        .Text("Group")
+        .OnClick("toggleGroupPanel")
+        )
+    @(Html.DevExtreme().Button()
+
+        .ID("btntoggleGroupPanel1")
+
+        .Type(ButtonType.Normal)
+
+        .StylingMode(ButtonStylingMode.Outlined)
+
+        .Icon("hierarchy")
+
+        .Width(50)
+
+        .OnClick("AccountGroupsOrdering")
+
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnAddNewAccount")
+        .Icon("add")
+        .Width("100px")
+        .Text("Add New Account")
+        .OnClick("AddNewAccount")
+        )
+
+   
+
+
+   
+
+
+</div>
+
+<script type="text/javascript">
+    // Hide context menu on click outside
+    $(document).on("click", function () {
+        var contextMenu = $("#contextMenu");
+        contextMenu.hide();
+        var $submenu = $('#submenuContainer');
+        $submenu.hide(); // Hide the submenu popup
+    });
+
+    // Handle the file selection
+    $("#loadLayoutInput").on("change", function (event) {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+                    // Parse the JSON string from the file
+                    const layout = JSON.parse(e.target.result);
+
+                    // Restore the grid state
+                    dataGrid.state(layout);
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    alert("Failed to load layout. Please ensure the file is valid JSON.");
+                }
+            };
+
+            // Read the file as text
+            reader.readAsText(file);
+        }
+    });
+    function saveLayoutClick(e) {
+        var grid = $("#dataGrid").dxDataGrid("instance");
+        var layout = grid.state();
+        const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+        //console.log(layoutJson);
+        // Create a Blob from the JSON string
+        const blob = new Blob([layoutJson], { type: "application/json" });
+        // Create a URL for the Blob
+        const url = URL.createObjectURL(blob);
+        // Create a link element
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "grid-layout.json"; // Set the file name for download
+        // Append the link to the body (needed for Firefox)
+        document.body.appendChild(a);
+        // Programmatically click the link to trigger the download
+        a.click();
+        // Clean up by removing the link and revoking the Object URL
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        //DevExpress.ui.notify("Layout", "success", 600);
+    }
+    function openLayoutClick(e) {
+        $("#loadLayoutInput").click();
+    }
+
+    function loadGridState() {
+        var form = $('#formId').val();
+        // Call the API to get the grid state
+        $.ajax({
+            url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+            method: 'GET',
+            data: {
+                form: form
+            },
+            success: function (response) {
+                // Get the DataGrid instance
+                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                // Load the state into the DataGrid
+                if (response) {
+                    try {
+                        // Parse the JSON string from the file
+                        const layout = JSON.parse(response);
+
+                        // Restore the grid state
+                        dataGrid.state(layout);
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        alert("Failed to load layout. Please ensure the JSON is valid.");
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading grid state:", error);
+            }
+        });
+    }
+    function setDefaultLayoutClick(e) {
+        var grid = $("#dataGrid").dxDataGrid("instance");
+        var form = $('#formId').val();
+        var layout = grid.state();
+        const layoutJson = JSON.stringify(layout, null, 2);
+        console.log(layoutJson);
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',  // API endpoint
+            type: 'POST',
+            data: {
+                layout: layoutJson,
+                form: form
+            },
+            success: function (data) {
+                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while saving data", "error", 2000);
+            }
+        });
+    }
+    function resetLayoutClick(e) {
+        var grid = $("#dataGrid").dxDataGrid("instance");
+        var form = $('#formId').val();
+        $.ajax({
+            url: '/api/Utility/SaveLayout',  // API endpoint
+            type: 'POST',
+            data: {
+                layout: null,
+                form: form
+            },
+            success: function (data) {
+                DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                grid.state({});
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while saving data", "error", 2000);
+            }
+        });
+    }
+    // Footer Group Pannel button click event
+    function toggleGroupPanel() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var isVisible = dataGrid.option("groupPanel.visible");
+        dataGrid.option("groupPanel.visible", !isVisible);
+    }
+    function showColumnChooser() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+        if (isColumnChooserVisible) {
+            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+        } else {
+            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+            dataGrid.showColumnChooser(); // Show the column chooser
+        }
+    }
+
+
+    // Footer Filter row button click event
+    function toggleFilterRow() {
+        var grid = $("#dataGrid").dxDataGrid("instance");
+        var currentVisibility = grid.option("filterRow.visible");
+
+        grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
+    }
+
+    // Footer Recipits button event
+    function addRecipitsButton_click(e) {
+        switch (e.itemData.text) {
+            case 'Add Cash Receipts':
+                window.open('/Finance/VoucherEntryCashReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+            case 'Add Bank Receipts':
+                window.open('/Finance/VoucherEntryReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+            // You can handle other cases here if needed
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+        }
+    }
+
+    function addReportsButton_click(e) {
+        let pageUrl = '';
+
+        switch (e.itemData.text) {
+            case 'Ledger to Salary Payable Mapping':
+                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
+                    pageUrl = `/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Select Account to Review',
+                        text: 'Please select an account before proceeding.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                break;
+
+            case 'Add Bank Receipts':
+                pageUrl = '/Finance/VoucherEntryReceipts';
+                break;
+
+            case 'Account Ledger to Recievables/Payable Mapping':
+                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
+                    pageUrl = `/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Select Account to Review',
+                        text: 'Please select an account before proceeding.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                break;
+
+            case 'Bank Reconciliation':
+                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
+                    pageUrl = `/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Select Account to Review',
+                        text: 'Please select an account before proceeding.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                break;
+
+            case 'Detailed Transaction Report':
+                window.open('/Finance/TransactionDetails', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                return;  // No need to set pageUrl for new window
+        }
+
+        // Handle Account Statement cases separately
+        let selectedText = e.itemData.text;
+
+        if (selectedText === "Account Statements") {
+            window.location.href = "/DocumentViewer?reportName=AccountReport";
+        } else if (selectedText === "Statement Of Account With Narration") {
+            window.location.href = "/DocumentViewer?reportName=AccountWithNarration";
+        } else if (selectedText === "Statement Of Account Export Formate") {
+            window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport";
+        } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
+            window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport";
+        } else if (selectedText === "Statement of Account Export [Formate2]") {
+            window.location.href = "/DocumentViewer?reportName=AccountStatementFormat2Report";
+        } else if (selectedText === "Statement of Account [OrderByVoucerNo9 (Without Narration)]") {
+            window.location.href = "/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport";
+        } else if (pageUrl !== '') {
+            // Set the iframe source and show overlay only if pageUrl is valid
+            $("#overlay-frame").attr("src", pageUrl);
+            $("#overlay").fadeIn();
+        }
+    }
+
+
+
+    // Function to close the overlay
+    function closeOverlay() {
+        $("#overlay").fadeOut();
+        $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
+    }
+
+
+
+    function addPaymentButton_click(e) {
+        switch (e.itemData.text) {
+
+            case 'Add Cash Payment':
+                window.open('/Finance/VoucherCashPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+
+            case 'Add Bank Payment':
+                window.open('/Finance/VoucherBankPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+
+            // You can handle other cases here if needed
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+        }
+    }
+    function otherVoucherButton_click(e) {
+        switch (e.itemData.text) {
+
+            case 'Add Purchase Voucher':
+                window.open('/Finance/Purchasevoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+
+            case 'Add Sales Voucher':
+                window.open('/Finance/Salesvoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+
+            case 'Add Journal Voucher':
+                window.open('/Finance/Voucherjournal', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+
+            // You can handle other cases here if needed
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+        }
+    }
+
+
+
+    function ChangeRowHeight(newHeight) {
+        // Update the row height
+        $("#dataGrid .dx-data-row").css("height", newHeight + "px");
+        closeSubmenu();
+    }
+    function showSubmenu(e) {
+        e.event.stopPropagation();
+        var $submenu = $('#submenuContainer');
+        var $target = $(e.event.target).closest('.dx-item-content'); // Target the content of the item
+        var offset = $target.offset();
+        var elementWidth = $target.outerWidth();
+        var elementHeight = $target.outerHeight();
+
+        // Position the submenu to the right of the dropdown item
+        $submenu.css({
+            'width': 180,
+            'position': 'absolute',
+            'top': offset.top,
+            'left': offset.left + elementWidth, // Position to the right of the item
+            'display': 'block' // Show the submenu
+        });
+    }
+    function closeSubmenu() {
+        var $submenu = $('#submenuContainer');
+        $submenu.hide(); // Hide the submenu popup
+    }
+    // Handle the file selection
+    $("#loadLayoutInput").on("change", function (event) {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+
+                    const layout = JSON.parse(e.target.result);
+
+
+                    dataGrid.state(layout);
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    alert("Failed to load layout. Please ensure the file is valid JSON.");
+                }
+            };
+
+
+            reader.readAsText(file);
+        }
+    });
+    // function addReportsButton_click(e) {
+    //     var selectedText = e.itemData.text; // Get selected item text
+
+
+    //     if (selectedText === "Account Statements") {
+    //         window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
+    //     } else if (selectedText === "Statement Of Account With Narration") {
+    //         window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
+    //     } else if (selectedText === "Statement Of Account Export Formate") {
+    //         window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
+    //     } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
+    //         window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
+    //     }
+    // }
+
+
+    function AccountGroupsOrdering() {
+
+        window.location.href = "/Finance/AccountGroupsOrdering";
+
+    }
+    function AddNewAccount(){
+        window.location.href = "/Finance/LedgerAccount";
+    }
+</script>

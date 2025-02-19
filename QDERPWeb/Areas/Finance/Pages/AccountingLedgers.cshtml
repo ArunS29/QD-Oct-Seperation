@@ -437,8 +437,8 @@
 					items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
 					items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 
-				})
-				)
+						})
+						)
 		@* @(Html.DevExtreme().DropDownButton()
 				.ID("ddBtnGenerateReport")
 				.Text("Generate Report")
@@ -516,10 +516,10 @@
 				.Visible(true);
 
 						columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('VoucherAmountFormatted')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.Add()
+ columns.Add()
 			.Caption(new JS("formatMessage('Balance')"))
-			.Alignment(HorizontalAlignment.Right)
-			.DataType(GridColumnDataType.Number)
+              .Alignment(HorizontalAlignment.Right)
+              .DataType(GridColumnDataType.Number)
               .CalculateCellValue("function(rowData) { "+
                 "let balance = 0;"+
                  "let gridInstance = $('#dataGrid').dxDataGrid('instance');"+
@@ -537,7 +537,7 @@
  
                    "let balanceType = balance >= 0 ? 'Dr' : 'Cr'; "+
                  " return `${formattedBalance} ${balanceType}`;"+
-			"}").Visible(true);
+"}").Visible(true);
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
 						columns.AddFor(m => m.BillRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(true);
 			
@@ -657,14 +657,58 @@
 <script>
 	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid, firstRowBalance, lastRowBalance;
 
-	 
-		function toggleFilterRow() {
+	 $(document).ready(function () {
+     const urlParams = new URLSearchParams(window.location.search);
+     const AccountId = urlParams.get('AccountId');
+	// alert(AccountId);
+
+     if (AccountId) {
+         // Change the Save button to Update
+         // $("#btnSave").text("Update");
+          //  var button = $("#btnSave").dxButton("instance");
+          // button.option("text", "Update");
+
+         // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
+         $.ajax({
+             url: `/api/AccountingLedgers/GetAccountId?id=${AccountId}`,
+             type: "GET",
+             success: function (response) {
+                 if (response.success) {
+					// alert(response.data.AccountId);
+					 // alert(response.data.AccountHead);
+                     $("#accountDropDownBox").dxDropDownBox("instance").option("value", response.data.AccountId);
+                     // Bind data to form fields
+                     // $("#CostAllocationUnitID").dxTextBox("instance").option("value", response.data.CostAllocationUnitId);
+                     // $("#CostAllocationUnitID").dxTextBox("instance").option("readOnly", true);  // Make it read-only
+                     // $("#CostAllocationUnit").dxTextBox("instance").option("value", response.data.CostAllocationUnit);
+                     // $("#costCenterComboBox").dxSelectBox("instance").option("value", response.data.CostAllocationGroup);
+                     // $("#costCenterMaster1").dxSelectBox("instance").option("value", response.data.CostAllocationMasterGroup);
+                     // $("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.data.ProjectMasterCode);
+                   
+                 } else {
+                  //   alert(response.message);
+                 }
+             },
+             error: function () {
+                 alert("An error occurred while fetching the Cost Center data.");
+             }
+
+
+         });
+
+     }
+	 });
+
+
+
+
+	function toggleFilterRow() {
 		var grid = $("#dataGrid").dxDataGrid("instance");
 		var isVisible = grid.option("filterRow.visible");
 		grid.option("filterRow.visible", !isVisible);
 	}
-
 	
+
 	var inputPopupInstance
 	$(function () {
 		// Initialize the DevExtreme Popup
@@ -691,36 +735,36 @@
 			contextMenu.hide();
 		});
 
-			$("#gridContainer").dxDataGrid({
-		columnChooser: {
-			enabled: true,
-			mode: "select",  // or 'dragAndDrop'
-			allowSearch: true, // Enables search
-			height: 400,
-			width: 300,
-			position: {
-				my: "left top",
-				at: "left bottom",
-				of: "#gridContainer"
-			}
-		},
-		toolbar: {
-			items: [
-				{
-					location: "before",
-					widget: "dxButton",
-					options: {
-						text: "Column Chooser",
-						icon: "columnchooser",
-						onClick: function () {
-							var grid = $("#gridContainer").dxDataGrid("instance");
-							grid.showColumnChooser();
+		$("#gridContainer").dxDataGrid({
+			columnChooser: {
+				enabled: true,
+				mode: "select",  // or 'dragAndDrop'
+				allowSearch: true, // Enables search
+				height: 400,
+				width: 300,
+				position: {
+					my: "left top",
+					at: "left bottom",
+					of: "#gridContainer"
+				}
+			},
+			toolbar: {
+				items: [
+					{
+						location: "before",
+						widget: "dxButton",
+						options: {
+							text: "Column Chooser",
+							icon: "columnchooser",
+							onClick: function () {
+								var grid = $("#gridContainer").dxDataGrid("instance");
+								grid.showColumnChooser();
+							}
 						}
 					}
-				}
-			]
-		}
-	});
+				]
+			}
+		});
 
 		// Apply the custom context menu plugin
 		$("#dataGrid").customizeGridContextMenu();
@@ -890,7 +934,7 @@
 		if (selectionChangedArgs.selectedRowKeys.length > 0) {
 			component.close();
 		}
-			}
+	}
 	function showLedgerAccountEditPopup() {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		var selectedValue = dropDownBox.option("value");
@@ -1054,8 +1098,8 @@
 				toDate: toDate
 			},
 			success: function (data) {
-				// Bind the data to the DataGrid
-				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+		   // Bind the data to the DataGrid
+		   $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
 			   var dataGrid = $("#dataGrid").dxDataGrid("instance");
       var dataSource = dataGrid.option("dataSource");
 if (dataSource && dataSource.length > 0) {
@@ -1064,8 +1108,8 @@ if (dataSource && dataSource.length > 0) {
 			 var firstRow = dataSource[0]; // Get the first row
 		   firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
   }
-				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
-			},
+		   // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
@@ -1333,7 +1377,7 @@ function updateBankReconciliationState(accheadname) {
 			if (formattedVoucher.startsWith(prefix)) {
 				window.location.href = voucherRoutes[prefix];
 				return;
-			}
+		}
 		}
 
 		alert("No matching voucher page found: " + formattedVoucher);
