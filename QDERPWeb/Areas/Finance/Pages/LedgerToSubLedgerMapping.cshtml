@@ -7,69 +7,68 @@
 
     /* Global styles for the card */
     .card {
-    margin: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     /* Card header styles */
     .card-header {
-    background-color: #F0F8FF;
-    color: black;
-    font-weight: bold;
+        background-color: #F0F8FF;
+        color: black;
+        font-weight: bold;
     }
 
     /* Card body styles */
     .card-body {
-    padding: 15px;
-    background-color: #ffffff;
-    border-radius: 5px;
+        padding: 15px;
+        background-color: #ffffff;
+        border-radius: 5px;
     }
 
     /* Styles for dx-fieldset with horizontal-container class */
     .dx-fieldset.horizontal-container {
-    margin-bottom: 0px;
+        margin-bottom: 0px;
     }
 
 
     .dx-datagrid .dx-row {
-    border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
     }
 
 
 
     .horizontal-container {
-    display: flex;
-    gap: 10px;
-    justify-content: start;
-    align-items: center;
-    margin: 15px;
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
     }
 
     .dx-selectbox .dx-texteditor-input {
-    text-align: center;
+        text-align: center;
     }
 
 
 
 
     .button-alignment-down {
-    margin-bottom: 10px
+        margin-bottom: 10px
     }
 
     #Narration {
-    overflow-y: auto;
-    resize: none;
+        overflow-y: auto;
+        resize: none;
     }
 
     #dataGrid .dx-header-row .dx-datagrid-text-content {
-    font-weight: bold;
-    color: black;
+        font-weight: bold;
+        color: black;
     }
 
     #AccountHeadName {
-    width: 250px; /* Adjust the width as needed */
+        width: 250px; /* Adjust the width as needed */
     }
-
 
 </style>
 <div class="card">
@@ -81,33 +80,33 @@
 
             <div>
                 @(Html.DevExtreme().TextBox()
-                            .ID("AccountLedgerNo")
-                            .Placeholder("Enter Account Ledger No")
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Label("Account Ledger No:")
-                            )
+                    .ID("AccountLedgerNo")
+                    .Placeholder(new JS("formatMessage('Enter Account Ledger No')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label(new JS("formatMessage('Account Ledger No:')"))
+                    )
             </div>
 
             <div>
                 @(Html.DevExtreme().TextBox()
-                            .ID("AccountHeadName")
-                            .Placeholder("Enter Account Head Name")
-                            .LabelMode(EditorLabelMode.Outside)
-                            .Label("Account Head Name:")
-                            )
+                    .ID("AccountHeadName")
+                    .Placeholder(new JS("formatMessage('Enter Account Head Name')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label(new JS("formatMessage('Account Head Name:')"))
+                    )
             </div>
 
 
 
             <div style="padding-top:15px">
                 @(Html.DevExtreme().DropDownButton()
-                            .ID("ddBtnShowRecords")
-                            .Text("Show Records")
-                            .Icon("smalliconslayout")
-                            .Width(180)
-                            .TabIndex(4)
-                            .DropDownOptions(options => options.Width(230))
-                            @*  .Items(items =>
+                    .ID("ddBtnShowRecords")
+                    .Text(new JS("formatMessage('Show Records')"))
+                    .Icon("smalliconslayout")
+                    .Width(180)
+                    .TabIndex(4)
+                    .DropDownOptions(options => options.Width(230))
+                    @*  .Items(items =>
                         {
                             items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
                             items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
@@ -120,45 +119,45 @@
                             items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
                             items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
                         }) *@
-                            )
+                    )
             </div>
         </div>
         <div class="dx-field ledgerResult">
             @(
-                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201114accountLedgersWtAdvance>()
-                        .ID("dataGrid")
-                        .KeyExpr("AccountHeadNo")
-                        .RemoteOperations(false)
-                        .DataSource(ds => ds.Mvc()
-                            .Controller("SalaryPayableMapping")
-                            .LoadAction("GetLedgerMapping")
-                            .LoadParams(new { accid = "aid", FromDate = "fDate", ToDate = "tDate" }) // Add dynamic parameters
-                        )
-                        .Columns(columns =>
-                        {
-                                columns.Add().DataField("AccountNoInVoucher").Caption("Account No");
-                                columns.Add().DataField("AccountHead").Caption("LegerName");
+                Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201114accountLedgersWtAdvance>()
+                .ID("dataGrid")
+                .KeyExpr("AccountHeadNo")
+                .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("SalaryPayableMapping")
+                .LoadAction("GetLedgerMapping")
+                .LoadParams(new { accid = "aid", FromDate = "fDate", ToDate = "tDate" }) // Add dynamic parameters
+                )
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("AccountNoInVoucher").Caption(new JS("formatMessage('Account No')"));
+                    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('LegerName')"));
 
-                                columns.Add().DataField("VoucherNoInVoucher").Caption("Voucher No");
+                    columns.Add().DataField("VoucherNoInVoucher").Caption(new JS("formatMessage('Voucher No')"));
 
-                                columns.Add().DataField("AmountInVoucherFormatted").Caption("Voucher Amount");
-                                columns.Add().DataField("AmountInSubLedgerFormatted").Caption("Adjusted/Mapped");
-                                columns.Add().DataField("BalanceInVoucher").Caption("Balance Amount");
-                                columns.Add().DataField("Mapping").Caption("Mapping Status");
+                    columns.Add().DataField("AmountInVoucherFormatted").Caption(new JS("formatMessage('Voucher Amount')"));
+                    columns.Add().DataField("AmountInSubLedgerFormatted").Caption(new JS("formatMessage('Adjusted/Mapped')"));
+                    columns.Add().DataField("BalanceInVoucher").Caption(new JS("formatMessage('Balance Amount')"));
+                    columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping Status')"));
 
-                        })
-                        .AllowColumnReordering(true)
-                        .AllowColumnResizing(true)
-                        .ColumnFixing(fixing => fixing.Enabled(true))
-                        .HeaderFilter(filter => filter.Visible(true))
-                        .Height(300)
-                        .ColumnAutoWidth(true)
-                        .FilterRow(filterRow => filterRow.Visible(false))
-                        .GroupPanel(groupPanel => groupPanel.Visible(false))
-                        .ShowBorders(true)
-                    .Width("100%")
-            )
-</div>
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(300)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%")
+                )
+        </div>
 
 
 
@@ -170,77 +169,77 @@
 
 
     <script>
-        $(document).ready(function () {
-        // Function to get URL parameters
-        function getQueryParam(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        // Get the passed parameters
-        const acchedid = getQueryParam("acchedid");
-        const accheadname = getQueryParam("accheadname");
-        const accid = getQueryParam("accid");
-        
-        const FromDate = getQueryParam("FromDate");
-     
-        const ToDate = getQueryParam("ToDate");
-      
-        // Set values in DevExtreme TextBoxes if parameters exist
-        if (acchedid) {
-            $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);
-        }
-        if (accheadname) {
-            $("#AccountHeadName").dxTextBox("instance").option("value", accheadname);
-        }
-
-        // Assign retrieved values to API request
-        let dataGrid = $("#dataGrid").dxDataGrid("instance");
-        dataGrid.option("dataSource", {
-       load: function () {
-        return $.getJSON("/api/SalaryPayableMapping/GetLedgerMapping", {  // Ensure leading "/"
-            accid: accid,
-            FromDate: FromDate,
-            ToDate: ToDate
-        });
-    }
-});
-
-        dataGrid.refresh();
-    });
-
-        function ddBtnShowRecords_click(filterType) {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const today = new Date();
-            let startDate = null, endDate = null;
-
-
-            dataGrid.option("dataSource", {
-                load: function () {
-                    return $.ajax({
-                        url: `/api/SalaryPayableMapping/GetLedgerMapping?accountid=${encodeURIComponent(aid)}&fromDate=${encodeURIComponent(fDate)}&toDate=${encodeURIComponent(tDate)}`,
-                        data: {
-                            startDate: startDate.toISOString(),
-                            endDate: endDate.toISOString()
-                        },
-                        type: "GET"
-                    }).then(function (data) {
-                        // Format dates before returning the data
-                        return data.map(function (item) {
-                            item.dateField = new Date(item.dateField).toLocaleDateString("en-GB", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric"
-                            });
-                            return item;
-                        });
-                    });
+                $(document).ready(function () {
+                // Function to get URL parameters
+                function getQueryParam(name) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get(name);
                 }
+
+                // Get the passed parameters
+                const acchedid = getQueryParam("acchedid");
+                const accheadname = getQueryParam("accheadname");
+                const accid = getQueryParam("accid");
+
+                const FromDate = getQueryParam("FromDate");
+
+                const ToDate = getQueryParam("ToDate");
+
+                // Set values in DevExtreme TextBoxes if parameters exist
+                if (acchedid) {
+                    $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);
+                }
+                if (accheadname) {
+                    $("#AccountHeadName").dxTextBox("instance").option("value", accheadname);
+                }
+
+                // Assign retrieved values to API request
+                let dataGrid = $("#dataGrid").dxDataGrid("instance");
+                dataGrid.option("dataSource", {
+               load: function () {
+                return $.getJSON("/api/SalaryPayableMapping/GetLedgerMapping", {  // Ensure leading "/"
+                    accid: accid,
+                    FromDate: FromDate,
+                    ToDate: ToDate
+                });
+            }
+        });
+
+                dataGrid.refresh();
             });
 
-        }
+                function ddBtnShowRecords_click(filterType) {
+                    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                    const today = new Date();
+                    let startDate = null, endDate = null;
 
-     
+
+                    dataGrid.option("dataSource", {
+                        load: function () {
+                            return $.ajax({
+                                url: `/api/SalaryPayableMapping/GetLedgerMapping?accountid=${encodeURIComponent(aid)}&fromDate=${encodeURIComponent(fDate)}&toDate=${encodeURIComponent(tDate)}`,
+                                data: {
+                                    startDate: startDate.toISOString(),
+                                    endDate: endDate.toISOString()
+                                },
+                                type: "GET"
+                            }).then(function (data) {
+                                // Format dates before returning the data
+                                return data.map(function (item) {
+                                    item.dateField = new Date(item.dateField).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric"
+                                    });
+                                    return item;
+                                });
+                            });
+                        }
+                    });
+
+                }
+
+
 
 
     </script>

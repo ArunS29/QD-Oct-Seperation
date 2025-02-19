@@ -191,6 +191,7 @@
                 <label>Account Group ID</label>
                 @(
                     Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Account Group ID')"))
                     .ID("AccountGroupID")
                     .Value(null)
                     .Width(250)
@@ -202,6 +203,7 @@
                 <label>Account Group</label>
                 @(
                     Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Account Group')"))
                     .ID("AccountGroup")
                     .Value(null)
                     .Width(250)
@@ -219,6 +221,7 @@
             <div class="form-group">
                 <label for="" class="button-alignment-down">Account Master</label>
                 @(Html.DevExtreme().DropDownBox()
+                    .Label(new JS("formatMessage('Account Master')"))
                     .DataSource(d => d.WebApi()
                     .Controller("LedgerAccountMaster")
                     .LoadAction("GetAccountMaster")
@@ -264,6 +267,7 @@
                 <label style="float: right;">رقم</label>
                 @(
                     Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Number')"))
                     .ID("AccountGroupID1")
                     .Value(null)
                     .Width(250)
@@ -289,6 +293,7 @@
                     </span>
                     @(
                         Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Account Group Name')"))
                         .ID("AccountGroup1")
                         .Value(null)
                         .Width(250)
@@ -301,6 +306,7 @@
             <div class="form-group">
                 <label for="" class="button-alignment-down">جماعة حساب</label>
                 @(Html.DevExtreme().DropDownBox()
+                    .Label(new JS("formatMessage('Account Group')"))
                     .DataSource(d => d.WebApi()
                     .Controller("LedgerAccountMaster")
                     .LoadAction("GetAccountMasterArabic")
@@ -360,6 +366,7 @@
                     <div class="col-md-12">
                         <div>
                             @(Html.DevExtreme().CheckBox()
+                                .Text(new JS("formatMessage('Choose if this group to be under Sales')"))
                                 .Value(true)
                                 .ID("ChooseifthisgrouptobeunderSales")
                                 .OnValueChanged("syncCard4")
@@ -376,6 +383,7 @@
                 <div class="form-group" style="position:relative;">
                     <div class="col-md-12">
                         @(Html.DevExtreme().CheckBox()
+                            .Text(new JS("formatMessage('Choose if this group to be under Purchases')"))
                             .ID("ChooseifthisgrouptobeunderPurchases")
                             .Value(true)
                             .OnValueChanged("syncCard4")
@@ -391,6 +399,7 @@
                 <div class="form-group" style="position:relative;left:11px;">
                     <div class="col-md-13">
                         @(Html.DevExtreme().CheckBox()
+                            .Text(new JS("formatMessage('Choose if this group to be under Salary Payable')"))
                             .ID("ChooseifthisgrouptobeunderSalaryPayable")
                             .Value(true)
                             .OnValueChanged("syncCard4")
@@ -406,6 +415,7 @@
                 <div class="form-group" style="position:relative;left:0px;">
                     <div class="col-md-12">
                         @(Html.DevExtreme().CheckBox()
+                            .Text(new JS("formatMessage('Choose if this group wants to be Reconciled')"))
                             .ID("ChooseifthisgroupwanttobeReconcilied")
                             .Value(true)
                             .OnValueChanged("syncCard4")
@@ -428,6 +438,7 @@
                     <div class="col-md-12" style="text-align: right;">
                         <div style="display: flex; align-items: center; justify-content: flex-start;">
                             @(Html.DevExtreme().CheckBox()
+                                .Text(new JS("formatMessage('Choose if this group is part of sales')"))
                                 .ID("ChooseifthisgrouptobeunderSales1")
                                 .Value(true)
 
@@ -445,6 +456,7 @@
                     <div class="col-md-12" style="text-align: right;">
                         <div style="display: flex; align-items: center; justify-content: flex-start;">
                             @(Html.DevExtreme().CheckBox()
+                                .Text(new JS("formatMessage('Choose if this group is under salary advance')"))
                                 .ID("ChooseifthisgrouptobeunderPurchases1")
                                 .Value(true)
                                 )
@@ -461,6 +473,7 @@
                     <div class="col-md-13" style="text-align: right;">
                         <div style="display: flex; align-items: center; justify-content: flex-start;">
                             @(Html.DevExtreme().CheckBox()
+                                .Text(new JS("formatMessage('Choose if this group is under salary salary')"))
                                 .ID("ChooseifthisgrouptobeunderSalaryPayable1")
                                 .Value(true)
                                 )
@@ -477,6 +490,7 @@
                     <div class="col-md-12" style="text-align: right;">
                         <div style="display: flex; align-items: center; justify-content: flex-start;">
                             @(Html.DevExtreme().CheckBox()
+                                .Text(new JS("formatMessage('Choose if this group is under the bank reconciliation item')"))
                                 .ID("ChooseifthisgroupwanttobeReconcilied1")
                                 .Value(true)
                                 )
@@ -638,7 +652,7 @@
             .Columns(columns =>
             {
                 columns.Add().DataField("MasterGroup")
-                .Caption("Master Group")
+                .Caption(new JS("formatMessage('Master Group')"))
                 .AllowSorting(false)
                 ; // This removes the header name
 
@@ -675,7 +689,7 @@
             .Columns(columns =>
             {
                 columns.Add().DataField("MasterGroupAr")
-                .Caption("Master Group Ar") // This removes the header name
+                .Caption(new JS("formatMessage('Master Group Ar')")) // This removes the header name
                 .AllowSorting(false);
             })
             )
@@ -819,11 +833,11 @@
             DevExpress.ui.dialog.custom({
                 title: "Validation Errors", // Title of the popup
                 messageHtml: `
-                    <div style="display: flex; align-items: center;">
-                        <i class="dx-icon-warning" style="font-size: 24px; margin-right: 10px; color: #e74c3c;"></i>
-                        <span>Cannot save while the entry has errors. Please clear the errors to continue.</span>
-                    </div>
-                `, // Content with an icon and message
+                <div style="display: flex; align-items: center;">
+                    <i class="dx-icon-warning" style="font-size: 24px; margin-right: 10px; color: #e74c3c;"></i>
+                    <span>Cannot save while the entry has errors. Please clear the errors to continue.</span>
+                </div>
+            `, // Content with an icon and message
                 buttons: [
                     {
                         text: "OK",
