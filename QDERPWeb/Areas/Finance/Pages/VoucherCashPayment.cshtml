@@ -115,14 +115,10 @@
     }
 
 </style>
-
-<div class="Head">
-    <div class="header-container">
+<div class="header-container">
         <div class="title">Payment Voucher Details</div>
         @*  <div class="footer">@await Html.PartialAsync("_GridFooter")</div> *@
     </div>
-</div>
-
 
 <div class="content-container-top" style="background-color:#909ead00;">
 
@@ -517,7 +513,7 @@
 
 
         <!-- Footer with TextBoxes Aligned Directly Under Debit and Credit -->
-        <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: aliceblue; color: white; padding:10px; margin-top: -11px; font-size: 14px; max-width:1245px;position:relative;left:17px;">
+        <div id="footerTotals" style="display: flex; justify-content: space-between; color: white; padding:10px; margin-top: -11px; font-size: 14px; max-width:1245px;position:relative;left:17px;">
             <div style="flex: 2;">&nbsp;</div> <!-- Aligns with Dr/Cr column -->
             <div style="flex: 2;">&nbsp;</div> <!-- Aligns with Account Head column -->
             <!-- TextBox for Debit -->
@@ -815,14 +811,15 @@
                                     Html.DevExtreme().TextBox()
                                     .ID("VoucherNarration")
                                     .Value(null)
-
+                                    .Height(50)
+                                    .Width(325)
                                     )
                             </div>
                         </div>
 
                         <!-- Button to the right -->
 
-                        <div class="d-flex justify-content-end" style="position:relative;top:50px;right:110px">
+                        <div class="d-flex justify-content-end" style="position:relative;top:50px;right:10px">
                             <div class="form-group">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAttachment")
@@ -837,7 +834,7 @@
                 </div>
 
                 <!-- Second Row for Bill No, Bill Date, Bill Paid To, and Remarks -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:0px; padding-bottom:0px; position:relative;bottom:35px;width:92%;">
+                <div class="col-md-12 backgroundcolor" style="padding-top:0px; padding-bottom:0px; position:relative;bottom:35px;width:100%;">
                     <div class="row">
                         <!-- Bill No -->
                         <div class="col-md-3">
@@ -900,7 +897,7 @@
                 </div>
 
                 <!-- Third Row for Payment Account, Verified By, Verified On, Approved By, Approved On -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:1px; padding-bottom:1px;position:relative;bottom:50px;Width:92%;">
+                <div class="col-md-12 backgroundcolor" style="padding-top:1px; padding-bottom:1px;position:relative;bottom:50px;Width:100%;">
                     <div class="row mt-3 align-items-center">
                         <!-- Payment Account -->
 
