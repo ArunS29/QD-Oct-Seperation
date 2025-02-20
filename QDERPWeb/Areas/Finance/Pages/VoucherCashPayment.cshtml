@@ -1605,7 +1605,7 @@
                     .ID("accountpaymentamount-datagrid")
                     .DataSource(d => d.WebApi()
                     .Controller("VoucherMaster")
-                    .LoadAction("GetCPPaymentAccounts")
+                    .LoadAction("GetCPPaymentAccounts"    )
                     .LoadMode(DataSourceLoadMode.Raw)
                     /// .Key("AccountHead") //salary paid entry
                     .Key("AccountId")
