@@ -56,14 +56,17 @@
         color: black;
     }
 
- 
 </style>
 
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
 <div class="content-container-top">
-   <div style="color:black; font-weight: bold;  width: 100%;font-size:20px;">
+   <div style="color: black; font-weight: bold; width: 100%; font-size: 20px; text-align: center;">
     Chart Of Accounts
 </div>
+
+<div>
+        @await Html.PartialAsync("_chartofaccounts")
+    </div>
 <div id="popupContainer"></div>
 
     <div class="dx-field chartOfAccount">
@@ -86,12 +89,12 @@
     </a>
 </text>);
 
-                    columns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
                     columns.AddFor(m => m.MasterGroup).Caption("Account Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
-                    columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head (Ar)").Alignment(HorizontalAlignment.Right).Visible(true);
+                    columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head (Ar)").Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
                     columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center).GroupIndex(1);
-                    columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center);
-                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
+                    columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center).AllowEditing(true);
+                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true).CustomizeText(@"
         function(e) {
         if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
@@ -102,8 +105,8 @@
         maximumFractionDigits: 2
         });
         }");
-                    columns.AddFor(m => m.OpeningBalanceDrCr).Caption("Dr/Cr").Alignment(HorizontalAlignment.Center).Visible(true);
-                    columns.AddFor(m => m.IsLedgerObselete).Caption("Is Ledger Obsolete").Alignment(HorizontalAlignment.Center)
+                    columns.AddFor(m => m.OpeningBalanceDrCr).Caption("Dr/Cr").Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                        columns.AddFor(m => m.IsLedgerObselete).Caption("Is Ledger Obsolete").Alignment(HorizontalAlignment.Center).AllowEditing(true)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -111,6 +114,10 @@
         </text>)
             .Visible(true);
                 })
+             .Editing(editing => editing
+             .Mode(GridEditMode.Cell) // ✅ Ensure inline cell editing is enabled
+             .AllowUpdating(true) // ✅ Enable editing
+             )
             .Height(500)
             .Paging(p => p.PageSize(10))
             .ColumnAutoWidth(true)
@@ -124,9 +131,7 @@
             .OnCellPrepared("onCellPrepared")
             )
     </div>
-    <div>
-        @await Html.PartialAsync("_chartofaccounts")
-    </div>
+    
 </div>
 
 <!-- Context Menu (hidden initially) -->

@@ -557,7 +557,58 @@
 
 <script>
 	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid, firstRowBalance, lastRowBalance;
+		$(document).ready(function () {
+		const urlParams = new URLSearchParams(window.location.search);
+		const AccountId = urlParams.get('AccountId'); // Get AccountId from URL
 
+		if (AccountId) {
+			let dropDownInstance = $("#accountDropDownBox").dxDropDownBox("instance");
+			if (dropDownInstance) {
+				dropDownInstance.option("value", AccountId);
+			}
+
+			// Get first and last day of the current month
+			let currentDate = new Date();
+			let firstDayCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+			let lastDayCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+			// Format date as MM/dd/yyyy
+			function formatDate(date) {
+				return (
+					(date.getMonth() + 1).toString().padStart(2, "0") + "/" +
+					date.getDate().toString().padStart(2, "0") + "/" +
+					date.getFullYear()
+				);
+			}
+
+			FromDate = formatDate(firstDayCurrentMonth);
+			ToDate = formatDate(lastDayCurrentMonth);
+
+			// Auto-fetch data for the current month
+			fetchAndBindData(AccountId, FromDate, ToDate);
+		}
+	});
+
+	// Function to fetch and bind data to the DataGrid
+	function fetchAndBindData(accountId, frmDate, toDate) {
+		$.ajax({
+			url: '/api/AccountingLedgers/GetVouchers',
+			type: 'GET',
+			data: { accountId, frmDate, toDate },
+			success: function (data) {
+				let dataGrid = $("#dataGrid").dxDataGrid("instance");
+				dataGrid.option("dataSource", data);
+
+				if (data.length > 0) {
+					firstRowBalance = data[0].VoucherAmountFormatted;
+					lastRowBalance = data[data.length - 1].VoucherAmountFormatted;
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			}
+		});
+	}
 	 $(document).ready(function () {
      const urlParams = new URLSearchParams(window.location.search);
      const AccountId = urlParams.get('AccountId');

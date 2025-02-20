@@ -78,15 +78,15 @@
     }
 
     /*     .dx-editor-outlined .dx-label span {
-                        font-weight:bold !important;
-                        } */
+            font-weight:bold !important;
+            } */
 
     .custom-textbox input {
         background-color: aliceblue;
         font-weight: bold !important;
         color: black !important; /* Use !important to override DevExtreme styles */
         /*   border: 3px solid #282222;
-                        border-radius: 8px !important; */
+            border-radius: 8px !important; */
     }
 
     .custom-textbox1 input {
@@ -266,58 +266,58 @@
         </div>
         <br />
         @* <div class="dx-fieldset horizontal-container">
-    @(Html.DevExtreme().Tabs()
-    .Items(items =>
-    {
-    items.Add()
-    .Icon("optionsgear")
-    .Text("Settings")
-    .ID("tab-content-1");
+        @(Html.DevExtreme().Tabs()
+        .Items(items =>
+        {
+        items.Add()
+        .Icon("optionsgear")
+        .Text("Settings")
+        .ID("tab-content-1");
 
 
-    items.Add()
-    .Icon("accountbox")
-    .Text("Contact Details")
-    .ID("tab-content-2");
+        items.Add()
+        .Icon("accountbox")
+        .Text("Contact Details")
+        .ID("tab-content-2");
 
 
-    items.Add()
-    .Icon("description")
-    .Text("Bank Details")
-    .ID("tab-content-3");
+        items.Add()
+        .Icon("description")
+        .Text("Bank Details")
+        .ID("tab-content-3");
 
-    items.Add()
-    .Icon("card")
-    .Text("Client Details")
-    .ID("tab-content-4");
+        items.Add()
+        .Icon("card")
+        .Text("Client Details")
+        .ID("tab-content-4");
 
-    items.Add()
-    .Icon("group")
-    .Text("Supplier Details")
-    .ID("tab-content-5");
+        items.Add()
+        .Icon("group")
+        .Text("Supplier Details")
+        .ID("tab-content-5");
 
-    items.Add()
-    .Icon("attach")
-    .Text("Attachments")
-    .ID("tab-content-6");
+        items.Add()
+        .Icon("attach")
+        .Text("Attachments")
+        .ID("tab-content-6");
 
-    items.Add()
-    .Icon("file")
-    .Text("Billing Details")
-    .ID("tab-content-7");
+        items.Add()
+        .Icon("file")
+        .Text("Billing Details")
+        .ID("tab-content-7");
 
-    items.Add()
-    .Icon("description")
-    .Text("Obselete(for Old Version)")
-    .ID("tab-content-8");
-    })
-    .SelectedIndex(0)  // Default selected tab is 0 (first tab)
-    .OnSelectionChanged("onTabSelectionChanged")  // Event handler for tab selection change
+        items.Add()
+        .Icon("description")
+        .Text("Obselete(for Old Version)")
+        .ID("tab-content-8");
+        })
+        .SelectedIndex(0)  // Default selected tab is 0 (first tab)
+        .OnSelectionChanged("onTabSelectionChanged")  // Event handler for tab selection change
 
-    )
+        )
 
 
-    </div> *@
+        </div> *@
         <div class="dx-fieldset horizontal-container">
             @(
                 Html.DevExtreme().Tabs()
@@ -2159,9 +2159,9 @@
             .OnSelectionChanged("subgroupdataGridSelectionChanged")
             .OnInitialized("subgroupdataGridInitialized")
             @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
             .FilterRow(f => f.Visible(false))
             //.FilterRow(f => f.Visible(true))
             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
@@ -2192,9 +2192,9 @@
             .OnSelectionChanged("salesdataGridSelectionChanged")
             .OnInitialized("salesdataGridInitialized")
             @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
             // .FilterRow(f => f.Visible(true))
             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
             .Height(200)
@@ -2223,9 +2223,9 @@
             .OnSelectionChanged("othertypedataGridSelectionChanged")
             .OnInitialized("othertypedataGridInitialized")
             @* .HeaderFilter(p => p.Visible(true))
-.ShowBorders(true)
-.HoverStateEnabled(true)
-.Paging(p => p.PageSize(15))*@
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
             .FilterRow(f => f.Visible(true))
             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
             .Height(200)
@@ -2287,7 +2287,7 @@
         var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
         var accgroupid = urlParams.get('AccountGroupID') || "";
         acgid = accgroupid;
-
+       
         var accheadar = urlParams.get('AccountHeadAr') || "";
 
 
@@ -2784,13 +2784,13 @@
             });
         }
 
-         debugger;
-if (getidfromCOA) {
+
+        if (getidfromCOA) {
             // Change the Save button to Update
             // $("#btnSave").text("Update");
-              var button = $("#btnSave").dxButton("instance");
-             button.option("text", "Update");
-             //IsChart=true;
+            var button = $("#btnSave").dxButton("instance");
+            button.option("text", "Update");
+            //IsChart=true;
 
             // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
             $.ajax({
@@ -2798,23 +2798,24 @@ if (getidfromCOA) {
                 type: "GET",
                 success: function (response) {
                     if (response.success) {
-                       //alert(response.data.AccountId);
-                         //alert(response.data.AccountHead);
+                        //alert(response.data.AccountId);
+                        //alert(response.data.AccountHead);
                         // Bind data to form fields
                         console.log(response.data.AccountId);
                         console.log(response.data.AccountHead);
 
-                    $('#txtAccountId').dxTextBox("instance").option("value",response.data.AccountId);
-                    $('#txtReferenceNo').dxTextBox("instance").option("value",response.data.ReferenceNo);
-                   $('#txtAccountHead').dxTextBox("instance").option("value",response.data.AccountHead);
-                   $('#txtAccountHeadAr').dxTextBox("instance").option("value",response.data.AccountHeadArabic);
-                   $("#ddlAccountGroup").dxDropDownBox("instance").option("value", response.data.AccountGroupId);
-                  acgid = response.data.AccountGroupId;
+                        $('#txtAccountId').dxTextBox("instance").option("value", response.data.AccountId);
+                        $('#txtReferenceNo').dxTextBox("instance").option("value", response.data.ReferenceNo);
+                        $('#txtAccountHead').dxTextBox("instance").option("value", response.data.AccountHead);
+                        $('#txtAccountHeadAr').dxTextBox("instance").option("value", response.data.AccountHeadArabic);
+                        $("#ddlAccountGroup").dxDropDownBox("instance").option("value", response.data.AccountGroupId);
+                        acgid = response.data.AccountGroupId;
+                        $("#schLedgerActive").dxSwitch("instance").option("value", response.data.IsLedgerObselete);
 
 
-                       
+
                     } else {
-                       alert(response.message);
+                        alert(response.message);
                     }
                 },
                 error: function () {
@@ -2832,7 +2833,7 @@ if (getidfromCOA) {
 
     });
 
-
+     
     function redirectToBranchMaster() {
 
         const modal = document.getElementById("ledgerAccountMasterModal");
@@ -3334,14 +3335,14 @@ if (getidfromCOA) {
                     }
                 });
 
-
+                
 
             }
 
         }
 
     }
-
+  
     function dataGridInitialized(e) {
         dataGrid = e.component;
     }
@@ -3680,7 +3681,8 @@ if (getidfromCOA) {
         var sRefNo = $('#txtReferenceNo').dxTextBox("instance").option("value");
         var sAcccountHead = $('#txtAccountHead').dxTextBox("instance").option("value");
         var sAcccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance").option("value");
-        var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox('option', 'value');
+        var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance").option("value");
+       acgid=sAccountGroup;
         //Setting Tab Values
         var sOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
         var sCreditDebit = $('#ddlCreditDebit').dxDropDownBox('option', 'value');
@@ -3691,7 +3693,7 @@ if (getidfromCOA) {
         var chkEmployeeDBEntryChecked = $("#chkEmployeeDBEntry").dxCheckBox("instance").option("value");
         var chkPropertyDBEntryChecked = $("#chkPropertyDBEntry").dxCheckBox("instance").option("value");
         var chkLoanAccountEntryChecked = $("#chkLoanAccountEntry").dxCheckBox("instance").option("value");
-        var schLedgerActiveChecked = $("#schLedgerActive").dxSwitch('option', 'value');
+        var schIsLedgerObselete = $("#schLedgerActive").dxSwitch("instance").option("value");
         //ContactDetails Tab
         var cdBranch = $('#ddlbranch').dxDropDownBox('option', 'value');
         var cdSubGroup = $('#ddlSubgroup').dxDropDownBox('option', 'value');
@@ -3806,7 +3808,8 @@ if (getidfromCOA) {
                 IsEmployeeAllocated: chkEmployeeDBEntryChecked,
                 IsPropertyAllocated: chkPropertyDBEntryChecked,
                 IsEmployeePaymentAc: chkLoanAccountEntryChecked,
-                LedgerActiveChecked: schLedgerActiveChecked,
+               // LedgerActiveChecked: schLedgerActiveChecked,
+                IsLedgerObselete: schIsLedgerObselete,
                 AccountBranch: cdBranch,
                 AccountSubGroup: cdSubGroup,
                 SalesPersonCode: cdSales,
