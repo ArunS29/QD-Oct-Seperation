@@ -143,6 +143,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl90112ReportAttribute> Tbl90112ReportAttributes { get; set; }
 
+    public virtual DbSet<Tbl90117VoucherDateLocking> Tbl90117VoucherDateLockings { get; set; }
+
     public virtual DbSet<TblUserMaster> TblUserMasters { get; set; }
 
 
@@ -3245,6 +3247,20 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VerifiedByText)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Tbl90117VoucherDateLocking>(entity =>
+        {
+            entity.HasKey(e => e.VoucherTypeCode);
+
+            entity.ToTable("tbl90117VoucherDateLocking");
+
+            entity.Property(e => e.VoucherTypeCode)
+                .HasMaxLength(15)
+                .IsUnicode(false);
+            entity.Property(e => e.VoucherDateLocked).HasColumnType("date");
+            entity.Property(e => e.VoucherModule).IsUnicode(false);
+            entity.Property(e => e.VoucherType).IsUnicode(false);
         });
 
         modelBuilder.Entity<TblUserMaster>(entity =>

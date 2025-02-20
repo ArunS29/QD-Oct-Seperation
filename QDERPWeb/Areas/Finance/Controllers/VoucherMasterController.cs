@@ -962,16 +962,211 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEditAccountHead(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts
-                .Select(i => new
-                {
-                    i.AccountId,
-                    i.AccountHead,
-                    i.AccountHeadArabic
-                });
+            try
+            {
+                var qryListOfAccountlists = _context.Qry201ListOfAccounts
+              .Select(i => new
+              {
+                  i.AccountId,
+                  i.AccountHead,
+                  i.AccountHeadArabic
+              });
 
-            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+          
         }
+
+        [HttpGet]
+
+        public IActionResult IsVoucherLocked([FromQuery] DateTime voucherDate)
+
+        {
+
+            try
+
+            {
+
+                Console.WriteLine($"Received Voucher Date: {voucherDate}"); // Debugging
+
+                var isLocked = _context.Tbl90117VoucherDateLockings
+
+                    .Any(v => v.VoucherTypeCode == "PAYMENT_VOUCHER" && v.VoucherDateLocked >= voucherDate);
+
+                return Ok(new { Locked = isLocked });
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                return StatusCode(500, new { Message = "An error occurred.", Error = ex.Message });
+
+            }
+
+        }
+
+
+
+        //[HttpPut]
+        //public async Task<ActionResult> UpdateVoucherEntry(DataSourceLoadOptions loadOptions, [FromQuery] List<long> VoucherEntryNos,[FromBody] VoucherEntryUpdate updatedEntry)
+        //{
+        //    try
+        //    {
+        //        if (VoucherEntryNos == null || !VoucherEntryNos.Any())
+        //        {
+        //            return BadRequest(new { message = "Invalid voucher entry numbers." });
+        //        }
+
+        //        int debitamt = 0;
+
+        //        // Find the existing records
+        //        var records = await _context.Tbl201VoucherEntries
+        //                                    .Where(v => VoucherEntryNos.Contains(v.VoucherEntryNo))
+        //                                    .ToListAsync();
+
+        //        if (!records.Any())
+        //        {
+        //            return NotFound(new { message = "Record not found!" });
+        //        }
+
+        //        // Update records
+        //        foreach (var record in records)
+        //        {
+        //            record.VoucherAmount = updatedEntry.VoucherAmount;
+        //            record.EntryNarration = updatedEntry.EntryNarration;
+        //            record.AccountHead = updatedEntry.AccountHead;
+        //            record.DrCr = updatedEntry.DrCr;
+        //        }
+
+        //        await _context.SaveChangesAsync(); // Save all changes once
+
+        //        // Get the updated list of voucher entries
+        //        var voucherEntries = await _context.Tbl201VoucherEntries
+        //                                           .Where(ve => ve.VoucherNo == updatedEntry.VoucherNo)
+        //                                           .ToListAsync();
+
+        //        var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct().ToList();
+
+        //        // Query to get the display list
+        //        var qryListOfAccountLists = await _context.Qry201VoucherEntryScreenDisplays
+        //                                                  .Where(p => voucherNos.Contains(p.VoucherNo))
+        //                                                  .OrderByDescending(i => i.DrCr == "Cr") // Correct sorting for "Cr" entries
+        //                                                  .Select(i => new VoucherEntryDisplayDTO
+        //                                                  {
+        //                                                      VoucherNo = i.VoucherNo,
+        //                                                      VoucherEntryNo = i.VoucherEntryNo,
+        //                                                      DrCr = i.DrCr,
+        //                                                      DrAmount = i.DrAmount,
+        //                                                      CrAmount = i.CrAmount,
+        //                                                      EntryNarration = i.EntryNarration,
+        //                                                      AccountHead = i.AccountHead,
+        //                                                      SysRemarks = i.SysRemarks
+        //                                                  })
+        //                                                  .ToListAsync();
+
+        //        // Process the updated list
+        //        foreach (var entry in qryListOfAccountLists)
+        //        {
+        //            debitamt += (int?)entry.DrAmount ?? 0;
+
+        //            // Adjust CrAmount for specific conditions
+        //            if (entry.DrCr == "Cr" && updatedEntry.PaymentAccoutHeadName == "Petty Cash - Shabbir")
+        //            {
+        //                var existingEntry = records.FirstOrDefault(v => v.AccountHead == entry.AccountHead && v.DrCr == "Cr" && v.VoucherNo == entry.VoucherNo);
+
+        //                if (existingEntry != null)
+        //                {
+        //                    entry.CrAmount = debitamt;
+        //                    existingEntry.VoucherAmount = entry.CrAmount;
+        //                }
+        //                else
+        //                {
+        //                    entry.CrAmount = debitamt;
+        //                }
+        //            }
+
+        //            // Update AccountHead from lookup table if necessary
+        //            if (!string.IsNullOrEmpty(entry.AccountHead))
+        //            {
+        //                var accountHead = await _context.Qry201ListOfAccounts
+        //                                                .Where(a => a.AccountId == entry.AccountHead)
+        //                                                .Select(a => a.AccountHead)
+        //                                                .FirstOrDefaultAsync();
+
+        //                entry.AccountHead = accountHead ?? updatedEntry.PaymentAccoutHeadName;
+
+        //                if (qryListOfAccountLists.Count == 1)
+        //                {
+        //                    entry.DrAmount = 0;
+        //                    entry.CrAmount = 0;
+        //                }
+        //            }
+        //        }
+
+        //        await _context.SaveChangesAsync(); // Save changes made during processing
+
+        //        // Return the updated result list
+        //        return Ok(DataSourceLoader.Load(qryListOfAccountLists.AsQueryable(), loadOptions));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = "An error occurred while updating the record.", error = ex.Message });
+        //    }
+        //}
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> UpdateVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] VoucherEntryUpdate updatedEntry)
+        //{
+        //    try
+        //    {
+        //        if (updatedEntry == null)
+        //        {
+        //            return BadRequest("Invalid document data.");
+        //        }
+
+        //        // Find the existing document by DocumentNo
+        //        var document = await _context.Tbl201VoucherEntries
+        //            .FirstOrDefaultAsync(d => d.VoucherEntryNo == updatedEntry.VoucherEntryNo);
+
+        //        // Check if the document exists
+        //        if (document == null)
+        //        {
+        //            return NotFound($"Document with DocumentNo {updatedEntry.VoucherEntryNo} not found.");
+        //        }
+
+        //        // Query the list of account lists
+        //        var qryListOfAccountlists = _context.Tbl201VoucherEntries
+        //            .Where(p => p.VoucherEntryNo == document.VoucherEntryNo)
+        //            .Select(i => new
+        //            {
+        //                i.DocumentNo,
+        //                i.DocumentType,
+        //                i.DocumentRefNo,
+        //                i.DocumentRemarks,
+        //                i.DocumentExpDate,
+        //                i.DocumentExpDateAr,
+        //                i.DocumentNotificationDate,
+        //            });
+
+        //        // Return the data
+        //        return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception (optional)
+        //        Console.WriteLine($"Error: {ex.Message}");
+        //        return StatusCode(500, "An error occurred while processing your request.");
+        //    }
+        //}
+
 
 
 

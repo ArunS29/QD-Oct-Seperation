@@ -167,6 +167,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl90117VoucherDateLocking]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tblUserMaster]",
          "ObjectType": 0
       },
