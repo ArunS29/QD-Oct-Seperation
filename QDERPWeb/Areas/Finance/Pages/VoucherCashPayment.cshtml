@@ -59,116 +59,6 @@
 
 
 
-    .Head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 1415px;
-        padding: 10px;
-        margin-left: 10px;
-        height: 20px;
-        padding-top: 25px;
-        margin-bottom: 25px;
-        margin-top: 50px;
-    }
-
-    .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-
-    .title {
-        font-size: 20px; /* Adjust size if needed */
-        font-weight: bold;
-    }
-
-    .footer {
-        display: flex;
-        align-items: center;
-        height: 0px;
-        margin-left: auto; /* Pushes it fully to the right */
-        margin-top: 15px;
-        padding-top: 22px;
-    }
-
-    .dx-popup-content.dx-popup-content-scrollable {
-        padding-top: 20px;
-        padding-right: 0px;
-        padding-left: 25px;
-    }
-
-    /* Hover effect for DataGrid rows */
-    .dx-datagrid-rowsview .dx-row:hover {
-        background-color: #f5f5f5; /* Light gray background */
-    }
-
-    /* Hover effect for DataGrid cells */
-    .dx-datagrid-rowsview .dx-row td:hover {
-        background-color: #e0e0e0; /* Slightly darker gray background */
-    }
-
-    /* Bold header text for DataGrid */
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
-    }
-
-    .dx-datagrid {
-        border-radius: 15px; /* Oval Shape */
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft Shadow */
-        overflow: hidden;
-    }
-
-    .dx-datagrid-rowsview .dx-row {
-        font-family: 'Inter', sans-serif;
-        font-size: 14px; /* Smaller, more modern font */
-    }
-
-        .dx-datagrid-rowsview .dx-row .dx-command-edit,
-        .dx-datagrid-rowsview .dx-row td {
-            padding: 8px;
-        }
-
-            /* Highlight Debit & Credit */
-            .dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
-                color: red; /* Debit */
-                font-weight: bold;
-            }
-
-            .dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
-                color: green; /* Credit */
-                font-weight: bold;
-            }
-
-            /* Dynamic Balance Highlighting */
-            .dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
-                font-weight: bold;
-            }
-
-    /* Toolbar Styling */
-    .custom-toolbar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-
-    .filter-btn {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-family: 'Inter', sans-serif;
-    }
-
-        .filter-btn:hover {
-            background-color: #0056b3;
-        }
-
-    /* Text Editor Styling */
     .dx-texteditor {
         background-color: #909ead00 !important; /* Light background */
         border: 1px solid #d6e4f0 !important; /* Soft border */
@@ -359,7 +249,8 @@
                     .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
                     )
             </div>
-            <div class="form-group" style="margin-top:56px;margin-left:-10px">
+            <div class="plusBtn">
+            <div class="form-group">
                 @(Html.DevExtreme().Button()
                     .ID("btnAddAHead")
                     .Icon("plus")
@@ -384,7 +275,7 @@
                     )
 
             </div>
-            <div class="form-group" style="margin-top:56px;margin-left:-10px">
+            <div class="form-group">
                 @(Html.DevExtreme().Button()
                     .ID("btnEditAHead")
                     .Icon("edit")
@@ -406,6 +297,7 @@
 </div>
 </text>)
     )
+            </div>
             </div>
 
             <div class="form-group">
@@ -432,8 +324,8 @@
         </div>
 
         <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:10px;">
-            <div class="form-group" style="padding-left:20px">
-                <label for="Amount" class="button-alignment-down" style="margin-right:25px">Narration</label>
+            <div class="form-group">
+                <label for="Amount">Narration</label>
             </div>
             <div class="form-group">
                 @(
@@ -595,7 +487,7 @@
                     .AllowColumnReordering(true) // Enable column reordering
                     .AllowColumnResizing(true)   // Enable column resizing
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                    .HeaderFilter(filter => filter.Visible(true))
+                    //.HeaderFilter(filter => filter.Visible(true))
                     .Height(250)
                     .ColumnAutoWidth(true)
                     .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
@@ -626,8 +518,8 @@
 
         <!-- Footer with TextBoxes Aligned Directly Under Debit and Credit -->
         <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: aliceblue; color: white; padding:10px; margin-top: -11px; font-size: 14px; max-width:1245px;position:relative;left:17px;">
-            <div style="flex: 1;">&nbsp;</div> <!-- Aligns with Dr/Cr column -->
-            <div style="flex: 1;">&nbsp;</div> <!-- Aligns with Account Head column -->
+            <div style="flex: 2;">&nbsp;</div> <!-- Aligns with Dr/Cr column -->
+            <div style="flex: 2;">&nbsp;</div> <!-- Aligns with Account Head column -->
             <!-- TextBox for Debit -->
             <div style="flex: none; text-align: right;position:relative;right:25px;">
 
@@ -716,6 +608,7 @@
                                             Html.DevExtreme().Button()
                                             .ID("btnChequePopup")
                                             .Text("...")
+                                            .Icon("money")
                                             .Width(40)
                                             .Height(35)
                                             .ElementAttr(new { @class = "input-button" })
@@ -929,7 +822,7 @@
 
                         <!-- Button to the right -->
 
-                        <div class="d-flex justify-content-end" style="position:relative;top:25px;">
+                        <div class="d-flex justify-content-end" style="position:relative;top:50px;right:110px">
                             <div class="form-group">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAttachment")
@@ -944,7 +837,7 @@
                 </div>
 
                 <!-- Second Row for Bill No, Bill Date, Bill Paid To, and Remarks -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:0px; padding-bottom:0px; position:relative;bottom:35px;">
+                <div class="col-md-12 backgroundcolor" style="padding-top:0px; padding-bottom:0px; position:relative;bottom:35px;width:92%;">
                     <div class="row">
                         <!-- Bill No -->
                         <div class="col-md-3">
@@ -1007,7 +900,7 @@
                 </div>
 
                 <!-- Third Row for Payment Account, Verified By, Verified On, Approved By, Approved On -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:1px; padding-bottom:1px;position:relative;bottom:50px;">
+                <div class="col-md-12 backgroundcolor" style="padding-top:1px; padding-bottom:1px;position:relative;bottom:50px;Width:92%;">
                     <div class="row mt-3 align-items-center">
                         <!-- Payment Account -->
 
@@ -1400,7 +1293,7 @@
                                         .AllowColumnReordering(true)
                                         .AllowColumnResizing(true)
                                         .ColumnFixing(fixing => fixing.Enabled(true))
-                                        .HeaderFilter(filter => filter.Visible(true))
+                                       // // .HeaderFilter(filter => filter.Visible(true))
                                         .Height(250)
                                         .ColumnAutoWidth(true)
                                         .FilterRow(filterRow => filterRow.Visible(false))
@@ -1475,7 +1368,7 @@
                                 .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                                 .OnSelectionChanged("dataGridSelectionChangedPaymentAccount")
                                 .OnInitialized("dataGridInitialized")
-                                .HeaderFilter(p => p.Visible(true))
+                                // .HeaderFilter(p => p.Visible(true))
                                 .ShowBorders(true)
                                 .HoverStateEnabled(true)
                                 .Paging(p => p.PageSize(15))
@@ -1521,7 +1414,7 @@
                                 .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                                 .OnSelectionChanged("dataGridEmployeeSelectionChanged")
                                 .OnInitialized("dataGridInitialized")
-                                .HeaderFilter(p => p.Visible(true))
+                                // .HeaderFilter(p => p.Visible(true))
                                 .ShowBorders(true)
                                 .HoverStateEnabled(true)
                                 .Paging(p => p.PageSize(15))
@@ -1560,7 +1453,7 @@
                                 .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                                 .OnSelectionChanged("dataGridAgainstPayableSelectionChanged")
                                 .OnInitialized("dataGridInitialized")
-                                .HeaderFilter(p => p.Visible(true))
+                                // .HeaderFilter(p => p.Visible(true))
                                 .ShowBorders(true)
                                 .HoverStateEnabled(true)
                                 .Paging(p => p.PageSize(15))
@@ -1605,7 +1498,7 @@
                     .ID("accountpaymentamount-datagrid")
                     .DataSource(d => d.WebApi()
                     .Controller("VoucherMaster")
-                    .LoadAction("GetCPPaymentAccounts"    )
+                    .LoadAction("GetCPPaymentAccounts")
                     .LoadMode(DataSourceLoadMode.Raw)
                     /// .Key("AccountHead") //salary paid entry
                     .Key("AccountId")
@@ -1617,7 +1510,7 @@
                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                     .OnSelectionChanged("dataGridSelectionChanged")
                     .OnInitialized("dataGridInitialized")
-                    .HeaderFilter(p => p.Visible(true))
+                    // .HeaderFilter(p => p.Visible(true))
                     .ShowBorders(true)
                     .HoverStateEnabled(true)
                     .Paging(p => p.PageSize(15))
@@ -1662,7 +1555,7 @@
                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                     .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
                     .OnInitialized("dataGridAccountHeadInitialized")
-                    .HeaderFilter(p => p.Visible(true))
+                    // .HeaderFilter(p => p.Visible(true))
                     .ShowBorders(true)
                     .HoverStateEnabled(true)
                     .Paging(p => p.PageSize(15))
@@ -1715,7 +1608,7 @@
         </text>)
 
 
-                        .HeaderFilter(p => p.Visible(true))
+                        // .HeaderFilter(p => p.Visible(true))
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
@@ -1742,13 +1635,13 @@
 <div id="CostAllocationModal" class="modal fade show" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog fullscreen" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Allocation for employees</h5>
-                <!-- Close Button -->
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            @* <div class="modal-header"> *@
+            @*     <h5 class="modal-title">Allocation for employees</h5> *@
+            @*     <!-- Close Button --> *@
+            @*     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> *@
+            @*         <span aria-hidden="true">&times;</span> *@
+            @*     </button> *@
+            @* </div> *@
             <div class="modal-body">
                 <!-- Content will be loaded dynamically -->
                 <div id="CostAllocationContent"></div>
@@ -1760,12 +1653,12 @@
 <div id="PropertyAllocationModal" class="modal fade show" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog fullscreen" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Property Allocation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            @* <div class="modal-header"> *@
+            @*     <h5 class="modal-title">Property Allocation</h5> *@
+            @*     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> *@
+            @*         <span aria-hidden="true">&times;</span> *@
+            @*     </button> *@
+            @* </div> *@
             <div class="modal-body">
                 <!-- Content will be loaded dynamically -->
                 <div id="PropertyAllocationContent"></div>

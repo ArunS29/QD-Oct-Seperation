@@ -108,13 +108,13 @@ body {
 
 .Head {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
 .header-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
@@ -172,4 +172,10 @@ body {
     margin-left: auto;
     margin: 15px;
     padding-top: 22px;
+}
+
+.plusBtn {
+    display: flex;
+    gap: 15px;
+    margin-top: 40px
 }
