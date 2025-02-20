@@ -127,7 +127,7 @@
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
-            .HeaderFilter(hf => hf.Visible(true))
+            @* .HeaderFilter(hf => hf.Visible(true)) *@
             .OnCellPrepared("onCellPrepared")
             )
     </div>

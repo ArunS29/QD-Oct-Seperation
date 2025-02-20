@@ -490,6 +490,7 @@
                     .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                     .ShowBorders(true)
                     .Width("100%")
+                    .Height(450)
                     .Editing(editing => editing
                     .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
                     .AllowUpdating(true)   // Enable editing of existing rows
@@ -582,7 +583,7 @@
 
 
         <div class="container">
-            <div class="row g-3">
+            <div class="row g-3" style="height:310px;">
                 <!-- First Row for Cheque No/Reference No and Voucher Narration with Button -->
                 <div class="container-fluid backgroundcolor py-3">
                     <div class="row align-items-start">
@@ -819,7 +820,7 @@
 
                         <!-- Button to the right -->
 
-                        <div class="d-flex justify-content-end" style="position:relative;top:50px;right:10px">
+                        <div class="d-flex justify-content-end" style="position:relative;top: -54px;right: 640px;">
                             <div class="form-group">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAttachment")
@@ -834,7 +835,7 @@
                 </div>
 
                 <!-- Second Row for Bill No, Bill Date, Bill Paid To, and Remarks -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:0px; padding-bottom:0px; position:relative;bottom:35px;width:100%;">
+                <div class="col-md-12 backgroundcolor" style="padding-top:0px; padding-bottom:0px; position:relative;bottom:70px;width:100%;">
                     <div class="row">
                         <!-- Bill No -->
                         <div class="col-md-3">
@@ -897,7 +898,7 @@
                 </div>
 
                 <!-- Third Row for Payment Account, Verified By, Verified On, Approved By, Approved On -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:1px; padding-bottom:1px;position:relative;bottom:50px;Width:100%;">
+                <div class="col-md-12 backgroundcolor" style="padding-top:1px; padding-bottom:1px;position:relative;bottom:70px;Width:100%;">
                     <div class="row mt-3 align-items-center">
                         <!-- Payment Account -->
 
@@ -1629,40 +1630,40 @@
 </div>
 
 
-<div id="CostAllocationModal" class="modal fade show" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog fullscreen" role="document">
-        <div class="modal-content">
-            @* <div class="modal-header"> *@
-            @*     <h5 class="modal-title">Allocation for employees</h5> *@
-            @*     <!-- Close Button --> *@
-            @*     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> *@
-            @*         <span aria-hidden="true">&times;</span> *@
-            @*     </button> *@
-            @* </div> *@
-            <div class="modal-body">
-                <!-- Content will be loaded dynamically -->
-                <div id="CostAllocationContent"></div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal for Property Allocation -->
-<div id="PropertyAllocationModal" class="modal fade show" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog fullscreen" role="document">
-        <div class="modal-content">
-            @* <div class="modal-header"> *@
-            @*     <h5 class="modal-title">Property Allocation</h5> *@
-            @*     <button type="button" class="close" data-dismiss="modal" aria-label="Close"> *@
-            @*         <span aria-hidden="true">&times;</span> *@
-            @*     </button> *@
-            @* </div> *@
-            <div class="modal-body">
-                <!-- Content will be loaded dynamically -->
-                <div id="PropertyAllocationContent"></div>
-            </div>
-        </div>
-    </div>
-</div>
+@* <div id="CostAllocationModal" class="modal fade show" tabindex="-1" role="dialog" aria-hidden="true"> *@
+@*     <div class="modal-dialog fullscreen" role="document"> *@
+@*         <div class="modal-content"> *@
+@*              <div class="modal-header">  *@
+@*                  <h5 class="modal-title">Allocation for employees</h5>  *@
+@*                  <!-- Close Button -->  *@
+@*                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">  *@
+@*                      <span aria-hidden="true">&times;</span>  *@
+@*                  </button>  *@
+@*              </div>  *@
+@*             <div class="modal-body"> *@
+@*                 <!-- Content will be loaded dynamically --> *@
+@*                 <div id="CostAllocationContent"></div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+@* <!-- Modal for Property Allocation --> *@
+@* <div id="PropertyAllocationModal" class="modal fade show" tabindex="-1" role="dialog" aria-hidden="true"> *@
+@*     <div class="modal-dialog fullscreen" role="document"> *@
+@*         <div class="modal-content"> *@
+@*              <div class="modal-header">  *@
+@*                  <h5 class="modal-title">Property Allocation</h5>  *@
+@*                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">  *@
+@*                      <span aria-hidden="true">&times;</span>  *@
+@*                  </button>  *@
+@*              </div>  *@
+@*             <div class="modal-body"> *@
+@*                 <!-- Content will be loaded dynamically --> *@
+@*                 <div id="PropertyAllocationContent"></div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
 
 
 
