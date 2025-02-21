@@ -65,7 +65,7 @@
 </div>
 
 <div>
-        @await Html.PartialAsync("_chartofaccounts")
+        @await Html.PartialAsync("chartofaccountsFooter")
     </div>
 <div id="popupContainer"></div>
 
@@ -82,13 +82,15 @@
                 .ShowBorders(true)
                 .Columns(columns =>
                 {
-           
-          columns.AddFor(m => m.AccountId).Caption("Account ID").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(@<text>
-    <a href="javascript:void(0);" onclick="openPopup('<%-data.AccountId%>')">
-        <%-data.AccountId%>
-    </a>
-</text>);
-
+                    columns.AddFor(m => m.AccountId)
+                .Caption("Account ID")
+                .Alignment(HorizontalAlignment.Center)
+                .Visible(true)
+                .CellTemplate(@<text>
+            <a href="javascript:void(0);" onclick="openPopup('<%-data.AccountId%>')" style="color: #0398fc; text-decoration: underline;">
+                <%-data.AccountId%>
+            </a>
+        </text>);
                     columns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
                     columns.AddFor(m => m.MasterGroup).Caption("Account Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
                     columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head (Ar)").Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
@@ -126,7 +128,7 @@
             .ColumnFixing(fixing => fixing.Enabled(true))
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
-            .ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
+            .ColumnChooser(c => c.Enabled(false).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
             @* .HeaderFilter(hf => hf.Visible(true)) *@
             .OnCellPrepared("onCellPrepared")
             )

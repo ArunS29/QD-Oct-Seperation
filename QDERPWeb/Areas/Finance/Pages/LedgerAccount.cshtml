@@ -78,15 +78,15 @@
     }
 
     /*     .dx-editor-outlined .dx-label span {
-            font-weight:bold !important;
-            } */
+                font-weight:bold !important;
+                } */
 
     .custom-textbox input {
         background-color: aliceblue;
         font-weight: bold !important;
         color: black !important; /* Use !important to override DevExtreme styles */
         /*   border: 3px solid #282222;
-            border-radius: 8px !important; */
+                border-radius: 8px !important; */
     }
 
     .custom-textbox1 input {
@@ -265,59 +265,7 @@
                 )
         </div>
         <br />
-        @* <div class="dx-fieldset horizontal-container">
-        @(Html.DevExtreme().Tabs()
-        .Items(items =>
-        {
-        items.Add()
-        .Icon("optionsgear")
-        .Text("Settings")
-        .ID("tab-content-1");
 
-
-        items.Add()
-        .Icon("accountbox")
-        .Text("Contact Details")
-        .ID("tab-content-2");
-
-
-        items.Add()
-        .Icon("description")
-        .Text("Bank Details")
-        .ID("tab-content-3");
-
-        items.Add()
-        .Icon("card")
-        .Text("Client Details")
-        .ID("tab-content-4");
-
-        items.Add()
-        .Icon("group")
-        .Text("Supplier Details")
-        .ID("tab-content-5");
-
-        items.Add()
-        .Icon("attach")
-        .Text("Attachments")
-        .ID("tab-content-6");
-
-        items.Add()
-        .Icon("file")
-        .Text("Billing Details")
-        .ID("tab-content-7");
-
-        items.Add()
-        .Icon("description")
-        .Text("Obselete(for Old Version)")
-        .ID("tab-content-8");
-        })
-        .SelectedIndex(0)  // Default selected tab is 0 (first tab)
-        .OnSelectionChanged("onTabSelectionChanged")  // Event handler for tab selection change
-
-        )
-
-
-        </div> *@
         <div class="dx-fieldset horizontal-container">
             @(
                 Html.DevExtreme().Tabs()
@@ -391,7 +339,7 @@
                                     .Format(format => format.Type("fixedPoint").Precision(2))
                                     .Width("100%")// Initial value
                                     @*  .Min(0)              // Minimum value
-                                .Max(1000)  *@          // Maximum value
+                                .Max(1000)  *@              // Maximum value
                                     .Step(1)             // Increment step
                                     .ShowSpinButtons(true) // Show spin buttons for up/down
                                                            //.Format("fixedPoint")  // Format as fixed-point (number with decimals)
@@ -541,9 +489,10 @@
                                 <label>Employee's Loan Account:</label>
                             </td>
                             <td colspan="4">
-                                @(Html.DevExtreme().CheckBox()
+                                @(
+                                    Html.DevExtreme().CheckBox()
                                     .ID("chkLoanAccountEntry")
-                                    .Text(new JS("formatMessage('Choose if you want this account to link with Employee's Salary Advance')"))
+                                    .Text(new JS("formatMessage('Choose if you want this account to link with Employees Salary Advance')"))
                                     .Value(false)
                                     //.Disabled(true)
                                     .ElementAttr("style", "font-style:italic;font-weight:bold;")
@@ -2041,7 +1990,7 @@
                 .Icon("arrowleft")
                 .Text(new JS("formatMessage('Close')"))
                 .Width("100%")
-                .Disabled(true)
+                .OnClick("PageClose")
                 )
         </div>
     </div>
@@ -2287,16 +2236,16 @@
         var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
         var accgroupid = urlParams.get('AccountGroupID') || "";
         acgid = accgroupid;
-       
+
         var accheadar = urlParams.get('AccountHeadAr') || "";
 
 
-         // get ChartofAccounts AccountId using Params
+        // get ChartofAccounts AccountId using Params
         const AccountId = urlParams.get('AccountId');
-        getidfromCOA = AccountId; 
+        getidfromCOA = AccountId;
 
         //alert(getidfromCOA);
-        
+
 
 
         // alert(accountheadid)
@@ -2798,9 +2747,7 @@
                 type: "GET",
                 success: function (response) {
                     if (response.success) {
-                        //alert(response.data.AccountId);
-                        //alert(response.data.AccountHead);
-                        // Bind data to form fields
+
                         console.log(response.data.AccountId);
                         console.log(response.data.AccountHead);
 
@@ -2833,7 +2780,7 @@
 
     });
 
-     
+
     function redirectToBranchMaster() {
 
         const modal = document.getElementById("ledgerAccountMasterModal");
@@ -3312,7 +3259,7 @@
 
                 ddbInstance.option("value", selectedKey);
                 accgrp = accountgroup;
-               
+
                 //getAccountingLedger   accunderid
                 // AJAX call to fetch the next Account ID
                 $.ajax({
@@ -3335,14 +3282,14 @@
                     }
                 });
 
-                
+
 
             }
 
         }
 
     }
-  
+
     function dataGridInitialized(e) {
         dataGrid = e.component;
     }
@@ -3675,6 +3622,10 @@
 </script>
 
 <script>
+    function PageClose() {
+
+        history.back();
+    }
     function onsaveLedgerAccountClick(e) {
 
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
@@ -3682,7 +3633,7 @@
         var sAcccountHead = $('#txtAccountHead').dxTextBox("instance").option("value");
         var sAcccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance").option("value");
         var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance").option("value");
-       acgid=sAccountGroup;
+        acgid = sAccountGroup;
         //Setting Tab Values
         var sOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
         var sCreditDebit = $('#ddlCreditDebit').dxDropDownBox('option', 'value');
@@ -3808,7 +3759,7 @@
                 IsEmployeeAllocated: chkEmployeeDBEntryChecked,
                 IsPropertyAllocated: chkPropertyDBEntryChecked,
                 IsEmployeePaymentAc: chkLoanAccountEntryChecked,
-               // LedgerActiveChecked: schLedgerActiveChecked,
+                // LedgerActiveChecked: schLedgerActiveChecked,
                 IsLedgerObselete: schIsLedgerObselete,
                 AccountBranch: cdBranch,
                 AccountSubGroup: cdSubGroup,
@@ -3893,11 +3844,9 @@
                     if (response.success) {
                         //alert(response.message);
                         DevExpress.ui.notify(response.message, "success", 3000);
-                        //     window.location.reload(); // This is for only particular page reload
-                      // window.location.href = `/Finance/LedgerAccount`;
+                        //  window.location.reload(); // This is for only particular page reload
 
-                        // window.location.href = '/account-ledger-list';   // Redirect to master page in the same website
-                    }else {
+                    } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }
                 },
@@ -4853,8 +4802,8 @@
 
     // alert("two");
     // alert(getidfromCOA);
-//Get datas and Bind from ChartOfAccounts
-  
+    //Get datas and Bind from ChartOfAccounts
+
 
 
 </script>

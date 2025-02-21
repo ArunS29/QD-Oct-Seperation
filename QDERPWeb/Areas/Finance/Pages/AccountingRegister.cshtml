@@ -56,7 +56,7 @@
         padding-top: 22px;
     }
 
-   
+
     /* Toolbar Styling */
     .custom-toolbar {
         display: flex;
@@ -108,11 +108,10 @@
         background-color: #909ead00 !important;
         border: 1px solid #d6e4f0 !important;
         border-radius: 4px !important;
-        /* padding: 6px 12px !important; /* Reduced button padding */ */
-        font-size: 14px !important;
+        /* padding: 6px 12px !important; /* Reduced button padding */ */ font-size: 14px !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
         transition: all 0.2s ease-in-out !important;
-        height:40px !important; /* Fixed height */
+        height: 40px !important; /* Fixed height */
     }
 
         /* Hover Effect for Button */
@@ -141,7 +140,7 @@
 
 
 
-    <!-- Context Menu -->
+<!-- Context Menu -->
 @*     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
         <div class="context-menu-item">
@@ -156,268 +155,272 @@
                 )
         </div>
     </div> *@
-    <!-- Context Control -->
-    <div class="context-menu" id="contextControl">
-        <div id="contextControlContent"></div>
-        <div class="context-menu-item">
-            <div style='text-align:right;'>
-                <button id='okButton' onclick='hideEditControl()' style='margin-right:5px;'> OK</button>
-            </div>
+<!-- Context Control -->
+<div class="context-menu" id="contextControl">
+    <div id="contextControlContent"></div>
+    <div class="context-menu-item">
+        <div style='text-align:right;'>
+            <button id='okButton' onclick='hideEditControl()' style='margin-right:5px;'> OK</button>
         </div>
     </div>
-    <!-- Pop UP-->
-    <div id="voucherPopup" style="display:none;">
-        <div style="margin-bottom:10px">
-            <strong>Voucher No:</strong> <span id="popupVoucherNo"></span><br />
-            <strong>Voucher Date:</strong> <span id="popupVoucherDate"></span><br />
-            <strong>Voucher Type:</strong> <span id="popupVoucherNarration"></span><br />
-        </div>
-        @(Html.DevExtreme().Button()
-            .ID("btnShowVoucher")
-            .Text("Show Voucher")
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("paste")
-            .Width(180)
-            .OnClick("function() { showVoucher(); }")
-            )
+</div>
+<!-- Pop UP-->
+<div id="voucherPopup" style="display:none;">
+    <div style="margin-bottom:10px">
+        <strong>Voucher No:</strong> <span id="popupVoucherNo"></span><br />
+        <strong>Voucher Date:</strong> <span id="popupVoucherDate"></span><br />
+        <strong>Voucher Type:</strong> <span id="popupVoucherNarration"></span><br />
     </div>
+    @(Html.DevExtreme().Button()
+        .ID("btnShowVoucher")
+        .Text("Show Voucher")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        .Icon("paste")
+        .Width(180)
+        .OnClick("function() { showVoucher(); }")
+        )
+</div>
 
 
-    <!-- Input Controlls -->
-    <div class="dx-fieldset horizontal-container ">
+<!-- Input Controlls -->
+<div class="dx-fieldset horizontal-container ">
 
-        @(Html.DevExtreme().SelectBox()
-            .ID("voucherTypeSelect")
-            .LabelMode(EditorLabelMode.Outside)
-            .Label("Select a Register")
-            .ValueExpr("VoucherType")
-            .InputAttr("aria-label", "Owner")
-            .DisplayExpr("VoucherType")
-            .DataSource(d => d.WebApi()
-            .Controller("AccountingRegister")
-            .LoadAction("GetVoucherTypes")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("VoucherType")
-            )
-            .SearchEnabled(true)
-            .Placeholder("Select a value...")
-            .ShowClearButton(true)
-            .Width(300)
-            .TabIndex(1)
-            )
-        
-
-        @(Html.DevExtreme().DateBox()
-            .ID("frmdateBox")
-            .Label("StartDate")
-            .LabelMode(EditorLabelMode.Outside)
-            .InputAttr("aria-label", "Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(2)
-            )
+    @(Html.DevExtreme().SelectBox()
+        .ID("voucherTypeSelect")
+        .LabelMode(EditorLabelMode.Outside)
+        .Label("Select a Register")
+        .ValueExpr("VoucherType")
+        .InputAttr("aria-label", "Owner")
+        .DisplayExpr("VoucherType")
+        .DataSource(d => d.WebApi()
+        .Controller("AccountingRegister")
+        .LoadAction("GetVoucherTypes")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("VoucherType")
+        )
+        .SearchEnabled(true)
+        .Placeholder("Select a value...")
+        .ShowClearButton(true)
+        .Width(300)
+        .TabIndex(1)
+        )
 
 
-        @(Html.DevExtreme().DateBox()
-            .ID("todateBox")
-            .Label("End Date")
-            .LabelMode(EditorLabelMode.Outside)
-            .InputAttr("aria-label", "Time")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(3)
-            )
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddBtnShowRecords")
-            .Text("Show Records")
-            .Icon("smalliconslayout")
-            .Width(180)
-            .ElementAttr("class", "button-alignment-down")
-            .DropDownOptions(options => options.Width(230))
-            .TabIndex(4)
-            .Items(items =>
-            {
-                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+    @(Html.DevExtreme().DateBox()
+        .ID("frmdateBox")
+        .Label("StartDate")
+        .LabelMode(EditorLabelMode.Outside)
+        .InputAttr("aria-label", "Date")
+        .Type(DateBoxType.Date)
+        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+        .DisplayFormat("dd-MMM-yyyy")
+        .TabIndex(2)
+        )
 
-            })
-            )
-    </div>
-    <!-- Result Grid -->
-    <div class="dx-field ledgerResult">
-        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerByVoucherTypeResult>()
+
+    @(Html.DevExtreme().DateBox()
+        .ID("todateBox")
+        .Label("End Date")
+        .LabelMode(EditorLabelMode.Outside)
+        .InputAttr("aria-label", "Time")
+        .Type(DateBoxType.Date)
+        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+        .DisplayFormat("dd-MMM-yyyy")
+        .TabIndex(3)
+        )
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddBtnShowRecords")
+        .Text("Show Records")
+        .Icon("smalliconslayout")
+        .Width(180)
+        .ElementAttr("class", "button-alignment-down")
+        .DropDownOptions(options => options.Width(230))
+        .TabIndex(4)
+        .Items(items =>
+        {
+            items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+            items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+            items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+            items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+            items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+            items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+            items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+            items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+            items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+            items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+
+        })
+        )
+</div>
+<!-- Result Grid -->
+<div class="dx-field ledgerResult">
+    @(
+            Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerByVoucherTypeResult>()
             .ID("dataGrid")
             .RemoteOperations(false)
             .DataSource(new JS("[]"))
-                .Columns(columns =>
-                {
-                    columns.AddFor(m => m.VoucherNo).Caption("Voucher No").MinWidth(150).Alignment(HorizontalAlignment.Center)
-                .CellTemplate(@<text>
-            <div>
-                <a href="javascript:void(0);"><%-data.VoucherNo%></a>
-            </div>
-        </text>).Visible(true);
-                    columns.AddFor(m => m.VoucherDate).Caption("Voucher Date").MinWidth(150).Alignment(HorizontalAlignment.Center).Format(format => format
-            .Type(Format.ShortDate)    // Custom type format
-            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
-                    columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On").MinWidth(150).Alignment(HorizontalAlignment.Center).Format(format => format
-            .Type(Format.ShortDate)
-            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }")).Visible(true);
-                    columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger").Alignment(HorizontalAlignment.Left).Visible(true);
-                    columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(@"
-                        function(e) {
-                        if(e.value === null || e.value === undefined) {
-                        return ''; // Return empty string or any placeholder for null values
-                        }
-                        return e.value.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                        });
-                        }
-        ").Visible(true);
-                    columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(@"
-                        function(e) {
-                        if(e.value === null || e.value === undefined) {
-                        return ''; // Return empty string or any placeholder for null values
-                        }
-                        return e.value.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                        });
-                        }
-        ").Visible(true);
-                    columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left).Visible(true);
-                    columns.AddFor(m => m.VoucherRefNo).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.VoucherVerifiedOn).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.VoucherVerifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.AccountGroup).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.AccountHead).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.EntryNarration).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.MasterGroup).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.SubGroupName).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.VoucherAmountFormatted).Alignment(HorizontalAlignment.Right).Visible(false);
-                    columns.AddFor(m => m.VoucherApprovedBy).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.VoucherApprovedOn).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.VoucherEnteredBy).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.VoucherEnteredOn).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.VoucherEntryNo).Alignment(HorizontalAlignment.Left).Visible(false);
-                    columns.AddFor(m => m.VoucherModifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
-                  
-                    // Enable custom inline editing for "SysRemarks" with a multiline TextArea
-                    columns.AddFor(m => m.SysRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
-                    columns.AddFor(m => m.VoucherType).Visible(false);
-                })
-            .OnCellClick("function(e) {handleCellClick(e);}")
-            @* .HeaderFilter(filter => filter.Visible(true)) *@
-            .ColumnChooser(columnChooser => columnChooser
-            .Enabled(false) // Enable the column chooser for hiding and showing columns
-            .Title("Column Chooser") // Optional: Set a custom title
-            .Mode(GridColumnChooserMode.Select)
-            )
-             @* .Paging(p=>p.Enabled(false)) *@
-            .AllowColumnReordering(true) // Enable column reordering
-            .AllowColumnResizing(true)   // Enable column resizing
-            .ColumnFixing(fixing => fixing
-            .Enabled(true) // Allow column fixing (pinning)
-            )
-            .Height(550)
-            .ColumnAutoWidth(true)
-            .Width("100%")
-            .Summary(summary =>
+            .Columns(columns =>
             {
-                summary.TotalItems(totalItems =>
-                {
-                    totalItems.Add()
-                .Column("VoucherNo") // Count of VoucherNo
-                .SummaryType(SummaryType.Count)
-                .DisplayFormat("Count: {0}"); // Customize the display format
+                columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div>
+            <a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
+               onclick="navigateToVoucherPage('<%- data.VoucherNo %>')">
+                <%- data.VoucherNo %>
+            </a>
+        </div>
+    </text>);
+                columns.AddFor(m => m.VoucherDate).Caption("Voucher Date").MinWidth(150).Alignment(HorizontalAlignment.Center).Format(format => format
+    .Type(Format.ShortDate)    // Custom type format
+    .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
+                columns.AddFor(m => m.VoucherEffectiveDate).Caption("Effective On").MinWidth(150).Alignment(HorizontalAlignment.Center).Format(format => format
+    .Type(Format.ShortDate)
+    .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }")).Visible(true);
+                columns.AddFor(m => m.AccountHeadName).Caption("Account Ledger").Alignment(HorizontalAlignment.Left).Visible(true);
+                columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(@"
+    function(e) {
+    if(e.value === null || e.value === undefined) {
+    return ''; // Return empty string or any placeholder for null values
+    }
+    return e.value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    }
+    ").Visible(true);
+                columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(@"
+    function(e) {
+    if(e.value === null || e.value === undefined) {
+    return ''; // Return empty string or any placeholder for null values
+    }
+    return e.value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    }
+    ").Visible(true);
+                columns.AddFor(m => m.VoucherNarration).Caption("Narration").Alignment(HorizontalAlignment.Left).Visible(true);
+                columns.AddFor(m => m.VoucherRefNo).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.VoucherVerifiedOn).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.VoucherVerifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.AccountGroup).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.AccountHead).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.EntryNarration).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.MasterGroup).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.SubGroupName).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.VoucherAmountFormatted).Alignment(HorizontalAlignment.Right).Visible(false);
+                columns.AddFor(m => m.VoucherApprovedBy).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.VoucherApprovedOn).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.VoucherEnteredBy).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.VoucherEnteredOn).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.VoucherEntryNo).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.VoucherModifiedBy).Alignment(HorizontalAlignment.Left).Visible(false);
 
-                     totalItems.Add()
+                // Enable custom inline editing for "SysRemarks" with a multiline TextArea
+                columns.AddFor(m => m.SysRemarks).Caption("Remarks").Alignment(HorizontalAlignment.Left).Visible(true);
+                columns.AddFor(m => m.VoucherType).Visible(false);
+            })
+        .OnCellClick("function(e) {handleCellClick(e);}")
+        @* .HeaderFilter(filter => filter.Visible(true)) *@
+        .ColumnChooser(columnChooser => columnChooser
+        .Enabled(false) // Enable the column chooser for hiding and showing columns
+        .Title("Column Chooser") // Optional: Set a custom title
+        .Mode(GridColumnChooserMode.Select)
+        )
+        @* .Paging(p=>p.Enabled(false)) *@
+        .AllowColumnReordering(true) // Enable column reordering
+        .AllowColumnResizing(true)   // Enable column resizing
+        .ColumnFixing(fixing => fixing
+        .Enabled(true) // Allow column fixing (pinning)
+        )
+        .Height(550)
+        .ColumnAutoWidth(true)
+        .Width("100%")
+        .Summary(summary =>
+        {
+            summary.TotalItems(totalItems =>
+            {
+                totalItems.Add()
+            .Column("VoucherNo") // Count of VoucherNo
+            .SummaryType(SummaryType.Count)
+            .DisplayFormat("Count: {0}"); // Customize the display format
+
+                totalItems.Add()
             .Column("DrAmount") // Sum of DrAmount
             .SummaryType(SummaryType.Sum)
-                .CustomizeText(
-                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+            .CustomizeText(
+            "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-                );
+            );
 
-        totalItems.Add()
-        .Column("CrAmount") // Sum of CrAmount
-        .SummaryType(SummaryType.Sum)
-                .CustomizeText(
-                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+                totalItems.Add()
+            .Column("CrAmount") // Sum of CrAmount
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(
+            "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-                );      // Customize the display format to currency
-                });
-            })
-            .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-            .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-            .ShowBorders(true)
-            .StateStoring(stateStoring =>
-            {
-                stateStoring
-                .Enabled(true)                       // Enable state storing
-                .Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
-                .StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
-            })
-            .OnInitialized("function(e) { loadGridState(); }")
-            )
-    </div>
-  
+            );      // Customize the display format to currency
+            });
+        })
+        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+        .ShowBorders(true)
+        .StateStoring(stateStoring =>
+        {
+            stateStoring
+            .Enabled(true)                       // Enable state storing
+            .Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
+            .StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
+        })
+        .OnInitialized("function(e) { loadGridState(); }")
+        )
+</div>
+
 
 <script>
- 
 
 
 
-    $(function () {
-        var contextMenu = $("#contextMenu");
-        var contextMenuContent = $("#contextMenuContent");
 
-        // Hide context menu on click outside
-        $(document).on("click", function () {
-            contextMenu.hide();
-        });
-         // Apply the custom context menu plugin
-            $("#dataGrid").customizeGridContextMenu();
+    // $(function () {
+    //     var contextMenu = $("#contextMenu");
+    //     var contextMenuContent = $("#contextMenuContent");
 
-
-        // Handle right-click event on the DataGrid rows
-        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-            e.preventDefault(); // Prevent the default context menu
-            var rowIndex = $(this).index(); // Get the row index
-            var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
-            console.log(rowData); // Log or use the row data as needed
-            // Clear previous content
-            contextMenuContent.empty();
-            // Add column titles and values to the context menu
-            contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
-            // Show custom context menu
-            contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-        });
-        // Get voucher Pop Up
-        $("#voucherPopup").dxPopup({
-            title: "Voucher Details",
-            width: 300,
-            height: 200,
-            visible: false, // Start hidden
-            showCloseButton: true,
-            closeOnOutsideClick: true,
-
-        });
+    //     // Hide context menu on click outside
+    //     $(document).on("click", function () {
+    //         contextMenu.hide();
+    //     });
+    //      // Apply the custom context menu plugin
+    //         $("#dataGrid").customizeGridContextMenu();
 
 
-    });
+    //     // Handle right-click event on the DataGrid rows
+    //     $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+    //         e.preventDefault(); // Prevent the default context menu
+    //         var rowIndex = $(this).index(); // Get the row index
+    //         var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex]; // Get the data for the row
+    //         console.log(rowData); // Log or use the row data as needed
+    //         // Clear previous content
+    //         contextMenuContent.empty();
+    //         // Add column titles and values to the context menu
+    //         contextMenuContent.append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+    //         // Show custom context menu
+    //         contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+    //     });
+    //     // Get voucher Pop Up
+    //     $("#voucherPopup").dxPopup({
+    //         title: "Voucher Details",
+    //         width: 300,
+    //         height: 200,
+    //         visible: false, // Start hidden
+    //         showCloseButton: true,
+    //         closeOnOutsideClick: true,
+
+    //     });
+
+
+    // });
     let dataGrid;
 
     function dataGridInitialized(e) {
@@ -514,7 +517,7 @@
 
                 // Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
                 frmDate = new Date(currentDate.setDate(startOfWeek)); // 7 days before Saturday
-                toDate = new Date(currentDate.setDate(startOfWeek+6));
+                toDate = new Date(currentDate.setDate(startOfWeek + 6));
                 break;
             case 'tillmonth':
                 // Get the first and last day of the current month
@@ -534,7 +537,7 @@
             case 'fullyear':
                 // Get the first and last day of the current year
                 frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
-                toDate = new Date(currentDate.getFullYear(),11,31); // Last day of month
+                toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
                 break;
             case 'lastyear':
                 // Get the first and last day of the last year
@@ -570,7 +573,7 @@
             success: function (data) {
                 // Bind the data to the DataGrid
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-               // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+                // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
             },
             error: function () {
                 DevExpress.ui.notify("Error while loading data", "error", 2000);
@@ -619,5 +622,37 @@
             }
         });
     }
+    function navigateToVoucherPage(voucherNo) {
+        console.log("Original VoucherNo:", voucherNo); // Debugging
 
+        if (!voucherNo) {
+            alert("Invalid voucher number.");
+            return;
+        }
+
+        let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
+
+        console.log("Formatted VoucherNo:", formattedVoucher); // Debugging
+
+        // Define routes based on prefixes
+        const voucherRoutes = {
+            "BP-": "/finance/VoucherBankPayment",  // Bank Payment
+            "CP-": "/finance/VoucherCashPayment",  // Cash Payment
+            "BR-": "/finance/VoucherEntryReceipts", // Bank Receipt
+            "CR-": "/finance/VoucherEntryCashReceipts", // Cash Receipt
+            "DA-": "/finance/SalesVoucher", // Sales
+            "PUR-": "/finance/PurchaseVoucher", // Purchase
+            "JV-": "/finance/Voucherjournal" // Journal Voucher
+        };
+
+        // Match by prefix
+        for (let prefix in voucherRoutes) {
+            if (formattedVoucher.startsWith(prefix)) {
+                window.location.href = voucherRoutes[prefix];
+                return;
+            }
+        }
+
+        alert("No matching voucher page found: " + formattedVoucher);
+    }
 </script>
