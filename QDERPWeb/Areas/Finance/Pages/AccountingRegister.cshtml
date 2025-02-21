@@ -331,7 +331,7 @@
             .ColumnFixing(fixing => fixing
             .Enabled(true) // Allow column fixing (pinning)
             )
-            .Height(440)
+            .Height(550)
             .ColumnAutoWidth(true)
             .Width("100%")
             .Summary(summary =>
@@ -344,8 +344,8 @@
                 .DisplayFormat("Count: {0}"); // Customize the display format
 
                      totalItems.Add()
-        .Column("DrAmount") // Sum of DrAmount
-        .SummaryType(SummaryType.Sum)
+            .Column("DrAmount") // Sum of DrAmount
+            .SummaryType(SummaryType.Sum)
                 .CustomizeText(
                 "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 

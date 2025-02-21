@@ -11,16 +11,6 @@
 		border-bottom: 1px solid #ccc;
 	}
 
-
-
-	.horizontal-container {
-		display: flex;
-		gap: 10px;
-		justify-content: start;
-		align-items: center;
-		margin: 15px;
-	}
-
 	.error-message {
 		color: red;
 		font-size: 12px;
@@ -29,14 +19,6 @@
 
 	.dx-selectbox .dx-texteditor-input {
 		text-align: center;
-	}
-
-	.backgroundcolor {
-		background-color: white;
-	}
-
-	.button-alignment-down {
-		margin-bottom: 10px
 	}
 
 	.context-menu {
@@ -72,15 +54,14 @@
 				)
 	</div>
 </div>
-<div class="card-header" style=" color: slategrey; font-weight:bolder; font-size: 24px;background-color:  aliceblue;">
-
-	SalesVoucher:
+<div class="title">
+	<div class="header-container">
+		<div class="title">SalesVoucher</div>
+	</div>
 </div>
-
-
-<div class="content-container-top">
+<div class="content-container-top" style="background-color:#909ead00;">
 	<div class="container">
-		<div class="row g-4">
+		<div class="row g-4" style="padding:1em;">
 			<div class="col-md-3">
 				<div class="form-group">
 					<label for="SalesInvoiceNo" class="button-alignment-down">Sales Invoice No</label>
@@ -146,9 +127,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="clear"></div>
-	<div class="container  mt-3">
-		<div class="row g-5">
+		<div class="row g-5" style="padding:1em;gap:1px">
 			<div class="col-md-6" style="padding-right:0px">
 				<div class="form-group">
 					<label for="ClientName" class="">Client Name:</label>
@@ -184,14 +163,14 @@
 				</div>
 			</div>
 
-			<div class="col-md-1" style="margin-top:72px;padding-left:0px;padding-right:0px;width:3%">
+		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
 				@(Html.DevExtreme().Button()
 								.ID("btnAddVoucher")
 								.Icon("plus")
 								.OnClick("navigateToLedger")
 								)
 			</div>
-			<div class="col-md-1" style="margin-top:72px;padding-left:0px;width:3%;padding-right:0px">
+		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
 				@(Html.DevExtreme().Button()
 								.ID("btnEditVoucher")
 								.Icon("edit")
@@ -232,7 +211,7 @@
 
 
 
-		<div class="dx-fieldset horizontal-container backgroundcolor" style="margin-top:15px;margin-bottom:0px;">
+		<div class="dx-fieldset horizontal-container" style="margin-top:15px;margin-bottom:0px;">
 			<div class="form-group" style="padding-left:20px">
 				<div class="button-alignment-down">
 					<label for="DrCr">Dr/Cr</label>
@@ -281,14 +260,14 @@
 								.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
 								)
 			</div>
-			<div class="form-group" style="margin-top:56px;margin-left:-10px">
+			<div class="form-group" style="margin-top:43px;">
 				@(Html.DevExtreme().Button()
 								.ID("btnAddAHead")
 								.Icon("plus")
 								.OnClick("navigateToLedger")
 								)
 			</div>
-			<div class="form-group" style="margin-top:56px;margin-left:-10px">
+			<div class="form-group" style="margin-top:43px;">
 				@(Html.DevExtreme().Button()
 								.ID("btnEditAHead")
 								.Icon("edit")
@@ -319,7 +298,7 @@
 								)
 			</div>
 		</div>
-		<div class="dx-fieldset horizontal-container backgroundcolor" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px">
+		<div class="dx-fieldset horizontal-container" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px">
 			<div class="form-group" style="padding-left:20px">
 				<label for="Amount" class="button-alignment-down" style="margin-right:25px">Narration</label>
 			</div>
@@ -381,7 +360,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.HeaderFilter(filter => filter.Visible(true))
+						@* .HeaderFilter(filter => filter.Visible(true)) *@
 						.Height(300)
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
@@ -394,8 +373,8 @@
 
 
 
-		<div id="footerTotals" style="display: flex; justify-content: space-between; background-color: aliceblue; color: white; padding:10px; font-size: 14px; max-width:1245px;position:relative;">
-			<div style="flex: 1;">&nbsp;</div>
+		<div id="footerTotals" style="display: flex; justify-content: space-between; color: white; padding:10px; font-size: 14px; max-width:1245px;position:relative;">
+			<div style="flex: 2;">&nbsp;</div>
 			<div style="flex: 1;">&nbsp;</div>
 			<div style="flex: none; text-align: right;">
 				@(Html.DevExtreme().TextBox()
@@ -435,9 +414,8 @@
 		</ul>
 
 
-		<div class="container">
-			<div class="row g-3">
-				<div class="col-md-2 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
+			<div class="row g-3" style="padding:1em">
+				<div class="col-md-2" style="padding-top:10px;padding-bottom:10px">
 					<div class="form-group">
 						<label for="VoucherRefNo">Client PO No</label>
 						@(
@@ -459,7 +437,7 @@
 
 					</div>
 				</div>
-				<div class="col-md-9 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
+				<div class="col-md-9" style="padding-top:10px;padding-bottom:10px">
 					<div class="form-group">
 						<label for="VoucharNarration">Voucher Narration</label>
 						@(
@@ -529,22 +507,17 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-1 backgroundcolor">
+				<div class="col-md-1">
 					<div class="form-group " style="padding-top:50px;padding-left:7px;">
 						@(Html.DevExtreme().Button()
-													.ID("btnAttachment")
-													.Icon("fa fa-book")
-													.Height(70)
-													.Width(70)
-													)
+						.ID("btnAttachment")
+						.Icon("fa fa-book")
+						.Height(70)
+						.Width(70)
+						)
 					</div>
 				</div>
 			</div>
-		</div>
-
-
-		<br />
-
 		<div>
 			@await Html.PartialAsync("_FormFooter")
 		</div>
@@ -589,8 +562,8 @@
 
 						})
 					)
-		}<div id="footerTotals" style="display: flex; background-color: aliceblue; color: white; padding: 5px 10px; font-size: 14px;">
-			<div style="flex: 3.4;">&nbsp;</div>
+		}<div id="footerTotals" style="display: flex padding: 5px 10px; font-size: 14px;">
+			<div style="flex: 3">&nbsp;</div>
 
 			<div style="flex: 1; text-align: center;">
 				@(Html.DevExtreme().TextBox()

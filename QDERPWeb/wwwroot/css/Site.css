@@ -179,3 +179,55 @@ body {
     gap: 15px;
     margin-top: 40px
 }
+
+/* Text Editor Styling */
+.dx-texteditor {
+    background-color: #909ead00 !important; /* Light background */
+    border: 1px solid #d6e4f0 !important; /* Soft border */
+    border-radius: 4px !important; /* Smaller rounded corners */
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+    font-size: 14px !important; /* Slightly smaller font */
+    transition: all 0.2s ease-in-out !important;
+    height: 39px !important; /* Fixed height */
+}
+
+    /* Hover and Focus States */
+    .dx-texteditor:hover,
+    .dx-texteditor.dx-state-hover,
+    .dx-button:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+        border-color: #86b7fe !important; /* Highlight border */
+    }
+
+    .dx-texteditor.dx-state-focused {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+        border-color: #508ae1 !important;
+    }
+
+/* Button Styling */
+.dx-button {
+    background-color: #909ead00 !important;
+    border: 1px solid #d6e4f0 !important;
+    border-radius: 4px !important;
+    padding: 6px 12px !important; /* Reduced button padding */
+    font-size: 14px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.2s ease-in-out !important;
+    height: 39px !important; /* Fixed height */
+}
+
+    /* Hover Effect for Button */
+    .dx-button:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+        border-color: #86b7fe !important; /* Highlight border */
+    }
+
+.dx-datagrid-header-panel {
+    background-color: #909ead00;
+}
+
+.form-group {
+    color: black;
+    font-family: "Inter", Helvetica, Arial, sans-serif;
+}

@@ -183,7 +183,7 @@
             border-left: 1px solid #ddd;
             border-right: 1px solid #ddd;
             /* padding-top: 50px; */
-            margin-top: 75px; /* Adjust to align with the rest of your layout */
+            margin-top: 70px; /* Adjust to align with the rest of your layout */
             height: calc(100vh - 75px); /* Sidebar takes full height minus the top margin */
             overflow-y: auto; /* Enable vertical scrolling */
             scrollbar-width: thin; /* For Firefox: thin scrollbar */
@@ -1097,6 +1097,18 @@
             // Adjust the toggle button symbol
             toggleBtn.innerHTML = sidebar.classList.contains('hidden') ? '&gt;' : '&lt;';
         }
+        // function updateHeight() {
+        //   document.querySelector('.mainContainer').style.height = window.innerHeight + 'px';
+        // }
+
+        // Update height when fullscreen mode is toggled
+        // document.addEventListener("fullscreenchange", updateHeight);
+        // document.addEventListener("webkitfullscreenchange", updateHeight);
+        // document.addEventListener("mozfullscreenchange", updateHeight);
+        // document.addEventListener("MSFullscreenChange", updateHeight);
+
+        // Also update on window resize
+        // window.addEventListener("resize", updateHeight);
 
     </script>
 </body>

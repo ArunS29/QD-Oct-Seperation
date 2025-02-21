@@ -10,158 +10,7 @@
 
 }
 <style type="text/css">
-    .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Transparent background */
-
-        z-index: 1000;
-    }
-
-    .overlay-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 80%;
-        background: #909ead00;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    #overlay-frame {
-        width: 100%;
-        height: 100%;
-    }
-
-    .Maincontainer.Maincontainer {
-        background-color: white;
-    }
-
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-
-
-    .Head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 1415px;
-        padding: 10px;
-        margin-left: 10px;
-        height: 20px;
-        padding-top: 25px;
-        margin-bottom: 25px;
-        margin-top: 50px;
-    }
-
-    .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-
-    .title {
-        font-size: 20px; /* Adjust size if needed */
-        font-weight: bold;
-    }
-
-    .footer {
-        display: flex;
-        align-items: center;
-        height: 0px;
-        margin-left: auto; /* Pushes it fully to the right */
-        margin-top: 15px;
-        padding-top: 22px;
-    }
-
-    .dx-popup-content.dx-popup-content-scrollable {
-        padding-top: 20px;
-        padding-right: 0px;
-        padding-left: 25px;
-    }
-
-    /* Hover effect for DataGrid rows */
-    .dx-datagrid-rowsview .dx-row:hover {
-        background-color: #f5f5f5; /* Light gray background */
-    }
-
-    /* Hover effect for DataGrid cells */
-    .dx-datagrid-rowsview .dx-row td:hover {
-        background-color: #e0e0e0; /* Slightly darker gray background */
-    }
-
-    /* Bold header text for DataGrid */
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
-    }
-
-    .dx-datagrid {
-        border-radius: 15px; /* Oval Shape */
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft Shadow */
-        overflow: hidden;
-    }
-
-    .dx-datagrid-rowsview .dx-row {
-        font-family: 'Inter', sans-serif;
-        font-size: 14px; /* Smaller, more modern font */
-    }
-
-        .dx-datagrid-rowsview .dx-row .dx-command-edit,
-        .dx-datagrid-rowsview .dx-row td {
-            padding: 8px;
-        }
-
-            /* Highlight Debit & Credit */
-            .dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
-                color: red; /* Debit */
-                font-weight: bold;
-            }
-
-            .dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
-                color: green; /* Credit */
-                font-weight: bold;
-            }
-
-            /* Dynamic Balance Highlighting */
-            .dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
-                font-weight: bold;
-            }
-
-    /* Toolbar Styling */
-    .custom-toolbar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .filter-btn {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-family: 'Inter', sans-serif;
-    }
-
-        .filter-btn:hover {
-            background-color: #0056b3;
-        }
-
+    
     /* Text Editor Styling */
     .dx-texteditor {
         background-color: #909ead00 !important; /* Light background */
@@ -212,29 +61,11 @@
 /* //cashreceipt */
   /*   .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc; /* Border between rows */
-    }
+
 
     .dx-header-row {
         background-color: aliceblue !important;
     } */
-
-    .card {
-        border: 1px solid white;
-        border-radius: 8px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 15px;
-        margin: 20px auto;
-        max-width: 1300px;
-        background-color: white;
-    }
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-    }
 
     .dx-selectbox .dx-texteditor-input {
         text-align: center; /* Centers the text inside the input */
@@ -246,13 +77,7 @@
         margin-bottom: 10px
     }
 
-    .form-group {
-        color: slategrey;
-        font-family: "Inter", Helvetica, Arial, sans-serif;
-    }
-
     .content-container {
-        background-color: white;
         border-radius: 10px;
         padding: 5px;
     }
@@ -266,37 +91,6 @@
         color: red; /* Red color for delete */
     }
 
-    .content-container-top {
-        background-color: #c0dceb;
-        border-top-left-radius: 10px; /* Radius for top-left corner */
-        border-top-right-radius: 10px; /* Radius for top-right corner */
-        padding: 5px;
-    }
-
-    label {
-        color: black;
-        font-weight: bold;
-    }
-
-    .Head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 1415px;
-        padding: 10px;
-        margin-left: 10px;
-        height: 20px;
-        padding-top: 25px;
-        margin-bottom: 25px;
-        margin-top: 50px;
-    }
-
-    .header-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
 </style>
 <!-- SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -313,10 +107,9 @@
         </div> *@
 
 
-<div class="Head">
+<div class="title">
     <div class="header-container">
         <div class="title">Receipts Voucher Details</div>
-       @*  <div class="footer">@await Html.PartialAsync("_GridFooter")</div> *@
     </div>
 </div>
     <div class="content-container-top" style="background-color:#909ead00;">
@@ -400,7 +193,7 @@
                     .OnValueChanged("onReceivingAccountChange") // Call the change handler
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
-                    .Width(720)
+                    .Width(650)
                     .TabIndex(1)
                     .DropDownOptions(o => o.Width(1000))
                     .OnKeyDown("onKeyDown")
@@ -414,10 +207,10 @@
 
 
 
-        <div class="dx-fieldset horizontal-container " style="margin-top:15px;margin-bottom:0px;background-color: white">
+    <div class="dx-fieldset horizontal-container" style="margin-bottom:0px;">
 
-            <div class="form-group" style="padding-left:20px">
-                <div class="button-alignment-down">
+            <div class="form-group">
+                <div>
                     <label for="DrCr">Dr/Cr:</label>
                 </div>
                 @(
@@ -431,7 +224,7 @@
             </div>
 
             <div class="form-group">
-                <label for="" class="button-alignment-down">Account Head:</label>
+                <label for="">Account Head:</label>
                 @(Html.DevExtreme().DropDownBox()
                     .DataSource(d => d.WebApi()
                     .Controller("VoucherEntryCashReceipts")
@@ -465,21 +258,22 @@
                     )
             </div>
 
-
-            <div class="form-group" style="margin-top:56px;margin-left:-10px">
+        <div class="plusBtn" style="margin-top:20px;">
+            <div class="form-group">
                 @(Html.DevExtreme().Button()
                     .ID("btnAddAHead")
                     .Icon("plus")
                     )
             </div>
-            <div class="form-group" style="margin-top:56px;margin-left:-10px">
+            <div class="form-group">
                 @(Html.DevExtreme().Button()
                     .ID("btnEditAHead")
                     .Icon("edit")
                     )
             </div>
+            </div>
             <div class="form-group">
-                <label for="Amount" class="button-alignment-down">Amount:</label>
+                <label for="Amount">Amount:</label>
                 @(
                     Html.DevExtreme().NumberBox()
                     .ID("Amount")
@@ -503,10 +297,11 @@
             </div>
         </div>
 
-        <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px;background-color: white;">
+        <div class="dx-fieldset horizontal-container ">
             <div class="form-group" style="padding-left:20px">
                 <label for="Amount" class="button-alignment-down" style="margin-right:25px">Narration:</label>
             </div>
+
             <div class="form-group">
                 @(
                     Html.DevExtreme().TextArea()
@@ -595,8 +390,8 @@
             </div>
         </div>
 
-        <div id="footerTotals" style="display: flex; background-color: aliceblue ; color: black; padding: 5px 10px; font-size: 14px;">
-            <div style="flex: 3.4;">&nbsp;</div> <!-- Aligns with Dr/Cr and Account Head columns -->
+        <div id="footerTotals" style="display: flex ; color: black; padding: 5px 10px; font-size: 14px;">
+            <div style="flex: 3;">&nbsp;</div> <!-- Aligns with Dr/Cr and Account Head columns -->
             <!-- TextBox for Debit -->
             <div style="flex: 1; text-align: center;">
                 @(Html.DevExtreme().TextBox()
@@ -619,9 +414,9 @@
         </div>
 
 
-        <div class="container" style="margin-top:0px;margin-bottom:0px;padding-top:15px;background-color: white;padding-bottom:30px">
+        <div class="container" style="margin-top:0px;margin-bottom:0px;padding:15px;">
             <div class="row g-3">
-                <div class="col-md-3 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
+                <div class="col-md-3 backgroundcolor">
                     <div class="form-group">
                         <label for="Cheque No/Reference No">Cheque No/Reference No:</label>
                         @(
@@ -642,7 +437,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-8 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
+                <div class="col-md-8 backgroundcolor">
                     <div class="form-group">
                         <label for="VoucherNarration">Voucher Narration:</label>
                         @(
@@ -712,7 +507,7 @@
                 </div>
 
                 <div class="col-md-1 backgroundcolor">
-                    <div class="form-group" style="padding-top:50px;padding-left:7px;">
+                <div class="form-group" style="padding-top: 20px;">
                         <!-- Attach Button -->
                         @(Html.DevExtreme().Button()
                             .ID("btnAttachment")
@@ -854,7 +649,7 @@
                     </div>
                     <div class="clear"></div>
 
-                    <div class="dx-fieldset horizontal-container" style="margin-top:15px;margin-bottom:0px;background-color:white;">
+                    <div class="dx-fieldset horizontal-container">
                         <div class="form-group" style="padding-left:20px">
                             <div class="button-alignment-down">
                                 <label for="Reference">Reference:</label>
@@ -936,7 +731,7 @@
                                 )
                         </div>
                     </div>
-                    <div class="dx-fieldset horizontal-container" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px;background-color:white;">
+                    <div class="dx-fieldset horizontal-container">
 
                         <div class="form-group" style="padding-left:145px">
                             <divstyle ="display:flex;>
