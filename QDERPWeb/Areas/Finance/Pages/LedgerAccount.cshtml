@@ -3845,6 +3845,9 @@
                         //alert(response.message);
                         DevExpress.ui.notify(response.message, "success", 3000);
                         //  window.location.reload(); // This is for only particular page reload
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
 
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);

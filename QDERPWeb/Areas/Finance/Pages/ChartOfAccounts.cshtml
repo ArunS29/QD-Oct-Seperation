@@ -150,26 +150,26 @@
 </div>
 
 <script type="text/javascript">
-function openPopup(accountId) {
-    $("#popupContainer").dxPopup({
-        contentTemplate: function(contentElement) {
-            $("<iframe>")
-                .attr("src", "/Finance/LedgerAccount?AccountId=" + accountId)
-                .css({ width: "100%", height: "500px", border: "none" })
-                .appendTo(contentElement);
-        },
-        width: 1200,
-        height: 600,
-        title: "Ledger Account Details",
-        showCloseButton: true,  // ✅ Displays the (X) close button
-        visible: true,
-        closeOnOutsideClick: true,  // ✅ Allows closing when clicking outside the popup
-        onHiding: function() { 
-            $("#popupContainer").dxPopup("instance").dispose(); // ✅ Cleanup
-        }
-    }).dxPopup("instance").show();
-}
-
+    function openPopup(accountId) {
+        $("#popupContainer").dxPopup({
+            contentTemplate: function (contentElement) {
+                $("<iframe>")
+                    .attr("src", "/Finance/LedgerAccount?AccountId=" + accountId)
+                    .css({ width: "100%", height: "600px", border: "none" })
+                    .appendTo(contentElement);
+            },
+            width: 1200,
+            height: 600,
+            title: "Ledger Account Details",
+            showCloseButton: true,  // ✅ Displays the (X) close button
+            visible: true,
+            closeOnOutsideClick: true,  // ✅ Allows closing when clicking outside the popup
+            onHiding: function () {
+                $("#popupContainer").dxPopup("instance").dispose(); // ✅ Cleanup popup instance
+                location.reload();  // ✅ Reloads the page after closing popup
+            }
+        }).dxPopup("instance").show();
+    }
 
 
 
