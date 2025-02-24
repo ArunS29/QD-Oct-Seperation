@@ -547,6 +547,7 @@
 							{
 								columns.Add().DataField("AccountId");
 								columns.Add().DataField("AccountHead").Width(400);
+							    columns.Add().DataField("AccountHeadArabic");
 								columns.Add().DataField("MasterGroup");
 								columns.Add().DataField("AccountGroup");
 								columns.Add().DataField("ReferenceNo");
@@ -1312,28 +1313,32 @@ function updateBankReconciliationState(accheadname) {
 
 		console.log("Formatted VoucherNo:", formattedVoucher); // Debugging
 
-		// Define routes based on prefixes
+		// Define base URLs (Fix: Avoid embedding formattedVoucher inside object definition)
 		const voucherRoutes = {
-			"BP-": "/finance/VoucherBankPayment",  // Bank Payment
-			"CP-": "/finance/VoucherCashPayment",  // Cash Payment
-			"BR-": "/finance/VoucherEntryReceipts", // Bank Receipt
-			"CR-": "/finance/VoucherEntryCashReceipts", // Cash Receipt
-			"SAL-": "/finance/SalesVoucher", // Sales
-			"PUR-": "/finance/PurchaseVoucher", // Purchase
-			
-			"JV-": "/finance/Voucherjournal" // Journal Voucher
+			"BP-": "/finance/VoucherBankPayment",
+			"CP-": "/finance/VoucherCashPayment",
+			"BR-": "/finance/VoucherEntryReceipts",
+			"CR-": "/finance/VoucherEntryCashReceipts",
+			"SAL-": "/finance/SalesVoucher",
+			"PUR-": "http://localhost:60232/finance/PurchaseVoucher",
+			"JV-": "http://localhost:60232/Finance/Voucherjournal"
 		};
 
 		// Match by prefix
 		for (let prefix in voucherRoutes) {
 			if (formattedVoucher.startsWith(prefix)) {
-				window.location.href = voucherRoutes[prefix];
+				let baseUrl = voucherRoutes[prefix];
+				let targetUrl = `${baseUrl}?argsledno=${encodeURIComponent(formattedVoucher)}`; // Proper encoding
+
+				console.log("Navigating to:", targetUrl); // Debugging
+				window.location.href = targetUrl; // Navigate
 				return;
 			}
 		}
 
-		alert("No matching voucher page found: " + formattedVoucher);
+		
 	}
+
 
 
 

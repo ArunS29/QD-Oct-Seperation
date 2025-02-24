@@ -827,19 +827,32 @@
 
 
                 $(document).ready(function () {
-                    $.ajax({
-                        url: '@Url.Action("GetNewVoucherNo", "VoucherJournal")',
-                        type: 'GET',
-                        success: function (data) {
-                            const voucherNoField = $("#VoucherNo").dxTextBox("instance");
-                            voucherNoField.option("value", data);
-                            updateTemporaryNo({ value: data });
-                        },
-                        error: function () {
-                            alert("Error generating voucher number.");
-                        }
-                    });
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const argsledno = urlParams.get("argsledno"); // Get the argsledno query parameter
+
+                    console.log("Formatted Voucher in ready block:", argsledno); // Debugging log
+
+                    if (argsledno) { // If argsledno is present in the URL
+                        const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                        voucherNoField.option("value", argsledno);
+                        updateTemporaryNo({ value: argsledno });
+                    } else { // If no argsledno, generate a new voucher number
+                        $.ajax({
+                            url: '@Url.Action("GetNewVoucherNo", "VoucherJournal")',
+                            type: 'GET',
+                            success: function (data) {
+                                const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                                voucherNoField.option("value", data);
+                                updateTemporaryNo({ value: data });
+                            },
+                            error: function () {
+                                alert("Error generating voucher number.");
+                            }
+                        });
+                    }
                 });
+
+
                 $(function () {
                     const dataGrid = $("#dataGrid").dxDataGrid("instance");
                     const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
