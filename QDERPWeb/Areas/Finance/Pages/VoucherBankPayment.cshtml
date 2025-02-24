@@ -875,11 +875,11 @@
                             <div class="form-group">
                                 @(
                                     Html.DevExtreme().SelectBox()
-                                    .Label(new JS("formatMessage('Cash Payment')"))
+                                    .Label(new JS("formatMessage('Bank Payment')"))
                                     .LabelMode(EditorLabelMode.Outside)
                                     .ID("VoucherType")
-                                    .DataSource(new[] { new JS("formatMessage('Cash Payment')") })
-                                    .Value("Cash Payment")
+                                    .DataSource(new[] { new JS("formatMessage('Bank Payment')") })
+                                    .Value("Bank Payment")
                                     .Width(520)
                                     .Disabled(true)
 
