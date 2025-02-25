@@ -23,11 +23,16 @@
 		font-weight: bold;
 	}
 
-	#dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+	/* Ensure text in grid headers is always centered */
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		white-space: normal !important;
 		text-align: center !important;
-		background-color: aliceblue;
 	}
 
+	/* Ensure column headers text aligns to center */
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+		text-align: center !important;
+	}
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -82,6 +87,18 @@
 			background-color: #0056b3;
 		}
 
+	/* Text Editor Styling */
+	.dx-texteditor {
+		background-color: #909ead00 !important; /* Light background */
+		border: 1px solid #d6e4f0 !important; /* Soft border */
+		border-radius: 4px !important; /* Smaller rounded corners */
+
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+		font-size: 14px !important; /* Slightly smaller font */
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important; /* Fixed height */
+	}
+
 		/* Hover and Focus States */
 		.dx-texteditor:hover,
 		.dx-texteditor.dx-state-hover,
@@ -105,13 +122,23 @@
 		background-color: #909ead00;
 	}
 
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none; /* Prevents hover and click effects */
+	}
 </style>
 
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 	<div class="title">
 		<div class="header-container">
-		<div id="AccountingLedger" class="no-border-title"></div>
+		<div id="AccountingLedger" class="no-border-input"></div>
 		</div>
 	</div>
 <div class="Head">
@@ -145,7 +172,7 @@
 						.StylingMode(ButtonStylingMode.Outlined)
 						.Icon("edit")
 						.Width(180)
-						.OnClick("function() { editRow(); }")
+						@* .OnClick("function() { editRow(); }") *@
 						)
 		</div>
 	</div>
@@ -352,9 +379,7 @@
 		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
 					.ID("dataGrid")
 					.RemoteOperations(false)
-					.ColumnAutoWidth(true) // Ensures columns adjust to content
-					.WordWrapEnabled(true)
-					.ColumnChooser(columnChooser => columnChooser.Enabled(false)) // Disable column chooser initially
+					.DataSource(new JS("[]"))
 					.Columns(columns =>
 					{
 						columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Alignment(HorizontalAlignment.Center)
@@ -454,38 +479,50 @@
 				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
 				.GroupPanel(groupPanel => groupPanel.Visible(true)) // Display group panel
 				.ShowBorders(false)
-			@* 	.ColumnChooser(columnChooser => columnChooser
-				.Enabled(false) // Enable the column chooser for hiding and showing columns
-				.Title("Column Chooser") // Optional: Set a custom title
-				.Mode (GridColumnChooserMode.Select)
-				)*@
+				@* 	.ColumnChooser(columnChooser => columnChooser
+		.Enabled(false) // Enable the column chooser for hiding and showing columns
+		.Title("Column Chooser") // Optional: Set a custom title
+		.Mode (GridColumnChooserMode.Select)
+		)*@
 				.Width("100%")
 				.Summary(summary =>
 				{
 					summary.TotalItems(totalItems =>
 					{
-						totalItems.Add().Column("VoucherNo").SummaryType(SummaryType.Count)
-					.DisplayFormat("Count: {0}");
+						totalItems.Add()
+					.Column("VoucherNo") // Count of VoucherNo
+					.SummaryType(SummaryType.Count)
+					.DisplayFormat(new JS("formatMessage('Count: {0}')")); // Customize the display format
 
-						totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
-					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+						totalItems.Add()
+					.Column("DrAmount") // Sum of DrAmount
+					.SummaryType(SummaryType.Sum)
+					.CustomizeText(
+					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-						totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
-					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+					);
+
+						totalItems.Add()
+					.Column("CrAmount") // Sum of CrAmount
+					.SummaryType(SummaryType.Sum)
+					.CustomizeText(
+					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+					);      // Customize the display format to currency
 					});
 				})
+				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+				.ShowBorders(true)
 				.StateStoring(stateStoring =>
 				{
 					stateStoring
-					.Enabled(true)
-					.Type(StateStoringType.LocalStorage)
-					.StorageKey("gridContainerState");
+					.Enabled(true)                       // Enable state storing
+					.Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
+					.StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
 				})
 				.OnInitialized("function(e) { loadGridState(); }")
-				.OnContentReady("function(e) { handleGridContentReady(e); }")
-				.OnOptionChanged("function(e) { if (e.fullName.startsWith('columns') && e.fullName.includes('sortOrder')) { calculateDynamicBalance(); } }")
 				)
-
 
 
 
@@ -539,6 +576,7 @@
 }
 
 <script>
+	let selectedVoucherNo = null; 
 		$(function () {
 										$("#AccountingLedger").dxTextBox({
 												text:formatMessage("Accounting Ledger"),
@@ -1329,7 +1367,40 @@ function updateBankReconciliationState(accheadname) {
 		
 	}
 
+	// Function to handle right-click event on the grid
+	$(document).on("contextmenu", ".dx-datagrid-rowsview .dx-row", function (e) {
+		e.preventDefault(); // Prevent default right-click menu
 
+		let dataGrid = $("#dataGrid").dxDataGrid("instance"); // Replace with your grid ID
+		let rowIndex = $(this).index();
+		let rowData = dataGrid.getVisibleRows()[rowIndex].data;
+
+		if (rowData && rowData.VoucherNo) {
+			selectedVoucherNo = rowData.VoucherNo; // Store the selected voucher number
+			console.log("Selected VoucherNo:", selectedVoucherNo);
+		}
+
+		// Show context menu at mouse position
+		$("#contextMenu").css({
+			display: "block",
+			left: e.pageX,
+			top: e.pageY
+		});
+	});
+
+	// Hide context menu when clicking elsewhere
+	$(document).on("click", function () {
+		$("#contextMenu").hide();
+	});
+
+	// Assign onclick event to btnEditVoucher
+	$("#btnEditVoucher").on("click", function () {
+		if (selectedVoucherNo) {
+			navigateToVoucherPage(selectedVoucherNo); // Pass the stored voucher number
+		} else {
+			alert("No voucher selected.");
+		}
+	});
 
 
 </script>

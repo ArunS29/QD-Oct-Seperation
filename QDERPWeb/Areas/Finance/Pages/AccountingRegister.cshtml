@@ -653,59 +653,42 @@
 					 }
 				 });
 			 }
-		 async function navigateToVoucherPage(voucherNo) {
-				 console.log("Original VoucherNo:", voucherNo); // Debugging
+		function navigateToVoucherPage(voucherNo) {
+		console.log("Original VoucherNo:", voucherNo); // Debugging
 
-				 if (!voucherNo) {
-					 alert("Invalid voucher number.");
-					 return;
-				 }
+		if (!voucherNo) {
+			alert("Invalid voucher number.");
+			return;
+		}
 
-				 let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
-				 console.log("Formatted VoucherNo:", formattedVoucher); // Debugging
+		let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
 
-			 try {
-				 // Fetch the voucher type from the API
-				 let response = await fetch(`/api/getVoucherType?voucherNo=${formattedVoucher}`);
-				 if (!response.ok) {
-					 throw new Error("Failed to fetch voucher type");
-				 }
+		console.log("Formatted VoucherNo:", formattedVoucher); // Debugging
 
-				 let { voucherType } = await response.json();
-				 console.log("Fetched Voucher Type:", voucherType); // Debugging
+		// Define base URLs (Fix: Avoid embedding formattedVoucher inside object definition)
+		const voucherRoutes = {
+			"BP-": "/development/finance/VoucherBankPayment",
+			"CP-": "/development/finance/VoucherCashPayment",
+			"BR-": "/development/finance/VoucherEntryReceipts",
+			"CR-": "/development/finance/VoucherEntryCashReceipts",
+			"SAL-": "/development/finance/SalesVoucher",
+			"PUR-": "http://localhost:60232/development/finance/PurchaseVoucher",
+			"JV-": "http://localhost:60232/development/Finance/Voucherjournal"
+		};
 
-				 if (!voucherType) {
-					 alert("Voucher type not found.");
-					 return;
-				 }
+		// Match by prefix
+		for (let prefix in voucherRoutes) {
+			if (formattedVoucher.startsWith(prefix)) {
+				let baseUrl = voucherRoutes[prefix];
+				let targetUrl = `${baseUrl}?argsledno=${encodeURIComponent(formattedVoucher)}`; // Proper encoding
 
-				 // Define routes based on voucherType
-				 const voucherRoutes = {
-                "BankPayment": "/development/finance/VoucherBankPayment",
-                "CashPayment": "/development/finance/VoucherCashPayment",
-                "BankReceipt": "/development/finance/VoucherEntryReceipts",
-                "CashReceipt": "/development/finance/VoucherEntryCashReceipts",
-                "Sales": "/development/finance/SalesVoucher",
-                "Purchase": "http://localhost:60232/development/finance/PurchaseVoucher",
-                "Journal": "http://localhost:60232/development/Finance/Voucherjournal"
-				 };
+				console.log("Navigating to:", targetUrl); // Debugging
+				window.location.href = targetUrl; // Navigate
+				return;
+			}
+		}
 
-				 // Match by voucherType
-				 let matchedUrl = voucherRoutes[voucherType];
-				 if (!matchedUrl) {
-					 alert("No matching form found for this voucher type.");
-						 return;
-					 }
-
-				 let targetUrl = `${matchedUrl}?argsledno=${encodeURIComponent(formattedVoucher)}`;
-				 console.log("Navigating to:", targetUrl); // Debugging
-
-				 window.location.href = targetUrl; // Navigate to the form
-			 } catch (error) {
-				 console.error("Error fetching voucher type:", error);
-				 alert("Error fetching voucher details.");
-			 }
-		 }
-
+		
+	}
 
 	</script>
