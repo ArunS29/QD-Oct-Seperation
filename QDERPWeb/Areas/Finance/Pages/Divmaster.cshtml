@@ -12,7 +12,7 @@
 <style type="text/css">
     /* Card container styling */
     .card-container {
-        background-color:white /* Set background color for the card */
+        background-color: white /* Set background color for the card */
         padding: 20px; /* Add some padding inside the card */
         border-radius: 8px; /* Rounded corners */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
@@ -79,70 +79,84 @@
         .action-buttons-container .dx-button {
             margin-right: 10px; /* Space between buttons */
         }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+
 </style>
 
+<h2>Branch Master</h2>
 
 <div class="content-container-top">
     <div class="container">
-        <h2>Branch Master</h2>
 
         <!-- Card Container for the form -->
-        <div class="card-container">
-            <div class="row g-6">
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Branch & Add to the Existing List</label>
-                        @(
-                            Html.DevExtreme().TextBox()
-                            .ID("txtbranchName")
-                            .Value(null)
-                            .ValidationRules(rules =>
-                            {
-                                rules.AddRequired()
-                                .Message("Branch Name is required");
-                            })
-                            )
-                            
-                    </div>
-                </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Branch & Add to the Existing List</label>
+                @(
+                    Html.DevExtreme().TextBox()
+                    .ID("txtbranchName")
+                    .Value(null)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message("Branch Name is required");
+                    })
+                    )
+
             </div>
-
-            <div class="row g-6">
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label for="SalesInvoiceNo" class="button-alignment-down">Branch In Arabic</label>
-                        @(
-                            Html.DevExtreme().TextBox()
-                            .ID("txtarabName")
-                            .Value(null)
-                            )
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @(Html.DevExtreme().Button()
-                            .ID("btnadd")
-                            .Text("ADD")
-                            .Height(40)
-                            .Width(178)
-                            .Icon("plus")
-                            .OnClick("function() { adddivmaster(); }")
-                            .ElementAttr(new { @class = "dx-button-add" }) 
-                                    )
-                    </div>
-
-
-                </div>
-            </div>
-            <div class="clear"></div>
-            <br />
-            <div id="gridContainer"></div>
-        </div> <!-- End of card-container -->
+        </div>
     </div>
-   
-</div>
+
+    <div class="row g-6">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="SalesInvoiceNo" class="button-alignment-down">Branch In Arabic</label>
+                @(
+                    Html.DevExtreme().TextBox()
+                    .ID("txtarabName")
+                    .Value(null)
+                    )
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @(Html.DevExtreme().Button()
+                    .ID("btnadd")
+                    .Text("ADD")
+                    .Height(40)
+                    .Width(178)
+                    .Icon("plus")
+                    .OnClick("function() { adddivmaster(); }")
+                    .ElementAttr(new { @class = "dx-button-add" })
+                    )
+            </div>
 
 
+        </div>
+    </div>
+    <div id="gridContainer"></div>
+</div> <!-- End of card-container -->
 
 <script type="text/javascript">
     $(function () {
@@ -185,7 +199,7 @@
                             var errorMessage = xhr.responseJSON?.message || "An error occurred.";
 
                             if (xhr.status === 400 && errorMessage.includes("Branch Name already exists")) {
-                               
+
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Duplicate Branch Name',
@@ -196,7 +210,7 @@
                                     var dataGrid = $("#gridContainer").dxDataGrid("instance");
                                     dataGrid.cancelEditData();  // Cancel the current edit
                                 });
-                              
+
 
                             } else {
                                 // Handle other errors

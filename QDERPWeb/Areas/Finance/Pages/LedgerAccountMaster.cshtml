@@ -188,13 +188,36 @@
         pointer-events: none; /* Prevents hover and click effects */
     }
 
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+
 </style>
 
 
+    <div id="AccountingLedgerGroups" class="no-border-input"></div>
 
 <div class="cards-container">
     @*    <h2>@ViewData["Title"]</h2> *@
-    <div id="AccountingLedgerGroups" class="no-border-input"></div>
     <!-- Card 1: General Account Group Information -->
     <div class="card">
         <div class="dx-fieldset vertical-container">

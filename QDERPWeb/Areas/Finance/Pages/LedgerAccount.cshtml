@@ -74,7 +74,7 @@
     }
 
     .button-alignment-down {
-        margin-top: 0px !important;
+        margin-top: 23px !important;
     }
 
     /*     .dx-editor-outlined .dx-label span {
@@ -159,7 +159,29 @@
         pointer-events: none; /* Prevents hover and click effects */
     }
 
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
 </style>
+<link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount" type="hidden" />
 <div id="Ledgeraccount" class="no-border-input"></div>
@@ -218,7 +240,7 @@
                     @(
                         Html.DevExtreme().Button()
                         .ID("convertToArabic1")
-                        .Width(39)
+                        .Width(75)
                         .Height(33)
                         .Icon("fas fa-language") // Ensure Font Awesome class is correct
                         .ElementAttr(new { @class = "input-button" })
@@ -760,7 +782,7 @@
                             <td style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnConvertAccountName")
-                                    .Width(40)
+                                    .Width(75)
                                     .Height(32)
                                     .Icon("fas fa-language") // Add an icon
                                     .ElementAttr(new { @class = "convert-button" })
@@ -797,7 +819,7 @@
                             <td style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnConvertBankName")
-                                    .Width(40)
+                                    .Width(75)
                                     .Height(32)
                                     .Icon("fas fa-language")
                                     .ElementAttr(new { @class = "convert-button" })
@@ -833,7 +855,7 @@
                             <td style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnConvertBankBranch")
-                                    .Width(40)
+                                    .Width(75)
                                     .Height(32)
                                     .Icon("fas fa-language")
                                     .ElementAttr(new { @class = "convert-button" })
@@ -906,7 +928,7 @@
                                 <div style="display: flex; align-items: center;">
                                     @(Html.DevExtreme().Button()
                                         .ID("dwnarrow")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-chevron-down")
                                         .OnClick("onDownArrowClick")
 
@@ -932,7 +954,7 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientBillingAr")
                                         // .Text("Action")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-language")
                                         .OnClick("onClientBillingArClick") // Add your JavaScript handler here
                                         )
@@ -1048,7 +1070,7 @@
                                 <div style="display: flex; align-items: center;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientAddressAr")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-language")
                                         .OnClick("onClientAddressArClick")
                                         )
@@ -1085,7 +1107,7 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientAdditionalAddressAr")
                                         .Icon("fas fa-language")
-                                        .Width("40")
+                                        .Width("75")
                                         .OnClick("onClientAdditionalAddressArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
@@ -1138,7 +1160,7 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientCityAr")
                                         .Icon("fas fa-language")
-                                        .Width("40")
+                                        .Width("75")
                                         .OnClick("onClientCityArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
@@ -1186,7 +1208,7 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnStateAr")
                                         .Icon("fas fa-language")
-                                        .Width("40")
+                                        .Width("75")
                                         .OnClick("onClientProvinceStateArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
@@ -1238,7 +1260,7 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnDistrictAr")
                                         .Icon("fas fa-language")
-                                        .Width("40")
+                                        .Width("75")
                                         .OnClick("onDistrictArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
@@ -1269,7 +1291,7 @@
                                 <div style="display: flex; align-items: center;">
                                     @(Html.DevExtreme().Button()
                                         .ID("dwnarrowsup")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-chevron-down")
                                         .OnClick("onDownArrowSupClick")
 
@@ -1295,7 +1317,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupBillingAr")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupplierNameArabicClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1364,7 +1386,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupAddress1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupAddressClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1397,7 +1419,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupAdditionalAddress1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupAddressAdditionalClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1448,7 +1470,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupCity1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupCityClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1494,7 +1516,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupState1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupStateClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1545,7 +1567,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupDistrict1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupDistrictClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
@@ -1622,7 +1644,7 @@
                                 <div style="display: flex; align-items: center;">
                                     @(Html.DevExtreme().Button()
                                         .ID("dwnarrowbill")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-chevron-down")
                                         .OnClick("onDownArrowBillClick")
 
@@ -1810,10 +1832,10 @@
                                     .InputAttr("aria-label", "txtBillingContactPersonTitle")
                                     )
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <div id="BillingPayment" class="no-border-input"></div>
                             </td>
-                            <td>
+                            <td colspan="2">
                                 @(Html.DevExtreme().DropDownBox()
                                     .Label(new JS("formatMessage('Bank Account for Receiving Payment')"))
                                     .LabelMode(EditorLabelMode.Outside)
@@ -1881,7 +1903,7 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnArabObsSupAddress")
                                         // .Text("Action")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-language")
                                         .OnClick("onArabObsSupAddressClick")
                                         )
@@ -1914,7 +1936,7 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnObsSupRegNoArabic")
                                         //     .Text("Action")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-language")
                                         .OnClick("onObsSupRegNoArabicClick")
                                         )

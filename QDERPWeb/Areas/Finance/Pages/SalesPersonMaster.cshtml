@@ -60,15 +60,34 @@
         color: black;
         pointer-events: none; /* Prevents hover and click effects */
     }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
 </style>
 
-<div class="content-container-top">
     <div id="SalesPersonMaster" class="no-border-input"></div>
+<div class="content-container-top">
     <div class="container">
-        <!-- Card Container for the form -->
-        <div class="card-container">
-            <div class="row g-6">
-                <div class="col-md-8">
+        <div class="col-md-8">
                     <div class="form-group">
                         @(
                             Html.DevExtreme().TextBox()
@@ -217,8 +236,6 @@
             <br />
             <div id="gridContainer"></div>
         </div> <!-- End of card-container -->
-    </div>
-</div>
 
 <script type="text/javascript">
         $(function () {

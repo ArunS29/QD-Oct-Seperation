@@ -271,7 +271,7 @@
 		<!-- DevExtreme Popup -->
 		@(Html.DevExtreme().Popup()
 				.ID("ledgerAccountPopup")
-				.Width("93%")
+				.Width("80%")
 				.Height("85%")
 				.Title("Add Ledger Account")
 				.ShowTitle(true)
@@ -293,7 +293,7 @@
 				)
 		@(Html.DevExtreme().Popup()
 				.ID("ledgerEditAccountPopup")
-				.Width("93%")
+				.Width("80%")
 				.Height("85%")
 				.Title(new JS("formatMessage('Edit Ledger Account')"))
 				.ShowTitle(true)
@@ -450,27 +450,25 @@
                    "let balanceType = balance >= 0 ? 'Dr' : 'Cr'; "+
                  " return `${formattedBalance} ${balanceType}`;"+
 			"}").Visible(true);
+						columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('ReferenceNote')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('BillDate')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('BillNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherModifiedOn).Caption(new JS("formatMessage('VoucherModifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('VoucherModifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('SysRemarks')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherType).Caption(new JS("formatMessage('VoucherType')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('MasterGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('EntryNarration')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('DrCr')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('AccountHead')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
-						columns.AddFor(m => m.BillRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(true);
-
-						columns.AddFor(m => m.ReferenceNote).Caption("ReferenceNote").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHeadArabic).Caption("AccountHeadArabic").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillPaidTo).Caption("BillPaidTo").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillDate).Caption("BillDate").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillNo).Caption("BillNo").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherModifiedOn).Caption("VoucherModifiedOn").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherModifiedBy).Caption("VoucherModifiedBy").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.SysRemarks).Caption("SysRemarks").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherType).Caption("VoucherType").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.MasterGroup).Caption("MasterGroup").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountGroup).Caption("AccountGroup").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.EntryNarration).Caption("EntryNarration").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHead).Caption("AccountHead").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherEntryNo).Caption("VoucherEntryNo").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherApprovedOn).Caption("VoucherApprovedOn").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherVerifiedOn).Caption("VoucherVerifiedOn").Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherVerifiedBy).Caption("VoucherVerifiedBy").Alignment(HorizontalAlignment.Left).Visible(false);
 					})
 				.OnCellClick("function(e) {handleCellClick(e);}")
 				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
