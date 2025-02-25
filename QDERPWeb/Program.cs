@@ -69,19 +69,19 @@ System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolTyp
 
 #endregion
 
-// **2. Serilog Configuration (Add this part right after the service configuration)**
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)  // Correct usage: Read settings from appsettings.json
-    .WriteTo.Console()  // Optional: log to console
-    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)  // Log to a file
-    .WriteTo.ApplicationInsights(
-        builder.Configuration["ApplicationInsights:InstrumentationKey"],
-        TelemetryConverter.Traces)  // Log to Azure App Insights
-    .CreateLogger();
+//// **2. Serilog Configuration (Add this part right after the service configuration)**
+//Log.Logger = new LoggerConfiguration()
+//    .ReadFrom.Configuration(builder.Configuration)  // Correct usage: Read settings from appsettings.json
+//    .WriteTo.Console()  // Optional: log to console
+//    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)  // Log to a file
+//    .WriteTo.ApplicationInsights(
+//        builder.Configuration["ApplicationInsights:InstrumentationKey"],
+//        TelemetryConverter.Traces)  // Log to Azure App Insights
+//    .CreateLogger();
 
-// Use Serilog for ASP.NET Core logging
-builder.Logging.ClearProviders();  // Remove other loggers
-builder.Logging.AddSerilog();  // Add Serilog to the logging pipeline
+//// Use Serilog for ASP.NET Core logging
+//builder.Logging.ClearProviders();  // Remove other loggers
+//builder.Logging.AddSerilog();  // Add Serilog to the logging pipeline
 
 var app = builder.Build();
 
