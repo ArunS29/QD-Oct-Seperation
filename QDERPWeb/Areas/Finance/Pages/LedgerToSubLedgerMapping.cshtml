@@ -70,11 +70,22 @@
         width: 250px; /* Adjust the width as needed */
     }
 
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+
 </style>
 <div class="card">
-    <div class="card-header">
-        Account Ledger to Salary Payable Mapping
-    </div>
+    <div id="AccountLedgertoSalaryPayableMapping" class="no-border-input"></div>
+
+    
     <div class="card-body">
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
 
@@ -169,6 +180,13 @@
 
 
     <script>
+        $(function () {
+                                $("#AccountLedgertoSalaryPayableMapping").dxTextBox({
+                                            text:formatMessage("Account Ledger to Salary Payable Mapping"),
+                                            readOnly: true
+
+                            });
+                    });
                 $(document).ready(function () {
                 // Function to get URL parameters
                 function getQueryParam(name) {

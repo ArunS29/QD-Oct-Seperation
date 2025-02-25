@@ -67,20 +67,30 @@
         .action-buttons-container .dx-button {
             margin-right: 10px;
         }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
 </style>
 
 <div class="content-container-top">
+    <div id="LedgerSubGroupMaster" class="no-border-input"></div>
     <div class="container">
-        <h2>Ledger Sub Group Master</h2>
-
         <div class="card-container">
             <div class="row g-6">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="SubGroupName" class="button-alignment-down">Enter New Sub Group & Add to the Existing List</label>
                         @(
                             Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Enter New Sub Group & Add to the Existing List')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("txtSubGroupName")
                             .Value(null)
                             )
@@ -91,10 +101,10 @@
             <div class="row g-6">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="SubGroupNameAr" class="button-alignment-down">Sub Group Name (Arabic)</label>
                         @(
                             Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Sub Group Name (Arabic)')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("txtSubGroupNameAr")
                             .Value(null)
                             )
@@ -122,6 +132,13 @@
 </div>
 
 <script type="text/javascript">
+    $(function () {
+                                $("#LedgerSubGroupMaster").dxTextBox({
+                                            text:formatMessage("Ledger Sub Group Master"),
+                                            readOnly: true
+
+                            });
+                    });
     $(function () {
         var updatedRows = []; // To store the updated rows
 

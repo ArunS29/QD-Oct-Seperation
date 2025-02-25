@@ -49,35 +49,47 @@
         align-items: center; /* Center the button vertically */
         margin-top: 20px;
     }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
 </style>
 
 <div class="content-container-top">
+    <div id="SalesPersonMaster" class="no-border-input"></div>
     <div class="container">
-        <h2>Sales Person Master</h2>
-
         <!-- Card Container for the form -->
         <div class="card-container">
             <div class="row g-6">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="SalesPersonName" class="button-alignment-down">Type a new SalesPerson/ Project Manager & Add to the Existing List</label>
                         @(
                             Html.DevExtreme().TextBox()
                             .ID("txtSalesPersonName")
+                            .Label(new JS("formatMessage('Type a new SalesPerson/ Project Manager & Add to the Existing List')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .Value(null)
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired()
-                                .Message("Sales Person Name is required");
+                                .Message(new JS("formatMessage('Sales Person Name is required')"));
                             })
                             )
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="UserCode" class="button-alignment-down">User Code</label>
                         @(
                             Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('User Code')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("DDlUserId") // Set the ID for the SelectBox
                             .DataSource(d => d.WebApi()
                             .Controller("Master")
@@ -88,9 +100,9 @@
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired()
-                                .Message("User Code is required");
+                                .Message(new JS("formatMessage('User Code is required')"));
                             })
-                            .Placeholder("Please Select UserCode")
+                            .Placeholder(new JS("formatMessage('Please Select UserCode')"))
                             .ShowClearButton(true)
                             .AcceptCustomValue(true)
                             .OpenOnFieldClick(true)
@@ -145,9 +157,10 @@
             <div class="row g-6">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="EmailAddress" class="button-alignment-down">Email Address</label>
                         @(
                             Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Email Address')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("txtEmailAddress")
                             .OnChange("validateEmail")
                             .Value(null)
@@ -161,9 +174,10 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="SalesPersonContactNo" class="button-alignment-down">Contact Number</label>
                         @(
                             Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Contact Number')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("txtSalesPersonContactNo")
                             //.OnChange("validateContactNumber")
                             .Value(null)
@@ -174,9 +188,10 @@
                 <!-- Add SalesPerson Code input field -->
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="SalesPersonCode" class="button-alignment-down">SalesPerson/ Project Manager Code</label>
                         @(
                             Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('SalesPerson/ Project Manager Code')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("txtSalesPersonCode")
                             .Value(null)
                             )
@@ -206,6 +221,13 @@
 </div>
 
 <script type="text/javascript">
+        $(function () {
+                                        $("#SalesPersonMaster").dxTextBox({
+                                                    text:formatMessage("Sales Person Master"),
+                                                readOnly: true
+
+                                });
+                        });
  
     $(function () {
         var updatedRows = []; // To store the updated rows

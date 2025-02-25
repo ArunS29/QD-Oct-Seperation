@@ -2,14 +2,16 @@
 using QDERPWeb.Models;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 using System.Globalization;
+using System.Threading.Tasks;
+using System.Linq;
+using System;
+using System.Collections.Generic;
+
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
-    //[ApiController]
     public class AccountingRegisterController : Controller
     {
         private ERPMasterWtDataContext _context;
@@ -20,21 +22,29 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetVoucherTypes(DataSourceLoadOptions loadOptions)
         {
-            var voucherTypelists = _context.Tbl201VoucherTypes.Select(i => new
+            try
             {
-                i.VoucherTypeId,
-                i.VoucherType,
-                i.VoucherTypeAr
-            });
+                var voucherTypelists = _context.Tbl201VoucherTypes.Select(i => new
+                {
+                    i.VoucherTypeId,
+                    i.VoucherType,
+                    i.VoucherTypeAr
+                });
 
-            return Json(await DataSourceLoader.LoadAsync(voucherTypelists, loadOptions));
+                return Json(await DataSourceLoader.LoadAsync(voucherTypelists, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
+
         [HttpGet]
         public async Task<ActionResult> GetVouchers(string voucherType, string frmDate, string toDate)
         {
             try
             {
-                DateTime from = new DateTime(2000, 1, 1); // Default from date
+                DateTime from = new DateTime(2000, 1, 1); 
                 DateTime to = DateTime.Now;
 
                 if (!string.IsNullOrEmpty(frmDate) && DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedFrom))
@@ -47,27 +57,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     to = parsedTo;
                 }
 
-                ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(_context);
-
-                List<QD.ERP.Web.DAL.Entities.StProAccountLedgerByVoucherTypeResult> ledgerData;
-
-                // If voucherType is null or empty, fetch all records
-                if (string.IsNullOrEmpty(voucherType))
-                {
-                    ledgerData = await _procedures.StProAccountLedgerByVoucherTypeAsync(null, from, to);
-                }
-                else
-                {
-                    ledgerData = await _procedures.StProAccountLedgerByVoucherTypeAsync(voucherType, from, to);
-                }
+                var procedures = new ERPMasterWtDataContextProcedures(_context);
+                var ledgerData = await procedures.StProAccountLedgerByVoucherTypeAsync(string.IsNullOrEmpty(voucherType) ? null : voucherType, from, to);
 
                 return Json(ledgerData);
             }
             catch (Exception ex)
             {
-                return Json(new { error = ex.Message });
+                return StatusCode(500, new { error = ex.Message });
             }
         }
-
     }
 }
