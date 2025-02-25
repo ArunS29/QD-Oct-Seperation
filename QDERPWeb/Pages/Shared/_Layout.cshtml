@@ -408,13 +408,13 @@
         }
 
         /* Styling for the avatar (User Profile Button) */
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background-color: #ccc;
-            border-radius: 50%;
-            cursor: pointer;
-        }
+        /* .avatar { */
+        /*     width: 40px; */
+        /*     height: 40px; */
+        /*     background-color: #ccc; */
+        /*     border-radius: 50%; */
+        /*     cursor: pointer; */
+        /* } */
 
         /* Special styling for the Profile Popup */
         .profile-popup {
@@ -457,6 +457,37 @@
             background-color:#fff;
             border: 1px solid #ddd;
         }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 150px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+            .dropdown-menu a {
+                display: block;
+                padding: 10px;
+                text-decoration: none;
+                color: black;
+            }
+
+                .dropdown-menu a:hover {
+                    background-color: #f0f0f0;
+                }
+
+        .show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -483,8 +514,12 @@
         <i class="fas fa-bell img" onclick="handleBellClick()"></i> <!-- Bell icon -->
         <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
         <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->
-        <div class="avatar" onclick="handleAvatarClick()"></div> <!-- Avatar -->
-
+            <div class="dropdown">
+                <i class="fa-solid fa-user img" onclick="toggleDropdown()"></i>
+                <div id="userDropdown" class="dropdown-menu">
+                    <a href="#" onclick="logout()">Logout</a>
+                </div>
+            </div>
     </div>
         <!-- Submenu-->
         <div id="submenuContainer1" class="context-menu" style="display:none;">
@@ -1107,7 +1142,39 @@
 
         // Also update on window resize
         // window.addEventListener("resize", updateHeight);
-
+        window.onclick = function(event) {
+            if (!event.target.matches('.fa-user')) {
+                let dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    let openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        };
+        function toggleDropdown() {
+            document.getElementById("userDropdown").classList.toggle("show");
+        }
+        function logout() {
+            console.log("test--------->");
+            fetch('/api/Login/SignOut', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to login page after successful logout
+                    window.location.href = "/Login";
+                } else {
+                    alert("Logout failed. Please try again.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
     </script>
 </body>
 </html>

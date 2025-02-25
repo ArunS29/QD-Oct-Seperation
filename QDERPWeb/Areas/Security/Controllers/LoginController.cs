@@ -162,6 +162,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
         public IActionResult SignOut()
         {
             HttpContext.Response.Cookies.Delete("AuthToken");
+            HttpContext.Session.Clear();
             return Ok(new { message = "Sign-out successful.", success = true });
         }
 
