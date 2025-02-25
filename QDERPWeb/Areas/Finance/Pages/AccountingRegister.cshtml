@@ -345,21 +345,22 @@
 						columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(true);
 						columns.AddFor(m => m.VoucherType).Caption(new JS("formatMessage('Voucher Type')")).Visible(false);
 					})
-				.OnCellClick("function(e) {handleCellClick(e);}")
-				@* .HeaderFilter(filter => filter.Visible(true)) *@
-				.ColumnChooser(columnChooser => columnChooser
-				.Enabled(false) // Enable the column chooser for hiding and showing columns
-				.Title("Column Chooser") // Optional: Set a custom title
-				.Mode(GridColumnChooserMode.Select)
-				)
-				@* .Paging(p=>p.Enabled(false)) *@
+			.OnCellClick("function(e) {handleCellClick(e);}")
+				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
 				.AllowColumnReordering(true) // Enable column reordering
 				.AllowColumnResizing(true)   // Enable column resizing
-				.ColumnFixing(fixing => fixing
-				.Enabled(true) // Allow column fixing (pinning)
-				)
+				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+				.HeaderFilter(filter => filter.Visible(false))
 				.Height(550)
 				.ColumnAutoWidth(true)
+				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+				.GroupPanel(groupPanel => groupPanel.Visible(true)) // Display group panel
+				.ShowBorders(false)
+			@* 	.ColumnChooser(columnChooser => columnChooser
+				.Enabled(false) // Enable the column chooser for hiding and showing columns
+				.Title("Column Chooser") // Optional: Set a custom title
+				.Mode (GridColumnChooserMode.Select)
+				)*@
 				.Width("100%")
 				.Summary(summary =>
 				{

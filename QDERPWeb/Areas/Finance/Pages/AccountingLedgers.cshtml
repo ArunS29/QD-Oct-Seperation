@@ -201,7 +201,7 @@
 				.Width(180)
 				.OnClick("function() { showVoucher(); }")
 				)
-	</div> *@
+</div> *@
 
 
 	<!-- Input Controlls -->
@@ -384,7 +384,7 @@
 					.ColumnChooser(columnChooser => columnChooser.Enabled(false)) // Disable column chooser initially
 					.Columns(columns =>
 					{
-				columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Alignment(HorizontalAlignment.Center)
+						columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Alignment(HorizontalAlignment.Center)
 					.CellTemplate(@<text>
 			<div>
 				<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
@@ -438,21 +438,21 @@
                   "if (!gridInstance) return '0.00 Dr'; "+
                   "let dataSource = gridInstance.option('dataSource');"+ 
                   "if (!dataSource) return '0.00 Dr';"+
- 
+
                   "for (let i = 0; i <= dataSource.indexOf(rowData); i++) {"+
                      "let item = dataSource[i];"+
                      " let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);"+
                     "  balance += voucherAmount"+
                  "}"+
-             //  "let formattedBalance = balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });"+
+			//  "let formattedBalance = balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });"+
          "let formattedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });"+
- 
+
                    "let balanceType = balance >= 0 ? 'Dr' : 'Cr'; "+
                  " return `${formattedBalance} ${balanceType}`;"+
 			"}").Visible(true);
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
 						columns.AddFor(m => m.BillRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(true);
-			
+
 						columns.AddFor(m => m.ReferenceNote).Caption("ReferenceNote").Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.AccountHeadArabic).Caption("AccountHeadArabic").Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.BillPaidTo).Caption("BillPaidTo").Alignment(HorizontalAlignment.Left).Visible(false);
@@ -472,22 +472,22 @@
 						columns.AddFor(m => m.VoucherVerifiedOn).Caption("VoucherVerifiedOn").Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherVerifiedBy).Caption("VoucherVerifiedBy").Alignment(HorizontalAlignment.Left).Visible(false);
 					})
-				.OnCellClick("function(e) { handleCellClick(e); }")
-				.AllowColumnReordering(true)
-				.AllowColumnResizing(true)
-				.ColumnFixing(fixing => fixing.Enabled(true))
-				@* .HeaderFilter(filter => filter.Visible(false)) /* Removed filter on headings */ *@
+				.OnCellClick("function(e) {handleCellClick(e);}")
+				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+				.AllowColumnReordering(true) // Enable column reordering
+				.AllowColumnResizing(true)   // Enable column resizing
+				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+				.HeaderFilter(filter => filter.Visible(false))
 				.Height(550)
 				.ColumnAutoWidth(true)
-				.FilterRow(filterRow => filterRow.Visible(false)) /* Initially hidden, toggled via button */
-				.GroupPanel(groupPanel => groupPanel.Visible(true))
+				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+				.GroupPanel(groupPanel => groupPanel.Visible(true)) // Display group panel
 				.ShowBorders(false)
-				 @* .HeaderFilter(filter => filter.Visible(true)) *@
-            .ColumnChooser(columnChooser => columnChooser
-            .Enabled(false) // Enable the column chooser for hiding and showing columns
-            .Title("Column Chooser") // Optional: Set a custom title
-            .Mode(GridColumnChooserMode.Select)
-            )
+			@* 	.ColumnChooser(columnChooser => columnChooser
+				.Enabled(false) // Enable the column chooser for hiding and showing columns
+				.Title("Column Chooser") // Optional: Set a custom title
+				.Mode (GridColumnChooserMode.Select)
+				)*@
 				.Width("100%")
 				.Summary(summary =>
 				{
@@ -527,44 +527,44 @@
 		</div>
 	</div>
 
-</div>
+	</div>
 
 @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
-							.ID("ledgeraccount-datagrid")
-							.DataSource(d => d.WebApi()
-							.Controller("AccountingLedgers")
-							.LoadAction("GetLedgerAccounts")
-							.LoadMode(DataSourceLoadMode.Raw)
-							.Key("AccountId")
-							)
+								.ID("ledgeraccount-datagrid")
+								.DataSource(d => d.WebApi()
+								.Controller("AccountingLedgers")
+								.LoadAction("GetLedgerAccounts")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("AccountId")
+								)
 							.WordWrapEnabled(false)
-							.ShowBorders(true)
-							.SearchPanel(sp => sp.HighlightSearchText(true))
-							.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-							.OnSelectionChanged("dataGridSelectionChanged")
-							.OnInitialized("dataGridInitialized")
+								.ShowBorders(true)
+								.SearchPanel(sp => sp.HighlightSearchText(true))
+								.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+								.OnSelectionChanged("dataGridSelectionChanged")
+								.OnInitialized("dataGridInitialized")
 							.HeaderFilter(p => p.Visible(false))
-							.ShowBorders(true)
-							.HoverStateEnabled(true)
+								.ShowBorders(true)
+								.HoverStateEnabled(true)
 							//.Paging(p => p.PageSize(15))
-							.FilterRow(f => f.Visible(true))
-							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+								.FilterRow(f => f.Visible(true))
+								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 							.Height(400)
-							.Selection(s => s.Mode(SelectionMode.Single))
-							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-							.Columns(columns =>
-							{
-								columns.Add().DataField("AccountId");
-								columns.Add().DataField("AccountHead").Width(400);
-							    columns.Add().DataField("AccountHeadArabic");
-								columns.Add().DataField("MasterGroup");
-								columns.Add().DataField("AccountGroup");
-								columns.Add().DataField("ReferenceNo");
-								columns.Add().DataField("IsLedgerObselete");
-							})
-						)
+								.Selection(s => s.Mode(SelectionMode.Single))
+								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+								.Columns(columns =>
+								{
+									columns.Add().DataField("AccountId");
+									columns.Add().DataField("AccountHead").Width(400);
+							        columns.Add().DataField("AccountHeadArabic");
+									columns.Add().DataField("MasterGroup");
+									columns.Add().DataField("AccountGroup");
+									columns.Add().DataField("ReferenceNo");
+									columns.Add().DataField("IsLedgerObselete");
+								})
+							)
 }
 
 <script>
@@ -906,7 +906,7 @@
 		if (selectionChangedArgs.selectedRowKeys.length > 0) {
 			component.close();
 		}
-			}
+	}
 	function showLedgerAccountEditPopup() {
 		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 		var selectedValue = dropDownBox.option("value");
@@ -1072,16 +1072,16 @@
 			success: function (data) {
 				// Bind the data to the DataGrid
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-			   var dataGrid = $("#dataGrid").dxDataGrid("instance");
-      var dataSource = dataGrid.option("dataSource");
-if (dataSource && dataSource.length > 0) {
-   	var lastRow = dataSource[dataSource.length - 1]; // Get the last row
-	 VoucherAmountFormatted = lastRow.VoucherAmountFormatted; // Return the value
-			 var firstRow = dataSource[0]; // Get the first row
-		   firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
-  }
-				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
-			},
+				   var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		  var dataSource = dataGrid.option("dataSource");
+	if (dataSource && dataSource.length > 0) {
+		var lastRow = dataSource[dataSource.length - 1]; // Get the last row
+		 VoucherAmountFormatted = lastRow.VoucherAmountFormatted; // Return the value
+				 var firstRow = dataSource[0]; // Get the first row
+			   firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
+	  }
+					// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+				},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
@@ -1130,20 +1130,20 @@ if (dataSource && dataSource.length > 0) {
 			type: "danger",
 			onClick: function () {
 				$("#errorPopup").dxPopup("instance").hide();
-			}
+	}
 		});
 	});
 function updateBankReconciliationState(accheadname) {
 	let dropdown = $("#ddReports").dxDropDownButton("instance");
 	let items = dropdown.option("items");
- 
+
 	if (items && items.length > 4) { // Ensure index exists before modifying
 		if (accheadname.includes("Bank") || accheadname.includes("BANK")) {  
 	items[4] = { ...items[4], disabled: false }; // Enable item if accheadname contains "Bank"
       } else {  
 	items[4] = { ...items[4], disabled: true }; // Disable otherwise
      }
- 
+
 		dropdown.option("items", items); // Update the dropdown options
 	}
 }
