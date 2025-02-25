@@ -103,54 +103,54 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult GenerateReport([FromBody] ReportRequest request)
-        {
-            try
-            {
-                // Initialize the report
-                AccountReport report = new AccountReport();
+        //[HttpPost]
+        //public IActionResult GenerateReport([FromBody] ReportRequest request)
+        //{
+        //    try
+        //    {
+        //        // Initialize the report
+        //        AccountReport report = new AccountReport();
 
-                // Ensure parameters exist and set values
-                if (report.Parameters["AccountId"] != null)
-                    report.Parameters["AccountId"].Value = request.accountId;
-                if (report.Parameters["FromDate"] != null)
-                    report.Parameters["FromDate"].Value = request.frmDate;
-                if (report.Parameters["ToDate"] != null)
-                    report.Parameters["ToDate"].Value = request.toDate;
+        //        // Ensure parameters exist and set values
+        //        if (report.Parameters["AccountId"] != null)
+        //            report.Parameters["AccountId"].Value = request.accountId;
+        //        if (report.Parameters["FromDate"] != null)
+        //            report.Parameters["FromDate"].Value = request.frmDate;
+        //        if (report.Parameters["ToDate"] != null)
+        //            report.Parameters["ToDate"].Value = request.toDate;
 
-                // Disable request parameter validation
-                report.RequestParameters = false;
+        //        // Disable request parameter validation
+        //        report.RequestParameters = false;
 
-                // Assign data source dynamically (if applicable)
-                report.DataSource = GetVouchers(request.accountId, request.frmDate, request.toDate);
+        //        // Assign data source dynamically (if applicable)
+        //        report.DataSource = GetVouchers(request.accountId, request.frmDate, request.toDate);
 
-                // Export the report to a PDF
-                using (MemoryStream reportStream = new MemoryStream())
-                {
-                    report.ExportToPdf(reportStream);
-                    reportStream.Seek(0, SeekOrigin.Begin);
+        //        // Export the report to a PDF
+        //        using (MemoryStream reportStream = new MemoryStream())
+        //        {
+        //            report.ExportToPdf(reportStream);
+        //            reportStream.Seek(0, SeekOrigin.Begin);
 
-                    // Generate a unique file name
-                    string fileName = $"AccountReport_{Guid.NewGuid()}.pdf";
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", fileName);
+        //            // Generate a unique file name
+        //            string fileName = $"AccountReport_{Guid.NewGuid()}.pdf";
+        //            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "reports", fileName);
 
-                    // Save the report file to the server
-                    using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                    {
-                        reportStream.CopyTo(fileStream);
-                    }
+        //            // Save the report file to the server
+        //            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+        //            {
+        //                reportStream.CopyTo(fileStream);
+        //            }
 
-                    // Return the file URL to the client
-                    string fileUrl = $"/reports/{fileName}";
-                    return Ok(new { fileUrl });
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred while generating the report", error = ex.Message });
-            }
-        }
+        //            // Return the file URL to the client
+        //            string fileUrl = $"/reports/{fileName}";
+        //            return Ok(new { fileUrl });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = "An error occurred while generating the report", error = ex.Message });
+        //    }
+        //}
 
 		[HttpGet]
 		public IActionResult GetAccountId(string id)
