@@ -896,9 +896,11 @@
         "VoucherApprovedOn": "Voucher Approved On",
         "VoucherVerifiedOn": "Voucher Verified On",
         "VoucherVerifiedBy": "Voucher Verified By",
-        "Narration": "Narration"
+        "Narration": "Narration",
+        "Mobile No:":"Mobile No:"
     },
     "ar": {
+        "Mobile No:":"رقم الجوال:",
         "Column Chooser":"محدد الأعمدة",
         "ReferenceNote": "ملاحظة المرجع",
         "AccountHeadArabic": "رئيس الحساب (بالعربية)",

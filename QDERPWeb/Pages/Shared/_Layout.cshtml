@@ -1157,7 +1157,6 @@
             document.getElementById("userDropdown").classList.toggle("show");
         }
         function logout() {
-            console.log("test--------->");
             fetch('/api/Login/SignOut', {
                 method: 'GET',
                 headers: {
@@ -1168,7 +1167,7 @@
             .then(data => {
                 if (data.success) {
                     // Redirect to login page after successful logout
-                    window.location.href = "/Login";
+                    window.location.href = "/Pulse";
                 } else {
                     alert("Logout failed. Please try again.");
                 }
