@@ -29,6 +29,7 @@
         "Open Layout": "Open Layout",
         "Save Layout": "Save Layout",
         "Print": "Print",
+        "Column Chooser": "Column Chooser",
         "Search": "Search",
         "Group": "Group",
         "Receipt": "Receipt",
@@ -898,6 +899,7 @@
         "Narration": "Narration"
     },
     "ar": {
+        "Column Chooser":"محدد الأعمدة",
         "ReferenceNote": "ملاحظة المرجع",
         "AccountHeadArabic": "رئيس الحساب (بالعربية)",
         "BillPaidTo": "تم دفع الفاتورة إلى",
