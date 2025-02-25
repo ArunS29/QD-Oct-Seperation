@@ -23,16 +23,11 @@
 		font-weight: bold;
 	}
 
-	/* Ensure text in grid headers is always centered */
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		white-space: normal !important;
+	#dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
 		text-align: center !important;
+		background-color: aliceblue;
 	}
 
-	/* Ensure column headers text aligns to center */
-	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
-		text-align: center !important;
-	}
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -87,18 +82,6 @@
 			background-color: #0056b3;
 		}
 
-	/* Text Editor Styling */
-	.dx-texteditor {
-		background-color: #909ead00 !important; /* Light background */
-		border: 1px solid #d6e4f0 !important; /* Soft border */
-		border-radius: 4px !important; /* Smaller rounded corners */
-
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
-		font-size: 14px !important; /* Slightly smaller font */
-		transition: all 0.2s ease-in-out !important;
-		height: 39px !important; /* Fixed height */
-	}
-
 		/* Hover and Focus States */
 		.dx-texteditor:hover,
 		.dx-texteditor.dx-state-hover,
@@ -122,23 +105,13 @@
 		background-color: #909ead00;
 	}
 
-	.no-border-input {
-		border: none !important;
-		outline: none !important;
-		box-shadow: none !important;
-		background: transparent !important;
-		font-weight: bold;
-		font-size: 16px;
-		color: black;
-		pointer-events: none; /* Prevents hover and click effects */
-	}
 </style>
 
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 	<div class="title">
 		<div class="header-container">
-		<div id="AccountingLedger" class="no-border-input"></div>
+		<div id="AccountingLedger" class="no-border-title"></div>
 		</div>
 	</div>
 <div class="Head">

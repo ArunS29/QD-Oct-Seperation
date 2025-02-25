@@ -46,18 +46,8 @@
         font-weight: bold;
     }
 
-    .no-border-input {
-        border: none !important;
-        outline: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        font-weight: bold;
-        font-size: 16px;
-        color: black;
-        pointer-events: none; /* Prevents hover and click effects */
-    }
 </style>
-<div id="LedgerDocuments" class="no-border-input" class="cards-container-title"></div>
+<div id="LedgerDocuments" class="no-border-title cards-container-title"></div>
 
 <div class="container my-3" style="max-width:2000px;">
     <div class="row g-3">
@@ -66,7 +56,7 @@
             <div class="card p-3 shadow-sm bg-light">
 
                 <!-- First Row -->
-                <div id="EnteraNewDocument&AddtotheExistingList" class="no-border-input" class="cards-container-title"></div>
+                <div id="EnteraNewDocument&AddtotheExistingList" class="no-border-input cards-container-title"></div>
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
                         @(Html.DevExtreme().TextBox()

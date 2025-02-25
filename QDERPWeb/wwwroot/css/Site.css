@@ -16,9 +16,19 @@
 }
 
 .dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
-    background-color: aliceblue;
+    background-color: aliceblue !important;
+}
+#dataGrid .dx-header-row .dx-datagrid-text-content {
+    font-weight: bold;
+    color: black;
+    background-color: aliceblue !important;
 }
 
+
+.dx-datagrid-header-panel {
+    background-color: aliceblue !important;
+/*    background-color: #909ead00;*/
+}
 .content-container-bottom {
     background-color: #c0dceb;
     border-bottom-left-radius: 10px; /* Radius for top-left corner */
@@ -118,11 +128,11 @@ body {
     align-items: center;
 }
 
-.dx-popup-content.dx-popup-content-scrollable {
+/*.dx-popup-content.dx-popup-content-scrollable {
     padding-top: 20px;
     padding-right: 0px;
     padding-left: 25px;
-}
+}*/
 
 .dx-datagrid-rowsview .dx-row:hover {
     background-color: #f5f5f5;
@@ -230,4 +240,26 @@ body {
 .form-group {
     color: black;
     font-family: "Inter", Helvetica, Arial, sans-serif;
+}
+
+.no-border-input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+    pointer-events: none; /* Prevents hover and click effects */
+}
+
+.no-border-title {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    font-weight: bold;
+    font-size: 20px !important;
+    color: black;
+    pointer-events: none; /* Prevents hover and click effects */
 }
