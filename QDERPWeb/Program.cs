@@ -1,4 +1,4 @@
-using QD.ERP.Web;
+﻿using QD.ERP.Web;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using QD.ERP.Web.Models.DALCommon;
@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using DevExpress.AspNetCore.Reporting;
 using Microsoft.EntityFrameworkCore.Internal;
 using QD.ERP.Web.Service;
-
 using Serilog;
 using Serilog.Events;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -54,6 +53,14 @@ builder.Services.AddRazorPages(options =>
 
 // **1.5 Add Caching, Multitenancy, and Other Dependencies**
 builder.Services.AddMemoryCache();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddMultitenancy<Tenant, TenantResolver>();
 builder.Services.AddSingleton<DbContextFactory>();
 builder.Services.AddHttpClient();
@@ -69,26 +76,11 @@ System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolTyp
 
 #endregion
 
-//// **2. Serilog Configuration (Add this part right after the service configuration)**
-//Log.Logger = new LoggerConfiguration()
-//    .ReadFrom.Configuration(builder.Configuration)  // Correct usage: Read settings from appsettings.json
-//    .WriteTo.Console()  // Optional: log to console
-//    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)  // Log to a file
-//    .WriteTo.ApplicationInsights(
-//        builder.Configuration["ApplicationInsights:InstrumentationKey"],
-//        TelemetryConverter.Traces)  // Log to Azure App Insights
-//    .CreateLogger();
-
-//// Use Serilog for ASP.NET Core logging
-//builder.Logging.ClearProviders();  // Remove other loggers
-//builder.Logging.AddSerilog();  // Add Serilog to the logging pipeline
-
 var app = builder.Build();
 
 #region **2. Configure Middleware**
 
 app.UseDevExpressControls();
-
 app.UseRouting();
 app.Use(async (context, next) =>
 {
@@ -110,6 +102,7 @@ if (!app.Environment.IsDevelopment())
 // **2.4 Enable Security & Authentication Middleware**
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession(); // ✅ Fix: Move after UseRouting
 app.UseMiddleware<TokenValidationMiddleware>();
 app.UseMultitenancy<Tenant>();
 app.UseAuthentication();
@@ -128,10 +121,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapGet("/", () => Results.Redirect("/Pulse/Security/Login"));
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.MapRazorPages();
 
