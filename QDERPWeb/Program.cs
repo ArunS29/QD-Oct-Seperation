@@ -14,6 +14,9 @@ using DevExpress.AspNetCore.Reporting;
 using Microsoft.EntityFrameworkCore.Internal;
 using QD.ERP.Web.Service;
 
+using Serilog;
+using Serilog.Events;
+using Microsoft.ApplicationInsights.Extensibility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,23 +26,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDevExpressControls();
 builder.Services.ConfigureReportingServices(configurator =>
 {
-configurator.ConfigureWebDocumentViewer(viewerConfigurator =>
-{
-viewerConfigurator.UseCachedReportSourceBuilder();
-});
+    configurator.ConfigureWebDocumentViewer(viewerConfigurator =>
+    {
+        viewerConfigurator.UseCachedReportSourceBuilder();
+    });
 });
 
 // **1.2 Configure Database Context**
-
-//var DBConnection = builder.Configuration.GetConnectionString("Data Source=sql-db-dev-erp.database.windows.net;Initial Catalog=ERP-MasterWtData;User ID=sa_dev;Password=Qu1ckd1ce;Persist Security Info=true;Encrypt=False;TrustServerCertificate=true");
-//builder.Services.AddDbContext<QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext>(options =>
-//    options.UseSqlServer(DBConnection));
-
-//var MasterDBCon = builder.Configuration.GetConnectionString("CommonDBConnection");
-//builder.Services.AddDbContext<ERPCommonContext>(options =>
-//    options.UseSqlServer(MasterDBCon));
-
-
 var DBConnection = builder.Configuration.GetConnectionString("DBConnection");
 builder.Services.AddDbContext<QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext>(options =>
     options.UseSqlServer(DBConnection));
@@ -47,7 +40,6 @@ builder.Services.AddDbContext<QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext>(op
 var CommonDBConnection = builder.Configuration.GetConnectionString("CommonDBConnection");
 builder.Services.AddDbContext<ERPCommonContext>(options =>
     options.UseSqlServer(CommonDBConnection));
-
 
 // **1.3 Add Razor Pages and JSON Configuration**
 builder.Services
@@ -57,7 +49,7 @@ builder.Services
 // **1.4 Razor Page Routing Convention for Multitenancy**
 builder.Services.AddRazorPages(options =>
 {
-options.Conventions.Add(new TenantRouteModelConvention());
+    options.Conventions.Add(new TenantRouteModelConvention());
 });
 
 // **1.5 Add Caching, Multitenancy, and Other Dependencies**
@@ -77,30 +69,42 @@ System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolTyp
 
 #endregion
 
+// **2. Serilog Configuration (Add this part right after the service configuration)**
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)  // Correct usage: Read settings from appsettings.json
+    .WriteTo.Console()  // Optional: log to console
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)  // Log to a file
+    .WriteTo.ApplicationInsights(
+        builder.Configuration["ApplicationInsights:InstrumentationKey"],
+        TelemetryConverter.Traces)  // Log to Azure App Insights
+    .CreateLogger();
+
+// Use Serilog for ASP.NET Core logging
+builder.Logging.ClearProviders();  // Remove other loggers
+builder.Logging.AddSerilog();  // Add Serilog to the logging pipeline
+
 var app = builder.Build();
 
 #region **2. Configure Middleware**
 
-// **2.1 Enable DevExpress Controls**
 app.UseDevExpressControls();
 
-// **2.2 Configure Routing Middleware (Tenant Extraction)**
 app.UseRouting();
 app.Use(async (context, next) =>
 {
-var tenantName = context.GetRouteValue("tenantName")?.ToString();
-if (!string.IsNullOrEmpty(tenantName))
-{
-context.Items["TenantName"] = tenantName;
-}
-await next();
+    var tenantName = context.GetRouteValue("tenantName")?.ToString();
+    if (!string.IsNullOrEmpty(tenantName))
+    {
+        context.Items["TenantName"] = tenantName;
+    }
+    await next();
 });
 
 // **2.3 Exception Handling for Production**
 if (!app.Environment.IsDevelopment())
 {
-app.UseExceptionHandler("/Error");
-app.UseHsts();
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
 
 // **2.4 Enable Security & Authentication Middleware**
@@ -115,25 +119,20 @@ app.UseAuthorization();
 
 #region **3. Configure Routing**
 
-// **3.1 Define Area-Based Routing**
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-// **3.2 Default Routing**
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// **3.3 Redirect Root URL to Login Page**
 app.MapGet("/", () => Results.Redirect("/Pulse/Security/Login"));
 
-// **3.4 Define Login Controller Routing**
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=Login}/{id?}");
 
-// **3.5 Enable Razor Pages**
 app.MapRazorPages();
 
 #endregion
