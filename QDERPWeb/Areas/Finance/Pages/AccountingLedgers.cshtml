@@ -121,13 +121,24 @@
 	.dx-datagrid-header-panel {
 		background-color: #909ead00;
 	}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none; /* Prevents hover and click effects */
+	}
 </style>
 
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 	<div class="title">
 		<div class="header-container">
-			<div class="title">Accounting Ledgers</div>
+		<div id="AccountingLedger" class="no-border-input"></div>
 		</div>
 	</div>
 <div class="Head">
@@ -557,6 +568,14 @@
 }
 
 <script>
+		$(function () {
+										$("#AccountingLedger").dxTextBox({
+												text:formatMessage("Accounting Ledger"),
+												readOnly: true
+
+								});
+						});
+
 	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid, firstRowBalance, lastRowBalance;
 		$(document).ready(function () {
 		const urlParams = new URLSearchParams(window.location.search);

@@ -177,21 +177,32 @@
         gap: 100px;
     }
 
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+
 </style>
 
 
 
 <div class="cards-container">
     @*    <h2>@ViewData["Title"]</h2> *@
-    <h5 class="cards-container-title">Accounting Ledger Groups//مجموعات الدفاتر المحاسبية</h5>
+    <div id="AccountingLedgerGroups" class="no-border-input"></div>
     <!-- Card 1: General Account Group Information -->
     <div class="card">
         <div class="dx-fieldset vertical-container">
             <div class="form-group">
-                <label>Account Group ID</label>
                 @(
                     Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Account Group ID')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("AccountGroupID")
                     .Value(null)
                     .Width(250)
@@ -200,10 +211,10 @@
                     )
             </div>
             <div class="form-group">
-                <label>Account Group</label>
                 @(
                     Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Account Group')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("AccountGroup")
                     .Value(null)
                     .Width(250)
@@ -219,7 +230,6 @@
             </div>
 
             <div class="form-group">
-                <label for="" class="button-alignment-down">Account Master</label>
                 @(Html.DevExtreme().DropDownBox()
                     .Label(new JS("formatMessage('Account Master')"))
                     .DataSource(d => d.WebApi()
@@ -264,10 +274,10 @@
     <div class="card" style="text-align: right;">
         <div class="dx-fieldset vertical-container" style="align-items: flex-end;">
             <div class="form-group">
-                <label style="float: right;">رقم</label>
                 @(
                     Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Number')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("AccountGroupID1")
                     .Value(null)
                     .Width(250)
@@ -279,7 +289,6 @@
                     )
             </div>
             <div class="form-group" style="display: flex;">
-                <label style="float: right; margin-right: 15px;">اسم مجموعة الحساب</label>
                 <div class="input-group" style="display: flex; align-items: center; width: 100%;justify-content: end;">
                     <span class="input-group-prepend" style="margin-right: 10px;">
                         @(
@@ -294,6 +303,7 @@
                     @(
                         Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Account Group Name')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("AccountGroup1")
                         .Value(null)
                         .Width(250)
@@ -304,7 +314,6 @@
 
 
             <div class="form-group">
-                <label for="" class="button-alignment-down">جماعة حساب</label>
                 @(Html.DevExtreme().DropDownBox()
                     .Label(new JS("formatMessage('Account Group')"))
                     .DataSource(d => d.WebApi()
@@ -360,7 +369,8 @@
         <div class="dx-fieldset vertical-container">
             <div class="form-group-row">
                 <div class="form-group">
-                    <label>Sales Group</label>
+                    <div id="SalesGroup" class="no-border-input"></div>
+
                 </div>
                 <div class="form-group" style="position:relative;left:11px;">
                     <div class="col-md-12">
@@ -371,14 +381,15 @@
                                 .ID("ChooseifthisgrouptobeunderSales")
                                 .OnValueChanged("syncCard4")
                                 )
-                            <span style="margin-left:3px">Choose if this group to be under Sales.</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="form-group-row">
                 <div class="form-group">
-                    <label>Purchase Group</label>
+
+                    <div id="PurchaseGroup" class="no-border-input"></div>
+
                 </div>
                 <div class="form-group" style="position:relative;">
                     <div class="col-md-12">
@@ -388,13 +399,13 @@
                             .Value(true)
                             .OnValueChanged("syncCard4")
                             )
-                        <span style="margin-left: 0px;">Choose if this group to be under Purchases.</span>
                     </div>
                 </div>
             </div>
             <div class="form-group-row">
                 <div class="form-group">
-                    <label>Salary Payable Group</label>
+                    <div id="SalaryPayableGroup" class="no-border-input"></div>
+
                 </div>
                 <div class="form-group" style="position:relative;left:11px;">
                     <div class="col-md-13">
@@ -404,13 +415,13 @@
                             .Value(true)
                             .OnValueChanged("syncCard4")
                             )
-                        <span style="margin-left: 0px;">Choose if this group to be under Salary Payable.</span>
                     </div>
                 </div>
             </div>
             <div class="form-group-row">
                 <div class="form-group">
-                    <label>Bank Reconciliation</strong></label>
+                    <div id="BankReconciliation" class="no-border-input"></div>
+
                 </div>
                 <div class="form-group" style="position:relative;left:0px;">
                     <div class="col-md-12">
@@ -420,7 +431,6 @@
                             .Value(true)
                             .OnValueChanged("syncCard4")
                             )
-                        <span style="margin-left: 0px;">Choose if this group wants to be Reconciled.</span>
                     </div>
                 </div>
             </div>
@@ -432,7 +442,6 @@
         <div class="dx-fieldset vertical-container">
             <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
                 <div class="form-group">
-                    <label>مجموعة المبيعات</label>
                 </div>
                 <div class="form-group">
                     <div class="col-md-12" style="text-align: right;">
@@ -443,14 +452,12 @@
                                 .Value(true)
 
                                 )
-                            <span style="margin-right: 5px;">اختر ما إذا كانت هذه المجموعة ضمن المبيعات</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
                 <div class="form-group">
-                    <label>مجموعة الشراء</label>
                 </div>
                 <div class="form-group">
                     <div class="col-md-12" style="text-align: right;">
@@ -460,14 +467,12 @@
                                 .ID("ChooseifthisgrouptobeunderPurchases1")
                                 .Value(true)
                                 )
-                            <span style="margin-right: 5px;">اختر ما إذا كانت هذه المجموعة تحت راتب الراتب</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
                 <div class="form-group">
-                    <label>مجموعة الرواتب المستحقة</label>
                 </div>
                 <div class="form-group">
                     <div class="col-md-13" style="text-align: right;">
@@ -477,14 +482,12 @@
                                 .ID("ChooseifthisgrouptobeunderSalaryPayable1")
                                 .Value(true)
                                 )
-                            <span style="margin-right: 5px;">اختر ما إذا كانت هذه المجموعة تحت راتب الراتب</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
                 <div class="form-group">
-                    <label>تسوية الحسابات المصرفية</label>
                 </div>
                 <div class="form-group">
                     <div class="col-md-12" style="text-align: right;">
@@ -494,7 +497,6 @@
                                 .ID("ChooseifthisgroupwanttobeReconcilied1")
                                 .Value(true)
                                 )
-                            <span style="margin-right: 5px;">اختر ما إذا كانت هذه المجموعة تحت بند تسوية البنك</span>
                         </div>
                     </div>
                 </div>
@@ -588,29 +590,30 @@
             <div class="form-group-row1">
                 <div class="form-group1">
                     <div>
-
-                        <span style="margin-left: 15px;">Created By:</span>
-                    </div>
-
-                </div>
-                <div class="form-group1">
-                    <div>
-                        <span style="margin-left: 15px;">Created On:</span>
-                    </div>
-
-                </div>
-                <div class="form-group1">
-                    <div>
-
-                        <span style="margin-left: 15px;">Modified By:</span>
+                        <div id="CreatedBy" class="no-border-input"></div>
 
                     </div>
 
                 </div>
                 <div class="form-group1">
                     <div>
+                        <div id="CreatedOn" class="no-border-input"></div>
 
-                        <span style="margin-left: 15px;">Modified On:</span>
+                    </div>
+
+                </div>
+                <div class="form-group1">
+                    <div>
+                        <div id="ModifiedBy" class="no-border-input"></div>
+
+
+                    </div>
+
+                </div>
+                <div class="form-group1">
+                    <div>
+                        <div id="ModifiedOn" class="no-border-input"></div>
+
                     </div>
 
                 </div>
@@ -697,6 +700,69 @@
 </div>
 
 <script>
+    $(function () {
+                                $("#AccountingLedgerGroups").dxTextBox({
+                                            text:formatMessage("Accounting Ledger Groups"),
+                                            readOnly: true
+
+                            });
+                    });
+    $(function () {
+                                $("#ModifiedOn").dxTextBox({
+                                            text:formatMessage("Modified On:"),
+                                            readOnly: true
+
+                            });
+                    });
+    $(function () {
+                                $("#ModifiedBy").dxTextBox({
+                                            text:formatMessage("Modified By:"),
+                                            readOnly: true
+
+                            });
+                    });
+    $(function () {
+                                $("#CreatedOn").dxTextBox({
+                                            text:formatMessage("Created On:"),
+                                            readOnly: true
+
+                            });
+                    });
+    $(function () {
+                                $("#CreatedBy").dxTextBox({
+                                            text:formatMessage("Created By:"),
+                                            readOnly: true
+
+                            });
+                    });
+                    $(function () {
+                                $("#BankReconciliation").dxTextBox({
+                                            text:formatMessage("Bank Reconciliation"),
+                                            readOnly: true
+
+                            });
+                    });
+                $(function () {
+                                $("#SalaryPayableGroup").dxTextBox({
+                                            text:formatMessage("Salary Payable Group"),
+                                            readOnly: true
+
+                            });
+                    });
+    $(function () {
+                                $("#PurchaseGroup").dxTextBox({
+                                            text:formatMessage("Purchase Group"),
+                                            readOnly: true
+
+                            });
+                    });
+    $(function () {
+                                $("#SalesGroup").dxTextBox({
+                                            text:formatMessage("Sales Group"),
+                                            readOnly: true
+
+                            });
+                    });
 
     var mARkey = null;
     let mARresponse = null, IsArabic = true;

@@ -45,9 +45,19 @@
     #btnBack .dx-button-text {
         font-weight: bold;
     }
-</style>
 
-<h2 class="cards-container-title">Ledger Documents</h2>
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+</style>
+<div id="LedgerDocuments" class="no-border-input" class="cards-container-title"></div>
 
 <div class="container my-3" style="max-width:2000px;">
     <div class="row g-3">
@@ -56,10 +66,9 @@
             <div class="card p-3 shadow-sm bg-light">
 
                 <!-- First Row -->
-                <h3>Enter a New Document & Add to the Existing List:</h3>
+                <div id="EnteraNewDocument&AddtotheExistingList" class="no-border-input" class="cards-container-title"></div>
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
-                        <label><strong>Document No:</strong></label>
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Document No')"))
                             .ID("DocumentNo")
@@ -70,7 +79,6 @@
                             )
                     </div>
                     <div class="col-12 col-md-6">
-                        <label><strong>Type of the Document Attached:</strong></label>
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Type of the Document Attached')"))
                             .DataSource(d => d.WebApi()
@@ -122,7 +130,6 @@
                 <!-- Second Row -->
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
-                        <label><strong>Reference No:</strong></label>
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Reference No')"))
                             .ID("ReferenceNo")
@@ -137,7 +144,6 @@
                             )
                     </div>
                     <div class="col-12 col-md-6">
-                        <label><strong>Remarks/Notes:</strong></label>
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Remarks/Notes')"))
                             .ID("Remarks")
@@ -170,7 +176,6 @@
                                     .Width("100%"))
                     </div> *@
                     <div class="col-12 col-md-4">
-                        <label><strong>Document Expiry Date:</strong></label>
                         @(Html.DevExtreme().DateBox()
                             .Label(new JS("formatMessage('Document Expiry Date')"))
                             .LabelMode(EditorLabelMode.Outside)
@@ -186,7 +191,6 @@
 
 
                     <div class="col-10 col-md-3">
-                        <label><strong>Expiry Date (Hijri):</strong></label>
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Expiry Date (Hijri)')"))
                             .ID("ExpiryDate")
@@ -194,7 +198,6 @@
                             .Width("100%"))
                     </div>
                     <div class="col-10 col-md-3">
-                        <label><strong>Notification Date:</strong></label>
                         @(Html.DevExtreme().DateBox()
                             .Label(new JS("formatMessage('Notification Date')"))
                             .LabelMode(EditorLabelMode.Outside)
@@ -326,6 +329,18 @@
 <!-- Add more cards here following the same structure -->
 <!-- DataGrid -->
 <script>
+    $(function () {
+                                $("#LedgerDocuments").dxTextBox({
+                                            text:formatMessage("Ledger Documents"),
+                                            readOnly: true
+
+                            });
+    $(function () {
+                                $("#EnteraNewDocument&AddtotheExistingList").dxTextBox({
+                                            text:formatMessage("Enter a New Document & Add to the Existing List:"),
+                                            readOnly: true
+
+                            });
 
         var mARkey = null;
         let mARresponse = null;
