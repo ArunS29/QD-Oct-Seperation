@@ -68,7 +68,7 @@
                 .Columns(columns =>
                 {
                     columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-                <a href="/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank">
+                <a href="/development/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank">
                     <%-data.CostAllocationUnitId%>
                 </a>
             </text>);
@@ -132,7 +132,7 @@
                                 alert("No row selected");
                             } else {
                                 // Navigate to the EditCostCenter page
-                                    window.location.href = `/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+                                window.location.href = `/development/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
                                     //&CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
                             }
                         }

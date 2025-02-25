@@ -154,7 +154,7 @@
         $("#popupContainer").dxPopup({
             contentTemplate: function (contentElement) {
                 $("<iframe>")
-                    .attr("src", "/Finance/LedgerAccount?AccountId=" + accountId)
+                    .attr("src", "/development/Finance/LedgerAccount?AccountId=" + accountId)
                     .css({ width: "100%", height: "600px", border: "none" })
                     .appendTo(contentElement);
             },
@@ -210,7 +210,7 @@
         if (rowData && rowData.AccountId) {   
             // Navigate to frm201LedgerAccount with Edit mode
            // window.location.href = `/frm201LedgerAccount?mode=edit&accountId=${rowData.AccountId}`;
-             window.location.href = `/Finance/LedgerAccount?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+            window.location.href = `/development/Finance/LedgerAccount?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
         } else {
             alert("No valid row selected for editing.");
         }
@@ -221,7 +221,7 @@
         var rowData = window.selectedRowData;
         if (rowData && rowData.AccountId) {
             // Navigate to frm201LedgerAccount with View Transactions mode
-          window.location.href = `/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+            window.location.href = `/development/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
 
            // window.location.href = `/frm201LedgerAccount?mode=view&accountId=${rowData.AccountId}`;
         } else {

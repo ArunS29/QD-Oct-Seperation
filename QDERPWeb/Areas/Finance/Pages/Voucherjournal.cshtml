@@ -222,7 +222,7 @@
 
 
         <div class="dx-field ledgerResult">
-                @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+                @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl201VoucherEntryTemp>()
                     .ID("dataGrid")
                     .KeyExpr("VoucherEntryNo")
                     .RemoteOperations(false)
@@ -252,14 +252,30 @@
                         .DisplayExpr("AccountHead")
 
                         );
-                        columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
-                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+                        columns.Add()
+                        .Caption("Debit")
+                        .Alignment(HorizontalAlignment.Right)
+                        .CalculateCellValue(@"
+            function(data) {
+            return data.DrCr === 'Dr' ? data.VoucherAmount : 0;
+            }")
+                        .CustomizeText(@"
+            function(e) {
+            return Number(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }");
 
-                        );
-                        columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
-                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+                        columns.Add()
+                        .Caption("Credit")
+                        .Alignment(HorizontalAlignment.Right)
+                        .CalculateCellValue(@"
+            function(data) {
+            return data.DrCr === 'Cr' ? data.VoucherAmount : 0;
+            }")
+                        .CustomizeText(@"
+            function(e) {
+            return Number(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }");
 
-                        );
                         columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
                         columns.AddFor(m => m.VoucherEntryNo).Caption("DeleteLine").Visible(false);
 
@@ -460,7 +476,7 @@
                     DevExpress.ui.notify("Navigating to Accounting Ledgers page...", "success", 2000);
 
                     // Redirect to the Accounting Ledgers page in the same window
-                    window.location.href = "/Finance/AccountingLedgers";
+                    window.location.href = "/development/Finance/AccountingLedgers";
                 }
                 function editAccountingLedger() {
                     // Get the selected account ID from the dropdown
@@ -475,7 +491,7 @@
                     DevExpress.ui.notify("Opening Account Ledger for editing...", "success", 2000);
 
                     // Redirect to the Accounting Ledger edit page with Account ID as a query parameter
-                    window.location.href = "/Finance/AccountingLedgers/GetVouchers?accountId=" + encodeURIComponent(accountId);
+                    window.location.href = "/development/Finance/AccountingLedgers/GetVouchers?accountId=" + encodeURIComponent(accountId);
                 }
 
 
@@ -616,32 +632,32 @@
                     var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
                     var gridData = dataGrid.option("dataSource"); // Get the current data in the DataGrid
 
-                    // Check if gridData is null or undefined
+                    // Check if gridData is null or empty
                     if (!gridData || gridData.length === 0) {
                         DevExpress.ui.notify("There are no line items to save. Please add transaction details.", "error", 2000);
-                        return; // Stop further processing if no data in the grid
+                        return;
                     }
 
-                    var totalDrAmount = 0; // Variable to store total Debit amount
-                    var totalCrAmount = 0; // Variable to store total Credit amount
+                    var totalDrAmount = 0; // Total Debit amount
+                    var totalCrAmount = 0; // Total Credit amount
 
-                    // Sum the total Debit and Credit amounts
+                    // Sum the total Debit and Credit amounts based on DrCr field
                     gridData.forEach(function (row) {
-                        if (row.DrAmount && row.DrAmount > 0) {
-                            totalDrAmount += row.DrAmount; // Add to total Debit amount
+                        if (row.DrCr === "Dr" && row.VoucherAmount && row.VoucherAmount > 0) {
+                            totalDrAmount += row.VoucherAmount;
                         }
-                        if (row.CrAmount && row.CrAmount > 0) {
-                            totalCrAmount += row.CrAmount; // Add to total Credit amount
+                        if (row.DrCr === "Cr" && row.VoucherAmount && row.VoucherAmount > 0) {
+                            totalCrAmount += row.VoucherAmount;
                         }
                     });
 
-                    // Check if both Debit and Credit amounts are equal
+                    // Check if Debit and Credit amounts match
                     if (totalDrAmount !== totalCrAmount) {
                         DevExpress.ui.notify("Voucher Entry is not tallying, please check the Debit / Credit Totals.", "error", 2000);
-                        return; // Stop further processing if amounts don't match
+                        return;
                     }
 
-                    // Prepare the data object to send
+                    // Prepare the data object for saving
                     var VM = {
                         "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
                         "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
@@ -654,11 +670,11 @@
                         "VoucherApprovedOn": new Date()
                     };
 
-                    // Check the button text to determine save or update action
+                    // Determine if we are saving or updating
                     var button = $("#btnSave").dxButton("instance");
                     var action = button.option("text") === "Save" ? "SaveVoucher" : "UpdateVoucher";
 
-                    // Perform AJAX request to save/update the voucher data
+                    // Perform AJAX request to save/update
                     $.ajax({
                         type: "POST",
                         url: `/api/VoucherJournal/${action}`,
@@ -667,7 +683,6 @@
                         dataType: "json",
                         success: function (response) {
                             if (response.success) {
-                                // Show appropriate success message based on the action
                                 var successMessage =
                                     action === "SaveVoucher"
                                         ? "Voucher saved successfully with matching Debit and Credit amounts."
@@ -691,6 +706,7 @@
                         }
                     });
                 });
+
 
 
                 function dataGridAccountHeadSelectionChanged(e) {
@@ -1070,6 +1086,6 @@
                     popup.show();
 
                     // Correct URL to your LedgerAccount view
-                    $("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
+                    $("#ledgerAccountFrame").attr("src", "/development/Finance/LedgerAccount");
                 }
             </script>

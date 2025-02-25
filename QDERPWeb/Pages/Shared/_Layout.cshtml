@@ -874,102 +874,100 @@
         function showFinanceSubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
             sidebar2.innerHTML = `
-                              <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
                     <i class="fas fa-book-open"></i>
                     <div class="text">Finance Dashboard</div>
                 </div>
-                 <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-                 <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2(' My Dashboard')">
+                <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                    <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2(' My Dashboard')">
                         <div class="text">My Dashboard</div>
                     </div>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/VoucherApproval">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/VoucherApproval">
                         <div class="text">Voucher Verification</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/BillsReceivable">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/BillsReceivable">
                         <div class="text">Bills Receivable</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" onclick="loadBillsPayable()">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/BillsPayable">
                         <div class="text">Bills Payable</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/BillsPayable">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/CostAnalysis">
                         <div class="text">Cost Analysis</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/SalaryPayable">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/SalaryPayable">
                         <div class="text">Salary Payable</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/ChartOfAccounts">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/ChartOfAccounts">
                         <div class="text">Chart Of Accounts</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/ChartOfCostCenters">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/ChartOfCostCenters">
                         <div class="text">Chart of Cost Centers</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/uc20106TrialBalance">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/uc20106TrialBalance">
                         <div class="text">Financial Reports</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/AssetView">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/AssetView">
                         <div class="text">Asset Register</div>
                     </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/Finance/AssetAllocation">
+                    <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/AssetAllocation">
                         <div class="text">Asset Allocation</div>
                     </a>
                 </div>
 
-
-
-        @**@
-                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/AccountingLedgers">
+                <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/AccountingLedgers">
                     <i class="fas fa-book"></i>
                     <div class="text">Accounting Ledgers</div>
                 </a>
-                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/AccountingRegister">
+                <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/AccountingRegister">
                     <i class="fas fa-book"></i>
                     <div class="text">Accounting Register</div>
                 </a>
-                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/VoucherBankPayment">
+                <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/VoucherBankPayment">
                     <i class="fas fa-university"></i>
                     <div class="text">Bank Payment</div>
                 </a>
-                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/ChartOfAccounts">
+                <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/ChartOfAccounts">
                     <i class="fas fa-chart-pie"></i>
                     <div class="text">Chart Of Accounts</div>
                 </a>
-                <a class="submenu-item" onclick="hideSidebars()" href="/Finance/ChartOfCostCenters">
+                <a class="submenu-item" onclick="hideSidebars()" href="/development/Finance/ChartOfCostCenters">
                     <i class="fas fa-chart-pie"></i>
                     <div class="text">Chart of Cost Centers</div>
                 </a>
-                <a class="submenu-item" href="/Finance/VoucherCashPayment">
+                <a class="submenu-item" href="/development/Finance/VoucherCashPayment">
                     <i class="fas fa-money-bill-wave"></i>
                     <div class="text">Cash Payment</div>
                 </a>
-                <a class="submenu-item" href="/Finance/VoucherEntryCashReceipts">
+                <a class="submenu-item" href="/development/Finance/VoucherEntryCashReceipts">
                     <i class="fas fa-dollar-sign"></i>
                     <div class="text">Cash Receipt</div>
                 </a>
-                <a class="submenu-item" href="/Finance/VoucherEntryReceipts">
+                <a class="submenu-item" href="/development/Finance/VoucherEntryReceipts">
                     <i class="fas fa-receipt"></i>
                     <div class="text">Bank Receipt</div>
                 </a>
-                <a class="submenu-item" href="/Finance/salesVoucher">
+                <a class="submenu-item" href="/development/Finance/salesVoucher">
                     <i class="fas fa-tags"></i>
                     <div class="text">Sales Voucher</div>
                 </a>
-                <a class="submenu-item" href="/Finance/purchasevoucher">
+                <a class="submenu-item" href="/development/Finance/purchasevoucher">
                     <i class="fas fa-shopping-cart"></i>
                     <div class="text">Purchase Voucher</div>
                 </a>
-                <a class="submenu-item" href="/Finance/ExpensesClaims">
+                <a class="submenu-item" href="/development/Finance/ExpensesClaims">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <div class="text">Expense Claim</div>
                 </a>
-                <a class="submenu-item" href="/Finance/Voucherjournal">
+                <a class="submenu-item" href="/development/Finance/Voucherjournal">
                     <i class="fas fa-book-open"></i>
-                    <div class="text">Journel Voucher</div>
+                    <div class="text">Journal Voucher</div>
                 </a>
-                <a class="submenu-item" href="/Finance/JournalRegister">
+                <a class="submenu-item" href="/development/Finance/JournalRegister">
                     <i class="fas fa-newspaper"></i>
-                    <div class="text">Journel Register</div>
+                    <div class="text">Journal Register</div>
                 </a>`;
         }
+
 
         // Function to toggle visibility of nested submenus
         function toggleSubmenu(submenuId) {
@@ -995,7 +993,7 @@
         function loadAccountLedger() {
             // Set the iframe source to load Accounting Ledgers content
             const iframe = document.getElementById("contentIframe");
-            iframe.src = "/Finance/AccountingLedgers";
+            iframe.src = "/development/Finance/AccountingLedgers";
             hideSidebars();
             // Update the breadcrumb (same as the anchor tag in the menu)
             updateBreadcrumbFromSidebar2('Accounting Ledgers');

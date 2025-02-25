@@ -1720,7 +1720,7 @@
         function attachMultipleFiles(aVoucherNo) {
             // Logic for attaching multiple files
             DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
-            window.location.href = `/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
+        window.location.href = `/development/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
         }
 
 
@@ -2287,7 +2287,7 @@
                         .map(key => `${key}=${params[key]}`)
                         .join("&");
 
-                    $("#CostAllocationContent").load(`/Finance/AE?${queryString}`, function () {
+                $("#CostAllocationContent").load(`/development/Finance/AE?${queryString}`, function () {
                         $("#CostAllocationModal").modal("show");
                         $(".close").on("click", function () {
                             $("#CostAllocationModal").modal("hide");
@@ -2317,7 +2317,7 @@
                                     .map(key => `${key}=${params[key]}`)
                                     .join('&');
 
-                                $("#PropertyAllocationContent").load(`/Finance/PropertyAllocation?${queryString}`, function () {
+                            $("#PropertyAllocationContent").load(`/development/Finance/PropertyAllocation?${queryString}`, function () {
                                     $("#PropertyAllocationModal").modal('show');
                                     $(".close").on("click", function () {
                                         $("#PropertyAllocationModal").modal('hide');
@@ -3294,7 +3294,7 @@
         popup.show();
 
         // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
+        $("#ledgerAccountFrame").attr("src", "/development/Finance/LedgerAccount");
     }
     $(document).ready(function () {
         $("#btntoggleGroupPanel").click();
@@ -3337,7 +3337,7 @@
             return;
         }
 
-        const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+        const url = `/development/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
         // Show the popup
         var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
@@ -3505,7 +3505,7 @@
     //         //  window.location.reload(); // Reloads only the current page
     //     } else {
     //         window.location.reload(); // Reloads only the current page
-    //         // window.location.href = `/Finance/LedgerAccount`; // Uncomment if redirecting
+    //         // window.location.href = `/development/Finance/LedgerAccount`; // Uncomment if redirecting
     //     }
     // }
 

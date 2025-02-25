@@ -9,7 +9,7 @@ using QD.ERP.Web.Areas.Finance.Reports;
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     
-    [Route("/Finance/api/[controller]/[action]")]
+    [Route("/development/Finance/api/[controller]/[action]")]
     [ApiController]
     public class BillsReceivableController : Controller
     {

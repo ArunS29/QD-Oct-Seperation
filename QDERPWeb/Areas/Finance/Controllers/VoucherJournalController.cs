@@ -75,10 +75,10 @@ namespace QDWEB.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult Delete(long VoucherEntryNo)
         {
-            var item = _context.Tbl201VoucherEntries.Where(p=>p.VoucherEntryNo==VoucherEntryNo).FirstOrDefault();
+            var item = _context.Tbl201VoucherEntryTemps.Where(p=>p.VoucherEntryNo==VoucherEntryNo).FirstOrDefault();
             if (item != null)
             {
-                _context.Tbl201VoucherEntries.Remove(item);
+                _context.Tbl201VoucherEntryTemps.Remove(item);
                 _context.SaveChanges();
                 return Ok(new {success=true});
             }
@@ -107,55 +107,54 @@ namespace QDWEB.Areas.Finance.Controllers
 		[HttpGet]
 		public async Task<ActionResult> GetVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
 		{
-			var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays.Where(p => p.VoucherNo == voucherNo).Select(i => new
+			var qryListOfAccountlists = _context.Tbl201VoucherEntryTemps.Where(p => p.VoucherNo == voucherNo).Select(i => new
 			{
 				i.VoucherNo,
 				i.DrCr,
-				i.DrAmount,
-				i.CrAmount,
-				i.EntryNarration,
+                i.VoucherAmount,
+                i.EntryNarration,
 				i.AccountHead,
 				i.SysRemarks,
 			});
 
 			return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
 		}
-		[HttpPost]
-		public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl201VoucherEntry VE)
-		{
-			if (VE == null)
-			{
-				return BadRequest(new { success = false, message = "Invalid data received." });
-			}
+        [HttpPost]
+        public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl201VoucherEntryTemp VE)
+        {
+            if (VE == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
 
-			try
-			{
-				_context.Tbl201VoucherEntries.Add(VE);
-				await _context.SaveChangesAsync();
-				var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays.Where(p => p.VoucherNo == VE.VoucherNo).Select(i => new
-				{
-					i.VoucherNo,
-					i.VoucherEntryNo,
-					i.DrCr,
-					i.DrAmount,
-					i.CrAmount,
-					i.EntryNarration,
-					i.AccountHead,
-				
-				});
+            try
+            {
+                // Add the new voucher entry to the table
+                _context.Tbl201VoucherEntryTemps.Add(VE);
+                await _context.SaveChangesAsync();
 
-				return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-				
-			}
-			catch (Exception ex)
-			{
+                // Retrieve the updated list from tbl201VoucherEntryTemp
+                var qryListOfAccountlists = _context.Tbl201VoucherEntryTemps
+                    .Where(p => p.VoucherNo == VE.VoucherNo)
+                    .Select(i => new
+                    {
+                        i.VoucherNo,
+                        i.VoucherEntryNo,
+                        i.DrCr,
+                        i.VoucherAmount,  // Replacing DrAmount & CrAmount with VoucherAmount
+                        i.EntryNarration,
+                        i.AccountHead
+                    });
 
-				return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-			}
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
 
-
-		}
-		[HttpPost]
+        [HttpPost]
 		public async Task<ActionResult> SaveVoucher([FromBody] Tbl201VoucherEntry VM)
 		{
 			if (VM == null)

@@ -902,7 +902,7 @@
 		if (!refno) refno = "";
 		if (!accheadar) accheadar = "";
 
-		const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+		const url = `/development/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
 		// Show the popup first
 		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
@@ -930,12 +930,12 @@
 	function addVoucher_click(form) {
 		let url = "";
 		if (form === "Purchase") {
-			url = "/Finance/PurchaseVoucher";
+			url = "/development/Finance/PurchaseVoucher";
 		} else if (form === "Sales") {
-			url = "/Finance/SalesVoucher";
+			url = "/development/Finance/SalesVoucher";
 		}
 		else if (form === "Journal") {
-			url = "/Finance/JournalVoucher";
+			url = "/development/Finance/JournalVoucher";
 		}
 		var newWindow = window.open(url, '_blank', 'width=1300,height=600');
 
@@ -1091,7 +1091,7 @@ if (dataSource && dataSource.length > 0) {
 		popup.show();
 
 		// Correct URL to your LedgerAccount view
-		$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
+		$("#ledgerAccountFrame").attr("src", "/development/Finance/LedgerAccount");
 	}
 		$(document).ready(function () {
 			$("#btntoggleGroupPanel").click();
@@ -1212,7 +1212,7 @@ function updateBankReconciliationState(accheadname) {
 			popup.show();
 
 			// Correct URL to your LedgerAccount view
-			$("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
+		$("#ledgerAccountFrame").attr("src", "/development/Finance/LedgerAccount");
 		}
 			$(document).ready(function () {
 				$("#btntoggleGroupPanel").click();
@@ -1315,13 +1315,13 @@ function updateBankReconciliationState(accheadname) {
 
 		// Define base URLs (Fix: Avoid embedding formattedVoucher inside object definition)
 		const voucherRoutes = {
-			"BP-": "/finance/VoucherBankPayment",
-			"CP-": "/finance/VoucherCashPayment",
-			"BR-": "/finance/VoucherEntryReceipts",
-			"CR-": "/finance/VoucherEntryCashReceipts",
-			"SAL-": "/finance/SalesVoucher",
-			"PUR-": "http://localhost:60232/finance/PurchaseVoucher",
-			"JV-": "http://localhost:60232/Finance/Voucherjournal"
+			"BP-": "/development/finance/VoucherBankPayment",
+			"CP-": "/development/finance/VoucherCashPayment",
+			"BR-": "/development/finance/VoucherEntryReceipts",
+			"CR-": "/development/finance/VoucherEntryCashReceipts",
+			"SAL-": "/development/finance/SalesVoucher",
+			"PUR-": "http://localhost:60232/development/finance/PurchaseVoucher",
+			"JV-": "http://localhost:60232/development/Finance/Voucherjournal"
 		};
 
 		// Match by prefix

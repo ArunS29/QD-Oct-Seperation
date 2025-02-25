@@ -949,7 +949,7 @@
                             .map(key => `${key}=${params[key]}`)
                             .join('&');
 
-                        $("#CostAllocationContent").load(`/Finance/CostAllocation?${queryString}`, function () {
+                        $("#CostAllocationContent").load(`/development/Finance/CostAllocation?${queryString}`, function () {
                             $("#CostAllocationModal").modal('show');
                             $(".close").on("click", function () {
                                 $("#CostAllocationModal").modal('hide');
@@ -1005,7 +1005,7 @@
 
                 // alert("1");
 
-                //       window.location.href = `/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
+                //       window.location.href = `/development/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
 
                 // return;
 

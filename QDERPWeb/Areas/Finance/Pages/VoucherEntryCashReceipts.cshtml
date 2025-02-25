@@ -1258,7 +1258,7 @@
 
                 // alert("1");
 
-                //       window.location.href = `/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
+                //       window.location.href = `/development/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
 
                 // return;
 
@@ -1932,7 +1932,7 @@
 
         $.ajax({
             type: "POST",
-            url: "/Finance/api/BillsPayableReceivable/AddBillsPayableReceivable",
+            url: "/development/Finance/api/BillsPayableReceivable/AddBillsPayableReceivable",
             contentType: "application/json",
             data: JSON.stringify(VE),
             dataType: "json",
@@ -1962,7 +1962,7 @@
 
         $.ajax({
             type: "POST",
-            url: "/Finance/api/BillsPayableReceivable/UpdateBillsPayableReceivable",
+            url: "/development/Finance/api/BillsPayableReceivable/UpdateBillsPayableReceivable",
             contentType: "application/json",
             data: JSON.stringify(VM),
             dataType: "json",
@@ -2035,7 +2035,7 @@
                         if (confirm(`You are about to delete the Bills Payable Records from the database. You cannot revert the changes. Are you sure you want to delete?`)) {
 
                             // Call server-side delete method
-                            $.post(`/Finance/api/BillsPayableReceivable/DeleteRecord?id=${selectedRowData.SubLedgerId}`, function (response) {
+                            $.post(`/development/Finance/api/BillsPayableReceivable/DeleteRecord?id=${selectedRowData.SubLedgerId}`, function (response) {
 
                                 if (response.success) {
                                     alert("Bills Payable Records have been successfully removed from the database");
