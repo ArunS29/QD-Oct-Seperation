@@ -6,7 +6,7 @@ using QD.ERP.Web.DAL.Entities;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-    [Route("Finance/api/[controller]/[action]")]
+    [Route("/api/[controller]/[action]")]
     [ApiController]
     public class AccountGroupsOrderingController : Controller
     {
@@ -24,7 +24,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 i.AccountGroupId,
                 i.AccountGroup,
                 i.AccountGroupOrderNo,
-               
+
             });
 
 
@@ -46,12 +46,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 if (existingRecord != null)
                 {
-                  
+
                     existingRecord.AccountGroupOrderNo = item.AccountGroupOrderNo;
                     _context.Tbl201AccountGroups.Update(existingRecord);
                 }
 
-             
+
             }
 
             _context.SaveChanges(); // Save changes to the database

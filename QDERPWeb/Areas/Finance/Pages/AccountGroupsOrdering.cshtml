@@ -117,6 +117,7 @@
     let selectedAccountGroupId;
 
     $("#btnSave").click(function () {
+        debugger;
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
         console.log("Save function triggered");
@@ -147,7 +148,7 @@
 
         // ✅ Send updated rows to the server via AJAX
         $.ajax({
-            url: "api/AccountGroupsOrdering/UpdateAccountGroupOrder", // Ensure this is the correct API endpoint
+            url: "/api/AccountGroupsOrdering/UpdateAccountGroupOrder", // Ensure this is the correct API endpoint
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(updatedRows),
@@ -318,21 +319,21 @@
     }
 
 
-    $(document).ready(function () {
-        // Retrieve the DataGrid instance
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+    // $(document).ready(function () {
+    //     // Retrieve the DataGrid instance
+    //     var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-        // Get selected row keys (it returns an array)
-        var selectedRowKeys = dataGrid.option("selectedRowKeys");
-        console.log("selectedRowKeys:", selectedAccountGroupId);
-        // If there's at least one selected row
-        if (selectedRowKeys.length > 0) {
-            // Retrieve the selected AccountGroupId
-            selectedAccountGroupId = selectedRowKeys[0]; // Since KeyExpr is "AccountGroupId"
-            console.log("Selected AccountGroupId:", selectedAccountGroupId);
-        } else {
-            console.log("No row selected");
-        }
-    });
+    //     // Get selected row keys (it returns an array)
+    //     var selectedRowKeys = dataGrid.option("selectedRowKeys");
+    //     console.log("selectedRowKeys:", selectedAccountGroupId);
+    //     // If there's at least one selected row
+    //     if (selectedRowKeys.length > 0) {
+    //         // Retrieve the selected AccountGroupId
+    //         selectedAccountGroupId = selectedRowKeys[0]; // Since KeyExpr is "AccountGroupId"
+    //         console.log("Selected AccountGroupId:", selectedAccountGroupId);
+    //     } else {
+    //         console.log("No row selected");
+    //     }
+    // });
 
 </script>
