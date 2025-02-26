@@ -110,7 +110,7 @@ a {
 body {
     font-family: var(--font-family);
     margin: 0;
-    background-color: #f9f9f9;
+    background-color: aliceblue;
     display: flex;
     height: 100vh;
     flex-direction: column;
