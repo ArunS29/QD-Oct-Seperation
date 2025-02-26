@@ -1,53 +1,171 @@
 using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Reports;
-using QD.ERP.Web.Reports; // Ensure this includes your reports
+using QD.ERP.Web.Reports;
 
 namespace QD.ERP.Web.Pages
 {
-	public class DocumentViewerModel : PageModel
-	{
-		public XtraReport Report { get; private set; }
+    public class DocumentViewerModel : PageModel
+    {
+        // Property to hold the dynamically generated report
+        public XtraReport Report { get; private set; }
 
-		public IActionResult OnGet(string reportName)
-		{
-			if (string.IsNullOrEmpty(reportName))
-			{
-				return BadRequest("Invalid report name.");
-			}
+        // Property to hold the report name
+        public string ReportName { get; private set; }
 
-            // Ensure reportName matches exactly what the controller sends
-            switch (reportName)
+        // Properties to hold parameters for StatementOfAccountReport
+        public string AccountId { get; private set; }
+        public DateTime FrmDate { get; private set; }
+        public DateTime ToDate { get; private set; }
+
+        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
+        {
+            if (string.IsNullOrEmpty(reportName))
             {
-                case "XtraReportBillsReceivableAgeingReport":
-                    Report = new XtraReportBillsReceivableAgeingReport();
-                    break;
-                case "XtraReportAgeingreportsummary":
-                    Report = new XtraReportAgeingreportsummary();
-                    break;
-                case "AccountReport":
-                    Report = new AccountReport();
-                    break;
-                case "AccountWithNarration":
-                    Report = new AccountWithNarration();
-                    break;
-                case "AccountExportFormatReport":
-                    Report = new AccountExportFromatReport();
-                    break;
-                case "AccountExportLandscapeReport":
-                    Report = new AccountExportLandscapeReport();
-                    break;
-                case "AccountStatementFormat2Report":
-                   
-                    Report = new AccountStatementFormat2Report(); break;
-                case "AccountOrderbyVchNoWONarrationReport":
-                    Report = new AccountOrderbyVchNoWONarrationReport(); break;
-                default:
-                    return NotFound("Report not found."); // Handle invalid report names
+                return BadRequest("Invalid report name.");
             }
 
-			return Page(); // Continue loading the page with the selected report
-		}
-	}
+            ReportName = reportName;  // Set the ReportName property
+
+
+            if (reportName == "StatementOfAccountReport")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for StatementOfAccountReport.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new StatementOfAccountReport(AccountId, FrmDate, ToDate);
+
+            }
+            else if (reportName == "AccountWithNarration")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AccountWithNarration.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new AccountWithNarration(AccountId, FrmDate, ToDate);
+            }
+            else if (reportName == "AccountStatementFormat2Report")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AccountStatementFormat2Report.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new AccountStatementFormat2Report(AccountId, FrmDate, ToDate);
+            }
+            else if (reportName == "AccountExportFromatReport")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AccountExportFromatReport.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new AccountExportFromatReport(AccountId, FrmDate, ToDate);
+            }
+            else if (reportName == "AccountOrderbyVchNoWONarrationReport")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AccountOrderbyVchNoWONarrationReport.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new AccountOrderbyVchNoWONarrationReport(AccountId, FrmDate, ToDate);
+            }
+            else if (reportName == "AccountExportLandscapeReport")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AccountExportLandscapeReport.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new AccountExportLandscapeReport(AccountId, FrmDate, ToDate);
+            }
+
+            else
+            {
+                switch (reportName)
+                {
+                    case "XtraReportBillsReceivableAgeingReport":
+                        Report = new XtraReportBillsReceivableAgeingReport();
+                        break;
+                    case "XtraReportAgeingreportsummary":
+                        Report = new XtraReportAgeingreportsummary();
+                        break;
+                    //case "StatementOfAccountReport":
+                    //    //Report = new StatementOfAccountReport();
+                    //    break;
+                    //case "AccountWithNarration":
+                    //    Report = new AccountWithNarration();
+                    //    break;
+                    //case "AccountExportFormatReport":
+                    //    Report = new AccountExportFromatReport();
+                    //    break;
+                    //case "AccountExportLandscapeReport":
+                    //    Report = new AccountExportLandscapeReport();
+                    //    break;
+                    //case "AccountStatementFormat2Report":
+                    //    Report = new AccountStatementFormat2Report();
+                    //    break;
+                    ////case "AccountOrderbyVchNoWONarrationReport":
+                    ////    Report = new AccountOrderbyVchNoWONarrationReport();
+                    ////    break;
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
+
+            // Dynamically set the Report based on the provided reportName
+
+
+            // Return the page and bind the Report to the Razor page
+            return Page();
+        }
+    }
 }

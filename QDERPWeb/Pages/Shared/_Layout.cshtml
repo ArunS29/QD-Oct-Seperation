@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="~/css/Site.css" />
 
     <!-- Scripts -->
+    <script src="~/js/vendor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
     <script src="~/js/thirdparty.bundle.js"></script>
@@ -600,21 +601,30 @@
         </div>
         <div id="submenuContainer4" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts')">
                     <i class="fa fa-search"></i>
                     <span>Account Ledger - Statement of Accounts</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (With Narration)')">
                     <i class="fa fa-search"></i>
                     <span>Account Ledger - Statement of Accounts (With Narration)</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-search"></i>
-                    <span>Account Ledger - Statement of Accounts (With Details)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format)')">
                     <i class="fa fa-search"></i>
                     <span>Account Ledger - Statement of Accounts (Export Format)</span>
+                </div>
+
+                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format2)')">
+                    <i class="fa fa-search"></i>
+                    <span>Account Ledger - Statement of Accounts (Export Format2)</span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
+                    <i class="fa fa-search"></i>
+                    <span>Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)</span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
+                    <i class="fa fa-search"></i>
+                    <span>Account Ledger - Statement of Account Export Format(Landscape)</span>
                 </div>
             </div>
          </div>
@@ -1142,6 +1152,69 @@
 
         // Also update on window resize
         // window.addEventListener("resize", updateHeight);
+        //Fuction for report onclick
+
+        function handleClick(selectedText) {
+            var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+            var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+            var toDateBox = $("#todateBox").dxDateBox("instance");
+
+            var accountId = dropDownBox.option("value");
+            var frmDate = frmDateBox.option("value");
+            var toDate = toDateBox.option("value");
+
+            // Check if accountId is not selected
+            if (!accountId) {
+                alert("Please select an account.");
+                return;
+            }
+
+            // Convert frmDate and toDate to a string format if they are Date objects
+            var frmDateStr = frmDate ? frmDate.toISOString().split('T')[0] : ''; // Format as YYYY-MM-DD
+            var toDateStr = toDate ? toDate.toISOString().split('T')[0] : ''; // Format as YYYY-MM-DD
+
+            // Debugging: Log the selectedText to check what is being passed
+            console.log("Selected Report Type: ", selectedText);
+
+            // Redirect based on selected report type
+            if (selectedText === "Account Ledger - Statement of Accounts") {
+                // Redirect to the StatementOfAccountReport
+                console.log("Redirecting to StatementOfAccountReport");
+                window.location.href = `/DocumentViewer?reportName=StatementOfAccountReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+            }
+            else if (selectedText === "Account Ledger - Statement of Accounts (With Narration)") {
+                // Redirect to the AccountWithNarration report
+                console.log("Redirecting to AccountWithNarration report");
+                window.location.href = `/DocumentViewer?reportName=AccountWithNarration&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+            }
+            else if (selectedText === "Account Ledger - Statement of Accounts (Export Format2)") {
+                // Redirect to the AccountStatementFormat2Report
+                console.log("Redirecting to AccountStatementFormat2Report");
+                window.location.href = `/DocumentViewer?reportName=AccountStatementFormat2Report&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+            }
+            else if (selectedText === "Account Ledger - Statement of Accounts (Export Format)") {
+                // Redirect to the AccountExportFormatReport
+                console.log("Redirecting to AccountExportFormatReport");
+                window.location.href = `/DocumentViewer?reportName=AccountExportFromatReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+            }
+            else if (selectedText === "Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)") {
+                // Redirect to the AccountOrderbyVchNoWONarrationReport
+                console.log("Redirecting to AccountOrderbyVchNoWONarrationReport");
+                window.location.href = `/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+            }
+            else if (selectedText === "Account Ledger - Statement of Account Export Format(Landscape)") {
+                // Redirect to the AccountExportLandscapeReport
+                console.log("Redirecting to AccountExportLandscapeReport");
+                window.location.href = `/DocumentViewer?reportName=AccountExportLandscapeReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+            }
+            else {
+                console.log("No matching report found for selectedText: ", selectedText);
+            }
+
+            // Optional: Adjust row height
+            ChangeRowHeight(70);
+        }
+
         window.onclick = function(event) {
             if (!event.target.matches('.fa-user')) {
                 let dropdowns = document.getElementsByClassName("dropdown-menu");

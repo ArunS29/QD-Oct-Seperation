@@ -1,0 +1,37 @@
+﻿@page
+@using DevExpress.AspNetCore
+@using QD.ERP.Web.Areas.Finance.Reports
+@using QD.ERP.Web.Reports
+@model QD.ERP.Web.Pages.ReportDesignerModel
+
+<link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
+<script src="~/js/reporting.designer.part.bundle.js"></script>
+
+@(Html.DevExpress().ReportDesigner("reportDesigner")
+    .Height("50em")
+    .Width("110em").Bind(Model.Report))
+
+
+<style>
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+    </style>

@@ -1,14 +1,11 @@
 {
-    "version": "1.0.0",
-    "name": "asp.net",
-    "private": true,
-    "dependencies": {
-        "@devexpress/analytics-core": "24.1-stable",
-        "bootstrap": "^4.3.1",
-        "devexpress-reporting": "24.1-stable",
-        "devextreme-dist": "24.1-stable"
-    },
-    "devDependencies": {
-        "eslint": "^9.19.0"
-    }
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "dependencies": {
+    "@devexpress/analytics-core": "24.2-stable",
+    "bootstrap": "^4.3.1",
+    "devexpress-reporting": "24.2-stable",
+    "devextreme": "24.2-stable"
+  }
 }
