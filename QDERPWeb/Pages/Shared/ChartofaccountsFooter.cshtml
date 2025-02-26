@@ -186,10 +186,19 @@
             .OnClick("toggleGroupPanel")
             )
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnColumnChooser")
+            .Icon("columnchooser")
+            .Width(40)
+            .Text("ColumnChooser")
+            .OnClick("showColumnChooser")
+            )
+    </div>
      <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAccountGroups")
-            .Icon("hierarchy")
+            .Icon("doc")
             .Width(40)
             .Text("AccountGroup")
             .OnClick("AccountGroupsOrdering")
@@ -204,15 +213,7 @@
             .OnClick("AddNewAccount")
             )
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnColumnChooser")
-            .Icon("columnchooser")
-            .Width(40)
-            .Text("Column")
-            .OnClick("showColumnChooser")
-            )
-    </div>
+
   
 </div>
 

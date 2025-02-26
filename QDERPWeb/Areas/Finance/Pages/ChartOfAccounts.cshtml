@@ -115,6 +115,507 @@
             </div>
         </text>)
             .Visible(true);
+                    columns.AddFor(m => m.AccountGroupId)
+            .Caption("Account Group ID")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+
+
+                    columns.AddFor(m => m.MasterGroupId)
+            .Caption("Master Group ID")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+
+
+                    columns.AddFor(m => m.IsRestrictedEntry)
+            .Caption("Is Restricted Entry")
+            .Alignment(HorizontalAlignment.Center)
+            .Visible(false);
+
+                    columns.AddFor(m => m.ReferenceNo)
+            .Caption("Reference No")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+
+                    columns.AddFor(m => m.BankAccountNo)
+            .Caption("Bank Account No")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BankIban)
+            .Caption("Bank IBAN")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BankName)
+            .Caption("Bank Name")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BankBranch)
+            .Caption("Bank Branch")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BankSwiftCode)
+            .Caption("Bank Swift Code")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BankAccountName)
+            .Caption("Bank Account Name")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BillingName)
+            .Caption("Billing Name")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BillingAddress)
+            .Caption("Billing Address")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BillingContactPerson)
+            .Caption("Billing Contact Person")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+                    columns.AddFor(m => m.BillingPhoneNo)
+            .Caption("Billing Phone No")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false); columns.AddFor(m => m.BillingFaxNo)
+
+            .Caption("Billing Fax No")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.BillingContactPersonTitle)
+
+            .Caption("Billing Contact Person Title")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.BillingBankAccount)
+
+            .Caption("Billing Bank Account")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.LedgerRemarks)
+
+            .Caption("Ledger Remarks")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+
+
+                    columns.AddFor(m => m.AccountGroupAr)
+
+            .Caption("Account Group Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.MasterGroupAr)
+
+            .Caption("Master Group Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.MasterOrderNo)
+
+            .Caption("Master Order No")
+
+            .Alignment(HorizontalAlignment.Right)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.MasterGroupCategory)
+
+            .Caption("Master Group Category")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ChartOfAccountsOrder)
+
+            .Caption("Chart of Accounts Order")
+
+            .Alignment(HorizontalAlignment.Right)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.AccountGroupOrderNo)
+
+            .Caption("Account Group Order No")
+
+            .Alignment(HorizontalAlignment.Right)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.MasterGroupCategoryAr)
+
+            .Caption("Master Group Category Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.VoucherAbbr)
+
+            .Caption("Voucher Abbreviation")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.IsMaintainBillByBill)
+
+            .Caption("Is Maintain Bill By Bill")
+
+            .Alignment(HorizontalAlignment.Center)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.RecordCreatedBy)
+
+            .Caption("Record Created By")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.RecordCreatedOn)
+
+            .Caption("Record Created On")
+
+            .Alignment(HorizontalAlignment.Center)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.RecordModifiedBy)
+
+            .Caption("Record Modified By")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.RecordModifiedOn)
+
+            .Caption("Record Modified On")
+
+            .Alignment(HorizontalAlignment.Center)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.NoOfDaysCreditPeriod)
+
+            .Caption("No Of Days Credit Period")
+
+            .Alignment(HorizontalAlignment.Right)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.AccountsContactName)
+
+            .Caption("Accounts Contact Name")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+
+                    columns.AddFor(m => m.AccountsContactMobile)
+
+            .Caption("Accounts Contact Mobile")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.AccountsContactTitle)
+
+            .Caption("Accounts Contact Title")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.IsEmployeeAllocated)
+
+            .Caption("Is Employee Allocated")
+
+            .Alignment(HorizontalAlignment.Center)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientVatno)
+
+            .Caption("Client VAT No")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierName)
+
+            .Caption("Supplier Name")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierNameAr)
+
+            .Caption("Supplier Name Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierAddress)
+
+            .Caption("Supplier Address")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierAddressAr)
+
+            .Caption("Supplier Address Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierVatno)
+
+            .Caption("Supplier VAT No")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientVendorNo)
+
+            .Caption("Client Vendor No")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.IsPropertyAllocated)
+
+            .Caption("Is Property Allocated")
+
+            .Alignment(HorizontalAlignment.Center)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.AccountSubGroup)
+
+            .Caption("Account Sub Group")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientGroupVatnumber)
+
+            .Caption("Client Group VAT Number")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientOtherId)
+
+            .Caption("Client Other ID")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientOtherIdtype)
+
+            .Caption("Client Other ID Type")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientAddressStreet)
+
+            .Caption("Client Address Street")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientAddressStreetAr)
+
+            .Caption("Client Address Street Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientAdditionalStreet)
+
+            .Caption("Client Additional Street")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientAdditionalStreetAr)
+
+            .Caption("Client Additional Street Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientBuildingNumber)
+
+            .Caption("Client Building Number")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientAdditionalNumber)
+
+            .Caption("Client Additional Number")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientCity)
+
+            .Caption("Client City")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientCityAr)
+
+            .Caption("Client City Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+
+                    columns.AddFor(m => m.ClientPostalCode)
+
+            .Caption("Client Postal Code")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientProvince)
+
+            .Caption("Client Province")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientProvinceAr)
+
+            .Caption("Client Province Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientNeighborhood)
+
+            .Caption("Client Neighborhood")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientNeighborhoodAr)
+
+            .Caption("Client Neighborhood Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.ClientCountryCode)
+
+            .Caption("Client Country Code")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierGroupVatnumber)
+
+            .Caption("Supplier Group VAT Number")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierOtherIdtype)
+
+            .Caption("Supplier Other ID Type")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierOtherId)
+
+            .Caption("Supplier Other ID")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierAddressStreet)
+
+            .Caption("Supplier Address Street")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
+                    columns.AddFor(m => m.SupplierAddressStreetAr)
+
+            .Caption("Supplier Address Street Arabic")
+
+            .Alignment(HorizontalAlignment.Left)
+
+            .Visible(false);
+
                 })
              .Editing(editing => editing
              .Mode(GridEditMode.Cell) // ✅ Ensure inline cell editing is enabled
@@ -128,7 +629,7 @@
             .ColumnFixing(fixing => fixing.Enabled(true))
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
-            .ColumnChooser(c => c.Enabled(false).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
+            .ColumnChooser(c => c.Enabled(false).Title(" Column Chooser ").Mode(GridColumnChooserMode.Select))
             @* .HeaderFilter(hf => hf.Visible(true)) *@
             .OnCellPrepared("onCellPrepared")
             )
