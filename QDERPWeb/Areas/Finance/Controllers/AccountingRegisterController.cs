@@ -39,12 +39,40 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        //[HttpGet]
+        //public async Task<ActionResult> GetVouchers(string voucherType, string frmDate, string toDate)
+        //{
+        //    try
+        //    {
+        //        DateTime from = new DateTime(2000, 1, 1); 
+        //        DateTime to = DateTime.Now;
+
+        //        if (!string.IsNullOrEmpty(frmDate) && DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedFrom))
+        //        {
+        //            from = parsedFrom;
+        //        }
+
+        //        if (!string.IsNullOrEmpty(toDate) && DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedTo))
+        //        {
+        //            to = parsedTo;
+        //        }
+
+        //        var procedures = new ERPMasterWtDataContextProcedures(_context);
+        //        var ledgerData = await procedures.StProAccountLedgerByVoucherTypeAsync(string.IsNullOrEmpty(voucherType) ? null : voucherType, from, to);
+
+        //        return Json(ledgerData);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { error = ex.Message });
+        //    }
+        //}
         [HttpGet]
         public async Task<ActionResult> GetVouchers(string voucherType, string frmDate, string toDate)
         {
             try
             {
-                DateTime from = new DateTime(2000, 1, 1); 
+                DateTime from = new DateTime(2000, 1, 1);
                 DateTime to = DateTime.Now;
 
                 if (!string.IsNullOrEmpty(frmDate) && DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedFrom))
@@ -60,7 +88,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 var procedures = new ERPMasterWtDataContextProcedures(_context);
                 var ledgerData = await procedures.StProAccountLedgerByVoucherTypeAsync(string.IsNullOrEmpty(voucherType) ? null : voucherType, from, to);
 
-                return Json(ledgerData);
+                // Sorting the ledgerData in ascending order by VoucherNo and VoucherDate
+                //  var sortedLedgerData = ledgerData.OrderBy(x => x.VoucherNo).ThenBy(x => x.VoucherDate).ToList();
+                var sortedLedgerData = ledgerData.OrderBy(x => x.VoucherDate).ToList();
+
+                return Json(sortedLedgerData);
             }
             catch (Exception ex)
             {
