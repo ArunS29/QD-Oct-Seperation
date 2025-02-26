@@ -1,5 +1,9 @@
 ﻿var dictionary = {
     "en": {
+        "Chart Of Accounts": "Chart Of Accounts",
+        "Edit Ledger Account": "Edit Ledger Account",
+        "View Ledger Transactions": "View Ledger Transactions",
+        "Delete Ledger Account": "Delete Ledger Account",
         "Language": "Language",
         "Voucher No": "Voucher No",
         "Voucher Date": "Voucher Date",
@@ -897,9 +901,17 @@
         "VoucherVerifiedOn": "Voucher Verified On",
         "VoucherVerifiedBy": "Voucher Verified By",
         "Narration": "Narration",
-        "Mobile No:":"Mobile No:"
+        "Mobile No:": "Mobile No:",
+        "Account Group": "Account Group",
+        "Add New Account": "Add New Account"
     },
     "ar": {
+        "Account Group": "مجموعة الحسابات",
+        "Add New Account": "إضافة حساب جديد",
+        "Chart Of Accounts": "دليل الحسابات",
+        "Edit Ledger Account": "تحرير حساب الأستاذ",
+        "View Ledger Transactions": "عرض معاملات الأستاذ",
+        "Delete Ledger Account": "حذف حساب الأستاذ",
         "Mobile No:":"رقم الجوال:",
         "Column Chooser":"محدد الأعمدة",
         "ReferenceNote": "ملاحظة المرجع",
