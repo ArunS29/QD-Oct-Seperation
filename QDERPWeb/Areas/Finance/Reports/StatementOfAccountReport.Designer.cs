@@ -271,8 +271,7 @@ namespace QD.ERP.Web.Reports
             this.xrLabel2.StylePriority.UseBorderColor = false;
             this.xrLabel2.StylePriority.UseFont = false;
             this.xrLabel2.StylePriority.UseTextAlignment = false;
-            this.xrLabel2.Text = "اكسيس انسبكشن سيرفسس\r\n[AccountHeadName]\r\nfrom  [VoucherDate!dd-MM-yy] to [Voucher" +
-    "Date!dd-MM-yy]";
+            this.xrLabel2.Text = "اكسيس انسبكشن سيرفسس\r\n[AccountHeadName]\r\nfrom  [VoucherDate!dd-MM-yy] to 26-Feb-2025";
             this.xrLabel2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // xrLabel1

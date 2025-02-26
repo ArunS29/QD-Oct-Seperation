@@ -736,7 +736,7 @@
                             </td>
                             <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Remarks')")).LabelMode(EditorLabelMode.Outside)
+                                   @*  .Label(new JS("formatMessage('Remarks')")).LabelMode(EditorLabelMode.Outside) *@
                                     .ID("txtRemarks")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -4277,7 +4277,9 @@
                         //alert(response.message);
                         DevExpress.ui.notify(response.message, "success", 3000);
                         //  window.location.reload(); // This is for only particular page reload
-
+                          setTimeout(function () {
+      window.location.reload();
+  }, 3000);
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }

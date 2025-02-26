@@ -60,9 +60,8 @@
 
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
 <div class="content-container-top">
-   <div style="color: black; font-weight: bold; width: 100%; font-size: 20px; text-align: center;">
-    Chart Of Accounts
-</div>
+    <div id="ChartOfAccounts" class="no-border-input" style="color: black; font-weight: bold; width: 100%; font-size: 20px; text-align: center;">
+    </div>
 
 <div>
         @await Html.PartialAsync("chartofaccountsFooter")
@@ -83,7 +82,7 @@
                 .Columns(columns =>
                 {
                     columns.AddFor(m => m.AccountId)
-                .Caption("Account ID")
+                .Caption(new JS("formatMessage('Account ID')"))
                 .Alignment(HorizontalAlignment.Center)
                 .Visible(true)
                 .CellTemplate(@<text>
@@ -91,12 +90,12 @@
                 <%-data.AccountId%>
             </a>
         </text>);
-                    columns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-                    columns.AddFor(m => m.MasterGroup).Caption("Account Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
-                    columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head (Ar)").Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
-                    columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center).GroupIndex(1);
-                    columns.AddFor(m => m.AccountGroup).Caption("Account Group").Alignment(HorizontalAlignment.Center).AllowEditing(true);
-                    columns.AddFor(m => m.OpeningBalance).Caption("Opening Balance").Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true).CustomizeText(@"
+                    columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                    columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Account Master')")).Alignment(HorizontalAlignment.Center).GroupIndex(0);
+                    columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('Account Head (Ar)')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
+                    columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
+                    columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Center).AllowEditing(true);
+                    columns.AddFor(m => m.OpeningBalance).Caption(new JS("formatMessage('Opening Balance')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true).CustomizeText(@"
         function(e) {
         if (e.value === null || e.value === undefined) {
         return ''; // Return empty string for null values
@@ -107,8 +106,8 @@
         maximumFractionDigits: 2
         });
         }");
-                    columns.AddFor(m => m.OpeningBalanceDrCr).Caption("Dr/Cr").Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-                        columns.AddFor(m => m.IsLedgerObselete).Caption("Is Ledger Obsolete").Alignment(HorizontalAlignment.Center).AllowEditing(true)
+                    columns.AddFor(m => m.OpeningBalanceDrCr).Caption(new JS("formatMessage('Dr/Cr')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                    columns.AddFor(m => m.IsLedgerObselete).Caption(new JS("formatMessage('Is Ledger Obsolete')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -629,7 +628,7 @@
             .ColumnFixing(fixing => fixing.Enabled(true))
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
-            .ColumnChooser(c => c.Enabled(false).Title(" Column Chooser ").Mode(GridColumnChooserMode.Select))
+            .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
             @* .HeaderFilter(hf => hf.Visible(true)) *@
             .OnCellPrepared("onCellPrepared")
             )
@@ -637,20 +636,50 @@
     
 </div>
 
+
 <!-- Context Menu (hidden initially) -->
 <div id="contextMenu" class="context-menu">
     <div class="context-menu-item" onclick="editLedger()">
-        <i class="fa fa-edit"></i> Edit Ledger Account
+        <i class="fa fa-edit"></i><div id="EditLedgerAccount" ></div>
     </div>
     <div class="context-menu-item" onclick="viewTransactions()">
-        <i class="fa fa-search"></i> View Ledger Transactions
+        <i class="fa fa-search"></i><div id="ViewLedgerTransactions"></div>
     </div>
+    <div id="EditLedgerAccount" ></div>
     <div class="context-menu-item" onclick="deleteLedger()">
-        <i class="fa fa-trash"></i> Delete Ledger Account
+        <i class="fa fa-trash"></i><div id="DeleteLedgerAccount"></div> 
     </div>
 </div>
 
 <script type="text/javascript">
+    $(function () {
+        $("#EditLedgerAccount").dxTextBox({
+            text: formatMessage("Edit Ledger Account"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ViewLedgerTransactions").dxTextBox({
+            text: formatMessage("View Ledger Transactions"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#DeleteLedgerAccount").dxTextBox({
+            text: formatMessage("Delete Ledger Account"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ChartOfAccounts").dxTextBox({
+            text: formatMessage("Chart Of Accounts"),
+            readOnly: true
+
+        });
+    });
     function openPopup(accountId) {
         $("#popupContainer").dxPopup({
             contentTemplate: function (contentElement) {

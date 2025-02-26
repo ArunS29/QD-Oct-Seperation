@@ -144,15 +144,16 @@
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
             .Width(40)
-            .Text("Layout")
+           
+            .Text(new JS("formatMessage('Layout')"))
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu");
-                items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
+                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
+                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
             })
             .ShowArrowIcon(false)
             )
@@ -162,7 +163,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Icon("print")
-            .Text("Print")
+            .Text(new JS("formatMessage('Print')"))
             .Width(40)
             )
     </div>
@@ -171,7 +172,8 @@
         @(Html.DevExtreme().Button()
             .ID("btnToggleSearch")
             .Icon("search")
-            .Text("Search")
+            
+            .Text(new JS("formatMessage('Search')"))
             .Width(40)
             .OnClick("toggleFilterRow")
             )
@@ -182,7 +184,8 @@
             .ID("btntoggleGroupPanel")
             .Icon("hierarchy")
             .Width(40)
-            .Text("Group")
+           
+            .Text(new JS("formatMessage('Group')"))
             .OnClick("toggleGroupPanel")
             )
     </div>
@@ -191,7 +194,8 @@
             .ID("btnColumnChooser")
             .Icon("columnchooser")
             .Width(40)
-            .Text("ColumnChooser")
+            
+            .Text(new JS("formatMessage('Column Chooser')"))
             .OnClick("showColumnChooser")
             )
     </div>
@@ -200,7 +204,8 @@
             .ID("btnAccountGroups")
             .Icon("doc")
             .Width(40)
-            .Text("AccountGroup")
+           
+            .Text(new JS("formatMessage('AccountGroup')"))
             .OnClick("AccountGroupsOrdering")
             )
     </div>
@@ -209,7 +214,8 @@
             .ID("btnAccountGroup")
             .Icon("add")
             .Width(40)
-            .Text("Add New Account")
+           
+            .Text(new JS("formatMessage('Add New Account')"))
             .OnClick("AddNewAccount")
             )
     </div>
