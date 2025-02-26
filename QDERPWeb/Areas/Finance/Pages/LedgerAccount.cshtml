@@ -159,12 +159,37 @@
         pointer-events: none; /* Prevents hover and click effects */
     }
 
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
 </style>
+<link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount" type="hidden" />
-<div id="Ledgeraccount" class="no-border-input"></div>
+<div class="title">
+    <div class="header-container">
+        <div id="Ledgeraccount" class="no-border-title"></div>
+    </div>
+</div>
 <div class="containerLedgerAccount">
-
 
     <div class="content-container-top">
         <div class="dx-fieldset horizontal-container">
@@ -200,8 +225,6 @@
                 )
             <!-- Container for txtAccountHeadAr and button -->
             <div style="display: flex; align-items: center; width: 100%;gap:5px;">
-
-
                 @(Html.DevExtreme().TextBox()
                     .ID("txtAccountHeadAr")
                     .Label(new JS("formatMessage('Account Head in Arabic')"))
@@ -218,7 +241,7 @@
                     @(
                         Html.DevExtreme().Button()
                         .ID("convertToArabic1")
-                        .Width(39)
+                        .Width(75)
                         .Height(33)
                         .Icon("fas fa-language") // Ensure Font Awesome class is correct
                         .ElementAttr(new { @class = "input-button" })
@@ -343,26 +366,22 @@
                             <td>
                                 @(
                                     Html.DevExtreme().NumberBox()
-                                    .Label(new JS("formatMessage('Opening Balance')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtOpeningBalance")
                                     .Value(0)
                                     .Min(0.00)
                                     .Format(format => format.Type("fixedPoint").Precision(2))
                                     .Width("100%")// Initial value
                                     @*  .Min(0)              // Minimum value
-                                .Max(1000)  *@              // Maximum value
+                                .Max(1000)  *@          // Maximum value
                                     .Step(1)             // Increment step
                                     .ShowSpinButtons(true) // Show spin buttons for up/down
-                                                           //.Format("fixedPoint")  // Format as fixed-point (number with decimals)
-                                                           //.FormatOptions(options => options.Precision(2))  // 2 decimal places
+                                    //.Format("fixedPoint")  // Format as fixed-point (number with decimals)
+                                    //.FormatOptions(options => options.Precision(2))  // 2 decimal places
                                     .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }) //.OnValueChanged("onValueChangedHandler") // Optional JS function for value change
                                     )
                             </td>
                             <td>
                                 @(Html.DevExtreme().DropDownBox()
-                                    .Label(new JS("formatMessage('Dr/Cr')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
                                     .LoadAction("getCreditDebit")
@@ -410,7 +429,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <div id="DefaultEntry"class="no-border-input"></div>
+                                <div id="DefaultEntry" class="no-border-input"></div>
                             </td>
                             <td colspan="2">
                                 @(Html.DevExtreme().CheckBox()
@@ -422,12 +441,10 @@
                                     )
                             </td>
                             <td>
-                                <div id="VoucherNoAbbr"class="no-border-input"></div>
+                                <div id="VoucherNoAbbr" class="no-border-input"></div>
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Voucher No Abbr:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtVoucherNoAbbr")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -439,7 +456,7 @@
                             <td>
                                 <div id="MaintainBillEntry" class="no-border-input"></div>
                             </td>
-                            <td colspan="4">
+                            <td colspan="2">
                                 @(Html.DevExtreme().CheckBox()
                                     .ID("chkMaintainBillEntry")
                                     .Text(new JS("formatMessage('Choose if you want to Maintain Billwise Details')"))
@@ -453,8 +470,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().NumberBox()
-                                    .Label(new JS("formatMessage('No of Days Credit')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtNoDays")
                                     .Value(0)
                                     .Min(0)
@@ -513,7 +528,9 @@
                         </tr>
 
                         <tr>
-                            <td colspan="4" align="right">
+                            <td colspan="2">
+                            </td>
+                            <td colspan="2">
                                 <div id="LedgerActive" class="no-border-input"></div>
                             </td>
                             <td>
@@ -540,14 +557,12 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().DropDownBox()
-                                    .Label(new JS("formatMessage('Division / Branch')"))
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
                                     .LoadAction("getAccountBranch")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("BranchCode")
                                     )
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("ddlbranch")
                                     .ShowClearButton(true)
                                     .AcceptCustomValue(true)
@@ -584,8 +599,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().DropDownBox()
-                                    .Label(new JS("formatMessage('Sub Group')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
                                     .LoadAction("getSubGroup")
@@ -628,8 +641,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().DropDownBox()
-                                    .Label(new JS("formatMessage('Sales Person')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
                                     .LoadAction("getSalesPersonList")
@@ -674,8 +685,6 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtContactPerson")
                                     .InputAttr("aria-label", "Text")// Dynamic value
-                                    .Label(new JS("formatMessage('Contact Person')")) // Globalized Label
-                                    .LabelMode(EditorLabelMode.Outside) // Static label to the left
                                     .Width("100%")
                                     )
                             </td>
@@ -685,25 +694,14 @@
                             <td>
                                 <div id="PersonTitle" class="no-border-input"></div>
                             </td>
-                            <td>
+                            <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Person Title')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtPersonTitle")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
                                     )
                             </td>
-                            <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Mobile No')"))
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .Placeholder(new JS("formatMessage('Mobile No')"))
-                                    .ID("txtPersonMobile")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
+                            
                         </tr>
 
                         <tr>
@@ -712,9 +710,20 @@
                             </td>
                             <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Email')")).LabelMode(EditorLabelMode.Outside)
                                     .ID("txtEmail")
                                     .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
+                                    .InputAttr("aria-label", "Text")// Dynamic value
+                                    .Width("100%")
+                                    )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="MobileNo" class="no-border-input"></div>
+                            </td>
+                            <td colspan="2">
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtPersonMobile")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
                                     )
@@ -747,31 +756,27 @@
                             </td>
                             <td style="width: 35%;">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Account Name')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBankAccountName")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
                                     )
                             </td>
-                            <td style="width: 15%;">
+                            <td style="width: 17%;">
                                 <div id="ConvertAccountName" class="no-border-input"></div>
                             </td>
-                            <td style="display: flex; align-items: center;gap: 5px;">
+                            <td colspan="3" style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnConvertAccountName")
-                                    .Width(40)
+                                    .Width(75)
                                     .Height(32)
                                     .Icon("fas fa-language") // Add an icon
                                     .ElementAttr(new { @class = "convert-button" })
                                     .OnClick("convertAccountNameToArabic") // Define the function
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Account Name (Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBankAccountNameAr")
                                     .InputAttr("aria-label", "Text")
-                                    .Width("calc(100% - 50px)") // Adjust for button
+                                    .Width("100%")
                                     .RtlEnabled(true)
 
                                     )
@@ -782,10 +787,8 @@
                             <td>
                                 <div id="BankName" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Bank Name')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBankName")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -797,15 +800,13 @@
                             <td style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnConvertBankName")
-                                    .Width(40)
+                                    .Width(75)
                                     .Height(32)
                                     .Icon("fas fa-language")
                                     .ElementAttr(new { @class = "convert-button" })
                                     .OnClick("convertBankNameToArabic")
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Bank Name (Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBankNameAr")
                                     .InputAttr("aria-label", "Text")
                                     .Width("calc(100% - 50px)")
@@ -818,10 +819,8 @@
                             <td>
                                 <div id="BankBranch" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Bank Branch')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBankBranch")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -833,15 +832,13 @@
                             <td style="display: flex; align-items: center;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnConvertBankBranch")
-                                    .Width(40)
+                                    .Width(75)
                                     .Height(32)
                                     .Icon("fas fa-language")
                                     .ElementAttr(new { @class = "convert-button" })
                                     .OnClick("convertBankBranchToArabic")
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Bank Branch (Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBankBranchAr")
                                     .InputAttr("aria-label", "Text")
                                     .Width("calc(100% - 50px)")
@@ -854,10 +851,8 @@
                             <td>
                                 <div id="BankAccountNo" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Bank AccountNo')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBankAccountNo")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -871,8 +866,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Bank IBAN')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBankIBAN")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -883,8 +876,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Swift Code')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSwiftCode")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -906,14 +897,12 @@
                                 <div style="display: flex; align-items: center;">
                                     @(Html.DevExtreme().Button()
                                         .ID("dwnarrow")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-chevron-down")
                                         .OnClick("onDownArrowClick")
 
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Client Billing Name')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtClientBilling")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Billing")
@@ -932,13 +921,11 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientBillingAr")
                                         // .Text("Action")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-language")
                                         .OnClick("onClientBillingArClick") // Add your JavaScript handler here
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Client Billing Name (Arabic)')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtClientBillingAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Billing")
@@ -952,10 +939,8 @@
                             <td>
                                 <div id="ClientVATNo" class="no-border-input"></div>
                             </td>
-                            <td>
+                            <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client VAT Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtClientVATNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientVATNo")
@@ -967,8 +952,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Group VAT Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtGrouptVATNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtGrouptVATNo")
@@ -980,17 +963,14 @@
                             <td>
                                 <div id="OtherType" class="no-border-input"></div>
                             </td>
-                            <td>
+                            <td colspan="3">
                                 @(Html.DevExtreme().DropDownBox()
-                                    .Label(new JS("formatMessage('Other ID Type')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
                                     .LoadAction("getOtherIDTypes")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("BuyerOtherIDType")
                                     )
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("ddlOtherType")
                                     .ShowClearButton(true)
                                     .AcceptCustomValue(true)
@@ -1015,8 +995,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client Other ID')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtOtherId")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtOtherId")
@@ -1033,8 +1011,6 @@
                             </td>
                             <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client Address - Street Name')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtClientAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAddress")
@@ -1048,13 +1024,11 @@
                                 <div style="display: flex; align-items: center;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientAddressAr")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-language")
                                         .OnClick("onClientAddressArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Client Address - Street Name (Arabic)')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtClientAddressAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Address")
@@ -1070,8 +1044,6 @@
                             </td>
                             <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client Address - Additional Address')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtClientAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAdditionalAddress")
@@ -1085,12 +1057,10 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientAdditionalAddressAr")
                                         .Icon("fas fa-language")
-                                        .Width("40")
+                                        .Width("75")
                                         .OnClick("onClientAdditionalAddressArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Client Address - Additional Address (Arabic)')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtClientAdditionalAddressAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
@@ -1105,8 +1075,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Building No')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBuildingNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBuildingNo")
@@ -1120,8 +1088,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client City')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtClientCity")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientCity")
@@ -1138,12 +1104,10 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientCityAr")
                                         .Icon("fas fa-language")
-                                        .Width("40")
+                                        .Width("75")
                                         .OnClick("onClientCityArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Client City(Arabic)')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtClientCityAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
@@ -1158,8 +1122,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Additional Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtAdditionalNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtAdditionalNo")
@@ -1171,8 +1133,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Province/State')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtState")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientCity")
@@ -1186,11 +1146,10 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnStateAr")
                                         .Icon("fas fa-language")
-                                        .Width("40")
+                                        .Width("75")
                                         .OnClick("onClientProvinceStateArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Province/State(Arabic)')")).LabelMode(EditorLabelMode.Outside)
                                         .ID("txtStateAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
@@ -1205,8 +1164,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Postal Code')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtPostalCode")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtPostalCode")
@@ -1220,8 +1177,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('District/Neighbourhood')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtDistrict")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtDistrict")
@@ -1238,12 +1193,10 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnDistrictAr")
                                         .Icon("fas fa-language")
-                                        .Width("40")
+                                        .Width("75")
                                         .OnClick("onDistrictArClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('District/Neighborhood (Arabic)')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtDistrictAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "District")
@@ -1255,7 +1208,6 @@
                     </table>
                 </div>
             </div>
-
             <div id="tab-content-5" class="tab-content">
                 <div style="background-color:aliceblue;">
 
@@ -1269,14 +1221,12 @@
                                 <div style="display: flex; align-items: center;">
                                     @(Html.DevExtreme().Button()
                                         .ID("dwnarrowsup")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-chevron-down")
                                         .OnClick("onDownArrowSupClick")
 
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Supplier Billing Name')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtSupBilling")
                                         .Width("100%")
                                         .InputAttr("aria-label", "txtSupBilling")
@@ -1295,12 +1245,10 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupBillingAr")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupplierNameArabicClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Supplier Name (Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupBillingAr")
                                     .Value("")
                                     .Width("100%")
@@ -1314,10 +1262,8 @@
                                 <div id="SupVATNo" class="no-border-input"></div>
 
                             </td>
-                            <td>
+                            <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Supplier VAT Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupVATNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupVATNo")
@@ -1329,10 +1275,8 @@
                             <td>
                                 <div id="SupGroupVATNo" class="no-border-input"></div>
                             </td>
-                            <td>
+                            <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Group VAT Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupGroupVATNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupGroupVATNo")
@@ -1346,8 +1290,6 @@
                             </td>
                             <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Supplier Address - Street Name')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAddress")
@@ -1364,12 +1306,10 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupAddress1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupAddressClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Supplier Address-Street Name (Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupAddressAr1")
                                     .Value("")
                                     .Width("100%")
@@ -1383,8 +1323,6 @@
                             </td>
                             <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Supplier Address - Additional Address')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAdditionalAddress")
@@ -1397,12 +1335,10 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupAdditionalAddress1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupAddressAdditionalClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Address-Additional Address (Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupAdditionalAddressAr1")
                                     .Value("")
                                     .Width("100%")
@@ -1416,8 +1352,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Building No')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupBuildingNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupBuildingNo")
@@ -1431,8 +1365,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client City')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupCity")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupCity")
@@ -1448,12 +1380,10 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupCity1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupCityClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client City (Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupCityAr1")
                                     .Value("")
                                     .Width("100%")
@@ -1467,8 +1397,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Additional Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupAdditionalNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAdditionalNo")
@@ -1480,8 +1408,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Province/State')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupState")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupState")
@@ -1494,12 +1420,10 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupState1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupStateClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Province/State(Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupStateAr1")
                                     .Value("")
                                     .Width("100%")
@@ -1513,8 +1437,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Postal Code')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupPostalCode")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupPostalCode")
@@ -1528,8 +1450,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('District/Neighbourhood')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupDistrict")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupDistrict")
@@ -1545,12 +1465,10 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupDistrict1")
                                     .Icon("fas fa-language")
-                                    .Width("40")
+                                    .Width("75")
                                     .OnClick("onSupDistrictClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Neighborhood (Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtSupDistrictAr1")
                                     .Value("")
                                     .Width("100%")
@@ -1611,8 +1529,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client Billing Name')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtClientBillingName")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientBillingName")
@@ -1622,13 +1538,12 @@
                                 <div style="display: flex; align-items: center;">
                                     @(Html.DevExtreme().Button()
                                         .ID("dwnarrowbill")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-chevron-down")
                                         .OnClick("onDownArrowBillClick")
 
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('District/Neighbourhood')")).LabelMode(EditorLabelMode.Outside)
                                         .ID("txtSupBilling")
                                         .Width("100%")
                                         .InputAttr("aria-label", "txtSupBilling")
@@ -1652,7 +1567,6 @@
                                         .OnClick("onClientBillingNameArabicButtonClick") // JavaScript function for button click
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Client Billing Name (Arabic)')")).LabelMode(EditorLabelMode.Outside)
                                         .ID("txtClientBillingNameAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "txtClientBillingNameArabic")
@@ -1660,14 +1574,13 @@
                                         )
                                 </div>
                             </td>
-
+                        </tr>
+                        <tr>
                             <td>
                                 <div id="BillingAddress" class="no-border-input"></div>
                             </td>
                             <td colspan="2">
                                 @(Html.DevExtreme().TextArea()
-                                    .Label(new JS("formatMessage('Client Billing Address')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingAddress")
                                     .Name("address")  // The name attribute for the textarea, used for form submission
                                     .Value("")  // Optional: Initial value of the textarea (empty here)
@@ -1691,8 +1604,6 @@
                                         .OnClick("onBillingAddressArabicButtonClick") // JavaScript function for button click
                                         )
                                     @(Html.DevExtreme().TextArea()
-                                        .Label(new JS("formatMessage('Client Billing Address (Arabic)')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtBillingAddressAr")
                                         .Name("addressArabic")
                                         .Value("")
@@ -1710,10 +1621,8 @@
                             <td>
                                 <div id="BillingVATRegNo" class="no-border-input"></div>
                             </td>
-                            <td>
+                            <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client VAT Reg Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingVATRegNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingVATRegNo")
@@ -1724,21 +1633,19 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client VAT Reg Number(Arabic)')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingVATRegNoArabic")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingVATRegNoArabic")
                                     .RtlEnabled(true)  // Enable RTL for Arabic VAT Registration Number
                                     )
                             </td>
+                        </tr>
+                        <tr>
                             <td>
                                 <div id="BillingTIN" class="no-border-input"></div>
                             </td>
-                            <td colspan="2">
+                            <td colspan="4">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Client TIN')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingTIN")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingTIN")
@@ -1751,8 +1658,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Billing Contact Person')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingContactPerson")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingContactPerson")
@@ -1763,8 +1668,6 @@
                             </td>
                             <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Billing Contact Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingContactNumber")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingContactNumber")
@@ -1777,8 +1680,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Billing Fax Number')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingFaxNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingFaxNo")
@@ -1789,8 +1690,6 @@
                             </td>
                             <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Vendor No')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingVendorNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingVendorNo")
@@ -1803,8 +1702,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Billing Contact Person Title')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtBillingContactPersonTitle")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingContactPersonTitle")
@@ -1815,8 +1712,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().DropDownBox()
-                                    .Label(new JS("formatMessage('Bank Account for Receiving Payment')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedger")
                                     .LoadAction("getBillingPayments")
@@ -1866,8 +1761,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Supplier Address')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtObsSupAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtObsSupAddress")
@@ -1881,12 +1774,11 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnArabObsSupAddress")
                                         // .Text("Action")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-language")
                                         .OnClick("onArabObsSupAddressClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Supplier Address (Arabic)')"))
                                         .ID("txtObsSupAddressAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Arabic Supplier Address"))
@@ -1899,8 +1791,6 @@
                             </td>
                             <td>
                                 @(Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Supplier VAT Registration No')"))
-                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtObsSupRegNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtObsSupRegNo")
@@ -1914,13 +1804,11 @@
                                     @(Html.DevExtreme().Button()
                                         .ID("btnObsSupRegNoArabic")
                                         //     .Text("Action")
-                                        .Width("40")
+                                        .Width("75")
                                         .Icon("fas fa-language")
                                         .OnClick("onObsSupRegNoArabicClick")
                                         )
                                     @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Supplier VAT Registration No (Arabic)')"))
-                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtObsSupRegNoAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Arabic Supplier VAT Registration No"))
@@ -2758,6 +2646,13 @@
 
                                                 });
                                         });
+                                        $(function () {
+                                                                        $("#MobileNo").dxTextBox({
+                                                                    text:formatMessage("Mobile No:"),
+                                                                    readOnly: true
+
+                                                });
+                                        });
                                         
         //Tab events
     let acgid, accgrp = null, accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = null;
@@ -3323,7 +3218,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/Finance/Divmaster`;
+        iframe.src = `/development/Finance/Divmaster`;
 
         modal.style.display = "block";
 
@@ -3369,7 +3264,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/Finance/LedgerSubGroupMaster`;
+        iframe.src = `/development/Finance/LedgerSubGroupMaster`;
 
         modal.style.display = "block";
 
@@ -3415,7 +3310,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/Finance/SalesPersonMaster`;
+        iframe.src = `/development/Finance/SalesPersonMaster`;
 
         modal.style.display = "block";
 
@@ -3459,7 +3354,7 @@
     function redirectAccoutledgerMaster() {
 
         const masterFormWindow = window.open(
-            '/Finance/LedgerAccount?AccountGroupId=A013',
+            '/development/Finance/LedgerAccount?AccountGroupId=A013',
             'popupWindow',
             'width=1400,height=600,scrollbars=yes,resizable=yes'
         );
@@ -3483,7 +3378,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
+        iframe.src = `/development/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
 
         modal.style.display = "block";
 

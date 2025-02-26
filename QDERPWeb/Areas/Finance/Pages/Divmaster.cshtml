@@ -101,13 +101,11 @@
     .mainContainer {
         margin-top: 1em;
     }
-
 </style>
 
 <h2>Branch Master</h2>
 
 <div class="content-container-top">
-    <!-- Card Container for the form -->
     <div class="col-md-8">
         <div class="form-group">
             <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Branch & Add to the Existing List</label>
@@ -123,37 +121,42 @@
                 )
 
         </div>
-    </div>
-</div>
 
-<div class="row g-6">
-    <div class="col-md-8">
-        <div class="form-group">
-            <label for="SalesInvoiceNo" class="button-alignment-down">Branch In Arabic</label>
-            @(
-                Html.DevExtreme().TextBox()
-                .ID("txtarabName")
-                .Value(null)
-                )
+        <div class="row g-6">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="SalesInvoiceNo" class="button-alignment-down">Branch In Arabic</label>
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .ID("txtarabName")
+                        .Value(null)
+                        )
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnadd")
+                        .Text("ADD")
+                        .Height(40)
+                        .Width(178)
+                        .Icon("plus")
+                        .OnClick("function() { adddivmaster(); }")
+                        .ElementAttr(new { @class = "dx-button-add" })
+                        )
+                </div>
+
+
+            </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="form-group">
-            @(Html.DevExtreme().Button()
-                .ID("btnadd")
-                .Text("ADD")
-                .Height(40)
-                .Width(178)
-                .Icon("plus")
-                .OnClick("function() { adddivmaster(); }")
-                .ElementAttr(new { @class = "dx-button-add" })
-                )
-        </div>
 
+        <div id="gridContainer"></div>
 
     </div>
-</div>
+
+
 <div id="gridContainer"></div>
+</div>
 
 <script type="text/javascript">
     $(function () {
