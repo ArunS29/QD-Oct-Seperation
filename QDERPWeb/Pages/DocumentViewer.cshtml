@@ -14,9 +14,7 @@
 )
 
 @* Floating Edit Report Button with Icon and Text *@
-<a href="@Url.Page("ReportDesigner", new { reportName = Model.ReportName })"
-   class="btn-edit-report"
-   data-tooltip="Open Designer">
+<a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report" data-tooltip="Open Designer">
     <span class="btn-text">Open Designer</span>
     <i class="fa fa-pencil-alt"></i>
 </a>
@@ -121,4 +119,21 @@
             width: '100%'
         });
     });
+    function openReportDesigner() {
+        // Extract values dynamically (ensure these values are set before calling this function)
+        const reportName = "StatementOfAccountReport"; // Change if needed
+        const accountId = "L00789"; // Replace with dynamic value if applicable
+        const frmDate = "2025-01-31"; // Replace with dynamic value if applicable
+        const toDate = "2025-02-27"; // Replace with dynamic value if applicable
+
+        // Construct the URL
+        const reportDesignerUrl = `http://localhost:60232/development/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+
+        // Redirect to the URL
+        window.location.href = reportDesignerUrl;
+    }
+
+    // Call this function when clicking the Open Designer button
+    document.getElementById("btnOpenDesigner").addEventListener("click", openReportDesigner);
+
 </script>
