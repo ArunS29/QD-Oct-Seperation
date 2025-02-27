@@ -114,6 +114,28 @@
         margin: 15px;
     }
 
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        list-style: none;
+        padding: 8px 0;
+        z-index: 1000;
+    }
+
+        .context-menu li {
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+            .context-menu li:hover {
+                background-color: #f0f0f0;
+            }
+
 </style>
 
 <div class="header-container">
@@ -2135,8 +2157,8 @@
         var voucherAmtValidation = voucherAmtValidator.validate();
 
         if (!paymentaccheadname) {
-            paymentaccheadname = "Petty Cash - Shabbir";
-            paymentaccheadId = "L00811";
+            paymentaccheadname = "Riyadh Bank";
+            paymentaccheadId = "L00505";
         }
         var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
         var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
@@ -2231,8 +2253,13 @@
                 dataType: "json",
                 success: function (response) {
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                    //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
-                    //console.log(response.data);
+
+                   $("#txtEntryNarration").dxTextArea("instance").option("value", "");
+                     var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+                     accountHeadValidator.reset();
+                     var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
+                     voucherAmtValidator.reset();
+
                     if (accheadname && accheadname.startsWith("Salary Payable")) {
                         $("#SalaryPaidEntryPopup").dxPopup({
                             title: "Salary Paid Entry",
@@ -2268,20 +2295,13 @@
                 "Clear Errors"
             );
         }
-        // alert(accheadname)
-        // if(accheadname!=null)
-        // {
+       
         var accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
 
         storedAccountHead = accountHeadInstance.option("value"); // Store before reset
 
 
-            $("#txtEntryNarration").dxTextArea("instance").option("value", "");
-            var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
-            accountHeadValidator.reset();
-            var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
-            voucherAmtValidator.reset();
-     //   }
+          
 
         if (accheadname != null) {
 
@@ -3776,14 +3796,14 @@
 
 $(function () {
     $.ajax({
-        url: "/api/VoucherMaster/GetCPPaymentAccounts",
+        url: "/api/VoucherMaster/GetBPPaymentAccounts",
         type: 'GET',
         success: function (response) {
             console.log("Success:", response);
 
             if (response && response.data && Array.isArray(response.data) && response.data.length > 0) {
                 // Find the object where AccountHead is "Petty Cash - Shabbir"
-                var foundAccount = response.data.find(acc => acc.AccountHead === "Petty Cash - Shabbir");
+                var foundAccount = response.data.find(acc => acc.AccountHead === "Riyadh Bank");
 
                 if (foundAccount && foundAccount.IsLedgerObselete === true) {
                     DevExpress.ui.dialog.alert(

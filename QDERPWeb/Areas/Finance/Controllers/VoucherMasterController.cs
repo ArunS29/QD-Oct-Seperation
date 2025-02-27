@@ -1359,12 +1359,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         //    }
         //}
 
-
-
-
-
-
-
     }
 
 }

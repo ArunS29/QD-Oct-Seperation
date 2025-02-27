@@ -114,6 +114,28 @@
         margin: 15px;
     }
 
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        list-style: none;
+        padding: 8px 0;
+        z-index: 1000;
+    }
+
+        .context-menu li {
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+            .context-menu li:hover {
+                background-color: #f0f0f0;
+            }
+
 </style>
 
 <div class="header-container">
@@ -418,8 +440,6 @@
 
             </text>);
 
-
-
                             columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).CustomizeText(
                         "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
@@ -449,7 +469,7 @@
 
 
                         })
-
+                    .Selection(selection => selection.Mode(SelectionMode.Single))
                     .AllowColumnReordering(true) // Enable column reordering
                     .AllowColumnResizing(true)   // Enable column resizing
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
@@ -1868,6 +1888,7 @@
             } else {
                 if(IsNotification==true)
                 {
+                    
                         DevExpress.ui.dialog.alert(
                     "Cannot continue saving with errors,please clear the errors and continue.",
                     "Clear Errors"
@@ -2231,8 +2252,13 @@
                 dataType: "json",
                 success: function (response) {
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                    //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
-                    //console.log(response.data);
+                   
+                     $("#txtEntryNarration").dxTextArea("instance").option("value", "");
+                     var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+                     accountHeadValidator.reset();
+                     var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
+                     voucherAmtValidator.reset();
+
                     if (accheadname && accheadname.startsWith("Salary Payable")) {
                         $("#SalaryPaidEntryPopup").dxPopup({
                             title: "Salary Paid Entry",
@@ -2263,10 +2289,13 @@
             accountHeadInstance.option("value", storedAccountHead);
         }
     }
+   
              DevExpress.ui.dialog.alert(
                 "Cannot continue saving with errors,please clear the errors and continue.",
                 "Clear Errors"
             );
+
+           
         }
         // alert(accheadname)
         // if(accheadname!=null)
@@ -2276,11 +2305,7 @@
         storedAccountHead = accountHeadInstance.option("value"); // Store before reset
 
 
-            $("#txtEntryNarration").dxTextArea("instance").option("value", "");
-            var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
-            accountHeadValidator.reset();
-            var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
-            voucherAmtValidator.reset();
+           
      //   }
 
         if (accheadname != null) {
@@ -3250,68 +3275,6 @@
                 effectiveDate.option("value", e.value);
             });
         });
-
-
-
-        $(document).ready(function () {
-            var isDateLocked = false; // Flag to track invalid date selection
-            var minAllowedDate = new Date("2021-12-31");
-
-            // Get the existing DateBox instance and bind the event
-            var voucherDateBox = $("#VoucherDate").dxDateBox("instance");
-
-            voucherDateBox.option("onValueChanged", function (e) {
-                var selectedDate = new Date(e.value);
-
-                if (selectedDate < minAllowedDate) {
-                    isDateLocked = true;
-                    alert("Voucher Date has been Locked. Please review your entry date.")
-
-                    // Display SweetAlert2 Error Message
-                    // Swal.fire({
-                    //     title: "Error",
-                    //     text: "Voucher Date has been Locked. Please review your entry date.",
-                    //     icon: "error",
-                    //     confirmButtonText: "OK"
-                    // });
-                } else {
-                    isDateLocked = false;
-                }
-            });
-
-            // Prevent form submission if date is locked
-            $("form").on("submit", function (event) {
-                if (isDateLocked) {
-                    // Swal.fire({
-                    //     title: "Error",
-                    //     text: "Cannot submit: Voucher Date has been Locked.",
-                    //     icon: "error",
-                    //     confirmButtonText: "OK"
-                    // });
-                    event.preventDefault();
-                }
-            });
-
-            // Prevent form interaction when date is locked
-            $(document).on("click", function (event) {
-                if (isDateLocked && !$(event.target).closest("#VoucherDate").length) {
-                    // Swal.fire({
-                    //     title: "Warning",
-                    //     text: "Voucher Date has been Locked. Please review your entry date.",
-                    //     icon: "warning",
-                    //     confirmButtonText: "OK"
-                    // }).then((result) => {
-                    //     if (result.isConfirmed) {
-                    //         // User clicked OK, allow them to proceed
-                    //     }
-                    // });
-
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-            });
-        });
-
 
         function showLedgerAccountPopup() {
         var popup = $("#ledgerAccountPopup").dxPopup("instance");
