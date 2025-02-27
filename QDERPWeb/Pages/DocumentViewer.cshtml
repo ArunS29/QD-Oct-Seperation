@@ -7,6 +7,11 @@
 <link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
 <script src="~/js/reporting.designer.part.bundle.js"></script>
 
+<!-- Dynamically set the current report name based on the model -->
+<script>
+    var currentReportName = '@Model.ReportName'; // The report name passed from the server-side model
+</script>
+
 @(Html.DevExpress().WebDocumentViewer("documentViewer")
     .Height("50em")
     .Width("110em")
@@ -43,6 +48,7 @@
     .mainContainer {
         margin-top: 1em;
     }
+
     /* Floating Edit Report Button */
     .btn-edit-report {
         position: fixed;
@@ -110,7 +116,9 @@
             border-bottom: 5px solid #333;
         }
 </style>
+
 <div id="webDocumentViewer"></div>
+
 <script>
     $(function () {
         $("#webDocumentViewer").dxWebDocumentViewer({
@@ -119,21 +127,23 @@
             width: '100%'
         });
     });
+
+    // Function to open the Report Designer for the current report
     function openReportDesigner() {
-        // Extract values dynamically (ensure these values are set before calling this function)
-        const reportName = "StatementOfAccountReport"; // Change if needed
+        // Dynamically get the current report name from the JavaScript variable
+        const reportName = currentReportName; // This is the report being displayed in the viewer
+
         const accountId = "L00789"; // Replace with dynamic value if applicable
         const frmDate = "2025-01-31"; // Replace with dynamic value if applicable
         const toDate = "2025-02-27"; // Replace with dynamic value if applicable
 
-        // Construct the URL
+        // Construct the URL to open the designer for the current report
         const reportDesignerUrl = `/development/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
 
-        // Redirect to the URL
-        window.location.href = reportDesignerUrl;
+        // Open the report designer in a new tab
+        window.open(reportDesignerUrl, "_blank");
     }
 
     // Call this function when clicking the Open Designer button
     document.getElementById("btnOpenDesigner").addEventListener("click", openReportDesigner);
-
 </script>

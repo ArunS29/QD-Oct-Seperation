@@ -33,7 +33,7 @@ namespace QD.ERP.Web.Pages
                     Report = new StatementOfAccountReport();
                     break;
                 case "AccountWithNarration":
-                    Report = new AccountWithNarration();
+                    Report = new AccountWithNarration();  // Specific report for Account with Narration
                     break;
                 case "AccountExportFormatReport":
                     Report = new AccountExportFromatReport();
@@ -55,4 +55,3 @@ namespace QD.ERP.Web.Pages
         }
     }
 }
-
