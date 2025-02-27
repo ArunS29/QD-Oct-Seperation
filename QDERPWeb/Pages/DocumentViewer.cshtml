@@ -127,7 +127,7 @@
         const toDate = "2025-02-27"; // Replace with dynamic value if applicable
 
         // Construct the URL
-        const reportDesignerUrl = `http://localhost:60232/development/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        const reportDesignerUrl = `/development/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
 
         // Redirect to the URL
         window.location.href = reportDesignerUrl;
