@@ -7,31 +7,82 @@
 <link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
 <script src="~/js/reporting.designer.part.bundle.js"></script>
 
+<!-- DevExpress Report Designer -->
 @(Html.DevExpress().ReportDesigner("reportDesigner")
     .Height("50em")
-    .Width("110em").Bind(Model.Report))
+    .Width("105em")
+    .Bind(Model.Report)
+)
 
+<!-- Reset Button -->
+<a href="javascript:void(0);" id="btnReset" class="btn-reset-report" data-tooltip="Reset Report Designer">
+    <span class="btn-text">Reset Report</span>
+    <i class="fa fa-sync-alt"></i>
+</a>
 
 <style>
-    .container {
-        display: none !important;
-    }
-
-    .frame {
-        display: none !important;
-    }
-
-    .footerContainer {
-        display: none !important;
-    }
-
-    .bodyContainer {
+    /* Reset Report Button */
+    .btn-reset-report {
+        position: fixed;
+        top: 100px; /* Positioning below the designer button */
+        right: 200px; /* Positioning from the right */
+        background-color: transparent;
+        border: 1px solid #28a745; /* Border color */
+        padding: 5px 15px; /* Padding */
+        font-size: 14px;
+        color: #28a745; /* Button color */
+        border-radius: 15px; /* Curved edges */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow */
+        cursor: pointer;
+        z-index: 9999; /* Ensure it stays on top */
+        transition: all 0.3s ease;
         display: flex;
-        justify-content: center;
-        background-color: aliceblue;
+        align-items: center;
+        height: 35px; /* Height */
     }
 
-    .mainContainer {
-        margin-top: 1em;
+        .btn-reset-report .btn-text {
+            margin-right: 10px; /* Space between text and icon */
+            font-weight: bold;
+        }
+
+        .btn-reset-report i {
+            font-size: 16px;
+        }
+
+        /* Change on Hover */
+        .btn-reset-report:hover {
+            background-color: rgba(40, 167, 69, 0.1); /* Light green background on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
+            color: #218838; /* Darker color on hover */
+        }
+
+        /* Tooltip Styling */
+        .btn-reset-report[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+</style>
+
+<script>
+    // Function to reload the page (reset the Report Designer)
+    function resetReportDesigner() {
+        location.reload();  // This will reload the page
     }
-    </style>
+
+    // Attach the reset function to the reset button
+    document.getElementById("btnReset").addEventListener("click", resetReportDesigner);
+</script>
