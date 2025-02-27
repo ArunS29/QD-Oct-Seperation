@@ -483,17 +483,17 @@
         let selectedText = e.itemData.text;
 
         if (selectedText === "Account Statements") {
-            window.location.href = "/DocumentViewer?reportName=AccountReport";
+            window.location.href = "/development/DocumentViewer?reportName=AccountReport";
         } else if (selectedText === "Statement Of Account With Narration") {
-            window.location.href = "/DocumentViewer?reportName=AccountWithNarration";
+            window.location.href = "/development/DocumentViewer?reportName=AccountWithNarration";
         } else if (selectedText === "Statement Of Account Export Formate") {
-            window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport";
+            window.location.href = "/development/DocumentViewer?reportName=AccountExportFormatReport";
         } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
-            window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport";
+            window.location.href = "/development/DocumentViewer?reportName=AccountExportLandscapeReport";
         } else if (selectedText === "Statement of Account Export [Formate2]") {
-            window.location.href = "/DocumentViewer?reportName=AccountStatementFormat2Report";
+            window.location.href = "/development/DocumentViewer?reportName=AccountStatementFormat2Report";
         } else if (selectedText === "Statement of Account [OrderByVoucerNo9 (Without Narration)]") {
-            window.location.href = "/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport";
+            window.location.href = "/development/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport";
         } else if (pageUrl !== '') {
             // Set the iframe source and show overlay only if pageUrl is valid
             $("#overlay-frame").attr("src", pageUrl);

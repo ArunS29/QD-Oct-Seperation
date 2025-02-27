@@ -60,12 +60,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         public IActionResult GenerateReport()
         {
             // Redirect to DocumentViewer page with report parameters
-            return RedirectToPage("/DocumentViewer", new { reportName = "XtraReportBillsReceivableAgeingReport" });
+            return RedirectToPage("/development/DocumentViewer", new { reportName = "XtraReportBillsReceivableAgeingReport" });
         }
 
         public IActionResult GenerateAgeingreportsummaryReport()
         {
-            return RedirectToPage("/DocumentViewer", new { reportName = "XtraReportAgeingreportsummary" });
+            return RedirectToPage("/development/DocumentViewer", new { reportName = "XtraReportAgeingreportsummary" });
         }
     }
     

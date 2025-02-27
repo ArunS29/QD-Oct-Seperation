@@ -522,6 +522,30 @@
                 </div>
             </div>
     </div>
+        <div id="submenuContainer" class="context-menu" style="display:none;">
+            <div class="context-menu-item">
+                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(30)">
+                    <i style="color:black" class="fa fa-th-list">
+                        <span style="color:black">Short</span>
+                    </i>
+                </div>
+                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(40)">
+                    <i style="color:black" class="fa fa-th-list">
+                        <span>Mediam</span>
+                    </i>
+                </div>
+                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(60)">
+                    <i style="color:black" class="fa fa-th-list">
+                        <span style="color:black">Tall</span>
+                    </i>
+                </div>
+                <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(70)">
+                    <i style="color:black" class="fa fa-th-list">
+                        <span style="color:black">Extra Tall</span>
+                    </i>
+                </div>
+            </div>
+        </div>
         <!-- Submenu-->
         <div id="submenuContainer1" class="context-menu" style="display:none;">
             <div class="context-menu-item1">
@@ -1180,32 +1204,32 @@
             if (selectedText === "Account Ledger - Statement of Accounts") {
                 // Redirect to the StatementOfAccountReport
                 console.log("Redirecting to StatementOfAccountReport");
-                window.location.href = `/DocumentViewer?reportName=StatementOfAccountReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+                window.location.href = `/development/DocumentViewer?reportName=StatementOfAccountReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
             }
             else if (selectedText === "Account Ledger - Statement of Accounts (With Narration)") {
                 // Redirect to the AccountWithNarration report
                 console.log("Redirecting to AccountWithNarration report");
-                window.location.href = `/DocumentViewer?reportName=AccountWithNarration&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+                window.location.href = `/development/DocumentViewer?reportName=AccountWithNarration&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
             }
             else if (selectedText === "Account Ledger - Statement of Accounts (Export Format2)") {
                 // Redirect to the AccountStatementFormat2Report
                 console.log("Redirecting to AccountStatementFormat2Report");
-                window.location.href = `/DocumentViewer?reportName=AccountStatementFormat2Report&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+                window.location.href = `/development/DocumentViewer?reportName=AccountStatementFormat2Report&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
             }
             else if (selectedText === "Account Ledger - Statement of Accounts (Export Format)") {
                 // Redirect to the AccountExportFormatReport
                 console.log("Redirecting to AccountExportFormatReport");
-                window.location.href = `/DocumentViewer?reportName=AccountExportFromatReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+                window.location.href = `/development/DocumentViewer?reportName=AccountExportFromatReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
             }
             else if (selectedText === "Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)") {
                 // Redirect to the AccountOrderbyVchNoWONarrationReport
                 console.log("Redirecting to AccountOrderbyVchNoWONarrationReport");
-                window.location.href = `/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+                window.location.href = `/development/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
             }
             else if (selectedText === "Account Ledger - Statement of Account Export Format(Landscape)") {
                 // Redirect to the AccountExportLandscapeReport
                 console.log("Redirecting to AccountExportLandscapeReport");
-                window.location.href = `/DocumentViewer?reportName=AccountExportLandscapeReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+                window.location.href = `/development/DocumentViewer?reportName=AccountExportLandscapeReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
             }
             else {
                 console.log("No matching report found for selectedText: ", selectedText);
