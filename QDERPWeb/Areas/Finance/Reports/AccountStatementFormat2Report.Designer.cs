@@ -140,8 +140,8 @@
             this.xrLabel13.StylePriority.UseFont = false;
             this.xrLabel13.StylePriority.UseForeColor = false;
             this.xrLabel13.StylePriority.UseTextAlignment = false;
-            this.xrLabel13.Text = "[AccountHeadName]\r\n[AccountHeadArabic]\r\nFor the period starting from  [VoucherDat" +
-    "e!d-MMM-yyyy] to  01-Feb-2025";
+            this.xrLabel13.Text = "[AccountHeadName]\r\n[AccountHeadArabic]\r\nFor the period starting from [Parameters." +
+    "StartDate!dd MMM yyyy] to [Parameters.EndDate!dd MMM yyyy]";
             this.xrLabel13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel13.TextFormatString = "{0:dd MMM yyyy}";
             // 

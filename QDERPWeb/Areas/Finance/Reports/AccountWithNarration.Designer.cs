@@ -226,8 +226,8 @@
             this.xrLabel2.StylePriority.UseFont = false;
             this.xrLabel2.StylePriority.UseForeColor = false;
             this.xrLabel2.StylePriority.UseTextAlignment = false;
-            this.xrLabel2.Text = "اكسيس انسبكشن سيرفسس\r\n[AccountHeadName]\r\nfrom  [VoucherDate!dd MMM yyyy]  to  28-" +
-    "Feb-2025";
+            this.xrLabel2.Text = "اكسيس انسبكشن سيرفسس\r\n[AccountHeadName]\r\nfrom [Parameters.StartDate!dd MMM yyyy] " +
+    "to [Parameters.EndDate!dd MMM yyyy]";
             this.xrLabel2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // xrLine1

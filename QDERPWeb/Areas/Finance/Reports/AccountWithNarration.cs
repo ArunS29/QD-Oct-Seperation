@@ -7,7 +7,6 @@ namespace QD.ERP.Web.Reports
 {
     public partial class AccountWithNarration : DevExpress.XtraReports.UI.XtraReport
     {
-        // Declare the query parameters and stored procedure query object
         private QueryParameter queryParameter1;
         private QueryParameter queryParameter2;
         private QueryParameter queryParameter3;
@@ -72,11 +71,11 @@ namespace QD.ERP.Web.Reports
 
             queryParameter2.Name = "@StartDate";
             queryParameter2.Type = typeof(DateTime);
-            queryParameter2.ValueInfo = frmDate == DateTime.MinValue ? "2020-01-01" : frmDate.ToString("yyyy-MM-dd");
+            queryParameter2.ValueInfo = frmDate == DateTime.MinValue ? DateTime.Today.ToString("yyyy-MM-dd") : frmDate.ToString("yyyy-MM-dd");
 
             queryParameter3.Name = "@EndDate";
             queryParameter3.Type = typeof(DateTime);
-            queryParameter3.ValueInfo = toDate == DateTime.MinValue ? "2021-12-01" : toDate.ToString("yyyy-MM-dd");
+            queryParameter3.ValueInfo = toDate == DateTime.MinValue ? DateTime.Today.ToString("yyyy-MM-dd") : toDate.ToString("yyyy-MM-dd");
 
             // Initialize the stored procedure query and set the StoredProcName
             storedProcQuery1 = new StoredProcQuery
@@ -88,10 +87,10 @@ namespace QD.ERP.Web.Reports
             // Clear existing parameters and add the new ones
             storedProcQuery1.Parameters.Clear();
             storedProcQuery1.Parameters.AddRange(new QueryParameter[] {
-                queryParameter1,
-                queryParameter2,
-                queryParameter3
-            });
+            queryParameter1,
+            queryParameter2,
+            queryParameter3
+        });
 
             // Re-assign the query to the SQL data source
             this.sqlDataSource1.Queries.Clear();
@@ -100,8 +99,7 @@ namespace QD.ERP.Web.Reports
             // Set the connection string for the data source
             this.sqlDataSource1.ConnectionName = "DBConnection"; // Your connection string name
             this.sqlDataSource1.Name = "sqlDataSource1";
-
-            // Set the result schema (optional)
         }
     }
+
 }
