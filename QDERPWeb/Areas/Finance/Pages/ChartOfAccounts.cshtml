@@ -59,11 +59,12 @@
 </style>
 
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
-<div class="content-container-top">
-    <div id="ChartOfAccounts" class="no-border-input" style="color: black; font-weight: bold; width: 100%; font-size: 20px; text-align: center;">
+    <div class="title">
+        <div class="header-container">
+            <div id="ChartOfAccounts" class="no-border-title"></div>
+        </div>
     </div>
-
-<div>
+    <div>
         @await Html.PartialAsync("chartofaccountsFooter")
     </div>
 <div id="popupContainer"></div>

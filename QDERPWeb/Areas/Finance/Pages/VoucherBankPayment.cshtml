@@ -58,62 +58,6 @@
     }
 
 
-
-    .dx-texteditor {
-        background-color: #909ead00 !important; /* Light background */
-        border: 1px solid #d6e4f0 !important; /* Soft border */
-        border-radius: 4px !important; /* Smaller rounded corners */
-
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
-        font-size: 14px !important; /* Slightly smaller font */
-        transition: all 0.2s ease-in-out !important;
-        height: 39px !important; /* Fixed height */
-    }
-
-        /* Hover and Focus States */
-        .dx-texteditor:hover,
-        .dx-texteditor.dx-state-hover,
-        .dx-button:hover {
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-            border-color: #86b7fe !important; /* Highlight border */
-        }
-
-        .dx-texteditor.dx-state-focused {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
-            border-color: #508ae1 !important;
-        }
-
-    /* Button Styling */
-    .dx-button {
-        background-color: #909ead00 !important;
-        border: 1px solid #d6e4f0 !important;
-        border-radius: 4px !important;
-        padding: 6px 12px !important; /* Reduced button padding */
-        font-size: 14px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-        transition: all 0.2s ease-in-out !important;
-        height: 39px !important; /* Fixed height */
-    }
-
-        /* Hover Effect for Button */
-        .dx-button:hover {
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-            border-color: #86b7fe !important; /* Highlight border */
-        }
-
-    .dx-datagrid-header-panel {
-        background-color: #909ead00;
-    }
-
-    /* for bank payment */
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-    }
-
     .context-menu {
         display: none;
         position: absolute;
@@ -138,9 +82,10 @@
 
 </style>
 
-<div class="header-container">
-    <div class="title">Payment Voucher Details</div>
-    @*  <div class="footer">@await Html.PartialAsync("_GridFooter")</div> *@
+<div class="title">
+    <div class="header-container">
+        <div id="PaymentVoucherDetails" class="no-border-title"></div>
+    </div>
 </div>
 
 
@@ -364,7 +309,7 @@
 
                             )
             </div>
-            <div class="form-group" style="">
+            <div class="form-group plusBtn" style="">
                 @(Html.DevExtreme().Button()
                             .ID("btnVoucherEntry")
                             .Text(new JS("formatMessage('ADD')"))
@@ -575,7 +520,7 @@
 
 
         <div class="container">
-            <div class="row g-3" style="height:310px;">
+            <div class="row g-3" style="height:25em;">
                 <!-- First Row for Cheque No/Reference No and Voucher Narration with Button -->
                 <div class="container-fluid backgroundcolor py-3">
                     <div class="row align-items-start">
@@ -592,7 +537,7 @@
                                                 .LabelMode(EditorLabelMode.Outside)
                                                 .Width(257)
                                                 )
-                                    <span class="input-group-append">
+                                    <span class="input-group-append plusBtn">
                                         @(
                                                     Html.DevExtreme().Button()
                                                     .ID("btnChequePopup")
@@ -1499,8 +1444,10 @@
 
 
 
-        <div>
-            @await Html.PartialAsync("_Formfooter")
+        <div class="Head">
+            <div class="header-container">
+                <div class="footer">@await Html.PartialAsync("_Formfooter")</div>
+            </div>
         </div>
         <!-- Drop Down Grid Template -->
         <!-- Drop Down Account Head Grid Template -->
@@ -1687,7 +1634,12 @@
         let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName,refno,accgroup,IsEdit = false,accgroupid,accheadar,
         IsNotification=false,storedAccountHead,IsObeselete=false;
 
-
+        $(function () {
+            $("#PaymentVoucherDetails").dxTextBox({
+                text: formatMessage("Payment Voucher Details"),
+                readOnly: true
+            });
+        });
         $("#btnAttach").on("click", function (e) {
             e.preventDefault();
             var aVoucherNo = $("#VoucherNo").dxTextBox("instance").option("value");

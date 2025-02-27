@@ -103,10 +103,12 @@
     }
 </style>
 
-<h2>Branch Master</h2>
-
+<div class="title">
+    <div class="header-container">
+        <div id="BranchMaster" class="no-border-title"></div>
+    </div>
+</div>
 <div class="content-container-top">
-    <div class="col-md-8">
         <div class="form-group">
             <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Branch & Add to the Existing List</label>
             @(
@@ -122,7 +124,6 @@
 
         </div>
 
-        <div class="row g-6">
             <div class="col-md-8">
                 <div class="form-group">
                     <label for="SalesInvoiceNo" class="button-alignment-down">Branch In Arabic</label>
@@ -147,12 +148,9 @@
                 </div>
 
 
-            </div>
         </div>
 
         <div id="gridContainer"></div>
-
-    </div>
 
 
 <div id="gridContainer"></div>
@@ -466,4 +464,10 @@
         }
     }
 
+    $(function () {
+        $("#BranchMaster").dxTextBox({
+            text: formatMessage("Branch Master"),
+            readOnly: true
+        });
+    });
 </script>

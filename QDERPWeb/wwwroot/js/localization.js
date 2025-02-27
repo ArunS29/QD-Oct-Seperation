@@ -903,9 +903,13 @@
         "Narration": "Narration",
         "Mobile No:": "Mobile No:",
         "Account Group": "Account Group",
-        "Add New Account": "Add New Account"
+        "Add New Account": "Add New Account",
+        "Branch Master": "Branch Master",
+        "Payment Voucher Details":"Payment Voucher Details",
     },
     "ar": {
+        "Payment Voucher Details":"تفاصيل قسيمة الدفع",
+        "Branch Master":"رئيس الفرع",
         "Account Group": "مجموعة الحسابات",
         "Add New Account": "إضافة حساب جديد",
         "Chart Of Accounts": "دليل الحسابات",
