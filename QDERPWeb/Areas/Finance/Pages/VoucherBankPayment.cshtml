@@ -495,25 +495,25 @@
         <!-- Context Menu for Actions -->
         <ul id="contextMenu" class="context-menu" style="display: none;">
             <li onclick="editCostAllocation()">
-                <i class="fas fa-edit" style="margin-right: 8px;"></i> Edit Cost Allocation
+                <i class="fas fa-edit" style="margin-right: 8px;"></i> <div id="EditCostAllocation" class="no-border-input"></div>
             </li>
             <li onclick="editBillReceivable()">
-                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> Edit Bill Receivable
+                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable" class="no-border-input"></div>
             </li>
             <li onclick="editBillReceivable1()">
-                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> Edit Salary Payable
+                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditSalaryPayable" class="no-border-input"></div>
             </li>
             <li onclick="editBillReceivable2()">
-                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> Edit Employee Allocation
+                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditEmployeeAllocation" class="no-border-input"></div>
             </li>
             <li onclick="editPropertyAllocation()">
-                <i class="fas fa-cogs" style="margin-right: 8px;"></i> Edit Property Allocation
+                <i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation" class="no-border-input"></div>
             </li>
             <li onclick="onRowRemoving()">
-                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete Line Entry
+                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteLineEntry" class="no-border-input"></div>
             </li>
             <li onclick="onAllRowRemoving()">
-                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete All Line Entries
+                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteAllLineEntries" class="no-border-input"></div>
             </li>
         </ul>
 
@@ -861,7 +861,7 @@
                                                 .Value("Bank Payment")
                                             .Width(520)
                                             .Disabled(true)
-                                                .ItemTemplate(@<div style="font-weight: bold;">Bank Payment</div>)
+                                                
                                             )
                             </div>
                         </div>
@@ -1483,10 +1483,10 @@
 
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("AccountId");
-                                columns.Add().DataField("AccountHead");
-                                columns.Add().DataField("AccountHeadArabic");
-                                columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+                                columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                        columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                             .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -1526,12 +1526,12 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("AccountId");
-                                columns.Add().DataField("AccountHead");
-                                columns.Add().DataField("AccountGroup");
-                                columns.Add().DataField("AccountHeadArabic");
-                                columns.Add().DataField("ReferenceNo");
-                                columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+                        columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountGroup')"));
+                        columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Head')"));
+                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                        columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
+                        columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                             .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -1578,9 +1578,9 @@
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().Caption("Account ID").DataField("AccountId");
-                            columns.Add().Caption("Account").DataField("AccountHead");
-                            columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
+                            columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+                            columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+                            columns.Add().Caption(new JS("formatMessage('Account Head Arabic')")).DataField("AccountHeadArabic");
 
                         })
                         )
@@ -1630,6 +1630,56 @@
 
 
 <script>
+    $(function () {
+                                    $("#EditCostAllocation").dxTextBox({
+                                                text:formatMessage("Edit Cost Allocation"),
+                                            readOnly: true
+
+                            });
+                    });
+                        $(function () {
+                                            $("#EditBillReceivable").dxTextBox({
+                                                        text:formatMessage("Edit Bill Receivable"),
+                                                readOnly: true
+
+                                });
+                        });
+ 
+    $(function () {
+                                    $("#EditSalaryPayable").dxTextBox({
+                                            text:formatMessage("Edit Salary Payable"),
+                                            readOnly: true
+
+                            });
+                    });
+    $(function () {
+                                        $("#EditEmployeeAllocation").dxTextBox({
+                                                text:formatMessage("Edit Employee Allocation"),
+                                                readOnly: true
+
+                                });
+                        });
+    $(function () {
+                                $("#EditPropertyAllocation").dxTextBox({
+                                            text:formatMessage("Edit Property Allocation"),
+                                            readOnly: true
+
+                            });
+                    });
+    $(function () {
+                                    $("#DeleteLineEntry").dxTextBox({
+                                                text:formatMessage("Delete Line Entry"),
+                                                readOnly: true
+
+                                });
+                        });
+   $(function () {
+                                            $("#DeleteAllLineEntries").dxTextBox({
+                                                        text:formatMessage("Delete All Line Entries"),
+                                                    readOnly: true
+
+                                    });
+                            });
 
         let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName,refno,accgroup,IsEdit = false,accgroupid,accheadar,
         IsNotification=false,storedAccountHead,IsObeselete=false;
