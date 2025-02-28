@@ -18,7 +18,7 @@ public partial class CustomerDetail
     public string ConnectionStringOffline { get; set; }
 
     public string Comment { get; set; }
-    public string CompanyLogo { get; set; }
+    //public string CompanyLogo { get; set; }
 
     public byte[] EncryptedConnectionStringOnline { get; set; }
 

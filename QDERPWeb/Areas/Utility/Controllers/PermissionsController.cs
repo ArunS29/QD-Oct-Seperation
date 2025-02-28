@@ -30,7 +30,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 return BadRequest(new { message = "All fields are required.", success = false });
             }
             var tenantName = User.Claims.FirstOrDefault(c => c.Type == "TenantName")?.Value;
-            var CompanyLogo = User.Claims.FirstOrDefault(c => c.Type == "CompanyLogo")?.Value;
+            //var CompanyLogo = User.Claims.FirstOrDefault(c => c.Type == "CompanyLogo")?.Value;
             var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
             if (_cache.TryGetValue("tenant_", out Dictionary<string, Tenant> tenantCache) &&
                 tenantCache.TryGetValue(tenantName.ToLower(), out Tenant tenant))
