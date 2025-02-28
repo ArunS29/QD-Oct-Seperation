@@ -1,19 +1,29 @@
 ﻿@page
 
 <style type="text/css">
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+    .content-container {
+        background-color: #c0dceb;
+        border-radius: 10px;
+        padding: 5px;
+    }
+
     .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #ccc; /* Border between rows */
     }
 
 
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px;
-        justify-content: start;
-        align-items: center;
-        margin: 15px;
-    }
+    /*  .horizontal-container {
+            display: flex;
+            gap: 10px;
+            justify-content: start;
+            align-items: center;
+            margin: 15px;
+        } */
 
     .dx-selectbox .dx-texteditor-input {
         text-align: center;
@@ -22,19 +32,19 @@
 
 
 
-    .button-alignment-down {
-        margin-bottom: 10px
-    }
+    /*  .button-alignment-down {
+            margin-bottom: 10px
+        } */
 
-    #Narration {
-        overflow-y: auto;
-        resize: none;
-    }
+    /*    #Narration {
+            overflow-y: auto;
+            resize: none;
+        }
 
-    .dx-datagrid {
-        color: #000000;
-    }
-
+        .dx-datagrid {
+            color: #000000;
+        }
+     */
     .center-checkbox {
         display: block;
         margin-left: 0;
@@ -47,135 +57,210 @@
         align-items: center;
     }
 
-    #dataGrid .dx-header-row .dx-datagrid-text-content {
-        
-        color: black;
-    }
 </style>
-<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="card-header" style=" color: black; ">
-        FinancesModules - Chart Of Cost Centers
+<input id="formId" value="uc20103ChartOfCostCenters" type="hidden" />
+<div class="title">
+    <div class="header-container">
+        <div id="ChartOfCostCenters" class="no-border-title"></div>
     </div>
-    <div class="card-body" style="padding: 20px; background-color: white; border-radius: 5px;">
-        <div id="dataGridContainer" class="dx-field ledgerResult">
-            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20108ChartOfCostCenter>()
-                .ID("dataGrid")
-                .KeyExpr("CostAllocationUnit")
-                .RemoteOperations(false)
-                .DataSource(ds => ds.Mvc()
-                .Controller("ChartOfCostCenters")
-                .LoadAction("GetChartOfCostCenters"))
-                .Columns(columns =>
+</div>
+<div>
+    @await Html.PartialAsync("FooterChartOfCostCenters")
+</div>
+@* <div id="popupContainer"></div> *@
+
+<div class="dx-field chartOfCostCenters">
+
+    @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20108ChartOfCostCenter>()
+        .ID("dataGrid")
+        .KeyExpr("CostAllocationUnit")
+        .RemoteOperations(false)
+        .DataSource(ds => ds.Mvc()
+        .Controller("ChartOfCostCenters")
+        .LoadAction("GetChartOfCostCenters"))
+        .Columns(columns =>
+        {
+            columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+        <a href="/development/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank" style="color: #0398fc; text-decoration: underline;">
+            <%-data.CostAllocationUnitId%>
+        </a>
+    </text>);
+            columns.Add().DataField("CostAllocationUnit").Caption("Cost Center Unit").Alignment(HorizontalAlignment.Left);
+            columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Center Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
+            columns.Add().DataField("CostAllocationGroup").Caption("Cost Center Group").Alignment(HorizontalAlignment.Center).GroupIndex(1);
+            columns.Add().DataField("IsDisabled").Caption("Is Disabled").CellTemplate(@<text>
+        <input type="checkbox" class="dx-checkbox" />
+    </text>
+        );
+            columns.AddFor(m => m.CreatedBy)
+            .Caption("Created By")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.CreatedOn)
+            .Caption("Created On")
+            .Alignment(HorizontalAlignment.Center)
+            .Visible(false);
+
+            columns.AddFor(m => m.ModifiedBy)
+            .Caption("Modified By")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.ModifiedOn)
+            .Caption("Modified On")
+            .Alignment(HorizontalAlignment.Center)
+            .Visible(false);
+
+
+            columns.AddFor(m => m.CostUnitRemarks)
+            .Caption("Cost Unit Remarks")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.CostCenterIncharge)
+            .Caption("Cost Center Incharge")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.ProjectDescription)
+            .Caption("Project Description")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.ProjectDuration)
+            .Caption("Project Duration")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.ProjectLocation)
+            .Caption("Project Location")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.ProjectMasterCode)
+            .Caption("Project Master Code")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.BranchCode)
+            .Caption("Branch Code")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.BranchName)
+            .Caption("Branch Name")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+            columns.AddFor(m => m.BranchNameAr)
+            .Caption("Branch Name (Arabic)")
+            .Alignment(HorizontalAlignment.Left)
+            .Visible(false);
+
+        })
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(true))
+        .Height(500)
+        .ColumnAutoWidth(true)
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+        .Width("100%")
+        .OnInitialized("dataGridInitialized") // Store the DataGrid instance
+        .OnContextMenuPreparing("onContextMenuPreparing") // Handle right-click event
+        .OnRowPrepared("onRowPrepared")       // Handle row appearance dynamically
+        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .Paging(paging => paging.Enabled(true))
+        .Scrolling(scrolling => scrolling
+        .Mode(GridScrollingMode.Virtual) // or "infinite" for endless scroll
+        .RowRenderingMode(GridRowRenderingMode.Virtual) // This ensures virtual row rendering for performance
+        .PreloadEnabled(true) // Preloads data in the background for smoother scrolling
+        .ScrollByContent(true) // Enables scrolling by content (no need to have pagination)
+        )
+        )
+</div>
+
+
+
+
+
+
+
+
+
+<script>
+    let dataGridInstance = null; // Store the DataGrid instance globally
+    let selectedRowData = null; // Store the selected row data
+
+    // Store the DataGrid instance when it's initialized
+    function dataGridInitialized(e) {
+        dataGridInstance = e.component;
+    }
+
+    // Handle the context menu event
+    function onContextMenuPreparing(e) {
+        if (e.row && e.row.rowType === "data") {
+            // Row was right-clicked
+            e.items = [
                 {
-                    columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-                <a href="/development/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank">
-                    <%-data.CostAllocationUnitId%>
-                </a>
-            </text>);
-                    columns.Add().DataField("CostAllocationUnit").Caption("Cost Center Unit").Alignment(HorizontalAlignment.Center);
-                    columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Center Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
-                    columns.Add().DataField("CostAllocationGroup").Caption("Cost Center Group").Alignment(HorizontalAlignment.Center).GroupIndex(1);
-                    columns.Add().DataField("IsDisabled").Caption("Is Disabled").CellTemplate(@<text>
-                <input type="checkbox" class="dx-checkbox" />
-            </text>);
-                })
-                .AllowColumnReordering(true)
-                .AllowColumnResizing(true)
-                .ColumnFixing(fixing => fixing.Enabled(true))
-                .HeaderFilter(filter => filter.Visible(true))
-                .Height(400)
-                .ColumnAutoWidth(true)
-                .FilterRow(filterRow => filterRow.Visible(false))
-                .Grouping(grouping => grouping.AutoExpandAll(true))
-                .GroupPanel(groupPanel => groupPanel.Visible(false))
-                .ShowBorders(true)
-                .Width("100%")
-                .OnInitialized("dataGridInitialized") // Store the DataGrid instance
-                .OnContextMenuPreparing("onContextMenuPreparing") // Handle right-click event
-                .OnRowPrepared("onRowPrepared")       // Handle row appearance dynamically
-
-                )
-        </div>
-
-
-
-        <div>
-            @await Html.PartialAsync("FooterChartOfCostCenters")
-        </div>
-    </div>
-
-
-
-
-    <script>
-        let dataGridInstance = null; // Store the DataGrid instance globally
-        let selectedRowData = null; // Store the selected row data
-
-        // Store the DataGrid instance when it's initialized
-        function dataGridInitialized(e) {
-            dataGridInstance = e.component;
-        }
-
-        // Handle the context menu event
-        function onContextMenuPreparing(e) {
-            if (e.row && e.row.rowType === "data") {
-                // Row was right-clicked
-                e.items = [
-                    {
-                        text: "Edit Cost Center",
-                        onItemClick: function () {
-                            selectedRowData = e.row.data; // Get the row data
+                    text: "Edit Cost Center",
+                    onItemClick: function () {
+                        selectedRowData = e.row.data; // Get the row data
                         //   alert(selectedRowData.IsDisabled);
-                          //    alert(selectedRowData.CostUnitRemarks);
-                               // alert(selectedRowData.CostCenterIncharge);
-                            if (!selectedRowData) {
-                                alert("No row selected");
-                            } else {
-                                // Navigate to the EditCostCenter page
-                                window.location.href = `/development/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
-                                    //&CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
-                            }
+                        //    alert(selectedRowData.CostUnitRemarks);
+                        // alert(selectedRowData.CostCenterIncharge);
+                        if (!selectedRowData) {
+                            alert("No row selected");
+                        } else {
+                            // Navigate to the EditCostCenter page
+                            window.location.href = `/development/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+                            //&CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
                         }
-                    },
-                        {
-                            text: "Delete Cost Center",
-                            onItemClick: function () {
-                                selectedRowData = e.row.data; // Get the row data
-                               // alert(selectedRowData.CostAllocationUnitId);
-                               // alret(selectedRowData.CreatedBy);
-                               // alert(selectedRowData.CreatedOn);
+                    }
+                },
+                {
+                    text: "Delete Cost Center",
+                    onItemClick: function () {
+                        selectedRowData = e.row.data; // Get the row data
+                        // alert(selectedRowData.CostAllocationUnitId);
+                        // alret(selectedRowData.CreatedBy);
+                        // alert(selectedRowData.CreatedOn);
 
-                                if (!selectedRowData) {
-                                    alert("No row selected");
-                                } else {
-                                    if (confirm(`You are about to delete the Cost Center from the database, Click Ok if you would like to continue.`)) {
-                                        // Perform delete operation via AJAX
-                                        $.post(`/api/ChartOfCostCenters/DeleteCostCenter?id=${encodeURIComponent(selectedRowData.CostAllocationUnitId)}`, function (response) {
-                                            if (response.success) {
-                                                alert("Cost Center has been successfully removed from the database.");
-                                                dataGridInstance.refresh(); // Refresh the grid
-                                            } else {
-                                                // Display the error message from the server response
-                                                alert(response.message); // Display the custom error message (e.g., for Common Overheads)
-                                            }
-                                        });
+                        if (!selectedRowData) {
+                            alert("No row selected");
+                        } else {
+                            if (confirm(`You are about to delete the Cost Center from the database, Click Ok if you would like to continue.`)) {
+                                // Perform delete operation via AJAX
+                                $.post(`/api/ChartOfCostCenters/DeleteCostCenter?id=${encodeURIComponent(selectedRowData.CostAllocationUnitId)}`, function (response) {
+                                    if (response.success) {
+                                        alert("Cost Center has been successfully removed from the database.");
+                                        dataGridInstance.refresh(); // Refresh the grid
+                                    } else {
+                                        // Display the error message from the server response
+                                        alert(response.message); // Display the custom error message (e.g., for Common Overheads)
                                     }
-                                }
+                                });
                             }
                         }
-
-                ];
-            }
-        }
-            function onRowPrepared(e) {
-                // Check if the rowType is "data" and the rowElement is available
-                if (e.rowType === "data" && e.rowElement && e.data.IsDisabled) {
-                    // Set the background color for the row
-                    $(e.rowElement).css("background-color", "rgb(255, 192, 192)"); // Light red for disabled rows
+                    }
                 }
-            }
 
-    </script>
+            ];
+        }
+    }
+    function onRowPrepared(e) {
+        // Check if the rowType is "data" and the rowElement is available
+        if (e.rowType === "data" && e.rowElement && e.data.IsDisabled) {
+            // Set the background color for the row
+            $(e.rowElement).css("background-color", "rgb(255, 192, 192)"); // Light red for disabled rows
+        }
+    }
+
+</script>
 
 
 

@@ -14,7 +14,7 @@
 
 
 
-    .horizontal-container {
+    .horizontal-container1 {
         display: flex;
         gap: 10px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
@@ -54,8 +54,8 @@
         background-color: white; /* Blue background */
         color: black; /* White text */
         padding: 20px; /* Padding around the header */
-        
-        display: flex; /* Flex container for alignment */
+
+        display: flex; /* Flex container1 for alignment */
         align-items: center; /* Vertically align icon and text */
     }
 
@@ -107,41 +107,64 @@
 
     label {
         color: black;
-        
+
     }
 </style> *@
-<div id="costAllocationPopup" style="display:none;">
-    <div style="margin-bottom:10px">
-        @(Html.DevExtreme().Button()
-            .ID("btnSaveCostAllocation")
-            .Icon("save")
-            .Text("Save")
-            .OnClick("function() { saveCostAllocation(); }")
-            )
-    </div>
-</div>
+<style>
+    .container {
+        display: none !important;
+    }
 
-<div class="card">
-    <div class="content-container-top"style="background-color:white">
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+</style>
+<div>
+    <div id="costAllocationPopup" style="display:none;">
+        <div style="margin-bottom:10px">
+            @(Html.DevExtreme().Button()
+                .ID("btnSaveCostAllocation")
+                .Icon("save")
+                .Text("Save")
+                .OnClick("function() { saveCostAllocation(); }")
+                )
+        </div>
+    </div>
+
+    <div class="content-container1-top" style="background-color:white">
         <div class="card-header">
             <i class="fas fa-pen-nib header-icon"></i> <!-- Font Awesome pen nib icon -->
             <span class="header-text">Cost Center's</span>
         </div>
 
         <br />
-@*         <div class="container">
-            <div class="card">
-                <h5 style="margin-left:10px;">Cost Center Details</h5>
-            </div>
+        @*         <div class="container1">
+        <div class="card">
+        <h5 style="margin-left:10px;">Cost Center Details</h5>
+        </div>
         </div> *@
 
 
-        <div class="container">
+        <div class="container1">
 
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label for="CostAllocationUnitID" >
+                        <label for="CostAllocationUnitID">
                             Cost Center Code:
                         </label>
                     </div>
@@ -162,7 +185,7 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label for="CostAllocationUnit" >
+                        <label for="CostAllocationUnit">
                             Cost Center Unit:
                         </label>
                     </div>
@@ -179,7 +202,7 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label for="CostCenterGroup" >
+                        <label for="CostCenterGroup">
                             Cost Center Group:
                         </label>
                     </div>
@@ -210,7 +233,7 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-md-2">
-                        <label for="CostUnitRemarks" >
+                        <label for="CostUnitRemarks">
                             Cost Center Remarks:
                         </label>
                     </div>
@@ -229,7 +252,7 @@
                 <div class="col-md-5">
                     <div class="form-group">
 
-                        <label for="CostCenterIncharge" >
+                        <label for="CostCenterIncharge">
                             Cost Center Incharge:
                         </label>
                         @(Html.DevExtreme().TextBox().ID("CostCenterIncharge").Value(null).Width("100%"))
@@ -245,7 +268,8 @@
                     <div class="form-group">
                         <label for="Branch" style=" display: flex; justify-content: space-between; align-items: center;">
                             <span>Project:</span>
-                            <span class="right-text">Add from the Project</span>
+                            <a class="right-text" style="color: #0398fc; text-decoration: underline;">Add from the Project</a>
+
                         </label>
 
 
@@ -284,7 +308,7 @@
                 <!-- Dropdown Section -->
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label for="Branch" >Division/Branch:</label>
+                        <label for="Branch">Division/Branch:</label>
                         @(Html.DevExtreme().DropDownBox()
                             .DataSource(d => d.WebApi()
                             .Controller("CostCenterMaster")
@@ -328,17 +352,17 @@
     </div>
     <br />
     <hr />
-    <div class="container">
+    <div class="container1">
         <div class="row">
             <div class="col-md-2">
-                <label for="CreatedBy" >Created By:</label>
+                <label for="CreatedBy">Created By:</label>
             </div>
             <div class="col-md-2">
                 @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(false))
             </div>
 
             <div class="col-md-2">
-                <label for="CreatedOn" >Created On:</label>
+                <label for="CreatedOn">Created On:</label>
             </div>
             <div class="col-md-2">
                 @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(false))
@@ -347,14 +371,14 @@
 
         <div class="row">
             <div class="col-md-2">
-                <label for="ModifiedBy" >Modified By:</label>
+                <label for="ModifiedBy">Modified By:</label>
             </div>
             <div class="col-md-2">
                 @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(false))
             </div>
 
             <div class="col-md-2">
-                <label for="ModifiedOn" >Modified On:</label>
+                <label for="ModifiedOn">Modified On:</label>
             </div>
             <div class="col-md-2">
                 @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(false))
@@ -364,9 +388,9 @@
     </div>
 
     <br />
-    <div class="container">
+    <div class="container1">
         <div class="card-footer">
-            <div class="dx-fieldset horizontal-container mt-2">
+            <div class="dx-fieldset horizontal-container1 mt-2">
 
                 @(Html.DevExtreme().Button()
                     .ID("btnSave")
@@ -376,12 +400,12 @@
                     .Icon("save")
                     )
                 @* @(Html.DevExtreme().Button()
-                    .ID("btnUpdate")
-                    .Text("Update")
-                    .Type(ButtonType.Normal)
-                    .StylingMode(ButtonStylingMode.Outlined)
-                    .Icon("save")
-                    )   *@
+                .ID("btnUpdate")
+                .Text("Update")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                )   *@
                 @(Html.DevExtreme().Button()
                     .ID("btnBack")
                     .Text("Back")
@@ -466,9 +490,8 @@
             })
             )
     }
-
-
 </div>
+
 
 
 
@@ -613,8 +636,8 @@
         if (costAllocationUnitId) {
             // Change the Save button to Update
             // $("#btnSave").text("Update");
-              var button = $("#btnSave").dxButton("instance");
-             button.option("text", "Update");
+            var button = $("#btnSave").dxButton("instance");
+            button.option("text", "Update");
 
             // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
             $.ajax({
@@ -622,7 +645,7 @@
                 type: "GET",
                 success: function (response) {
                     if (response.success) {
-                       //alert(response.data.IsDisabled);
+                        //alert(response.data.IsDisabled);
                         //alert(formatDate(response.data.CreatedOn));
                         // Bind data to form fields
                         $("#CostAllocationUnitID").dxTextBox("instance").option("value", response.data.CostAllocationUnitId);
@@ -641,7 +664,7 @@
                         $("#ModifiedBy").dxTextBox("instance").option("value", response.data.ModifiedBy);
                         $("#ModifiedOn").dxTextBox("instance").option("value", formatDate(new Date()));
                     } else {
-                     //   alert(response.message);
+                        //   alert(response.message);
                     }
                 },
                 error: function () {
@@ -709,15 +732,15 @@
 
 
 
-           // CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
-         // let CreatedOn = $("#CreatedOn").dxTextBox("instance").option("value"); // Get CreatedOn value
+            // CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
+            // let CreatedOn = $("#CreatedOn").dxTextBox("instance").option("value"); // Get CreatedOn value
             const ModifiedBy = $("#ModifiedBy").dxTextBox("instance").option("value");
             const ModifiedOn = new Date().toISOString(); // Current date in ISO format
 
             // Ensure CreatedOn is a valid date or null
             //if (!CreatedOn || !Date.parse(CreatedOn)) {
-             //   CreatedOn = null;  // Set CreatedOn to null if it's invalid or empty
-           // }
+            //   CreatedOn = null;  // Set CreatedOn to null if it's invalid or empty
+            // }
 
             const data = {
                 CostAllocationUnitId: costAllocationUnitId,
@@ -729,8 +752,8 @@
                 ProjectMasterCode: projectMasterCode,
                 BranchCode: branchCode,
                 IsDisabled: isDisabled,
-               //CreatedBy: CreatedBy,
-               //CreatedOn: CreatedOn,
+                //CreatedBy: CreatedBy,
+                //CreatedOn: CreatedOn,
                 ModifiedBy: ModifiedBy,
                 ModifiedOn: ModifiedOn
 
@@ -744,7 +767,9 @@
                 success: function (response) {
                     if (response.success) {
                         DevExpress.ui.notify(response.message, "success", 3000);
-                         // location.reload();
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }
@@ -834,10 +859,13 @@
                         success: function (response) {
                             if (response.success) {
                                 DevExpress.ui.notify(response.message, "success", 3000);
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 3000);
                                 // Change button label to "Update"
-                              //  location.reload();
-                                var button = $("#btnSave").dxButton("instance");
-                                button.option("text", "Update");
+
+                                // var button = $("#btnSave").dxButton("instance");
+                                // button.option("text", "Update");
 
                             } else {
                                 DevExpress.ui.notify(response.message, "error", 3000);
