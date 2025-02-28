@@ -1,4 +1,47 @@
-﻿<!DOCTYPE html>
+﻿﻿@using System.IdentityModel.Tokens.Jwt
+@using System.Linq
+@using Microsoft.AspNetCore.Http
+
+@{
+    string userName = "";
+    string userId = "";
+    string tenantName = "";
+    string companyName = "";
+
+    var authToken = Context.Request.Cookies["AuthToken"];
+    if (!string.IsNullOrEmpty(authToken))
+    {
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(authToken);
+
+            userName = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            tenantName = jwtToken.Claims.FirstOrDefault(c => c.Type == "TenantName")?.Value;
+            companyName = jwtToken.Claims.FirstOrDefault(c => c.Type == "CompanyName")?.Value; // Extract Company Name
+
+            Context.Session.SetString("UserName", userName ?? "");
+            Context.Session.SetString("UserId", userId ?? "");
+            Context.Session.SetString("TenantName", tenantName ?? "");
+            Context.Session.SetString("CompanyName", companyName ?? ""); // Store Company Name
+        }
+        catch (Exception ex)
+        {
+            userName = "Error decoding token: " + ex.Message;
+        }
+    }
+    else
+    {
+        userName = "No AuthToken found.";
+    }
+}
+
+@{
+    userName = Context.Session.GetString("UserName") ?? "Guest";
+    // CompanyName = Context.Session.GetString("CompanyName") ?? "Guest";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -147,7 +190,7 @@
 
         /* Toggle button */
         .toggle-btn {
-            position: absolute;
+            position: fixed;
             top: 70px;
             /* left: calc(var(--sidebar-width, 17em)); /* Use the sidebar width */
             width: 30px;
@@ -160,7 +203,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            /* z-index: 1000; */
+            z-index: 1000;
             transition: left 0.3s ease; /* Smooth transition */
         }
 
@@ -425,7 +468,18 @@
         }
 
 
-
+        .userName{
+            padding:5px;
+            background-color:aliceblue;
+            width: 15em;
+        }
+        .companyName{
+            margin-right: auto;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
 
 
         /* Ensure iframe takes full size */
@@ -497,6 +551,10 @@
         <div class="image">
             <img src="~/images/Pulse.png" alt="Pulse Logo" />
         </div>
+        <div class="companyName">
+                @* <p>@CompanyName</p> *@
+            @tenantName
+        </div>
         <div>
                 @(Html.DevExtreme().SelectBox()
                     .Label(new JS("formatMessage('Language')"))
@@ -518,6 +576,9 @@
             <div class="dropdown">
                 <i class="fa-solid fa-user img" onclick="toggleDropdown()"></i>
                 <div id="userDropdown" class="dropdown-menu">
+                    <div class="userName">
+                        Welcome, @userName &#128513;!
+                    </div>
                     <a href="#" onclick="logout()">Logout</a>
                 </div>
             </div>
@@ -858,13 +919,265 @@
             </main>
         </div>
     </div>
+    @* <div id="idleModal" class="modal" tabindex="-1"> *@
+    @*     <div class="modal-dialog"> *@
+    @*         <div class="modal-content"> *@
+    @*             <div class="modal-header"> *@
+    @*                 <h5 class="modal-title">Session Timeout</h5> *@
+    @*             </div> *@
+    @*             <div class="modal-body"> *@
+    @*                 <p>You have been idle for 1 minute. Do you want to stay logged in?</p> *@
+    @*                 <p>Session will expire in <span id="countdownTimer">00:60</span>.</p> *@
+    @*             </div> *@
+    @*             <div class="modal-footer"> *@
+    @*                 <button id="stayLoggedIn" class="btn btn-primary">Stay Logged In</button> *@
+    @*                 <button id="logout" class="btn btn-secondary">Log Out</button> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*     </div> *@
+    @* </div> *@
     <footer class="text-center py-3 footerContainer">
         <p><b>Copyright &copy; @DateTime.Now.Year Pulse InfoTech.</b> All rights reserved.</p>
     </footer>
         <script src="~/js/localization.js" asp-append-version="true"></script>
 
     <script>
-        // Function for Bell icon click - show notifications popup
+        var authToken = '@authToken';
+
+        var tenantName = '@tenantName';
+
+        var userName = '@userName';
+
+        var userId = '@userId';
+
+        $(document).ready(function () {
+
+            if (authToken) {
+
+                var decodedToken = jwt_decode(authToken);
+
+                var tokenExpiry = new Date(decodedToken.exp * 1000); // Token expiry time in milliseconds
+
+                var currentTime = new Date();
+
+                // Store token expiry in sessionStorage for use across reloads
+
+                sessionStorage.setItem('TokenExpiry', tokenExpiry);
+
+                 monitorTokenExpiry();
+
+                // Initialize idle timeout handling
+
+                setupIdleTimeout();
+
+                 // Function to monitor token expiry and extend session
+
+            function monitorTokenExpiry() {
+
+                // Set interval to check the token expiry every 30 seconds
+
+                setInterval(function () {
+
+                    var tokenExpiry = new Date(sessionStorage.getItem('TokenExpiry')); // Get updated expiry
+
+                    var currentTime = new Date();
+
+                    var timeToExpiry = (tokenExpiry - currentTime) / 1000; // Time left in seconds
+
+                    // If token will expire in less than 2 minutes, extend the session
+
+                    if (timeToExpiry <= 120 && timeToExpiry > 0) {
+
+                        console.log('Token is about to expire. Extending session...');
+
+                        extendSession();
+
+                    }
+
+                }, 30000); // Check every 30 seconds
+
+            }
+
+                // Function to setup idle timeout logic
+
+                function setupIdleTimeout() {
+
+                    var countdown;
+
+                    var countdownTime = 60; // Countdown for 30 seconds
+
+                    var countdownInterval;
+
+                    $(document).idle({
+
+                        idle: 5 * 60 * 1000, // 15 minutes of inactivity
+
+                        onIdle: function () {
+
+                            // Show the modal when the user is idle for 15 minutes
+
+                            $('#idleModal').modal('show');
+
+                            // Start countdown
+
+                            countdown = countdownTime;
+
+                            updateCountdownDisplay(countdown);
+
+                            countdownInterval = setInterval(function () {
+
+                                countdown--;
+
+                                updateCountdownDisplay(countdown);
+
+                                // If countdown reaches 0, log out automatically
+
+                                if (countdown <= 0) {
+
+                                    clearInterval(countdownInterval);
+
+                                    autoLogout();
+
+                                }
+
+                            }, 1000);
+
+                        },
+
+                        onActive: function () {
+
+                            // If user becomes active again, stop countdown and hide the modal
+
+                        },
+
+                        keepTracking: true,
+
+                    });
+
+                    // Handle "Stay Logged In" button
+
+                    $('#stayLoggedIn').on('click', function () {
+
+                        $('#idleModal').modal('hide');
+
+                        clearInterval(countdownInterval); // Stop countdown
+
+                        extendSession(); // Extend session when user stays logged in
+
+                    });
+
+                    // Handle "Log Out" button
+
+                    $('#logout').on('click', function () {
+
+                        clearInterval(countdownInterval); // Stop countdown
+
+                        autoLogout(); // Log out the user
+
+                    });
+
+                    // Function to update countdown display
+
+                    function updateCountdownDisplay(seconds) {
+
+                        var minutes = Math.floor(seconds / 60);
+
+                        var secondsLeft = seconds % 60;
+
+                        $('#countdownTimer').text(`${minutes}:${secondsLeft < 10 ? '0' + secondsLeft : secondsLeft}`);
+
+                    }
+
+                }
+
+                // Function to automatically log out the user
+
+                function autoLogout() {
+
+                    $.ajax({
+
+                        url: '/api/Login/SignOut', // Call the SignOut API
+
+                        type: 'GET', // HTTP method
+
+                        success: function (response) {
+
+                            sessionStorage.clear();
+
+                            alert(response.message);
+
+                            window.location.href = `/${tenantName}/Security/Login`; // Redirect to login page
+
+                        },
+
+                        error: function (xhr, status, error) {
+
+                            alert('An error occurred during sign-out');
+
+                        }
+
+                    });
+
+                }
+
+                // Function to extend the session
+
+                function extendSession() {
+
+                    $.ajax({
+
+                        url: '/api/Login/ExtendSession', // API endpoint for extending session
+
+                        type: 'POST',
+
+                        xhrFields: {
+
+                            withCredentials: true // Include cookies in the request
+
+                        },
+
+                        success: function (data) {
+
+                            if (data.success) {
+
+                                console.log('Session extended successfully.');
+
+                                // Update AuthToken and Permissions in sessionStorage
+
+                                sessionStorage.setItem('AuthToken', data.token);
+
+                                sessionStorage.setItem('Permissions', JSON.stringify(data.permissions));
+
+                                // Update the token expiry
+
+                                var newDecodedToken = jwt_decode(data.token);
+
+                                var newTokenExpiry = new Date(newDecodedToken.exp * 1000);
+
+                                sessionStorage.setItem('TokenExpiry', newTokenExpiry);
+
+                            } else {
+
+                                console.error('Failed to extend session:', data.message);
+
+                            }
+
+                        },
+
+                        error: function (xhr, status, error) {
+
+                            console.error('Error extending session:', error);
+
+                        }
+
+                    });
+
+                }
+
+            }
+
+        });
+
         function handleBellClick() {
             const notificationPopup = document.getElementById('notificationPopup');
             if (notificationPopup) {
@@ -1269,7 +1582,7 @@
             .then(data => {
                 if (data.success) {
                     // Redirect to login page after successful logout
-                    window.location.href = "/Pulse";
+                    window.location.href = "/{tenantName}";
                 } else {
                     alert("Logout failed. Please try again.");
                 }

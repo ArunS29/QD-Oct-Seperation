@@ -141,6 +141,7 @@ var excludedAreas = new[] { "Security", "Help" };
 builder.Services.AddSingleton<IEnumerable<string>>(excludedAreas);
 
 // **1.7 Add Authorization and Security**
+builder.Services.AddSession();
 
 builder.Services.AddAuthorization();
 

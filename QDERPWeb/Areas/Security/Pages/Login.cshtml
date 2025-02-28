@@ -4,7 +4,7 @@
     ViewData["Title"] = "Login";
     Layout = null;
 }
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/Demo.styles.css" asp-append-version="true" />
@@ -159,7 +159,7 @@
     .input-group-append {
         position: absolute;
         right: 10px;
-        top: 50%;
+        top: 65%;
         transform: translateY(-50%);
     }
 
@@ -230,6 +230,11 @@
             font-size: 16px;
             color: #ff0000;
             margin: 20px 0 0;
+        }
+        
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
         }
 
  </style>
@@ -328,8 +333,7 @@
 
     $('#togglePassword').click(function () {
         var passwordField = $('#password');
-        var type = passwordField.attr('type') === 'password' ? 'text' : 'password';
-        passwordField.attr('type', type);
+        passwordField.attr('type', passwordField.attr('type') === 'password' ? 'text' : 'password');
         $(this).find('i').toggleClass('fa-eye fa-eye-slash');
     });
 </script>
