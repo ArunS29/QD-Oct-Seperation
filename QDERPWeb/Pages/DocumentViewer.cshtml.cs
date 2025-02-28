@@ -127,7 +127,38 @@ namespace QD.ERP.Web.Pages
 
                 Report = new AccountExportLandscapeReport(AccountId, FrmDate, ToDate);
             }
+            else if (reportName == "AccountOrderbyVchNoWONarrationReport")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AccountOrderbyVchNoWONarrationReport.");
+                }
 
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new AccountOrderbyVchNoWONarrationReport(AccountId, FrmDate, ToDate);
+            }
+            else if (reportName == "BillsReceivablelandscapeformat")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for BillsReceivablelandscapeformat.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new BillsReceivablelandscapeformat(AccountId, FrmDate, ToDate);
+            }
             else
             {
                 switch (reportName)

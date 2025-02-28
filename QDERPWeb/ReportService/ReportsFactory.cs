@@ -3,13 +3,13 @@ using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Reports;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace QD.ERP.Web.ReportService
 {
     public static class ReportsFactory
     {
-        // Store reports with a function to generate them
         public static Dictionary<string, Func<XtraReport>> Reports = new Dictionary<string, Func<XtraReport>>()
         {
             ["StatementOfAccountReport"] = () => new StatementOfAccountReport(),
@@ -18,21 +18,32 @@ namespace QD.ERP.Web.ReportService
 
         public static XtraReport GetReportFromDatabase(string reportName, ReportDbContext dbContext)
         {
-            var reportData = dbContext.ReportAttributes.FirstOrDefault(x => x.ReportName == reportName);
-            if (reportData != null)
+            try
             {
-                // Create a new report from the stored layout XML data
-                XtraReport report = new XtraReport();
-                using (var stream = new MemoryStream(reportData.ReportXML))
+                var reportData = dbContext.ReportAttributes.FirstOrDefault(x => x.ReportName == reportName);
+
+                if (reportData != null)
                 {
-                    report.LoadLayoutFromXml(stream);  // Load the saved layout into the report
+                    XtraReport report = new XtraReport();
+
+                    using (var stream = new MemoryStream(reportData.ReportXML))
+                    {
+                        report.LoadLayoutFromXml(stream);  
+                    }
+
+                    return report;
                 }
-                return report;
+                else
+                {
+                    Console.WriteLine($"Report '{reportName}' not found in the database.");
+
+                    return null;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // If not found in the database, return null or throw exception if needed
-                return null;
+                Console.Error.WriteLine($"Error in GetReportFromDatabase for report '{reportName}': {ex.Message}");
+                throw new InvalidOperationException($"An error occurred while retrieving the report '{reportName}' from the database.", ex);
             }
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Reports;
 
+
 namespace QD.ERP.Web.Pages
 {
     public class ReportDesignerModel : PageModel
@@ -46,6 +47,9 @@ namespace QD.ERP.Web.Pages
                     break;
                 case "AccountOrderbyVchNoWONarrationReport":
                     Report = new AccountOrderbyVchNoWONarrationReport();
+                    break;
+                case "BillsReceivablelandscapeformat":
+                    Report = new BillsReceivablelandscapeformat();
                     break;
                 default:
                     return NotFound("Report not found.");

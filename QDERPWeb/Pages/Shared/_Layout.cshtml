@@ -650,8 +650,8 @@
                     <i class="fa fa-search"></i>
                     <span>Account Ledger - Statement of Account Export Format(Landscape)</span>
                 </div>
+                </div>
             </div>
-         </div>
         <div id="submenuContainer5" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="ChangeRowHeight(70)">
@@ -674,9 +674,9 @@
                     <i class="fa fa-file"></i>
                     <span>Bills Receivable (With Retention)</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-file"></i>
-                    <span>Bills Receivable (Landscape Format)</span>
+                <div class="submenu-item" onclick="handleClick('BillsReceivablelandscapeformat')">
+                    <i class="fa fa-search"></i>
+                    <span>BillsReceivablelandscapeformat</span>
                 </div>
                 <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
@@ -1230,6 +1230,11 @@
                 // Redirect to the AccountExportLandscapeReport
                 console.log("Redirecting to AccountExportLandscapeReport");
                 window.location.href = `/development/DocumentViewer?reportName=AccountExportLandscapeReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+            }
+             else if (selectedText === "BillsReceivablelandscapeformat") {
+                // Redirect to the AccountExportLandscapeReport
+                console.log("Redirecting to AccountExportLandscapeReport");
+                window.location.href = `/development/DocumentViewer?reportName=BillsReceivablelandscapeformat&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
             }
             else {
                 console.log("No matching report found for selectedText: ", selectedText);
