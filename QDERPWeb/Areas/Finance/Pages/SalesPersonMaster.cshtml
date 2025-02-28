@@ -156,8 +156,8 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("UserId");  // Ensure this matches the data field returned by the API
-                    columns.Add().DataField("UserName").Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("UserId").Caption(new JS("formatMessage('User Id')"));  // Ensure this matches the data field returned by the API
+                    columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')")).Alignment(HorizontalAlignment.Center);
                 })
                 )
         }
@@ -265,8 +265,8 @@
                             success: function (response) {
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Sales Person Updated',
-                                    text: 'The sales person has been successfully updated.',
+                                    title: formatMessage('Sales Person Updated'),
+                                    text: formatMessage('The sales person has been successfully updated.'),
                                     confirmButtonText: 'OK'
                                 });
                             },
@@ -276,7 +276,7 @@
                                     : "Validation error: " + "Invalid User Code";//xhr.responseText;
                                 Swal.fire({
                                     icon: 'error',
-                                    title: 'Error',
+                                    title: formatMessage('Error'),
                                     text: errorMessage,
                                     confirmButtonText: 'OK'
                                 });
@@ -310,10 +310,10 @@
                     //         allowClearing: true  // Allow clearing the selected value
                     //     }
                     // },
-                    { dataField: "UserCode", caption: "User Code", allowFiltering: false },
-                    { dataField: "SalesPersonName", caption: "Sales Person Name", allowFiltering: false },
-                    { dataField: "EmailAddress", caption: "Email Address", allowFiltering: false },
-                    { dataField: "SalesPersonContactNo", caption: "Sales Person Contact Number", allowFiltering: false }
+                    { dataField: "UserCode", caption: formatMessage("User Code"), allowFiltering: false },
+                    { dataField: "SalesPersonName", caption: formatMessage("Sales Person Name"), allowFiltering: false },
+                    { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: false },
+                    { dataField: "SalesPersonContactNo", caption: formatMessage("Sales Person Contact Number"), allowFiltering: false }
                 ],
                 showBorders: true,
                 paging: {
@@ -334,7 +334,7 @@
                             widget: "dxButton",
                             options: {
                                 icon: "save",  // Icon for the Save button
-                                text: "Update",  // Text alongside the icon
+                                text: formatMessage("Update"),  // Text alongside the icon
                                 onClick: function () {
                                     $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
                                 }
@@ -345,7 +345,7 @@
                             widget: "dxButton",  // Adding Cancel button
                             options: {
                                 icon: "close",  // Icon for Cancel button
-                                text: "Cancel",  // Text for Cancel button
+                                text: formatMessage("Cancel"),  // Text for Cancel button
                                 onClick: function () {
                                     $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
                                 }
@@ -356,7 +356,7 @@
                             widget: "dxButton", // Add the Back button
                             options: {
                                 icon: "arrowleft", // You can choose another icon if you'd like
-                                text: "Back",
+                                text: formatMessage("Back"),
                                 onClick: function () {
                                     window.close(); // This closes the current window/tab
                                 }
@@ -368,16 +368,16 @@
                 onRowUpdated: function (e) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Row Updated',
-                        text: 'The row data was successfully updated.',
+                        title: formatMessage('Row Updated'),
+                        text: formatMessage('The row data was successfully updated.'),
                         confirmButtonText: 'OK'
                     });
                 },
                 onRowRemoved: function (e) {
                     Swal.fire({
                         icon: 'info',
-                        title: 'Row Removed',
-                        text: 'The row has been removed from the grid.',
+                        title: formatMessage('Row Removed'),
+                        text: formatMessage('The row has been removed from the grid.'),
                         confirmButtonText: 'OK'
                     });
                 },
@@ -427,8 +427,8 @@
                     success: function (response) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Sales Person Added Successfully',
-                            text: 'The new sales person has been added to the list.',
+                            title: formatMessage('Sales Person Added Successfully'),
+                            text: formatMessage('The new sales person has been added to the list.'),
                             confirmButtonText: 'OK'
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -443,15 +443,15 @@
 
                          Swal.fire({
                                         icon: 'error',
-                            title: 'Duplicate SalesPerson/ Project Manager Code',
-                            text: 'This SalesPerson/ Project Manager Code already exists! Please choose a different name.',
+                            title: formatMessage('Duplicate SalesPerson/ Project Manager Code'),
+                            text: formatMessage('This SalesPerson/ Project Manager Code already exists! Please choose a different name.'),
                                         confirmButtonText: 'OK'
 
                                     });
                     }
                 });
             } else {
-                DevExpress.ui.notify("Please fill required details!", "error", 2000);
+                DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
             }
 
 
@@ -473,8 +473,8 @@
         if (!salesPersonName || !userCode || !emailAddress || !salesPersonContactNo || !SalesPersonCode) {
             Swal.fire({
                 icon: 'warning',
-                title: 'Incomplete Form',
-                text: 'Please fill in all fields before submitting.',
+                title: formatMessage('Incomplete Form'),
+                text: formatMessage('Please fill in all fields before submitting.'),
                 confirmButtonText: 'OK'
             });
             return; // Stop further processing if fields are not filled
@@ -498,8 +498,8 @@
             success: function (response) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Sales Person Updated',
-                    text: 'The salesperson data has been successfully updated.',
+                    title: formatMessage('Sales Person Updated'),
+                    text: formatMessage('The salesperson data has been successfully updated.'),
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -513,7 +513,7 @@
                     : "Validation error: " + xhr.responseText;
 
                 Swal.fire({
-                    icon: 'error',
+                    icon: formatMessage('error'),
                     title: 'Error',
                     text: errorMessage,
                     confirmButtonText: 'OK'
@@ -597,7 +597,7 @@
             // Check if the email is valid
             if (!tempInput.checkValidity()) {
                 DevExpress.ui.notify({
-                    message: "Your Email ID is Invalid",
+                    message: formatMessage("Your Email ID is Invalid"),
                     type: "error",
                     displayTime: 3000
 
@@ -607,7 +607,7 @@
                 $("#txtEmailAddress").dxTextBox("instance").option("value", "");
             } else {
                 DevExpress.ui.notify({
-                    message: "Your Email ID is valid",
+                    message: formatMessage("Your Email ID is valid"),
                     type: "success",
                     displayTime: 3000,
                     position: { my: "top right", at: "top right", of: window, offset: "0 30" }
@@ -626,7 +626,7 @@
             // Check if the contact number is valid
             if (!regex.test(contactNumber)) {
                 DevExpress.ui.notify({
-                    message: "Please enter a valid 10-digit contact number.",
+                    message: formatMessage("Please enter a valid 10-digit contact number."),
                     type: "error",
                     displayTime: 3000,
                     position: { my: "top right", at: "top right", of: window, offset: "0 50" }
@@ -636,7 +636,7 @@
                 $("#txtSalesPersonContactNo").dxTextBox("instance").option("value", "");
             } else {
                 DevExpress.ui.notify({
-                    message: "Contact Number is valid.",
+                    message: formatMessage("Contact Number is valid."),
                     type: "success",
                     displayTime: 3000,
                     position: { my: "top right", at: "top right", of: window, offset: "0 50" }

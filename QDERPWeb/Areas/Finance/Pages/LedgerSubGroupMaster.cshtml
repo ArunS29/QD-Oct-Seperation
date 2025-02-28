@@ -203,9 +203,9 @@
                 }
             },
             columns: [
-                { dataField: "LedgerSubGroupCode", caption: "Sub Group Code", width: 100, editorOptions: { readOnly: true } },
-                { dataField: "SubGroupName", caption: "Sub Group Name" },
-                { dataField: "SubGroupNameAr", caption: "Sub Group Name (Arabic)" }
+                { dataField: "LedgerSubGroupCode", caption: formatMessage("Sub Group Code"), width: 100, editorOptions: { readOnly: true } },
+                { dataField: "SubGroupName", caption: formatMessage("Sub Group Name") },
+                { dataField: "SubGroupNameAr", caption: formatMessage("Sub Group Name (Arabic)") }
             ],
             showBorders: true,
             paging: {
@@ -226,7 +226,7 @@
                         widget: "dxButton",
                         options: {
                             icon: "save",
-                            text: "Update",
+                            text: formatMessage("Update"),
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").saveEditData();
                             }
@@ -237,7 +237,7 @@
                         widget: "dxButton",
                         options: {
                             icon: "close",
-                            text: "Cancel",
+                            text: formatMessage("Cancel"),
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").cancelEditData();
                             }
@@ -248,7 +248,7 @@
                         widget: "dxButton",
                         options: {
                             icon: "arrowleft",
-                            text: "Back",
+                            text: formatMessage("Back"),
                             onClick: function () {
                                 window.close();
                             }
@@ -261,24 +261,24 @@
             onRowUpdated: function (e) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Row Updated',
-                    text: 'The row data was successfully updated.',
+                    title: formatMessage('Row Updated'),
+                    text: formatMessage('The row data was successfully updated.'),
                     confirmButtonText: 'OK'
                 });
             },
             onRowInserted: function (e) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Row Inserted',
-                    text: 'A new row was added successfully.',
+                    title: formatMessage('Row Inserted'),
+                    text: formatMessage('A new row was added successfully.'),
                     confirmButtonText: 'OK'
                 });
             },
             onRowRemoved: function (e) {
                 Swal.fire({
                     icon: 'info',
-                    title: 'Row Removed',
-                    text: 'The row has been removed from the grid.',
+                    title: formatMessage('Row Removed'),
+                    text: formatMessage('The row has been removed from the grid.'),
                     confirmButtonText: 'OK'
                 });
             },
@@ -311,8 +311,8 @@
                 success: function () {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Added!',
-                        text: 'The Sub Group has been added.',
+                        title: formatMessage('Added!'),
+                        text: formatMessage('The Sub Group has been added.'),
                         confirmButtonText: 'OK'
                     }).then(function () {
                         location.reload(); // Refresh grid
@@ -321,8 +321,8 @@
                 error: function (xhr) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error',
-                        text: 'An error occurred while adding the subgroup.',
+                        title: formatMessage('Error'),
+                        text: formatMessage('An error occurred while adding the subgroup.'),
                         confirmButtonText: 'OK'
                     });
                 }

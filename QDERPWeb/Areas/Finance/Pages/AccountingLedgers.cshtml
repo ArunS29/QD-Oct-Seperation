@@ -565,13 +565,13 @@
 								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 								.Columns(columns =>
 								{
-									columns.Add().DataField("AccountId");
-									columns.Add().DataField("AccountHead").Width(400);
-							        columns.Add().DataField("AccountHeadArabic");
-									columns.Add().DataField("MasterGroup");
-									columns.Add().DataField("AccountGroup");
-									columns.Add().DataField("ReferenceNo");
-									columns.Add().DataField("IsLedgerObselete");
+										columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+										columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width(400);
+										columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+										columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')"));
+										columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
+										columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
+										columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')"));
 								})
 							)
 }

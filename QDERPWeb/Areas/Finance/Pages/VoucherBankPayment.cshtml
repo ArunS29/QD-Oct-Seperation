@@ -858,7 +858,7 @@
                                             .LabelMode(EditorLabelMode.Outside)
                                             .ID("VoucherType")
                                             .DataSource(new[] { "Bank Payment" })
-                                                .Value("Bank Payment")
+                                                .Value(new JS("formatMessage('Bank Payment')"))
                                             .Width(520)
                                             .Disabled(true)
                                                 
@@ -1892,9 +1892,7 @@
             } else {
                 if(IsNotification==true)
                 {
-                        DevExpress.ui.dialog.alert(
-                    "Cannot continue saving with errors,please clear the errors and continue.",
-                    "Clear Errors"
+                        DevExpress.ui.dialog.alert(formatMessage('Cannot continue saving with errors,please clear the errors and continue.'),formatMessage('Clear Errors')
                 );
                 }
                 else

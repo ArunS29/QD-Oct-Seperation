@@ -1868,7 +1868,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("AccountGroup");
+                columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
             })
             )
     }
@@ -1932,7 +1932,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BranchName");
+                columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')"));
             })
             )
     }
@@ -1964,7 +1964,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("SubGroupName");
+                columns.Add().DataField("SubGroupName").Caption(new JS("formatMessage('Sub Group Name')"));
             })
             )
     }
@@ -1996,7 +1996,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("SalesPersonName");
+                columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
             })
             )
     }
@@ -2027,7 +2027,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BuyerIDTypeName");
+                columns.Add().DataField("BuyerIDTypeName").Caption(new JS("formatMessage('Buyer ID Type Name')"));
             })
             )
     }
@@ -2054,7 +2054,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BillingAccountHead");
+                columns.Add().DataField("BillingAccountHead").Caption(new JS("formatMessage('Billing Account Head')"));
             })
             )
     }

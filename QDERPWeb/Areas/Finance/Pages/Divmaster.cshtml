@@ -110,15 +110,17 @@
 </div>
 <div class="content-container-top">
         <div class="form-group">
-            <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Branch & Add to the Existing List</label>
+           
             @(
                 Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Type a New Branch & Add to the Existing List')"))
+            .LabelMode(EditorLabelMode.Outside)
                 .ID("txtbranchName")
                 .Value(null)
                 .ValidationRules(rules =>
                 {
                     rules.AddRequired()
-                    .Message("Branch Name is required");
+                    .Message(new JS("formatMessage('Branch Name is required')"));
                 })
                 )
 
@@ -126,9 +128,10 @@
 
             <div class="col-md-8">
                 <div class="form-group">
-                    <label for="SalesInvoiceNo" class="button-alignment-down">Branch In Arabic</label>
                     @(
                         Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Branch In Arabic')"))
+                .LabelMode(EditorLabelMode.Outside)
                         .ID("txtarabName")
                         .Value(null)
                         )
@@ -138,7 +141,7 @@
                 <div class="form-group">
                     @(Html.DevExtreme().Button()
                         .ID("btnadd")
-                        .Text("ADD")
+                        .Text(new JS("formatMessage('ADD')"))
                         .Height(40)
                         .Width(178)
                         .Icon("plus")
@@ -187,8 +190,8 @@
                             // SweetAlert on success
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Branch Updated',
-                                text: 'The branch has been successfully updated.',
+                                title:formatMessage('Branch Updated'),
+                                text: formatMessage('The branch has been successfully updated.'),
                                 confirmButtonText: 'OK'
                             });
                         },
@@ -200,8 +203,8 @@
 
                                 Swal.fire({
                                     icon: 'error',
-                                    title: 'Duplicate Branch Name',
-                                    text: 'This branch name already exists! Please choose a different name.',
+                                    title: formatMessage('Duplicate Branch Name'),
+                                    text: formatMessage('This branch name already exists! Please choose a different name.'),
                                     confirmButtonText: 'OK'
                                 }).then(() => {
                                     // Trigger the cancel action on the DataGrid after alert is closed
@@ -235,9 +238,9 @@
                 }
             },
             columns: [
-                { dataField: "BranchCode", caption: "Branch Code", width: 100, editorOptions: { readOnly: true } },
-                { dataField: "BranchName", caption: "Branch Name" },
-                { dataField: "BranchNameAr", caption: "Branch Name (Arabic)" },
+                { dataField: "BranchCode", caption: formatMessage("Branch Code"), width: 100, editorOptions: { readOnly: true } },
+                { dataField: "BranchName", caption: formatMessage("Branch Name") },
+                { dataField: "BranchNameAr", caption: formatMessage("Branch Name (Arabic)") },
                 {
                     type: "buttons",
                     width: 100,
@@ -262,7 +265,7 @@
                                             Swal.fire({
                                                 icon: 'success',
                                                 title: 'Success',
-                                                text: ' Branch deleted successfully.',
+                                                text: formatMessage('Branch deleted successfully.'),
                                                 confirmButtonText: 'OK'
                                             });
                                         } else {
@@ -307,7 +310,7 @@
                         widget: "dxButton",
                         options: {
                             icon: "save",  // Icon for the Save button
-                            text: "Update",  // Text alongside the icon
+                            text: formatMessage("Update"),  // Text alongside the icon
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
                             }
@@ -318,7 +321,7 @@
                         widget: "dxButton",  // Adding Cancel button
                         options: {
                             icon: "close",  // Icon for Cancel button
-                            text: "Cancel",  // Text for Cancel button
+                            text: formatMessage("Cancel"),  // Text for Cancel button
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
                             }
@@ -329,7 +332,7 @@
                         widget: "dxButton", // Add the Back button
                         options: {
                             icon: "arrowleft", // You can choose another icon if you'd like
-                            text: "Back",
+                            text: formatMessage("Back"),
                             onClick: function () {
                                 window.close(); // This closes the current window/tab
                             }
@@ -343,8 +346,8 @@
                 // SweetAlert when a row is updated
                 Swal.fire({
                     icon: 'success',
-                    title: 'Row Updated',
-                    text: 'The row data was successfully updated.',
+                    title: formatMessage('Row Updated'),
+                    text: formatMessage('The row data was successfully updated.'),
                     confirmButtonText: 'OK'
                 });
             },
@@ -352,8 +355,8 @@
                 // SweetAlert when a new row is inserted
                 Swal.fire({
                     icon: 'success',
-                    title: 'Row Inserted',
-                    text: 'A new row was added successfully.',
+                    title: formatMessage('Row Inserted'),
+                    text: formatMessage('A new row was added successfully.'),
                     confirmButtonText: 'OK'
                 });
             },
@@ -361,8 +364,8 @@
                 // SweetAlert when a row is removed
                 Swal.fire({
                     icon: 'info',
-                    title: 'Row Removed',
-                    text: 'The row has been removed from the grid.',
+                    title: formatMessage('Row Removed'),
+                    text: formatMessage('The row has been removed from the grid.'),
                     confirmButtonText: 'OK'
                 });
             },
@@ -404,8 +407,8 @@
             if (duplicate) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Duplicate Branch',
-                    text: 'This branch already exists!',
+                    title: formatMessage('Duplicate Branch'),
+                    text: formatMessage('This branch already exists!'),
                     confirmButtonText: 'OK'
                 });
                 return;
@@ -427,7 +430,7 @@
                     if (response.success) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Branch Added',
+                            title: formatMessage('Branch Added'),
                             text: response.message,
                             confirmButtonText: 'OK'
                         });
@@ -440,7 +443,7 @@
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error',
+                            title: formatMessage('Error'),
                             text: response.message,
                             confirmButtonText: 'OK'
                         });
@@ -460,7 +463,7 @@
             });
         } else {
             // If validation fails, show a notification
-            DevExpress.ui.notify("Please fill required details!", "error", 2000);
+            DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
         }
     }
 
