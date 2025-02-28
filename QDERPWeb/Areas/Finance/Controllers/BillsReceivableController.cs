@@ -9,7 +9,7 @@ using QD.ERP.Web.Areas.Finance.Reports;
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     
-    [Route("/development/Finance/api/[controller]/[action]")]
+    [Route("/pulse/Finance/api/[controller]/[action]")]
     [ApiController]
     public class BillsReceivableController : Controller
     {
@@ -60,12 +60,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         public IActionResult GenerateReport()
         {
             // Redirect to DocumentViewer page with report parameters
-            return RedirectToPage("/development/DocumentViewer", new { reportName = "XtraReportBillsReceivableAgeingReport" });
+            return RedirectToPage("/pulse/DocumentViewer", new { reportName = "XtraReportBillsReceivableAgeingReport" });
         }
 
         public IActionResult GenerateAgeingreportsummaryReport()
         {
-            return RedirectToPage("/development/DocumentViewer", new { reportName = "XtraReportAgeingreportsummary" });
+            return RedirectToPage("/pulse/DocumentViewer", new { reportName = "XtraReportAgeingreportsummary" });
         }
     }
     

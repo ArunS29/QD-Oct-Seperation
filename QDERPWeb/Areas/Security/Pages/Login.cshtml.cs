@@ -7,10 +7,13 @@ namespace Demo.Areas.Security.Pages
     {
         public string TenantName { get; set; }
 
+        public string CompanyLogo { get; set; }
+
         public void OnGet()
         {
             // Get tenant name from the route
             TenantName = RouteData.Values["tenantName"]?.ToString();
+            CompanyLogo = RouteData.Values["companyLogo"]?.ToString();
         }
     }
 }

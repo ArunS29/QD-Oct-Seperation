@@ -288,7 +288,7 @@
         $('.spneditJournal').click(function () {
             var parameter = 'Hello';
             // Load content from another .cshtml page into a div
-            window.location.href = '@Url.Content("~/development/Finance/frm20129JournalEntryEdit")?message=' + encodeURIComponent(parameter);
+            window.location.href = '@Url.Content("~/pulse/Finance/frm20129JournalEntryEdit")?message=' + encodeURIComponent(parameter);
         });
         // Handle right-click event on the DataGrid rows
         $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {

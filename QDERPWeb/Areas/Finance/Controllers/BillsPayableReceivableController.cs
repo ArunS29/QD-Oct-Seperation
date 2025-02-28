@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FormQD.ERP.Web.Areas.Finance.Controllers
 {
 
-    [Route("/development/Finance/api/[controller]/[action]")]
+    [Route("/pulse/Finance/api/[controller]/[action]")]
     [ApiController]
 
     public class BillsPayableReceivableController : Controller

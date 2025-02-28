@@ -112,7 +112,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 string ids = (selectedIds.Length == accountIdsLength) ? "0" : string.Join(",", selectedIds);
 
                 // Redirect to the Designer page and pass selectedIds as a query parameter
-                return RedirectToPage("/development/DocumentViewer", new { reportName = "AccountsPayableReport", selectedIds = ids });
+                return RedirectToPage("/pulse/DocumentViewer", new { reportName = "AccountsPayableReport", selectedIds = ids });
             }
             catch (Exception ex)
             {
@@ -136,7 +136,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 string ids = (selectedIds.Length == accountIdsLength) ? "0" : string.Join(",", selectedIds);
 
                 // Redirect to the Designer page and pass selectedIds as a query parameter
-                return RedirectToPage("/development/DocumentViewer", new { reportName = "AccountsPayableReport", selectedIds = ids });
+                return RedirectToPage("/pulse/DocumentViewer", new { reportName = "AccountsPayableReport", selectedIds = ids });
             }
             catch (Exception ex)
             {
@@ -160,7 +160,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 string ids = (selectedIds.Length == accountIdsLength) ? "0" : string.Join(",", selectedIds);
 
                 // Redirect to the Designer page and pass selectedIds as a query parameter
-                return RedirectToPage("/development/DocumentViewer", new { reportName = "AccountsPayableReport", selectedIds = ids });
+                return RedirectToPage("/pulse/DocumentViewer", new { reportName = "AccountsPayableReport", selectedIds = ids });
             }
             catch (Exception ex)
             {

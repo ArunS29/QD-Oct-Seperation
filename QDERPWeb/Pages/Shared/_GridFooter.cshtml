@@ -450,10 +450,10 @@
     function addRecipitsButton_click(e) {
         switch (e.itemData.text) {
             case 'Add Cash Receipts':
-                window.open('/development/Finance/VoucherEntryCashReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open('/pulse/Finance/VoucherEntryCashReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
             case 'Add Bank Receipts':
-                window.open('/development/Finance/VoucherEntryReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open('/pulse/Finance/VoucherEntryReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
             // You can handle other cases here if needed
             default:
@@ -467,7 +467,7 @@
         switch (selectedText) {
             case 'Ledger to Salary Payable Mapping':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/development/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
+                    pageUrl = `/pulse/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -481,7 +481,7 @@
 
             case 'Ledger to Receivable/Payable Mapping':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/development/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
+                    pageUrl = `/pulse/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -495,7 +495,7 @@
 
             case 'Bank Reconciliation':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/development/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
+                    pageUrl = `/pulse/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -508,7 +508,7 @@
                 break;
 
             case 'Detailed Transaction Report':
-                window.open('/development/Finance/TransactionDetails', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open('/pulse/Finance/TransactionDetails', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 return;  // No need to set pageUrl for new window
         }
 
@@ -545,11 +545,11 @@
         switch (e.itemData.text) {
 
             case 'Add Cash Payment':
-                window.open('/development/Finance/VoucherCashPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open('/pulse/Finance/VoucherCashPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
 
             case 'Add Bank Payment':
-                window.open('/development/Finance/VoucherBankPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open('/pulse/Finance/VoucherBankPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
 
             // You can handle other cases here if needed
@@ -561,15 +561,15 @@
         switch (e.itemData.text) {
 
             case 'Add Purchase Voucher':
-                window.open('/development/Finance/Purchasevoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open('/pulse/Finance/Purchasevoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
 
             case 'Add Sales Voucher':
-                window.open('/development/Finance/Salesvoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open('/pulse/Finance/Salesvoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
 
             case 'Add Journal Voucher':
-                window.open('/development/Finance/Voucherjournal', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open('/pulse/Finance/Voucherjournal', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
 
             // You can handle other cases here if needed
@@ -648,7 +648,7 @@
 
     function AccountGroupsOrdering() {
 
-        window.location.href = "/development/Finance/AccountGroupsOrdering";
+        window.location.href = "/pulse/Finance/AccountGroupsOrdering";
 
     }
     function showSubmenu4(e) {

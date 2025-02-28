@@ -476,7 +476,7 @@
                     DevExpress.ui.notify("Navigating to Accounting Ledgers page...", "success", 2000);
 
                     // Redirect to the Accounting Ledgers page in the same window
-                    window.location.href = "/development/Finance/AccountingLedgers";
+                    window.location.href = "/pulse/Finance/AccountingLedgers";
                 }
                 function editAccountingLedger() {
                     // Get the selected account ID from the dropdown
@@ -491,7 +491,7 @@
                     DevExpress.ui.notify("Opening Account Ledger for editing...", "success", 2000);
 
                     // Redirect to the Accounting Ledger edit page with Account ID as a query parameter
-                    window.location.href = "/development/Finance/AccountingLedgers/GetVouchers?accountId=" + encodeURIComponent(accountId);
+                    window.location.href = "/pulse/Finance/AccountingLedgers/GetVouchers?accountId=" + encodeURIComponent(accountId);
                 }
 
 
@@ -1086,6 +1086,6 @@
                     popup.show();
 
                     // Correct URL to your LedgerAccount view
-                    $("#ledgerAccountFrame").attr("src", "/development/Finance/LedgerAccount");
+                    $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
                 }
             </script>

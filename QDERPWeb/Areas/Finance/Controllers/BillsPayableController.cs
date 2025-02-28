@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-    [Route("/development/Finance/api/[controller]/[action]")]
+    [Route("/pulse/Finance/api/[controller]/[action]")]
     [ApiController]
     public class BillsPayableController : Controller
     {

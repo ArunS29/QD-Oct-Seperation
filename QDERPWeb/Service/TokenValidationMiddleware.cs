@@ -86,7 +86,7 @@ namespace QD.ERP.Web.Service
             {
                 var tenantName = context.GetRouteValue("tenantName")?.ToString();
                 var redirectUrl = string.IsNullOrEmpty(tenantName)
-                    ? "/Security/Login" // Default path if tenantName is not available
+                    ? "pulse/Security/Login" // Default path if tenantName is not available
                     : $"/{tenantName}/Security/Login";
                 context.Response.Redirect(redirectUrl);
             }

@@ -100,7 +100,7 @@
                     band.AddFor(m => m.ReferenceNo)
                 .Caption("Reference No")
                 .CellTemplate(@<text>
-            <a href="/development/Finance/SalesVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
+            <a href="/pulse/Finance/SalesVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
         </text>)
             .Width(150);
 
@@ -352,7 +352,7 @@
         if (dataGrid) {
             dataGrid.option("dataSource", {
                 load: function () {
-                    return $.getJSON("/development/Finance/api/BillsReceivable/Get", { filterType: filterType });
+                    return $.getJSON("/pulse/Finance/api/BillsReceivable/Get", { filterType: filterType });
 
                 }
             });
@@ -367,7 +367,7 @@
                     onItemClick: function () {
                         // Navigate to frm201LedgerView with the selected client details
                         const AccountHeadNo = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
-                        const url = `/development/Finance/frm201LedgerView?AccountHeadNo=${AccountHeadNo}`;
+                        const url = `/pulse/Finance/frm201LedgerView?AccountHeadNo=${AccountHeadNo}`;
                         window.open(url, '_blank'); // Opens in a new tab
                     }
                 }
@@ -380,11 +380,11 @@
     // Print button functionality (Export as PDF)
     function showReport() {
         // Open the report in a new tab
-        window.open('/development/Finance/api/BillsReceivable/GenerateReport', '_blank');
+        window.open('/pulse/Finance/api/BillsReceivable/GenerateReport', '_blank');
     }
     function showReport1() {
         // Open the report in a new tab
-        window.open('/development/Finance/api/BillsReceivable/GenerateAgeingreportsummaryReport', '_blank');
+        window.open('/pulse/Finance/api/BillsReceivable/GenerateAgeingreportsummaryReport', '_blank');
     }
 
 </script>

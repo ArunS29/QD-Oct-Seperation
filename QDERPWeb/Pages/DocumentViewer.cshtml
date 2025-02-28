@@ -138,7 +138,7 @@
         const toDate = "2025-02-27"; // Replace with dynamic value if applicable
 
         // Construct the URL to open the designer for the current report
-        const reportDesignerUrl = `/development/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        const reportDesignerUrl = `/pulse/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
 
         // Open the report designer in a new tab
         window.open(reportDesignerUrl, "_blank");

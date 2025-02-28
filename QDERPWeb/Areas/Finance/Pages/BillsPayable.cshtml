@@ -164,7 +164,7 @@
 
                     band.AddFor(m => m.ReferenceNo).Alignment(HorizontalAlignment.Center)
                 .Width(120).CellTemplate(@<text>
-            <a href="/development/Finance/PurchaseVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
+            <a href="/pulse/Finance/PurchaseVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
         </text>);
 
                     band.AddFor(m => m.VoucherDate).Alignment(HorizontalAlignment.Center)
@@ -425,7 +425,7 @@
         if (dataGrid) {
             dataGrid.option("dataSource", {
                 load: function () {
-                    return $.getJSON("/development/Finance/api/BillsPayable/Get", { filterType: filterType });
+                    return $.getJSON("/pulse/Finance/api/BillsPayable/Get", { filterType: filterType });
                 }
             });
             dataGrid.refresh();
@@ -441,7 +441,7 @@
                     onItemClick: function () {
                         // Navigate to frm201LedgerView with the selected client details
                         const clientID = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
-                        const url = `/development/Finance/frm201LedgerView?clientID=${clientID}`;
+                        const url = `/pulse/Finance/frm201LedgerView?clientID=${clientID}`;
                         window.open(url, '_blank'); // Opens in a new tab
                     }
                 }

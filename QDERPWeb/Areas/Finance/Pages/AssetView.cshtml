@@ -410,7 +410,7 @@
                     return;
                 }
 
-            window.location.href = `/development/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
+            window.location.href = `/pulse/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
             }
 
 
@@ -470,7 +470,7 @@
             });
         });
         function showDepreciationSchedule() {
-        $("#DepreciationContent").load("/development/Finance/DepreciationMaster", function () {
+        $("#DepreciationContent").load("/pulse/Finance/DepreciationMaster", function () {
                 $("#DepreciationModal").modal('show');
                 $(".close").on("click", function () {
                     $("#DepreciationModal").modal('hide');
