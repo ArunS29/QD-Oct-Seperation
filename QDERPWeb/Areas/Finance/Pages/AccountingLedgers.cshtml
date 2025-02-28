@@ -917,43 +917,47 @@
 			component.close();
 		}
 	}
-	function showLedgerAccountEditPopup() {
-		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
-		var selectedValue = dropDownBox.option("value");
+function showLedgerAccountEditPopup() {
+    var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+    var selectedValue = dropDownBox.option("value");
 
-		// Check if a value is selected
-		if (!selectedValue) {
-			DevExpress.ui.notify("Please select an account ledger before editing.", "error", 2000);
-			return;
-		}
+    // Check if a value is selected
+    if (!selectedValue) {
+        DevExpress.ui.notify("Please select an account ledger before editing.", "error", 2000);
+        return;
+    }
 
-		IsEdit = true;
-		if (!refno) refno = "";
-		if (!accheadar) accheadar = "";
+    IsEdit = true;
+    if (!refno) refno = "";
+    if (!accheadar) accheadar = "";
 
-		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+    const url = `/development/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
-		// Show the popup first
-		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
-		popupInstance.show();
+    var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 
-		// Wait for the popup to render before getting the iframe
-		setTimeout(function () {
-			var iframe = document.getElementById("ledgerEditAccountFrame");
+    // Add an event to refresh the page when the popup is closed
+    popupInstance.option("onHidden", function () {
+        location.reload(); // Reloads the page after closing the popup
+    });
 
-			if (!iframe) {
-				console.error("Error: ledgerEditAccountFrame not found!");
-				return;
-			}
+    popupInstance.show();
 
-			// Set iframe src after popup is visible
-			iframe.onload = function () {
-				console.log("Iframe loaded successfully.");
-			};
+    setTimeout(function () {
+        var iframe = document.getElementById("ledgerEditAccountFrame");
 
-			iframe.src = url;
-		}, 300); // Wait 300ms to ensure rendering
-	}
+        if (!iframe) {
+            console.error("Error: ledgerEditAccountFrame not found!");
+            return;
+        }
+
+        iframe.onload = function () {
+            console.log("Iframe loaded successfully.");
+        };
+
+        iframe.src = url;
+    }, 300);
+}
+
 
 
 	function addVoucher_click(form) {
