@@ -147,7 +147,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<TblUserMaster> TblUserMasters { get; set; }
 
-
+    public virtual DbSet<TblUserAccess> TblUserAccesses { get; set; }
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -3262,7 +3262,25 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VoucherModule).IsUnicode(false);
             entity.Property(e => e.VoucherType).IsUnicode(false);
         });
+        modelBuilder.Entity<TblUserAccess>(entity =>
+        {
+            entity.HasKey(e => e.SlNo);
 
+            entity.ToTable("tblUserAccess");
+
+            entity.HasIndex(e => e.UserId, "IX_tblUserAccess");
+
+            entity.Property(e => e.GroupSlNo).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.ItemDescription).IsUnicode(false);
+            entity.Property(e => e.ItemForm).IsUnicode(false);
+            entity.Property(e => e.ItemName).IsUnicode(false);
+            entity.Property(e => e.ItemNotes).IsUnicode(false);
+            entity.Property(e => e.ItemRemarks).IsUnicode(false);
+            entity.Property(e => e.ItemSlNo).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.MasterSlNo).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.Module).IsUnicode(false);
+            entity.Property(e => e.UserId).HasColumnName("UserID");
+        });
         modelBuilder.Entity<TblUserMaster>(entity =>
         {
             entity.HasKey(e => e.UserId);

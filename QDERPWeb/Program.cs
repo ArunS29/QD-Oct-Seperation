@@ -2,7 +2,7 @@
 
 using QD.ERP.Web.DAL.Entities;
 
-using QD.ERP.Web.Models.DAL;
+//using QD.ERP.Web.Models.DAL;
 
 using QD.ERP.Web.Models.DALCommon;
 
@@ -69,19 +69,6 @@ builder.Services.ConfigureReportingServices(configurator =>
 
 });
 
-// **1.2 Configure Database Context**
-
-//var DBConnection = builder.Configuration.GetConnectionString("Data Source=sql-db-dev-erp.database.windows.net;Initial Catalog=ERP-MasterWtData;User ID=sa_dev;Password=Qu1ckd1ce;Persist Security Info=true;Encrypt=False;TrustServerCertificate=true");
-
-//builder.Services.AddDbContext<QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext>(options =>
-
-//    options.UseSqlServer(DBConnection));
-
-//var MasterDBCon = builder.Configuration.GetConnectionString("CommonDBConnection");
-
-//builder.Services.AddDbContext<ERPCommonContext>(options =>
-
-//    options.UseSqlServer(MasterDBCon));
 
 
 var DBConnection = builder.Configuration.GetConnectionString("DBConnection");
@@ -126,9 +113,10 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddScoped<DbContextFactory>();
 builder.Services.AddMultitenancy<Tenant, TenantResolver>();
 
-builder.Services.AddSingleton<DbContextFactory>();
+//builder.Services.AddSingleton<DbContextFactory>();
 
 builder.Services.AddHttpClient();
 

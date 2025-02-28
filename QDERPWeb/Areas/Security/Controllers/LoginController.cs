@@ -1,7 +1,7 @@
 ﻿using Azure.Core;
-using QD.ERP.Web.Models.DAL;
+using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using QD.ERP.Web.Models.DALCommon;
+//using QD.ERP.Web.Models.DALCommon;
 using QD.ERP.Web.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +29,29 @@ namespace QD.ERP.Web.Areas.Security.Controllers
             _configuration = configuration;
         }
 
+        private bool TryGetTenantAndDbContext(string tenantName, out Tenant tenant, out ERPMasterWtDataContext dbContext)
+        {
+            tenant = null;
+            dbContext = null;
+
+            if (_cache.TryGetValue("tenant_", out Dictionary<string, Tenant> tenantCache) &&
+                tenantCache.TryGetValue(tenantName.ToLower(), out tenant))
+            {
+                try
+                {
+                    dbContext = _dbContextFactory.CreateDbContext(tenant.ConnectionString);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+
+            return false;
+        }
+
+
         [HttpPost]
         public IActionResult SignIn([FromBody] SignInRequest request)
         {
@@ -39,56 +62,48 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                 return BadRequest(new { message = "All fields are required.", success = false });
             }
 
-            if (_cache.TryGetValue("tenant_", out Dictionary<string, Tenant> tenantCache) &&
-                tenantCache.TryGetValue(request.TenantName.ToLower(), out Tenant tenant))
+            if (TryGetTenantAndDbContext(request.TenantName, out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                try
+                using (dbContext)
                 {
-                    using (var dbContext = _dbContextFactory.CreateDbContext(tenant.ConnectionString))
+                    var user = dbContext.TblUserMasters
+                        .FirstOrDefault(u => u.UserName == request.Username && u.Password == request.Password);
+
+                    if (user == null)
                     {
-                        var user = dbContext.TblUserMasters
-                            .FirstOrDefault(u => u.UserName == request.Username && u.Password == request.Password);
-
-                        if (user == null)
-                        {
-                            return Unauthorized(new { message = "Invalid credentials.", success = false });
-                        }
-
-                        var permissions = dbContext.TblUserAccesses
-                            .Where(p => p.UserId == user.UserId)
-                            .Select(p => new Permission
-                            {
-                                UserId = p.UserId,
-                                ItemForm = p.ItemForm,
-                                ItemName = p.ItemName,
-                                ItemEnabled = p.ItemEnabled,
-                                ItemVisible = p.ItemVisible
-                            })
-                            .ToList();
-
-                        var token = GenerateJwtToken(user, request.TenantName);
-
-                        SetHttpOnlyCookie("AuthToken", token, 20);
-                        SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
-
-                        return Ok(new
-                        {
-                            message = "Login successful",
-                            success = true,
-                            token,
-                            permissions
-                        });
+                        return Unauthorized(new { message = "Invalid credentials.", success = false });
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred during login.", success = false });
+
+                    var permissions = dbContext.TblUserAccesses
+                        .Where(p => p.UserId == user.UserId)
+                        .Select(p => new Permission
+                        {
+
+                            UserId = p.UserId,
+                            ItemForm = p.ItemForm,
+                            ItemName = p.ItemName,
+                            ItemEnabled = p.ItemEnabled,
+                            ItemVisible = p.ItemVisible
+                        }).ToList();
+
+                    var token = GenerateJwtToken(user, request.TenantName);
+
+                    SetHttpOnlyCookie("AuthToken", token, 20);
+                    SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
+
+                    return Ok(new
+                    {
+                        message = "Login successful",
+                        success = true,
+                        token,
+                        permissions
+                    });
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpPost]
         public IActionResult ExtendSession()
@@ -124,11 +139,11 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                     .Where(p => p.UserId == byte.Parse(userId))
                     .Select(p => new Permission
                     {
-                        UserId = p.UserId,
-                        ItemForm = p.ItemForm,
-                        ItemName = p.ItemName,
-                        ItemEnabled = p.ItemEnabled,
-                        ItemVisible = p.ItemVisible
+                        //UserId = p.UserId,
+                        //ItemForm = p.ItemForm,
+                        //ItemName = p.ItemName,
+                        //ItemEnabled = p.ItemEnabled,
+                        //ItemVisible = p.ItemVisible
                     })
                     .ToList();
                         

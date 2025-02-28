@@ -1,5 +1,4 @@
-﻿using QD.ERP.Web.Models.DALCommon;
-using QD.ERP.Web.Models.DAL;
+﻿
 using QD.ERP.Web.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Models.DAL;
 
 namespace QD.ERP.Web.Areas.Utility.Controllers
 {
@@ -17,9 +18,9 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
     {
         private readonly IMemoryCache _cache;
         private readonly DbContextFactory _dbContextFactory;
-        public PermissionsController (IMemoryCache cache, DbContextFactory dbContextFactory)
+        public PermissionsController(IMemoryCache cache, DbContextFactory dbContextFactory)
         {
-            _cache = cache; 
+            _cache = cache;
             _dbContextFactory = dbContextFactory;
         }
         [HttpGet]
@@ -52,7 +53,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                             })
                             .ToList();
 
-                        
+
                         return Ok(new
                         {
                             message = "successful",

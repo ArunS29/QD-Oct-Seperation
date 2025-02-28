@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.DAL.Entities;
 
-namespace QD.ERP.Web.Models.DAL
+namespace QD.ERP.Web.DAL.Entities
 {
     public class DbContextFactory
     {
@@ -14,11 +13,10 @@ namespace QD.ERP.Web.Models.DAL
 
         public ERPMasterWtDataContext CreateDbContext(string connectionString)
         {
-          //  connectionString = "Server=Lenovo;Database=ERP-MasterWtData;User Id=sa;Password=sql@123;TrustServerCertificate=True;";
             var optionsBuilder = new DbContextOptionsBuilder<ERPMasterWtDataContext>();
             optionsBuilder.UseSqlServer(connectionString)
                 .EnableSensitiveDataLogging()
-              .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
+                .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
             return new ERPMasterWtDataContext(optionsBuilder.Options);
         }
 
