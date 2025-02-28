@@ -579,12 +579,14 @@
 <script>
 	let selectedVoucherNo = null; 
 		$(function () {
-										$("#AccountingLedger").dxTextBox({
-												text:formatMessage("Accounting Ledger"),
-												readOnly: true
-
-								});
-						});
+				$("#AccountingLedger").dxTextBox({
+						text:formatMessage("Accounting Ledger"),
+						readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
+				});
+		});
 
 	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid, firstRowBalance, lastRowBalance;
 		$(document).ready(function () {

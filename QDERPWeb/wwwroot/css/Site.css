@@ -263,3 +263,11 @@ body {
     color: black;
     pointer-events: none; /* Prevents hover and click effects */
 }
+.dx-button-has-text .dx-icon {
+    color: black !important;
+}
+
+.dx-textbox-heading .dx-texteditor-input {
+    font-size: 24px !important;
+    font-weight: bold;
+}
