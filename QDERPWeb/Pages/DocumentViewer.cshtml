@@ -1,7 +1,11 @@
 ﻿@page
+
 @using DevExpress.AspNetCore
+
 @using QD.ERP.Web.Areas.Finance.Reports
+
 @using QD.ERP.Web.Reports
+
 @model QD.ERP.Web.Pages.DocumentViewerModel
 
 <link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
@@ -9,13 +13,18 @@
 
 <!-- Dynamically set the current report name based on the model -->
 <script>
-    var currentReportName = '@Model.ReportName'; // The report name passed from the server-side model
+
+    var currentReportName = '@Model.ReportName';
 </script>
 
 @(Html.DevExpress().WebDocumentViewer("documentViewer")
+
     .Height("50em")
+
     .Width("110em")
+
     .Bind(Model.Report)
+
 )
 
 @* Floating Edit Report Button with Icon and Text *@
@@ -24,9 +33,16 @@
     <i class="fa fa-pencil-alt"></i>
 </a>
 
+<!-- Floating Close Button -->
+<a href="javascript:void(0);" id="btnClose" class="btn-close-report" data-tooltip="Close">
+    <span class="btn-text">Close</span>
+    <i class="fa fa-times"></i>
+</a>
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
 <style>
+
     .container {
         display: none !important;
     }
@@ -50,19 +66,28 @@
     }
 
     /* Floating Edit Report Button */
+
     .btn-edit-report {
         position: fixed;
         top: 30px; /* Positioning from the top */
+
         right: 20px; /* Positioning from the right */
+
         background-color: transparent;
         border: 1px solid #007bff; /* Border to make it rectangular */
+
         padding: 5px 15px; /* Adjusting padding for rectangular shape */
+
         font-size: 14px;
         color: #007bff; /* Button color */
+
         border-radius: 15px; /* Curved edges */
+
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+
         cursor: pointer;
         z-index: 9999; /* Ensure it's on top of other elements */
+
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
@@ -71,6 +96,7 @@
 
         .btn-edit-report .btn-text {
             margin-right: 10px; /* Space between the text and the icon */
+
             font-weight: bold;
         }
 
@@ -79,15 +105,20 @@
         }
 
         /* Change on Hover */
+
         .btn-edit-report:hover {
             background-color: rgba(0, 123, 255, 0.1); /* Light blue background on hover */
+
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
+
             color: #0056b3; /* Darker color on hover */
         }
 
         /* Tooltip Styling */
+
         .btn-edit-report[data-tooltip]:hover::after {
             content: attr(data-tooltip); /* Tooltip text */
+
             position: absolute;
             top: -30px;
             left: 50%;
@@ -105,6 +136,7 @@
         }
 
         /* Optional: Tooltip arrow */
+
         .btn-edit-report[data-tooltip]:hover::before {
             content: '';
             position: absolute;
@@ -115,35 +147,101 @@
             border-right: 5px solid transparent;
             border-bottom: 5px solid #333;
         }
+
+    /* Floating Close Button */
+
+    .btn-close-report {
+        position: fixed;
+        top: 30px; /* Positioning from the top */
+
+        left: 11px; /* Adjusting position from the right (so it doesn't overlap with Open Designer button) */
+
+        background-color: transparent;
+        border: 1px solid #dc3545; /* Border to make it rectangular */
+
+        padding: 5px 15px; /* Adjusting padding */
+
+        font-size: 14px;
+        color: #dc3545; /* Button color */
+
+        border-radius: 15px; /* Curved edges */
+
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+
+        cursor: pointer;
+        z-index: 9999; /* Ensure it's on top of other elements */
+
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        height: 35px;
+    }
+
+        .btn-close-report .btn-text {
+            margin-right: 10px; /* Space between the text and the icon */
+
+            font-weight: bold;
+        }
+
+        .btn-close-report i {
+            font-size: 16px;
+        }
+
+        /* Change on Hover */
+
+        .btn-close-report:hover {
+            background-color: rgba(220, 53, 69, 0.1); /* Light red background on hover */
+
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
+
+            color: #c82333; /* Darker red color on hover */
+        }
 </style>
 
 <div id="webDocumentViewer"></div>
 
 <script>
+
     $(function () {
+
         $("#webDocumentViewer").dxWebDocumentViewer({
+
             reportUrl: '@Url.Action("Viewer", "Report", new { reportName = "ReportName" })',
+
             height: 600,
-            width: '100%'
+
+            width: '100%',
+
+            showParameterPanel: false
+
         });
+
     });
 
-    // Function to open the Report Designer for the current report
     function openReportDesigner() {
-        // Dynamically get the current report name from the JavaScript variable
-        const reportName = currentReportName; // This is the report being displayed in the viewer
 
-        const accountId = "L00789"; // Replace with dynamic value if applicable
-        const frmDate = "2025-01-31"; // Replace with dynamic value if applicable
-        const toDate = "2025-02-27"; // Replace with dynamic value if applicable
+        const reportName = currentReportName;
 
-        // Construct the URL to open the designer for the current report
+        const accountId = "L00789";
+
+        const frmDate = "2025-01-31";
+
+        const toDate = "2025-02-27";
+
         const reportDesignerUrl = `/pulse/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
 
-        // Open the report designer in a new tab
         window.open(reportDesignerUrl, "_blank");
+
     }
 
-    // Call this function when clicking the Open Designer button
+
+
+    document.getElementById("btnClose").addEventListener("click", function () {
+
+        window.history.back();
+
+    });
+
     document.getElementById("btnOpenDesigner").addEventListener("click", openReportDesigner);
 </script>
+
