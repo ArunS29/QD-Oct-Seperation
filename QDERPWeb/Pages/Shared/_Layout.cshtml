@@ -1456,7 +1456,8 @@
         // window.addEventListener("resize", updateHeight);
         //Fuction for report onclick
 
-        function handleClick(selectedText) {
+
+              function handleClick(selectedText) {
             var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
             var frmDateBox = $("#frmdateBox").dxDateBox("instance");
             var toDateBox = $("#todateBox").dxDateBox("instance");
@@ -1471,56 +1472,49 @@
                 return;
             }
 
-            // Convert frmDate and toDate to a string format if they are Date objects
-            var frmDateStr = frmDate ? frmDate.toISOString().split('T')[0] : ''; // Format as YYYY-MM-DD
-            var toDateStr = toDate ? toDate.toISOString().split('T')[0] : ''; // Format as YYYY-MM-DD
+            // Function to format date as D-MMM-YYYY (e.g., 18-Jan-2022)
+            function formatDate(date) {
+                if (!date) return "";
+                let dateObj = new Date(date);
+                let day = dateObj.getDate(); // Get Day
+                let month = dateObj.toLocaleString('en-US', { month: 'short' }); // Get Month as 'Jan', 'Feb'
+                let year = dateObj.getFullYear(); // Get Year
+                return `${day}-${month}-${year}`; // Format as D-MMM-YYYY
+            }
 
-            // Debugging: Log the selectedText to check what is being passed
-            console.log("Selected Report Type: ", selectedText);
+            // Format dates correctly
+            var frmDateStr = formatDate(frmDate);
+            var toDateStr = formatDate(toDate);
 
-            // Redirect based on selected report type
-            if (selectedText === "Account Ledger - Statement of Accounts") {
-                // Redirect to the StatementOfAccountReport
-                console.log("Redirecting to StatementOfAccountReport");
-                window.location.href = `/pulse/DocumentViewer?reportName=StatementOfAccountReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
-            }
-            else if (selectedText === "Account Ledger - Statement of Accounts (With Narration)") {
-                // Redirect to the AccountWithNarration report
-                console.log("Redirecting to AccountWithNarration report");
-                window.location.href = `/pulse/DocumentViewer?reportName=AccountWithNarration&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
-            }
-            else if (selectedText === "Account Ledger - Statement of Accounts (Export Format2)") {
-                // Redirect to the AccountStatementFormat2Report
-                console.log("Redirecting to AccountStatementFormat2Report");
-                window.location.href = `/pulse/DocumentViewer?reportName=AccountStatementFormat2Report&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
-            }
-            else if (selectedText === "Account Ledger - Statement of Accounts (Export Format)") {
-                // Redirect to the AccountExportFormatReport
-                console.log("Redirecting to AccountExportFormatReport");
-                window.location.href = `/pulse/DocumentViewer?reportName=AccountExportFromatReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
-            }
-            else if (selectedText === "Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)") {
-                // Redirect to the AccountOrderbyVchNoWONarrationReport
-                console.log("Redirecting to AccountOrderbyVchNoWONarrationReport");
-                window.location.href = `/pulse/DocumentViewer?reportName=AccountOrderbyVchNoWONarrationReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
-            }
-            else if (selectedText === "Account Ledger - Statement of Account Export Format(Landscape)") {
-                // Redirect to the AccountExportLandscapeReport
-                console.log("Redirecting to AccountExportLandscapeReport");
-                window.location.href = `/pulse/DocumentViewer?reportName=AccountExportLandscapeReport&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
-            }
-             else if (selectedText === "BillsReceivablelandscapeformat") {
-                // Redirect to the AccountExportLandscapeReport
-                console.log("Redirecting to AccountExportLandscapeReport");
-                window.location.href = `/pulse/DocumentViewer?reportName=BillsReceivablelandscapeformat&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
-            }
-            else {
-                console.log("No matching report found for selectedText: ", selectedText);
+            // Debugging: Log selectedText and formatted dates
+            console.log("Selected Report Type:", selectedText);
+            console.log("Formatted From Date:", frmDateStr);
+            console.log("Formatted To Date:", toDateStr);
+
+            // Mapping report names to URLs
+            const reportMappings = {
+                "Account Ledger - Statement of Accounts": "StatementOfAccountReport",
+                "Account Ledger - Statement of Accounts (With Narration)": "AccountWithNarration",
+                "Account Ledger - Statement of Accounts (Export Format2)": "AccountStatementFormat2Report",
+                "Account Ledger - Statement of Accounts (Export Format)": "AccountExportFormatReport",
+                "Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)": "AccountOrderbyVchNoWONarrationReport",
+                "Account Ledger - Statement of Account Export Format(Landscape)": "AccountExportLandscapeReport",
+                "BillsReceivablelandscapeformat": "BillsReceivablelandscapeformat"
+            };
+
+            // Check if selectedText matches any report name
+            if (reportMappings[selectedText]) {
+                let reportName = reportMappings[selectedText];
+                console.log(`Redirecting to ${reportName}`);
+                window.location.href = `/pulse/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`;
+            } else {
+                console.log("No matching report found for selectedText:", selectedText);
             }
 
             // Optional: Adjust row height
             ChangeRowHeight(70);
         }
+
 
         window.onclick = function(event) {
             if (!event.target.matches('.fa-user')) {
