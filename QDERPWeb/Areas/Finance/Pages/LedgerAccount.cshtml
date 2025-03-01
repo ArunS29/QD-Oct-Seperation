@@ -78,15 +78,15 @@
     }
 
     /*     .dx-editor-outlined .dx-label span {
-                font-weight:bold !important;
-                } */
+                    font-weight:bold !important;
+                    } */
 
     .custom-textbox input {
         background-color: aliceblue;
         font-weight: bold !important;
         color: black !important; /* Use !important to override DevExtreme styles */
         /*   border: 3px solid #282222;
-                border-radius: 8px !important; */
+                    border-radius: 8px !important; */
     }
 
     .custom-textbox1 input {
@@ -274,12 +274,12 @@
                 .DisplayExpr("AccountGroup")
                 .OnInput("ddlAccountGroupOnInput")
                 .OnOpened("ddlAccountGrouponOpened")
-                .Width("100%")
+                .Width("70%")
                 .TabIndex(4)
                 .ValidationRules(value => value.AddRequired().Message(new JS("formatMessage('Account Group cannot be empty')")))
                 .ValidationMessageMode(ValidationMessageMode.Auto)
                 .DropDownOptions(o => o
-                .Width("100%")
+                .Width("70%")
                 )
                 .OnKeyDown("ddlAccountGrouponKeyDown")
                 .OnValueChanged("ddlAccountGroupValueChanged")
@@ -372,11 +372,11 @@
                                     .Format(format => format.Type("fixedPoint").Precision(2))
                                     .Width("100%")// Initial value
                                     @*  .Min(0)              // Minimum value
-                                .Max(1000)  *@          // Maximum value
+                                .Max(1000)  *@              // Maximum value
                                     .Step(1)             // Increment step
                                     .ShowSpinButtons(true) // Show spin buttons for up/down
-                                    //.Format("fixedPoint")  // Format as fixed-point (number with decimals)
-                                    //.FormatOptions(options => options.Precision(2))  // 2 decimal places
+                                                           //.Format("fixedPoint")  // Format as fixed-point (number with decimals)
+                                                           //.FormatOptions(options => options.Precision(2))  // 2 decimal places
                                     .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }) //.OnValueChanged("onValueChangedHandler") // Optional JS function for value change
                                     )
                             </td>
@@ -701,7 +701,7 @@
                                     .Width("100%")
                                     )
                             </td>
-                            
+
                         </tr>
 
                         <tr>
@@ -736,7 +736,7 @@
                             </td>
                             <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
-                                   @*  .Label(new JS("formatMessage('Remarks')")).LabelMode(EditorLabelMode.Outside) *@
+                                    @*  .Label(new JS("formatMessage('Remarks')")).LabelMode(EditorLabelMode.Outside) *@
                                     .ID("txtRemarks")
                                     .InputAttr("aria-label", "Text")
                                     .Width("100%")
@@ -1868,7 +1868,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
+                columns.Add().DataField("AccountGroup");
             })
             )
     }
@@ -1932,7 +1932,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')"));
+                columns.Add().DataField("BranchName");
             })
             )
     }
@@ -1964,7 +1964,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("SubGroupName").Caption(new JS("formatMessage('Sub Group Name')"));
+                columns.Add().DataField("SubGroupName");
             })
             )
     }
@@ -1996,7 +1996,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
+                columns.Add().DataField("SalesPersonName");
             })
             )
     }
@@ -2027,7 +2027,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BuyerIDTypeName").Caption(new JS("formatMessage('Buyer ID Type Name')"));
+                columns.Add().DataField("BuyerIDTypeName");
             })
             )
     }
@@ -2054,7 +2054,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BillingAccountHead").Caption(new JS("formatMessage('Billing Account Head')"));
+                columns.Add().DataField("BillingAccountHead");
             })
             )
     }
@@ -2070,591 +2070,591 @@
 <script>
     $(function () {
         $("#DefaultEntry").dxTextBox({
-                text:formatMessage("Default For Entry:"),
-                readOnly: true
-                
-            });
+            text: formatMessage("Default For Entry:"),
+            readOnly: true
+
+        });
     });
     $(function () {
-    $("#Ledgeraccount").dxTextBox({
-                text:formatMessage("Ledger Account"),
-                readOnly: true
+        $("#Ledgeraccount").dxTextBox({
+            text: formatMessage("Ledger Account"),
+            readOnly: true
 
-            });
+        });
     });
-        $(function () {
+    $(function () {
         $("#OpeningBalance").dxTextBox({
-                        text:formatMessage("Opening Balance:"),
-                        readOnly: true
-                });
+            text: formatMessage("Opening Balance:"),
+            readOnly: true
         });
-            $(function () {
-                $("#MaintainBillEntry").dxTextBox({
-                            text:formatMessage("Maintain Bill By Bill:"),
-                            readOnly: true
-                    });
-            });
-            $(function () {
-            $("#VoucherNoAbbr").dxTextBox({
-                        text:formatMessage("Voucher No Abbr:"),
-                        readOnly: true
-                });
+    });
+    $(function () {
+        $("#MaintainBillEntry").dxTextBox({
+            text: formatMessage("Maintain Bill By Bill:"),
+            readOnly: true
         });
-        $(function () {
-            $("#NoDays").dxTextBox({
-                            text:formatMessage("No of Days Credit:"),
-                            readOnly: true
-                });
+    });
+    $(function () {
+        $("#VoucherNoAbbr").dxTextBox({
+            text: formatMessage("Voucher No Abbr:"),
+            readOnly: true
         });
-            $(function () {
-                $("#PropertyDBEntry").dxTextBox({
-                            text:formatMessage("Link to Property DB:"),
-                            readOnly: true
-                    });
-            });
-            $(function () {
-                $("#EmployeeDBEntry").dxTextBox({
-                                text:formatMessage("Link to Employee DB:"),
-                                readOnly: true
-                    });
-            });
-            $(function () {
-                $("#LoanAccountEntry").dxTextBox({
-                                text:formatMessage("Employees Loan Account:"),
-                                readOnly: true
-                                
-                    });
-            });
-            $(function () {
-                $("#LedgerActive").dxTextBox({
-                                    text:formatMessage("Ledger is Currently Active:"),
-                                    readOnly: true
-                                
-                                  
-                        });
-                });
-            $(function () {
-                    $("#branch").dxTextBox({
-                                        text:formatMessage("Division / Branch:"),
-                                        readOnly: true
-                                    
-
-                            });
-                    });
-            $(function () {
-                    $("#Subgroup").dxTextBox({
-                                    text:formatMessage("Sub Group:"),
-                                    readOnly: true
-                                
-                                  
-                        });
-                });
-            $(function () {
-                    $("#Sales").dxTextBox({
-                                text:formatMessage("Sales Person:"),
-                                readOnly: true
-                                  
-                        });
-                });
-            $(function () {
-                    $("#ContactPerson").dxTextBox({
-                                    text:formatMessage("Contact Person:"),
-                                    readOnly: true
-                                  
-                        });
-                });
-            $(function () {
-                        $("#PersonTitle").dxTextBox({
-                                    text:formatMessage("Person Title:"),
-                                    readOnly: true
-
-                            });
-                    });
-                $(function () {
-                            $("#Email").dxTextBox({
-                                        text:formatMessage("Email:"),
-                                        readOnly: true
-
-                            });
-                    });
-                $(function () {
-                        $("#Remarks").dxTextBox({
-                                        text:formatMessage("Remarks:"),
-                                        readOnly: true
-
-                            });
-                    });
-                $(function () {
-                        $("#BankAccountName").dxTextBox({
-                                    text:formatMessage("Account Name:"),
-                                    readOnly: true
-
-                            });
-                    });
-                $(function () {
-                        $("#ConvertAccountName").dxTextBox({
-                                    text:formatMessage("Account Name(Arabic):"),
-                                    readOnly: true
-
-                            });
-                    });
-                $(function () {
-                            $("#BankName").dxTextBox({
-                                                    text:formatMessage("Bank Name:"),
-                                                    readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                        $("#ConvertBankName").dxTextBox({
-                                            text:formatMessage("Bank Name(Arabic):"),
-                                            readOnly: true
-
-                                });
-                        });
-                $(function () {
-                        $("#BankBranch").dxTextBox({
-                                                text:formatMessage("Bank Branch:"),
-                                                readOnly: true
-
-                                });
-                        });
-                $(function () {
-                        $("#ConvertBankBranch").dxTextBox({
-                                            text:formatMessage("Bank Branch(Arabic):"),
-                                            readOnly: true
-
-                                });
-                        });
-                $(function () {
-                        $("#BankAccountNo").dxTextBox({
-                                                text:formatMessage("Bank AccountNo:"),
-                                                readOnly: true
-
-                                });
-                        });
-                $(function () {
-                        $("#BankIBAN").dxTextBox({
-                                                text:formatMessage("Bank IBAN:"),
-                                                readOnly: true
-
-                                });
-                        });
-                $(function () {
-                            $("#SwiftCode").dxTextBox({
-                                                    text:formatMessage("Swift Code:"),
-                                                    readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                            $("#Email").dxTextBox({
-                                        text:formatMessage("Email:"),
-                                        readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientBilling").dxTextBox({
-                                            text:formatMessage("Client Billing Name: *"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientBillingAr").dxTextBox({
-                                            text:formatMessage("Client Billing Name(Arabic):"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientVATNo").dxTextBox({
-                                            text:formatMessage("Client VAT Number: *"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                    $("#OtherType").dxTextBox({
-                                            text:formatMessage("Other ID Type: *"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientAddress").dxTextBox({
-                                            text:formatMessage("Client Address - Street Name: *"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientAdditionalAddress").dxTextBox({
-                                            text:formatMessage("Client Address - Additional Address:"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#BuildingNo").dxTextBox({
-                                            text:formatMessage("Building No: *"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#OtherId").dxTextBox({
-                                            text:formatMessage("Client Other ID: *"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#GrouptVATNo").dxTextBox({
-                                            text:formatMessage("Group VAT Number:"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientAddressAr").dxTextBox({
-                                            text:formatMessage("Client Address - Street Name (Arabic):"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientCityAr").dxTextBox({
-                                            text:formatMessage("Client City(Arabic):"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientAdditionalAddressAr").dxTextBox({
-                                            text:formatMessage("Client Address - Additional Address (Arabic):"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                $("#ClientCity").dxTextBox({
-                                            text:formatMessage("Client City: *"),
-                                            readOnly: true
-
-                            });
-                    });
-                $(function () {
-                                        $("#AdditionalNo").dxTextBox({
-                                                    text:formatMessage("Additional Number: *"),
-                                                    readOnly: true
-
-                                });
-                        });
-                $(function () {
-                                        $("#State").dxTextBox({
-                                                    text:formatMessage("Province/State:"),
-                                                    readOnly: true
-
-                                });
-                        });
-                $(function () {
-                                        $("#StateAr").dxTextBox({
-                                                    text:formatMessage("Province/State(Arabic):"),
-                                                    readOnly: true
-
-                                });
-                        });
-                $(function () {
-                                            $("#PostalCode").dxTextBox({
-                                                        text:formatMessage("Postal Code: *"),
-                                                        readOnly: true
-
-                                    });
-                        
-                    });
-                $(function () {
-                                            $("#District").dxTextBox({
-                                                        text:formatMessage("District/Neighbourhood: *"),
-                                                        readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                            $("#DistrictAr").dxTextBox({
-                                                        text:formatMessage("District/Neighborhood (Arabic):"),
-                                                        readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                            $("#SupBilling").dxTextBox({
-                                                        text:formatMessage("Supplier Billing Name:"),
-                                                        readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                            $("#SupBillingAr").dxTextBox({
-                                                            text:formatMessage("Supplier Billing Name(Arabic):"),
-                                                            readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                            $("#SupVATNo").dxTextBox({
-                                                        text:formatMessage("Supplier VAT Number: *"),
-                                                        readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                            $("#SupGroupVATNo").dxTextBox({
-                                                        text:formatMessage("Group VAT Number:"),
-                                                        readOnly: true
-
-                                    });
-                            });
-                    $(function () {
-                                            $("#SupAddress").dxTextBox({
-                                                        text:formatMessage("Supplier Address - Street Name: *"),
-                                                        readOnly: true
-
-                                    });
-                            });
-                                $(function () {
-                                                    $("#SupAddress1").dxTextBox({
-                                                                text:formatMessage("Supplier Address-Street Name (Arabic):"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                $(function () {
-                                                $("#SupAdditionalAddress").dxTextBox({
-                                                            text:formatMessage("Supplier Address - Additional Address:"),
-                                                            readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                                $("#SupAdditionalAddress1").dxTextBox({
-                                                        text:formatMessage("Address-Additional Address (Arabic):"),
-                                                        readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                                $("#SupBuildingNo").dxTextBox({
-                                                            text:formatMessage("Building No: *"),
-                                                            readOnly: true
-
-                                    });
-                            });
-                    $(function () {
-                                                        $("#SupState").dxTextBox({
-                                                                text:formatMessage("Province/State:"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                    $(function () {
-                                                        $("#SupState1").dxTextBox({
-                                                                text:formatMessage("Province/State(Arabic):"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                    $(function () {
-                                                            $("#SupPostalCode").dxTextBox({
-                                                                text:formatMessage("Postal Code: *"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                    $(function () {
-                                                            $("#SupDistrict").dxTextBox({
-                                                                text:formatMessage("District/Neighbourhood: *"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                    $(function () {
-                                                            $("#SupDistrict1").dxTextBox({
-                                                                text:formatMessage("Neighborhood (Arabic):"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                    $(function () {
-                                                            $("#ClientBillingName").dxTextBox({
-                                                                text:formatMessage("Client Billing Name: *"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                                $(function () {
-                                                            $("#BillingAddressArabic").dxTextBox({
-                                                                text:formatMessage("Client Billing Address (Arabic):"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                    $(function () {
-                                                            $("#ClientBillingNameArabic").dxTextBox({
-                                                                text:formatMessage("Client Billing Name(Arabic):"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                        $(function () {
-                                                                $("#BillingAddress").dxTextBox({
-                                                                    text:formatMessage("Client Billing Address:"),
-                                                                    readOnly: true
-
-                                            });
-                                    });
-                    $(function () {
-                                                            $("#BillingAddressArabic").dxTextBox({
-                                                            text:formatMessage("Client Billing Address(Arabic):"),
-                                                            readOnly: true
-
-                                        });
-                                });
-                    $(function () {
-                                                            $("#BillingVATRegNo").dxTextBox({
-                                                                text:formatMessage("Client VAT Registration Number:"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                        $(function () {
-                                                                $("#BillingVATRegNoArabic").dxTextBox({
-                                                                    text:formatMessage("Client VAT Registration Number(Arabic):"),
-                                                                    readOnly: true
-
-                                            });
-                                    });
-                    $(function () {
-                                                            $("#BillingTIN").dxTextBox({
-                                                                text:formatMessage("Client TIN:"),
-                                                                readOnly: true
-
-                                        });
-                                });
-                        $(function () {
-                                                                $("#BillingContactPerson").dxTextBox({
-                                                                    text:formatMessage("Billing Contact Person:"),
-                                                                    readOnly: true
-
-                                            });
-                                    });
-                        $(function () {
-                                                                $("#BillingContactNumber").dxTextBox({
-                                                                    text:formatMessage("Billing Contact Number:"),
-                                                                     readOnly: true
-                                                                    
-                                            });
-                                    });
-                            $(function () {
-                                                                        $("#BillingFaxNo").dxTextBox({
-                                                                        text:formatMessage("Billing Fax Number:"),
-                                                                        readOnly: true
-
-                                                });
-                                        });
-                            $(function () {
-                                                                    $("#BillingVendorNo").dxTextBox({
-                                                                    text:formatMessage("Vendor No:"),
-                                                                    readOnly: true
-
-                                            });
-                                    });
-                            $(function () {
-                                                                    $("#BillingContactPersonTitle").dxTextBox({
-                                                                    text:formatMessage("Billing Contact Person Title:"),
-                                                                    readOnly: true
-
-                                            });
-                                    });
-                           $(function () {
-                                                                    $("#BillingPayment").dxTextBox({
-                                                                    text:formatMessage("Bank Account for Receiving Payment:"),
-                                                                    readOnly: true
-
-                                            });
-                                    });
-                            $(function () {
-                                                                    $("#ObsSupAddress").dxTextBox({
-                                                                text:formatMessage("Supplier Address - Street Name: *"),
-                                                                readOnly: true
-                                            });
-                                    });
-                                $(function () {
-                                                                        $("#ObsSupRegNo").dxTextBox({
-                                                                    text:formatMessage("Supplier VAT Registration No:"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                        $(function () {
-                                                                        $("#ObsSupRegNoArabic").dxTextBox({
-                                                                    text:formatMessage("Supplier VAT Registration No (Arabic):"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                 $(function () {
-                                                                        $("#SupCity").dxTextBox({
-                                                                    text:formatMessage("Client City: *"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                        $(function () {
-                                                                        $("#SupState").dxTextBox({
-                                                                    text:formatMessage("Province/State:"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                        $(function () {
-                                                                        $("#SupDistrict1").dxTextBox({
-                                                                    text:formatMessage("Neighborhood (Arabic):"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                        $(function () {
-                                                                        $("#SupAdditionalNo").dxTextBox({
-                                                                    text:formatMessage("Additional Number: *"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                        $(function () {
-                                                                        $("#SupCity1").dxTextBox({
-                                                                    text:formatMessage("Client City(Arabic):"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                        $(function () {
-                                                                        $("#ArabObsSupAddress").dxTextBox({
-                                                                    text:formatMessage("Supplier Address(Arabic):"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                        $(function () {
-                                                                        $("#MobileNo").dxTextBox({
-                                                                    text:formatMessage("Mobile No:"),
-                                                                    readOnly: true
-
-                                                });
-                                        });
-                                        
-        //Tab events
+    });
+    $(function () {
+        $("#NoDays").dxTextBox({
+            text: formatMessage("No of Days Credit:"),
+            readOnly: true
+        });
+    });
+    $(function () {
+        $("#PropertyDBEntry").dxTextBox({
+            text: formatMessage("Link to Property DB:"),
+            readOnly: true
+        });
+    });
+    $(function () {
+        $("#EmployeeDBEntry").dxTextBox({
+            text: formatMessage("Link to Employee DB:"),
+            readOnly: true
+        });
+    });
+    $(function () {
+        $("#LoanAccountEntry").dxTextBox({
+            text: formatMessage("Employees Loan Account:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#LedgerActive").dxTextBox({
+            text: formatMessage("Ledger is Currently Active:"),
+            readOnly: true
+
+
+        });
+    });
+    $(function () {
+        $("#branch").dxTextBox({
+            text: formatMessage("Division / Branch:"),
+            readOnly: true
+
+
+        });
+    });
+    $(function () {
+        $("#Subgroup").dxTextBox({
+            text: formatMessage("Sub Group:"),
+            readOnly: true
+
+
+        });
+    });
+    $(function () {
+        $("#Sales").dxTextBox({
+            text: formatMessage("Sales Person:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ContactPerson").dxTextBox({
+            text: formatMessage("Contact Person:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#PersonTitle").dxTextBox({
+            text: formatMessage("Person Title:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#Email").dxTextBox({
+            text: formatMessage("Email:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#Remarks").dxTextBox({
+            text: formatMessage("Remarks:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BankAccountName").dxTextBox({
+            text: formatMessage("Account Name:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ConvertAccountName").dxTextBox({
+            text: formatMessage("Account Name(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BankName").dxTextBox({
+            text: formatMessage("Bank Name:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ConvertBankName").dxTextBox({
+            text: formatMessage("Bank Name(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BankBranch").dxTextBox({
+            text: formatMessage("Bank Branch:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ConvertBankBranch").dxTextBox({
+            text: formatMessage("Bank Branch(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BankAccountNo").dxTextBox({
+            text: formatMessage("Bank AccountNo:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BankIBAN").dxTextBox({
+            text: formatMessage("Bank IBAN:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SwiftCode").dxTextBox({
+            text: formatMessage("Swift Code:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#Email").dxTextBox({
+            text: formatMessage("Email:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientBilling").dxTextBox({
+            text: formatMessage("Client Billing Name: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientBillingAr").dxTextBox({
+            text: formatMessage("Client Billing Name(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientVATNo").dxTextBox({
+            text: formatMessage("Client VAT Number: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#OtherType").dxTextBox({
+            text: formatMessage("Other ID Type: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientAddress").dxTextBox({
+            text: formatMessage("Client Address - Street Name: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientAdditionalAddress").dxTextBox({
+            text: formatMessage("Client Address - Additional Address:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BuildingNo").dxTextBox({
+            text: formatMessage("Building No: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#OtherId").dxTextBox({
+            text: formatMessage("Client Other ID: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#GrouptVATNo").dxTextBox({
+            text: formatMessage("Group VAT Number:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientAddressAr").dxTextBox({
+            text: formatMessage("Client Address - Street Name (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientCityAr").dxTextBox({
+            text: formatMessage("Client City(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientAdditionalAddressAr").dxTextBox({
+            text: formatMessage("Client Address - Additional Address (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientCity").dxTextBox({
+            text: formatMessage("Client City: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#AdditionalNo").dxTextBox({
+            text: formatMessage("Additional Number: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#State").dxTextBox({
+            text: formatMessage("Province/State:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#StateAr").dxTextBox({
+            text: formatMessage("Province/State(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#PostalCode").dxTextBox({
+            text: formatMessage("Postal Code: *"),
+            readOnly: true
+
+        });
+
+    });
+    $(function () {
+        $("#District").dxTextBox({
+            text: formatMessage("District/Neighbourhood: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#DistrictAr").dxTextBox({
+            text: formatMessage("District/Neighborhood (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupBilling").dxTextBox({
+            text: formatMessage("Supplier Billing Name:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupBillingAr").dxTextBox({
+            text: formatMessage("Supplier Billing Name(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupVATNo").dxTextBox({
+            text: formatMessage("Supplier VAT Number: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupGroupVATNo").dxTextBox({
+            text: formatMessage("Group VAT Number:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupAddress").dxTextBox({
+            text: formatMessage("Supplier Address - Street Name: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupAddress1").dxTextBox({
+            text: formatMessage("Supplier Address-Street Name (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupAdditionalAddress").dxTextBox({
+            text: formatMessage("Supplier Address - Additional Address:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupAdditionalAddress1").dxTextBox({
+            text: formatMessage("Address-Additional Address (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupBuildingNo").dxTextBox({
+            text: formatMessage("Building No: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupState").dxTextBox({
+            text: formatMessage("Province/State:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupState1").dxTextBox({
+            text: formatMessage("Province/State(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupPostalCode").dxTextBox({
+            text: formatMessage("Postal Code: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupDistrict").dxTextBox({
+            text: formatMessage("District/Neighbourhood: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupDistrict1").dxTextBox({
+            text: formatMessage("Neighborhood (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientBillingName").dxTextBox({
+            text: formatMessage("Client Billing Name: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingAddressArabic").dxTextBox({
+            text: formatMessage("Client Billing Address (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientBillingNameArabic").dxTextBox({
+            text: formatMessage("Client Billing Name(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingAddress").dxTextBox({
+            text: formatMessage("Client Billing Address:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingAddressArabic").dxTextBox({
+            text: formatMessage("Client Billing Address(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingVATRegNo").dxTextBox({
+            text: formatMessage("Client VAT Registration Number:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingVATRegNoArabic").dxTextBox({
+            text: formatMessage("Client VAT Registration Number(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingTIN").dxTextBox({
+            text: formatMessage("Client TIN:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingContactPerson").dxTextBox({
+            text: formatMessage("Billing Contact Person:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingContactNumber").dxTextBox({
+            text: formatMessage("Billing Contact Number:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingFaxNo").dxTextBox({
+            text: formatMessage("Billing Fax Number:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingVendorNo").dxTextBox({
+            text: formatMessage("Vendor No:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingContactPersonTitle").dxTextBox({
+            text: formatMessage("Billing Contact Person Title:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#BillingPayment").dxTextBox({
+            text: formatMessage("Bank Account for Receiving Payment:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ObsSupAddress").dxTextBox({
+            text: formatMessage("Supplier Address - Street Name: *"),
+            readOnly: true
+        });
+    });
+    $(function () {
+        $("#ObsSupRegNo").dxTextBox({
+            text: formatMessage("Supplier VAT Registration No:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ObsSupRegNoArabic").dxTextBox({
+            text: formatMessage("Supplier VAT Registration No (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupCity").dxTextBox({
+            text: formatMessage("Client City: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupState").dxTextBox({
+            text: formatMessage("Province/State:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupDistrict1").dxTextBox({
+            text: formatMessage("Neighborhood (Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupAdditionalNo").dxTextBox({
+            text: formatMessage("Additional Number: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupCity1").dxTextBox({
+            text: formatMessage("Client City(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ArabObsSupAddress").dxTextBox({
+            text: formatMessage("Supplier Address(Arabic):"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#MobileNo").dxTextBox({
+            text: formatMessage("Mobile No:"),
+            readOnly: true
+
+        });
+    });
+
+    //Tab events
     let acgid, accgrp = null, accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = null;
     let getidfromCOA;//IsChart=false;
     $(document).ready(function () {
@@ -2671,16 +2671,20 @@
 
         var accheadar = urlParams.get('AccountHeadAr') || "";
 
+        const IsCharOfAccounts = urlParams.get('IsCharOfAccounts'); // This will be a string ('true' or 'false')
 
-        // get ChartofAccounts AccountId using Params
-        const AccountId = urlParams.get('AccountId');
-        getidfromCOA = AccountId;
+        if (IsCharOfAccounts === 'true') {
+            // Directly assign AccountId to the already declared accountheadid variable
+            accountheadid = urlParams.get('AccountId');  // Use the already declared accountheadid
 
-        //alert(getidfromCOA);
+        }
+
+        // alert(IsCharOfAccounts);
+        // Check if IsCharOfAccounts is 'true' (string comparison)
+        // alert("AccountHeadId: " + accountheadid);
 
 
 
-        // alert(accountheadid)
         // If AccountGroupId exists, set it in the DropDownBox and make it readonly
 
         if (accountGroupId) {
@@ -2711,16 +2715,55 @@
 
         var txtAccountHeadAr = $("#txtAccountHeadAr").dxTextBox("instance");
         if (txtAccountHeadAr) txtAccountHeadAr.option("value", accheadar);
-
+  
         $.ajax({
+
             url: `/api/AccountLedgerMaster/GetAccountDetails?accountID=${encodeURIComponent(accountheadid)}`,
             type: 'GET',
             dataType: 'json',  // Expecting JSON response
             success: function (response) {
+
+
                 if (response && response.accountDetails && response.accountDetails.length > 0) {
                     // Extract the first item from the accountDetails array
                     var account = response.accountDetails[0];
-                    console.log(account)
+                    console.log("responseData:", account);
+                     var button = $("#btnSave").dxButton("instance");
+                     button.option("text", "Update");
+
+                    var txtAccountId = $('#txtAccountId').dxTextBox("instance");
+                    if (txtAccountId) {
+                        txtAccountId.option("value", account.AccountId);
+
+                    }
+                    var txtReferenceNo = $('#txtReferenceNo').dxTextBox("instance");
+                    if (txtReferenceNo) {
+                        txtReferenceNo.option("value", account.ReferenceNo);
+
+                    }
+
+                    var txtAccountHead = $('#txtAccountHead').dxTextBox("instance");
+                    if (txtAccountHead) {
+                        txtAccountHead.option("value", account.AccountHead);
+
+                    }
+
+                    var txtAccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance");
+                    if (txtAccountHeadAr) {
+                        txtAccountHeadAr.option("value", account.AccountHeadArabic);
+
+                    }
+                    var ddlAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance");
+                    if (ddlAccountGroup) {
+                        ddlAccountGroup.option("value", account.AccountGroupId);
+                        acgid = account.AccountGroupId;
+                    }
+                    var schLedgerActive = $('#schLedgerActive').dxSwitch("instance");
+                    if (schLedgerActive) {
+                        schLedgerActive.option("value", account.IsLedgerObselete);
+
+                    }
+
 
                     //Settings Tab
                     var txtOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance");
@@ -3133,15 +3176,15 @@
         $("#tab-content-" + (selectedTabIndex + 1)).show();
 
 
-        if (!isedit) {
 
+        // Check if the parameter IsCharOfAccounts is 'true'
+        if (!isedit && IsCharOfAccounts !== 'true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
             // Reset validator if it exists
             var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
             if (AccountHeadNameValidator) {
                 AccountHeadNameValidator.reset();
             }
             IsAccGrp = true;
-
 
             // AJAX call to fetch the next Account ID
             $.ajax({
@@ -3152,7 +3195,6 @@
                     // Check if response has the expected structure
                     if (response && response.nextAccountId) {
                         if (txtAccountId) {
-
                             txtAccountId.option('value', response.nextAccountId);
                         }
                     } else {
@@ -3163,48 +3205,53 @@
                     console.error("Error fetching Account ID:", error);
                 }
             });
+        } else {
+            // If IsCharOfAccounts is 'true', skip the API call
+            console.log("Skipping GetMaxLedgerAccountID API call as IsCharOfAccounts is 'true'.");
         }
 
 
-        if (getidfromCOA) {
-            // Change the Save button to Update
-            // $("#btnSave").text("Update");
-            var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Update");
-            //IsChart=true;
-
-            // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
-            $.ajax({
-                url: `/api/ChartOfAccounts/GetAccountId?id=${getidfromCOA}`,
-                type: "GET",
-                success: function (response) {
-                    if (response.success) {
-
-                        console.log(response.data.AccountId);
-                        console.log(response.data.AccountHead);
-
-                        $('#txtAccountId').dxTextBox("instance").option("value", response.data.AccountId);
-                        $('#txtReferenceNo').dxTextBox("instance").option("value", response.data.ReferenceNo);
-                        $('#txtAccountHead').dxTextBox("instance").option("value", response.data.AccountHead);
-                        $('#txtAccountHeadAr').dxTextBox("instance").option("value", response.data.AccountHeadArabic);
-                        $("#ddlAccountGroup").dxDropDownBox("instance").option("value", response.data.AccountGroupId);
-                        acgid = response.data.AccountGroupId;
-                        $("#schLedgerActive").dxSwitch("instance").option("value", response.data.IsLedgerObselete);
 
 
+        // if (getidfromCOA) {
+        //     // Change the Save button to Update
+        //     // $("#btnSave").text("Update");
+        //     var button = $("#btnSave").dxButton("instance");
+        //     button.option("text", "Update");
+        //     //IsChart=true;
 
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert("An error occurred while fetching the Cost Center data.");
-                }
+        //     // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
+        //     $.ajax({
+        //         url: `/api/ChartOfAccounts/GetAccountId?id=${getidfromCOA}`,
+        //         type: "GET",
+        //         success: function (response) {
+        //             if (response.success) {
+
+        //                 console.log(response.data.AccountId);
+        //                 console.log(response.data.AccountHead);
+
+        //                 $('#txtAccountId').dxTextBox("instance").option("value", response.data.AccountId);
+        //                 $('#txtReferenceNo').dxTextBox("instance").option("value", response.data.ReferenceNo);
+        //                 $('#txtAccountHead').dxTextBox("instance").option("value", response.data.AccountHead);
+        //                 $('#txtAccountHeadAr').dxTextBox("instance").option("value", response.data.AccountHeadArabic);
+        //                 $("#ddlAccountGroup").dxDropDownBox("instance").option("value", response.data.AccountGroupId);
+        //                 acgid = response.data.AccountGroupId;
+        //                 $("#schLedgerActive").dxSwitch("instance").option("value", response.data.IsLedgerObselete);
 
 
-            });
 
-        }
+        //             } else {
+        //                 alert(response.message);
+        //             }
+        //         },
+        //         error: function () {
+        //             alert("An error occurred while fetching the Cost Center data.");
+        //         }
+
+
+        //     });
+
+        // }
 
 
 
@@ -3218,7 +3265,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/pulse/Finance/Divmaster`;
+        iframe.src = `/development/Finance/Divmaster`;
 
         modal.style.display = "block";
 
@@ -3264,7 +3311,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/pulse/Finance/LedgerSubGroupMaster`;
+        iframe.src = `/development/Finance/LedgerSubGroupMaster`;
 
         modal.style.display = "block";
 
@@ -3310,7 +3357,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/pulse/Finance/SalesPersonMaster`;
+        iframe.src = `/development/Finance/SalesPersonMaster`;
 
         modal.style.display = "block";
 
@@ -3354,7 +3401,7 @@
     function redirectAccoutledgerMaster() {
 
         const masterFormWindow = window.open(
-            '/pulse/Finance/LedgerAccount?AccountGroupId=A013',
+            '/development/Finance/LedgerAccount?AccountGroupId=A013',
             'popupWindow',
             'width=1400,height=600,scrollbars=yes,resizable=yes'
         );
@@ -3378,7 +3425,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/pulse/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
+        iframe.src = `/development/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
 
         modal.style.display = "block";
 
@@ -4277,9 +4324,9 @@
                         //alert(response.message);
                         DevExpress.ui.notify(response.message, "success", 3000);
                         //  window.location.reload(); // This is for only particular page reload
-                          setTimeout(function () {
-      window.location.reload();
-  }, 3000);
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }

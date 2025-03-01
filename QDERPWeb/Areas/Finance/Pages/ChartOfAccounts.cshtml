@@ -59,435 +59,667 @@
 </style>
 
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
-    <div class="title">
-        <div class="header-container">
-            <div id="ChartOfAccounts" class="no-border-title"></div>
-        </div>
+<div class="title">
+    <div class="header-container">
+        <div id="ChartOfAccounts" class="no-border-title"></div>
     </div>
-    <div>
-        @await Html.PartialAsync("chartofaccountsFooter")
-    </div>
+</div>
+<div>
+    @await Html.PartialAsync("chartofaccountsFooter")
+</div>
 <div id="popupContainer"></div>
 
-<div class="dx-field ledgerResult">
-        @(
-                Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20107ChartOfAccount>()
-                .ID("dataGrid")
-                .DataSource(d => d.WebApi()
-                .Controller("ChartOfAccounts")
-                .LoadAction("GetChartOfAccounts")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountId"))
-                .RemoteOperations(false)
-                .ShowBorders(true)
-                .Columns(columns =>
-                {
-                    columns.AddFor(m => m.AccountId)
-                .Caption(new JS("formatMessage('Account ID')"))
-                .Alignment(HorizontalAlignment.Center)
-                .Visible(true)
-                .CellTemplate(@<text>
-            <a href="javascript:void(0);" onclick="openPopup('<%-data.AccountId%>')" style="color: #0398fc; text-decoration: underline;">
-                <%-data.AccountId%>
-            </a>
-        </text>);
-                    columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-                    columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Account Master')")).Alignment(HorizontalAlignment.Center).GroupIndex(0);
-                    columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('Account Head (Ar)')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
-                    columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
-                    columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Center).AllowEditing(true);
-                    columns.AddFor(m => m.OpeningBalance).Caption(new JS("formatMessage('Opening Balance')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true).CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Ensure positive values
-        return positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        }");
-                    columns.AddFor(m => m.OpeningBalanceDrCr).Caption(new JS("formatMessage('Dr/Cr')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-                    columns.AddFor(m => m.IsLedgerObselete).Caption(new JS("formatMessage('Is Ledger Obsolete')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-                .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>)
-            .Visible(true);
+<div class="dx-field chartOfAccount">
+    <!-- DevExtreme Popup -->
+    @(Html.DevExtreme().Popup()
+        .ID("ledgerAccountPopup")
+        .Width("80%")
+        .Height("85%")
+        .Title("Add Ledger Account")
+        .ShowTitle(true)
+        .CloseOnOutsideClick(true)
+        .Visible(false)
+        .ResizeEnabled(true)
+        .ContentTemplate(@<text>
+        <div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
+            <iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
+        </div>
+    </text>)
+        )
+
+
+    @(
+            Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20107ChartOfAccount>()
+            .ID("dataGrid")
+            .DataSource(d => d.WebApi()
+            .Controller("ChartOfAccounts")
+            .LoadAction("GetChartOfAccounts")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountId"))
+            .RemoteOperations(false)
+            .ShowBorders(true)
+            .Columns(columns =>
+            {
+                columns.AddFor(m => m.AccountId)
+            .Caption(new JS("formatMessage('Account ID')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Visible(true)
+            .CellTemplate(@<text>
+        <a href="javascript:void(0);" onclick="openPopup('<%-data.AccountId%>')" style="color: #0398fc; text-decoration: underline;">
+            <%-data.AccountId%>
+        </a>
+    </text>);
+                columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Account Master')")).Alignment(HorizontalAlignment.Center).GroupIndex(0);
+                columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('Account Head (Ar)')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
+                columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
+                columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Center).AllowEditing(true);
+                columns.AddFor(m => m.OpeningBalance).Caption(new JS("formatMessage('Opening Balance')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true).CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return ''; // Return empty string for null values
+    }
+    let positiveValue = Math.abs(e.value); // Ensure positive values
+    return positiveValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    }");
+                columns.AddFor(m => m.OpeningBalanceDrCr).Caption(new JS("formatMessage('Dr/Cr')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                columns.AddFor(m => m.IsLedgerObselete).Caption(new JS("formatMessage('Is Ledger Obsolete')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>)
+        .Visible(true);
                 columns.AddFor(m => m.AccountGroupId)
-    .Caption(new JS("formatMessage('Account Group ID')"))
+    .Caption("Account Group ID")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
+
+
 
                 columns.AddFor(m => m.MasterGroupId)
-    .Caption(new JS("formatMessage('Master Group ID')"))
+    .Caption("Master Group ID")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
+
+
                 columns.AddFor(m => m.IsRestrictedEntry)
-    .Caption(new JS("formatMessage('Is Restricted Entry')"))
+    .Caption("Is Restricted Entry")
     .Alignment(HorizontalAlignment.Center)
     .Visible(false);
 
                 columns.AddFor(m => m.ReferenceNo)
-    .Caption(new JS("formatMessage('Reference No')"))
+    .Caption("Reference No")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
+
                 columns.AddFor(m => m.BankAccountNo)
-    .Caption(new JS("formatMessage('Bank Account No')"))
+    .Caption("Bank Account No")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankIban)
-    .Caption(new JS("formatMessage('Bank IBAN')"))
+    .Caption("Bank IBAN")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankName)
-    .Caption(new JS("formatMessage('Bank Name')"))
+    .Caption("Bank Name")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankBranch)
-    .Caption(new JS("formatMessage('Bank Branch')"))
+    .Caption("Bank Branch")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankSwiftCode)
-    .Caption(new JS("formatMessage('Bank Swift Code')"))
+    .Caption("Bank Swift Code")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankAccountName)
-    .Caption(new JS("formatMessage('Bank Account Name')"))
+    .Caption("Bank Account Name")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BillingName)
-    .Caption(new JS("formatMessage('Billing Name')"))
+    .Caption("Billing Name")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BillingAddress)
-    .Caption(new JS("formatMessage('Billing Address')"))
+    .Caption("Billing Address")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BillingContactPerson)
-    .Caption(new JS("formatMessage('Billing Contact Person')"))
+    .Caption("Billing Contact Person")
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BillingPhoneNo)
-    .Caption(new JS("formatMessage('Billing Phone No')"))
+    .Caption("Billing Phone No")
     .Alignment(HorizontalAlignment.Left)
-    .Visible(false);
+    .Visible(false); columns.AddFor(m => m.BillingFaxNo)
 
-                columns.AddFor(m => m.BillingFaxNo)
-    .Caption(new JS("formatMessage('Billing Fax No')"))
+    .Caption("Billing Fax No")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.BillingContactPersonTitle)
-    .Caption(new JS("formatMessage('Billing Contact Person Title')"))
+
+    .Caption("Billing Contact Person Title")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.BillingBankAccount)
-    .Caption(new JS("formatMessage('Billing Bank Account')"))
+
+    .Caption("Billing Bank Account")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.LedgerRemarks)
-    .Caption(new JS("formatMessage('Ledger Remarks')"))
+
+    .Caption("Ledger Remarks")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
+
+
                 columns.AddFor(m => m.AccountGroupAr)
-    .Caption(new JS("formatMessage('Account Group Arabic')"))
+
+    .Caption("Account Group Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.MasterGroupAr)
-    .Caption(new JS("formatMessage('Master Group Arabic')"))
+
+    .Caption("Master Group Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.MasterOrderNo)
-    .Caption(new JS("formatMessage('Master Order No')"))
+
+    .Caption("Master Order No")
+
     .Alignment(HorizontalAlignment.Right)
+
     .Visible(false);
 
                 columns.AddFor(m => m.MasterGroupCategory)
-    .Caption(new JS("formatMessage('Master Group Category')"))
+
+    .Caption("Master Group Category")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ChartOfAccountsOrder)
-    .Caption(new JS("formatMessage('Chart of Accounts Order')"))
+
+    .Caption("Chart of Accounts Order")
+
     .Alignment(HorizontalAlignment.Right)
+
     .Visible(false);
 
                 columns.AddFor(m => m.AccountGroupOrderNo)
-    .Caption(new JS("formatMessage('Account Group Order No')"))
+
+    .Caption("Account Group Order No")
+
     .Alignment(HorizontalAlignment.Right)
+
     .Visible(false);
 
                 columns.AddFor(m => m.MasterGroupCategoryAr)
-    .Caption(new JS("formatMessage('Master Group Category Arabic')"))
+
+    .Caption("Master Group Category Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.VoucherAbbr)
-    .Caption(new JS("formatMessage('Voucher Abbreviation')"))
+
+    .Caption("Voucher Abbreviation")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.IsMaintainBillByBill)
-    .Caption(new JS("formatMessage('Is Maintain Bill By Bill')"))
+
+    .Caption("Is Maintain Bill By Bill")
+
     .Alignment(HorizontalAlignment.Center)
+
     .Visible(false);
 
                 columns.AddFor(m => m.RecordCreatedBy)
-    .Caption(new JS("formatMessage('Record Created By')"))
+
+    .Caption("Record Created By")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.RecordCreatedOn)
-    .Caption(new JS("formatMessage('Record Created On')"))
+
+    .Caption("Record Created On")
+
     .Alignment(HorizontalAlignment.Center)
+
     .Visible(false);
 
                 columns.AddFor(m => m.RecordModifiedBy)
-    .Caption(new JS("formatMessage('Record Modified By')"))
+
+    .Caption("Record Modified By")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.RecordModifiedOn)
-    .Caption(new JS("formatMessage('Record Modified On')"))
+
+    .Caption("Record Modified On")
+
     .Alignment(HorizontalAlignment.Center)
+
     .Visible(false);
 
                 columns.AddFor(m => m.NoOfDaysCreditPeriod)
-    .Caption(new JS("formatMessage('No Of Days Credit Period')"))
+
+    .Caption("No Of Days Credit Period")
+
     .Alignment(HorizontalAlignment.Right)
+
     .Visible(false);
 
                 columns.AddFor(m => m.AccountsContactName)
-    .Caption(new JS("formatMessage('Accounts Contact Name')"))
+
+    .Caption("Accounts Contact Name")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
+
                 columns.AddFor(m => m.AccountsContactMobile)
-    .Caption(new JS("formatMessage('Accounts Contact Mobile')"))
+
+    .Caption("Accounts Contact Mobile")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.AccountsContactTitle)
-    .Caption(new JS("formatMessage('Accounts Contact Title')"))
+
+    .Caption("Accounts Contact Title")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.IsEmployeeAllocated)
-    .Caption(new JS("formatMessage('Is Employee Allocated')"))
+
+    .Caption("Is Employee Allocated")
+
     .Alignment(HorizontalAlignment.Center)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientVatno)
-    .Caption(new JS("formatMessage('Client VAT No')"))
+
+    .Caption("Client VAT No")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierName)
-    .Caption(new JS("formatMessage('Supplier Name')"))
+
+    .Caption("Supplier Name")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierNameAr)
-    .Caption(new JS("formatMessage('Supplier Name Arabic')"))
+
+    .Caption("Supplier Name Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierAddress)
-    .Caption(new JS("formatMessage('Supplier Address')"))
+
+    .Caption("Supplier Address")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierAddressAr)
-    .Caption(new JS("formatMessage('Supplier Address Arabic')"))
+
+    .Caption("Supplier Address Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierVatno)
-    .Caption(new JS("formatMessage('Supplier VAT No')"))
+
+    .Caption("Supplier VAT No")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientVendorNo)
-    .Caption(new JS("formatMessage('Client Vendor No')"))
+
+    .Caption("Client Vendor No")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.IsPropertyAllocated)
-    .Caption(new JS("formatMessage('Is Property Allocated')"))
+
+    .Caption("Is Property Allocated")
+
     .Alignment(HorizontalAlignment.Center)
+
     .Visible(false);
 
                 columns.AddFor(m => m.AccountSubGroup)
-    .Caption(new JS("formatMessage('Account Sub Group')"))
+
+    .Caption("Account Sub Group")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientGroupVatnumber)
-    .Caption(new JS("formatMessage('Client Group VAT Number')"))
+
+    .Caption("Client Group VAT Number")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientOtherId)
-    .Caption(new JS("formatMessage('Client Other ID')"))
+
+    .Caption("Client Other ID")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientOtherIdtype)
-    .Caption(new JS("formatMessage('Client Other ID Type')"))
+
+    .Caption("Client Other ID Type")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientAddressStreet)
-    .Caption(new JS("formatMessage('Client Address Street')"))
+
+    .Caption("Client Address Street")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientAddressStreetAr)
-    .Caption(new JS("formatMessage('Client Address Street Arabic')"))
+
+    .Caption("Client Address Street Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientAdditionalStreet)
-    .Caption(new JS("formatMessage('Client Additional Street')"))
+
+    .Caption("Client Additional Street")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientAdditionalStreetAr)
-    .Caption(new JS("formatMessage('Client Additional Street Arabic')"))
+
+    .Caption("Client Additional Street Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientBuildingNumber)
-    .Caption(new JS("formatMessage('Client Building Number')"))
+
+    .Caption("Client Building Number")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientAdditionalNumber)
-    .Caption(new JS("formatMessage('Client Additional Number')"))
+
+    .Caption("Client Additional Number")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientCity)
-    .Caption(new JS("formatMessage('Client City')"))
+
+    .Caption("Client City")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientCityAr)
-    .Caption(new JS("formatMessage('Client City Arabic')"))
+
+    .Caption("Client City Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
+
                 columns.AddFor(m => m.ClientPostalCode)
-    .Caption(new JS("formatMessage('Client Postal Code')"))
+
+    .Caption("Client Postal Code")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientProvince)
-    .Caption(new JS("formatMessage('Client Province')"))
+
+    .Caption("Client Province")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientProvinceAr)
-    .Caption(new JS("formatMessage('Client Province Arabic')"))
+
+    .Caption("Client Province Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientNeighborhood)
-    .Caption(new JS("formatMessage('Client Neighborhood')"))
+
+    .Caption("Client Neighborhood")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientNeighborhoodAr)
-    .Caption(new JS("formatMessage('Client Neighborhood Arabic')"))
+
+    .Caption("Client Neighborhood Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.ClientCountryCode)
-    .Caption(new JS("formatMessage('Client Country Code')"))
+
+    .Caption("Client Country Code")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierGroupVatnumber)
-    .Caption(new JS("formatMessage('Supplier Group VAT Number')"))
+
+    .Caption("Supplier Group VAT Number")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierOtherIdtype)
-    .Caption(new JS("formatMessage('Supplier Other ID Type')"))
+
+    .Caption("Supplier Other ID Type")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierOtherId)
-    .Caption(new JS("formatMessage('Supplier Other ID')"))
+
+    .Caption("Supplier Other ID")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierAddressStreet)
-    .Caption(new JS("formatMessage('Supplier Address Street')"))
+
+    .Caption("Supplier Address Street")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
                 columns.AddFor(m => m.SupplierAddressStreetAr)
-    .Caption(new JS("formatMessage('Supplier Address Street Arabic')"))
+
+    .Caption("Supplier Address Street Arabic")
+
     .Alignment(HorizontalAlignment.Left)
+
     .Visible(false);
 
+            })
+        .Editing(editing => editing
+        .Mode(GridEditMode.Cell) // ✅ Ensure inline cell editing is enabled
+        .AllowUpdating(true) // ✅ Enable editing
+        )
+        .Height(500)
+        // .Paging(p => p.PageSize(10))
+        .ColumnAutoWidth(true)
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        @* .HeaderFilter(hf => hf.Visible(true)) *@
+        .OnCellPrepared("onCellPrepared")
+        .Paging(paging => paging.Enabled(true))
+        .Scrolling(scrolling => scrolling
+        .Mode(GridScrollingMode.Virtual) // or "infinite" for endless scroll
+        .RowRenderingMode(GridRowRenderingMode.Virtual) // This ensures virtual row rendering for performance
+        .PreloadEnabled(true) // Preloads data in the background for smoother scrolling
+        .ScrollByContent(true) // Enables scrolling by content (no need to have pagination)
+        )
+        )
+</div>
 
-                })
-             .Editing(editing => editing
-             .Mode(GridEditMode.Cell) // ✅ Ensure inline cell editing is enabled
-             .AllowUpdating(true) // ✅ Enable editing
-             )
-            .Height(500)
-            .Paging(p => p.PageSize(10))
-            .ColumnAutoWidth(true)
-            .AllowColumnReordering(true)
-            .AllowColumnResizing(true)
-            .ColumnFixing(fixing => fixing.Enabled(true))
-            .FilterRow(filterRow => filterRow.Visible(false))
-            .GroupPanel(groupPanel => groupPanel.Visible(false))
-            .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
-            @* .HeaderFilter(hf => hf.Visible(true)) *@
-            .OnCellPrepared("onCellPrepared")
-            )
-    </div>
-    
 </div>
 
 
 <!-- Context Menu (hidden initially) -->
 <div id="contextMenu" class="context-menu">
     <div class="context-menu-item" onclick="editLedger()">
-        <i class="fa fa-edit"></i><div id="EditLedgerAccount" ></div>
+        <i class="fa fa-edit"></i><div id="EditLedgerAccount"></div>
     </div>
     <div class="context-menu-item" onclick="viewTransactions()">
         <i class="fa fa-search"></i><div id="ViewLedgerTransactions"></div>
     </div>
-    <div id="EditLedgerAccount" ></div>
+    <div id="EditLedgerAccount"></div>
     <div class="context-menu-item" onclick="deleteLedger()">
-        <i class="fa fa-trash"></i><div id="DeleteLedgerAccount"></div> 
+        <i class="fa fa-trash"></i><div id="DeleteLedgerAccount"></div>
     </div>
 </div>
 
 <script type="text/javascript">
+
+    function showLedgerAccountPopup() {
+        var popup = $("#ledgerAccountPopup").dxPopup("instance");
+        popup.show();
+
+        // Set the iframe src to the Ledger Account URL
+        $("#ledgerAccountFrame").attr("src", "/development/Finance/LedgerAccount");
+    }
+
+    // Document ready function to initialize popups and other controls
+    $(document).ready(function () {
+
+
+        // Initialize the Error Popup
+        $("#errorPopup").dxPopup({
+            width: 350,
+            height: 300,
+            title: "⚠ Error",
+            visible: false,  // Initially hidden
+            showCloseButton: true,  // Show close button in popup
+            dragEnabled: false,  // Disable dragging for the popup
+            closeOnOutsideClick: true  // Allow closing when clicking outside
+        });
+
+        // Initialize the close button for the error popup
+        $("#errorCloseBtn").dxButton({
+            text: "Close",  // Button text
+            type: "danger",  // Button style type
+            onClick: function () {
+                // Hide the error popup when the close button is clicked
+                $("#errorPopup").dxPopup("instance").hide();
+            }
+        });
+    });
+
+    // Call this function wherever you need to show the Ledger Account popup
+    // Example: When a button is clicked, you can trigger the showLedgerAccountPopup()
+    $("#btnAddNewAccount").on("click", function () {
+        showLedgerAccountPopup();
+    });
+
+
     $(function () {
         $("#EditLedgerAccount").dxTextBox({
             text: formatMessage("Edit Ledger Account"),
@@ -516,11 +748,18 @@
 
         });
     });
+
+
+    let IsCharOfAccounts = true; // Global variable
+
     function openPopup(accountId) {
         $("#popupContainer").dxPopup({
             contentTemplate: function (contentElement) {
+                // Construct URL with both AccountId and the global IsCharOfAccounts variable
+                var url = "/development/Finance/LedgerAccount?AccountId=" + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
+
                 $("<iframe>")
-                    .attr("src", "/pulse/Finance/LedgerAccount?AccountId=" + accountId)
+                    .attr("src", url)
                     .css({ width: "100%", height: "600px", border: "none" })
                     .appendTo(contentElement);
             },
@@ -536,7 +775,6 @@
             }
         }).dxPopup("instance").show();
     }
-
 
 
     $(function () {
@@ -573,10 +811,10 @@
     // Function to handle Edit Ledger Account action
     function editLedger() {
         var rowData = window.selectedRowData;
-        if (rowData && rowData.AccountId) {   
-            // Navigate to frm201LedgerAccount with Edit mode
-           // window.location.href = `/frm201LedgerAccount?mode=edit&accountId=${rowData.AccountId}`;
-            window.location.href = `/pulse/Finance/LedgerAccount?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+        if (rowData && rowData.AccountId) {
+            // Open the popup with the selected AccountId
+            openPopup(rowData.AccountId);
+            //window.location.href = `/Finance/LedgerAccount?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
         } else {
             alert("No valid row selected for editing.");
         }
@@ -587,9 +825,9 @@
         var rowData = window.selectedRowData;
         if (rowData && rowData.AccountId) {
             // Navigate to frm201LedgerAccount with View Transactions mode
-            window.location.href = `/pulse/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+            window.location.href = `/development/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
 
-           // window.location.href = `/frm201LedgerAccount?mode=view&accountId=${rowData.AccountId}`;
+            // window.location.href = `/frm201LedgerAccount?mode=view&accountId=${rowData.AccountId}`;
         } else {
             alert("No valid row selected to view transactions.");
         }
@@ -636,6 +874,16 @@
     }
 
 
+    // function onCellPrepared(e) {
+    //     if (e.rowType === "data" && e.column.dataField === "AccountHead") {
+    //         if (!e.data.IsLedgerObselete) {
+    //             e.cellElement.css({
+    //                 "background-color": "#f57f7f",
+    //                 "color": "white"
+    //             });
+    //         }
+    //     }
+    // }
     function onCellPrepared(e) {
         if (e.rowType === "data" && e.column.dataField === "AccountHead") {
             if (!e.data.IsLedgerObselete) {
@@ -644,13 +892,14 @@
                     "color": "white",
                     "background-color": "white",
                     "color": "#ef5353",
-                    "font-weight":"bold"
+                    "font-weight": "bold"
                 });
-            }else{
+            } else {
                 e.cellElement.css({
                     "background-color": "white",
                     "color": "green",
-                    "font-weight":"bold"
+                    "font-weight": "bold"
+                
                 });
             }
         }

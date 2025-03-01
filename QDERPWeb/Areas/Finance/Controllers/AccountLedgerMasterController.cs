@@ -594,6 +594,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 					.Where(p => p.AccountId == accountID) // Fixed the incorrect condition
 					.Select(i => new
 					{
+						i.AccountId,
 						i.ReferenceNo,
 						i.AccountHead,
 						i.AccountGroupId,
