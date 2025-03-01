@@ -1895,8 +1895,8 @@
             .ShowBorders(true)
             .HoverStateEnabled(true)
             .Paging(p => p.PageSize(15))
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .Height(130)
+           @*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
+            .Height("auto")
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {

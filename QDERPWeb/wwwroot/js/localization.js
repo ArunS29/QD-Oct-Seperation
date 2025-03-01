@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Post": "Post",
         "Chart Of Accounts": "Chart Of Accounts",
         "Edit Ledger Account": "Edit Ledger Account",
         "View Ledger Transactions": "View Ledger Transactions",
