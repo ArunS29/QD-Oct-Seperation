@@ -201,7 +201,8 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnToggleHeaderFilter")
-            .Text("Toggle Filter")
+      
+            .Text(new JS("formatMessage('Toggle Filter')"))
             .Icon("filter")
             .OnClick("toggleHeaderFilter")
             )

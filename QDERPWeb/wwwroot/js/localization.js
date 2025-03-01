@@ -1038,10 +1038,12 @@
         "This branch already exists!": "This branch already exists!",
         "Branch Added": "Branch Added",
         "Clear Errors": "Clear Errors",
-        "Cannot continue saving with errors, please clear the errors and continue.":"Cannot continue saving with errors, please clear the errors and continue."
-        
+        "Cannot continue saving with errors, please clear the errors and continue.":"Cannot continue saving with errors, please clear the errors and continue.",
+        "Toggle Filter": "Toggle Filter"
     },
     "ar": {
+        "Toggle Filter": "تبديل عامل التصفية",
+        "Post": "نشر",
         "Branch deleted successfully": "تم حذف الفرع بنجاح",
         "Cannot continue saving with errors, please clear the errors and continue.":"لا يمكن الاستمرار في الحفظ مع الأخطاء، يرجى مسح الأخطاء والاستمرار",
         "Clear Errors": "مسح الأخطاء",
