@@ -69,7 +69,7 @@
 </div>
 <div id="popupContainer"></div>
 
-<div class="dx-field chartOfAccount">
+<div class="dx-field ledgerResult">
     <!-- DevExtreme Popup -->
     @(Html.DevExtreme().Popup()
         .ID("ledgerAccountPopup")
@@ -744,7 +744,10 @@
     $(function () {
         $("#ChartOfAccounts").dxTextBox({
             text: formatMessage("Chart Of Accounts"),
-            readOnly: true
+            readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
 
         });
     });

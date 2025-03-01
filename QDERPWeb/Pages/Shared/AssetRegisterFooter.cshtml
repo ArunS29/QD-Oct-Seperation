@@ -189,6 +189,14 @@
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+            .ID("btnToggleHeaderFilter")
+            .Text("Toggle Filter")
+            .Icon("filter")
+            .OnClick("toggleHeaderFilter")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
             .Width(40)
@@ -245,6 +253,14 @@
 </div>
 
 <script type="text/javascript">
+    let isHeaderFilterEnabled = false;
+
+    function toggleHeaderFilter() {
+    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    isHeaderFilterEnabled = !isHeaderFilterEnabled;
+    dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
+    }
     // Hide context menu on click outside
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");

@@ -714,7 +714,10 @@
     $(function () {
                                 $("#AccountingLedgerGroups").dxTextBox({
                                             text:formatMessage("Accounting Ledger Groups"),
-                                            readOnly: true
+                                            readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
 
                             });
                     });

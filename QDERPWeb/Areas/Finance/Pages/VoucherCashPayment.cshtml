@@ -1735,7 +1735,10 @@
         $(function () {
             $("#PaymentVoucherDetails").dxTextBox({
                 text: formatMessage("Payment Voucher Details"),
-                readOnly: true
+                readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
             });
         });
         $("#btnAttach").on("click", function (e) {

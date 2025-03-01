@@ -470,7 +470,10 @@
     $(function () {
         $("#BranchMaster").dxTextBox({
             text: formatMessage("Branch Master"),
-            readOnly: true
+            readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
         });
     });
 </script>

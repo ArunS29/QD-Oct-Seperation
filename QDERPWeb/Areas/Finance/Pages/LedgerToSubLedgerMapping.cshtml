@@ -173,7 +173,10 @@
         $(function () {
                                 $("#AccountLedgertoSalaryPayableMapping").dxTextBox({
                                             text:formatMessage("Account Ledger to Salary Payable Mapping"),
-                                            readOnly: true
+                                            readOnly: truereadOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
 
                             });
                     });

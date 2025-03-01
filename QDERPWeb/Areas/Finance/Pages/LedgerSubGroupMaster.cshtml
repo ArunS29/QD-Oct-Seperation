@@ -139,7 +139,10 @@
     $(function () {
                                 $("#LedgerSubGroupMaster").dxTextBox({
                                             text:formatMessage("Ledger Sub Group Master"),
-                                            readOnly: true
+                                            readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
 
                             });
                     });

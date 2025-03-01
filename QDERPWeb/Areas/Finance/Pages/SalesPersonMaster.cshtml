@@ -232,7 +232,10 @@
             $(function () {
                 $("#SalesPersonMaster").dxTextBox({
                     text:formatMessage("Sales Person Master"),
-                    readOnly: true
+                    readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
                 });
             });
 

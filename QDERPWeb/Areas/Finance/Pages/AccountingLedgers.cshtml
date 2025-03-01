@@ -475,11 +475,12 @@
 				.AllowColumnResizing(true)   // Enable column resizing
 				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
 				.HeaderFilter(filter => filter.Visible(false))
-				.Height(550)
+				.Height(435)
 				.ColumnAutoWidth(true)
 				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
 				.GroupPanel(groupPanel => groupPanel.Visible(true)) // Display group panel
-				.ShowBorders(false)
+				.ShowBorders(true)
+				.ShowRowLines(true) // Enable row lines
 				@* 	.ColumnChooser(columnChooser => columnChooser
 		.Enabled(false) // Enable the column chooser for hiding and showing columns
 		.Title("Column Chooser") // Optional: Set a custom title

@@ -2078,7 +2078,10 @@
     $(function () {
         $("#Ledgeraccount").dxTextBox({
             text: formatMessage("Ledger Account"),
-            readOnly: true
+            readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
 
         });
     });

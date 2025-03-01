@@ -322,7 +322,10 @@
     $(function () {
                                 $("#LedgerDocuments").dxTextBox({
                                             text:formatMessage("Ledger Documents"),
-                                            readOnly: true
+                                            readOnly: true,
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
 
                             });
     $(function () {

@@ -69,7 +69,8 @@
     <script src="~/js/devextreme/aspnet/dx.aspnet.mvc.js"></script>
     <script src="~/js/devextreme/aspnet/dx.aspnet.data.js"></script>
     <script src="~/js/custom/datagrid-dynamic-conditional-formatting.js"></script>
-
+    <script src="~/js/jquery.idle.js"></script>
+    <script src="~/js/jwt-decode.min.js"></script>
 
     <style>
         <style >
@@ -355,7 +356,7 @@
             top: 0; /* Position at the top */
             left: 0; /* Start from the very left */
             z-index: 100; /* Ensure it stays above other elements */
-            height: 5em;
+            height: 6em;
             border-bottom: 1px solid #ddd;
         }
 
@@ -475,11 +476,11 @@
             width: 15em;
         }
         .companyName{
-            margin-right: auto;
+            /* margin-right: auto; */
             padding: 20px;
             font-size: 20px;
             font-weight: bold;
-            text-transform: uppercase;
+            /* text-transform: uppercase; */
         }
 
 
@@ -489,9 +490,7 @@
             height: 100% !important;
             display: block;
         }
-
-
-
+        
         /* Main Content */
         .mainContainer {
             margin-top: 6em;
@@ -544,6 +543,71 @@
         .show {
             display: block;
         }
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 35%;
+            height: 50vh;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        .modal-header {
+            background: #007bff;
+            color: white;
+            border-radius: 8px 8px 0 0;
+            padding: 20px;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-body {
+            font-size: 16px;
+            color: #333;
+        }
+
+        #countdownTimer {
+            font-weight: bold;
+            color: red;
+            font-size: 18px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
     </style>
 </head>
 <body>
@@ -559,6 +623,7 @@
         <div>
                 @(Html.DevExtreme().SelectBox()
                     .Label(new JS("formatMessage('Language')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("selectBox")
                     .InputAttr("id", "selectInput")
                     .DataSource(new JS("locales"))
@@ -920,263 +985,162 @@
             </main>
         </div>
     </div>
-    @* <div id="idleModal" class="modal" tabindex="-1"> *@
-    @*     <div class="modal-dialog"> *@
-    @*         <div class="modal-content"> *@
-    @*             <div class="modal-header"> *@
-    @*                 <h5 class="modal-title">Session Timeout</h5> *@
-    @*             </div> *@
-    @*             <div class="modal-body"> *@
-    @*                 <p>You have been idle for 1 minute. Do you want to stay logged in?</p> *@
-    @*                 <p>Session will expire in <span id="countdownTimer">00:60</span>.</p> *@
-    @*             </div> *@
-    @*             <div class="modal-footer"> *@
-    @*                 <button id="stayLoggedIn" class="btn btn-primary">Stay Logged In</button> *@
-    @*                 <button id="logout" class="btn btn-secondary">Log Out</button> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*     </div> *@
-    @* </div> *@
     <footer class="text-center py-3 footerContainer">
         <p><b>Copyright &copy; @DateTime.Now.Year Pulse InfoTech.</b> All rights reserved.</p>
     </footer>
         <script src="~/js/localization.js" asp-append-version="true"></script>
+    <!-- Bootstrap Modal -->
+    <div id="idleModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Session Timeout</h5>
+                </div>
+                <div class="modal-body">
+                    <p>You have been idle for 1 minute. Do you want to stay logged in?</p>
+                    <p>Session will expire in <span id="countdownTimer">00:60</span>.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="stayLoggedIn" class="btn btn-primary">Stay Logged In</button>
+                    <button id="logout" class="btn btn-secondary">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
+        
         var authToken = '@authToken';
-
         var tenantName = '@tenantName';
-
         var userName = '@userName';
-
         var userId = '@userId';
 
         $(document).ready(function () {
-
             if (authToken) {
-
                 var decodedToken = jwt_decode(authToken);
-
                 var tokenExpiry = new Date(decodedToken.exp * 1000); // Token expiry time in milliseconds
-
                 var currentTime = new Date();
 
                 // Store token expiry in sessionStorage for use across reloads
-
                 sessionStorage.setItem('TokenExpiry', tokenExpiry);
-
                  monitorTokenExpiry();
-
                 // Initialize idle timeout handling
-
                 setupIdleTimeout();
-
+                    $('.modal-backdrop').remove(); 
                  // Function to monitor token expiry and extend session
-
             function monitorTokenExpiry() {
-
                 // Set interval to check the token expiry every 30 seconds
-
                 setInterval(function () {
-
                     var tokenExpiry = new Date(sessionStorage.getItem('TokenExpiry')); // Get updated expiry
-
                     var currentTime = new Date();
-
                     var timeToExpiry = (tokenExpiry - currentTime) / 1000; // Time left in seconds
 
                     // If token will expire in less than 2 minutes, extend the session
-
                     if (timeToExpiry <= 120 && timeToExpiry > 0) {
-
                         console.log('Token is about to expire. Extending session...');
-
                         extendSession();
-
                     }
-
                 }, 30000); // Check every 30 seconds
-
             }
 
                 // Function to setup idle timeout logic
-
                 function setupIdleTimeout() {
-
                     var countdown;
-
                     var countdownTime = 60; // Countdown for 30 seconds
-
                     var countdownInterval;
-
                     $(document).idle({
-
-                        idle: 5 * 60 * 1000, // 15 minutes of inactivity
-
+                        idle: 15 * 60 * 1000, // 15 minutes of inactivity
                         onIdle: function () {
-
                             // Show the modal when the user is idle for 15 minutes
-
                             $('#idleModal').modal('show');
-
+                            $('.modal-backdrop').remove();
                             // Start countdown
-
                             countdown = countdownTime;
-
                             updateCountdownDisplay(countdown);
-
                             countdownInterval = setInterval(function () {
-
                                 countdown--;
-
                                 updateCountdownDisplay(countdown);
 
                                 // If countdown reaches 0, log out automatically
-
                                 if (countdown <= 0) {
-
                                     clearInterval(countdownInterval);
-
                                     autoLogout();
-
                                 }
-
                             }, 1000);
-
                         },
-
                         onActive: function () {
-
                             // If user becomes active again, stop countdown and hide the modal
-
                         },
-
                         keepTracking: true,
-
                     });
 
                     // Handle "Stay Logged In" button
-
                     $('#stayLoggedIn').on('click', function () {
-
                         $('#idleModal').modal('hide');
-
                         clearInterval(countdownInterval); // Stop countdown
-
                         extendSession(); // Extend session when user stays logged in
-
                     });
 
                     // Handle "Log Out" button
-
                     $('#logout').on('click', function () {
-
                         clearInterval(countdownInterval); // Stop countdown
-
                         autoLogout(); // Log out the user
-
                     });
 
                     // Function to update countdown display
-
                     function updateCountdownDisplay(seconds) {
-
                         var minutes = Math.floor(seconds / 60);
-
                         var secondsLeft = seconds % 60;
-
                         $('#countdownTimer').text(`${minutes}:${secondsLeft < 10 ? '0' + secondsLeft : secondsLeft}`);
-
                     }
-
                 }
 
                 // Function to automatically log out the user
-
                 function autoLogout() {
-
                     $.ajax({
-
                         url: '/api/Login/SignOut', // Call the SignOut API
-
                         type: 'GET', // HTTP method
-
                         success: function (response) {
-
                             sessionStorage.clear();
-
-                            alert(response.message);
-
+                            // alert(response.message);
                             window.location.href = `/${tenantName}/Security/Login`; // Redirect to login page
-
                         },
-
                         error: function (xhr, status, error) {
-
                             alert('An error occurred during sign-out');
-
                         }
-
                     });
-
                 }
 
                 // Function to extend the session
-
                 function extendSession() {
-
                     $.ajax({
-
                         url: '/api/Login/ExtendSession', // API endpoint for extending session
-
                         type: 'POST',
-
                         xhrFields: {
-
                             withCredentials: true // Include cookies in the request
-
                         },
-
                         success: function (data) {
-
                             if (data.success) {
-
                                 console.log('Session extended successfully.');
-
                                 // Update AuthToken and Permissions in sessionStorage
-
                                 sessionStorage.setItem('AuthToken', data.token);
-
                                 sessionStorage.setItem('Permissions', JSON.stringify(data.permissions));
 
                                 // Update the token expiry
-
                                 var newDecodedToken = jwt_decode(data.token);
-
                                 var newTokenExpiry = new Date(newDecodedToken.exp * 1000);
-
                                 sessionStorage.setItem('TokenExpiry', newTokenExpiry);
-
                             } else {
-
                                 console.error('Failed to extend session:', data.message);
-
                             }
-
                         },
-
                         error: function (xhr, status, error) {
-
                             console.error('Error extending session:', error);
-
                         }
-
                     });
-
                 }
-
             }
-
         });
 
         function handleBellClick() {
