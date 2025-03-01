@@ -513,6 +513,61 @@
             </li>
         </ul>
 
+        <div id="popupContainer">
+
+            @(Html.DevExtreme().Popup()
+
+                    .ID("CostAllocationPopup")
+
+                    .Title("Cost Allocation")
+
+                    .Width(1300)
+
+                    .Height(500)
+
+                    .Visible(false)
+
+                    .ShowCloseButton(true)
+
+                    .ResizeEnabled(true)
+
+                    .DragEnabled(true)
+
+                    .ShowTitle(true)
+
+                    @* .ToolbarItems(toolbar =>
+
+         {
+
+             toolbar.Add()
+
+             .Widget(w => w.Button()
+
+             .Icon("minus")
+
+             .OnClick("minimizePopup")
+
+             )
+
+             .Location(ToolbarItemLocation.After);
+
+             toolbar.Add()
+
+             .Widget(w => w.Button()
+
+             .Icon("expand")
+
+             .OnClick("maximizePopup")
+
+             )
+
+             .Location(ToolbarItemLocation.After);
+
+         }) *@
+
+                    )
+</div>
+
 
 
         <div class="container">
@@ -1972,11 +2027,7 @@
 
         });
 
-
-
-        function addCostAllocation() {
-            $("#costAllocationPopup").dxPopup("instance").show();
-        }
+       
         function saveCostAllocation() {
             $("#costAllocationPopup").dxPopup("instance").close();
         }
@@ -2140,8 +2191,7 @@
         }
 
 
-
-      function addVoucherEntry() {
+function addVoucherEntry() {
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
         var amount = $("#txtVoucherAmount").dxNumberBox("instance").option("value");
         var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
@@ -2249,14 +2299,27 @@
                 dataType: "json",
                 success: function (response) {
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                   
+
                      $("#txtEntryNarration").dxTextArea("instance").option("value", "");
                      var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
                      accountHeadValidator.reset();
                      var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
                      voucherAmtValidator.reset();
 
-                    if (accheadname && accheadname.startsWith("Salary Payable")) {
+                           //console.log(response.data);
+                         // Retrieve the newly added row from response or datagrid instance
+    var updatedGridData = $("#dataGrid").dxDataGrid("instance").option("dataSource");
+
+    // Filter entries where DrCr is "Cr"
+    var filteredData = updatedGridData.filter(entry => entry.DrCr === "Dr");
+
+    // Get the latest entry from the filtered data
+    var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
+    console.log(latestEntry);
+    debugger;
+      if (accheadname != null) {
+
+           if (accheadname && accheadname.startsWith("Salary Payable")) {
                         $("#SalaryPaidEntryPopup").dxPopup({
                             title: "Salary Paid Entry",
                             width: 1250,
@@ -2265,50 +2328,9 @@
                             visible: true
                         });
                     }
-                    var button = $("#btnSave").dxButton("instance");
-                    button.option("text", "Update");
-                },
-                error: function (xhr, status, error) {
-                    alert("Error occurred while updating data: " + error);
-                }
-            });
-        } else {
-            IsNotification=true;
-                         // Append the stored value back when the user clicks Add again                    
-    if (storedAccountHead) {
-
-   const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
-            ddbInstance.option("value", storedAccountHead);
-        var currentValue = accountHeadInstance.option("value");
-
-        if (!currentValue.includes(storedAccountHead)) {
-
-            accountHeadInstance.option("value", storedAccountHead);
-        }
-    }
-   
-             DevExpress.ui.dialog.alert(
-                "Cannot continue saving with errors,please clear the errors and continue.",
-                "Clear Errors"
-            );
-
-           
-        }
-        // alert(accheadname)
-        // if(accheadname!=null)
-        // {
-        var accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
-
-        storedAccountHead = accountHeadInstance.option("value"); // Store before reset
-
-
-           
-     //   }
-
-        if (accheadname != null) {
 
           //  $("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00")
-            if (accheadname.startsWith("Salary Payable")) {
+           else if (accheadname.startsWith("Salary Payable")) {
                 var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
 
                 $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
@@ -2340,6 +2362,18 @@
                     DevExpress.ui.repaintFloatingActionButton();
                 });
             }
+
+              else if (accheadname && accheadname.startsWith("Cost")) {
+
+                     const params = {
+                           VoucherNo: encodeURIComponent(voucherNo),
+                           VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                           AccountHead: encodeURIComponent(accheadname),
+                           VoucherAmount: encodeURIComponent(amount),
+                           DrCr: encodeURIComponent(sbDrCr)
+        };
+        openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
+    }
             else if (accheadname) {
                 $.ajax({
                     type: "GET",
@@ -2380,6 +2414,48 @@
                 });
             }
         }
+
+                    var button = $("#btnSave").dxButton("instance");
+                    button.option("text", "Update");
+                },
+                error: function (xhr, status, error) {
+                    alert("Error occurred while updating data: " + error);
+                }
+            });
+        } else {
+            IsNotification=true;
+                         // Append the stored value back when the user clicks Add again                    
+    if (storedAccountHead) {
+
+   const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+            ddbInstance.option("value", storedAccountHead);
+        var currentValue = accountHeadInstance.option("value");
+
+        if (!currentValue.includes(storedAccountHead)) {
+
+            accountHeadInstance.option("value", storedAccountHead);
+        }
+    }
+
+             DevExpress.ui.dialog.alert(
+                "Cannot continue saving with errors,please clear the errors and continue.",
+                "Clear Errors"
+            );
+
+
+        }
+        // alert(accheadname)
+        // if(accheadname!=null)
+        // {
+        var accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
+
+        storedAccountHead = accountHeadInstance.option("value"); // Store before reset
+
+
+
+     //   }
+
+
     }
 
 
@@ -3762,6 +3838,132 @@ $(function () {
     });
 });
 
+
+function closeParentModal() {
+        let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+    var openedPopups = {};  // A map to store instances of opened popups by their unique identifier
+    var popupId = null;
+// Function to open a popup (Cost Allocation)
+function openCostAllocationPopup(params) {
+    const queryString = Object.keys(params)
+        .map(key => `${key}=${params[key]}`)
+        .join('&');
+
+    debugger;
+    $.ajax({
+        url: `/api/VoucherMaster/CostAllocation?${queryString}`,
+        type: "GET",
+        dataType: "html",
+        success: function (data) {
+            // Get the popup's unique identifier, for example, use the voucher number
+            const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
+
+            // Check if the popup is already opened
+            if (!openedPopups[popupId]) {
+                // Create and store the popup instance
+                let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+                popupInstance.option("contentTemplate", function () {
+                    return $("<div>").html(data);
+                });
+
+                // Store the popup instance in the openedPopups map
+                openedPopups[popupId] = popupInstance;
+                 // popupInstance.popupId = popupId;
+                 console.log(openedPopups); 
+                popupInstance.show();
+            } else {
+                // If the popup is already opened, just show it
+                openedPopups[popupId].show();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading Cost Allocation view:", error);
+            alert("Failed to load cost allocation details.");
+        }
+    });
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const grid = document.getElementById("dataGrid");
+    const contextMenu = document.getElementById("contextMenu");
+    const contentContainer = document.getElementById("contentContainer"); // Div to load pages
+
+    grid.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+
+        // Find the closest row element
+        const rowElement = e.target.closest(".dx-data-row");
+
+        if (rowElement) {
+            const rowIndex = rowElement.getAttribute("aria-rowindex");
+            contextMenu.dataset.rowIndex = rowIndex;
+
+            let mouseX = e.clientX;
+            let mouseY = e.clientY;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const menuWidth = contextMenu.offsetWidth;
+            const menuHeight = contextMenu.offsetHeight;
+
+            // Prevent overflow
+            if (mouseX + menuWidth > windowWidth) {
+                mouseX -= menuWidth;
+            }
+            if (mouseY + menuHeight > windowHeight) {
+                mouseY -= menuHeight;
+            }
+
+            contextMenu.style.display = "block";
+            contextMenu.style.left = `${mouseX}px`;
+            contextMenu.style.top = `${mouseY}px`;
+        }
+    });
+
+    // Hide context menu when clicking elsewhere
+    document.addEventListener("click", function () {
+        contextMenu.style.display = "none";
+    });
+
+    function openPopup(action, title) {
+        fetch(`/api/VoucherMaster/${action}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Page not found");
+                }
+                return response.text();
+            })
+            .then(html => {
+                let popupInstance = $("#allocationPopup").dxPopup("instance");
+                popupInstance.option("contentTemplate", function () {
+                    return $("<div>").html(html);
+                });
+                popupInstance.option("title", title);
+                popupInstance.show();
+            })
+            .catch(error => console.error("Error loading page:", error));
+    }
+
+    window.editCostAllocation = function () {
+        let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+
+        if (popupInstance) {
+            popupInstance.show(); // Just show the existing popup
+        } else {
+            console.error("Popup instance not found!");
+        }
+    };
+
+
+    window.editPropertyAllocation = function () {
+        openPopup("PropertyAllocation", "Edit Property Allocation");
+    };
+
+    window.editEmployeeAllocation = function () {
+        openPopup("EmployeeAllocation", "Edit Employee Allocation");
+    };
+
+});
 
 
 </script>

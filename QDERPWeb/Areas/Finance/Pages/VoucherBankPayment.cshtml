@@ -57,7 +57,6 @@
         cursor: pointer;
     }
 
-
     .context-menu {
         display: none;
         position: absolute;
@@ -81,7 +80,6 @@
             }
 
 </style>
-
 <div class="title">
     <div class="header-container">
         <div id="PaymentVoucherDetails" class="no-border-title"></div>
@@ -194,7 +192,7 @@
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired()
-                                .Message("Ledger Account should be entered ");
+                                .Message(new JS("formatMessage('Ledger Account should be entered')"));
                             })
                             .LabelMode(EditorLabelMode.Outside)
                             .ID("ddAccountHead")
@@ -385,8 +383,6 @@
 
             </text>);
 
-
-
                                 columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).CustomizeText(
                             "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
@@ -416,7 +412,7 @@
 
 
                             })
-
+                        .Selection(selection => selection.Mode(SelectionMode.Single))
                         .AllowColumnReordering(true) // Enable column reordering
                         .AllowColumnResizing(true)   // Enable column resizing
                         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
@@ -495,7 +491,7 @@
         <!-- Context Menu for Actions -->
         <ul id="contextMenu" class="context-menu" style="display: none;">
             <li onclick="editCostAllocation()">
-                <i class="fas fa-edit" style="margin-right: 8px;"></i> <div id="EditCostAllocation" class="no-border-input"></div>
+                <i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation" class="no-border-input"></div>
             </li>
             <li onclick="editBillReceivable()">
                 <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable" class="no-border-input"></div>
@@ -516,6 +512,61 @@
                 <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteAllLineEntries" class="no-border-input"></div>
             </li>
         </ul>
+
+        <div id="popupContainer">
+
+            @(Html.DevExtreme().Popup()
+
+                        .ID("CostAllocationPopup")
+
+                        .Title("Cost Allocation")
+
+                        .Width(1300)
+
+                        .Height(500)
+
+                        .Visible(false)
+
+                        .ShowCloseButton(true)
+
+                        .ResizeEnabled(true)
+
+                        .DragEnabled(true)
+
+                        .ShowTitle(true)
+
+                        @* .ToolbarItems(toolbar =>
+
+         {
+
+             toolbar.Add()
+
+             .Widget(w => w.Button()
+
+             .Icon("minus")
+
+             .OnClick("minimizePopup")
+
+             )
+
+             .Location(ToolbarItemLocation.After);
+
+             toolbar.Add()
+
+             .Widget(w => w.Button()
+
+             .Icon("expand")
+
+             .OnClick("maximizePopup")
+
+             )
+
+             .Location(ToolbarItemLocation.After);
+
+         }) *@
+
+                        )
+</div>
 
 
 
@@ -574,7 +625,7 @@
                                                 .ValidationRules(rules =>
                                                 {
                                                 rules.AddRequired()
-                                                .Message("ChequeNo is required");
+                                                .Message(new JS("formatMessage('ChequeNo is required'')"));
                                                 })
                                                 .ElementAttr(new { style = "background-color: lightGrey; color: darkgrey;" })
                                                 )
@@ -854,14 +905,14 @@
                             <div class="form-group">
                                 @(
                                             Html.DevExtreme().SelectBox()
-                                            .Label(new JS("formatMessage('Bank Payment')"))
+                                            .Label(new JS("formatMessage('Cash Payment')"))
                                             .LabelMode(EditorLabelMode.Outside)
                                             .ID("VoucherType")
-                                            .DataSource(new[] { "Bank Payment" })
-                                                .Value(new JS("formatMessage('Bank Payment')"))
+                                            .DataSource(new[] { "Cash Payment" })
+                                            .Value(new JS("formatMessage('Cash Payment')"))
                                             .Width(520)
                                             .Disabled(true)
-                                                
+
                                             )
                             </div>
                         </div>
@@ -1345,7 +1396,7 @@
                                             columns.Add().DataField("AccountHeadArabic");
                                             columns.Add().DataField("ReferenceNo");
                                             columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
-                                            .CellTemplate(@<text>
+                                                    .CellTemplate(@<text>
                             <div class="dx-icon">
                                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
                             </div>
@@ -1444,10 +1495,8 @@
 
 
 
-        <div class="Head">
-            <div class="header-container">
-                <div class="footer">@await Html.PartialAsync("_Formfooter")</div>
-            </div>
+        <div>
+            @await Html.PartialAsync("_Formfooter")
         </div>
         <!-- Drop Down Grid Template -->
         <!-- Drop Down Account Head Grid Template -->
@@ -1455,90 +1504,90 @@
         {
             @(Html.DevExtreme().DataGrid()
 
-                            .ID("accountpaymentamount-datagrid")
-                            .DataSource(d => d.WebApi()
-                            .Controller("VoucherMaster")
-                            .LoadAction("GetBPPaymentAccounts")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            /// .Key("AccountHead") //salary paid entry
-                            .Key("AccountId")
-                            )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
+                                .ID("accountpaymentamount-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("VoucherMaster")
+                                .LoadAction("GetBPPaymentAccounts")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                /// .Key("AccountHead") //salary paid entry
+                                .Key("AccountId")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
 
-                            .SearchPanel(sp => sp.HighlightSearchText(true))
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("dataGridSelectionChanged")
-                            .OnInitialized("dataGridInitialized")
-                            // .HeaderFilter(p => p.Visible(true))
-                            .ShowBorders(true)
-                            .HoverStateEnabled(true)
-                            .Paging(p => p.PageSize(15))
-                            .FilterRow(f => f.Visible(true))
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(345)
+                                .SearchPanel(sp => sp.HighlightSearchText(true))
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                .OnSelectionChanged("dataGridSelectionChanged")
+                                .OnInitialized("dataGridInitialized")
+                                // .HeaderFilter(p => p.Visible(true))
+                                .ShowBorders(true)
+                                .HoverStateEnabled(true)
+                                .Paging(p => p.PageSize(15))
+                                .FilterRow(f => f.Visible(true))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(345)
 
-                            .Selection(s => s.Mode(SelectionMode.Single))
-                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 
-                            .Columns(columns =>
-                            {
-                                columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
-                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
-                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
-                        columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
-                            .CellTemplate(@<text>
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                                    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                                    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                                    columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
+                                .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>);
 
-                            })
+                                })
                         )
         }
         @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
         {
             @(Html.DevExtreme().DataGrid()
 
-                            .ID("accounthead-datagrid")
-                            .DataSource(d => d.WebApi()
-                            .Controller("VoucherMaster")
-                            .LoadAction("GetAccountHead")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            ///   .Key("AccountHead") //salary paid entry
-                            .Key("AccountId")
+                                .ID("accounthead-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("VoucherMaster")
+                                .LoadAction("GetAccountHead")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                ///   .Key("AccountHead") //salary paid entry
+                                .Key("AccountId")
 
-                            )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
-                            .SearchPanel(sp => sp.HighlightSearchText(true))
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
-                            .OnInitialized("dataGridAccountHeadInitialized")
-                            // .HeaderFilter(p => p.Visible(true))
-                            .ShowBorders(true)
-                            .HoverStateEnabled(true)
-                            .Paging(p => p.PageSize(15))
-                            .FilterRow(f => f.Visible(true))
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(345)
-                            .Selection(s => s.Mode(SelectionMode.Single))
-                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                            .Columns(columns =>
-                            {
-                        columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
-                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountGroup')"));
-                        columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Head')"));
-                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
-                        columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
-                        columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
-                            .CellTemplate(@<text>
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                .SearchPanel(sp => sp.HighlightSearchText(true))
+                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
+                                .OnInitialized("dataGridAccountHeadInitialized")
+                                // .HeaderFilter(p => p.Visible(true))
+                                .ShowBorders(true)
+                                .HoverStateEnabled(true)
+                                .Paging(p => p.PageSize(15))
+                                .FilterRow(f => f.Visible(true))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(345)
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                                    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                                    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
+                                    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                                    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
+                                    columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
+                                .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>);
 
-                            })
+                                })
                         )
         }
 
@@ -1580,7 +1629,7 @@
                         {
                             columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
                             columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
-                            columns.Add().Caption(new JS("formatMessage('Account Head Arabic')")).DataField("AccountHeadArabic");
+                            columns.Add().Caption(new JS("formatMessage('AccountHead Arabic')")).DataField("AccountHeadArabic");
 
                         })
                         )
@@ -1630,56 +1679,55 @@
 
 
 <script>
-    $(function () {
-                                    $("#EditCostAllocation").dxTextBox({
-                                                text:formatMessage("Edit Cost Allocation"),
-                                            readOnly: true
-
-                            });
-                    });
-                        $(function () {
-                                            $("#EditBillReceivable").dxTextBox({
-                                                        text:formatMessage("Edit Bill Receivable"),
+        $(function () {
+                                        $("#EditCostAllocation").dxTextBox({
+                                                    text:formatMessage("Edit Cost Allocation"),
                                                 readOnly: true
 
                                 });
                         });
- 
-    $(function () {
-                                    $("#EditSalaryPayable").dxTextBox({
-                                            text:formatMessage("Edit Salary Payable"),
+        $(function () {
+                                        $("#DeleteAllLineEntries").dxTextBox({
+                                                    text:formatMessage("Delete All Line Entries"),
                                             readOnly: true
 
                             });
                     });
-    $(function () {
-                                        $("#EditEmployeeAllocation").dxTextBox({
-                                                text:formatMessage("Edit Employee Allocation"),
-                                                readOnly: true
-
-                                });
-                        });
-    $(function () {
-                                $("#EditPropertyAllocation").dxTextBox({
-                                            text:formatMessage("Edit Property Allocation"),
+        $(function () {
+                                        $("#EditBillReceivable").dxTextBox({
+                                                text:formatMessage("Edit Bill Receivable"),
                                             readOnly: true
 
                             });
                     });
-    $(function () {
-                                    $("#DeleteLineEntry").dxTextBox({
-                                                text:formatMessage("Delete Line Entry"),
+        $(function () {
+                                            $("#EditSalaryPayable").dxTextBox({
+                                                    text:formatMessage("Edit Salary Payable"),
                                                 readOnly: true
 
                                 });
                         });
-   $(function () {
-                                            $("#DeleteAllLineEntries").dxTextBox({
-                                                        text:formatMessage("Delete All Line Entries"),
-                                                    readOnly: true
+        $(function () {
+                                            $("#EditEmployeeAllocation").dxTextBox({
+                                                        text:formatMessage("Edit Employee Allocation"),
+                                                readOnly: true
 
-                                    });
-                            });
+                                });
+                        });
+        $(function () {
+                                            $("#EditPropertyAllocation").dxTextBox({
+                                                    text:formatMessage("Edit Property Allocation"),
+                                                readOnly: true
+
+                                });
+                        });
+        $(function () {
+                                            $("#DeleteLineEntry").dxTextBox({
+                                                        text:formatMessage("Delete Line Entry"),
+                                                readOnly: true
+
+                                });
+                        });
 
         let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName,refno,accgroup,IsEdit = false,accgroupid,accheadar,
         IsNotification=false,storedAccountHead,IsObeselete=false;
@@ -1892,7 +1940,10 @@
             } else {
                 if(IsNotification==true)
                 {
-                        DevExpress.ui.dialog.alert(formatMessage('Cannot continue saving with errors,please clear the errors and continue.'),formatMessage('Clear Errors')
+
+                        DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors,please clear the errors and continue.",
+                    "Clear Errors"
                 );
                 }
                 else
@@ -1977,10 +2028,6 @@
         });
 
 
-
-        function addCostAllocation() {
-            $("#costAllocationPopup").dxPopup("instance").show();
-        }
         function saveCostAllocation() {
             $("#costAllocationPopup").dxPopup("instance").close();
         }
@@ -2144,8 +2191,7 @@
         }
 
 
-
-      function addVoucherEntry() {
+function addVoucherEntry() {
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
         var amount = $("#txtVoucherAmount").dxNumberBox("instance").option("value");
         var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
@@ -2254,13 +2300,26 @@
                 success: function (response) {
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
-                   $("#txtEntryNarration").dxTextArea("instance").option("value", "");
+                     $("#txtEntryNarration").dxTextArea("instance").option("value", "");
                      var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
                      accountHeadValidator.reset();
                      var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
                      voucherAmtValidator.reset();
 
-                    if (accheadname && accheadname.startsWith("Salary Payable")) {
+                           //console.log(response.data);
+                         // Retrieve the newly added row from response or datagrid instance
+    var updatedGridData = $("#dataGrid").dxDataGrid("instance").option("dataSource");
+
+    // Filter entries where DrCr is "Cr"
+    var filteredData = updatedGridData.filter(entry => entry.DrCr === "Dr");
+
+    // Get the latest entry from the filtered data
+    var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
+    console.log(latestEntry);
+    debugger;
+      if (accheadname != null) {
+
+           if (accheadname && accheadname.startsWith("Salary Payable")) {
                         $("#SalaryPaidEntryPopup").dxPopup({
                             title: "Salary Paid Entry",
                             width: 1250,
@@ -2269,44 +2328,9 @@
                             visible: true
                         });
                     }
-                    var button = $("#btnSave").dxButton("instance");
-                    button.option("text", "Update");
-                },
-                error: function (xhr, status, error) {
-                    alert("Error occurred while updating data: " + error);
-                }
-            });
-        } else {
-            IsNotification=true;
-                         // Append the stored value back when the user clicks Add again                    
-    if (storedAccountHead) {
-
-   const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
-            ddbInstance.option("value", storedAccountHead);
-        var currentValue = accountHeadInstance.option("value");
-
-        if (!currentValue.includes(storedAccountHead)) {
-
-            accountHeadInstance.option("value", storedAccountHead);
-        }
-    }
-             DevExpress.ui.dialog.alert(
-                "Cannot continue saving with errors,please clear the errors and continue.",
-                "Clear Errors"
-            );
-        }
-       
-        var accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
-
-        storedAccountHead = accountHeadInstance.option("value"); // Store before reset
-
-
-          
-
-        if (accheadname != null) {
 
           //  $("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00")
-            if (accheadname.startsWith("Salary Payable")) {
+           else if (accheadname.startsWith("Salary Payable")) {
                 var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
 
                 $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
@@ -2338,6 +2362,18 @@
                     DevExpress.ui.repaintFloatingActionButton();
                 });
             }
+
+              else if (accheadname && accheadname.startsWith("Cost")) {
+
+                     const params = {
+                           VoucherNo: encodeURIComponent(voucherNo),
+                           VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                           AccountHead: encodeURIComponent(accheadname),
+                           VoucherAmount: encodeURIComponent(amount),
+                           DrCr: encodeURIComponent(sbDrCr)
+        };
+        openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
+    }
             else if (accheadname) {
                 $.ajax({
                     type: "GET",
@@ -2378,6 +2414,48 @@
                 });
             }
         }
+
+                    var button = $("#btnSave").dxButton("instance");
+                    button.option("text", "Update");
+                },
+                error: function (xhr, status, error) {
+                    alert("Error occurred while updating data: " + error);
+                }
+            });
+        } else {
+            IsNotification=true;
+                         // Append the stored value back when the user clicks Add again                    
+    if (storedAccountHead) {
+
+   const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+            ddbInstance.option("value", storedAccountHead);
+        var currentValue = accountHeadInstance.option("value");
+
+        if (!currentValue.includes(storedAccountHead)) {
+
+            accountHeadInstance.option("value", storedAccountHead);
+        }
+    }
+
+             DevExpress.ui.dialog.alert(
+                "Cannot continue saving with errors,please clear the errors and continue.",
+                "Clear Errors"
+            );
+
+
+        }
+        // alert(accheadname)
+        // if(accheadname!=null)
+        // {
+        var accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
+
+        storedAccountHead = accountHeadInstance.option("value"); // Store before reset
+
+
+
+     //   }
+
+
     }
 
 
@@ -3271,68 +3349,6 @@
             });
         });
 
-
-
-        $(document).ready(function () {
-            var isDateLocked = false; // Flag to track invalid date selection
-            var minAllowedDate = new Date("2021-12-31");
-
-            // Get the existing DateBox instance and bind the event
-            var voucherDateBox = $("#VoucherDate").dxDateBox("instance");
-
-            voucherDateBox.option("onValueChanged", function (e) {
-                var selectedDate = new Date(e.value);
-
-                if (selectedDate < minAllowedDate) {
-                    isDateLocked = true;
-                    alert("Voucher Date has been Locked. Please review your entry date.")
-
-                    // Display SweetAlert2 Error Message
-                    // Swal.fire({
-                    //     title: "Error",
-                    //     text: "Voucher Date has been Locked. Please review your entry date.",
-                    //     icon: "error",
-                    //     confirmButtonText: "OK"
-                    // });
-                } else {
-                    isDateLocked = false;
-                }
-            });
-
-            // Prevent form submission if date is locked
-            $("form").on("submit", function (event) {
-                if (isDateLocked) {
-                    // Swal.fire({
-                    //     title: "Error",
-                    //     text: "Cannot submit: Voucher Date has been Locked.",
-                    //     icon: "error",
-                    //     confirmButtonText: "OK"
-                    // });
-                    event.preventDefault();
-                }
-            });
-
-            // Prevent form interaction when date is locked
-            $(document).on("click", function (event) {
-                if (isDateLocked && !$(event.target).closest("#VoucherDate").length) {
-                    // Swal.fire({
-                    //     title: "Warning",
-                    //     text: "Voucher Date has been Locked. Please review your entry date.",
-                    //     icon: "warning",
-                    //     confirmButtonText: "OK"
-                    // }).then((result) => {
-                    //     if (result.isConfirmed) {
-                    //         // User clicked OK, allow them to proceed
-                    //     }
-                    // });
-
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-            });
-        });
-
-
         function showLedgerAccountPopup() {
         var popup = $("#ledgerAccountPopup").dxPopup("instance");
         popup.show();
@@ -3803,7 +3819,7 @@ $(function () {
 
             if (response && response.data && Array.isArray(response.data) && response.data.length > 0) {
                 // Find the object where AccountHead is "Petty Cash - Shabbir"
-                var foundAccount = response.data.find(acc => acc.AccountHead === "Riyadh Bank");
+                var foundAccount = response.data.find(acc => acc.AccountHead === "Petty Cash - Shabbir");
 
                 if (foundAccount && foundAccount.IsLedgerObselete === true) {
                     DevExpress.ui.dialog.alert(
@@ -3822,6 +3838,132 @@ $(function () {
     });
 });
 
+
+function closeParentModal() {
+        let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+    var openedPopups = {};  // A map to store instances of opened popups by their unique identifier
+    var popupId = null;
+// Function to open a popup (Cost Allocation)
+function openCostAllocationPopup(params) {
+    const queryString = Object.keys(params)
+        .map(key => `${key}=${params[key]}`)
+        .join('&');
+
+    debugger;
+    $.ajax({
+        url: `/api/VoucherMaster/CostAllocation?${queryString}`,
+        type: "GET",
+        dataType: "html",
+        success: function (data) {
+            // Get the popup's unique identifier, for example, use the voucher number
+            const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
+
+            // Check if the popup is already opened
+            if (!openedPopups[popupId]) {
+                // Create and store the popup instance
+                let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+                popupInstance.option("contentTemplate", function () {
+                    return $("<div>").html(data);
+                });
+
+                // Store the popup instance in the openedPopups map
+                openedPopups[popupId] = popupInstance;
+                 // popupInstance.popupId = popupId;
+                 console.log(openedPopups); 
+                popupInstance.show();
+            } else {
+                // If the popup is already opened, just show it
+                openedPopups[popupId].show();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading Cost Allocation view:", error);
+            alert("Failed to load cost allocation details.");
+        }
+    });
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const grid = document.getElementById("dataGrid");
+    const contextMenu = document.getElementById("contextMenu");
+    const contentContainer = document.getElementById("contentContainer"); // Div to load pages
+
+    grid.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+
+        // Find the closest row element
+        const rowElement = e.target.closest(".dx-data-row");
+
+        if (rowElement) {
+            const rowIndex = rowElement.getAttribute("aria-rowindex");
+            contextMenu.dataset.rowIndex = rowIndex;
+
+            let mouseX = e.clientX;
+            let mouseY = e.clientY;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const menuWidth = contextMenu.offsetWidth;
+            const menuHeight = contextMenu.offsetHeight;
+
+            // Prevent overflow
+            if (mouseX + menuWidth > windowWidth) {
+                mouseX -= menuWidth;
+            }
+            if (mouseY + menuHeight > windowHeight) {
+                mouseY -= menuHeight;
+            }
+
+            contextMenu.style.display = "block";
+            contextMenu.style.left = `${mouseX}px`;
+            contextMenu.style.top = `${mouseY}px`;
+        }
+    });
+
+    // Hide context menu when clicking elsewhere
+    document.addEventListener("click", function () {
+        contextMenu.style.display = "none";
+    });
+
+    function openPopup(action, title) {
+        fetch(`/api/VoucherMaster/${action}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Page not found");
+                }
+                return response.text();
+            })
+            .then(html => {
+                let popupInstance = $("#allocationPopup").dxPopup("instance");
+                popupInstance.option("contentTemplate", function () {
+                    return $("<div>").html(html);
+                });
+                popupInstance.option("title", title);
+                popupInstance.show();
+            })
+            .catch(error => console.error("Error loading page:", error));
+    }
+
+    window.editCostAllocation = function () {
+        let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+
+        if (popupInstance) {
+            popupInstance.show(); // Just show the existing popup
+        } else {
+            console.error("Popup instance not found!");
+        }
+    };
+
+
+    window.editPropertyAllocation = function () {
+        openPopup("PropertyAllocation", "Edit Property Allocation");
+    };
+
+    window.editEmployeeAllocation = function () {
+        openPopup("EmployeeAllocation", "Edit Employee Allocation");
+    };
+
+});
 
 
 </script>

@@ -1023,19 +1023,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
-        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string effectiveDate)
-        {
-            // Log or debug the incoming parameters
-            ViewBag.VoucherNo = voucherNo;
-            ViewBag.AccountHead = accountHead;
-            ViewBag.VoucherAmount = voucherAmount;
-            ViewBag.DrCr = drCr;
-            ViewBag.EffectiveDate = effectiveDate;
-
-            return View();
-        }
-
-
         [HttpGet]
         public IActionResult GetEmployeeName()
         {
@@ -1358,6 +1345,36 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         //        return StatusCode(500, "An error occurred while processing your request.");
         //    }
         //}
+
+
+        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo)
+
+        {
+            try
+            {
+                // Log or debug the incoming parameters
+
+                ViewBag.VoucherNo = voucherNo;
+
+                ViewBag.AccountHead = accountHead;
+
+                ViewBag.VoucherAmount = voucherAmount;
+
+                ViewBag.DrCr = drCr;
+
+                ViewBag.VoucherEntryNo = voucherEntryNo;
+
+                return PartialView("~/Areas/Finance/Views/_CostAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+           
+
+        }
+
 
     }
 
