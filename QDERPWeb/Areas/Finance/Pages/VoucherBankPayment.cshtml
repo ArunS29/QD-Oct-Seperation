@@ -1888,6 +1888,9 @@
 
                     "BillPaidTo": $("#BillPaidTo").dxTextBox("instance").option("value") || null,
 
+                    "VoucherType": $("#VoucherType").dxSelectBox("instance").option("value") || null,
+
+
                     "Remarks": $("#Remarks").dxTextBox("instance").option("value") || null,
 
                     // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
@@ -1991,6 +1994,7 @@
                     "BillDate": $("#BillDate").dxDateBox("instance").option("value") || null,
 
                     "BillPaidTo": $("#BillPaidTo").dxTextBox("instance").option("value") || null,
+                   "VoucherType": $("#VoucherType").dxSelectBox("instance").option("value") || null,
 
                     "Remarks": $("#Remarks").dxTextBox("instance").option("value") || null,
 
@@ -2025,13 +2029,13 @@
                 });
         } else {
 
-            DevExpress.ui.dialog.alert(
-                "Voucher has no line items to be saved, please enter transaction to save.!",
-                "No Line Items"
-            ).done(function () {
-                history.back();
-            });
-        }
+                DevExpress.ui.dialog.alert(
+    "Voucher has no line items to be saved, please enter transaction to save.!",
+    "No Line Items"
+).done(function () {
+    history.back();
+});
+            }
 
         });
 
