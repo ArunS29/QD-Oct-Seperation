@@ -115,18 +115,17 @@
 
 <div class="title">
     <div class="header-container">
-        <div class="title">Receipts Voucher Details</div>
+        <div id="ReceiptsVoucherDetails" class="title no-border-title"></div>
     </div>
 </div>
 <div class="content-container-top" style="background-color:#909ead00;">
 
-
     <div class="dx-fieldset horizontal-container" style="margin-bottom:0px">
         <div class="form-group">
-            <label for="VoucherNo" class="button-alignment-down">Voucher No:</label>
-
             @(
                 Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Voucher No')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .ID("VoucherNo")
                 .Value(null)
                 .ReadOnly(true)
@@ -139,12 +138,12 @@
         </div>
 
         <div class="form-group">
-            <label for="VoucherDate" class="button-alignment-down">Voucher Date:</label>
 
             @(Html.DevExtreme().DateBox()
 
                 .ID("VoucherDate")
-
+                .Label(new JS("formatMessage('Voucher Date')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .InputAttr("aria-label", "Date")
 
                 .LabelMode(EditorLabelMode.Outside)
@@ -158,12 +157,12 @@
                 )
         </div>
         <div class="form-group">
-            <label for="EffectiveDate" class="button-alignment-down">Effective Date:</label>
 
             @(Html.DevExtreme().DateBox()
 
                 .ID("EffectiveDate")
-
+                .Label(new JS("formatMessage('Effective Date')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .InputAttr("aria-label", "Date")
 
                 .LabelMode(EditorLabelMode.Outside)
@@ -177,7 +176,6 @@
                 )
         </div>
         <div class="form-group">
-            <label for="" class="button-alignment-down">Receiving Account:</label>
             @(Html.DevExtreme().DropDownBox()
                 .DataSource(d => d.WebApi()
                 .Controller("VoucherEntryReceipts")
@@ -190,6 +188,7 @@
                     rules.AddRequired()
                     .Message("Receiving Account is required");
                 })
+                .Label(new JS("formatMessage('Receiving Account')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("accountDropDownBox")
                 .ShowClearButton(true)
@@ -221,10 +220,12 @@
 
         <div class="form-group" style="padding-left:20px">
             <div class="button-alignment-down">
-                <label for="DrCr">Dr/Cr:</label>
+           
             </div>
             @(
                 Html.DevExtreme().SelectBox()
+                .Label(new JS("formatMessage('Dr/Cr')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .ID("TransactionTypeComboBox")
                 .DataSource(new[] { "Dr", "Cr" })
                 .Value("Cr")
@@ -235,8 +236,9 @@
 
 
         <div class="form-group">
-            <label for="" class="button-alignment-down" style="color: black;">Account Head:</label>
             @(Html.DevExtreme().DropDownBox()
+                .Label(new JS("formatMessage('Account Head')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .DataSource(d => d.WebApi()
                 .Controller("VoucherEntryReceipts")
                 .LoadAction("GetAccountHead")
@@ -247,9 +249,8 @@
                 .ValidationRules(rules =>
                 {
                     rules.AddRequired()
-                    .Message("Account Head is required");
+                    .Message(new JS("formatMessage('Account Head is required')"));
                 })
-                .LabelMode(EditorLabelMode.Outside)
                 .ID("AccountHeadDropDown")
                 .ShowClearButton(true)
                 .AcceptCustomValue(true)
@@ -270,7 +271,7 @@
         </div>
 
 
-        <div class="form-group" style="margin-top:56px;margin-left:-10px">
+        <div class="form-group" style="margin-top:25px;margin-left:0px">
             @(Html.DevExtreme().Button()
                 .ID("btnAddAHead")
                 .Icon("plus")
@@ -282,7 +283,7 @@
                 .ID("ledgerAccountPopup")
                 .Width("93%")
                 .Height("85%")
-                .Title("Add Ledger Account")
+                .Title(new JS("formatMessage('Add Ledger Account')"))
                 .ShowTitle(true)
                 .CloseOnOutsideClick(true)
                 .Visible(false)
@@ -295,7 +296,7 @@
                 )
         </div>
         <div id="popupContainer"></div>
-        <div class="form-group" style="margin-top:56px;margin-left:-10px">
+        <div class="form-group" style="margin-top:25px;margin-left:10px">
             @(Html.DevExtreme().Button()
                 .ID("btnEditAHead")
                 .Icon("edit")
@@ -306,7 +307,7 @@
                 .ID("ledgerEditAccountPopup")
                 .Width("93%")
                 .Height("85%")
-                .Title("Edit Ledger Account")
+                .Title(new JS("formatMessage('Edit Ledger Account')"))
                 .ShowTitle(true)
                 .CloseOnOutsideClick(true)
                 .Visible(false)  // Hidden by default
@@ -319,15 +320,16 @@
                 )
         </div>
         <div class="form-group">
-            <label for="Amount" class="button-alignment-down">Amount:</label>
             @(
                 Html.DevExtreme().NumberBox()
+                .Label(new JS("formatMessage('Amount')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .ID("Amount")
                 .Value(null)
                 .ValidationRules(rules =>
                 {
                     rules.AddRequired()
-                    .Message("Amount value doesnot allow to add Zero or negative");
+                    .Message(new JS("formatMessage('Voucher Amount is required')"));
                 })
                 .Min(0)
                 .Placeholder("0.00")
@@ -345,11 +347,12 @@
 
     <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px;">
         <div class="form-group" style="padding-left:20px">
-            <label for="Amount" class="button-alignment-down" style="margin-right:25px;height:40px;">Narration:</label>
         </div>
         <div class="form-group">
             @(
                 Html.DevExtreme().TextArea()
+                .Label(new JS("formatMessage('Narration')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .ID("Narration")
                 .Value("")
                 .ValidationRules(rules =>
@@ -359,14 +362,14 @@
                 })
                 .Height(40)
                 .Width(720)
-                .Placeholder("Enter your comments here...")
+                .Placeholder(new JS("formatMessage('Enter your comments here...')"))
                 .MaxLength(500)
                 )
         </div>
-        <div class="form-group" style="">
+        <div class="form-group" style="margin-top:25px">
             @(Html.DevExtreme().Button()
                 .ID("btnaddCostAllocation")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Height(40)
                 .Width(178)
                 .Icon("plus")
@@ -387,16 +390,15 @@
                     .Caption("VoucherEntryNo")
                     .Visible(false);
 
-                    columns.AddFor(m => m.DrCr).Caption("Dr/Cr").DataType(GridColumnDataType.String).Lookup(lookup => lookup
+                    columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')")).DataType(GridColumnDataType.String).Lookup(lookup => lookup
                     .DataSource(new[] { "Dr", "Cr" })
                     .ValueExpr("this")
                     .DisplayExpr("this")
                     );
-
                     @*       columns.AddFor(m => m.AccountHead)
             .Caption("Account Head"); *@
-                    columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')"))
-                    .CellTemplate(@<text>
+                    columns.AddFor(m => m.AccountHead)
+                    .Caption(new JS("formatMessage('Account Head')")).CellTemplate(@<text>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
                         <%- data.AccountHead ? data.AccountHead : "No Selection" %>
@@ -435,17 +437,16 @@
 
 
             </text>);
-
-                    columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
+                                columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).CustomizeText(
                     "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
                     ).AllowEditing(false);
-                    columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
+                    columns.AddFor(m => m.CrAmount).Caption(new JS("formatMessage('Credit')")).Alignment(HorizontalAlignment.Right).CustomizeText(
                     "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
                     ).AllowEditing(false);
-                    columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
-                    columns.AddFor(m => m.SysRemarks).Caption("Remarks");
+                    columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')"));
+                    columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')"));
                 })
                 .Selection(selection => selection.Mode(SelectionMode.Single))
                 //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
@@ -506,25 +507,25 @@
     <!-- Context Menu for Actions -->
     <ul id="contextMenu" class="context-menu" style="display: none;">
         <li onclick="editCostAllocation()">
-            <i class="fas fa-edit" style="margin-right: 8px;"></i> Edit Cost Allocation
+            <i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation" class="no-border-input"></div>
         </li>
         <li onclick="editBillReceivable()">
-            <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> Edit Bill Receivable
+            <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable" class="no-border-input"></div>
         </li>
         <li onclick="editBillReceivable1()">
-            <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> Edit Salary Payable
+            <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditSalaryPayable" class="no-border-input"></div>
         </li>
         <li onclick="editBillReceivable2()">
-            <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> Edit Employee Allocation
+            <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditEmployeeAllocation" class="no-border-input"></div>
         </li>
         <li onclick="editPropertyAllocation()">
-            <i class="fas fa-cogs" style="margin-right: 8px;"></i> Edit Property Allocation
+            <i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation" class="no-border-input"></div>
         </li>
         <li onclick="onRowRemoving()">
-            <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete Line Entry
+            <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteLineEntry" class="no-border-input"></div>
         </li>
         <li onclick="onAllRowRemoving()">
-            <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete All Line Entries
+            <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteAllLineEntries" class="no-border-input"></div>
         </li>
     </ul>
 
@@ -536,9 +537,10 @@
             <div class="col-md-3 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
 
                 <div class="form-group">
-                    <label for="Cheque No/Reference No">Cheque No/Reference No:</label>
                     @(
                         Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Cheque No/Reference No')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("ChequeNoReferenceNo")
                         .ValidationRules(rules =>
                         {
@@ -549,9 +551,10 @@
                         )
                 </div>
                 <div class="form-group mt-3">
-                    <label for="VoucherType">Voucher Type:</label>
                     @(
                         Html.DevExtreme().SelectBox()
+                        .Label(new JS("formatMessage('Voucher Type')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("VoucherType")
                         .DataSource(new[] { "Bank Receipts" }) // DataSource
                         .Value("Bank Receipts") // Default value
@@ -562,9 +565,10 @@
 
             <div class="col-md-8 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
                 <div class="form-group">
-                    <label for="VoucherNarration">Voucher Narration:</label>
                     @(
                         Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Voucher Narration')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("VoucherNarration")
                         .ValidationRules(rules =>
                         {
@@ -576,9 +580,10 @@
                         )
                 </div>
                 <div class="form-group mt-3">
-                    <label for="Remarks">Remarks:</label>
                     @(
                         Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Remarks')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("Remarks")
                         .Value(null)
                         .ValidationRules(rules =>
@@ -594,8 +599,8 @@
                     <div class="col-md-6">
                         <!-- Verified By -->
                         <div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-                            @(Html.DevExtreme().CheckBox().ID("VerifiedBy"))
-                            <span style="margin-left:5px">Verified By:</span>
+                            @(Html.DevExtreme().CheckBox().ID("VerifiedBy").Text(new JS("formatMessage('Verified By:')")))
+
                             @(Html.DevExtreme().TextBox()
                                 .ID("VerifiedBytext")
                                 .Value(null)
@@ -605,7 +610,7 @@
                         </div>
                         <!-- Verified On -->
                         <div class="form-group d-flex align-items-center mt-2">
-                            <span>Verified On:</span>
+                            <span id="VerifiedOn" class="no-border-input"></span>
                             @(Html.DevExtreme().TextBox()
                                 .ID("VerifiedOnDate")
                                 .Value(null)
@@ -618,8 +623,7 @@
                     <div class="col-md-6">
                         <!-- Approved By -->
                         <div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-                            @(Html.DevExtreme().CheckBox().ID("ApprovedBy"))
-                            <span style="margin-left:5px">Approved By:</span>
+                            @(Html.DevExtreme().CheckBox().ID("ApprovedBy").Text(new JS("formatMessage('Approved By:')")))
                             @(Html.DevExtreme().TextBox()
                                 .ID("ApprovedBytext")
                                 .Value(null)
@@ -629,7 +633,7 @@
                         </div>
                         <!-- Approved On -->
                         <div class="form-group d-flex align-items-center mt-2">
-                            <span>Approved On:</span>
+                            <span id="ApprovedOn" class="no-border-input"></span>
                             @(Html.DevExtreme().TextBox()
                                 .ID("ApprovedOntext")
                                 .Value(null)
@@ -643,7 +647,7 @@
             </div>
 
             <div class="col-md-1 backgroundcolor">
-                <div class="form-group" style="padding-top:50px;padding-left:7px;">
+                <div class="form-group" style="padding-top:32px;padding-left:7px;">
                     <!-- Attach Button -->
                     @(Html.DevExtreme().Button()
                         .ID("btnAttachment")
@@ -690,10 +694,10 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("AccountId");
-                    columns.Add().DataField("AccountHead");
-                    columns.Add().DataField("AccountHeadArabic");
-                    columns.Add().DataField("IsLedgerObselete")
+                    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                    columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')"))
 
 
                 .Alignment(HorizontalAlignment.Center)
@@ -737,12 +741,12 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("AccountId");
-                    columns.Add().DataField("AccountHead");
-                    columns.Add().DataField("AccountGroup");
-                    columns.Add().DataField("AccountHeadArabic");
-                    columns.Add().DataField("ReferenceNo");
-                    columns.Add().DataField("IsLedgerObselete")
+                    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
+                    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
+                    columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')"))
 
 
 
@@ -872,9 +876,9 @@
             .Selection(s => s.Mode(SelectionMode.Single))
             .Columns(columns =>
             {
-                columns.Add().Caption("Account ID").DataField("AccountId");
-                columns.Add().Caption("Account").DataField("AccountHead");
-                columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
+                columns.Add().Caption(new JS("formatMessage('Account Id')")).DataField("AccountId");
+                columns.Add().Caption(new JS("formatMessage('Account Head')")).DataField("AccountHead");
+                columns.Add().Caption(new JS("formatMessage('Account Head Arabic')")).DataField("AccountHeadArabic");
 
             })
             )
@@ -882,7 +886,81 @@
 </div>
 
 <script>
+    $(function () {
+                                        $("#EditCostAllocation").dxTextBox({
+                                                    text:formatMessage("Edit Cost Allocation"),
+                                                readOnly: true
 
+                                });
+                        });
+        $(function () {
+                                        $("#DeleteAllLineEntries").dxTextBox({
+                                                    text:formatMessage("Delete All Line Entries"),
+                                            readOnly: true
+
+                            });
+                    });
+        $(function () {
+                                        $("#EditBillReceivable").dxTextBox({
+                                                text:formatMessage("Edit Bill Receivable"),
+                                            readOnly: true
+
+                            });
+                    });
+        $(function () {
+                                            $("#EditSalaryPayable").dxTextBox({
+                                                    text:formatMessage("Edit Salary Payable"),
+                                                readOnly: true
+
+                                });
+                        });
+        $(function () {
+                                            $("#EditEmployeeAllocation").dxTextBox({
+                                                        text:formatMessage("Edit Employee Allocation"),
+                                                readOnly: true
+
+                                });
+                        });
+        $(function () {
+                                            $("#EditPropertyAllocation").dxTextBox({
+                                                    text:formatMessage("Edit Property Allocation"),
+                                                readOnly: true
+
+                                });
+                        });
+        $(function () {
+                                            $("#DeleteLineEntry").dxTextBox({
+                                                        text:formatMessage("Delete Line Entry"),
+                                                readOnly: true
+
+                                });
+                        });
+        $(function () {
+                                                $("#ReceiptsVoucherDetails").dxTextBox({
+                                                            text:formatMessage("Receipts Voucher Details"),
+                                                            readOnly: true,
+                                                            onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading");
+                }
+
+                                        });
+                                });
+    $(function () {
+                                                $("#ApprovedOn").dxTextBox({
+                                                            text:formatMessage("Approved On:"),
+                                                            readOnly: true,
+                                                            width:"110px"
+
+                                        });
+                                });VerifiedOn
+    $(function () {
+                                                $("#VerifiedOn").dxTextBox({
+                                                            text:formatMessage("Verified On:"),
+                                                            readOnly: true,
+                                                             width:"95px"
+
+                                        });
+                                });
     let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName, refno, accgroup, IsEdit = false, accgroupid, accheadar, vouentryid,
         IsNotification = false, storedAccountHead, IsObeselete = false;
 
