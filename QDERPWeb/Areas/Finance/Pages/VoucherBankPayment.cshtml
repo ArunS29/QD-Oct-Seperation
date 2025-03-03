@@ -2012,7 +2012,7 @@
                     success: function (response) {
                         if (response.success) {
                             //  DevExpress.ui.notify("Data saved successfully!", "success", 2000);
-                            window.location.reload();
+                          history.back();
 
                         } else {
                             alert("Update failed: " + response.message);
@@ -2025,8 +2025,12 @@
                 });
             } else {
 
-                DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
-            }
+DevExpress.ui.dialog.alert(
+    "Voucher has no line items to be saved, please enter transaction to save.!",
+    "No Line Items"
+).done(function () {
+    history.back();        
+}
 
         });
 
@@ -3563,14 +3567,14 @@ function addVoucherEntry() {
                         "Voucher has been successfully removed from the database.",
                         "Data Deleted Successfully"
                     ).done(function () {
-                        window.location.href = `/Home/Dashboard`; // Uncomment if redirecting
-                       // window.history.back(); // Go back to the previous page
+                       
+                       history.back(); // Go back to the previous page
                     });
                 }
             });
         } else {
-            //  window.location.href = `/Home/Dashboard`; // Uncomment if redirecting
-          //  window.history.back(); // Closes or navigates back
+           
+            history.back(); // Closes or navigates back
         }
     }
 
@@ -3822,7 +3826,7 @@ $(function () {
 
             if (response && response.data && Array.isArray(response.data) && response.data.length > 0) {
                 // Find the object where AccountHead is "Petty Cash - Shabbir"
-                var foundAccount = response.data.find(acc => acc.AccountHead === "Petty Cash - Shabbir");
+                var foundAccount = response.data.find(acc => acc.AccountHead === "Riyadh Bank");
 
                 if (foundAccount && foundAccount.IsLedgerObselete === true) {
                     DevExpress.ui.dialog.alert(

@@ -1964,8 +1964,6 @@
         $("#btnSaveAndClose").on("click", function (e) {
             e.preventDefault();
 
-
-
             var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
             var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
 
@@ -2012,7 +2010,8 @@
                     success: function (response) {
                         if (response.success) {
                             //  DevExpress.ui.notify("Data saved successfully!", "success", 2000);
-                            window.location.reload();
+                           // window.location.reload();
+                           history.back();
 
                         } else {
                             alert("Update failed: " + response.message);
@@ -2025,7 +2024,12 @@
                 });
             } else {
 
-                DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
+                DevExpress.ui.dialog.alert(
+    "Voucher has no line items to be saved, please enter transaction to save.!",
+    "No Line Items"
+).done(function () {
+    history.back();
+});
             }
 
         });
@@ -2244,7 +2248,7 @@ function addVoucherEntry() {
                         "VoucherNo": voucherNo,
                         "AccountHead": paymentaccheadId,
                         "VoucherAmount": amount,
-                        "DrCr": sbDrCr === "Cr" ? "Dr" : "Cr",
+                        "DrCr": sbDrCr === "Cr" ? "Cr" : "Cr",
                         "AddedBy": "102",
                         "AddedOn": new Date(),
                         "EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
@@ -3563,14 +3567,12 @@ function addVoucherEntry() {
                         "Voucher has been successfully removed from the database.",
                         "Data Deleted Successfully"
                     ).done(function () {
-                        window.location.href = `/Home/Dashboard`; // Uncomment if redirecting
-                       // window.history.back(); // Go back to the previous page
+                        history.back(); // Go back to the previous page
                     });
                 }
             });
         } else {
-            //  window.location.href = `/Home/Dashboard`; // Uncomment if redirecting
-          //  window.history.back(); // Closes or navigates back
+          history.back(); // Closes or navigates back
         }
     }
 
@@ -3608,6 +3610,8 @@ function addVoucherEntry() {
                 dataGrid.selectRows(e.value, false);
             }
             if (e.value) {
+
+
                 let grid = $("#dataGrid").dxDataGrid("instance");
                 let rowIndex = e.element.closest("tr").index(); // Get the edited row index
                 let rowData = grid.getVisibleRows()[rowIndex].data;

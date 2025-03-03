@@ -359,8 +359,34 @@
         URL.revokeObjectURL(url);
         //DevExpress.ui.notify("Layout", "success", 600);
     }
-    function openLayoutClick(e) {
-        $("#loadLayoutInput").click();
+     function openLayoutClick(e) {
+        // Create an input element dynamically
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "application/json";
+
+        // When a file is selected
+        input.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const layout = JSON.parse(e.target.result);
+                    const grid = $("#dataGrid").dxDataGrid("instance");
+                    grid.state(layout);
+                    //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                } catch (error) {
+                    DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                }
+            };
+
+            reader.readAsText(file);
+        });
+
+        // Trigger the file input click event
+        input.click();
     }
 
     function loadGridState() {
