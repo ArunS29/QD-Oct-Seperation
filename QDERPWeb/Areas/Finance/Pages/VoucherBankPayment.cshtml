@@ -2023,14 +2023,15 @@
                     }
 
                 });
-            } else {
+        } else {
 
-DevExpress.ui.dialog.alert(
-    "Voucher has no line items to be saved, please enter transaction to save.!",
-    "No Line Items"
-).done(function () {
-    history.back();        
-}
+            DevExpress.ui.dialog.alert(
+                "Voucher has no line items to be saved, please enter transaction to save.!",
+                "No Line Items"
+            ).done(function () {
+                history.back();
+            });
+        }
 
         });
 

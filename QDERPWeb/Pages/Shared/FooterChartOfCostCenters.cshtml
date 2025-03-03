@@ -189,6 +189,22 @@
             )
     </div>
     <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+
+            .ID("btnToggleHeaderFilter")
+
+            .Text(new JS("formatMessage('Toggle Filter')"))
+
+            .Icon("filter")
+
+            .OnClick("toggleHeaderFilter")
+
+            )
+
+    </div>                           
+
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
@@ -626,5 +642,18 @@
     function createNewCostCenter() {
 
         window.location.href = "/development/Finance/CostCenterMaster";
+    }
+
+
+    let isHeaderFilterEnabled = false;
+
+    function toggleHeaderFilter() {
+
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        isHeaderFilterEnabled = !isHeaderFilterEnabled;
+
+        dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
+
     }
 </script>
