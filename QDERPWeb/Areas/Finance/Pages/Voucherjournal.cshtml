@@ -14,7 +14,7 @@
                 @(Html.DevExtreme().Button()
                     .ID("btnSaveCostAllocation")
                     .Icon("save")
-                    .Text("Save")
+                    .Text(new JS("formatMessage('Save')"))
                     .OnClick("function() { saveCostAllocation(); }")
                     )
             </div>
@@ -23,18 +23,19 @@
 
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
             <div class="form-group">
-                <label for="SalesInvoiceNo" class="button-alignment-down">Voucher No</label>
                 @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Voucher No')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("VoucherNo")
                     .Value("")
-                    .Placeholder("Generating...")
+                    .Placeholder(new JS("formatMessage('Generating...')"))
                     .OnValueChanged("updateTemporaryNo")
                     .ReadOnly(true)
                     )
             </div>
             <div class="form-group">
-                <label for="VoucherDate" class="button-alignment-down">Voucher Date</label>
                 @(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Voucher Date')"))
                     .ID("VoucherDate")
                     .InputAttr("aria-label", "Date")
                     .LabelMode(EditorLabelMode.Outside)
@@ -44,8 +45,8 @@
                     )
             </div>
             <div class="form-group">
-                <label for="EffectiveDate" class="button-alignment-down">Effective Date</label>
                 @(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Effective Date')"))
                     .ID("EffectiveDate")
                     .InputAttr("aria-label", "Date")
                     .LabelMode(EditorLabelMode.Outside)
@@ -55,8 +56,9 @@
                     )
             </div>
             <div class="form-group">
-                <label for="VoucherType" class="button-alignment-down">Voucher Type</label>
                 @(Html.DevExtreme().SelectBox()
+                    .Label(new JS("formatMessage('Voucher Type')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("Voucher Type")
                     .DataSource(new[] { "Journal" })
                     .Value("Journal")
@@ -66,11 +68,12 @@
 
 
             <div class="form-group">
-                <label for="TemprovaryNo" class="button-alignment-down"> Temporary No</label>
                 @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Temporary No')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("TemporaryNo")
                     .Value("")
-                    .Placeholder("Generating...")
+                    .Placeholder(new JS("formatMessage('Generating...')"))
                     .ReadOnly(true)
                     )
             </div>
@@ -82,20 +85,21 @@
 
             <div class="form-group" style="padding-left:20px">
                 <div class="button-alignment-down">
-                    <label for="DrCr">Dr/Cr</label>
                 </div>
                 @(
                     Html.DevExtreme().SelectBox()
+                    .Label(new JS("formatMessage('Dr/Cr')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("sbDrCr")
                     .DataSource(new[] { "Dr", "Cr" })
                     .Value("Dr")
-                    .Placeholder("Select Transaction Type")
+                    .Placeholder(new JS("formatMessage('Select Transaction Type')"))
                     .Width(90)
                     )
             </div>
             <div class="form-group">
-                <label for="AccountHead" class="button-alignment-down">Account Head:</label>
                 @(Html.DevExtreme().DropDownBox()
+                    .Label(new JS("formatMessage('Account Head')"))
                     .DataSource(d => d.WebApi()
                     .Controller("VoucherJournal")
                     .LoadAction("GetSupplierName")
@@ -136,9 +140,10 @@
                     )
             </div>
             <div class="form-group">
-                <label for="Amount" class="button-alignment-down" ">Amount</label>
                 @(
                     Html.DevExtreme().NumberBox()
+                    .Label(new JS("formatMessage('Amount')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("txtVoucherAmount")
                     .Value(0.00)
 
@@ -158,25 +163,26 @@
         </div>
         <div class="dx-fieldset horizontal-container" style="margin-top:10px;">
             <div class="form-group" style="padding-left:20px">
-                <label for="Narration" style="margin-right:25px; color: black;">Narration</label>
-
+                
             </div>
 
             <div class="form-group">
                 @(
                     Html.DevExtreme().TextArea()
+                    .Label(new JS("formatMessage('Narration')"))
+                    .LabelMode(EditorLabelMode.Outside)
                     .ID("txtEntryNarration")
                     .Value("")
                     .Height(40)
                     .Width(720)
-                    .Placeholder("Enter your comments here...")
+                    .Placeholder(new JS("formatMessage('Enter your comments here...')"))
                     .MaxLength(500)
                     )
             </div>
             <div class="form-group" style="">
                 @(Html.DevExtreme().Button()
                     .ID("btnVoucherEntry")
-                    .Text("ADD")
+                    .Text(new JS("formatMessage('Voucher No')"))
                     .Height(40)
                     .Width(178)
                     .Icon("plus")
@@ -196,11 +202,11 @@
 
                     .Columns(columns =>
                     {
-                        columns.AddFor(m => m.DrCr).Caption("Dr/Cr");
+                    
+                    columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')"));
+
                         columns.AddFor(m => m.AccountHead)
-
-                        .Caption("Account Head")
-
+                        .Caption(new JS("formatMessage('Account Head')"))
                         .DataType(GridColumnDataType.String)
 
                         .Lookup(lookup => lookup
@@ -219,7 +225,7 @@
 
                         );
                         columns.Add()
-                        .Caption("Debit")
+                        .Caption(new JS("formatMessage('Debit')"))
                         .Alignment(HorizontalAlignment.Right)
                         .CalculateCellValue(@"
             function(data) {
@@ -231,7 +237,7 @@
             }");
 
                         columns.Add()
-                        .Caption("Credit")
+                        .Caption(new JS("formatMessage('Credit')"))
                         .Alignment(HorizontalAlignment.Right)
                         .CalculateCellValue(@"
             function(data) {
@@ -242,8 +248,9 @@
             return Number(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             }");
 
-                        columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
-                        columns.AddFor(m => m.VoucherEntryNo).Caption("DeleteLine").Visible(false);
+                        columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')"));
+
+                        columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('DeleteLine')")).Visible(false);
 
 
 
@@ -296,9 +303,10 @@
     <div class="displayFlex">
     <div class="col-md-7" style="padding-top:10px; padding-bottom:10px;">
         <div class="form-group">
-            <label for="VoucharNarration">Voucher Narration:</label>
         @(
             Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Voucher Narration')"))
+            .LabelMode(EditorLabelMode.Outside)
             .ID("VoucherNarration")
             .Value(null)
             .Width("100%")
@@ -306,9 +314,10 @@
             )
         </div>
         <div class="form-group mt-3">
-            <label for="BillRemarks">Remarks:</label>
         @(
             Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Remarks')"))
+            .LabelMode(EditorLabelMode.Outside)
             .ID("Remarks")
             .Value(null)
             .Width("100%")
@@ -417,11 +426,11 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("AccountId");
-                                columns.Add().DataField("AccountHead");
-                                columns.Add().DataField("AccountHeadArabic");
-                                columns.Add().DataField("AccountGroup");
-                                columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+                                columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                                columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                                columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                                columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
+                                columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                             .CellTemplate(@<text>
                     <div class="dx-icon">
                         <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>

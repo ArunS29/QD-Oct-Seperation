@@ -1056,6 +1056,7 @@
         "Success!": "Success!",
         "Voucher has been Verified.": "Voucher has been Verified.",
         "Error": "Error",
+        "Journal Register": "Journal Register",
         "Please save the transactions after proceeding!!": "Please save the transactions after proceeding!!",
         "Voucher is not Approved": "Voucher is not Approved",
         "Voucher has been Approved.": "Voucher has been Approved.",
@@ -1063,10 +1064,17 @@
         "Days": "Days",
         "Due Date or Payment Terms": "Due Date or Payment Terms",
         "Sales Voucher": "Sales Voucher",
-        "Purchase Voucher":"Purchase Voucher"
+        "Purchase Voucher": "Purchase Voucher",
+        "Submit": "Submit",
+        "Add Line": "Add Line",
+        "Save & Close": "Save & Close"
         
     },
     "ar": {
+        "Journal Register": "سجل اليومية",
+        "Submit": "إرسال",
+        "Add Line": "إضافة سطر",
+        "Save & Close": "حفظ وإغلاق",
         "JournalRegister":"تسجيل المجلة",
         "Journal Voucher Entry":"إدخال قسيمة دفتر اليومية",
         "Expenses Claims":"مطالبات المصاريف",

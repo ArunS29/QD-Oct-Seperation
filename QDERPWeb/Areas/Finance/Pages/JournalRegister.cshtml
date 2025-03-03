@@ -68,7 +68,7 @@
             .Key("UserId")) // Set the key for the data source
             .Width(300) // Set the width of the SelectBox
             .ElementAttr("class", "button-alignment-down") // Add custom classes
-            .Label("Requested By") // Label for the SelectBox
+            .Label(new JS("formatMessage('Requested By')")) // Label for the SelectBox
             .LabelMode(EditorLabelMode.Outside) // Label positioning
             .SearchEnabled(true) // Enable searching
             .DisplayExpr("UserName") // Expression for displaying values
@@ -79,7 +79,7 @@
         @(Html.DevExtreme().DateBox()
             .ID("startDate")
             .InputAttr("aria-label", "Date")
-            .Label("Start Date")
+            .Label(new JS("formatMessage('Start Date')"))
             .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
@@ -88,14 +88,14 @@
         @(Html.DevExtreme().DateBox()
             .ID("endDate")
             .InputAttr("aria-label", "Date")
-            .Label("End Date")
+            .Label(new JS("formatMessage('End Date')"))
             .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
             )
         @(Html.DevExtreme().Button()
-            .Text("Show all Submissions")
+            .Text(new JS("formatMessage('Show All Documents')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Contained)
             .Width(180)
@@ -105,26 +105,26 @@
 
         @(Html.DevExtreme().DropDownButton()
             .ID("ddBtnShowRecords")
-            .Text("Show Records")
+            .Text(new JS("formatMessage('Show Records')"))
             .Icon("smalliconslayout")
             .Width(180)
             .ElementAttr("class", "button-alignment-down")
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text("Show Records").Icon("event")
+                items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event")
 
 
                 .OnClick("function() { ddBtnShowRecords_click('range'); }");
-                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 
             })
             )
@@ -137,58 +137,58 @@
                     .ShowBorders(true)
                     .Columns(columns =>
                     {
-                        columns.AddFor(m => m.RequesterID).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.RequesterID).Caption(new JS("formatMessage('Requester ID')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-                    columns.AddFor(m => m.JournalRefNo).Alignment(HorizontalAlignment.Center).Visible(true);
-                    columns.AddFor(m => m.ApprovedBy).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.ApprovedOn).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalCreatedBy).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalCreatedOn).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalEffectiveDate).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalModifiedBy).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.JournalModifiedOn).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.PostedBy).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.PostedOn).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.PostedVoucherNo).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.SubmittedBy).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.SubmittedOn).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.VerifiedBy).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.VerifiedOn).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalRefNo).Caption(new JS("formatMessage('Journal Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalCreatedBy).Caption(new JS("formatMessage('Journal Created By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalCreatedOn).Caption(new JS("formatMessage('Journal Created On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalEffectiveDate).Caption(new JS("formatMessage('Journal Effective Date')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalModifiedBy).Caption(new JS("formatMessage('Journal Modified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.JournalModifiedOn).Caption(new JS("formatMessage('Journal Modified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                    columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
                         columns.AddFor(m => m.JournalEntryDate)
-                    .Caption("Journal Entry Date").Alignment(HorizontalAlignment.Center).Format(format => format
+                .Caption(new JS("formatMessage('Journal Entry Date')")).Alignment(HorizontalAlignment.Center).Format(format => format
                     .Type(Format.ShortDate)    // Custom type format
                 .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
-                    columns.AddFor(m => m.JournalVoucherNarration).Alignment(HorizontalAlignment.Center).Visible(true);
-                    columns.AddFor(m => m.DrAmountTotal).Alignment(HorizontalAlignment.Right).Visible(true);
-                    columns.AddFor(m => m.CrAmountTotal).Alignment(HorizontalAlignment.Right).Visible(true);
-                    columns.AddFor(m => m.IsSubmittedToFinance).Alignment(HorizontalAlignment.Center)
+                    columns.AddFor(m => m.JournalVoucherNarration).Caption(new JS("formatMessage('Journal Voucher Narration')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.DrAmountTotal).Caption(new JS("formatMessage('Dr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
+                    columns.AddFor(m => m.CrAmountTotal).Caption(new JS("formatMessage('Cr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
+                    columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Is Submitted To Finance')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>).Visible(true);
-                    columns.AddFor(m => m.IsVerified).Alignment(HorizontalAlignment.Center)
-                .Caption("Verified")
+                    columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Verified')")).Alignment(HorizontalAlignment.Center)
+                
                 .Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>).Visible(true);
-                    columns.AddFor(m => m.IsApproved).Alignment(HorizontalAlignment.Center)
+                    columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>).Visible(true);
-                    columns.AddFor(m => m.IsPosted).Alignment(HorizontalAlignment.Center)
+                    columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>
             ).Visible(true);
-                    columns.AddFor(m => m.PostedVoucherNo).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
                 })
 
             .Height(440)
@@ -205,7 +205,7 @@
         .AllowAdding(false)     // Disable adding new records
         .AllowDeleting(false)   // Disable deleting records
         .UseIcons(true))        // Enable edit icons (like pencil) *@
-            .ColumnChooser(c => c.Enabled(true).Title("Show/Hide Column").Mode(GridColumnChooserMode.Select))
+            .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
             .ShowBorders(true)
            @*  .Summary(s => s
             .TotalItems(totalItems =>
