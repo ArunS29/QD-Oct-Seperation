@@ -2,53 +2,7 @@
 @using DevExtreme.AspNet.Mvc
 <style>
 
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; /* Border between rows */
-    }
-
-    .content-container {
-        background-color: #c0dceb;
-        border-radius: 10px;
-        padding: 5px;
-    }
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-    }
-
-    .button-alignment-down {
-        margin-top: 23px;
-    }
-
-    .button-alignment-left {
-        margin-left: 120px;
-    }
-
-    .ledgerResult {
-        margin: 15px !important;
-    }
-
-    .dx-button-content {
-        background-color: white !important;
-    }
-
-    .context-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-    }
-
-    .context-menu-item {
-        padding: 10px 15px;
-        cursor: pointer;
-    }
+   
 
     .spnRightClickGride {
         margin-left: 10px;
@@ -66,10 +20,18 @@
     #dataGrid .dx-header-row .dx-datagrid-text-content {
         font-weight: bold;
         color: black;
-    }
+    } 
 
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
+<div class="title">
+    <div class="header-container">
+        <div id="JournalRegister" class="no-border-input"></div>
+    </div>
+</div>
+<div>
+    @await Html.PartialAsync("_GridFooter")
+</div>
 <div class="content-container-top">
     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
@@ -252,13 +214,18 @@
             })) *@
             )
     </div>
-    <div>
-        @await Html.PartialAsync("_GridFooter")
-    </div>
+    
 </div>
 
 <script type="text/javascript">
     $(function () {
+                $("#JournalRegister").dxTextBox({
+                        text:formatMessage("Journal Register"),
+                        readOnly: true,
+                        onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading");
+                }
+                });
         getJournalOnLoad();
         var contextMenu = $("#contextMenu");
         var contextMenuContent = $("#contextMenuContent");

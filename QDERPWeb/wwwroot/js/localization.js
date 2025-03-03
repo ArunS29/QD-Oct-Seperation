@@ -1039,9 +1039,15 @@
         "Branch Added": "Branch Added",
         "Clear Errors": "Clear Errors",
         "Cannot continue saving with errors, please clear the errors and continue.":"Cannot continue saving with errors, please clear the errors and continue.",
-        "Toggle Filter": "Toggle Filter"
+        "Toggle Filter": "Toggle Filter",
+        "Expenses Claims": "Expenses Claims",
+        "Journal Voucher Entry": "Journal Voucher Entry",
+        "Journal Register":"Journal Register"
     },
     "ar": {
+        "JournalRegister":"تسجيل المجلة",
+        "Journal Voucher Entry":"إدخال قسيمة دفتر اليومية",
+        "Expenses Claims":"مطالبات المصاريف",
         "Toggle Filter": "تبديل عامل التصفية",
         "Post": "نشر",
         "Branch deleted successfully": "تم حذف الفرع بنجاح",
@@ -2064,8 +2070,8 @@ DevExpress.localization.loadMessages(dictionary);
 var formatMessage = DevExpress.localization.formatMessage;
 
 var locales = [
-    { name: "English", value: "en" },
-    { name: "عربي", value: "ar" },
+    { name: "English", value: "en", flag: "https://flagcdn.com/w40/us.png" },
+    { name: "العربية", value: "ar", flag: "https://flagcdn.com/w40/ae.png" }
 ];
 // Get the saved locale or default to English
 var locale = getLocale();
@@ -2076,6 +2082,7 @@ function changeLocale(dropdown) {
     var selectedLocale = dropdown.value;
     setLocale(selectedLocale);
     document.location.reload(); // Reload page to apply changes
+    updateFlagIcon(selectedLocale);
 }
 
 // Function to get saved locale
@@ -2087,4 +2094,28 @@ function getLocale() {
 // Function to save the selected locale
 function setLocale(locale) {
     sessionStorage.setItem("locale", locale);
+}
+function updateFlagIcon(selectedValue) {
+    var selectedItem = locales.find(item => item.value === selectedValue);
+    if (!selectedItem) return;
+
+    $("#selectInput").css({
+        backgroundImage: `url(${selectedItem.flag})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "20px 20px",
+        backgroundPosition: "5px center",
+        paddingLeft: "30px"
+    });
+}
+
+$(document).ready(() => updateFlagIcon(locale));
+
+function customItemTemplate(data) {
+    if (!data) return $("<div>");
+    return $("<div>").css({ display: "flex", alignItems: "center" })
+        .append(
+            $("<img>").attr("src", data.flag).attr("alt", data.name)
+                .css({ width: "20px", height: "20px", marginRight: "8px", borderRadius: "50%" }),
+            $("<span>").text(data.name)
+        );
 }

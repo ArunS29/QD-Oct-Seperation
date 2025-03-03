@@ -3,39 +3,39 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; /* Border between rows */
-    }
+    /* .dx-datagrid .dx-row { */
+    /*     border-bottom: 1px solid #ccc; /* Border between rows */ */
+    /* } */
 
-    .content-container {
-        background-color: #c0dceb;
-        border-radius: 10px;
-        padding: 5px;
-    }
+    /* .content-container { */
+    /*     background-color: #c0dceb; */
+    /*     border-radius: 10px; */
+    /*     padding: 5px; */
+    /* } */
 
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-    }
+    /* .horizontal-container { */
+    /*     display: flex; */
+    /*     gap: 10px; /* Adds spacing between buttons */ */
+    /*     justify-content: start; /* Aligns buttons to the left */ */
+    /*     align-items: center; /* Vertically centers the buttons */ */
+    /*     margin: 15px; */
+    /* } */
 
-    .button-alignment-down {
-        margin-top: 23px;
-    }
+    /* .button-alignment-down { */
+    /*     margin-top: 23px; */
+    /* } */
 
-    .button-alignment-left {
-        margin-left: 120px;
-    }
+    /* .button-alignment-left { */
+    /*     margin-left: 120px; */
+    /* } */
 
-    .ledgerResult {
-        margin: 15px !important;
-    }
+    /* .ledgerResult { */
+    /*     margin: 15px !important; */
+    /* } */
 
-    .dx-button-content {
-        background-color: white !important;
-    }
+    /* .dx-button-content { */
+    /*     background-color: white !important; */
+    /* } */
 
     .context-menu {
         display: none;
@@ -70,6 +70,14 @@
     }
 </style>
 <input id="formId" value="frn20107ExpenseClaimView" type="hidden" />
+<div class="title">
+    <div class="header-container">
+        <div id="ExpensesClaims" class="no-border-input"></div>
+    </div>
+</div>
+<div>
+    @await Html.PartialAsync("_GridFooter")
+</div>
 <div class="content-container-top">
     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
@@ -273,13 +281,18 @@
             }))
             )
     </div>
-    <div>
-        @await Html.PartialAsync("_GridFooter")
-    </div>
+    
 </div>
 
 <script type="text/javascript">
     $(function () {
+        $("#ExpensesClaims").dxTextBox({
+                text:formatMessage("Expenses Claims"),
+                readOnly: true,
+                onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+        }
+        });
         getJournalOnLoad();
         var contextMenu = $("#contextMenu");
         var contextMenuContent = $("#contextMenuContent");

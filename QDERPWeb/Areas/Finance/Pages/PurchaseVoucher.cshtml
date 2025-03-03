@@ -26,9 +26,6 @@
 		text-align: center; /* Centers the text inside the input */
 	}
 
-	.backgroundcolor {
-		background-color: white;
-	}
 
 	.button-alignment-down {
 		margin-bottom: 10px
@@ -68,15 +65,16 @@
 				)
 	</div>
 </div>
-<div class="card-header" style=" color: slategrey; font-weight:bolder; font-size: 24px;background-color:  aliceblue;">
-
-	PurchaseVoucher:
-</div>
-<div class="content-container-top">
-	<div class="container">
-		<div class="row g-4">
-			<div class="col-md-3">
-				<div class="form-group">
+	<div class="title">
+		<div class="header-container">
+			<div class="title">PurchaseVoucher</div>
+		</div>
+	</div>
+	<div class="content-container-top">
+		<div class="container">
+			<div class="row g-4" style="padding:1em;">
+				<div class="col-md-3">
+					<div class="form-group">
 					<label for="SalesInvoiceNo" class="button-alignment-down">Purchase Voucher No</label>
 					@(
 												Html.DevExtreme().TextBox()
@@ -141,93 +139,87 @@
 		</div>
 	</div>
 	<div class="clear"></div>
-	<div class="container  mt-3">
-		<div class="row g-5">
-			<div class="col-md-6" style="padding-right:0px">
-				<div class="form-group">
+	<div class="row g-5" style="padding:0em 1em;gap:1px">
+		<div class="col-md-6" style="padding-right:0px">
+			<div class="form-group">
 					<label for="SupplierName" class="">Supplier Name:</label>
-					@(Html.DevExtreme().DropDownBox()
-												.DataSource(d => d.WebApi()
-												.Controller("PurchaseVoucher")
-												.LoadAction("GetSupplierName")
-												.LoadMode(DataSourceLoadMode.Raw)
-												.Key("AccountId")
-												)
-												.ValidationRules(rules =>
-												{
-													rules.AddRequired()
-													.Message("Supplier Name is required");
-												})
-												.LabelMode(EditorLabelMode.Outside)
+				@(Html.DevExtreme().DropDownBox()
+								.DataSource(d => d.WebApi()
+								.Controller("PurchaseVoucher")
+								.LoadAction("GetSupplierName")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("AccountId")
+								)
+								.ValidationRules(rules =>
+								{
+									rules.AddRequired()
+									.Message("Supplier Name is required");
+								})
+								.LabelMode(EditorLabelMode.Outside)
 												.ID("SupplierNameDropDown")
-												.ShowClearButton(true)
-												.AcceptCustomValue(true)
-												.OpenOnFieldClick(false)
-												.ValueChangeEvent("input")
-												.HoverStateEnabled(true)
-												.ValueExpr("AccountId")
-												.DisplayExpr("AccountHead")
-												.OnInput("dropDownBoxOnInput")
-												.OnOpened("onOpened")
-												.TabIndex(1)
-												.OnKeyDown("onKeyDown")
+								.ShowClearButton(true)
+								.AcceptCustomValue(true)
+								.OpenOnFieldClick(false)
+								.ValueChangeEvent("input")
+								.HoverStateEnabled(true)
+								.ValueExpr("AccountId")
+								.DisplayExpr("AccountHead")
+								.OnInput("dropDownBoxOnInput")
+								.OnOpened("onOpened")
+								.TabIndex(1)
+								.OnKeyDown("onKeyDown")
 												//.OnValueChanged("dropDownBoxValueChanged")
-												.ContentTemplate(new TemplateName("SupplierNameContentTemplate"))
-												)
+								.ContentTemplate(new TemplateName("SupplierNameContentTemplate"))
+								)
 
-				</div>
 			</div>
+		</div>
 
-			<div class="col-md-1" style="margin-top:72px;padding-left:0px;padding-right:0px;width:3%">
-				@(Html.DevExtreme().Button()
-								.ID("btnAddVoucher")
-								.Icon("plus")
+		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+			@(Html.DevExtreme().Button()
+						.ID("btnAddVoucher")
+						.Icon("plus")
+						)
+		</div>
+		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+			@(Html.DevExtreme().Button()
+						.ID("btnEditVoucher")
+						.Icon("edit")
+						)
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="InvoiceDueDate" class="">Due Date or Payment Terms</label>
+				@(Html.DevExtreme().DateBox()
+								.ID("InvoiceDueDate")
+								.InputAttr("aria-label", "Date")
+								.LabelMode(EditorLabelMode.Outside)
+								.Type(DateBoxType.Date)
+								.DisplayFormat("dd-MMM-yyyy")
+								.Value(DateTime.Now)
 								)
 			</div>
-			<div class="col-md-1" style="margin-top:72px;padding-left:0px;width:3%;padding-right:0px">
-				@(Html.DevExtreme().Button()
-								.ID("btnEditVoucher")
-								.Icon("edit")
-								)
-			</div>
-			<div class="col-md-3">
-				<div class="form-group">
-					<label for="InvoiceDueDate" class="">DueDate or Payment Terms</label>
-					@(Html.DevExtreme().DateBox()
-												.ID("InvoiceDueDate")
-												.InputAttr("aria-label", "Date")
-												.LabelMode(EditorLabelMode.Outside)
-												.Type(DateBoxType.Date)
-												.DisplayFormat("dd-MMM-yyyy")
-												.Value(DateTime.Now)
-												@* .OnValueChanged("onDateChange") *@
-												)
-				</div>
-			</div>
-			<div class="col-md-2">
-				<div class="form-group">
-					<label for="InvoiceNoOfDays" class="">No. Of Days</label>
-					<div style="display:flex;">
-						@(Html.DevExtreme().NumberBox()
-													.ID("InvoiceNoOfDays")
-													.Value(0)
-													.ShowSpinButtons(true)
-													.Min(0)
-													.Max(1000)
-													.Step(1)
+		</div>
+		<div class="col-md-2">
+			<div class="form-group">
+				<label for="InvoiceNoOfDays" class="">No. Of Days</label>
+				<div style="display:flex;">
+					@(Html.DevExtreme().NumberBox()
+												.ID("InvoiceNoOfDays")
+												.Value(0)
+												.ShowSpinButtons(true)
+												.Min(0)
+												.Max(1000)
+												.Step(1)
 
-													)
-						<label style="margin-top:10px;" for="InvoiceNoOfDays">Days</label>
-					</div>
+												)
+					<label style="margin-top:10px;" for="InvoiceNoOfDays">Days</label>
 				</div>
 			</div>
 		</div>
 	</div>
 
-
-
-
-	<div class="dx-fieldset horizontal-container backgroundcolor" style="margin-top:15px;margin-bottom:0px;">
+	<div class="dx-fieldset horizontal-container" style="margin-bottom:0px;">
 		<div class="form-group" style="padding-left:20px">
 			<div class="button-alignment-down">
 				<label for="DrCr">Dr/Cr</label>
@@ -276,14 +268,14 @@
 						.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
 						)
 		</div>
-		<div class="form-group" style="margin-top:56px;margin-left:-10px">
+		<div class="form-group" style="margin-top:52px;">
 			@(Html.DevExtreme().Button()
 						.ID("btnAddAHead")
 						.Icon("plus")
 						.OnClick("redirectToLedgerAccount")
 						)
 		</div>
-		<div class="form-group" style="margin-top:56px;margin-left:-10px">
+		<div class="form-group" style="margin-top:52px;">
 			@(Html.DevExtreme().Button()
 						.ID("btnEditAHead")
 						.Icon("edit")
@@ -313,7 +305,7 @@
 
 		</div>
 	</div>
-	<div class="dx-fieldset horizontal-container backgroundcolor" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px">
+	<div class="dx-fieldset horizontal-container" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px">
 		<div class="form-group" style="padding-left:20px">
 			<label for="Amount" class="button-alignment-down" style="margin-right:25px">Narration</label>
 		</div>
@@ -402,13 +394,10 @@
 				)
 	</div>
 
-	<!-- Footer with TextBoxes Aligned Directly Under Debit and Credit -->
-	<div id="footerTotals" style="display: flex; justify-content: space-between; background-color: #f5f5f5; color: white; padding:10px; margin-top: -11px; font-size: 14px; max-width:1245px;position:relative;left:15px;">
-		<div style="flex: 1;">&nbsp;</div> <!-- Aligns with Dr/Cr column -->
-		<div style="flex: 1;">&nbsp;</div> <!-- Aligns with Account Head column -->
-		<!-- TextBox for Debit -->
+	<div id="footerTotals" style="display: flex; justify-content: space-between; color: white; padding:10px; font-size: 14px; max-width:1245px;position:relative;">
+		<div style="flex: 2;">&nbsp;</div>
+		<div style="flex: 2;">&nbsp;</div>
 		<div style="flex: none; text-align: right;">
-
 			@(Html.DevExtreme().TextBox()
 
 						.ID("totalDebitTextbox")
@@ -458,9 +447,8 @@
 		</li>
 	</ul>
 
-	<div class="container">
-		<div class="row g-3">
-			<div class="col-md-2 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
+	<div class="row g-3" style="padding:1em">
+			<div class="col-md-2" style="padding-top:10px;padding-bottom:10px">
 				<div class="form-group">
 					<label for="VoucherRefNo">Our PO/ Reference No</label>
 					@(
@@ -489,7 +477,7 @@
 												)
 				</div>
 			</div>
-			<div class="col-md-9 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
+			<div class="col-md-9" style="padding-top:10px;padding-bottom:10px">
 				<div class="form-group">
 					<label for="VoucharNarration">Voucher Narration</label>
 					@(
@@ -558,7 +546,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-1 backgroundcolor">
+			<div class="col-md-1">
 				<div class="form-group " style="padding-top:50px;padding-left:7px;">
 					@(Html.DevExtreme().Button()
 												.ID("btnAttachment")
@@ -569,7 +557,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
 
 
 	<br />

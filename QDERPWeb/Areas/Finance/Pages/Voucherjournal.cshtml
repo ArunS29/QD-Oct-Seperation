@@ -1,47 +1,13 @@
 ﻿@page
-<!-- SweetAlert2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<style type="text/css">
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc;
-    }
-
-
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px;
-        justify-content: start;
-        align-items: center;
-        margin: 15px;
-        background-color: white;
-    }
-
-    .dx-selectbox .dx-texteditor-input {
-        text-align: center;
-    }
-
-
-
-    .button-alignment-down {
-        margin-bottom: 10px
-    }
-
-    #Narration {
-        overflow-y: auto;
-        resize: none;
-    }
-
-</style>
-<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="card-header" style="background-color: white; color:black; ">
-        JournalVoucherEntry
+<div class="title">
+    <div class="header-container">
+        <div id="JournalVoucherEntry" class="no-border-input"></div>
     </div>
-    <div class="card-body" style="padding: 20px; background-color: white; border-radius: 5px;">
+</div>
 
         <div id="costAllocationPopup" style="display:none;">
             <div style="margin-bottom:10px">
@@ -112,7 +78,7 @@
 
 
 
-        <div class="dx-fieldset horizontal-container " style="margin-top:15px;margin-bottom:0px;">
+        <div class="dx-fieldset horizontal-container " style="margin-bottom:0px;">
 
             <div class="form-group" style="padding-left:20px">
                 <div class="button-alignment-down">
@@ -155,14 +121,14 @@
 
                     )
             </div>
-            <div class="form-group" style="margin-top:56px;margin-left:-10px">
+            <div class="form-group" style="margin-top:42px;margin-left:-10px">
                 @(Html.DevExtreme().Button()
                     .ID("btnAddAHead")
                     .Icon("plus")
                     .OnClick("navigateToLedger")
                     )
             </div>
-            <div class="form-group" style="margin-top:56px;margin-left:-10px">
+            <div class="form-group" style="margin-top:42px;margin-left:-10px">
                 @(Html.DevExtreme().Button()
                     .ID("btnEditAHead")
                     .Icon("edit")
@@ -190,9 +156,9 @@
             </div>
 
         </div>
-        <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:15px;background-color:white;padding-bottom:30px">
+        <div class="dx-fieldset horizontal-container" style="margin-top:10px;">
             <div class="form-group" style="padding-left:20px">
-                <label for="Narration" class="button-alignment-down" style="margin-right:25px; color: black;">Narration</label>
+                <label for="Narration" style="margin-right:25px; color: black;">Narration</label>
 
             </div>
 
@@ -292,22 +258,19 @@
                     .FilterRow(filterRow => filterRow.Visible(false))
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
-                    .Width("100%")
+                    @* .Width("1") *@
                     .Editing(editing => editing
                     .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
                     .AllowUpdating(true)   // Enable editing of existing rows
                     .AllowDeleting(true)   // Enable deleting rows
                     .UseIcons(true)
 
-
-
-
                     )
                     .OnEditorPreparing("onEditorPreparing")
 
                     )
-            <div id="footerTotals" style="display: flex; background-color: aliceblue; color: black; padding: 5px 10px; font-size: 14px;">
-                <div style="flex: 3.4;">&nbsp;</div>
+            <div id="footerTotals" style="display: flex;color: black; padding: 5px 10px; font-size: 14px;">
+                <div style="flex: 5;">&nbsp;</div>
 
                 <div style="flex: 1; text-align: center;">
                 @(Html.DevExtreme().TextBox()
@@ -329,96 +292,98 @@
                 <div style="flex: 4;">&nbsp;</div>
             </div>
 
-            <div class="container">
-                <div class="card" style="background-color:white; color: black;">
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-4 backgroundcolor" style="padding-top:3px; padding-bottom:3px;">
+           
+    <div class="displayFlex">
+    <div class="col-md-7" style="padding-top:10px; padding-bottom:10px;">
+        <div class="form-group">
+            <label for="VoucharNarration">Voucher Narration:</label>
+        @(
+            Html.DevExtreme().TextBox()
+            .ID("VoucherNarration")
+            .Value(null)
+            .Width("100%")
+            .Height("30px")
+            )
+        </div>
+        <div class="form-group mt-3">
+            <label for="BillRemarks">Remarks:</label>
+        @(
+            Html.DevExtreme().TextBox()
+            .ID("Remarks")
+            .Value(null)
+            .Width("100%")
+            .Height("30px")
+            )
+        </div>
+    </div>
 
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                @(Html.DevExtreme().CheckBox()
-                    .ID("VerifiedBy")
-                    )
-                                    <span style="margin-left:5px; margin-right:104px;">VerifiedBy:</span>
-                @(Html.DevExtreme().TextBox()
-                    .ID("VerifiedBytext")
-                    .Width("150px")
-                    .Height("20px")
-                    )
-                                </div>
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                                    <span>VerifiedOn:</span>
-                                    <span id="VoucherVerifiedOn" style="margin-left:5px; margin-right:5px;"></span>
-                @(Html.DevExtreme().TextBox()
-                    .ID("VerifiedOnDate")
-                    .Width("150px")
-                    .Height("20px")
-                    )
-                                </div>
+    <div class="col-md-1">
+        <div class="form-group" style="padding-top:30px; padding-left:10px;">
+        @(Html.DevExtreme().Button()
+            .ID("btnAttachment")
+            .Icon("fa fa-book")
+            .Height(80)
+            .Width(100)
+            )
+        </div>
+    </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+        @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
+            .ID("VerifiedBy")
+            .Value(null) // Default value
 
-
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-                @(Html.DevExtreme().CheckBox()
-                    .ID("ApprovedBy")
-                    )
-                                    <span style="margin-left:5px; margin-right:104px;">ApprovedBy:</span>
-                @(Html.DevExtreme().TextBox()
-                    .ID("ApprovedBytext")
-                    .Width("150px")
-                    .Height("20px")
-                    )
-                                </div>
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <span>ApprovedOn:</span>
-                                    <span id="VoucherApprovedOn" style="margin-left:5px; margin-right:5px;"></span>
-                @(Html.DevExtreme().TextBox()
-                    .ID("ApprovedOntext")
-                    .Width("150px")
-                    .Height("20px")
-                    )
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-7 backgroundcolor" style="padding-top:10px; padding-bottom:10px;">
-                                <div class="form-group">
-                                    <label for="VoucharNarration">Voucher Narration:</label>
-                @(
-                    Html.DevExtreme().TextBox()
-                    .ID("VoucherNarration")
-                    .Value(null)
-                    .Width("100%")
-                    .Height("30px")
-                    )
-                                </div>
-                                <div class="form-group mt-3">
-                                    <label for="BillRemarks">Remarks:</label>
-                @(
-                    Html.DevExtreme().TextBox()
-                    .ID("Remarks")
-                    .Value(null)
-                    .Width("100%")
-                    .Height("30px")
-                    )
-                                </div>
-                            </div>
-
-                            <div class="col-md-1 backgroundcolor">
-                                <div class="form-group" style="padding-top:40px; padding-left:10px;">
-                @(Html.DevExtreme().Button()
-                    .ID("btnAttachment")
-                    .Icon("fa fa-book")
-                    .Height(80)
-                    .Width(100)
-                    )
-                                    </d
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            )
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Verified By')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("VerifiedBytext")
+            .Value(null) // Default value
+            .Disabled(true)
+            .Width(250)
+            )
                 </div>
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Verified On')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("VerifiedOnDate")
+            .Value(null) // Default value
+            .Disabled(true)
+            .Width(250)
+            )
+            </div>
+            <div class="col-md-6">
+                <div>
+        @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
+            .ID("ApprovedBy")
+            .Value(null) // Default value
+            )
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Approved By')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("ApprovedBytext")
+            .Value(null) // Default value
+            .Disabled(true)
+            .Width(250)
+            )
+                </div>
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Approved On')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("ApprovedOntext")
+            .Value(null) // Default value
+            .Disabled(true)
+            .Width(250)
+            )
+            </div>
+        </div>
+    </div>
 
 
+       
                 <div>
                 @await Html.PartialAsync("_FormFooter1")
                 </div>
@@ -469,8 +434,18 @@
 
 
             </div>
-
+             </div>
+    </div>
             <script>
+                $(function () {
+                    $("#JournalVoucherEntry").dxTextBox({
+                        text:formatMessage("Journal Voucher Entry"),
+                        readOnly: true,
+                        onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading");
+                    }
+                    });
+                });
                 function navigateToLedger() {
                     // Show a notification
                     DevExpress.ui.notify("Navigating to Accounting Ledgers page...", "success", 2000);
