@@ -134,81 +134,81 @@
     </text>)
         .Visible(true);
                 columns.AddFor(m => m.AccountGroupId)
-    .Caption("Account Group ID")
+    .Caption(new JS("formatMessage('Account Group ID')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
 
 
                 columns.AddFor(m => m.MasterGroupId)
-    .Caption("Master Group ID")
+    .Caption(new JS("formatMessage('Master Group ID')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
 
 
                 columns.AddFor(m => m.IsRestrictedEntry)
-    .Caption("Is Restricted Entry")
+    .Caption(new JS("formatMessage('Is Restricted Entry')"))
     .Alignment(HorizontalAlignment.Center)
     .Visible(false);
 
                 columns.AddFor(m => m.ReferenceNo)
-    .Caption("Reference No")
+    .Caption(new JS("formatMessage('Reference No')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
 
                 columns.AddFor(m => m.BankAccountNo)
-    .Caption("Bank Account No")
+    .Caption(new JS("formatMessage('Bank Account No')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankIban)
-    .Caption("Bank IBAN")
+    .Caption(new JS("formatMessage('Bank IBAN')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankName)
-    .Caption("Bank Name")
+    .Caption(new JS("formatMessage('Bank Name')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankBranch)
-    .Caption("Bank Branch")
+    .Caption(new JS("formatMessage('Bank Branch')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankSwiftCode)
-    .Caption("Bank Swift Code")
+    .Caption(new JS("formatMessage('Bank Swift Code')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BankAccountName)
-    .Caption("Bank Account Name")
+    .Caption(new JS("formatMessage('Bank Account Name')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BillingName)
-    .Caption("Billing Name")
+    .Caption(new JS("formatMessage('Billing Name')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BillingAddress)
-    .Caption("Billing Address")
+    .Caption(new JS("formatMessage('Billing Address')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BillingContactPerson)
-    .Caption("Billing Contact Person")
+    .Caption(new JS("formatMessage('Billing Contact Person')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false);
 
                 columns.AddFor(m => m.BillingPhoneNo)
-    .Caption("Billing Phone No")
+    .Caption(new JS("formatMessage('Billing Phone No')"))
     .Alignment(HorizontalAlignment.Left)
     .Visible(false); columns.AddFor(m => m.BillingFaxNo)
 
-    .Caption("Billing Fax No")
+    .Caption(new JS("formatMessage('Billing Fax No')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -216,7 +216,7 @@
 
                 columns.AddFor(m => m.BillingContactPersonTitle)
 
-    .Caption("Billing Contact Person Title")
+    .Caption(new JS("formatMessage('Billing Contact Person Title')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -224,7 +224,7 @@
 
                 columns.AddFor(m => m.BillingBankAccount)
 
-    .Caption("Billing Bank Account")
+    .Caption(new JS("formatMessage('Billing Bank Account')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -232,7 +232,7 @@
 
                 columns.AddFor(m => m.LedgerRemarks)
 
-    .Caption("Ledger Remarks")
+    .Caption(new JS("formatMessage('Ledger Remarks')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -242,7 +242,7 @@
 
                 columns.AddFor(m => m.AccountGroupAr)
 
-    .Caption("Account Group Arabic")
+    .Caption(new JS("formatMessage('Account Group Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -250,15 +250,14 @@
 
                 columns.AddFor(m => m.MasterGroupAr)
 
-    .Caption("Master Group Arabic")
-
+    .Caption(new JS("formatMessage('Master Group Arabic')"))
     .Alignment(HorizontalAlignment.Left)
 
     .Visible(false);
 
                 columns.AddFor(m => m.MasterOrderNo)
 
-    .Caption("Master Order No")
+    .Caption(new JS("formatMessage('Master Order No')"))
 
     .Alignment(HorizontalAlignment.Right)
 
@@ -266,7 +265,7 @@
 
                 columns.AddFor(m => m.MasterGroupCategory)
 
-    .Caption("Master Group Category")
+    .Caption(new JS("formatMessage('Master Group Category')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -274,7 +273,7 @@
 
                 columns.AddFor(m => m.ChartOfAccountsOrder)
 
-    .Caption("Chart of Accounts Order")
+    .Caption(new JS("formatMessage('Chart of Accounts Order')"))
 
     .Alignment(HorizontalAlignment.Right)
 
@@ -282,7 +281,7 @@
 
                 columns.AddFor(m => m.AccountGroupOrderNo)
 
-    .Caption("Account Group Order No")
+    .Caption(new JS("formatMessage('Account Group Order No')"))
 
     .Alignment(HorizontalAlignment.Right)
 
@@ -290,7 +289,7 @@
 
                 columns.AddFor(m => m.MasterGroupCategoryAr)
 
-    .Caption("Master Group Category Arabic")
+    .Caption(new JS("formatMessage('Master Group Category Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -298,7 +297,7 @@
 
                 columns.AddFor(m => m.VoucherAbbr)
 
-    .Caption("Voucher Abbreviation")
+    .Caption(new JS("formatMessage('Voucher Abbreviation')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -306,7 +305,7 @@
 
                 columns.AddFor(m => m.IsMaintainBillByBill)
 
-    .Caption("Is Maintain Bill By Bill")
+    .Caption(new JS("formatMessage('Is Maintain Bill By Bill')"))
 
     .Alignment(HorizontalAlignment.Center)
 
@@ -314,7 +313,7 @@
 
                 columns.AddFor(m => m.RecordCreatedBy)
 
-    .Caption("Record Created By")
+    .Caption(new JS("formatMessage('Record Created By')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -322,7 +321,7 @@
 
                 columns.AddFor(m => m.RecordCreatedOn)
 
-    .Caption("Record Created On")
+    .Caption(new JS("formatMessage('Record Created On')"))
 
     .Alignment(HorizontalAlignment.Center)
 
@@ -330,7 +329,7 @@
 
                 columns.AddFor(m => m.RecordModifiedBy)
 
-    .Caption("Record Modified By")
+    .Caption(new JS("formatMessage('Record Modified By')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -338,15 +337,15 @@
 
                 columns.AddFor(m => m.RecordModifiedOn)
 
-    .Caption("Record Modified On")
+    .Caption(new JS("formatMessage('Record Modified On')"))
 
     .Alignment(HorizontalAlignment.Center)
-
+     
     .Visible(false);
 
                 columns.AddFor(m => m.NoOfDaysCreditPeriod)
 
-    .Caption("No Of Days Credit Period")
+    .Caption(new JS("formatMessage('No Of Days Credit Period')"))
 
     .Alignment(HorizontalAlignment.Right)
 
@@ -354,7 +353,7 @@
 
                 columns.AddFor(m => m.AccountsContactName)
 
-    .Caption("Accounts Contact Name")
+    .Caption(new JS("formatMessage('Accounts Contact Name')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -363,7 +362,7 @@
 
                 columns.AddFor(m => m.AccountsContactMobile)
 
-    .Caption("Accounts Contact Mobile")
+    .Caption(new JS("formatMessage('Accounts Contact Mobile')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -371,7 +370,7 @@
 
                 columns.AddFor(m => m.AccountsContactTitle)
 
-    .Caption("Accounts Contact Title")
+    .Caption(new JS("formatMessage('Accounts Contact Title')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -379,7 +378,7 @@
 
                 columns.AddFor(m => m.IsEmployeeAllocated)
 
-    .Caption("Is Employee Allocated")
+    .Caption(new JS("formatMessage('Is Employee Allocated')"))
 
     .Alignment(HorizontalAlignment.Center)
 
@@ -387,7 +386,7 @@
 
                 columns.AddFor(m => m.ClientVatno)
 
-    .Caption("Client VAT No")
+    .Caption(new JS("formatMessage('Client VAT No')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -395,7 +394,7 @@
 
                 columns.AddFor(m => m.SupplierName)
 
-    .Caption("Supplier Name")
+    .Caption(new JS("formatMessage('Supplier Name')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -403,7 +402,7 @@
 
                 columns.AddFor(m => m.SupplierNameAr)
 
-    .Caption("Supplier Name Arabic")
+    .Caption(new JS("formatMessage('Supplier Name Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -411,7 +410,7 @@
 
                 columns.AddFor(m => m.SupplierAddress)
 
-    .Caption("Supplier Address")
+    .Caption(new JS("formatMessage('Supplier Address')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -419,7 +418,7 @@
 
                 columns.AddFor(m => m.SupplierAddressAr)
 
-    .Caption("Supplier Address Arabic")
+    .Caption(new JS("formatMessage('Supplier Address Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -427,7 +426,7 @@
 
                 columns.AddFor(m => m.SupplierVatno)
 
-    .Caption("Supplier VAT No")
+    .Caption(new JS("formatMessage('Supplier VAT No')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -435,7 +434,7 @@
 
                 columns.AddFor(m => m.ClientVendorNo)
 
-    .Caption("Client Vendor No")
+    .Caption(new JS("formatMessage('Client Vendor No')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -443,7 +442,7 @@
 
                 columns.AddFor(m => m.IsPropertyAllocated)
 
-    .Caption("Is Property Allocated")
+    .Caption(new JS("formatMessage('Is Property Allocated')"))
 
     .Alignment(HorizontalAlignment.Center)
 
@@ -451,7 +450,7 @@
 
                 columns.AddFor(m => m.AccountSubGroup)
 
-    .Caption("Account Sub Group")
+    .Caption(new JS("formatMessage('Account Sub Group')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -459,7 +458,7 @@
 
                 columns.AddFor(m => m.ClientGroupVatnumber)
 
-    .Caption("Client Group VAT Number")
+    .Caption(new JS("formatMessage('Client Group VAT Number')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -467,7 +466,7 @@
 
                 columns.AddFor(m => m.ClientOtherId)
 
-    .Caption("Client Other ID")
+    .Caption(new JS("formatMessage('Client Other ID')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -475,7 +474,7 @@
 
                 columns.AddFor(m => m.ClientOtherIdtype)
 
-    .Caption("Client Other ID Type")
+    .Caption(new JS("formatMessage('Client Other ID Type')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -483,7 +482,7 @@
 
                 columns.AddFor(m => m.ClientAddressStreet)
 
-    .Caption("Client Address Street")
+    .Caption(new JS("formatMessage('Client Address Street')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -491,7 +490,7 @@
 
                 columns.AddFor(m => m.ClientAddressStreetAr)
 
-    .Caption("Client Address Street Arabic")
+    .Caption(new JS("formatMessage('Client Address Street Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -499,7 +498,7 @@
 
                 columns.AddFor(m => m.ClientAdditionalStreet)
 
-    .Caption("Client Additional Street")
+    .Caption(new JS("formatMessage('Client Additional Street')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -507,7 +506,7 @@
 
                 columns.AddFor(m => m.ClientAdditionalStreetAr)
 
-    .Caption("Client Additional Street Arabic")
+    .Caption(new JS("formatMessage('Client Additional Street Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -515,7 +514,7 @@
 
                 columns.AddFor(m => m.ClientBuildingNumber)
 
-    .Caption("Client Building Number")
+    .Caption(new JS("formatMessage('Client Building Number')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -523,7 +522,7 @@
 
                 columns.AddFor(m => m.ClientAdditionalNumber)
 
-    .Caption("Client Additional Number")
+    .Caption(new JS("formatMessage('Client Additional Number')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -531,7 +530,7 @@
 
                 columns.AddFor(m => m.ClientCity)
 
-    .Caption("Client City")
+    .Caption(new JS("formatMessage('Client City')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -539,7 +538,7 @@
 
                 columns.AddFor(m => m.ClientCityAr)
 
-    .Caption("Client City Arabic")
+    .Caption(new JS("formatMessage('Client City Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -548,7 +547,7 @@
 
                 columns.AddFor(m => m.ClientPostalCode)
 
-    .Caption("Client Postal Code")
+    .Caption(new JS("formatMessage('Client Postal Code')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -556,7 +555,7 @@
 
                 columns.AddFor(m => m.ClientProvince)
 
-    .Caption("Client Province")
+    .Caption(new JS("formatMessage('Client Province')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -564,7 +563,7 @@
 
                 columns.AddFor(m => m.ClientProvinceAr)
 
-    .Caption("Client Province Arabic")
+    .Caption(new JS("formatMessage('Client Province Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -572,7 +571,7 @@
 
                 columns.AddFor(m => m.ClientNeighborhood)
 
-    .Caption("Client Neighborhood")
+    .Caption(new JS("formatMessage('Client Neighborhood')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -580,7 +579,7 @@
 
                 columns.AddFor(m => m.ClientNeighborhoodAr)
 
-    .Caption("Client Neighborhood Arabic")
+    .Caption(new JS("formatMessage('Client Neighborhood Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -588,7 +587,7 @@
 
                 columns.AddFor(m => m.ClientCountryCode)
 
-    .Caption("Client Country Code")
+    .Caption(new JS("formatMessage('Client Country Code')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -596,7 +595,7 @@
 
                 columns.AddFor(m => m.SupplierGroupVatnumber)
 
-    .Caption("Supplier Group VAT Number")
+    .Caption(new JS("formatMessage('Supplier Group VAT Number')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -604,7 +603,7 @@
 
                 columns.AddFor(m => m.SupplierOtherIdtype)
 
-    .Caption("Supplier Other ID Type")
+    .Caption(new JS("formatMessage('Supplier Other ID Type')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -612,7 +611,7 @@
 
                 columns.AddFor(m => m.SupplierOtherId)
 
-    .Caption("Supplier Other ID")
+    .Caption(new JS("formatMessage('Supplier Other ID')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -620,7 +619,7 @@
 
                 columns.AddFor(m => m.SupplierAddressStreet)
 
-    .Caption("Supplier Address Street")
+    .Caption(new JS("formatMessage('Supplier Address Street')"))
 
     .Alignment(HorizontalAlignment.Left)
 
@@ -628,7 +627,7 @@
 
                 columns.AddFor(m => m.SupplierAddressStreetAr)
 
-    .Caption("Supplier Address Street Arabic")
+    .Caption(new JS("formatMessage('Supplier Address Street Arabic')"))
 
     .Alignment(HorizontalAlignment.Left)
 

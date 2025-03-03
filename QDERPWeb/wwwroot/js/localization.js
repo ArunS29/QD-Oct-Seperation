@@ -1,5 +1,10 @@
 ﻿var dictionary = {
     "en": {
+        "Created By": "Created By",
+        "Modified On": "Modified On",
+        "Modified By": "Modified By",
+        "Created On": "Created On",
+        "Cost Unit Remarks": "Cost Unit Remarks",
         "Post": "Post",
         "Chart Of Accounts": "Chart Of Accounts",
         "Edit Ledger Account": "Edit Ledger Account",
@@ -1091,6 +1096,11 @@
         
     },
     "ar": {
+        "Created By": "تم الإنشاء بواسطة",
+        "Modified On": "تم التعديل في",
+        "Modified By": "تم التعديل بواسطة",
+        "Created On": "تم الإنشاء في",
+        "Cost Unit Remarks": "ملاحظات وحدة التكلفة",
         "Project Duration": "مدة المشروع",
         "Project Location": "موقع المشروع",
         "Project Master Code": "كود المشروع الرئيسي",
