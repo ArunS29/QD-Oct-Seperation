@@ -356,7 +356,7 @@
             top: 0; /* Position at the top */
             left: 0; /* Start from the very left */
             z-index: 100; /* Ensure it stays above other elements */
-            height: 6em;
+            height: 5em;
             border-bottom: 1px solid #ddd;
         }
 
@@ -611,6 +611,7 @@
     </style>
 </head>
 <body>
+    <script src="~/js/layouticon.js"></script>
     <div class="bodyContainer">
     <div class="frame">
         <div class="image">
@@ -622,20 +623,22 @@
         </div>
         <div>
                 @(Html.DevExtreme().SelectBox()
-                    .Label(new JS("formatMessage('Language')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("selectBox")
+                    .ID("languageSelectBox")
                     .InputAttr("id", "selectInput")
                     .DataSource(new JS("locales"))
                     .DisplayExpr("name")
-                    .Width("200px")
                     .ValueExpr("value")
+                    .Width("8em")
                     .Value(new JS("locale"))
                     .OnValueChanged("changeLocale")
+                    .ItemTemplate(new JS("customItemTemplate"))
                     )
 
         </div>
-
+            @* <button id="themeToggle">Toggle Dark Mode</button> *@
+            <button id="fullscreenToggle">
+                <i class="fas fa-expand" id="fullscreenIcon"></i>
+            </button>
         <i class="fas fa-bell img" onclick="handleBellClick()"></i> <!-- Bell icon -->
         <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
         <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->

@@ -383,16 +383,18 @@
 					.DataSource(new JS("[]"))
 					.Columns(columns =>
 					{
-						columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Alignment(HorizontalAlignment.Center)
-					.CellTemplate(@<text>
-			<div>
-				<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
-				   onclick="navigateToVoucherPage('<%- data.VoucherNo %>')">
-					<%- data.VoucherNo %>
-				</a>
-			</div>
-		</text>)
-					.Visible(true);
+						columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')"))
+    .Alignment(HorizontalAlignment.Center)
+    .CellTemplate(@<text>
+        <div>
+            <a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
+               onclick="navigateToVoucherPage('<%- data.VoucherNo %>', '<%- data.VoucherType %>')">
+                <%- data.VoucherNo %>
+            </a>
+        </div>
+    </text>)
+    .Visible(true);
+
 
 						columns.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('VoucherDate')"))
 					.Alignment(HorizontalAlignment.Center)
@@ -1337,55 +1339,59 @@ function updateBankReconciliationState(accheadname) {
 		}
 
 	}
-	function navigateToVoucherPage(voucherNo) {
-		console.log("Original VoucherNo:", voucherNo); // Debugging
-
-		if (!voucherNo) {
-			alert("Invalid voucher number.");
+	function navigateToVoucherPage(voucherNo, voucherType) {
+		console.log("Original VoucherNo:", voucherNo, "VoucherType:", voucherType); // Debugging
+		
+		if (!voucherNo || !voucherType) {
+			alert("Invalid voucher details.");
 			return;
 		}
 
 		let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
+		let formattedVoucherType = voucherType.trim(); // Trim to avoid leading/trailing spaces
 
-		console.log("Formatted VoucherNo:", formattedVoucher); // Debugging
+		console.log("Formatted VoucherNo:", formattedVoucher, "Formatted VoucherType:", formattedVoucherType); // Debugging
 
-		// Define base URLs (Fix: Avoid embedding formattedVoucher inside object definition)
+		// Define voucher type-based URLs
 		const voucherRoutes = {
-			"BP-": "/pulse/finance/VoucherBankPayment",
-			"CP-": "/pulse/finance/VoucherCashPayment",
-			"BR-": "/pulse/finance/VoucherEntryReceipts",
-			"CR-": "/pulse/finance/VoucherEntryCashReceipts",
-			"SAL-": "/pulse/finance/SalesVoucher",
-			"PUR-": "/pulse/finance/PurchaseVoucher",
-			"JV-": "/pulse/Finance/Voucherjournal"
+			"Bank Payment": "/pulse/finance/VoucherBankPayment",
+			"Cash Payment": "/pulse/finance/VoucherCashPayment",
+			"Bank Receipts": "/pulse/finance/VoucherEntryReceipts",
+			"Cash Receipts": "/pulse/finance/VoucherEntryCashReceipts",
+			"Sales": "/pulse/finance/SalesVoucher",
+			"Purchase": "/pulse/finance/PurchaseVoucher",
+			"Journal": "/pulse/finance/Voucherjournal"
 		};
 
-		// Match by prefix
-		for (let prefix in voucherRoutes) {
-			if (formattedVoucher.startsWith(prefix)) {
-				let baseUrl = voucherRoutes[prefix];
-				let targetUrl = `${baseUrl}?argsledno=${encodeURIComponent(formattedVoucher)}`; // Proper encoding
+		let baseUrl = voucherRoutes[formattedVoucherType];
 
-				console.log("Navigating to:", targetUrl); // Debugging
-				window.location.href = targetUrl; // Navigate
-				return;
-			}
+		if (baseUrl) {
+			// Append both VoucherNo and VoucherType as query parameters
+			let targetUrl = `${baseUrl}?argsledno=${encodeURIComponent(formattedVoucher)}&vouchertype=${encodeURIComponent(formattedVoucherType)}`;
+			console.log("Navigating to:", targetUrl); // Debugging
+			window.location.href = targetUrl; // Navigate
+		} else {
+			alert("Unknown voucher type: " + voucherType);
 		}
-
-		
 	}
+
 
 	// Function to handle right-click event on the grid
 	$(document).on("contextmenu", ".dx-datagrid-rowsview .dx-row", function (e) {
 		e.preventDefault(); // Prevent default right-click menu
 
-		let dataGrid = $("#dataGrid").dxDataGrid("instance"); // Replace with your grid ID
+		let dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the grid instance
 		let rowIndex = $(this).index();
-		let rowData = dataGrid.getVisibleRows()[rowIndex].data;
+		let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
 
-		if (rowData && rowData.VoucherNo) {
-			selectedVoucherNo = rowData.VoucherNo; // Store the selected voucher number
-			console.log("Selected VoucherNo:", selectedVoucherNo);
+		console.log("Row Data:", rowData); // Debugging
+
+		if (rowData && rowData.VoucherNo && rowData.VoucherType) {
+			selectedVoucherNo = rowData.VoucherNo; // Store selected voucher number
+			selectedVoucherType = rowData.VoucherType; // Store selected voucher type
+			console.log("Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
+		} else {
+			console.log("Voucher data is missing.");
 		}
 
 		// Show context menu at mouse position
@@ -1403,8 +1409,10 @@ function updateBankReconciliationState(accheadname) {
 
 	// Assign onclick event to btnEditVoucher
 	$("#btnEditVoucher").on("click", function () {
-		if (selectedVoucherNo) {
-			navigateToVoucherPage(selectedVoucherNo); // Pass the stored voucher number
+		console.log("Edit Voucher Clicked. Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
+
+		if (selectedVoucherNo && selectedVoucherType) {
+			navigateToVoucherPage(selectedVoucherNo, selectedVoucherType); // Pass both voucher details
 		} else {
 			alert("No voucher selected.");
 		}

@@ -292,7 +292,7 @@
         "Is Paid": "Is Paid",
         "Claimer ID": "Claimer ID",
         "Approved By": "Approved By",
-        "Approved On": "Approved On",
+        "Approved On:": "Approved On:",
         "Claim Created By": "Claim Created By",
         "Claim Created On": "Claim Created On",
         "Claim Modified By": "Claim Modified By",
@@ -893,7 +893,7 @@
         "BillNo": "Bill No",
         "VoucherModifiedOn": "Voucher Modified On",
         "VoucherModifiedBy": "Voucher Modified By",
-        "SysRemarks": "System Remarks",
+        "SysRemarks": "Remarks",
         "VoucherType": "Voucher Type",
         "MasterGroup": "Master Group",
         "AccountGroup": "Account Group",
@@ -931,6 +931,7 @@
         "Account Group Arabic": "Account Group Arabic",
         "Master Group Arabic": "Master Group Arabic",
         "Master Order No": "Master Order No",
+        "Please select the AccountHead to edit.": "Please select the AccountHead to edit.",
         "Master Group Category": "Master Group Category",
         "Chart of Accounts Order": "Chart of Accounts Order",
         "Account Group Order No": "Account Group Order No",
@@ -1012,6 +1013,7 @@
         "An error occurred while adding the subgroup.": "An error occurred while adding the subgroup.",
         "User Id": "User Id",
         "User Name": "User Name",
+        "Receipts Voucher Details": "Receipts Voucher Details",
         "Sales Person Updated": "Sales Person Updated",
         "The sales person has been successfully updated.": "The sales person has been successfully updated.",
         "User Code": "User Code",
@@ -1038,12 +1040,64 @@
         "This branch already exists!": "This branch already exists!",
         "Branch Added": "Branch Added",
         "Clear Errors": "Clear Errors",
-        "Cannot continue saving with errors, please clear the errors and continue.":"Cannot continue saving with errors, please clear the errors and continue.",
-        "Toggle Filter": "Toggle Filter"
+        "Cannot continue saving with errors, please clear the errors and continue.": "Cannot continue saving with errors, please clear the errors and continue.",
+        "Toggle Filter": "Toggle Filter",
+        "Expenses Claims": "Expenses Claims",
+        "Journal Voucher Entry": "Journal Voucher Entry",
+        "Journal Register":"Journal Register",
+        "Verified On:": "Verified On:",
+        "Approved On:": "Approved On:",
+        "Receipts Voucher Details": "Receipts Voucher Details",
+        "Verified By:": "Verified By:",
+        "Approved By:": "Approved By:",
+        "Voucher is not Verified": "Voucher is not Verified",
+        "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.": "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+        "OK": "OK",
+        "Success!": "Success!",
+        "Voucher has been Verified.": "Voucher has been Verified.",
+        "Error": "Error",
+        "Journal Register": "Journal Register",
+        "Please save the transactions after proceeding!!": "Please save the transactions after proceeding!!",
+        "Voucher is not Approved": "Voucher is not Approved",
+        "Voucher has been Approved.": "Voucher has been Approved.",
+        "Please save the transactions after proceeding!": "Please save the transactions after proceeding!",
+        "Days": "Days",
+        "Due Date or Payment Terms": "Due Date or Payment Terms",
+        "Sales Voucher": "Sales Voucher",
+        "Purchase Voucher": "Purchase Voucher",
+        "Submit": "Submit",
+        "Add Line": "Add Line",
+        "Save & Close": "Save & Close"
+        
     },
     "ar": {
+        "Journal Register": "سجل اليومية",
+        "Submit": "إرسال",
+        "Add Line": "إضافة سطر",
+        "Save & Close": "حفظ وإغلاق",
+        "JournalRegister":"تسجيل المجلة",
+        "Journal Voucher Entry":"إدخال قسيمة دفتر اليومية",
+        "Expenses Claims":"مطالبات المصاريف",
         "Toggle Filter": "تبديل عامل التصفية",
         "Post": "نشر",
+        "Due Date or Payment Terms": "تاريخ الاستحقاق أو شروط الدفع",
+        "Sales Voucher": "قسيمة المبيعات",
+        "Days": "أيام",
+        "Voucher is not Verified": "لم يتم التحقق من القسيمة",
+        "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.": "لم يتم الموافقة على القسيمة، اضغط نعم إذا كنت تريد التحقق والموافقة على هذه القسيمة.",
+        "OK": "موافق",
+        "Success!": "نجاح!",
+        "Voucher has been Verified.": "تم التحقق من القسيمة.",
+        "Error": "خطأ",
+        "Please save the transactions after proceeding!!": "يرجى حفظ المعاملات بعد المتابعة!!",
+        "Voucher is not Approved": "لم يتم الموافقة على القسيمة",
+        "Voucher has been Approved.": "تمت الموافقة على القسيمة.",
+        "Please save the transactions after proceeding!": "يرجى حفظ المعاملات بعد المتابعة!",
+        "Please select the AccountHead to edit.": "الرجاء تحديد رئيس الحساب للتحرير.",
+        "Verified By:": "تم التحقق بواسطة:",
+        "Verified On:": "تم التحقق في:",
+        "Approved On:": "تمت الموافقة في:",
+        "Receipts Voucher Details": "تفاصيل قسيمة الاستلام",
         "Branch deleted successfully": "تم حذف الفرع بنجاح",
         "Cannot continue saving with errors, please clear the errors and continue.":"لا يمكن الاستمرار في الحفظ مع الأخطاء، يرجى مسح الأخطاء والاستمرار",
         "Clear Errors": "مسح الأخطاء",
@@ -1467,9 +1521,11 @@
         "Maintenance Reading": "قراءة الصيانة",
         "Brand": "ماركة",
         "Approved On": "تمت الموافقة في",
+        "Approved On:": "تمت الموافقة في:",
         "Amount": "المبلغ",
         "Expenses Ledger Account": "حساب دفتر المصاريف",
         "Approved By": "تمت الموافقة بواسطة",
+        "Approved By:": "تمت الموافقة بواسطة:",
         "Effective Date": "تاريخ السريان",
         "Add New Cost Centre": "إضافة مركز تكلفة جديد",
         "Approve [Add]": "الموافقة [إضافة]",
@@ -2064,8 +2120,8 @@ DevExpress.localization.loadMessages(dictionary);
 var formatMessage = DevExpress.localization.formatMessage;
 
 var locales = [
-    { name: "English", value: "en" },
-    { name: "عربي", value: "ar" },
+    { name: "English", value: "en", flag: "https://flagcdn.com/w40/us.png" },
+    { name: "العربية", value: "ar", flag: "https://flagcdn.com/w40/ae.png" }
 ];
 // Get the saved locale or default to English
 var locale = getLocale();
@@ -2076,6 +2132,7 @@ function changeLocale(dropdown) {
     var selectedLocale = dropdown.value;
     setLocale(selectedLocale);
     document.location.reload(); // Reload page to apply changes
+    updateFlagIcon(selectedLocale);
 }
 
 // Function to get saved locale
@@ -2087,4 +2144,28 @@ function getLocale() {
 // Function to save the selected locale
 function setLocale(locale) {
     sessionStorage.setItem("locale", locale);
+}
+function updateFlagIcon(selectedValue) {
+    var selectedItem = locales.find(item => item.value === selectedValue);
+    if (!selectedItem) return;
+
+    $("#selectInput").css({
+        backgroundImage: `url(${selectedItem.flag})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "20px 20px",
+        backgroundPosition: "5px center",
+        paddingLeft: "30px"
+    });
+}
+
+$(document).ready(() => updateFlagIcon(locale));
+
+function customItemTemplate(data) {
+    if (!data) return $("<div>");
+    return $("<div>").css({ display: "flex", alignItems: "center" })
+        .append(
+            $("<img>").attr("src", data.flag).attr("alt", data.name)
+                .css({ width: "20px", height: "20px", marginRight: "8px", borderRadius: "50%" }),
+            $("<span>").text(data.name)
+        );
 }
