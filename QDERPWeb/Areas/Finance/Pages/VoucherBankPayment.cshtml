@@ -1795,7 +1795,7 @@
         function attachMultipleFiles(aVoucherNo) {
             // Logic for attaching multiple files
             DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
-            window.location.href = `/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
+        window.location.href = `/pulse/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
         }
 
 
@@ -2362,7 +2362,7 @@ function addVoucherEntry() {
                     .map(key => `${key}=${params[key]}`)
                     .join("&");
 
-                $("#CostAllocationContent").load(`/Finance/AE?${queryString}`, function () {
+                            $("#CostAllocationContent").load(`/pulse/Finance/AE?${queryString}`, function () {
                     $("#CostAllocationModal").modal("show");
                     $(".close").on("click", function () {
                         $("#CostAllocationModal").modal("hide");
@@ -2404,7 +2404,7 @@ function addVoucherEntry() {
                                 .map(key => `${key}=${params[key]}`)
                                 .join('&');
 
-                            $("#PropertyAllocationContent").load(`/Finance/PropertyAllocation?${queryString}`, function () {
+                                        $("#PropertyAllocationContent").load(`/pulse/Finance/PropertyAllocation?${queryString}`, function () {
                                 $("#PropertyAllocationModal").modal('show');
                                 $(".close").on("click", function () {
                                     $("#PropertyAllocationModal").modal('hide');
@@ -3362,7 +3362,7 @@ function addVoucherEntry() {
         popup.show();
 
         // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
+        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
     }
     $(document).ready(function () {
         $("#btntoggleGroupPanel").click();
@@ -3405,7 +3405,7 @@ function addVoucherEntry() {
             return;
         }
 
-        const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+        const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
         // Show the popup
         var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
@@ -3984,7 +3984,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const voucherNoField = $("#VoucherNo").dxTextBox("instance");
                 if (voucherNoField) {
                     voucherNoField.option("value", argsledno);
-                    updateTemporaryNo({ value: argsledno });
+                    
                 } else {
                     console.error("VoucherNo TextBox instance not found.");
                 }
@@ -3998,7 +3998,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const voucherNoField = $("#VoucherNo").dxTextBox("instance");
                         if (voucherNoField) {
                             voucherNoField.option("value", data);
-                            updateTemporaryNo({ value: data });
+                           
                         } else {
                             console.error("VoucherNo TextBox instance not found.");
                         }

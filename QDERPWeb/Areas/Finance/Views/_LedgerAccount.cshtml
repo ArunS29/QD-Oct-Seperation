@@ -2839,7 +2839,7 @@ if (getidfromCOA) {
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/Finance/Divmaster`;
+        iframe.src = `/pulse/Finance/Divmaster`;
 
         modal.style.display = "block";
 
@@ -2885,7 +2885,7 @@ if (getidfromCOA) {
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/Finance/LedgerSubGroupMaster`;
+        iframe.src = `/pulse/Finance/LedgerSubGroupMaster`;
 
         modal.style.display = "block";
 
@@ -2931,7 +2931,7 @@ if (getidfromCOA) {
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/Finance/SalesPersonMaster`;
+        iframe.src = `/pulse/Finance/SalesPersonMaster`;
 
         modal.style.display = "block";
 
@@ -2975,7 +2975,7 @@ if (getidfromCOA) {
     function redirectAccoutledgerMaster() {
 
         const masterFormWindow = window.open(
-            '/Finance/LedgerAccount?AccountGroupId=A013',
+            '/pulse/Finance/LedgerAccount?AccountGroupId=A013',
             'popupWindow',
             'width=1400,height=600,scrollbars=yes,resizable=yes'
         );
@@ -2999,7 +2999,7 @@ if (getidfromCOA) {
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
+        iframe.src = `/pulse/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
 
         modal.style.display = "block";
 

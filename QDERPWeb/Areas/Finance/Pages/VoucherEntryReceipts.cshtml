@@ -1570,7 +1570,7 @@
         popup.show();
 
         // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
+        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
     }
 
     $(function () {
@@ -1917,7 +1917,7 @@
             return;
         }
 
-        const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+        const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
         // Show the popup
         var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
@@ -2191,7 +2191,7 @@
                 const voucherNoField = $("#VoucherNo").dxTextBox("instance");
                 if (voucherNoField) {
                     voucherNoField.option("value", argsledno);
-                    updateTemporaryNo({ value: argsledno });
+                
                 } else {
                     console.error("VoucherNo TextBox instance not found.");
                 }
@@ -2205,7 +2205,7 @@
                         const voucherNoField = $("#VoucherNo").dxTextBox("instance");
                         if (voucherNoField) {
                             voucherNoField.option("value", data);
-                            updateTemporaryNo({ value: data });
+                            
                         } else {
                             console.error("VoucherNo TextBox instance not found.");
                         }
