@@ -49,6 +49,9 @@ namespace QD.ERP.Web.Reports
             this.xrLabel10 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
+            this.xrLabel15 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel13 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPictureBox1 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLine1 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
@@ -89,9 +92,6 @@ namespace QD.ERP.Web.Reports
             this.xrLabel3 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabelTotal = new DevExpress.XtraReports.UI.XRLabel();
             this.calculatedField1 = new DevExpress.XtraReports.UI.CalculatedField();
-            this.xrLabel13 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel15 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -264,6 +264,44 @@ namespace QD.ERP.Web.Reports
             this.xrLabel2});
             this.ReportHeader.HeightF = 168.3333F;
             this.ReportHeader.Name = "ReportHeader";
+            // 
+            // xrLabel15
+            // 
+            this.xrLabel15.Borders = DevExpress.XtraPrinting.BorderSide.None;
+            this.xrLabel15.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
+            this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(0.0002288818F, 42.6666F);
+            this.xrLabel15.Name = "xrLabel15";
+            this.xrLabel15.SizeF = new System.Drawing.SizeF(867.9998F, 21.00004F);
+            this.xrLabel15.StylePriority.UseBorders = false;
+            this.xrLabel15.StylePriority.UseFont = false;
+            this.xrLabel15.StylePriority.UseTextAlignment = false;
+            this.xrLabel15.Text = "Al  Injaz  Contracting  Company ";
+            this.xrLabel15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            // 
+            // xrLabel14
+            // 
+            this.xrLabel14.Borders = DevExpress.XtraPrinting.BorderSide.None;
+            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(0.0004704793F, 63.66664F);
+            this.xrLabel14.Name = "xrLabel14";
+            this.xrLabel14.SizeF = new System.Drawing.SizeF(867.9995F, 25.83332F);
+            this.xrLabel14.StylePriority.UseBorders = false;
+            this.xrLabel14.StylePriority.UseTextAlignment = false;
+            this.xrLabel14.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
+            this.xrLabel14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            // 
+            // xrLabel13
+            // 
+            this.xrLabel13.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
+            this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(0F, 140.6667F);
+            this.xrLabel13.Multiline = true;
+            this.xrLabel13.Name = "xrLabel13";
+            this.xrLabel13.SizeF = new System.Drawing.SizeF(868F, 26.49997F);
+            this.xrLabel13.StylePriority.UseBorderColor = false;
+            this.xrLabel13.StylePriority.UseFont = false;
+            this.xrLabel13.StylePriority.UseTextAlignment = false;
+            this.xrLabel13.Text = "from  [?StartDate!dd-MMM-yy] to [?EndDate!dd-MMM-yy]";
+            this.xrLabel13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // xrPictureBox1
             // 
@@ -780,44 +818,6 @@ namespace QD.ERP.Web.Reports
             this.calculatedField1.DataMember = "StProAccountLedger";
             this.calculatedField1.Expression = "Abs(Sum([DrAmount])-Sum([CrAmount]))";
             this.calculatedField1.Name = "calculatedField1";
-            // 
-            // xrLabel13
-            // 
-            this.xrLabel13.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
-            this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(0F, 140.6667F);
-            this.xrLabel13.Multiline = true;
-            this.xrLabel13.Name = "xrLabel13";
-            this.xrLabel13.SizeF = new System.Drawing.SizeF(868F, 26.49997F);
-            this.xrLabel13.StylePriority.UseBorderColor = false;
-            this.xrLabel13.StylePriority.UseFont = false;
-            this.xrLabel13.StylePriority.UseTextAlignment = false;
-            this.xrLabel13.Text = "from  [?StartDate!dd-MMM-yy] to [?EndDate!dd-MMM-yy]";
-            this.xrLabel13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            // 
-            // xrLabel14
-            // 
-            this.xrLabel14.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(0.0004704793F, 63.66664F);
-            this.xrLabel14.Name = "xrLabel14";
-            this.xrLabel14.SizeF = new System.Drawing.SizeF(867.9995F, 25.83332F);
-            this.xrLabel14.StylePriority.UseBorders = false;
-            this.xrLabel14.StylePriority.UseTextAlignment = false;
-            this.xrLabel14.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
-            this.xrLabel14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            // 
-            // xrLabel15
-            // 
-            this.xrLabel15.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrLabel15.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
-            this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(0.0002288818F, 42.6666F);
-            this.xrLabel15.Name = "xrLabel15";
-            this.xrLabel15.SizeF = new System.Drawing.SizeF(867.9998F, 21.00004F);
-            this.xrLabel15.StylePriority.UseBorders = false;
-            this.xrLabel15.StylePriority.UseFont = false;
-            this.xrLabel15.StylePriority.UseTextAlignment = false;
-            this.xrLabel15.Text = "Al  Injaz  Contracting  Company ";
-            this.xrLabel15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // StatementOfAccountReport
             // 

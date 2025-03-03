@@ -86,6 +86,7 @@
             this.xrLabel6 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabelTotal = new DevExpress.XtraReports.UI.XRLabel();
             this.calculatedField1 = new DevExpress.XtraReports.UI.CalculatedField();
+            this.xrLabel12 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -98,6 +99,7 @@
             // BottomMargin
             // 
             this.BottomMargin.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel12,
             this.pageInfo1,
             this.xrLabel10,
             this.xrLabel5,
@@ -477,7 +479,8 @@
             // 
             this.xrTableCell11.BackColor = System.Drawing.Color.Transparent;
             this.xrTableCell11.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[VoucherNo]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Concat(\n    Iif(IsNullOrEmpty([VoucherNo]), \'\', [VoucherNo]), \n    Iif(IsNullOrEm" +
+                    "pty([VoucherRefNo]), \'\', \' / Ref.No: \' + [VoucherRefNo])\n)\n\n")});
             this.xrTableCell11.Name = "xrTableCell11";
             this.xrTableCell11.StyleName = "DetailData1";
             this.xrTableCell11.StylePriority.UseBackColor = false;
@@ -760,6 +763,19 @@
             this.calculatedField1.Expression = "Abs(Sum([DrAmount])-Sum([CrAmount]))";
             this.calculatedField1.Name = "calculatedField1";
             // 
+            // xrLabel12
+            // 
+            this.xrLabel12.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel12.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel12.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(16.89223F, 33.66689F);
+            this.xrLabel12.Name = "xrLabel12";
+            this.xrLabel12.SizeF = new System.Drawing.SizeF(270.3535F, 13.66637F);
+            this.xrLabel12.StylePriority.UseBorderColor = false;
+            this.xrLabel12.StylePriority.UseFont = false;
+            this.xrLabel12.StylePriority.UseForeColor = false;
+            this.xrLabel12.Text = "Quickdice ERP Solutions";
+            // 
             // AccountOrderbyVchNoWONarrationReport
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -847,5 +863,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel9;
         private DevExpress.XtraReports.UI.XRLabel xrLabel10;
         private DevExpress.XtraReports.UI.XRPageInfo pageInfo1;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel12;
     }
 }

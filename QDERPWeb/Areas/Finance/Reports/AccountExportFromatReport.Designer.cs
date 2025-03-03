@@ -254,7 +254,7 @@
             // xrLabel13
             // 
             this.xrLabel13.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Arial Narrow", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Arial", 11F);
             this.xrLabel13.ForeColor = System.Drawing.Color.DodgerBlue;
             this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(0F, 92.99998F);
             this.xrLabel13.Multiline = true;
@@ -526,7 +526,8 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell11.BorderWidth = 1F;
             this.xrTableCell11.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[VoucherNo]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Concat(\n    Iif(IsNullOrEmpty([VoucherNo]), \'\', [VoucherNo]), \n    Iif(IsNullOrEm" +
+                    "pty([VoucherRefNo]), \'\', \' / Ref.No: \' + [VoucherRefNo])\n)\n\n")});
             this.xrTableCell11.Name = "xrTableCell11";
             this.xrTableCell11.StyleName = "DetailData1";
             this.xrTableCell11.StylePriority.UseBorderColor = false;

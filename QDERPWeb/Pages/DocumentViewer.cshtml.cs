@@ -159,6 +159,22 @@ namespace QD.ERP.Web.Pages
 
                 Report = new BillsReceivablelandscapeformat(AccountId, FrmDate, ToDate);
             }
+            else if (reportName == "AccountOrderByVoucherNo")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AccountOrderByVoucherNo.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new AccountOrderByVoucherNo(AccountId, FrmDate, ToDate);
+            }
             else
             {
                 switch (reportName)
