@@ -127,7 +127,7 @@
                 .Label(new JS("formatMessage('Voucher No')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("VoucherNo")
-                .Value(null)
+                .Value("")
                 .ReadOnly(true)
                 .ValidationRules(rules =>
                 {
@@ -2180,6 +2180,42 @@
         });
     }
 
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const argsledno = urlParams.get("argsledno");
 
+        console.log("Formatted Voucher in ready block:", argsledno);
+
+        if (argsledno) {
+            setTimeout(function () {
+                const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                if (voucherNoField) {
+                    voucherNoField.option("value", argsledno);
+                    updateTemporaryNo({ value: argsledno });
+                } else {
+                    console.error("VoucherNo TextBox instance not found.");
+                }
+            }, 500); // Small delay to ensure the textbox is ready
+        } else { // If no argsledno, generate a new voucher number
+            $.ajax({
+                url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+                type: 'GET',
+                success: function (data) {
+                    setTimeout(function () {
+                        const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                        if (voucherNoField) {
+                            voucherNoField.option("value", data);
+                            updateTemporaryNo({ value: data });
+                        } else {
+                            console.error("VoucherNo TextBox instance not found.");
+                        }
+                    }, 500);
+                },
+                error: function () {
+                    alert("Error generating voucher number.");
+                }
+            });
+        }
+    });
 
 </script>

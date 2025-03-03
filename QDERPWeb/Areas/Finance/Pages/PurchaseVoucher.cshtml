@@ -80,7 +80,7 @@
 												.Label(new JS("formatMessage('Purchase Voucher No')"))
 												.ID("VoucherNo")
 												.LabelMode(EditorLabelMode.Outside)
-												.Value(null)
+												.Value("")
 												.OnValueChanged("onVoucherNoChanged")
 												.Disabled(false)
 												)
@@ -908,26 +908,29 @@ $(function () {
 
 		dataGrid.on("dataSourceChanged", calculateTotals);
 	});
-
-
 	$(function () {
-		const voucherNo = getQueryParam('VoucherNo');
-		//alert(voucherNo);
+		const urlParams = new URLSearchParams(window.location.search);
+		const voucherNo = urlParams.get("argsledno"); // Get argsledno from URL
+
 		if (voucherNo) {
+			console.log("Setting VoucherNo from URL (argsledno):", voucherNo);
 			$("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
 		} else {
+			console.warn("No argsledno found in URL. Generating a new voucher number...");
 			$.ajax({
 				url: "/api/PurchaseVoucher/GetNewVoucherNo",
 				type: 'GET',
 				success: function (data) {
-					// Set the value in the TextBox
+					console.log("Generated new VoucherNo:", data);
 					$("#VoucherNo").dxTextBox("instance").option("value", data);
 				},
 				error: function (xhr, status, error) {
-					console.error("Error loading Voucher No:", error);
+					console.error("Error generating Voucher No:", error);
+					DevExpress.ui.notify("Error generating new Voucher No.", "error", 2000);
 				}
 			});
 		}
+
 		$("#costAllocationPopup").dxPopup({
 			title: "Cost Allocation",
 			width: 300,
@@ -935,11 +938,10 @@ $(function () {
 			visible: false,
 			showCloseButton: true,
 			closeOnOutsideClick: true,
-
 		});
-
-
 	});
+
+
 	function getQueryParam(param) {
 		const urlParams = new URLSearchParams(window.location.search);
 
@@ -1760,6 +1762,24 @@ $(function () {
 		const files = this.files;
 		console.log("Selected files:", files);
 		// Handle file upload logic here
+	});
+	$(document).ready(function () {
+		const urlParams = new URLSearchParams(window.location.search);
+		const argsledno = urlParams.get("argsledno");
+
+		console.log("Formatted Voucher in ready block:", argsledno);
+
+		if (argsledno) {
+			setTimeout(function () {
+				const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+				if (voucherNoField) {
+					voucherNoField.option("value", argsledno);
+					updateTemporaryNo({ value: argsledno });
+				} else {
+					console.error("VoucherNo TextBox instance not found.");
+				}
+			}, 500);
+		}
 	});
 
 

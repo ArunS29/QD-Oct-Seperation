@@ -69,7 +69,7 @@
 												.Label(new JS("formatMessage('Sales Invoice No')"))
 												.LabelMode(EditorLabelMode.Outside)
 												.ID("VoucherNo")
-												.Value(null)
+												.Value("")
 												.OnValueChanged("onVoucherNoChanged")
 												.ValidationRules(rules =>
 												{
@@ -877,40 +877,47 @@
 			});
 		}
 
-		function onVoucherNoChanged(e) {
-			const voucherNo = e.value;
+	function onVoucherNoChanged(e) {
+		const voucherNo = e.value;
 
-			// Make an AJAX request to check if the Sales Invoice No exists
-			$.ajax({
-				type: "GET",
-				url: "/api/SalesVoucher/CheckVoucherExists", // API endpoint to validate voucher existence
-				contentType: "application/json",
-				data: {
-					voucherNo: voucherNo
-				},
-				success: function (response) {
-					if (!response.success) {
-						// Show error notification if the input is invalid or empty
-						DevExpress.ui.notify(response.message, "error", 3000);
+		const urlParams = new URLSearchParams(window.location.search);
+		const argsledno = urlParams.get("argsledno");
 
-						// Clear the TextBox value
-						$("#VoucherNo").dxTextBox("instance").option("value", null);
-						return;
-					}
-					debugger
-					if (response.exists) {
-						// Show error notification if the voucher already exists
-						DevExpress.ui.notify("Sales Invoice No already exists. Please use a different number.", "error", 3000);
-
-						// Clear the TextBox value
-						$("#VoucherNo").dxTextBox("instance").option("value", null);
-					}
-				},
-				error: function (xhr, status, error) {
-					DevExpress.ui.notify("An error occurred while validating Sales Invoice No.", "error", 3000);
-				}
-			});
+		// If the voucher number is coming from the URL, accept it without validation
+		if (argsledno && argsledno === voucherNo) {
+			return;
 		}
+
+		// Make an AJAX request to check if the Sales Invoice No exists
+		$.ajax({
+			type: "GET",
+			url: "/api/SalesVoucher/CheckVoucherExists", // API endpoint to validate voucher existence
+			contentType: "application/json",
+			data: { voucherNo: voucherNo },
+			success: function (response) {
+				if (!response.success) {
+					// Show error notification if the input is invalid or empty
+					DevExpress.ui.notify(response.message, "error", 3000);
+
+					// Clear the TextBox value
+					$("#VoucherNo").dxTextBox("instance").option("value", null);
+					return;
+				}
+
+				if (response.exists) {
+					// Show error notification if the voucher already exists
+					DevExpress.ui.notify("Sales Invoice No already exists. Please use a different number.", "error", 3000);
+
+					// Clear the TextBox value
+					$("#VoucherNo").dxTextBox("instance").option("value", null);
+				}
+			},
+			error: function (xhr, status, error) {
+				DevExpress.ui.notify("An error occurred while validating Sales Invoice No.", "error", 3000);
+			}
+		});
+	}
+
 
 		function addVoucherEntry() {
 			var accountHead = $("#ddAccountHead").dxDropDownBox("instance");
@@ -1567,6 +1574,25 @@
 				DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
 			}
 		});
+	$(document).ready(function () {
+		const urlParams = new URLSearchParams(window.location.search);
+		const argsledno = urlParams.get("argsledno");
+
+		console.log("Formatted Voucher in ready block:", argsledno);
+
+		if (argsledno) {
+			setTimeout(function () {
+				const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+				if (voucherNoField) {
+					voucherNoField.option("value", argsledno);
+					updateTemporaryNo({ value: argsledno });
+				} else {
+					console.error("VoucherNo TextBox instance not found.");
+				}
+			}, 500);
+		}
+	});
+
 
 	</script>
 
