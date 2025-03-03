@@ -98,7 +98,7 @@
 <input id="formId" value="uc20103ChartOfCostCenters" type="hidden" />
 <div class="title">
     <div class="header-container">
-        <div id="ChartOfCostCenters" class="no-border-title"></div>
+        <div id="ChartOfCostCenters" class="no-border-input"></div>
     </div>
 </div>
 <div>
@@ -117,82 +117,82 @@
         .LoadAction("GetChartOfCostCenters"))
         .Columns(columns =>
         {
-            columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+            columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
         <div onclick="redirectToCostCenterMaster('/pulse/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>')" style="color: #0398fc; text-decoration: underline;"><%-data.CostAllocationUnitId%></div>
         @* <a href="/pulse/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank" style="color: #0398fc; text-decoration: underline;"> *@
         @*     <%-data.CostAllocationUnitId%> *@
         @* </a> *@
     </text>);
-            columns.Add().DataField("CostAllocationUnit").Caption("Cost Center Unit").Alignment(HorizontalAlignment.Left);
-            columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Center Master").Alignment(HorizontalAlignment.Center).GroupIndex(0);
-            columns.Add().DataField("CostAllocationGroup").Caption("Cost Center Group").Alignment(HorizontalAlignment.Center).GroupIndex(1);
-            columns.Add().DataField("IsDisabled").Caption("Is Disabled").CellTemplate(@<text>
+            columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center Unit')")).Alignment(HorizontalAlignment.Left);
+            columns.Add().DataField("CostAllocationMasterGroup").Caption(new JS("formatMessage('Cost Center Master')")).Alignment(HorizontalAlignment.Center).GroupIndex(0);
+            columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Cost Center Group')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
+            columns.Add().DataField("IsDisabled").Caption(new JS("formatMessage('Is Disabled')")).CellTemplate(@<text>
         <input type="checkbox" class="dx-checkbox" />
     </text>
         );
             columns.AddFor(m => m.CreatedBy)
-            .Caption("Created By")
+            .Caption(new JS("formatMessage('Created By')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.CreatedOn)
-            .Caption("Created On")
+            .Caption(new JS("formatMessage('Created On')"))
             .Alignment(HorizontalAlignment.Center)
             .Visible(false);
 
             columns.AddFor(m => m.ModifiedBy)
-            .Caption("Modified By")
+            .Caption(new JS("formatMessage('Modified By')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.ModifiedOn)
-            .Caption("Modified On")
+            .Caption(new JS("formatMessage('Modified On')"))
             .Alignment(HorizontalAlignment.Center)
             .Visible(false);
 
 
             columns.AddFor(m => m.CostUnitRemarks)
-            .Caption("Cost Unit Remarks")
+            .Caption(new JS("formatMessage('Cost Unit Remarks')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.CostCenterIncharge)
-            .Caption("Cost Center Incharge")
+            .Caption(new JS("formatMessage('Cost Center Incharge')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.ProjectDescription)
-            .Caption("Project Description")
+            .Caption(new JS("formatMessage('Project Description')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.ProjectDuration)
-            .Caption("Project Duration")
+            .Caption(new JS("formatMessage('Project Duration')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.ProjectLocation)
-            .Caption("Project Location")
+            .Caption(new JS("formatMessage('Project Location')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.ProjectMasterCode)
-            .Caption("Project Master Code")
+            .Caption(new JS("formatMessage('Project Master Code')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.BranchCode)
-            .Caption("Branch Code")
+            .Caption(new JS("formatMessage('Branch Code')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.BranchName)
-            .Caption("Branch Name")
+            .Caption(new JS("formatMessage('Branch Name')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
             columns.AddFor(m => m.BranchNameAr)
-            .Caption("Branch Name (Arabic)")
+            .Caption(new JS("formatMessage('Branch Name (Arabic)')"))
             .Alignment(HorizontalAlignment.Left)
             .Visible(false);
 
