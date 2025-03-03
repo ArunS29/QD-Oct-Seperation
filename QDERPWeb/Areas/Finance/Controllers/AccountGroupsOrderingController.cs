@@ -18,19 +18,22 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAccountGroupsOrdering(DataSourceLoadOptions loadOptions)
         {
-            var qry20164salarypayableledgermaster = _context.Qry201207accountGroupOrderings.Select(i => new {
-                i.ChartOfAccountsOrder,
-                i.MasterGroup,
-                i.AccountGroupId,
-                i.AccountGroup,
-                i.AccountGroupOrderNo,
+            // Fetching the data and sorting by AccountGroupOrderNo in ascending order
+            var qry20164salarypayableledgermaster = _context.Qry201207accountGroupOrderings
+                .Select(i => new
+                {
+                    i.ChartOfAccountsOrder,
+                    i.MasterGroup,
+                    i.AccountGroupId,
+                    i.AccountGroup,
+                    i.AccountGroupOrderNo
+                })
+                .OrderBy(i => i.AccountGroupOrderNo);  // Sorting by AccountGroupOrderNo in ascending order
 
-            });
-
-
-
+            // Returning the result to the client using DataSourceLoader to handle paging, filtering, etc.
             return Json(await DataSourceLoader.LoadAsync(qry20164salarypayableledgermaster, loadOptions));
         }
+
         [HttpPost]
         public IActionResult UpdateAccountGroupOrder([FromBody] List<Qry201207accountGroupOrdering> updatedData)
         {
