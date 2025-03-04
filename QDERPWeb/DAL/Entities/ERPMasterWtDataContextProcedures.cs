@@ -32,9 +32,23 @@ namespace QD.ERP.Web.DAL.Entities
         {
             return Procedures;
         }
-    }
+    
+	protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
+	{
+		modelBuilder.Entity<sp20102GetAccountBalanceResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<sp20102GetAccountDetailsResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<sp20105ExpenseClaimViewResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<sp20201JournalRegisterViewResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<sp90122GetUserLedgerAccessResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<StProAccountLedgerResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<StProAccountLedgerByVoucherTypeResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<sp20157AssetRegisterViewResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<sp20101TrialBalanceReportResult>().HasNoKey().ToView(null);
+		modelBuilder.Entity<StProTrialBalanceResult>().HasNoKey().ToView(null);
+	}
+}
 
-    public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextProcedures
+public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextProcedures
     {
         private readonly ERPMasterWtDataContext _context;
 
