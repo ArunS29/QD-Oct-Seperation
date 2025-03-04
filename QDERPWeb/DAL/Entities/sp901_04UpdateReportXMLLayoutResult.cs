@@ -5,11 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QD.ERP.Web.DAL.Entities
 {
-    public partial class sp20108ExpensesInfoGraphResult
+    public partial class sp901_04UpdateReportXMLLayoutResult
     {
-        public decimal? Amount { get; set; }
-        public string AccountGroup { get; set; }
-        public string MasterGroup { get; set; }
-        public string MasterGroupID { get; set; }
     }
 }

@@ -31,5 +31,5 @@ public partial class Qry1018801HourlyRateSalary
 
     public decimal? SplOverTimeAmount { get; set; }
 
-    public long PayrollMasterId { get; set; }
+    public long? PayrollMasterId { get; set; }
 }

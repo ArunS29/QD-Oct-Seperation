@@ -73,65 +73,65 @@ public partial class Qry10101PaySlipTesting
 
     public int? D31 { get; set; }
 
-    public decimal? T1 { get; set; }
+    public string T1 { get; set; }
 
-    public decimal? T2 { get; set; }
+    public string T2 { get; set; }
 
-    public decimal? T3 { get; set; }
+    public string T3 { get; set; }
 
-    public decimal? T4 { get; set; }
+    public string T4 { get; set; }
 
-    public decimal? T5 { get; set; }
+    public string T5 { get; set; }
 
-    public decimal? T6 { get; set; }
+    public string T6 { get; set; }
 
-    public decimal? T7 { get; set; }
+    public string T7 { get; set; }
 
-    public decimal? T8 { get; set; }
+    public string T8 { get; set; }
 
-    public decimal? T9 { get; set; }
+    public string T9 { get; set; }
 
-    public decimal? T10 { get; set; }
+    public string T10 { get; set; }
 
-    public decimal? T11 { get; set; }
+    public string T11 { get; set; }
 
-    public decimal? T12 { get; set; }
+    public string T12 { get; set; }
 
-    public decimal? T13 { get; set; }
+    public string T13 { get; set; }
 
-    public decimal? T14 { get; set; }
+    public string T14 { get; set; }
 
-    public decimal? T15 { get; set; }
+    public string T15 { get; set; }
 
-    public decimal? T16 { get; set; }
+    public string T16 { get; set; }
 
-    public decimal? T17 { get; set; }
+    public string T17 { get; set; }
 
-    public decimal? T18 { get; set; }
+    public string T18 { get; set; }
 
-    public decimal? T19 { get; set; }
+    public string T19 { get; set; }
 
-    public decimal? T20 { get; set; }
+    public string T20 { get; set; }
 
-    public decimal? T21 { get; set; }
+    public string T21 { get; set; }
 
-    public decimal? T22 { get; set; }
+    public string T22 { get; set; }
 
-    public decimal? T23 { get; set; }
+    public string T23 { get; set; }
 
-    public decimal? T24 { get; set; }
+    public string T24 { get; set; }
 
-    public decimal? T25 { get; set; }
+    public string T25 { get; set; }
 
-    public decimal? T26 { get; set; }
+    public string T26 { get; set; }
 
-    public decimal? T27 { get; set; }
+    public string T27 { get; set; }
 
-    public decimal? T28 { get; set; }
+    public string T28 { get; set; }
 
-    public decimal? T29 { get; set; }
+    public string T29 { get; set; }
 
-    public decimal? T30 { get; set; }
+    public string T30 { get; set; }
 
-    public decimal? T31 { get; set; }
+    public string T31 { get; set; }
 }

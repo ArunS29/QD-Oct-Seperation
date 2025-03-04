@@ -35,7 +35,7 @@ public partial class Qry40803properyDailyLogsheetReport
 
     public decimal? RatePerHour { get; set; }
 
-    public short? NoOfWorkHours { get; set; }
+    public short NoOfWorkHours { get; set; }
 
     public decimal? PerDayAmount { get; set; }
 

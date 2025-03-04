@@ -107,7 +107,7 @@ public partial class Tbl90112ReportAttribute
 
     public decimal? ThirdSignLocationY { get; set; }
 
-    public string ReportXml { get; set; }
+    public byte[] ReportXml { get; set; }
 
     public string ModifiedBy { get; set; }
 

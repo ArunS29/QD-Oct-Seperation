@@ -9,7 +9,7 @@ public partial class Qry60311deliveryNotesWithDetail
 {
     public string DeliveryNoteNo { get; set; }
 
-    public DateTime? DeliveryDate { get; set; }
+    public DateTime DeliveryDate { get; set; }
 
     public byte? DeliveryType { get; set; }
 

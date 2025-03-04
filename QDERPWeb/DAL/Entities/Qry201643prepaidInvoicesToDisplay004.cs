@@ -15,7 +15,7 @@ public partial class Qry201643prepaidInvoicesToDisplay004
 
     public string InvoiceStatus { get; set; }
 
-    public int? InvoiceTypeCode { get; set; }
+    public short? InvoiceTypeCode { get; set; }
 
     public string SubmittedInvoiceUuid { get; set; }
 

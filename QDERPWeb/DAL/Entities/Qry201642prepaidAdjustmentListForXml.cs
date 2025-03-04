@@ -13,7 +13,7 @@ public partial class Qry201642prepaidAdjustmentListForXml
 
     public DateTime? PrepaidInvoiceDateWtTime { get; set; }
 
-    public int? InvoiceTypeCode { get; set; }
+    public short? InvoiceTypeCode { get; set; }
 
     public string SubmittedInvoiceUuid { get; set; }
 

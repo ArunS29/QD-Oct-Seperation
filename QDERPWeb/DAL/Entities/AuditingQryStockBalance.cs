@@ -29,7 +29,7 @@ public partial class AuditingQryStockBalance
 
     public double CostPrice { get; set; }
 
-    public double? CostPrice1 { get; set; }
+    public double CostPrice1 { get; set; }
 
-    public double? TotalCostBalance { get; set; }
+    public double TotalCostBalance { get; set; }
 }

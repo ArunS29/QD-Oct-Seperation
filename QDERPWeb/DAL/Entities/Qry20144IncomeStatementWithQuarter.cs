@@ -17,7 +17,7 @@ public partial class Qry20144IncomeStatementWithQuarter
 
     public decimal? VoucherTotal { get; set; }
 
-    public DateTime? VoucherDate { get; set; }
+    public DateTime VoucherDate { get; set; }
 
     public string Quarter { get; set; }
 
