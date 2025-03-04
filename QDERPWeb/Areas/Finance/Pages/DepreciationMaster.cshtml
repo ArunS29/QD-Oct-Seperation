@@ -72,8 +72,8 @@
     }
 </style>
 <div class="card">
-    <div class="card-header">
-        Depreciation Master
+    <div id="DepreciationMaster" class="card-header">
+        
     </div>
     <div class="card-body">
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
@@ -81,6 +81,7 @@
 
 
             @(Html.DevExtreme().DateBox()
+                .Label(new JS("formatMessage('VoucherDate')"))
                 .ID("VoucherDate")
                 .InputAttr("aria-label", "Date")
                 .LabelMode(EditorLabelMode.Outside)
@@ -91,6 +92,7 @@
 
 
             @(Html.DevExtreme().DateBox()
+                .Label(new JS("formatMessage('EffectiveDate')"))
                 .ID("EffectiveDate")
                 .InputAttr("aria-label", "Effective Date")
                 .LabelMode(EditorLabelMode.Outside)
@@ -101,7 +103,7 @@
 
             @(Html.DevExtreme().DropDownButton()
                 .ID("ddBtnShowRecords")
-                .Text("Show Records")
+                .Text(new JS("formatMessage('Show Records')"))
                 .Icon("smalliconslayout")
                 .Width(180)
 
@@ -109,16 +111,16 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                    items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                    items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                    items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                    items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                    items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                    items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
                 })
                 )
         </div>
@@ -136,7 +138,7 @@
                 .Columns(columns =>
                 {
 
-                    columns.Add().Caption("Depreciation Register Details").Columns(band =>
+                        columns.Add().Caption(new JS("formatMessage('Depreciation Register Details')")).Columns(band =>
                     {
 
                         band.Add().DataField("Postedon").Caption("Posted")
@@ -144,10 +146,10 @@
                 <input type="checkbox" class="row-checkbox" data-claimrefno="<%= data.ClaimRefNo %>" onclick="highlightRow(this)" />
             </text>);
 
-                        band.Add().DataField("JournalVoucherNo").Caption("Voucher No");
-                        band.Add().DataField("DepreciationDocNo").Caption("Depreciation Doc No");
-                        band.Add().DataField("DeprStartDate").Caption("Start Date").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
-                        band.Add().DataField("DeprEndDate").Caption("End Date").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                        band.Add().DataField("JournalVoucherNo").Caption(new JS("formatMessage('Voucher No')"));
+                        band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')"));
+                        band.Add().DataField("DeprStartDate").Caption(new JS("formatMessage('Start Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                        band.Add().DataField("DeprEndDate").Caption(new JS("formatMessage('End Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
 
 
                     });
@@ -157,17 +159,17 @@
                         band.Add().DataField("NoOfAssets").Caption("No of Assets");
 
                     });
-                    columns.Add().Caption("Depreciation Amount").Columns(band =>
+                        columns.Add().Caption(new JS("formatMessage('Depreciation Amount')")).Columns(band =>
                     {
 
-                        band.Add().DataField("AssetOpeningBalance").Caption("Opening Balance").DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AssetTotalDebitTrans").Caption("Debit Transactions").DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AssetTotalCreditTrans").Caption("Credit Transactions").DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AssetClosingBalance").Caption("Closing Balance").DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AccumulatedOpeningBalance").Caption("Accumulated Opening Balance").DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("TotalDepreciationAmount").Caption("Total Depreciation Amount").DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("AccumulatedTotalBalance").Caption("Accumulated Closing Balance").DataType(GridColumnDataType.Number).Format("#,##0.00");
-                        band.Add().DataField("TotalBookValue").Caption("Total Book Value").DataType(GridColumnDataType.Number).Format("#,##0.00");
+                        band.Add().DataField("AssetOpeningBalance").Caption(new JS("formatMessage('Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                        band.Add().DataField("AssetTotalDebitTrans").Caption(new JS("formatMessage('Debit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                        band.Add().DataField("AssetTotalCreditTrans").Caption(new JS("formatMessage('Credit Transactions')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                        band.Add().DataField("AssetClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                        band.Add().DataField("AccumulatedOpeningBalance").Caption(new JS("formatMessage('Accumulated Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                        band.Add().DataField("TotalDepreciationAmount").Caption(new JS("formatMessage('Total Depreciation Amount')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                        band.Add().DataField("AccumulatedTotalBalance").Caption(new JS("formatMessage('Accumulated Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
+                        band.Add().DataField("TotalBookValue").Caption(new JS("formatMessage('Total Book Value')")).DataType(GridColumnDataType.Number).Format("#,##0.00");
 
                     });
                 })
@@ -197,6 +199,18 @@
     </div>
     </div>
     <script>
+        $(function () {
+
+										$("#DepreciationMaster").dxTextBox({
+													text:formatMessage("Depreciation Master"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
+        
         function ddBtnShowRecords_click(filterType) {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
 

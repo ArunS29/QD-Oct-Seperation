@@ -43,7 +43,7 @@
 		@(Html.DevExtreme().Button()
 				.ID("btnSaveCostAllocation")
 				.Icon("save")
-				.Text("Save")
+				.Text(new JS("formatMessage('Save')"))
 				.OnClick("function() { saveCostAllocation(); }")
 				)
 	</div>
@@ -53,9 +53,10 @@
 		<div class="row g-5">
 			<div class="col-md-3">
 				<div class="form-group">
-					<label for="SalesInvoiceNo" class="button-alignment-down">Voucher Entry ID:</label>
 					@(
 												Html.DevExtreme().TextBox()
+												.Label(new JS("formatMessage('Voucher Entry ID:')"))
+												.LabelMode(EditorLabelMode.Outside)
 												.ID("VoucherNoId")
 												.Value(null)
 												//.OnValueChanged("onVoucherNoChanged")
@@ -66,8 +67,9 @@
 
 			<div class="col-md-4" style="padding-right:0px;padding-top:33px;">
 				<div class="form-group">
-					<label for="PaymentAccount" class="">Payment Account:</label>
 					@(Html.DevExtreme().DropDownBox()
+												.Label(new JS("formatMessage('Payment Account:')"))
+												.LabelMode(EditorLabelMode.Outside)
 												.Disabled(true)
 												.DataSource(d => d.WebApi()
 												//	.Controller("PurchaseVoucher")
@@ -109,8 +111,9 @@
 			</div>
 			<div class="col-md-2">
 				<div class="form-group">
-					<label for="Amount" class="button-alignment-down">Amount</label>
 					@(Html.DevExtreme().NumberBox()
+												.Label(new JS("formatMessage('Amount')"))
+												.LabelMode(EditorLabelMode.Outside)
 												.ID("AmountId")
 												.Value(null)
 												.ShowSpinButtons(true)
@@ -124,9 +127,10 @@
 			</div>
 			<div class="col-md-2">
 				<div class="form-group" style="margin-top: 33px;">
-					<label for="DrCr" class="">DrCr</label>
 					@(
 												Html.DevExtreme().SelectBox()
+												.Label(new JS("formatMessage('DrCr')"))
+												.LabelMode(EditorLabelMode.Outside)
 												.ID("DrCrId")
 												.DataSource(new[] { "Dr", "Cr" })
 												.Value("null")
@@ -148,10 +152,11 @@
 	<div class="dx-fieldset horizontal-container" style="margin-top:15px;margin-bottom:0px;background-color:white;">
 		<div class="form-group" style="padding-left:20px">
 			<div class="button-alignment-down">
-				<label for="Reference">Reference:</label>
-			</div>
+			
 			@(
 						Html.DevExtreme().SelectBox()
+						.Label(new JS("formatMessage('Reference')"))
+						.LabelMode(EditorLabelMode.Outside)
 						.ID("Reference")
 						.DataSource(new[] { "New Reference", "Against Reference" })
 						.Value("Dr")
@@ -160,8 +165,7 @@
 						)
 		</div>
 		<div class="form-group">
-			<label for="AccountHead" class="button-alignment-down">Reference No:</label>
-			@(Html.DevExtreme().DropDownBox()
+			@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Reference No:')")).LabelMode(EditorLabelMode.Outside)
 						.DataSource(new[] {
 			new { AccountId = "2024-00088", AccountHead = "Account 2024-00088" },
 			new { AccountId = "2024-00089", AccountHead = "Account 2024-00089" }
@@ -194,9 +198,10 @@
 		</div>
 
 		<div class="form-group">
-			<label for="Amount2" class="button-alignment-down">Amount</label>
 			@(
 						Html.DevExtreme().NumberBox()
+						.Label(new JS("formatMessage('Amount')"))
+						.LabelMode(EditorLabelMode.Outside)
 						.ID("txtAmount2")
 						.Value(null)
 						.Width(150)
@@ -214,7 +219,7 @@
 		<div class="form-group" style="margin-top:40px;">
 			@(Html.DevExtreme().Button()
 						.ID("btnVoucherEntry")
-						.Text("ADD")
+						.Text(new JS("formatMessage('ADD')"))
 						.Height(50)
 						.Width(150)
 						.Icon("plus")
@@ -227,11 +232,12 @@
 		<div class="form-group" style="padding-left:145px">
 			<divstyle ="display:flex;>
 			@(Html.DevExtreme().CheckBox()
+							.Text(new JS("formatMessage('IsVerified')"))
 							.ID("IsVerified1")
 							)
 
 
-				<label for="Amount">Show Retained Value</label>
+				<label id="Show Retained Value" for="Amount"></label>
 		</div>
 
 	</div>
@@ -245,11 +251,11 @@
 					//.OnRowRemoved("onRowRemoved")
 					.Columns(columns =>
 					{
-						columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center).Width(100);
-						columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Center).Width(100);
-						columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).Width(100);
-						columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Center).Width(100);
-						columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center).Width(100);
+						columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('DrCr')")).Alignment(HorizontalAlignment.Center).Width(100);
+						columns.AddFor(m => m.ReferenceType).Caption(new JS("formatMessage('Reference Type')")).Alignment(HorizontalAlignment.Center).Width(100);
+						columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Alignment(HorizontalAlignment.Center).Width(100);
+						columns.AddFor(m => m.Amount).Caption(new JS("formatMessage('Amount')")).Alignment(HorizontalAlignment.Center).Width(100);
+						columns.AddFor(m => m.RetentionAmount).Caption(new JS("formatMessage('Retention Amount')")).Alignment(HorizontalAlignment.Center).Width(100);
 
 
 					})
@@ -303,10 +309,10 @@
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 						.Columns(columns =>
 						{
-							columns.Add().DataField("AccountId");
-							columns.Add().DataField("AccountHead");
-							columns.Add().DataField("AccountHeadArabic");
-							columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+							columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+							columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+							columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+							columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
 						.CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -345,10 +351,10 @@
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 						.Columns(columns =>
 						{
-							columns.Add().DataField("AccountId");
-							columns.Add().DataField("AccountHead");
-							columns.Add().DataField("AccountHeadArabic");
-							columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+							columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+							columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+							columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+							columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
 						.CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -362,6 +368,13 @@
 
 </div>
 <script>
+	$(function () {
+
+										$("#Show Retained Value").dxTextBox({
+													text:formatMessage("Show Retained Value"),
+                                                        readOnly: true
+                                    });
+									});
 	$(document).ready(function () {
 		// Retrieve query parameters
 		const urlParams = new URLSearchParams(window.location.search);

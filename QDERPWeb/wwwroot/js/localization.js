@@ -1107,6 +1107,12 @@
         "PlateNo": "PlateNo",
         "PropertyDescription": "PropertyDescription",
         "Brand": "Brand",
+        
+        "Depreciation Master":"Depreciation Master",
+        "Over due Days":"Over due Days",
+        "Bills Receivable":"Bills Receivable",
+        "Show Retained Value":"Show Retained Value",
+        "Bills Payable":"Bills Payable",
         "Capacity": "Capacity",
         "Model": "Model",
         "PropertyNo": "PropertyNo",
@@ -1126,10 +1132,25 @@
         "Submit": "Submit",
         "Add Line": "Add Line",
         "Save & Close": "Save & Close",
-        "Expenses / Reimbursement - Allocation for Assets it is a single sentence ":"Expenses / Reimbursement - Allocation for Assets it is a single sentence "
-        
+        "Expenses / Reimbursement - Allocation for Assets it is a single sentence ":"Expenses / Reimbursement - Allocation for Assets it is a single sentence ",
+        "Finance Management : Dashboard":"Finance Management : Dashboard",
+        "Asset Documents":"Asset Documents",
+        "Enter a New Document Add to the Existing List":"Enter a New Document Add to the Existing List",
+        "Document Type":"Document Type",
+        "Document Type Id":"Document Type Id"
+
     },
     "ar": {
+        "Asset Documents": "وثائق الأصول",
+  "Enter a New Document Add to the Existing List": "أدخل مستندًا جديدًا أضفه إلى القائمة الحالية",
+  "Document Type": "نوع المستند",
+  "Document Type Id": "معرف نوع المستند",
+        "Depreciation Master": "رئيس الإهلاك",
+        "Over due Days": "أيام التأخير",
+        "Bills Receivable": "الفواتير المستحقة القبض",
+        "Show Retained Value": "عرض القيمة المحتفظ بها",
+        "Finance Management : Dashboard": "إدارة المالية: لوحة القيادة",
+        "Bills Payable": "الفواتير المستحقة الدفع",
         "Expenses / Reimbursement - Allocation for Assets": "النفقات / التعويض - التخصيص للأصول",
         "Assets Document Types": "أنواع مستندات الأصول",
         "Reminder Days": "أيام التذكير",

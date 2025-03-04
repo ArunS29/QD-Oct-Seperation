@@ -68,7 +68,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnRefresh")
-        .Text("Refresh")
+        .Text(new JS("formatMessage('Refresh')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("refresh")
@@ -77,17 +77,17 @@
         )
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
-        .Text("Layout")
+        .Text(new JS("formatMessage('Layout')"))
         .Icon("smalliconslayout")
         .Width(180)
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu"); ;
-            items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
-            items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
-            items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
-            items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
+            items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu"); ;
+            items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+            items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+            items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+            items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
         })
         .ShowArrowIcon(true)
 
@@ -96,7 +96,7 @@
         )
     @(Html.DevExtreme().Button()
         .ID("btnPrint")
-        .Text("Print")
+        .Text(new JS("formatMessage('Print')"))
         .Icon("print")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
@@ -105,7 +105,7 @@
         )
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")
-        .Text("Search")
+        .Text(new JS("formatMessage('Search')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("search")
@@ -114,7 +114,7 @@
         )
     @(Html.DevExtreme().Button()
         .ID("btntoggleGroupPanel")
-        .Text("Group")
+        .Text(new JS("formatMessage('Group')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("hierarchy")
@@ -127,21 +127,21 @@
 
     @(Html.DevExtreme().DropDownButton()
         .ID("btntoggleReport")
-        .Text("Report")
+        .Text(new JS("formatMessage('Report')"))
         .Icon("textdocument")
         .Width(180)
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("Receivables Reports").Icon("textdocument");
-            items.Add().Text("Receivables Reports(with Effective Date").Icon("textdocument");
-            items.Add().Text("Ageing Reports").Icon("textdocument").OnClick("showSubmenu1");
-            items.Add().Text("Receivables Summary Reports").Icon("textdocument");
-            items.Add().Text("Receivables By Client").Icon("taskcomplete").OnClick("ReportsByClient");
-            items.Add().Text("Receivables By Sales Person").Icon("taskcomplete");
-            items.Add().Text("Receivables By Branch/ Division").Icon("taskcomplete");
-            items.Add().Text("Invoice Collection Report").Icon("event");
-            items.Add().Text("Receivables with unmapped Vouchers").Icon("optionsgear");
+            items.Add().Text(new JS("formatMessage('Receivables Reports')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Receivables Reports(with Effective Date')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").OnClick("showSubmenu1");
+            items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete");
+            items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete");
+            items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete");
+            items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Icon("event");
+            items.Add().Text(new JS("formatMessage('Receivables with unmapped Vouchers')")).Icon("optionsgear");
 
         })
         .ShowArrowIcon(true)

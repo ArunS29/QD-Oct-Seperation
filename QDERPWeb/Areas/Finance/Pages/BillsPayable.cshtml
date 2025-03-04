@@ -82,12 +82,12 @@
         <div class="container-fluid"></div>
 
 
-        <div class="card-header">Finance Management : Dashboard</div>
+        <div id="FinanceManagementDashboard" class="card-header no-border-input"></div>
         <div class="container">
             <div class="row">
                 <!-- Left Text Section -->
                 <div class="col-md-6" style="padding-top: 10px; padding-bottom: 10px;">
-                    <h4 class="left-text">Bills Payable</h4>
+                    <h4 id="BillsPayable" class="left-text no-border-input"></h4>
                 </div>
 
                 <!-- Right Button Section -->
@@ -95,7 +95,7 @@
                     <div>
                         @(Html.DevExtreme().Button()
                             .ID("btnBillsWithBalance")
-                            .Text("Show All Bills(Only with Balance)")
+                            .Text(new JS("formatMessage('Show All Bills(Only with Balance)')"))
                             .Height(30)
                             .Width(350)
                             .Icon("checklist")
@@ -106,7 +106,7 @@
                     <div>
                         @(Html.DevExtreme().Button()
                             .ID("btnBillsFullyPaid")
-                            .Text("Show Bills Receivable(Including fully Paid)")
+                            .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
                             .Height(30)
                             .Width(350)
                             .Icon("checklist")
@@ -141,15 +141,15 @@
 
                 {
                     // Grid Band: Bills Payable
-                    columns.Add().Caption("Bills Payable").Columns(band =>
+                    columns.Add().Caption(new JS("formatMessage('Bills Payable')")).Columns(band =>
                 {
 
-                    band.AddFor(m => m.AccountHeadNo).Alignment(HorizontalAlignment.Center)
+                    band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('AccountHeadNo')")).Alignment(HorizontalAlignment.Center)
                 .Width(120);
 
                     // Account Head column
                     band.AddFor(m => m.AccountHead)
-                .Caption("Ledger Account")
+                .Caption(new JS("formatMessage('Ledger Account')"))
                 .Alignment(HorizontalAlignment.Left)
                 .Width(200);
 
@@ -162,22 +162,22 @@
 
 
 
-                    band.AddFor(m => m.ReferenceNo).Alignment(HorizontalAlignment.Center)
+                    band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('ReferenceNo')")).Alignment(HorizontalAlignment.Center)
                 .Width(120).CellTemplate(@<text>
             <a href="/pulse/Finance/PurchaseVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
         </text>);
 
-                    band.AddFor(m => m.VoucherDate).Alignment(HorizontalAlignment.Center)
+                    band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('VoucherDate')")).Alignment(HorizontalAlignment.Center)
             .Width(120).Format(format => format
             .Type(Format.ShortDate)
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
 
 
-                    band.AddFor(m => m.VoucherRefNo).Alignment(HorizontalAlignment.Center)
+                    band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('VoucherRefNo')")).Alignment(HorizontalAlignment.Center)
             .Width(150);
 
                     band.AddFor(m => m.InvoiceAmountBeforeRetention)
-            .Caption("Invoice Amount")
+            .Caption(new JS("formatMessage('Invoice Amount')"))
             .Alignment(HorizontalAlignment.Right)
             .Width(140)
             .CustomizeText(@"
@@ -196,7 +196,7 @@
 
 
 
-                    band.AddFor(m => m.Paid).Alignment(HorizontalAlignment.Right)
+                    band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right)
             .Width(140).CustomizeText(@"
         function(e) {
         if(e.value === null || e.value === undefined) {
@@ -208,6 +208,7 @@
         });
         }
         "); band.AddFor(m => m.Balance)
+            .Caption(new JS("formatMessage('Balance')"))
             .Alignment(HorizontalAlignment.Right)
             .Width(140)
             .CustomizeText(@"
@@ -224,14 +225,14 @@
         }
         ");
 
-                    band.AddFor(m => m.InvoiceDueDate).Alignment(HorizontalAlignment.Center)
+                    band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('InvoiceDueDate')")).Alignment(HorizontalAlignment.Center)
             .Width(120).Format(format => format
             .Type(Format.ShortDate)
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
             ;
-                    band.AddFor(m => m.NoOfDaysCreditPeriod).Alignment(HorizontalAlignment.Center)
+                    band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('NoOfDaysCreditPeriod')")).Alignment(HorizontalAlignment.Center)
             .Width(100);
-                    band.AddFor(m => m.OverdueDays).Alignment(HorizontalAlignment.Center)
+                    band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('OverdueDays')")).Alignment(HorizontalAlignment.Center)
             .Width(100);
                 });
                 })
@@ -266,7 +267,7 @@
                     items.Add().Column("VoucherRefNo")
                 .SummaryType(SummaryType.Count)
                 .ShowInGroupFooter(true)
-                .DisplayFormat("No of Invoices: {0}");
+                .DisplayFormat(new JS("formatMessage('No of Invoices: {0}')"));
 
 
                     items.Add().Column("InvoiceAmountBeforeRetention")
@@ -393,6 +394,28 @@
 </div>
 
 <script>
+    $(function () {
+
+										$("#FinanceManagementDashboard").dxTextBox({
+													text:formatMessage("Finance Management : Dashboard"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
+    $(function () {
+
+										$("#BillsPayable").dxTextBox({
+													text:formatMessage("Bills Payable"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
     let dataGrid; // Global reference to the DataGrid instance
 
     // Initialize the DataGrid and store its instance

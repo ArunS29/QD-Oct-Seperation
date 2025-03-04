@@ -33,7 +33,7 @@
                     <!-- Icon -->
                     <i class="fas fa-clone" style="margin-right: 10px; color: #ffcc00;"></i>
                     <!-- Text styled with .left-text -->
-                    <h4 class="left-text" style="color:black">Bills Receivable</h4>
+                    <h4 id="BillsReceivable" class="left-text no-border-input" style="color:black"></h4>
                 </div>
 
                 <!-- Right Button Section -->
@@ -41,7 +41,7 @@
                     <div>
                         @(Html.DevExtreme().Button()
                             .ID("btnBillsWithBalance")
-                            .Text("Show All Bills(Only with Balance)")
+                        .Text(new JS("formatMessage('Show All Bills(Only with Balance)')"))
                             .Height(30)
                             .Width(350)
                             .Icon("checklist")
@@ -52,7 +52,7 @@
                     <div>
                         @(Html.DevExtreme().Button()
                             .ID("btnBillsFullyReceived")
-                            .Text("Show Bills Receivable(Including fully Received)")
+                        .Text(new JS("formatMessage('Show Bills Receivable(Including fully Received)')"))
                             .Height(30)
                             .Width(350)
                             .Icon("checklist")
@@ -83,38 +83,38 @@
                 .Columns(columns =>
                 {
                     // Grid Band: Bills Receivable
-                    columns.Add().Caption("Bills Receivable").Columns(band =>
+                    columns.Add().Caption(new JS("formatMessage('Bills Receivable')")).Columns(band =>
                 {
                     band.AddFor(m => m.AccountHead)
-                .Caption("Ledger Account")
+                .Caption(new JS("formatMessage('Ledger Account')"))
                 .Alignment(HorizontalAlignment.Left)
                 .Width(200);
                     // Account Head column
                     band.AddFor(m => m.AccountHead)
-                .Caption("Ledger Account")
+                .Caption(new JS("formatMessage('Ledger Account')"))
                 .Alignment(HorizontalAlignment.Left)
                 .Width(200)
                 .GroupIndex(0); // Group by this column
 
                     // Reference No column with hyperlink
                     band.AddFor(m => m.ReferenceNo)
-                .Caption("Reference No")
+                .Caption(new JS("formatMessage('Reference No')"))
                 .CellTemplate(@<text>
-            <a href="/pulse/Finance/SalesVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
+            <a href="/Finance/SalesVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
         </text>)
             .Width(150);
 
                     // Voucher Reference No column
                     band.AddFor(m => m.VoucherRefNo)
-            .Caption("Voucher Ref No")
+            .Caption(new JS("formatMessage('Voucher Ref No')"))
             .Alignment(HorizontalAlignment.Center)
             .Width(150);
 
-                    band.AddFor(m => m.VoucherDate).Alignment(HorizontalAlignment.Center).Width(140).Format(format => format
+                    band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Width(140).Format(format => format
             .Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
                     // Invoice Due Date column
                     band.AddFor(m => m.InvoiceDueDate)
-            .Caption("Invoice Due Date")
+            .Caption(new JS("formatMessage('Invoice Due Date')"))
             .Alignment(HorizontalAlignment.Center)
             .Format(format => format
             .Type(Format.ShortDate)
@@ -123,11 +123,11 @@
                 });
 
                     // Grid Band: Amount
-                    columns.Add().Caption("Amount").Columns(band =>
+                    columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(band =>
             {
                 // Receivable Amount column
                     band.AddFor(m => m.ReceivableAmount)
-                .Caption("Invoice Amount")
+                .Caption(new JS("formatMessage('Invoice Amount')"))
                 .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
@@ -144,7 +144,7 @@
 
                 // Paid Amount column
                     band.AddFor(m => m.Received)
-                .Caption("Received")
+                .Caption(new JS("formatMessage('Received')"))
                 .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
@@ -163,7 +163,7 @@
 
                 // Balance Amount column
                     band.AddFor(m => m.Balance)
-                .Caption("Balance")
+                .Caption(new JS("formatMessage('Balance')"))
                 .Alignment(HorizontalAlignment.Right)
                 .CustomizeText(@"
         function(e) {
@@ -177,7 +177,7 @@
         });
         }")
                 .Width(140);
-                    band.AddFor(m => m.OverdueDays).Alignment(HorizontalAlignment.Center).Alignment(HorizontalAlignment.Center).Width(100);
+                    band.AddFor(m => m.OverdueDays).Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width(100);
                 });
                 })
 
@@ -320,6 +320,17 @@
 </div>
 
 <script>
+    $(function () {
+
+										$("#BillsReceivable").dxTextBox({
+													text:formatMessage("Bills Receivable"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
     let dataGrid; // Global reference to the DataGrid instance
 
     // Initialize the DataGrid and store its instance
