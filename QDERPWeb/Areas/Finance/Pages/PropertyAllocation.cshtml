@@ -138,7 +138,7 @@
 <div class="content-container-top">
 	<div class="card-header">
 		<i class="fas fa-pen-nib header-icon"></i> <!-- Font Awesome pen nib icon -->
-		<span class="header-text">Cost Allocation for Property</span>
+		<span id="CostAllocationforProperty" class="header-text"></span>
 	</div>
 
 	<br />
@@ -149,9 +149,10 @@
 			<div class="col-md-1">
 				<!-- Adjust width as necessary -->
 				<div class="form-group">
-					<label for="DrCr">Dr/Cr</label>
 					@(
 												Html.DevExtreme().SelectBox()
+												.Label(new JS("formatMessage('Dr/Cr')"))
+												.LabelMode(EditorLabelMode.Outside)
 												.ID("PaDrCr")
 												.DataSource(new[] { drCr })
 												.Value(drCr)
@@ -165,9 +166,10 @@
 			<!-- Expenses / Returns -->
 			<div class="col-md-3">
 				<div class="form-group">
-					<label for="VoucherRefNo">Expenses Ledger Account</label>
 					@(
 												Html.DevExtreme().SelectBox()
+												.Label(new JS("formatMessage('Expenses Ledger Account')"))
+												.LabelMode(EditorLabelMode.Outside)
 												.ID("PropertyExpenses")
 												.DataSource(new[] { accountHead }) // Only the selected AccountHead
 												.Value(accountHead) // Pre-selected value
@@ -179,9 +181,10 @@
 			<!-- Amount -->
 			<div class="col-md-2">
 				<div class="form-group">
-					<label for="txtVoucherAmount">Amount</label>
 					@(
 												Html.DevExtreme().NumberBox()
+												.Label(new JS("formatMessage('Amount')"))
+												.LabelMode(EditorLabelMode.Outside)
 												.ID("propertyAmount")
 												.Value(voucherAmountParsed)
 												.ShowSpinButtons(true)
@@ -197,12 +200,12 @@
 					<div>
 						@(
 													Html.DevExtreme().CheckBox()
+													.Text(new JS("formatMessage('Approved By')"))
 													.ID("IsApproved")
 													)
-						<span style="margin-left:5px">Approved By:</span>
 					</div>
-					<div style="margin-left:25px">
-						Approved On: <span id="VoucherApprovedOn"></span>
+					<div id="ApprovedOn" style="margin-left:25px">
+						<span id="VoucherApprovedOn"></span>
 					</div>
 				</div>
 			</div>
@@ -214,6 +217,8 @@
 					<div>
 						@(
 													Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Voucher No')"))
+													.LabelMode(EditorLabelMode.Outside)
 													.ID("propertyVoucherNo")
 													.Value(voucherNo)
 													.ReadOnly(true)
@@ -223,6 +228,8 @@
 					<div style="margin-top: 5px;">
 						@(
 													Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Proprty Id')"))
+													.LabelMode(EditorLabelMode.Outside)
 													.ID("propertyId")
 													.Value(accountId)
 													.ReadOnly(true)
@@ -250,7 +257,7 @@
 
 						columns.Add()
 					.DataField("PropertyDescription")
-					.Caption("Property Name")
+					.Caption(new JS("formatMessage('Property Name')"))
 					.Width(500)
 					.AllowEditing(true)
 					// Normal Grid Mode
@@ -321,8 +328,8 @@
 
 		</text>);
 						columns.Add()
-					.Caption("Effective Date")
-					.DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
+						.Caption(new JS("formatMessage('Effective Date')"))
+						.DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
 					.AllowEditing(true)
 					// Normal Grid Mode
 					.CellTemplate(@<text>
@@ -341,9 +348,9 @@
 		</text>);
 
 						@* columns.Add().Caption("Effective Date").DataField("EffectiveDate").AllowEditing(false); *@
-						columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-						columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-						columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
+						columns.Add().Caption("Amount").DataField(new JS("formatMessage('VoucherAmount')")).DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+						columns.Add().Caption("Dr/Cr").DataField(new JS("formatMessage('DrCr')")).Width(100).AllowEditing(false);
+						columns.Add().Caption("Remarks").DataField(new JS("formatMessage('Remarks')")).AllowEditing(true);
 
 					})
 				//.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
@@ -390,14 +397,14 @@
 
 				@(Html.DevExtreme().Button()
 								.ID("btnpropertySave")
-								.Text("Save & Close")
+								.Text(new JS("formatMessage('Save & Close')"))
 								.Type(ButtonType.Normal)
 								.StylingMode(ButtonStylingMode.Outlined)
 								.Icon("save")
 								)
 				@(Html.DevExtreme().Button()
 								.ID("btnpropertyPrint")
-								.Text("Print")
+								.Text(new JS("formatMessage('Print')"))
 								.Type(ButtonType.Normal)
 								.StylingMode(ButtonStylingMode.Outlined)
 								.Icon("print")
@@ -405,13 +412,13 @@
 								)
 				@(Html.DevExtreme().Button()
 								.ID("btnPropertyBack")
-								.Text("Back")
+								.Text(new JS("formatMessage('Back')"))
 								.Icon("arrowleft")
 								
 								)
 				@(Html.DevExtreme().Button()
 								.ID("btnpropertyDelete")
-								.Text("Delete")
+								.Text(new JS("formatMessage('Delete')"))
 								.Icon("close")
 								)
 			</div>
@@ -455,16 +462,28 @@
 				.Selection(s => s.Mode(SelectionMode.Single))
 				.Columns(columns =>
 				{
-					columns.Add().Caption("Property No").DataField("PropertyNo");
-					columns.Add().Caption("Property Description").DataField("PropertyDescription");
-					columns.Add().Caption("Property Type").DataField("PropertyType");
-					columns.Add().Caption("Plate No").DataField("PlateNo");
+					columns.Add().Caption(new JS("formatMessage('Property No')")).DataField("PropertyNo");
+				columns.Add().Caption(new JS("formatMessage('Property Description')")).DataField("PropertyDescription");
+				columns.Add().Caption(new JS("formatMessage('Property Type')")).DataField("PropertyType");
+				columns.Add().Caption(new JS("formatMessage('Plate No')")).DataField("PlateNo");
+				
 				})
 			)
 	}
 
 </div>
 <script>
+	$(function () {
+
+										$("#CostAllocationforProperty").dxTextBox({
+													text:formatMessage("Cost Allocation for Property"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
 	let propertyno = null;
 	let Amount = 0;
 

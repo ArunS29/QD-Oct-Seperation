@@ -140,28 +140,36 @@
 
 </style>
 <div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);background-color:white">
-    <div class="card-header" style=" color: black; ">
-        SalaryPayableByDate
+    <div id="SalaryPayableByDate" class="card-header no-border-input" style=" color: black; ">
+        
     </div>
     <div class="card-body" style="padding: 20px; background-color:white; border-radius: 5px;">
         <div class="d-flex align-items-center mb-3">
 
             <div class="me-3">
                 @(Html.DevExtreme().DateBox()
+                    
                     .ID("EffectiveDate")
                     .InputAttr("aria-label", "Salary Payable Report End Date")
-                    .Label("Salary Payable Report End Date")
+                    .Label(new JS("formatMessage('Salary Payable Report End Date')"))
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)
                     .DisplayFormat("dd-MMM-yyyy")
                     .Value(DateTime.Now))
             </div>
 
-            <div>
-                <button id="btnShowRecords"
+            <div style="margin-top:25px;">
+                @(Html.DevExtreme().Button()
+								.ID("btnShowRecords")
+								.Text(new JS("formatMessage('Show Records')"))
+								.Type(ButtonType.Normal)
+								.StylingMode(ButtonStylingMode.Outlined)
+								.Icon("save")
+								)
+                @*<button id="btnShowRecords ShowRecords"
                         style="width: 200px; height: 50px; background-color: aliceblue; color: #333; border: 1px solid #e2c035; border-radius: 5px; cursor: pointer; font-size: 12px; display: flex; align-items: center; padding: 0 10px;">
-                    <i class="dx-icon dx-icon-smalliconslayout" style="font-size: 20px; margin-right: 10px;"></i> Show Records
-                </button>
+                    <i class="dx-icon dx-icon-smalliconslayout" style="font-size: 20px; margin-right: 10px;"></i>
+                </button>*@
             </div>
 
 
@@ -176,26 +184,26 @@
                 .LoadAction("GetSalarybydate"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("EmployeeName").Caption("EmployeeName").GroupIndex(0);
-                    columns.Add().DataField("EmployeeNo").Caption("Employee No").Width(120);
-                    columns.Add().DataField("EmployeeName").Caption("Employee Name").Width(150);
-                    columns.Add().DataField("NationalId").Caption("National ID").Width(120);
+                    columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('EmployeeName')")).GroupIndex(0);
+                    columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee No')")).Width(120);
+                    columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')")).Width(150);
+                    columns.Add().DataField("NationalId").Caption(new JS("formatMessage('National ID')")).Width(120);
                     columns.Add()
                     .DataField("ReferenceNo")
-                    .Caption("Reference No")
+                    .Caption(new JS("formatMessage('Reference No')"))
                     .Width(120)
                     .CellTemplate(@"
-            <a href='/pulse/Finance/SalesVoucher?VoucherNo=<%- data.ReferenceNo %>' target='_blank'>
+            <a href='/Finance/SalesVoucher?VoucherNo=<%- data.ReferenceNo %>' target='_blank'>
             <%- data.ReferenceNo %>
             </a>
             ");
 
-                    columns.Add().DataField("MonthOf").Caption("Month Of").Width(120);
+                    columns.Add().DataField("MonthOf").Caption(new JS("formatMessage('Month Of')")).Width(120);
 
                     // Payable Amount
                     columns.Add()
                     .DataField("PayableAmount")
-                    .Caption("Payable Amount")
+                    .Caption(new JS("formatMessage('Payable Amount')"))
                     .Alignment(HorizontalAlignment.Right)
                     .CustomizeText(@"
             function(e) {
@@ -210,14 +218,14 @@
                     // Paid
                     columns.Add()
                     .DataField("Paid")
-                    .Caption("Paid")
+                    .Caption(new JS("formatMessage('Paid')"))
                     .Width(100)
                     .Alignment(HorizontalAlignment.Right);
 
                     // Balance
                     columns.Add()
                     .DataField("Balance")
-                    .Caption("Balance")
+                    .Caption(new JS("formatMessage('Balance')"))
                     .Alignment(HorizontalAlignment.Right)
                     .CustomizeText(@"
             function(e) {
@@ -298,6 +306,18 @@
 
 
     <script>
+        $(function () {
+
+										$("#SalaryPayableByDate").dxTextBox({
+													text:formatMessage("Salary Payable By Date"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
+        
         function showRecords() {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
 

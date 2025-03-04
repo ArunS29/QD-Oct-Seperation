@@ -1132,15 +1132,23 @@
         "Submit": "Submit",
         "Add Line": "Add Line",
         "Save & Close": "Save & Close",
+        "Employee Salary Payables":"Employee Salary Payables",
+        "Cost Allocation for Property":"Cost Allocation for Property",
         "Expenses / Reimbursement - Allocation for Assets it is a single sentence ":"Expenses / Reimbursement - Allocation for Assets it is a single sentence ",
         "Finance Management : Dashboard":"Finance Management : Dashboard",
         "Asset Documents":"Asset Documents",
         "Enter a New Document Add to the Existing List":"Enter a New Document Add to the Existing List",
         "Document Type":"Document Type",
-        "Document Type Id":"Document Type Id"
+        "Document Type Id":"Document Type Id",
+        "Salary Payable By Date":"Salary Payable By Date",
+        "Salary Payable Report End Date":"Salary Payable Report End Date"
 
     },
     "ar": {
+        "Salary Payable Report End Date": "تاريخ انتهاء تقرير الرواتب المستحقة",
+        "Salary Payable By Date": "الراتب المستحق حسب التاريخ",
+        "Employee Salary Payables": "مستحقات رواتب الموظفين",
+        "Cost Allocation for Property": "توزيع التكلفة للعقار",
         "Asset Documents": "وثائق الأصول",
   "Enter a New Document Add to the Existing List": "أدخل مستندًا جديدًا أضفه إلى القائمة الحالية",
   "Document Type": "نوع المستند",
