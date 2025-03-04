@@ -107,8 +107,8 @@
 
 </style>
 <div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="card-header" style="background-color: white; color: black;">
-        VoucherApproval
+    <div id="VoucherApproval" class="card-header no-border-title" style="background-color: white; color: black;">
+        
     </div>
     <div class="card-body" style="padding: 20px; background-color: white; border-radius: 5px;">
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px;background-color:white">
@@ -135,6 +135,7 @@
         <div class="dx-fieldset" style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
             <div>
                 @(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Voucher Date')"))
                     .ID("VoucherDate")
                     .InputAttr("aria-label", "Voucher Date")
                     .LabelMode(EditorLabelMode.Outside)
@@ -144,6 +145,7 @@
             </div>
             <div>
                 @(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Effective Date')"))
                     .ID("EffectiveDate")
                     .InputAttr("aria-label", "Effective Date")
                     .LabelMode(EditorLabelMode.Outside)
@@ -153,11 +155,11 @@
             </div>
 
 
-            <div>
+            <div style="margin-top:25px;">
 
                 @(Html.DevExtreme().DropDownButton()
                     .ID("ddBtnShowRecords")
-                    .Text("Show Records")
+                    .Text(new JS("formatMessage('Show Records')"))
                     .Icon("smalliconslayout")
                     .Width(180)
 
@@ -165,16 +167,16 @@
                     .DropDownOptions(options => options.Width(230))
                     .Items(items =>
                     {
-                        items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                        items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                        items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                        items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                        items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                        items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                        items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                        items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                        items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                        items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                        items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                        items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                        items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                        items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                        items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                        items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                        items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                        items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                        items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                        items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
                     })
                     )
             </div>
@@ -193,28 +195,28 @@
                 .Columns(columns =>
                 {
 
-                    columns.Add().DataField("select").Caption("Select").CellTemplate(@<text>
+                    columns.Add().DataField("select").Caption(new JS("formatMessage('Select')")).CellTemplate(@<text>
                 <input type="checkbox" class="dx-checkbox" />
             </text>)
                 .Width(50);
-                    columns.Add().DataField("VoucherNo").Caption("Voucher No").Width(80);
+                    columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(80);
 
 
-                    columns.Add().DataField("VoucherDate").Caption("Voucher Date").Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
-                    columns.Add().DataField("VoucherEffectiveDate").Caption("Effective On").Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
-                    columns.Add().DataField("VoucherNarration").Caption("Voucher Narration").Width(150);
-                    columns.Add().DataField("DebitAmount").Caption("Debit").Width(100).Alignment(HorizontalAlignment.Right)
+                    columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
+                    columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Effective On')")).Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
+                    columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150);
+                    columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
                     .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }");
-                    columns.Add().DataField("CreditAmount").Caption("Credit").Width(100).Alignment(HorizontalAlignment.Right)
+                    columns.Add().DataField("CreditAmount").Caption(new JS("formatMessage('Credit')")).Width(100).Alignment(HorizontalAlignment.Right)
                     .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }");
-                    columns.Add().DataField("VoucherEnteredBy").Caption("Entered By").Width(120);
-                    columns.Add().DataField("VoucherVerifiedBy").Caption("Verified By").Width(120);
-                    columns.Add().DataField("VoucherApprovedBy").Caption("Approved").Width(120);
-                    columns.Add().DataField("VoucherType").Caption("Voucher").Width(100);
-                    columns.Add().DataField("AuditVerifiedBy").Caption("Audit").Width(120);
-                    columns.Add().DataField("IsApproved").Caption("Approved?").Width(120);
-                    columns.Add().DataField("IsVerified").Caption("Verified").Width(120);
-                    columns.Add().DataField("IsAuditVerified").Caption("Audit").Width(120);
+                    columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120);
+                    columns.Add().DataField("VoucherVerifiedBy").Caption(new JS("formatMessage('Verified By')")).Width(120);
+                    columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved')")).Width(120);
+                    columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher')")).Width(100);
+                    columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120);
+                    columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120);
+                    columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120);
+                    columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120);
                 })
 
                 .Summary(summary =>
@@ -256,6 +258,20 @@
 
 
     <script>
+        
+    $(function () {
+        $("#VoucherApproval").dxTextBox({
+            text: formatMessage("Voucher Approval"),
+            readOnly: true,
+            onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
+						
+
+        });
+        
+    });
+    
         function ddBtnShowRecords_click(filterType) {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
