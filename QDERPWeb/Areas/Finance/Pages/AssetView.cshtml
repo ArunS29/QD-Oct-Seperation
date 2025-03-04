@@ -92,8 +92,8 @@
 
 </style>
 <div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="card-header" style=" color:black; font-weight: bold;">
-        AssetView
+    <div id="AssetView" class="card-header no-border-input" style=" color:black; font-weight: bold;">
+        
     </div>
     <div class="card-body" style="padding: 20px;  border-radius: 5px;">
 
@@ -108,31 +108,29 @@
                 .LoadAction("GetAssetView"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("AccountGroup").Caption("Account Group").GroupIndex(0);
+                    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0);
                     columns.Add().DataField("AccountID").Visible(false);
-                    columns.Add().Caption("AssetDetails").Columns(group =>
+                    columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
                     {
-                        group.Add().DataField("AssetLedgerNo").Caption("Asset Ledger");
-                        group.Add().DataField("AccountHead").Caption("Asset Ledger Name");
-                        group.Add().DataField("AssetDescription").Caption("Asset Description");
-                        group.Add().DataField("Specifications").Caption("Specifications");
-                        group.Add().DataField("AccountGroup").Caption("Account  Group");
-                        group.Add().DataField("PropertyNo").Caption("Property No");
+                        group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
+                        group.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountHead')"));
+                        group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('AssetDescription')"));
+                        group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')"));
+                        group.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')"));
+                        group.Add().DataField("PropertyNo").Caption(new JS("formatMessage('PropertyNo')"));
+
                     });
 
-                    columns.Add().Caption("Depreciation Details").Columns(group =>
+                    columns.Add().Caption(new JS("formatMessage('DepreciationDetails')")).Columns(group =>
                     {
-                        group.Add().DataField("DepreciationMethod").Caption("Depreciation Method");
-                        group.Add().DataField("ScrapValueOfProperty").Caption("Scrap Value").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("LifeSpanOfProperty").Caption("Life Span of Property").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("DepreciationPercentage").Caption("Depreciation").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("OpeningTotal").Caption("Opening Total").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("TotalDebit").Caption("Total Debit").Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("DepreciationMethod").Caption(new JS("formatMessage('DepreciationMethod')"));
+                        group.Add().DataField("ScrapValueOfProperty").Caption(new JS("formatMessage('ScrapValue')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("LifeSpanOfProperty").Caption(new JS("formatMessage('LifeSpanOfProperty')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("DepreciationPercentage").Caption(new JS("formatMessage('Depreciation')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("OpeningTotal").Caption(new JS("formatMessage('OpeningTotal')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('TotalDebit')")).Alignment(HorizontalAlignment.Right);
 
-                        group.Add()
-                    .DataField("TotalCredit")
-                    .Caption("TotalCredit")
-                    .Alignment(HorizontalAlignment.Right) // Ensure right alignment
+                        group.Add().DataField("TotalCredit").Caption(new JS("formatMessage('TotalCredit')")).Alignment(HorizontalAlignment.Right) // Ensure right alignment
                     .CustomizeText(@"
             function(e) {
             let value = e.value || 0; // Get the value
@@ -144,36 +142,36 @@
             return value < 0 ? formattedValue + 'Cr' : formattedValue;
             }");
 
-                        group.Add().DataField("ClosingBalance").Caption("Closing Balance").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("TotalDepreciatedAmount").Caption("Total Depreciated").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("NetBookValue").Caption("Net Book Value").Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('ClosingBalance')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('TotalDepreciated')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('NetBookValue')")).Alignment(HorizontalAlignment.Right);
                     });
 
-                    columns.Add().Caption("Specifications").Columns(group =>
+                    columns.Add().Caption(new JS("formatMessage('Specifications')")).Columns(group =>
                     {
-                        group.Add().DataField("AssetCategory").Caption("Asset Category");
-                        group.Add().DataField("AssetLocation").Caption("Asset Location");
-                        group.Add().DataField("Brand").Caption("Brand");
-                        group.Add().DataField("PlateNo").Caption("Plate No");
-                        group.Add().DataField("Model").Caption("Model");
-                        group.Add().DataField("Year").Caption("Year");
-                        group.Add().DataField("Ownership").Caption("Ownership");
-                        group.Add().DataField("PurchaseDate").Caption("Purchase Date");
-                        group.Add().DataField("ValueOfProperty").Caption("Purchased Value").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("PurchasedAs").Caption("Purchased As");
+                        group.Add().DataField("AssetCategory").Caption(new JS("formatMessage('AssetCategory')"));
+                        group.Add().DataField("AssetLocation").Caption(new JS("formatMessage('AssetLocation')"));
+                        group.Add().DataField("Brand").Caption(new JS("formatMessage('Brand')"));
+                        group.Add().DataField("PlateNo").Caption(new JS("formatMessage('PlateNo')"));
+                        group.Add().DataField("Model").Caption(new JS("formatMessage('Model')"));
+                        group.Add().DataField("Year").Caption(new JS("formatMessage('Year')"));
+                        group.Add().DataField("Ownership").Caption(new JS("formatMessage('Ownership')"));
+                        group.Add().DataField("PurchaseDate").Caption(new JS("formatMessage('PurchaseDate')"));
+                        group.Add().DataField("ValueOfProperty").Caption(new JS("formatMessage('PurchasedValue')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("PurchasedAs").Caption(new JS("formatMessage('PurchasedAs')"));
                     });
 
-                    columns.Add().Caption("Installment Details").Columns(group =>
+                    columns.Add().Caption(new JS("formatMessage('InstallmentDetails')")).Columns(group =>
                     {
-                        group.Add().DataField("IsFinanced").Caption("Is Financed");
-                        group.Add().DataField("FinancedFrom").Caption("Financed From");
-                        group.Add().DataField("NoOfInstallments").Caption("No of Installments").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InitialDownPayment").Caption("Initial Down Payment").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InitialDocCharges").Caption("Initial Doc Charges").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("MonthlyInstallment").Caption("Monthly Installment").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("FinalInstallment").Caption("Final Installment").Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InstallmentStartDate").Caption("Installment Start Date").Format("dd-MMM-yyyy");
-                        group.Add().DataField("InstallmentEndDate").Caption("Installment End Date").Format("dd-MMM-yyyy");
+                        group.Add().DataField("IsFinanced").Caption(new JS("formatMessage('IsFinanced')"));
+                        group.Add().DataField("FinancedFrom").Caption(new JS("formatMessage('FinancedFrom')"));
+                        group.Add().DataField("NoOfInstallments").Caption(new JS("formatMessage('NoOfInstallments')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("InitialDownPayment").Caption(new JS("formatMessage('InitialDownPayment')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("InitialDocCharges").Caption(new JS("formatMessage('InitialDocCharges')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("MonthlyInstallment").Caption(new JS("formatMessage('MonthlyInstallment')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("FinalInstallment").Caption(new JS("formatMessage('FinalInstallment')")).Alignment(HorizontalAlignment.Right);
+                        group.Add().DataField("InstallmentStartDate").Caption(new JS("formatMessage('InstallmentStartDate')")).Format("dd-MMM-yyyy");
+                        group.Add().DataField("InstallmentEndDate").Caption(new JS("formatMessage('InstallmentEndDate')")).Format("dd-MMM-yyyy");
                     });
                 })
 
@@ -328,6 +326,18 @@
 </div>
     <script>
         $(function () {
+        $("#AssetView").dxTextBox({
+            text: formatMessage("Asset View"),
+            readOnly: true,
+            onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
+						
+
+        });
+        
+    });
+        $(function () {
             let selectedVoucherId = null;
 
             $("#voucherPopup").dxPopup({
@@ -353,8 +363,8 @@
                                     padding: "0",
                                 })
                                 .append(
-                                    createMenuItem("Edit Asset Details", "edit", editVoucher, "black"),
-                                    createMenuItem("Delete Asset Details", "trash", deleteVoucher, "red")
+                                    createMenuItem(formatMessage("Edit Asset Details"), "edit", editVoucher, "black"),
+                                    createMenuItem(formatMessage("Delete Asset Details"), "trash", deleteVoucher, "red")
                                 )
                         );
                 },
@@ -410,7 +420,7 @@
                     return;
                 }
 
-            window.location.href = `/pulse/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
+                window.location.href = `/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
             }
 
 
@@ -470,7 +480,7 @@
             });
         });
         function showDepreciationSchedule() {
-        $("#DepreciationContent").load("/pulse/Finance/DepreciationMaster", function () {
+            $("#DepreciationContent").load("/Finance/DepreciationMaster", function () {
                 $("#DepreciationModal").modal('show');
                 $(".close").on("click", function () {
                     $("#DepreciationModal").modal('hide');

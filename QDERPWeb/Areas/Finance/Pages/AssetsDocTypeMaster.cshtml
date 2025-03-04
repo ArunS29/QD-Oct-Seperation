@@ -36,20 +36,21 @@
 
 <div class="content-container-top">
     <div class="container">
-        <h2>@ViewData["Title"]</h2>
+        <h2 id="AssetsDocumentTypes"></h2>
 
         <div class="card-container">
             <div class="row g-6">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="DocumentType">Document Type</label>
                         @(Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Document Type')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("txtDocumentType")
                             . Value(null)
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired()
-                                .Message("Branch Name is required");
+                                .Message(new JS("formatMessage('Branch Name is required')"));
                             })
                             )
                         
@@ -57,8 +58,9 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="ReminderDays">Reminder Days</label>
                         @(Html.DevExtreme().NumberBox()
+                            .Label(new JS("formatMessage('Reminder Days')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("txtReminderDays")
                             .Value(null)
                             .Min(0)
@@ -73,7 +75,7 @@
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
                             .ID("btnAdd")
-                            .Text("ADD")
+                            .Text(new JS("formatMessage('ADD')"))
                             .Height(70)
                             .Width(178)
                             .Icon("plus")
@@ -90,6 +92,16 @@
 </div>
 
 <script type="text/javascript">
+$(function () {
+        $("#AssetsDocumentTypes").dxTextBox({
+            text: formatMessage("Assets Document Types"),
+            readOnly: true,
+            onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
+						
+
+        });
     $(function () {
         var updatedRows = [];
 

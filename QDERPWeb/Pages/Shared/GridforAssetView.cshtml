@@ -76,7 +76,7 @@
     @* <div id="ddButtonLayout"></div> *@
     @(Html.DevExtreme().Button()
         .ID("btnRefresh")
-        .Text("Refresh")
+        .Text(new JS("formatMessage('Refresh')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("refresh") // Use the "refresh" icon
@@ -87,17 +87,18 @@
 
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
-        .Text("Layout")
+        .Text(new JS("formatMessage('Layout')"))
         .Icon("smalliconslayout")
         .Width(180)
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu"); ;
-            items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
-            items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
-            items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
-            items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
+            items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu"); ;
+            items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+            items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+            items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+            items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+
         })
         .ShowArrowIcon(true)
 
@@ -106,7 +107,7 @@
         )
     @(Html.DevExtreme().Button()
         .ID("btnPrint")
-        .Text("Print")
+        .Text(new JS("formatMessage('Print')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("print")
@@ -114,7 +115,7 @@
         )
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")
-        .Text("Search")
+        .Text(new JS("formatMessage('Search')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("search")
@@ -123,7 +124,7 @@
         )
     @(Html.DevExtreme().Button()
         .ID("btntoggleGroupPanel")
-        .Text("Group")
+        .Text(new JS("formatMessage('Group')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("hierarchy")
@@ -141,7 +142,7 @@
         ) *@
     @(Html.DevExtreme().Button()
         .ID("btnDepreciationSchedule") // Unique ID for the button
-        .Text("Depreciation Schedule") // Text for the button
+        .Text(new JS("formatMessage('Depreciation Schedule')")) // Text for the button
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("fa fa-calendar-alt") // Relevant FontAwesome icon

@@ -85,15 +85,16 @@
 
 <div class="content-container-top">
     <div class="container">
-        <h2>Asset Maintenance Master</h2>
+        <h2 id="AssetMaintenanceMaster" class="no-border-input"></h2>
         <div class="row g-6">
             <div class="card-container">
 
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="SalesInvoiceNo" class="button-alignment-down">Type a New Maintenance Type & Add to the Existing List</label>
                         @(
                             Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Type a New Maintenance Type & Add to the Existing List')"))
+                            .LabelMode(EditorLabelMode.Outside)
                             .ID("txtmaintanence")
                             .Value(null)
                             .ValidationRules(rules =>
@@ -108,7 +109,7 @@
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
                             .ID("btnadd")
-                            .Text("ADD")
+                            .Text(new JS("formatMessage('ADD')"))
                             .Height(70)
                             .Width(178)
                             .Icon("plus")
@@ -125,6 +126,18 @@
     </div> <!-- End of card-container -->
 </div>
 <script type="text/javascript">
+$(function () {
+        $("#AssetMaintenanceMaster").dxTextBox({
+            text: formatMessage("Asset Maintenance Master"),
+            readOnly: true,
+            onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
+						
+
+        });
+        
+    });
     $(function () {
         // Initialize DevExtreme DataGrid with CustomStore for Asset Maintenance Type
         $("#gridContainer").dxDataGrid({
@@ -151,7 +164,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Duplicate Type',
-                            text: 'This maintenance type already exists!',
+                            text: new JS("formatMessage('This maintenance type already exists!')"),
                             confirmButtonText: 'OK'
                         });
                         return; // Prevent the update if a duplicate exists
@@ -167,7 +180,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Success',
-                                text: 'Asset maintenance type updated successfully.',
+                                text: new JS("formatMessage('Asset maintenance type updated successfully.')"),
                                 confirmButtonText: 'OK'
                             });
                         },

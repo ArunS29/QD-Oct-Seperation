@@ -113,18 +113,17 @@
     <div class="card-body" style="padding: 20px; background-color: white; border-radius: 5px;">
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px;background-color:white">
             <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-family: Inter, Helvetica, Arial, sans-serif;">
-                <div style="flex: 1; margin: 10px; padding: 30px; background-color: #629e63; color: white; text-align: center;  font-size: 12px;">
-                    QuickDiceERPSolutions<br>
-                    AssetsRegister
+                <div id="QuickDiceERPSolutionsAssetsRegister" style="flex: 1; margin: 10px; padding: 30px; background-color: #256226; color: rgb(0, 0, 0); text-align: center;  font-size: 10px;">
+                    
+                    
                 </div>
-                <div style="flex: 1; margin: 10px; padding: 30px; background-color: #5a85b0; color: white; text-align: center;  font-size: 12px;">
-                    No of voucher verified
+                <div id="Noofvoucherverified" style="flex: 1; margin: 10px; padding: 30px; background-color: #5a85b0; color: rgb(0, 0, 0); text-align: center;  font-size: 12px;">
                 </div>
-                <div style="flex: 1; margin: 10px; padding: 25px; background-color: #c94d44; color: white; text-align: center;  font-size: 12px; display: flex; justify-content: center; align-items: center;">
-                    No of Assets: <span id="noOfAssets">0</span>
+                <div id="No of Assets" style="flex: 1; margin: 10px; padding: 25px; background-color: #c94d44; color: rgb(0, 0, 0); text-align: center;  font-size: 12px; display: flex; justify-content: center; align-items: center;">
+                    
                 </div>
-                <div style="flex: 1; margin: 10px; padding: 30px; background-color: #0b6e25; color: white; text-align: center;  font-size: 12px;">
-                    Current Assets Value: ₹<span id="currentAssetValue">0.00</span>
+                <div id="Current Assets Value" style="flex: 1; margin: 10px; padding: 30px; background-color: #0b6e25; color: rgb(0, 0, 0); text-align: center;  font-size: 12px;">
+                     
                 </div>
             </div>
         </div>
@@ -258,7 +257,29 @@
 
 
     <script>
-        
+        $(function () {
+        $("#QuickDiceERPSolutionsAssetsRegister").dxTextBox({
+            text: formatMessage("Quick Dice ERP Solutions Assets Register"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#Noofvoucherverified").dxTextBox({
+            text: formatMessage("No of voucher verified"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#No of Assets").dxTextBox({
+            text: formatMessage("No of Assets:0"),
+            readOnly: true
+						
+
+        });
+
+    });
     $(function () {
         $("#VoucherApproval").dxTextBox({
             text: formatMessage("Voucher Approval"),
@@ -271,7 +292,13 @@
         });
         
     });
-    
+    $(function () {
+        $("#Current Assets Value").dxTextBox({
+            text: formatMessage("Current Assets Value:0.00"),
+            readOnly: true
+
+        });
+    });
         function ddBtnShowRecords_click(filterType) {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
@@ -382,20 +409,20 @@
                 width: 300,
                 height: 400,
                 showTitle: true,
-                title: "Voucher Options",
+                title: formatMessage("Voucher Options"),
                 visible: false,
                 dragEnabled: true,
                 closeOnOutsideClick: true,
                 contentTemplate: function () {
                     return $("<div>").append(
                         $("<ul>").addClass("voucher-actions").append(
-                            createMenuItem("Edit Voucher", "edit", editVoucher),
-                            createMenuItem("View Voucher", "find", viewVoucher),
-                            createMenuItem("Verify Voucher", "check", verifyVoucher),
-                            createMenuItem("Delete Voucher", "trash", deleteVoucher),
-                            createMenuItem("Verify All Selected Vouchers", "selectall", verifyAll),
-                            createMenuItem("Approve All Selected Vouchers", "todo", approveAll),
-                            createMenuItem("Unlock the Voucher", "unlock", unlockVoucher)
+                            createMenuItem(formatMessage("Edit Voucher"), "edit", editVoucher),
+                            createMenuItem(formatMessage("View Voucher"), "find", viewVoucher),
+                            createMenuItem(formatMessage("Verify Voucher"), "check", verifyVoucher),
+                            createMenuItem(formatMessage("Delete Voucher"), "trash", deleteVoucher),
+                            createMenuItem(formatMessage("Verify All Selected Vouchers"), "selectall", verifyAll),
+                            createMenuItem(formatMessage("Approve All Selected Vouchers"), "todo", approveAll),
+                            createMenuItem(formatMessage("Unlock the Voucher"), "unlock", unlockVoucher)
                         )
                     );
                 }

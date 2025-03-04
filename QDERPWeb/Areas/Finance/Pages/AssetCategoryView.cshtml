@@ -87,15 +87,16 @@
             <div class="row g-6">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="AssetCategoryName" class="button-alignment-down">Type a New Asset Category & Add to the Existing List</label>
                         @(
                             Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('Type a New Asset Category & Add to the Existing List')"))
+                                .LabelMode(EditorLabelMode.Outside)
                             .ID("txtAssetCategory")
                             .Value(null)
                                 .ValidationRules(rules =>
                                 {
                                     rules.AddRequired()
-                                    .Message("Sales Person Name is required");
+                                    .Message(new JS("formatMessage('Sales Person Name is required')"));
                                 })
                                 
                             )
@@ -104,8 +105,8 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
+                                .Text(new JS("formatMessage('ADD')"))
                             .ID("btnAddAssetCategory")
-                            .Text("ADD")
                             .Height(70)
                             .Width(178)
                             .Icon("plus")

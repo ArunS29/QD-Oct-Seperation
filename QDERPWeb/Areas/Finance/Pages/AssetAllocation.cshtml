@@ -72,37 +72,46 @@
 <div class="content-container-top container p-3">
     <div class="card-header">
         <i class="fas fa-pen-nib header-icon"></i>
-        <span class="header-text">Expenses / Reimbursement - Allocation for Assets</span>
+        <span id="Expenses / Reimbursement - Allocation for Assets" class="header-text no-border-input"></span>
     </div>
     <br />
     <div class="row align-items-center">
         <div class="col-md-1">
-            <label for="DrCr">Dr/Cr</label>
             @(Html.DevExtreme().SelectBox()
+                .Label(new JS("formatMessage('Dr/Cr')"))
+                .LabelMode(EditorLabelMode.Outside)
                 .ID("DrCr")
                 .Width(90)
                 .DataSource(new[] { "Dr", "Cr" })  
                 )
         </div>
         <div class="col-md-3">
-            <label>Expenses Ledger Account</label>
-            @(Html.DevExtreme().SelectBox().ID("PropertyExpenses"))
+            @(Html.DevExtreme().SelectBox()
+                .ID("PropertyExpenses")
+                .Label(new JS("formatMessage('Expenses Ledger Account')"))
+                .LabelMode(EditorLabelMode.Outside))
         </div>
         <div class="col-md-2">
-            <label>Amount</label>
-            @(Html.DevExtreme().NumberBox().ID("propertyAmount").ShowSpinButtons(true).Format("#,##0.00").Min(0))
+             @(Html.DevExtreme().NumberBox()
+            .ID("propertyAmount")
+            .Label(new JS("formatMessage('Amount')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ShowSpinButtons(true)
+            .Format("#,##0.00")
+            .Min(0))
         </div>
         <div class="col-md-2">
-            <label>Approved By:</label>
-            @(Html.DevExtreme().CheckBox().ID("IsApproved"))
-            <div>Approved On: <span id="VoucherApprovedOn"></span></div>
+            
+            @(Html.DevExtreme().CheckBox()
+                .Text(new JS("formatMessage('Approved On')"))
+            .ID("IsApproved"))
         </div>
         <div class="col-md-3">
             <div class="mb-2">
-                @(Html.DevExtreme().TextBox().ID("propertyVoucherNo").Disabled(false))
+                @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Approved On')")).LabelMode(EditorLabelMode.Outside).ID("propertyVoucherNo").Disabled(false))
             </div>
             <div>
-                @(Html.DevExtreme().TextBox().ID("propertyId").Disabled(false))
+                @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Approved By')")).LabelMode(EditorLabelMode.Outside).ID("propertyId").Disabled(false))
             </div>
         </div>
 
@@ -116,11 +125,12 @@
             .ShowBorders(true)
             .Columns(columns =>
             {
-                columns.AddFor(m => m.AssetCostAllocDrCr).Caption("Dr/Cr");
-                columns.AddFor(m => m.AssetNo).Caption("Asset Description");
-                columns.AddFor(m => m.EffectiveDate).Caption("Effective Date").DataType(GridColumnDataType.Date);
-                columns.AddFor(m => m.AmountAllocated).Caption("Amount").Format("#,##0.00");
-                columns.AddFor(m => m.AssetCostAllocRemarks).Caption("Remarks");
+                columns.AddFor(m => m.AssetCostAllocDrCr).Caption(new JS("formatMessage('Dr/Cr')"));
+                columns.AddFor(m => m.AssetNo).Caption(new JS("formatMessage('Asset Description')"));
+                columns.AddFor(m => m.EffectiveDate).Caption(new JS("formatMessage('Effective Date')")).DataType(GridColumnDataType.Date);
+                columns.AddFor(m => m.AmountAllocated).Caption(new JS("formatMessage('Amount')")).Format("#,##0.00");
+                columns.AddFor(m => m.AssetCostAllocRemarks).Caption(new JS("formatMessage('Remarks')"));
+
             })
             )
     </div>
@@ -128,12 +138,26 @@
     <div class="container">
         <div class="card-footer">
             <div class="d-flex gap-2 mt-2">
-                @(Html.DevExtreme().Button().ID("btnpropertySave").Text("Save & Close").Icon("save"))
-                @(Html.DevExtreme().Button().ID("btnpropertyDelete").Text("Delete").Icon("close"))
-                @(Html.DevExtreme().Button().ID("btnPropertyBack").Text("Back").Icon("arrowleft"))
-                @(Html.DevExtreme().Button().ID("btnAddCostCentre").Text("Add New Cost Centre").Icon("plus"))
-                @(Html.DevExtreme().Button().ID("btnApproveAdd").Text("Approve [Add]").Icon("check"))
+                @(Html.DevExtreme().Button().ID("btnpropertySave").Text(new JS("formatMessage('Save & Close')")).Icon("save"))
+                @(Html.DevExtreme().Button().ID("btnpropertyDelete").Text(new JS("formatMessage('Delete')")).Icon("close"))
+                @(Html.DevExtreme().Button().ID("btnPropertyBack").Text(new JS("formatMessage('Back')")).Icon("arrowleft"))
+                @(Html.DevExtreme().Button().ID("btnAddCostCentre").Text(new JS("formatMessage('Add New Cost Centre')")).Icon("plus"))
+                @(Html.DevExtreme().Button().ID("btnApproveAdd").Text(new JS("formatMessage('Approve [Add]')")).Icon("check"))
             </div>
         </div>
     </div>
 </div>
+<script>
+    $(function () {
+        $("#Expenses / Reimbursement - Allocation for Assets").dxTextBox({
+            text: formatMessage("Expenses / Reimbursement - Allocation for Assets"),
+            readOnly: true,
+            onContentReady: function(e) {
+						$(e.element).addClass("dx-textbox-heading");
+				}
+						
+
+        });
+        
+    });
+</script>
