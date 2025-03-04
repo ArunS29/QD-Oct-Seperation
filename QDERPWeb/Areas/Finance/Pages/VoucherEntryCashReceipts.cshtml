@@ -532,7 +532,7 @@
 
     <div id="CostAllocationContent"></div>
 
-    <div class="container" style="padding:15px">
+    <div class="container1" style="padding:15px">
         <div class="row g-3">
             <div class="col-md-3 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
 
@@ -2176,10 +2176,27 @@
             }
         });
     }
+    // Function to check if the page is inside a modal
+    function isModal() {
+        return new URLSearchParams(window.location.search).get("modal") === "true";
+    }
+
 
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const argsledno = urlParams.get("argsledno");
+
+    if (isModal()) {
+        const style = document.createElement("style");
+        style.innerHTML = `
+            .container { display: none !important; }
+            .frame { display: none !important; }
+            .footerContainer { display: none !important; }
+            .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+            .mainContainer { margin-top: 1em; }
+        `;
+        document.head.appendChild(style);
+    }
 
         console.log("Formatted Voucher in ready block:", argsledno);
 

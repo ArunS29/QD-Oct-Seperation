@@ -1072,4 +1072,19 @@
                     // Correct URL to your LedgerAccount view
                     $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
                 }
+                function isModal() {
+                    return new URLSearchParams(window.location.search).get("modal") === "true";
+                }
+
+                if (isModal()) {
+                    const style = document.createElement("style");
+                    style.innerHTML = `
+                        .container { display: none !important; }
+                        .frame { display: none !important; }
+                        .footerContainer { display: none !important; }
+                        .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+                        .mainContainer { margin-top: 1em; }
+                    `;
+                    document.head.appendChild(style);
+                }
             </script>

@@ -570,7 +570,7 @@
 
 
 
-        <div class="container">
+        <div class="container1">
             <div class="row g-3" style="height:25em;">
                 <!-- First Row for Cheque No/Reference No and Voucher Narration with Button -->
                 <div class="container-fluid backgroundcolor py-3">
@@ -990,7 +990,7 @@
                 <h2 class="cards-container-title" style="margin-left:20px;position:relative;top:5px;color:white;font-weight:bold;">Employee Salary Payables</h2>
 
                 <!-- Popup Content (Your existing content here) -->
-                <div class="container my-3">
+                <div class="container1 my-3">
                     <div class="row g-3">
                         <div class="col-12">
                             <div class="card p-3 shadow-sm bg-blue text-danger" style="background-color: #B4E1F5;margin-bottom: -10px;">
@@ -4015,5 +4015,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
   
+    function isModal() {
+            return new URLSearchParams(window.location.search).get("modal") === "true";
+        }
 
+        if (isModal()) {
+            const style = document.createElement("style");
+            style.innerHTML = `
+                .container { display: none !important; }
+                .frame { display: none !important; }
+                .footerContainer { display: none !important; }
+                .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+                .mainContainer { margin-top: 1em;width:100%; }
+            `;
+            document.head.appendChild(style);
+        }
 </script>

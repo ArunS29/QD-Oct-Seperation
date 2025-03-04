@@ -1,96 +1,5 @@
 ﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
-    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
-        text-align: center !important;
-    }
-
-    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-        text-align: center !important;
-        /* background-color: aliceblue; */
-    }
-    /* Button Styling */
-    .dx-button {
-        background-color: #909ead00 !important;
-        border: 1px solid #d6e4f0 !important;
-        border-radius: 4px !important;
-        padding: 6px 12px !important; /* Reduced button padding */
-        font-size: 14px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-        transition: all 0.2s ease-in-out !important;
-        height: 39px !important; /* Fixed height */
-    }
-
-        /* Hover Effect for Button */
-        .dx-button:hover {
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-            border-color: #86b7fe !important; /* Highlight border */
-        }
-
-    .dx-icon {
-        font-size: 20px !important; /* Adjust size if needed */
-        color: gray !important; /* Adjust color if needed */
-    }
-
-    .dx-button-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .dx-dropdownbutton .dx-button-content {
-        padding: 0 !important;
-    }
-
-
-
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
-    }
-
-    .button-alignment-down {
-        margin-top: 23px;
-    }
-
-    .button-group {
-        margin-left: 1px !important;
-    }
-
-    .dx-datagrid .dx-row {
-        margin-bottom: 50px;
-    }
-    /* Custom styles for context menu */
-    .context-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-    }
-
-    .context-menu-item {
-        padding: 0px, 15px,10px 15px;
-        cursor: pointer;
-    }
-
-    .ledgerResult {
-        margin: 15px !important;
-    }
-
-    #rowHeightMenu {
-        position: absolute;
-        top: 100px; /* Adjust positioning as per your design */
-        left: 300px; /* Adjust positioning as per your design */
-        display: none; /* Keep it hidden until needed */
-    }
-
-   
     .btn-container {
         display: inline-block;
         position: relative;
@@ -134,6 +43,59 @@
 
     .btn-container:hover .dx-dropdownbutton .dx-button-text {
         display: inline-block;
+    }
+    /* Modal Styling */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 1200px;
+        height: 90%;
+        max-height: 800px;
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden; /* Prevents content overflow */
+    }
+
+    /* Modal Header */
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff; /* Blue header */
+        color: #000;
+        padding: 10px 20px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* Close Button */
+    .close {
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    /* Fullscreen iframe */
+    #modalIframe {
+        width: 100%;
+        height: calc(100% - 50px); /* Adjusted for header height */
+        border: none;
     }
 
 </style>
@@ -291,6 +253,16 @@
             .OnItemClick("addReportsButton_click")
             .ShowArrowIcon(false)
             )
+    </div>
+    <!-- Modal Structure -->
+    <div id="customModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Modal Title</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <iframe id="modalIframe" src="" frameborder="0"></iframe>
+        </div>
     </div>
 
 </div>
@@ -490,20 +462,6 @@
         grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
     }
 
-    // Footer Recipits button event
-    function addRecipitsButton_click(e) {
-        switch (e.itemData.text) {
-            case 'Add Cash Receipts':
-                window.open('/pulse/Finance/VoucherEntryCashReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-            case 'Add Bank Receipts':
-                window.open('/pulse/Finance/VoucherEntryReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                break;
-            // You can handle other cases here if needed
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-        }
-    }
     function addReportsButton_click(e) {
         let pageUrl = '';
         let selectedText = e.itemData.text;
@@ -582,45 +540,89 @@
         $("#overlay").fadeOut();
         $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
     }
+        // Function to open modal with URL and title
+    function openModal(url, title) {
+        document.getElementById("modalIframe").src = url + "?modal=true"; // Append ?modal=true
+        document.getElementById("modalTitle").innerText = title; // Set modal title
+        document.getElementById("customModal").style.display = "block";
+    }
 
+    // Function to close modal
+    function closeModal() {
+        document.getElementById("customModal").style.display = "none";
+        document.getElementById("modalIframe").src = ""; // Clear iframe on close
+    }
 
+    // Handle button clicks
+    function addRecipitsButton_click(e) {
+        let url = "";
+        let title = "Receipts";
+        switch (e.itemData.text) {
+            case 'Add Cash Receipts':
+                url = "/pulse/Finance/VoucherEntryCashReceipts";
+                title = "Add Cash Receipts";
+                break;
+            case 'Add Bank Receipts':
+                url = "/pulse/Finance/VoucherEntryReceipts";
+                title = "Add Bank Receipts";
+                break;
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+                return;
+        }
+        openModal(url, title);
+    }
 
     function addPaymentButton_click(e) {
+        let url = "";
+        let title = "Payments";
         switch (e.itemData.text) {
-
             case 'Add Cash Payment':
-                window.open('/pulse/Finance/VoucherCashPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                url = "/pulse/Finance/VoucherCashPayment";
+                title = "Add Cash Payment";
                 break;
-
             case 'Add Bank Payment':
-                window.open('/pulse/Finance/VoucherBankPayment', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                url = "/pulse/Finance/VoucherBankPayment";
+                title = "Add Bank Payment";
                 break;
-
-            // You can handle other cases here if needed
             default:
                 console.log("Clicked item: ", e.itemData.text);
+                return;
         }
+        openModal(url, title);
     }
+
     function otherVoucherButton_click(e) {
+        let url = "";
+        let title = "Vouchers";
         switch (e.itemData.text) {
-
             case 'Add Purchase Voucher':
-                window.open('/pulse/Finance/Purchasevoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                url = "/pulse/Finance/Purchasevoucher";
+                title = "Add Purchase Voucher";
                 break;
-
             case 'Add Sales Voucher':
-                window.open('/pulse/Finance/Salesvoucher', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                url = "/pulse/Finance/Salesvoucher";
+                title = "Add Sales Voucher";
                 break;
-
             case 'Add Journal Voucher':
-                window.open('/pulse/Finance/Voucherjournal', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                url = "/pulse/Finance/Voucherjournal";
+                title = "Add Journal Voucher";
                 break;
-
-            // You can handle other cases here if needed
             default:
                 console.log("Clicked item: ", e.itemData.text);
+                return;
         }
+        openModal(url, title);
     }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        let modal = document.getElementById("customModal");
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+
 
 
 

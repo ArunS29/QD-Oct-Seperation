@@ -1574,6 +1574,7 @@
 				DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
 			}
 		});
+
 	$(document).ready(function () {
 		const urlParams = new URLSearchParams(window.location.search);
 		const argsledno = urlParams.get("argsledno");
@@ -1594,7 +1595,21 @@
 		}
 	});
 
+		function isModal() {
+		return new URLSearchParams(window.location.search).get("modal") === "true";
+	}
 
+	if (isModal()) {
+		const style = document.createElement("style");
+		style.innerHTML = `
+			.container { display: none !important; }
+			.frame { display: none !important; }
+			.footerContainer { display: none !important; }
+			.bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+			.mainContainer { margin-top: 1em; }
+		`;
+		document.head.appendChild(style);
+	}
 	</script>
 
 
