@@ -305,3 +305,31 @@ body {
 .displayFlex{
     display:flex;
 }
+
+.dx-textbox-heading1 .dx-texteditor-input {
+    font-weight: bold;
+    background-color: #256226;
+    color: white;
+    text-align: center;
+}
+.dx-textbox-heading2 .dx-texteditor-input {
+    font-weight: bold;
+    background-color: #5A85B0;
+    color: white;
+    text-align: center;
+    width: 220px;
+}
+.dx-textbox-heading3 .dx-texteditor-input {
+    font-weight: bold;
+    background-color: #C94d44;
+    color: white;
+    text-align: center;
+    width: 220px;
+}
+.dx-textbox-heading4 .dx-texteditor-input {
+    font-weight: bold;
+    background-color: #0b6e25;
+    color: white;
+    text-align: center;
+    width: 220px;
+}

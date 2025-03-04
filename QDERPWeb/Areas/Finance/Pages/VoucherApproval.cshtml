@@ -106,26 +106,24 @@
     }
 
 </style>
-<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div id="VoucherApproval" class="card-header no-border-title" style="background-color: white; color: black;">
-        
+<div class="title">
+    <div class="header-container">
+        <div id="VoucherApproval" class="no-border-input"></div>
     </div>
-    <div class="card-body" style="padding: 20px; background-color: white; border-radius: 5px;">
-        <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px;background-color:white">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-family: Inter, Helvetica, Arial, sans-serif;">
-                <div id="QuickDiceERPSolutionsAssetsRegister" style="flex: 1; margin: 10px; padding: 30px; background-color: #256226; color: rgb(0, 0, 0); text-align: center;  font-size: 10px;">
-                    
-                    
+</div>
+    <div>
+        @await Html.PartialAsync("GridFooterApproval")
+    </div>
+        <div class="dx-fieldset horizontal-container">
+            @* <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-family: Inter, Helvetica, Arial, sans-serif;"> *@
+                <div id="QuickDiceERPSolutionsAssetsRegister">
                 </div>
-                <div id="Noofvoucherverified" style="flex: 1; margin: 10px; padding: 30px; background-color: #5a85b0; color: rgb(0, 0, 0); text-align: center;  font-size: 12px;">
+                <div id="Noofvoucherverified">
                 </div>
-                <div id="No of Assets" style="flex: 1; margin: 10px; padding: 25px; background-color: #c94d44; color: rgb(0, 0, 0); text-align: center;  font-size: 12px; display: flex; justify-content: center; align-items: center;">
-                    
+                <div id="NoofAssets">
                 </div>
-                <div id="Current Assets Value" style="flex: 1; margin: 10px; padding: 30px; background-color: #0b6e25; color: rgb(0, 0, 0); text-align: center;  font-size: 12px;">
-                     
-                </div>
-            </div>
+                <div id="CurrentAssetsValue"></div>
+            @* </div> *@
         </div>
 
 
@@ -248,11 +246,8 @@
                 )
         </div>
 
-        <div>
-            @await Html.PartialAsync("GridFooterApproval")
-        </div>
+        
         <div id="voucherPopup"></div>
-    </div>
 
 
 
@@ -260,23 +255,29 @@
         $(function () {
         $("#QuickDiceERPSolutionsAssetsRegister").dxTextBox({
             text: formatMessage("Quick Dice ERP Solutions Assets Register"),
-            readOnly: true
-
+            readOnly: true,
+            width:"330px",
+             onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading1");
+                }
         });
     });
     $(function () {
         $("#Noofvoucherverified").dxTextBox({
             text: formatMessage("No of voucher verified"),
-            readOnly: true
-
+            readOnly: true,
+            onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading2");
+                }
         });
     });
     $(function () {
-        $("#No of Assets").dxTextBox({
+        $("#NoofAssets").dxTextBox({
             text: formatMessage("No of Assets:0"),
-            readOnly: true
-						
-
+            readOnly: true,
+            onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading3");
+                }
         });
 
     });
@@ -287,15 +288,16 @@
             onContentReady: function(e) {
 						$(e.element).addClass("dx-textbox-heading");
 				}
-						
-
         });
         
     });
     $(function () {
-        $("#Current Assets Value").dxTextBox({
+        $("#CurrentAssetsValue").dxTextBox({
             text: formatMessage("Current Assets Value:0.00"),
-            readOnly: true
+            readOnly: true,
+            onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading4");
+                }
 
         });
     });
