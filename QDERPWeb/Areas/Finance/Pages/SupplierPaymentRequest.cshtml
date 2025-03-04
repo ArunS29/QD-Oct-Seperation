@@ -44,14 +44,14 @@
 </style>
 <div class="container mt-4">
     <div class="card shadow">
-        <div class="card-header bg-dark text-white font-weight-bold">
-            Supplier Payment Requests
+        <div id="SupplierPaymentRequests" class="card-header bg-dark text-white font-weight-bold">
+            
         </div>
         <div class="card-body bg-secondary">
             <!-- Supplier Selection Dropdown -->
             <div class="mb-4">
-                <label for="SupplierName" style="color: white;">Select Supplier</label>
                 @(Html.DevExtreme().SelectBox()
+                    .Label(new JS("formatMessage('Select Supplier')"))
                     .ID("SupplierName")
                     .Width("300px")
                     .LabelMode(EditorLabelMode.Outside))
@@ -64,14 +64,14 @@
                         .RemoteOperations(true)
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("select").Caption("Select")
+                            columns.Add().DataField("select").Caption(new JS("formatMessage('Select')"))
                         .CellTemplate(@<text>
                     <input type="checkbox" class="dx-checkbox" />
                 </text>);
-                            columns.Add().DataField("ReferenceNo").Caption("Reference No");
-                            columns.Add().DataField("PurchaseOrderNo").Caption("Supplier Bill No");
-                            columns.Add().DataField("VoucherDate").Caption("Voucher Date");
-                            columns.Add().DataField("PayableAmount").Caption("Payable Amount")
+                            columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')"));
+                            columns.Add().DataField("PurchaseOrderNo").Caption(new JS("formatMessage('Supplier Bill No')"));
+                            columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')"));
+                            columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')"))
                             .Alignment(HorizontalAlignment.Right)
                             .CustomizeText(@"
                 function(e) {
@@ -82,7 +82,7 @@
                 });
                 return value < 0 ? '(' + formattedValue + ')' : formattedValue;
                 }");
-                            columns.Add().DataField("Balance").Caption("Balance")
+                            columns.Add().DataField("Balance").Caption(new JS("formatMessage('Balance')"))
                             .Alignment(HorizontalAlignment.Right)
                             .CustomizeText(@"
                 function(e) {
@@ -93,7 +93,7 @@
                 });
                 return value < 0 ? '(' + formattedValue + ')' : formattedValue;
                 }");
-                            columns.Add().DataField("Paid").Caption("Paid")
+                            columns.Add().DataField("Paid").Caption(new JS("formatMessage('Paid')"))
                             .Alignment(HorizontalAlignment.Right)
                             .CustomizeText(@"
                 function(e) {
@@ -105,7 +105,7 @@
                 return value < 0 ? '(' + formattedValue + ')' : formattedValue;
                 }");
 
-                            columns.Add().DataField("OverdueDays").Caption("Overdue Days");
+                            columns.Add().DataField("OverdueDays").Caption(new JS("formatMessage('Overdue Days')"));
                         })
                     .Height(500)
                     .ColumnAutoWidth(true)
@@ -159,6 +159,17 @@
 
 
     <script>
+        $(function () {
+
+										$("#SupplierPaymentRequests").dxTextBox({
+													text:formatMessage("Supplier Payment Requests"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
         $(function () {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
 

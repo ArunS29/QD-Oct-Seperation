@@ -4,7 +4,7 @@
     ViewData["Title"] = "Trial Balance";
 }
 
-<h7>@ViewData["Title"]</h7>
+<h7 id="TrialBalance" class="no-border-input"></h7>
 <div class="container">
     <!-- Input Controls -->
     <div class="dx-fieldset horizontal-container">
@@ -14,7 +14,7 @@
             .DataSource(d => d.Mvc().Controller("TrialBalance").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
             .Width(300)
             .ElementAttr("class", "button-alignment-down")
-            .Label("Select Account Group")
+            .Label(new JS("formatMessage('Select Account Group')"))
             .LabelMode(EditorLabelMode.Outside)
             .SearchEnabled(true)
             .DisplayExpr("AccountGroup")
@@ -26,7 +26,7 @@
         <!-- Start Date Picker -->
         @(Html.DevExtreme().DateBox()
             .ID("frmdateBox")
-            .Label("Start Date")
+            .Label(new JS("formatMessage('Start Date')"))
             .LabelMode(EditorLabelMode.Outside)
             .InputAttr("aria-label", "Date")
             .Type(DateBoxType.Date)
@@ -38,7 +38,7 @@
         <!-- End Date Picker -->
         @(Html.DevExtreme().DateBox()
             .ID("todateBox")
-            .Label("End Date")
+            .Label(new JS("formatMessage('End Date')"))
             .LabelMode(EditorLabelMode.Outside)
             .InputAttr("aria-label", "Date")
             .Type(DateBoxType.Date)
@@ -50,7 +50,7 @@
         <!-- Dropdown Button to Show Records -->
         @(Html.DevExtreme().DropDownButton()
             .ID("ddBtnShowRecords")
-            .Text("Show Records")
+            .Text(new JS("formatMessage('Show Records')"))
             .Icon("smalliconslayout")
             .Width(180)
             .ElementAttr("class", "button-alignment-down")
@@ -58,16 +58,16 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
             })
             )
     </div>
@@ -80,6 +80,17 @@
 </div>
 
 <script type="text/javascript">
+$(function () {
+
+										$("#TrialBalance").dxTextBox({
+													text:formatMessage("Trial Balance"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
     // Function to handle changes in the Account Group selection
     function onRequestedByChanged(e) {
         var selectedValue = e.value; // Get the selected value from the SelectBox

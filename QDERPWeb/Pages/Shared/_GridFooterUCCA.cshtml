@@ -68,17 +68,17 @@
 
     @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonLayout")
-        .Text("Layout")
+        .Text(new JS("formatMessage('Layout')"))
         .Icon("smalliconslayout")
         .Width(50)
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu"); ;
-            items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
-            items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
-            items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
-            items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
+            items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu"); ;
+            items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+            items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+            items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+            items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
         })
         .ShowArrowIcon(true)
 
@@ -123,9 +123,9 @@
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("Print Cost Differences").Icon("preferences");
-            items.Add().Text("Cost on BalanceSheet Items").Icon("preferences");
-            items.Add().Text("Clear All wrong Allocation of Cost").Icon("preferences");
+            items.Add().Text(new JS("formatMessage('Print Cost Differences')")).Icon("preferences");
+            items.Add().Text(new JS("formatMessage('Cost on BalanceSheet Items')")).Icon("preferences");
+            items.Add().Text(new JS("formatMessage('Clear All wrong Allocation of Cost')")).Icon("preferences");
         }).OnItemClick("otherVoucherButton_click")
         )
     @(Html.DevExtreme().DropDownButton()
@@ -134,8 +134,8 @@
         .DropDownOptions(options => options.Width(240))
         .Items(items =>
         {
-            items.Add().Text("Cost Center Summary Reports").Icon("search").OnClick("showSubmenu2"); ;
-            items.Add().Text("Cost Center Detailed Reports").Icon("search").OnClick("showSubmenu3"); ;
+            items.Add().Text(new JS("formatMessage('Cost Center Summary Reports')")).Icon("search").OnClick("showSubmenu2"); ;
+            items.Add().Text(new JS("formatMessage('Cost Center Detailed Reports')")).Icon("search").OnClick("showSubmenu3"); ;
       
 
         })

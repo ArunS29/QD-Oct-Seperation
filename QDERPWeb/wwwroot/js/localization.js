@@ -1141,10 +1141,18 @@
         "Document Type":"Document Type",
         "Document Type Id":"Document Type Id",
         "Salary Payable By Date":"Salary Payable By Date",
-        "Salary Payable Report End Date":"Salary Payable Report End Date"
+        "Salary Payable Report End Date":"Salary Payable Report End Date",
+        "Account Ledger to Salary Payable Mapping":"Account Ledger to Salary Payable Mapping",
+        "Supplier Payment Requests":"Supplier Payment Requests",
+        "Trial Balance":"Trial Balance",
+        "FinancesModules-Trial Balance customaizable Formate":"FinancesModules-Trial Balance customaizable Formate"
 
     },
     "ar": {
+        "FinancesModules-Trial Balance customizable Format": "وحدات المالية - تنسيق ميزان المراجعة القابل للتخصيص",
+        "Trial Balance": "ميزان المراجعة",
+        "Supplier Payment Requests": "طلبات دفع الموردين",
+        "Account Ledger to Salary Payable Mapping": "تعيين دفتر الحسابات إلى الرواتب المستحقة",
         "Salary Payable Report End Date": "تاريخ انتهاء تقرير الرواتب المستحقة",
         "Salary Payable By Date": "الراتب المستحق حسب التاريخ",
         "Employee Salary Payables": "مستحقات رواتب الموظفين",
@@ -1189,6 +1197,11 @@
         "Brand": "العلامة التجارية",
         "Capacity": "السعة",
         "Model": "الموديل",
+        "Print Cost Differences": "طباعة فروقات التكلفة",
+        "Cost on BalanceSheet Items": "التكلفة على عناصر الميزانية العمومية",
+        "Clear All wrong Allocation of Cost": "مسح جميع تخصيصات التكلفة الخاطئة",
+        "Cost Center Summary Reports": "تقارير ملخص مركز التكلفة",
+        "Cost Center Detailed Reports": "تقارير تفصيلية لمركز التكلفة",
         "PropertyNo": "رقم العقار",
         "Asset Register": "سجل الأصول",
         "Created By": "تم الإنشاء بواسطة",

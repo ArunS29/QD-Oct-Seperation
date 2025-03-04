@@ -99,7 +99,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnSaveCostAllocation")
             .Icon("save")
-            .Text("Save")
+            .Text(new JS("formatMesage('Save')"))
             .OnClick("function() { saveCostAllocation(); }")
             )
     </div>
@@ -107,31 +107,33 @@
 <div class="card">
     <div class="content-container-top">
 
-        <div class="card-header">
-            Salary Payable Details
+        <div id="SalaryPayableDetails" class="card-header">
+            
         </div>
         <div class="container">
             <div class="row">
                 <!-- Employee No Field -->
                 <div class="form-group col-md-3" style="padding-top: 10px; padding-bottom: 10px; text-align: left;">
-                    <label for="BillingNo" style="color:white">Employee No: </label>
                     @(
                         Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMesage('Employee No')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("employeeNo")
                         .Value("")
-                        .Placeholder("Enter Employee No")
+                        .Placeholder(new JS("formatMesage('Enter Employee No')"))
                         .RtlEnabled(false)
                         )
                 </div>
 
                 <!-- Employee Name Field -->
                 <div class="form-group col-md-4" style="padding-top: 10px; padding-bottom: 10px; text-align: left;">
-                    <label for="employeeName" style="color:white">Employee Name: </label>
                     @(
                         Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMesage('Employee Name')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("employeeName")
                         .Value("")
-                        .Placeholder("Enter Employee Name")
+                        .Placeholder(new JS("formatMesage('Enter Employee Name')"))
                         .RtlEnabled(false)
                         )
                 </div>
@@ -140,7 +142,7 @@
                 <div class="form-group col-md-4" style="padding-top: 35px; padding-bottom: 10px; text-align: right;">
                     @(Html.DevExtreme().Button()
                         .ID("filterButton")
-                        .Text("Show Full Employee's Record")
+                        .Text(new JS("formatMesage('Show Full Employee's Record')"))
                         .Width(300)
                         .Height(38)
                         .OnClick("function() { applyGridFilter(); }")
@@ -159,10 +161,10 @@
                     .RemoteOperations(true) // Enable remote data operations
                     .Columns(columns =>
                     {
-                        columns.AddFor(m => m.ReferenceNo).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.EmployeeNo).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.EmployeeName).Alignment(HorizontalAlignment.Left);
-                        columns.AddFor(m => m.Amount).Alignment(HorizontalAlignment.Right).CustomizeText(@"
+                        columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMesage('Reference No')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.EmployeeNo).Caption(new JS("formatMesage('Employee No')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.EmployeeName).Caption(new JS("formatMesage('Employee Name')")).Alignment(HorizontalAlignment.Left);
+                        columns.AddFor(m => m.Amount).Caption(new JS("formatMesage('Amount')")).Alignment(HorizontalAlignment.Right).CustomizeText(@"
                 function(e) {
                 if(e.value === null || e.value === undefined) {
                 return ''; // Return empty string for null values
@@ -173,14 +175,14 @@
                 });
                 }
                 ");
-                        columns.AddFor(m => m.DrCr).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.VoucherNo).Alignment(HorizontalAlignment.Center);
-                        columns.AddFor(m => m.VoucherDate).Alignment(HorizontalAlignment.Center).Format(format => format
+                        columns.AddFor(m => m.DrCr).Caption(new JS("formatMesage('DrCr')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMesage('Voucher No')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.VoucherDate).Caption(new JS("formatMesage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Format(format => format
                         .Type(Format.ShortDate)
                         .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")
                         );
-                        columns.AddFor(m => m.EntryNarration).Alignment(HorizontalAlignment.Left);
-                        columns.AddFor(m => m.ReferenceType).Alignment(HorizontalAlignment.Left);
+                        columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMesage('Entry Narration')")).Alignment(HorizontalAlignment.Left);
+                        columns.AddFor(m => m.ReferenceType).Caption(new JS("formatMesage('ReferenceType')")).Alignment(HorizontalAlignment.Left);
                     })
                     .Paging(p => p.PageSize(10))
                     .AllowColumnReordering(true) // Enable column reordering

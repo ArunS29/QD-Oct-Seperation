@@ -73,8 +73,8 @@
 
 </style>
 <div class="card">
-    <div class="card-header">
-        Account Ledger to Salary Payable Mapping
+    <div id="AccountLedgertoSalaryPayableMapping" class="card-header no-border-input">
+        
     </div>
     <div class="card-body">
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
@@ -82,18 +82,18 @@
             <div>
                 @(Html.DevExtreme().TextBox()
                     .ID("AccountLedgerNo")
-                    .Placeholder("Enter Account Ledger No")
+                    .Placeholder(new JS("formatMessage('Enter Account Ledger No')"))
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Account Ledger No:")
+                    .Label(new JS("formatMessage('Account Ledger No')"))
                     )
             </div>
 
             <div>
                 @(Html.DevExtreme().TextBox()
                     .ID("AccountHeadName")
-                    .Placeholder("Enter Account Head Name")
+                    .Placeholder(new JS("formatMessage('Enter Account Head Name')"))
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Account Head Name:")
+                    .Label(new JS("formatMessage('Account Head Name')"))
                     )
             </div>
 
@@ -102,7 +102,7 @@
                     .ID("StartDate")
                     .InputAttr("aria-label", "Date")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Start Date:")
+                    .Label(new JS("formatMessage('Start Date')"))
                     .Type(DateBoxType.Date)
                     .DisplayFormat("dd-MMM-yyyy")
                     .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
@@ -114,7 +114,7 @@
                     .ID("EndDate")
                     .InputAttr("aria-label", "Effective Date")
                     .LabelMode(EditorLabelMode.Outside) 
-                    .Label("End Date:")
+                    .Label(new JS("formatMessage('End Date')"))
                     .Type(DateBoxType.Date)
                     .DisplayFormat("dd-MMM-yyyy")
                     .Value(DateTime.Now))
@@ -123,23 +123,23 @@
             <div style="padding-top:15px">
                 @(Html.DevExtreme().DropDownButton()
                     .ID("ddBtnShowRecords")
-                    .Text("Show Records")
+                    .Text(new JS("formatMessage('Show Records')"))
                     .Icon("smalliconslayout")
                     .Width(180)
                     .TabIndex(4)
                     .DropDownOptions(options => options.Width(230))
                     .Items(items =>
                     {
-                        items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                        items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                        items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                        items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                        items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                        items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                        items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                        items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                        items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                        items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                        items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                        items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                        items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                        items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                        items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                        items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                        items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                        items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                        items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                        items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
                     })
                     )
             </div>
@@ -195,14 +195,14 @@
                     )
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("VoucherNo").Caption("Voucher No");
-                        columns.Add().DataField("VoucherDate").Caption("Voucher Date");
-                        columns.Add().DataField("EmployeeNo").Caption("Employee No");
-                        columns.Add().DataField("EmployeeName").Caption("Employee Name");
-                        columns.Add().DataField("NationalID").Caption("National ID");
-                        columns.Add().DataField("VoucherAmount").Caption("Voucher Amount");
-                        columns.Add().DataField("TotalMappedAmount").Caption("Total Mapped Amount");
-                        columns.Add().DataField("Mapping").Caption("Mapping Status");
+                    columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')"));
+                    columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')"));
+                    columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee No')"));
+                    columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')"));
+                    columns.Add().DataField("NationalID").Caption(new JS("formatMessage('National ID')"));
+                    columns.Add().DataField("VoucherAmount").Caption(new JS("formatMessage('Voucher Amount')"));
+                    columns.Add().DataField("TotalMappedAmount").Caption(new JS("formatMessage('Total Mapped Amount')"));
+                    columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping Status')"));
                     })
                     .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
@@ -226,6 +226,17 @@
   
 
     <script>
+        $(function () {
+
+										$("#AccountLedgertoSalaryPayableMapping").dxTextBox({
+													text:formatMessage("Account Ledger to Salary Payable Mapping"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
         function ddBtnShowRecords_click(filterType) {
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
             const today = new Date();
