@@ -20,59 +20,53 @@ namespace QDWEB.Areas.Finance.Controllers
         {
             _context = context;
         }
-        [HttpGet]
-        public async Task<ActionResult> GetNewVoucherNo()
-        {
-            string voucherPrefix = "JV-NEW-";
-            string strNewVoucherNo;
+		[HttpGet]
+		public async Task<ActionResult> GetNewVoucherNo()
+		{
+			string voucherPrefix = "JV-NEW-";
+			string strNewVoucherNo;
 
-            try
-            {
-              
-                using (var transaction = await _context.Database.BeginTransactionAsync())
-                {
-                   
-                    string sql = @"
+			try
+			{
+				using (var transaction = await _context.Database.BeginTransactionAsync())
+				{
+					string sql = @"
                 SELECT MAX(CAST(RIGHT(TempVoucherNo, 6) AS INT)) AS MaxVoucherNo
                 FROM tbl201VoucherMasterTemp WITH (TABLOCKX)
                 WHERE TempVoucherNo LIKE {0}";
 
-                    
-                    var result = await _context.SqlQueryAsync<VoucherResult>(sql, new object[] { voucherPrefix + "%" });
+					// Fix: Use FromSqlRaw instead of SqlQueryAsync
+					var result = await _context.VoucherResults
+						.FromSqlRaw(sql, voucherPrefix + "%")
+						.ToListAsync();
 
-                    int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
+					int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
 
-                   
-                    int newVoucherNo = maxVoucherNo + 1;
+					int newVoucherNo = maxVoucherNo + 1;
+					strNewVoucherNo = voucherPrefix + newVoucherNo.ToString("D6");
 
-                  
-                    strNewVoucherNo = voucherPrefix + newVoucherNo.ToString("D6");
+					var newVoucherEntry = new Tbl201VoucherMasterTemp
+					{
+						TempVoucherNo = strNewVoucherNo
+					};
 
-                   
-                    var newVoucherEntry = new Tbl201VoucherMasterTemp
-                    {
-                        TempVoucherNo = strNewVoucherNo
-                    };
+					_context.Tbl201VoucherMasterTemps.Add(newVoucherEntry);
+					await _context.SaveChangesAsync();
 
-                    _context.Tbl201VoucherMasterTemps.Add(newVoucherEntry);
-                    await _context.SaveChangesAsync();
+					await transaction.CommitAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, error = ex.Message });
+			}
 
-                    
-                    await transaction.CommitAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-               
-                return Json(new { success = false, error = ex.Message });
-            }
-
-           
-            return Json(strNewVoucherNo);
-        }
+			return Json(strNewVoucherNo);
+		}
 
 
-        [HttpGet]
+
+		[HttpGet]
         public IActionResult Delete(long VoucherEntryNo)
         {
             var item = _context.Tbl201VoucherEntryTemps.Where(p=>p.VoucherEntryNo==VoucherEntryNo).FirstOrDefault();

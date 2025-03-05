@@ -129,14 +129,14 @@
                 @(Html.DevExtreme().Button()
                     .ID("btnAddAHead")
                     .Icon("plus")
-                    .OnClick("navigateToLedger")
+            .OnClick("showLedgerAccountPopup")
                     )
             </div>
             <div class="form-group" style="margin-top:42px;margin-left:-10px">
                 @(Html.DevExtreme().Button()
                     .ID("btnEditAHead")
                     .Icon("edit")
-                    .OnClick("editAccountingLedger")
+            .OnClick("showLedgerAccountPopup")
                     )
             </div>
             <div class="form-group">
@@ -182,7 +182,7 @@
             <div class="form-group" style="">
                 @(Html.DevExtreme().Button()
                     .ID("btnVoucherEntry")
-                    .Text(new JS("formatMessage('Voucher No')"))
+                    .Text(new JS("formatMessage('Add')"))
                     .Height(40)
                     .Width(178)
                     .Icon("plus")
@@ -394,7 +394,7 @@
 
        
                 <div>
-                @await Html.PartialAsync("_FormFooter1")
+                @await Html.PartialAsync("_FormFooter")
                 </div>
 
 
@@ -455,28 +455,28 @@
                     }
                     });
                 });
-                function navigateToLedger() {
-                    // Show a notification
-                    DevExpress.ui.notify("Navigating to Accounting Ledgers page...", "success", 2000);
+                // function navigateToLedger() {
+                //     // Show a notification
+                //     DevExpress.ui.notify("Navigating to Accounting Ledgers page...", "success", 2000);
 
-                    // Redirect to the Accounting Ledgers page in the same window
-                    window.location.href = "/pulse/Finance/AccountingLedgers";
-                }
-                function editAccountingLedger() {
-                    // Get the selected account ID from the dropdown
-                    var accountId = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+                //     // Redirect to the Accounting Ledgers page in the same window
+                //     window.location.href = "/pulse/Finance/AccountingLedgers";
+                // }
+                // function editAccountingLedger() {
+                //     // Get the selected account ID from the dropdown
+                //     var accountId = $("#ddAccountHead").dxDropDownBox("instance").option("value");
 
-                    if (!accountId) {
-                        DevExpress.ui.notify("Please select an account to edit.", "warning", 2000);
-                        return;
-                    }
+                //     if (!accountId) {
+                //         DevExpress.ui.notify("Please select an account to edit.", "warning", 2000);
+                //         return;
+                //     }
 
-                    // Show a notification
-                    DevExpress.ui.notify("Opening Account Ledger for editing...", "success", 2000);
+                //     // Show a notification
+                //     DevExpress.ui.notify("Opening Account Ledger for editing...", "success", 2000);
 
-                    // Redirect to the Accounting Ledger edit page with Account ID as a query parameter
-                    window.location.href = "/pulse/Finance/AccountingLedgers/GetVouchers?accountId=" + encodeURIComponent(accountId);
-                }
+                //     // Redirect to the Accounting Ledger edit page with Account ID as a query parameter
+                //     window.location.href = "/pulse/Finance/AccountingLedgers/GetVouchers?accountId=" + encodeURIComponent(accountId);
+                // }
 
 
                 var lastDrCr = "Dr"; // Default value for the first entry (Dr)
@@ -1086,5 +1086,183 @@
                         .mainContainer { margin-top: 1em; }
                     `;
                     document.head.appendChild(style);
+    } function onAttachButtonClick() {
+        $("#attachOptionsPopup").dxPopup("instance").show();
+    }
+
+    function attachSingleFile() {
+        // Logic for attaching a single file
+        DevExpress.ui.notify("Single file attach initiated.", "info", 2000);
+    }
+
+    function attachMultipleFiles(aVoucherNo) {
+        // Logic for attaching multiple files
+        DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
+        window.location.href = `/pulse/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
+    }
+
+    function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Approved",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithApproval();
+        }
+    }
+
+    function proceedWithApproval() {
+        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).replace(/ /g, '-');
+
+        $.ajax({
+            success: function () {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Voucher has been Approved.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    disableEditing();
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please save the transactions after proceeding!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    }
+    function openAttachmentOptions() {
+        // Show an options dialog using SweetAlert for Single/Multiple selection
+        Swal.fire({
+            title: "Select Attachment Option",
+            html: "<p>How would you like to attach files?</p>",
+            showCancelButton: true,
+            confirmButtonText: "Single File",
+            cancelButtonText: "Multiple Files",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleFileSelection(false); // Single file selection
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                handleFileSelection(true); // Multiple file selection
+            }
+        });
+    }
+
+    function handleFileSelection(isMultiple) {
+        // Configure the file input
+        const fileInput = document.getElementById("fileInput");
+        fileInput.multiple = isMultiple; // Allow multiple files if selected
+        fileInput.click(); // Trigger file input click
+    }
+
+    // File Input Change Handler (Optional: Log or Process Files)
+    document.getElementById("fileInput").addEventListener("change", function () {
+        const files = this.files;
+        console.log("Selected files:", files);
+        // Handle file upload logic here
+    });
+
+
+    function onBackButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount === 0) {
+            DevExpress.ui.dialog.confirm(
+                "No entries in the voucher, do you want to clear the voucher completely?",
+                "No line items"
+            ).done(function (dialogResult) {
+                if (dialogResult) {
+                    if (typeof onConfirm === "function") {
+                        onConfirm(); // Ensure onConfirm is defined before calling
+                    }
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has been successfully removed from the database.",
+                        "Data Deleted Successfully"
+                    ).done(function () {
+
+                        history.back(); // Go back to the previous page
+                    });
                 }
+            });
+        } else {
+
+            history.back(); // Closes or navigates back
+        }
+    }
+
+    function onDeleteButtonClick() {
+        // const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        // const rowCount = dataGrid.getVisibleRows().length;
+        DevExpress.ui.dialog.confirm(
+            "You are about to delete the Voucher from the database,Click yes if you would like to continue.",
+            "Delete Confirmation"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                if (typeof onConfirm === "function") {
+                    onConfirm(); // Ensure onConfirm is defined before calling
+                }
+                DevExpress.ui.dialog.alert(
+                    "Voucher has been successfully removed from the database.",
+                    "Data Deleted Successfully"
+                ).done(function () {
+                    // window.location.href = `/Home/Dashboard`; // Uncomment if redirecting
+
+                });
+            }
+        });
+    }
+
+    function showLedgerAccountPopup() {
+        var popup = $("#ledgerAccountPopup").dxPopup("instance");
+        popup.show();
+
+        // Correct URL to your LedgerAccount view
+        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+    }
+    $(document).ready(function () {
+        $("#btntoggleGroupPanel").click();
+
+        $("#errorPopup").dxPopup({
+            width: 350,
+            height: 300,
+            title: "⚠ Error",
+            visible: false,
+            showCloseButton: true,
+            dragEnabled: false,
+            closeOnOutsideClick: true
+        });
+
+        $("#errorCloseBtn").dxButton({
+            text: "Close",
+            type: "danger",
+            onClick: function () {
+                $("#errorPopup").dxPopup("instance").hide();
+            }
+        });
+    });
+
             </script>

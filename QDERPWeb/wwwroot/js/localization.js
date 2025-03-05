@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Add":"Add",
         "Created By": "Created By",
         "Modified On": "Modified On",
         "Modified By": "Modified By",
@@ -1466,6 +1467,7 @@
         "VoucherVerifiedBy": "تم التحقق من القسيمة بواسطة",
         "AccountGroup": "مجموعة الحساب",
         "AccountHead": "رئيس الحساب",
+        "Add": "إضافة",
         "EntryNarration": "سرد الإدخال",
         "MasterGroup": "المجموعة الرئيسية",
         "SubGroupName": "اسم المجموعة الفرعية",
