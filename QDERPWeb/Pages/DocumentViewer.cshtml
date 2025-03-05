@@ -28,7 +28,9 @@
 )
 
 @* Floating Edit Report Button with Icon and Text *@
-<a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report" data-tooltip="Open Designer">
+<a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report"
+   data-tooltip="Open Designer"
+   onclick="openReportDesigner('@Model.ReportName', '@Model.AccountId', '@Model.FrmDate', '@Model.ToDate')">
     <span class="btn-text">Open Designer</span>
     <i class="fa fa-pencil-alt"></i>
 </a>
@@ -37,7 +39,7 @@
 <a href="javascript:void(0);" id="btnClose" class="btn-close-report" data-tooltip="Close">
     <span class="btn-text">Close</span>
     <i class="fa fa-times"></i>
-</a> 
+</a>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
@@ -218,15 +220,7 @@
 
     });
 
-    function openReportDesigner() {
-
-        const reportName = currentReportName;
-
-        const accountId = "L00789";
-
-        const frmDate = "2025-01-31";
-
-        const toDate = "2025-02-27";
+        function openReportDesigner(reportName, accountId, frmDate, toDate) {
 
         const reportDesignerUrl = `/pulse/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
 
