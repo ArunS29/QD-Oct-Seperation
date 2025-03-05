@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Reports;
+using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
 using QD.ERP.Web.Reports;
 
@@ -314,6 +315,60 @@ namespace QD.ERP.Web.Pages
 
                 Report = new BillsReceivableFormat(AccountId, FrmDate, ToDate);
             }
+            else if (reportName == "rpt201BillsPayable")
+
+            {
+
+                // Ensure required parameters are provided for StatementOfAccountReport
+
+                if (accountId == null || frmDate == null || toDate == null)
+
+                {
+
+                    return BadRequest("Missing required parameters for rpt201BillsPayable.");
+
+                }
+
+                // Set the properties for the report
+
+                AccountId = accountId;
+
+                FrmDate = frmDate.Value;
+
+                ToDate = toDate.Value;
+
+
+                Report = new rpt201BillsPayable(AccountId, FrmDate, ToDate);
+
+            }
+
+            else if (reportName == "rpt201BillsPayableWithVchNo")
+
+            {
+
+                // Ensure required parameters are provided for StatementOfAccountReport
+
+                if (accountId == null || frmDate == null || toDate == null)
+
+                {
+
+                    return BadRequest("Missing required parameters for rpt201BillsPayableWithVchNo.");
+
+                }
+
+                // Set the properties for the report
+
+                AccountId = accountId;
+
+                FrmDate = frmDate.Value;
+
+                ToDate = toDate.Value;
+
+
+                Report = new rpt201BillsPayableWithVchNo(AccountId, FrmDate, ToDate);
+
+            }
+
             else
             {
                 switch (reportName)

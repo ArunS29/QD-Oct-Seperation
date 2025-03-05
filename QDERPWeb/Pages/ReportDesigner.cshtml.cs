@@ -2,7 +2,10 @@ using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QD.ERP.Web.Areas.Finance.Reports;
+using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
+using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
 using QD.ERP.Web.Reports;
+using System;
 
 namespace QD.ERP.Web.Pages
 {
@@ -10,9 +13,6 @@ namespace QD.ERP.Web.Pages
     {
         public XtraReport Report { get; private set; }
         public string ReportName { get; private set; }
-        public string AccountId { get; private set; }
-        public DateTime FrmDate { get; private set; }
-        public DateTime ToDate { get; private set; }
 
         public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
         {
@@ -23,51 +23,75 @@ namespace QD.ERP.Web.Pages
 
             ReportName = reportName;
 
-            if (accountId != null && frmDate != null && toDate != null)
+            if (NeedsParameters(reportName))
             {
-                AccountId = accountId;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest($"Missing required parameters for {reportName}.");
+                }
+
+                DateTime fromDate = frmDate.Value;
+                DateTime endDate = toDate.Value;
+
+                Report = reportName switch
+                {
+                    "StatementOfAccountReport" => new StatementOfAccountReport(accountId, fromDate, endDate),
+                    "AccountWithNarration" => new AccountWithNarration(accountId, fromDate, endDate),
+                    "AccountExportFromatReport" => new AccountExportFromatReport(accountId, fromDate, endDate),
+                    "AccountExportLandscapeReport" => new AccountExportLandscapeReport(accountId, fromDate, endDate),
+                    "AccountStatementFormat2Report" => new AccountStatementFormat2Report(accountId, fromDate, endDate),
+                    "AccountOrderbyVchNoWONarrationReport" => new AccountOrderbyVchNoWONarrationReport(accountId, fromDate, endDate),
+                    "BillsReceivablelandscapeformat" => new BillsReceivablelandscapeformat(accountId, fromDate, endDate),
+                    "BillsReceivableLedgerBalance" => new BillsReceivableLedgerBalance(accountId, fromDate, endDate),
+                    "BillsReceivableRentation" => new BillsReceivableRentation(accountId, fromDate, endDate),
+                    "BillsReceivableAgeingToday" => new BillsReceivableAgeingToday(accountId, fromDate, endDate),
+                    "BillsReceivableByAccount" => new BillsReceivableByAccount(accountId, fromDate, endDate),
+                    "BillsReceivableAll" => new BillsReceivableAll(accountId, fromDate, endDate),
+                    "BillsReceivableFormat" => new BillsReceivableFormat(accountId, fromDate, endDate),
+                    "rpt201BillsPayable" => new rpt201BillsPayable(accountId, fromDate, endDate),
+                    "rpt201BillsPayableWithVchNo" => new rpt201BillsPayableWithVchNo(accountId, fromDate, endDate),
+                    _ => null
+                };
+            }
+            else
+            {
+                Report = reportName switch
+                {
+                    "XtraReportBillsReceivableAgeingReport" => new XtraReportBillsReceivableAgeingReport(),
+                    "XtraReportAgeingreportsummary" => new XtraReportAgeingreportsummary(),
+                    _ => null
+                };
             }
 
-            // Load the appropriate report based on the report name for design mode
-            switch (reportName)
+            if (Report == null)
             {
-                case "XtraReportBillsReceivableAgeingReport":
-                    Report = new XtraReportBillsReceivableAgeingReport();
-                    break;
-                case "XtraReportAgeingreportsummary":
-                    Report = new XtraReportAgeingreportsummary();
-                    break;
-                case "StatementOfAccountReport":
-                    Report = new StatementOfAccountReport(AccountId, FrmDate, ToDate);
-                    break;
-                case "AccountWithNarration":
-                    Report = new AccountWithNarration(AccountId, FrmDate, ToDate);
-                    break;
-                case "AccountExportFromatReport":
-                    Report = new AccountExportFromatReport(AccountId, FrmDate, ToDate);
-                    break;
-                case "AccountExportLandscapeReport":
-                    Report = new AccountExportLandscapeReport(AccountId, FrmDate, ToDate);
-                    break;
-                case "AccountStatementFormat2Report":
-                    Report = new AccountStatementFormat2Report(AccountId, FrmDate, ToDate);
-                    break;
-                case "AccountOrderbyVchNoWONarrationReport":
-                    Report = new AccountOrderbyVchNoWONarrationReport(AccountId, FrmDate, ToDate);
-                    break;
-                case "BillsReceivablelandscapeformat":
-                    Report = new BillsReceivablelandscapeformat(AccountId, FrmDate, ToDate);
-                    break;
-                case "AccountOrderByVoucherNo":
-                    Report = new AccountOrderByVoucherNo(AccountId, FrmDate, ToDate);
-                    break;
-                default:
-                    return NotFound("Report not found.");
+                return NotFound("Report not found.");
             }
 
-            return Page(); // Return page with report design loaded
+            return Page();
+        }
+
+        private bool NeedsParameters(string reportName)
+        {
+            return reportName switch
+            {
+                "StatementOfAccountReport" => true,
+                "AccountWithNarration" => true,
+                "AccountExportFromatReport" => true,
+                "AccountExportLandscapeReport" => true,
+                "AccountStatementFormat2Report" => true,
+                "AccountOrderbyVchNoWONarrationReport" => true,
+                "BillsReceivablelandscapeformat" => true,
+                "BillsReceivableLedgerBalance" => true,
+                "BillsReceivableRentation" => true,
+                "BillsReceivableAgeingToday" => true,
+                "BillsReceivableByAccount" => true,
+                "BillsReceivableAll" => true,
+                "BillsReceivableFormat" => true,
+                "rpt201BillsPayable" => true,
+                "rpt201BillsPayableWithVchNo" => true,
+                _ => false
+            };
         }
     }
 }

@@ -831,11 +831,11 @@
         </div>
         <div id="submenuContainer6" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('rpt201BillsPayable')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (With Reference No)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                </div>"
+                <div class="submenu-item" onclick="handleClick('rpt201BillsPayableWithVchNo')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (With Voucher No)</span>
                 </div>
@@ -1510,7 +1510,7 @@
                 "Account Ledger - Statement of Accounts": "StatementOfAccountReport",
                 "Account Ledger - Statement of Accounts (With Narration)": "AccountWithNarration",
                 "Account Ledger - Statement of Accounts (Export Format2)": "AccountStatementFormat2Report",
-                "Account Ledger - Statement of Accounts (Export Fromat)": "AccountExportFormatReport",
+                "Account Ledger - Statement of Accounts (Export Format)": "AccountExportFromatReport",
                 "Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)": "AccountOrderbyVchNoWONarrationReport",
                 "Account Ledger - Statement of Account Export Format(Landscape)": "AccountExportLandscapeReport",
                 "AccountOrderByVoucherNo": "AccountOrderByVoucherNo",
@@ -1521,7 +1521,9 @@
                 // "Report4": "Report4",
                 "BillsReceivableRentation": "BillsReceivableRentation",
                 "BillsReceivableLedgerBalance": "BillsReceivableLedgerBalance",
-                "BillsReceivableFormat": "BillsReceivableFormat"
+                "BillsReceivableFormat": "BillsReceivableFormat",
+                "rpt201BillsPayable": "rpt201BillsPayable",
+                "rpt201BillsPayableWithVchNo": "rpt201BillsPayableWithVchNo"
             };
 
             // Check if selectedText matches any report name
