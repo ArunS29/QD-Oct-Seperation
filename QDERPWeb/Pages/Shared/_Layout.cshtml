@@ -4,6 +4,7 @@
 @using QD.ERP.Web.DAL.Entities
 @using QD.ERP.Web.Service
 @inject SaasKit.Multitenancy.ITenant<Tenant> Tenant
+
 @{
     string userName = "";
     string userId = "";
@@ -37,10 +38,6 @@
     {
         userName = "No AuthToken found.";
     }
-}
-
-@{
-    userName = Context.Session.GetString("UserName") ?? "Guest";
 }
 
 <!DOCTYPE html>
