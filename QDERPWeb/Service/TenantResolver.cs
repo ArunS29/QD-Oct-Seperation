@@ -9,7 +9,6 @@ namespace QD.ERP.Web.Service
     public class TenantResolver : ITenantResolver<Tenant>
     {
         private readonly ERPCommonContext _dbContext;
-        //private readonly IList<Tenant> _tenants;
         private readonly IMemoryCache _cache;
         private const string CacheKey = "tenant_"; // Prefix for cache key
 
@@ -45,7 +44,8 @@ namespace QD.ERP.Web.Service
             }
 
             // If tenant is not found in cache, query the database to resolve tenant details
-            var company = _dbContext.CustomerDetails.Where(P => P.CompanyName.ToLower() == tenantName.ToLower())
+            var company = _dbContext.CustomerDetails
+                .Where(P => P.CompanyName.ToLower() == tenantName.ToLower())
                 .FirstOrDefault();
 
             if (company != null)
@@ -54,7 +54,8 @@ namespace QD.ERP.Web.Service
                 {
                     Name = company.CompanyName.ToLower(),
                     Id = Convert.ToInt32(company.CompanyId),
-                    ConnectionString = company.ConnectionStringOnline
+                    ConnectionString = company.ConnectionStringOnline,
+                    LogoUrl = company.LogoUrl // Set the logo URL dynamically
                 };
             }
             else
@@ -75,5 +76,4 @@ namespace QD.ERP.Web.Service
             return Task.FromResult<TenantContext<Tenant>>(null);
         }
     }
-
 }

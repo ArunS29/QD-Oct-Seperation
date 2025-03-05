@@ -1,16 +1,13 @@
 ﻿@page
-@model Demo.Areas.Security.Pages.LoginModel
+@model QD.ERP.Web.Areas.Security.Pages.LoginModel
 @{
     ViewData["Title"] = "Login";
     Layout = null;
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/Demo.styles.css" asp-append-version="true" />
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
 <script src="~/js/jquery.idle.js"></script>
 <script src="~/js/jwt-decode.min.js"></script>
 <style>
@@ -231,13 +228,24 @@
             color: #ff0000;
             margin: 20px 0 0;
         }
-        
-        input[type="password"]::-ms-reveal,
-        input[type="password"]::-ms-clear {
-            display: none;
-        }
 
- </style>
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+
+    /* Loading spinner */
+    #loadingSpinner {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        font-size: 24px;
+        color: #007bff;
+    }
+</style>
 <div class="background-container">
     <!-- Logo -->
     <div class="logo">
@@ -278,6 +286,11 @@
         </form>
     </div>
 
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner">
+        <i class="fas fa-spinner fa-spin"></i> Logging in...
+    </div>
+
     <!-- Skyline Background -->
     <div class="skyline"></div>
 </div>
@@ -296,6 +309,9 @@
             return;
         }
 
+        // Show loading spinner
+        document.getElementById('loadingSpinner').style.display = 'block';
+
         $.ajax({
             url: `/api/Login/SignIn`, // API endpoint
             type: 'POST',
@@ -306,8 +322,10 @@
                 TenantName: tenantName
             }),
             success: function (data) {
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').style.display = 'none';
+
                 if (data.success) {
-                    // alert("Login successful!");
                     sessionStorage.setItem('AuthToken', data.token);
                     sessionStorage.setItem('Permissions', JSON.stringify(data.permissions));
                     sessionStorage.setItem('tenantName', tenantName);
@@ -321,6 +339,9 @@
                 }
             },
             error: function (xhr, status, error) {
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').style.display = 'none';
+
                 console.error('Error:', error);
                 showErrorMessage('Invalid username or password. Please try again.'); // Show generic error
             }

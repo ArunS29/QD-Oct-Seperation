@@ -15,6 +15,8 @@ public partial class CustomerDetail
 
     public string ConnectionStringOnline { get; set; }
 
+    public string LogoUrl { get; set; }
+
     public string ConnectionStringOffline { get; set; }
 
     public string Comment { get; set; }

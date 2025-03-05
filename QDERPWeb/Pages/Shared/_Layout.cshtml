@@ -1,7 +1,9 @@
-﻿﻿@using System.IdentityModel.Tokens.Jwt
+﻿@using System.IdentityModel.Tokens.Jwt
 @using System.Linq
 @using Microsoft.AspNetCore.Http
-
+@using QD.ERP.Web.DAL.Entities
+@using QD.ERP.Web.Service
+@inject SaasKit.Multitenancy.ITenant<Tenant> Tenant
 @{
     string userName = "";
     string userId = "";
@@ -41,6 +43,7 @@
     userName = Context.Session.GetString("UserName") ?? "Guest";
     // CompanyName = Context.Session.GetString("CompanyName") ?? "Guest";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,7 +98,7 @@
             --breadcrumb-color: #808080;
         }
 
-        
+
 
         .container {
             display: flex;
@@ -123,13 +126,13 @@
             height: 105vh;
         }
 
-     
-        /* Hidden state of sidebar */
-        .sidebar.hidden {
-            width: 60px; /* Minimized width to show icons only */
-            background-color: white;
-            height: inherit;
-        }
+
+            /* Hidden state of sidebar */
+            .sidebar.hidden {
+                width: 60px; /* Minimized width to show icons only */
+                background-color: white;
+                height: inherit;
+            }
 
 
 
@@ -160,13 +163,14 @@
             border-radius: 4px;
         }
 
-            /* Change text color to white on hover */
-            .menu-item:hover {
-                color: white;
+        /* Change text color to white on hover */
+        .menu-item:hover {
+            color: white;
                 i{
-                color: white;
-                }
-            }
+            color: white;
+        }
+
+        }
 
         .menu-item i {
             width: 22.5px;
@@ -178,16 +182,16 @@
         }
 
 
-        .menu-item  {
+        .menu-item {
             color: var(--text-color);
             font-size: 14px;
             font-weight: 500;
         }
 
-        /* Active menu item */
-        .menu-item.active .text {
-            color: var(--highlight-color);
-        }
+            /* Active menu item */
+            .menu-item.active .text {
+                color: var(--highlight-color);
+            }
 
         /* Toggle button */
         .toggle-btn {
@@ -236,8 +240,8 @@
             /* padding:10px; */
             margin-left: 0px;
             transition: margin-left 0.3s ease;
-            color:black;
-            height:inherit;
+            color: black;
+            height: inherit;
         }
 
             /* Scrollbar styles for Webkit-based browsers */
@@ -275,7 +279,7 @@
 
         /* Breadcrumb styles */
         .breadcrumb {
-            display:none;
+            display: none;
             /* margin-left: 10px; */
             font-size: 14px;
             color: var(--breadcrumb-color);
@@ -324,7 +328,7 @@
             gap: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            border-bottom:1px solid #ddd;
+            border-bottom: 1px solid #ddd;
         }
 
             .submenu-item:hover {
@@ -332,9 +336,9 @@
                 border-radius: 4px;
             }
 
-                .submenu-item:hover {
-                    color: white;
-                }
+            .submenu-item:hover {
+                color: white;
+            }
 
             .submenu-item i {
                 font-size: 14px;
@@ -343,7 +347,7 @@
             }
 
         /* Previous Button Style */
-       
+
         .frame {
             display: flex; /* Use flexbox to align items */
             align-items: center; /* Vertically align items */
@@ -470,12 +474,13 @@
         }
 
 
-        .userName{
-            padding:5px;
-            background-color:aliceblue;
+        .userName {
+            padding: 5px;
+            background-color: aliceblue;
             width: 15em;
         }
-        .companyName{
+
+        .companyName {
             /* margin-right: auto; */
             padding: 20px;
             font-size: 20px;
@@ -490,7 +495,7 @@
             height: 100% !important;
             display: block;
         }
-        
+
         /* Main Content */
         .mainContainer {
             margin-top: 6em;
@@ -502,14 +507,15 @@
             text-decoration: none;
         }
 
-        .bodyContainer{
-            display:flex;
+        .bodyContainer {
+            display: flex;
         }
-        .footerContainer{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background-color:#fff;
+
+        .footerContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
             border: 1px solid #ddd;
         }
 
@@ -555,6 +561,7 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
         }
+
         .modal-content {
             background-color: white;
             margin: 5% auto;
@@ -613,15 +620,15 @@
 <body>
     <script src="~/js/layouticon.js"></script>
     <div class="bodyContainer">
-    <div class="frame">
-        <div class="image">
-            <img src="~/images/Pulse.png" alt="Pulse Logo" />
-        </div>
-        <div class="companyName">
+        <div class="frame">
+            <div class="image">
+                <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
+            </div>
+            <div class="companyName">
                 @* <p>@CompanyName</p> *@
-            @tenantName
-        </div>
-        <div>
+                @tenantName
+            </div>
+            <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("languageSelectBox")
                     .InputAttr("id", "selectInput")
@@ -634,14 +641,14 @@
                     .ItemTemplate(new JS("customItemTemplate"))
                     )
 
-        </div>
+            </div>
             @* <button id="themeToggle">Toggle Dark Mode</button> *@
             <button id="fullscreenToggle">
                 <i class="fas fa-expand" id="fullscreenIcon"></i>
             </button>
-        <i class="fas fa-bell img" onclick="handleBellClick()"></i> <!-- Bell icon -->
-        <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
-        <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->
+            <i class="fas fa-bell img" onclick="handleBellClick()"></i> <!-- Bell icon -->
+            <i class="fas fa-cogs img" onclick="handleGearClick()"></i> <!-- Gear icon -->
+            <i class="fas fa-file-alt img" onclick="handleFileClick()"></i> <!-- File text icon -->
             <div class="dropdown">
                 <i class="fa-solid fa-user img" onclick="toggleDropdown()"></i>
                 <div id="userDropdown" class="dropdown-menu">
@@ -651,7 +658,7 @@
                     <a href="#" onclick="logout()">Logout</a>
                 </div>
             </div>
-    </div>
+        </div>
         <div id="submenuContainer" class="context-menu" style="display:none;">
             <div class="context-menu-item">
                 <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(30)">
@@ -751,79 +758,77 @@
                     <i class="fa fa-th-list"></i>
                     <span>Cost Center Master Report</span>
                 </div>
-             </div>
+            </div>
         </div>
         <div id="submenuContainer4" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts')">
-                    
+
                     <span>Statement of Accounts</span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (With Narration)')">
-                    
+
                     <span>Statement of Accounts (With Narration)</span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format)')">
-                    
+
                     <span>Statement of Accounts (Export Format)</span>
                 </div>
 
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format2)')">
-                    
+
                     <span>Statement of Accounts (Export Format2)</span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
-                    
+
                     <span>Statement of Account OrderByVocuherNo(Without Narration)</span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account Export Format(Landscape)')">
-                    
+
                     <span>Statement of Account Export Format(Landscape)</span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('AccountOrderByVoucherNo')">
                     <span>Statement of Account Order By Voucher No</span>
                 </div>
 
-                </div>
             </div>
+        </div>
         <div id="submenuContainer5" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleClick('BillsReceivableAll')">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
                     <span>Bills Receivable (All)</span>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivableByAccount')">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
                     <span>Bills Receivable (By Account)</span>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivableAgeingToday')">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
                     <span>Bills Receivable (Ageing as on Today)</span>
                 </div>
-               @*  <div class="submenu-item" onclick="handleClick('Report4')">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
                     <span>Bills Receivable (Ageing By End Date)</span>
-                </div> *@
-                <div class="submenu-item" onclick="handleClick('BillsReceivableRentation')">
+                </div>
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
                     <span>Bills Receivable (With Retention)</span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('BillsReceivablelandscapeformat')">
-                    <i class="fa fa-file"></i>
+
                     <span>BillsReceivablelandscapeformat</span>
                 </div>
-
-
-                <div class="submenu-item" onclick="handleClick('BillsReceivableLedgerBalance')">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
                     <span>Bills Receivable (Ageing as per Ledger Balance)</span>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivableFormat')">
+                <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
                     <span>Bills Receivable (Format 2)</span>
                 </div>
             </div>
-            </div>
+        </div>
         <div id="submenuContainer6" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="ChangeRowHeight(70)">
@@ -887,105 +892,105 @@
                     <span>Property Cost Allocation Report - Summary</span>
                 </div>
             </div>
+        </div>
+        <!-- Notification Popup -->
+        <div id="notificationPopup" class="popup">
+            <div class="popup-header">
+                Notifications
+                <span class="popup-close" onclick="closePopup('notificationPopup')">X</span>
             </div>
-    <!-- Notification Popup -->
-    <div id="notificationPopup" class="popup">
-        <div class="popup-header">
-            Notifications
-            <span class="popup-close" onclick="closePopup('notificationPopup')">X</span>
-        </div>
-        <div class="popup-content">
-            <!-- Add notification content here -->
-            <p>You have new notifications!</p>
-        </div>
-    </div>
-
-    <!-- Settings Popup -->
-    <div id="settingsPopup" class="popup">
-        <div class="popup-header">
-            Settings
-            <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
-        </div>
-        <div class="popup-content">
-            <!-- Add settings content here -->
-            <p>Adjust your preferences here.</p>
-        </div>
-    </div>
-
-    <!-- Profile Popup -->
-    <div id="profilePopup" class="popup profile-popup">
-        <div class="popup-header">
-            User Profile
-            <span class="popup-close" onclick="closePopup('profilePopup')">X</span>
-        </div>
-        <div class="popup-content">
-            <!-- Add user profile content here -->
-            <p>Profile details go here...</p>
-        </div>
-    </div>
-
-
-
-
-    <!-- Main container to hold sidebars and content -->
-    <div class="container">
-        <!-- Sidebar 1 Section -->
-        <!-- Sidebar Header with Logo -->
-
-        <div id="sidebar" class="sidebar hidden">
-            <div class="menu">
-                <div class="menu-item" onclick="navigate('Human Resources')">
-                    <i class="fas fa-users"></i>
-                    <div class="text">Human Resources</div>
-                </div>
-                <div class="menu-item" onclick="navigate('Finance')">
-                    <i class="fas fa-dollar-sign"></i>
-                    <div class="text">Finance</div>
-                </div>
-                <div class="menu-item" onclick="navigate('VAT Modules')">
-                    <i class="fas fa-certificate"></i>
-                    <div class="text">VAT Modules</div>
-                </div>
-                <div class="menu-item" onclick="navigate('Equipment Rentals')">
-                    <i class="fas fa-truck"></i>
-                    <div class="text">Equipment Rentals</div>
-                </div>
-                <div class="menu-item" onclick="navigate('Camp Management')">
-                    <i class="fas fa-campground"></i>
-                    <div class="text">Camp Management</div>
-                </div>
-                <div class="menu-item" onclick="navigate('Inventory Management')">
-                    <i class="fas fa-cogs"></i>
-                    <div class="text">Inventory Management</div>
-                </div>
-                <div class="menu-item" onclick="navigate('Projects Control')">
-                    <i class="fas fa-project-diagram"></i>
-                    <div class="text">Projects Control</div>
-                </div>
+            <div class="popup-content">
+                <!-- Add notification content here -->
+                <p>You have new notifications!</p>
             </div>
         </div>
 
-        <div id="sidebar2" class="sidebar2">
-            <!-- Content for Sidebar 2 -->
+        <!-- Settings Popup -->
+        <div id="settingsPopup" class="popup">
+            <div class="popup-header">
+                Settings
+                <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
+            </div>
+            <div class="popup-content">
+                <!-- Add settings content here -->
+                <p>Adjust your preferences here.</p>
+            </div>
         </div>
 
-        <div>
-            <button class="toggle-btn" onclick="toggleSidebar()">&#x3e;</button>
+        <!-- Profile Popup -->
+        <div id="profilePopup" class="popup profile-popup">
+            <div class="popup-header">
+                User Profile
+                <span class="popup-close" onclick="closePopup('profilePopup')">X</span>
+            </div>
+            <div class="popup-content">
+                <!-- Add user profile content here -->
+                <p>Profile details go here...</p>
+            </div>
         </div>
 
-        <!-- Breadcrumb above Sidebar 2 -->
-        <div class="breadcrumb" id="breadcrumb">
-            <span onclick="resetBreadcrumb()">Home</span>
+
+
+
+        <!-- Main container to hold sidebars and content -->
+        <div class="container">
+            <!-- Sidebar 1 Section -->
+            <!-- Sidebar Header with Logo -->
+
+            <div id="sidebar" class="sidebar hidden">
+                <div class="menu">
+                    <div class="menu-item" onclick="navigate('Human Resources')">
+                        <i class="fas fa-users"></i>
+                        <div class="text">Human Resources</div>
+                    </div>
+                    <div class="menu-item" onclick="navigate('Finance')">
+                        <i class="fas fa-dollar-sign"></i>
+                        <div class="text">Finance</div>
+                    </div>
+                    <div class="menu-item" onclick="navigate('VAT Modules')">
+                        <i class="fas fa-certificate"></i>
+                        <div class="text">VAT Modules</div>
+                    </div>
+                    <div class="menu-item" onclick="navigate('Equipment Rentals')">
+                        <i class="fas fa-truck"></i>
+                        <div class="text">Equipment Rentals</div>
+                    </div>
+                    <div class="menu-item" onclick="navigate('Camp Management')">
+                        <i class="fas fa-campground"></i>
+                        <div class="text">Camp Management</div>
+                    </div>
+                    <div class="menu-item" onclick="navigate('Inventory Management')">
+                        <i class="fas fa-cogs"></i>
+                        <div class="text">Inventory Management</div>
+                    </div>
+                    <div class="menu-item" onclick="navigate('Projects Control')">
+                        <i class="fas fa-project-diagram"></i>
+                        <div class="text">Projects Control</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sidebar2" class="sidebar2">
+                <!-- Content for Sidebar 2 -->
+            </div>
+
+            <div>
+                <button class="toggle-btn" onclick="toggleSidebar()">&#x3e;</button>
+            </div>
+
+            <!-- Breadcrumb above Sidebar 2 -->
+            <div class="breadcrumb" id="breadcrumb">
+                <span onclick="resetBreadcrumb()">Home</span>
+            </div>
+
+            @* <div class="main-content" id="mainContent"> *@
+            @*     <iframe id="contentIframe" *@
+            @*             src="" *@
+            @*             frameborder="0"></iframe> *@
+            @* </div> *@
+
         </div>
-
-        @* <div class="main-content" id="mainContent"> *@
-        @*     <iframe id="contentIframe" *@
-        @*             src="" *@
-        @*             frameborder="0"></iframe> *@
-        @* </div> *@
-
-    </div>
-    <!-- Main Content -->
+        <!-- Main Content -->
         <div class="mainContainer">
             <main>
                 @RenderBody()
@@ -997,7 +1002,7 @@
     <footer class="text-center py-3 footerContainer">
         <p><b>Copyright &copy; @DateTime.Now.Year Pulse InfoTech.</b> All rights reserved.</p>
     </footer>
-        <script src="~/js/localization.js" asp-append-version="true"></script>
+    <script src="~/js/localization.js" asp-append-version="true"></script>
     <!-- Bootstrap Modal -->
     <div id="idleModal" class="modal" tabindex="-1">
         <div class="modal-dialog">
@@ -1019,7 +1024,7 @@
 
 
     <script>
-        
+
         var authToken = '@authToken';
         var tenantName = '@tenantName';
         var userName = '@userName';
@@ -1033,25 +1038,25 @@
 
                 // Store token expiry in sessionStorage for use across reloads
                 sessionStorage.setItem('TokenExpiry', tokenExpiry);
-                 monitorTokenExpiry();
+                monitorTokenExpiry();
                 // Initialize idle timeout handling
                 setupIdleTimeout();
-                    $('.modal-backdrop').remove(); 
-                 // Function to monitor token expiry and extend session
-            function monitorTokenExpiry() {
-                // Set interval to check the token expiry every 30 seconds
-                setInterval(function () {
-                    var tokenExpiry = new Date(sessionStorage.getItem('TokenExpiry')); // Get updated expiry
-                    var currentTime = new Date();
-                    var timeToExpiry = (tokenExpiry - currentTime) / 1000; // Time left in seconds
+                $('.modal-backdrop').remove();
+                // Function to monitor token expiry and extend session
+                function monitorTokenExpiry() {
+                    // Set interval to check the token expiry every 30 seconds
+                    setInterval(function () {
+                        var tokenExpiry = new Date(sessionStorage.getItem('TokenExpiry')); // Get updated expiry
+                        var currentTime = new Date();
+                        var timeToExpiry = (tokenExpiry - currentTime) / 1000; // Time left in seconds
 
-                    // If token will expire in less than 2 minutes, extend the session
-                    if (timeToExpiry <= 120 && timeToExpiry > 0) {
-                        console.log('Token is about to expire. Extending session...');
-                        extendSession();
-                    }
-                }, 30000); // Check every 30 seconds
-            }
+                        // If token will expire in less than 2 minutes, extend the session
+                        if (timeToExpiry <= 120 && timeToExpiry > 0) {
+                            console.log('Token is about to expire. Extending session...');
+                            extendSession();
+                        }
+                    }, 30000); // Check every 30 seconds
+                }
 
                 // Function to setup idle timeout logic
                 function setupIdleTimeout() {
@@ -1180,11 +1185,11 @@
                 popup.style.display = 'none';
             }
         }
-        const breadcrumbTrail = []; 
+        const breadcrumbTrail = [];
         function navigate(name) {
             const sidebar2 = document.getElementById('sidebar2');
             if (sidebar2.style.display === 'block') {
-                sidebar2.style.display = 'none'; 
+                sidebar2.style.display = 'none';
             } else {
                 sidebar2.style.display = 'block'; // Show sidebar2
             }
@@ -1230,98 +1235,98 @@
         function showFinanceSubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
             sidebar2.innerHTML = `
-                <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
-                    <i class="fas fa-book-open"></i>
-                    <div class="text">Finance Dashboard</div>
-                </div>
-                <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-                    <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2(' My Dashboard')">
-                        <div class="text">My Dashboard</div>
-                    </div>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/VoucherApproval">
-                        <div class="text">Voucher Verification</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/BillsReceivable">
-                        <div class="text">Bills Receivable</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/BillsPayable">
-                        <div class="text">Bills Payable</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/CostAnalysis">
-                        <div class="text">Cost Analysis</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/SalaryPayable">
-                        <div class="text">Salary Payable</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/ChartOfAccounts">
-                        <div class="text">Chart Of Accounts</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/ChartOfCostCenters">
-                        <div class="text">Chart of Cost Centers</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/uc20106TrialBalance">
-                        <div class="text">Financial Reports</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/AssetView">
-                        <div class="text">Asset Register</div>
-                    </a>
-                    <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/AssetAllocation">
-                        <div class="text">Asset Allocation</div>
-                    </a>
-                </div>
+                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                            <i class="fas fa-book-open"></i>
+                            <div class="text">Finance Dashboard</div>
+                        </div>
+                        <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                            <div class="submenu-item" onclick="updateBreadcrumbFromSidebar2(' My Dashboard')">
+                                <div class="text">My Dashboard</div>
+                            </div>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/VoucherApproval">
+                                <div class="text">Voucher Verification</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/BillsReceivable">
+                                <div class="text">Bills Receivable</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/BillsPayable">
+                                <div class="text">Bills Payable</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/CostAnalysis">
+                                <div class="text">Cost Analysis</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/SalaryPayable">
+                                <div class="text">Salary Payable</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/ChartOfAccounts">
+                                <div class="text">Chart Of Accounts</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/ChartOfCostCenters">
+                                <div class="text">Chart of Cost Centers</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/uc20106TrialBalance">
+                                <div class="text">Financial Reports</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/AssetView">
+                                <div class="text">Asset Register</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/AssetAllocation">
+                                <div class="text">Asset Allocation</div>
+                            </a>
+                        </div>
 
-                <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/AccountingLedgers">
-                    <i class="fas fa-book"></i>
-                    <div class="text">Accounting Ledgers</div>
-                </a>
-                <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/AccountingRegister">
-                    <i class="fas fa-book"></i>
-                    <div class="text">Accounting Register</div>
-                </a>
-                <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/VoucherBankPayment">
-                    <i class="fas fa-university"></i>
-                    <div class="text">Bank Payment</div>
-                </a>
-                <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/ChartOfAccounts">
-                    <i class="fas fa-chart-pie"></i>
-                    <div class="text">Chart Of Accounts</div>
-                </a>
-                <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/ChartOfCostCenters">
-                    <i class="fas fa-chart-pie"></i>
-                    <div class="text">Chart of Cost Centers</div>
-                </a>
-                <a class="submenu-item" href="/pulse/Finance/VoucherCashPayment">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <div class="text">Cash Payment</div>
-                </a>
-                <a class="submenu-item" href="/pulse/Finance/VoucherEntryCashReceipts">
-                    <i class="fas fa-dollar-sign"></i>
-                    <div class="text">Cash Receipt</div>
-                </a>
-                <a class="submenu-item" href="/pulse/Finance/VoucherEntryReceipts">
-                    <i class="fas fa-receipt"></i>
-                    <div class="text">Bank Receipt</div>
-                </a>
-                <a class="submenu-item" href="/pulse/Finance/salesVoucher">
-                    <i class="fas fa-tags"></i>
-                    <div class="text">Sales Voucher</div>
-                </a>
-                <a class="submenu-item" href="/pulse/Finance/purchasevoucher">
-                    <i class="fas fa-shopping-cart"></i>
-                    <div class="text">Purchase Voucher</div>
-                </a>
-                <a class="submenu-item" href="/pulse/Finance/ExpensesClaims">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    <div class="text">Expense Claim</div>
-                </a>
-                <a class="submenu-item" href="/pulse/Finance/Voucherjournal">
-                    <i class="fas fa-book-open"></i>
-                    <div class="text">Journal Voucher</div>
-                </a>
-                <a class="submenu-item" href="/pulse/Finance/JournalRegister">
-                    <i class="fas fa-newspaper"></i>
-                    <div class="text">Journal Register</div>
-                </a>`;
+                        <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/AccountingLedgers">
+                            <i class="fas fa-book"></i>
+                            <div class="text">Accounting Ledgers</div>
+                        </a>
+                        <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/AccountingRegister">
+                            <i class="fas fa-book"></i>
+                            <div class="text">Accounting Register</div>
+                        </a>
+                        <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/VoucherBankPayment">
+                            <i class="fas fa-university"></i>
+                            <div class="text">Bank Payment</div>
+                        </a>
+                        <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/ChartOfAccounts">
+                            <i class="fas fa-chart-pie"></i>
+                            <div class="text">Chart Of Accounts</div>
+                        </a>
+                        <a class="submenu-item" onclick="hideSidebars()" href="/pulse/Finance/ChartOfCostCenters">
+                            <i class="fas fa-chart-pie"></i>
+                            <div class="text">Chart of Cost Centers</div>
+                        </a>
+                        <a class="submenu-item" href="/pulse/Finance/VoucherCashPayment">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <div class="text">Cash Payment</div>
+                        </a>
+                        <a class="submenu-item" href="/pulse/Finance/VoucherEntryCashReceipts">
+                            <i class="fas fa-dollar-sign"></i>
+                            <div class="text">Cash Receipt</div>
+                        </a>
+                        <a class="submenu-item" href="/pulse/Finance/VoucherEntryReceipts">
+                            <i class="fas fa-receipt"></i>
+                            <div class="text">Bank Receipt</div>
+                        </a>
+                        <a class="submenu-item" href="/pulse/Finance/salesVoucher">
+                            <i class="fas fa-tags"></i>
+                            <div class="text">Sales Voucher</div>
+                        </a>
+                        <a class="submenu-item" href="/pulse/Finance/purchasevoucher">
+                            <i class="fas fa-shopping-cart"></i>
+                            <div class="text">Purchase Voucher</div>
+                        </a>
+                        <a class="submenu-item" href="/pulse/Finance/ExpensesClaims">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <div class="text">Expense Claim</div>
+                        </a>
+                        <a class="submenu-item" href="/pulse/Finance/Voucherjournal">
+                            <i class="fas fa-book-open"></i>
+                            <div class="text">Journal Voucher</div>
+                        </a>
+                        <a class="submenu-item" href="/pulse/Finance/JournalRegister">
+                            <i class="fas fa-newspaper"></i>
+                            <div class="text">Journal Register</div>
+                        </a>`;
         }
 
 
@@ -1441,7 +1446,7 @@
                 //sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
             } else if (sidebar.classList.contains('hidden')) {
                 root.style.setProperty('--sidebar-width', '0px'); // No sidebar
-              //  sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
+                //  sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
             } else {
                 root.style.setProperty('--sidebar-width', '256px'); // Sidebar 1 width
                 //sidebar2.style.marginTop = '70px'; // Keep Sidebar 2 margin
@@ -1466,7 +1471,7 @@
         //Fuction for report onclick
 
 
-              function handleClick(selectedText) {
+        function handleClick(selectedText) {
             var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
             var frmDateBox = $("#frmdateBox").dxDateBox("instance");
             var toDateBox = $("#todateBox").dxDateBox("instance");
@@ -1508,7 +1513,7 @@
                 "Account Ledger - Statement of Accounts (Export Fromat)": "AccountExportFormatReport",
                 "Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)": "AccountOrderbyVchNoWONarrationReport",
                 "Account Ledger - Statement of Account Export Format(Landscape)": "AccountExportLandscapeReport",
-                 "AccountOrderByVoucherNo": "AccountOrderByVoucherNo",
+                "AccountOrderByVoucherNo": "AccountOrderByVoucherNo",
                 "BillsReceivablelandscapeformat": "BillsReceivablelandscapeformat",
                  "BillsReceivableAll" : "BillsReceivableAll",
                 "BillsReceivableByAccount": "BillsReceivableByAccount",
@@ -1533,7 +1538,7 @@
         }
 
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (!event.target.matches('.fa-user')) {
                 let dropdowns = document.getElementsByClassName("dropdown-menu");
                 for (let i = 0; i < dropdowns.length; i++) {
@@ -1554,16 +1559,17 @@
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to login page after successful logout
-                    window.location.href = "/Pulse";
-                } else {
-                    alert("Logout failed. Please try again.");
-                }
-            })
-            .catch(error => console.error("Error:", error));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect to login page after successful logout
+                        window.location.href = `/${tenantName}/Security/Login`; // Redirect to login page
+
+                    } else {
+                        alert("Logout failed. Please try again.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
         }
     </script>
 </body>

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Demo.Areas.Security.Pages
+namespace QD.ERP.Web.Areas.Security.Pages
 {
     public class LoginModel : PageModel
     {
