@@ -41,7 +41,6 @@
 
 @{
     userName = Context.Session.GetString("UserName") ?? "Guest";
-    // CompanyName = Context.Session.GetString("CompanyName") ?? "Guest";
 }
 
 <!DOCTYPE html>
@@ -102,12 +101,13 @@
 
         .container {
             display: flex;
-            flex-grow: 1;
+            /* flex-grow: 1; */
             padding: 0px;
             margin-left: 0px;
             margin-right: 0px;
             background-color: #909ead00;
             /* height: 100vh; */
+            width: max-content;
         }
 
         /* Sidebar 1 styles */
