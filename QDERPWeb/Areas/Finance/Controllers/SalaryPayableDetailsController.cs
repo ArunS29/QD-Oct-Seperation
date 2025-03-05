@@ -1,44 +1,60 @@
-﻿
-using DevExtreme.AspNet.Data;
-using DevExtreme.AspNet.Data.ResponseModel;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using QD.ERP.Web.DAL.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-    //[Area("Finance")]
     [Route("Finance/api/[controller]/[action]")]
     [ApiController]
     public class SalaryPayableDetailsController : Controller
     {
-        private ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<SalaryPayableDetailsController> _logger;
 
-        public SalaryPayableDetailsController(ERPMasterWtDataContext context)
+        public SalaryPayableDetailsController(ILogger<SalaryPayableDetailsController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
         {
-            var qry20164salarypayableledgermaster = _context.Qry20164SalaryPayableLedgerMasters.Select(i => new {
-                i.ReferenceNo,
-                i.EmployeeNo,
-                i.EmployeeName,
-                i.Amount,
-                i.DrCr,
-                i.VoucherNo,
-                i.VoucherDate,
-                i.EntryNarration
-            });
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var qry20164salarypayableledgermaster = dbContext.Qry20164SalaryPayableLedgerMasters.Select(i => new
+                {
+                    i.ReferenceNo,
+                    i.EmployeeNo,
+                    i.EmployeeName,
+                    i.Amount,
+                    i.DrCr,
+                    i.VoucherNo,
+                    i.VoucherDate,
+                    i.EntryNarration
+                });
 
+                return Json(await DataSourceLoader.LoadAsync(qry20164salarypayableledgermaster, loadOptions));
+            }
 
-
-            return Json(await DataSourceLoader.LoadAsync(qry20164salarypayableledgermaster, loadOptions));
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
-
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

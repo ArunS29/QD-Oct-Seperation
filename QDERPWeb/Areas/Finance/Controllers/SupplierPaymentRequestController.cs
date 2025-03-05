@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QDWEB.Areas.Finance.Controllers
 {
@@ -7,87 +12,105 @@ namespace QDWEB.Areas.Finance.Controllers
     [ApiController]
     public class SupplierPaymentRequestController : Controller
     {
-        private readonly ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<SupplierPaymentRequestController> _logger;
 
-        public SupplierPaymentRequestController(ERPMasterWtDataContext context)
+        public SupplierPaymentRequestController(ILogger<SupplierPaymentRequestController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
 
         [HttpGet("GetSupplierPaymentRequest")]
         public IActionResult GetSupplierPaymentRequest(string supplierId)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-               
-                var query = _context.Qry201SubLedgerPayablesMasters
-                    .Where(e => e.AccountHeadNo == supplierId);
-
-              
-                var totalCount = query.Count();
-
-                var data = query.Select(e => new
+                try
                 {
+                    var query = dbContext.Qry201SubLedgerPayablesMasters
+                        .Where(e => e.AccountHeadNo == supplierId);
 
-                    e.ReferenceNo,
-                    e.AccountHeadNo,
-                   
-                    VoucherDate = e.VoucherDate.HasValue
-                        ? e.VoucherDate.Value.ToString("dd-MMM-yyyy")
-                        : string.Empty,
-                        
-                    e.PayableAmount,
-                    e.Paid,
-                    e.Balance ,
-                    e.VoucherNarration,
-                    InvoiceDueDate = e.InvoiceDueDate.HasValue
-                        ? e.InvoiceDueDate.Value.ToString("dd-MMM-yyyy")
-                        : string.Empty,
-                    e.OverdueDays,
-                    VoucherEffectiveDate = e.VoucherEffectiveDate.HasValue
-                        ? e.VoucherEffectiveDate.Value.ToString("dd-MMM-yyyy")
-                        : string.Empty,
-                    e.PurchaseOrderNo
-                }).ToList();
+                    var totalCount = query.Count();
 
-                
-                return Json(new
+                    var data = query.Select(e => new
+                    {
+                        e.ReferenceNo,
+                        e.AccountHeadNo,
+                        VoucherDate = e.VoucherDate.HasValue
+                            ? e.VoucherDate.Value.ToString("dd-MMM-yyyy")
+                            : string.Empty,
+                        e.PayableAmount,
+                        e.Paid,
+                        e.Balance,
+                        e.VoucherNarration,
+                        InvoiceDueDate = e.InvoiceDueDate.HasValue
+                            ? e.InvoiceDueDate.Value.ToString("dd-MMM-yyyy")
+                            : string.Empty,
+                        e.OverdueDays,
+                        VoucherEffectiveDate = e.VoucherEffectiveDate.HasValue
+                            ? e.VoucherEffectiveDate.Value.ToString("dd-MMM-yyyy")
+                            : string.Empty,
+                        e.PurchaseOrderNo
+                    }).ToList();
+
+                    return Json(new
+                    {
+                        data = data,
+                        totalCount = totalCount
+                    });
+                }
+                catch (Exception ex)
                 {
-                    data = data,
-                    totalCount = totalCount
-                });
+                    _logger.LogError($"Error in GetSupplierPaymentRequest: {ex.Message}");
+                    return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpGet("GetSuppliers")]
         public IActionResult GetSuppliers()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var suppliers = _context.Qry201SubLedgerPayablesMasters
-                    .GroupBy(s => new { s.AccountHeadNo, s.AccountHead })
-                    .Select(g => new
-                    {
-                        AccountHeadNo = g.Key.AccountHeadNo,
-                        AccountHead = g.Key.AccountHead
-                    })
-                    .ToList();
-
-                if (!suppliers.Any())
+                try
                 {
-                    return Json(new { message = "No suppliers found." });
-                }
+                    var suppliers = dbContext.Qry201SubLedgerPayablesMasters
+                        .GroupBy(s => new { s.AccountHeadNo, s.AccountHead })
+                        .Select(g => new
+                        {
+                            AccountHeadNo = g.Key.AccountHeadNo,
+                            AccountHead = g.Key.AccountHead
+                        })
+                        .ToList();
 
-                return Json(suppliers);
+                    if (!suppliers.Any())
+                    {
+                        return Json(new { message = "No suppliers found." });
+                    }
+
+                    return Json(suppliers);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetSuppliers: {ex.Message}");
+                    return BadRequest(new { message = "An error occurred while fetching suppliers.", error = ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = "An error occurred while fetching suppliers.", error = ex.Message });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
     }
 }
+
+
+
+
+
+
+
+
+
+

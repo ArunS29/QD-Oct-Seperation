@@ -1,8 +1,15 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -10,28 +17,35 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     [ApiController]
     public class AccountGroupsOrderingController : Controller
     {
-        private ERPMasterWtDataContext _context;
-        public AccountGroupsOrderingController(ERPMasterWtDataContext context)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<AccountGroupsOrderingController> _logger;
+
+        public AccountGroupsOrderingController(ILogger<AccountGroupsOrderingController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAccountGroupsOrdering(DataSourceLoadOptions loadOptions)
         {
-            // Fetching the data and sorting by AccountGroupOrderNo in ascending order
-            var qry20164salarypayableledgermaster = _context.Qry201207accountGroupOrderings
-                .Select(i => new
-                {
-                    i.ChartOfAccountsOrder,
-                    i.MasterGroup,
-                    i.AccountGroupId,
-                    i.AccountGroup,
-                    i.AccountGroupOrderNo
-                })
-                .OrderBy(i => i.AccountGroupOrderNo);  // Sorting by AccountGroupOrderNo in ascending order
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var qry20164salarypayableledgermaster = dbContext.Qry201207accountGroupOrderings
+                    .Select(i => new
+                    {
+                        i.ChartOfAccountsOrder,
+                        i.MasterGroup,
+                        i.AccountGroupId,
+                        i.AccountGroup,
+                        i.AccountGroupOrderNo
+                    })
+                    .OrderBy(i => i.AccountGroupOrderNo);  // Sorting by AccountGroupOrderNo in ascending order
 
-            // Returning the result to the client using DataSourceLoader to handle paging, filtering, etc.
-            return Json(await DataSourceLoader.LoadAsync(qry20164salarypayableledgermaster, loadOptions));
+                return Json(await DataSourceLoader.LoadAsync(qry20164salarypayableledgermaster, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost]
@@ -42,25 +56,26 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("No data received");
             }
 
-            foreach (var item in updatedData)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var existingRecord = _context.Tbl201AccountGroups
-                    .FirstOrDefault(x => x.AccountGroupId == item.AccountGroupId);
-
-                if (existingRecord != null)
+                foreach (var item in updatedData)
                 {
+                    var existingRecord = dbContext.Tbl201AccountGroups
+                        .FirstOrDefault(x => x.AccountGroupId == item.AccountGroupId);
 
-                    existingRecord.AccountGroupOrderNo = item.AccountGroupOrderNo;
-                    _context.Tbl201AccountGroups.Update(existingRecord);
+                    if (existingRecord != null)
+                    {
+                        existingRecord.AccountGroupOrderNo = item.AccountGroupOrderNo;
+                        dbContext.Tbl201AccountGroups.Update(existingRecord);
+                    }
                 }
 
+                dbContext.SaveChanges(); // Save changes to the database
 
+                return Ok(new { message = "Data updated successfully" });
             }
 
-            _context.SaveChanges(); // Save changes to the database
-
-            return Ok(new { message = "Data updated successfully" });
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
     }
 }

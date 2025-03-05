@@ -1,72 +1,83 @@
-﻿
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using QD.ERP.Web.DAL.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.Areas.Finance.Reports;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-    
-    [Route("/pulse/Finance/api/[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BillsReceivableController : Controller
     {
-        private ERPMasterWtDataContext _context;
-        public BillsReceivableController(ERPMasterWtDataContext context)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<BillsReceivableController> _logger;
+
+        public BillsReceivableController(ILogger<BillsReceivableController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
+
         [HttpGet]
         public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions, string filterType = null)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var query = _context.Qry20105BillsReceivableAgeingViews.Select(i => new
+                try
                 {
-                    i.AccountHeadNo,
-                    i.AccountHead,
-                    i.ReferenceNo,
-                    i.VoucherRefNo,
-                    i.VoucherDate,
-                    i.InvoiceDueDate,
-                    // i.invoiceAmount,
-                    i.ReceivableAmount,
-                    i.Received,
-                    i.Balance,
-                    i.OverdueDays
-                });
+                    var query = dbContext.Qry20105BillsReceivableAgeingViews.Select(i => new
+                    {
+                        i.AccountHeadNo,
+                        i.AccountHead,
+                        i.ReferenceNo,
+                        i.VoucherRefNo,
+                        i.VoucherDate,
+                        i.InvoiceDueDate,
+                        i.ReceivableAmount,
+                        i.Received,
+                        i.Balance,
+                        i.OverdueDays
+                    });
 
-                // Apply filter based on filterType
-                if (filterType == "WithBalance")
-                {
-                    query = query.Where(i => i.Balance > 0); // Only show rows where Balance > 0
+                    if (filterType == "WithBalance")
+                    {
+                        query = query.Where(i => i.Balance > 0);
+                    }
+                    else if (filterType == "FullyReceived")
+                    {
+                        query = query.Where(i => i.Balance <= 0);
+                    }
+
+                    var result = await DataSourceLoader.LoadAsync(query, loadOptions);
+                    return Json(result);
                 }
-                else if (filterType == "FullyReceived")
+                catch (Exception ex)
                 {
-                    query = query.Where(i => i.Balance <= 0); // Only show rows where Balance = 0
+                    _logger.LogError($"Error in Get: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
                 }
-
-                var result = await DataSourceLoader.LoadAsync(query, loadOptions);
-                return Json(result);
             }
-            catch (Exception ex)
-            {
 
-                return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
         public IActionResult GenerateReport()
         {
-            // Redirect to DocumentViewer page with report parameters
             return RedirectToPage("/pulse/DocumentViewer", new { reportName = "XtraReportBillsReceivableAgeingReport" });
         }
 
+        [HttpGet]
         public IActionResult GenerateAgeingreportsummaryReport()
         {
             return RedirectToPage("/pulse/DocumentViewer", new { reportName = "XtraReportAgeingreportsummary" });
         }
     }
-    
 }
+

@@ -1,126 +1,67 @@
-﻿using AutoMapper.Execution;
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
-using System.Drawing;
+using QD.ERP.Web.Service;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-    //[Area("Finance")]
     [Route("api/[controller]/[action]")]
-    // [Route("Finapi/[controller]/[action]")]
     [ApiController]
     public class AssetViewController : Controller
     {
-        private ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<AssetViewController> _logger;
 
-        public AssetViewController(ERPMasterWtDataContext context)
+        public AssetViewController(ILogger<AssetViewController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
+
         [HttpGet]
-        public async Task<ActionResult> GetAssetView()
+        public async Task<ActionResult> GetAssetView(DataSourceLoadOptions loadOptions)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(_context);
-
-
-                var ledgerData = await _procedures.sp20157AssetRegisterViewAsync();
-
-
-                var result = ledgerData.Select(x => new
+                try
                 {
-                    x.AccountGroup,
-                    x.AssetLedgerNo,
-                    x.AccountHead,
-                    x.AssetDescription,
-                    x.Specifications,
-                    x.PropertyNo,
-                    x.DepreciationMethod,
-                    x.ScrapValueOfProperty,
-                    x.LifeSpanOfProperty,
-                    x.DepreciationPercentage,
-                    x.OpeningTotal,
-                    x.TotalDebit,
-                    x.TotalCredit,
-                    //TotalCredit = x.TotalCredit.HasValue ? (x.TotalCredit < 0 ? $"{Math.Abs(x.TotalCredit.Value):N2}Cr" 
-                    //: $"{x.TotalCredit.Value:N2}") 
-                    //: "0.00",
-                    x.ClosingBalance,
-                    x.TotalDepreciatedAmount,
-                    x.NetBookValue,
-                    x.AssetCategory,
-                    x.AssetLocation,
-                    x.Brand,
-                    x.PlateNo,
-                    x.Model,
-                    x.Year,
-                    x.AssetType,
-                    x.FMV,
-                    x.BMV,
-                    x.FinancedBy,
-                    x.Ownership,
-                    PurchaseDate = x.PurchaseDate.HasValue
-                    ? x.PurchaseDate.Value.ToString("dd-MMM-yyyy")
-                    : string.Empty,
-                    x.ValueOfProperty,
-                    x.PurchasedAs,
-                    x.IsFinanced,
-                    x.FinancedFrom,
-                    x.NoOfInstallments,
-                    x.InitialDownPayment,
-                    x.InitialDocCharges,
-                    x.MonthlyInstallment,
-                    x.FinalInstallment,
-                    InstallmentStartDate = x.InstallmentStartDate.HasValue
-                    ? x.InstallmentStartDate.Value.ToString("dd-MMM-yyyy")
-                    : string.Empty,
-                    InstallmentEndDate = x.InstallmentEndDate.HasValue
-                    ? x.InstallmentEndDate.Value.ToString("dd-MMM-yyyy")
-                    : string.Empty,
-                    x.PurchasedFrom,
-                    x.CurrentCondition
+                    var procedures = new ERPMasterWtDataContextProcedures(dbContext);
+                    var ledgerData = await procedures.sp20157AssetRegisterViewAsync();
 
-
-                }).ToList();
-
-
-
-                return Json(result);
-            }
-            catch (Exception ex)
-
-            {
-
-                return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
-            }
-        }
-        [HttpGet]
-        public async Task<ActionResult> GetAssetViewedit(string assetLedgerNo)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(assetLedgerNo))
-                {
-                    assetLedgerNo = assetLedgerNo.Trim('"');
-                }
-
-                // Assuming you are using Entity Framework to query the database
-                var ledgerData = await _context.Tbl20105AssetMasters
-                    .Where(x => string.IsNullOrEmpty(assetLedgerNo) || x.AssetLedgerNo == assetLedgerNo)
-                    .Select(x => new
+                    var result = ledgerData.Select(x => new
                     {
+                        x.AccountGroup,
                         x.AssetLedgerNo,
+                        x.AccountHead,
                         x.AssetDescription,
                         x.Specifications,
+                        x.PropertyNo,
+                        x.DepreciationMethod,
+                        x.ScrapValueOfProperty,
+                        x.LifeSpanOfProperty,
+                        x.DepreciationPercentage,
+                        x.OpeningTotal,
+                        x.TotalDebit,
+                        x.TotalCredit,
+                        x.ClosingBalance,
+                        x.TotalDepreciatedAmount,
+                        x.NetBookValue,
+                        x.AssetCategory,
+                        x.AssetLocation,
                         x.Brand,
                         x.PlateNo,
                         x.Model,
                         x.Year,
+                        x.AssetType,
+                        x.FMV,
+                        x.BMV,
+                        x.FinancedBy,
                         x.Ownership,
                         PurchaseDate = x.PurchaseDate.HasValue ? x.PurchaseDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
                         x.ValueOfProperty,
@@ -135,218 +76,284 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         InstallmentStartDate = x.InstallmentStartDate.HasValue ? x.InstallmentStartDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
                         InstallmentEndDate = x.InstallmentEndDate.HasValue ? x.InstallmentEndDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
                         x.PurchasedFrom,
-                        x.CurrentCondition,
-                        x.CurrentReading,
-                        x.DepreciationMethod,
-                        x.LifeSpanOfProperty,
-                        x.ScrapValueOfProperty,
-                        x.AssetCategory,
-                        x.AssetLocation,
-                        x.AssetType,
-                        x.Fmv,
-                        x.Bmv,
-                        x.FinancedBy,
-                        x.DepPercentage,
-                        x.PropertyNo,
-                    })
-                    .ToListAsync();
+                        x.CurrentCondition
+                    }).ToList();
 
-                return Json(ledgerData);
+                    return Json(await DataSourceLoader.LoadAsync(result, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetAssetView: {ex.Message}");
+                    return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-        [HttpPost]
-        public async Task<ActionResult> updateAsset([FromBody] Tbl20105AssetMaster updatedAsset)
+
+        [HttpGet]
+        public async Task<ActionResult> GetAssetViewedit(string assetLedgerNo)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                if (updatedAsset == null)
+                try
                 {
-                    return BadRequest(new { message = "Invalid asset data." });
+                    if (!string.IsNullOrEmpty(assetLedgerNo))
+                    {
+                        assetLedgerNo = assetLedgerNo.Trim('"');
+                    }
+
+                    var ledgerData = await dbContext.Tbl20105AssetMasters
+                        .Where(x => string.IsNullOrEmpty(assetLedgerNo) || x.AssetLedgerNo == assetLedgerNo)
+                        .Select(x => new
+                        {
+                            x.AssetLedgerNo,
+                            x.AssetDescription,
+                            x.Specifications,
+                            x.Brand,
+                            x.PlateNo,
+                            x.Model,
+                            x.Year,
+                            x.Ownership,
+                            PurchaseDate = x.PurchaseDate.HasValue ? x.PurchaseDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
+                            x.ValueOfProperty,
+                            x.PurchasedAs,
+                            x.IsFinanced,
+                            x.FinancedFrom,
+                            x.NoOfInstallments,
+                            x.InitialDownPayment,
+                            x.InitialDocCharges,
+                            x.MonthlyInstallment,
+                            x.FinalInstallment,
+                            InstallmentStartDate = x.InstallmentStartDate.HasValue ? x.InstallmentStartDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
+                            InstallmentEndDate = x.InstallmentEndDate.HasValue ? x.InstallmentEndDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
+                            x.PurchasedFrom,
+                            x.CurrentCondition,
+                            x.CurrentReading,
+                            x.DepreciationMethod,
+                            x.LifeSpanOfProperty,
+                            x.ScrapValueOfProperty,
+                            x.AssetCategory,
+                            x.AssetLocation,
+                            x.AssetType,
+                            x.Fmv,
+                            x.Bmv,
+                            x.FinancedBy,
+                            x.DepPercentage,
+                            x.PropertyNo,
+                        })
+                        .ToListAsync();
+
+                    return Json(ledgerData);
                 }
-
-                // Fetch the existing asset record
-                var existingAsset = await _context.Tbl20105AssetMasters
-                    .FirstOrDefaultAsync(x => x.AssetLedgerNo == updatedAsset.AssetLedgerNo);
-
-                if (existingAsset == null)
+                catch (Exception ex)
                 {
-                    return NotFound(new { message = "Asset not found." });
+                    _logger.LogError($"Error in GetAssetViewedit: {ex.Message}");
+                    return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
                 }
-
-                //// Validate and convert PurchaseDate if necessary
-                //if (!string.IsNullOrEmpty(updatedAsset.PurchaseDate?.ToString()))
-                //{
-                //    if (DateTime.TryParse(updatedAsset.PurchaseDate.ToString(), out var parsedDate))
-                //    {
-                //        existingAsset.PurchaseDate = parsedDate; // Set the parsed date
-                //    }
-                //    else
-                //    {
-                //        return BadRequest(new { message = "Invalid date format for PurchaseDate." });
-                //    }
-                //}
-
-                // Update fields
-                existingAsset.AssetDescription = updatedAsset.AssetDescription;
-                existingAsset.Specifications = updatedAsset.Specifications;
-                existingAsset.Brand = updatedAsset.Brand;
-                existingAsset.PlateNo = updatedAsset.PlateNo;
-                existingAsset.Model = updatedAsset.Model;
-                existingAsset.Year = updatedAsset.Year;
-                existingAsset.Ownership = updatedAsset.Ownership;
-                existingAsset.ValueOfProperty = updatedAsset.ValueOfProperty;
-                existingAsset.PurchasedAs = updatedAsset.PurchasedAs;
-                existingAsset.PurchaseDate = updatedAsset.PurchaseDate;
-                existingAsset.IsFinanced = updatedAsset.IsFinanced;
-                existingAsset.FinancedFrom = updatedAsset.FinancedFrom;
-                existingAsset.NoOfInstallments = updatedAsset.NoOfInstallments;
-                existingAsset.InitialDownPayment = updatedAsset.InitialDownPayment;
-                existingAsset.InitialDocCharges = updatedAsset.InitialDocCharges;
-                existingAsset.MonthlyInstallment = updatedAsset.MonthlyInstallment;
-                existingAsset.FinalInstallment = updatedAsset.FinalInstallment;
-                existingAsset.InstallmentStartDate = updatedAsset.InstallmentStartDate;
-                existingAsset.InstallmentEndDate = updatedAsset.InstallmentEndDate;
-                existingAsset.PurchasedFrom = updatedAsset.PurchasedFrom;
-                existingAsset.CurrentCondition = updatedAsset.CurrentCondition;
-                existingAsset.CurrentReading = updatedAsset.CurrentReading;
-                existingAsset.DepreciationMethod = updatedAsset.DepreciationMethod;
-                existingAsset.LifeSpanOfProperty = updatedAsset.LifeSpanOfProperty;
-                existingAsset.ScrapValueOfProperty = updatedAsset.ScrapValueOfProperty;
-                existingAsset.AssetCategory = updatedAsset.AssetCategory;
-                existingAsset.AssetLocation = updatedAsset.AssetLocation;
-                existingAsset.AssetType = updatedAsset.AssetType;
-                existingAsset.Fmv = updatedAsset.Fmv;
-                existingAsset.Bmv = updatedAsset.Bmv;
-                existingAsset.FinancedBy = updatedAsset.FinancedBy;
-                existingAsset.DepPercentage = updatedAsset.DepPercentage;
-                existingAsset.PropertyNo = updatedAsset.PropertyNo;
-
-                // Set modification details
-                existingAsset.ModifiedBy = "Admin"; // Replace with actual current user
-                existingAsset.ModifiedOn = DateTime.Now;
-
-                // Save changes
-                await _context.SaveChangesAsync();
-
-                return Ok(new { message = "Asset updated successfully." });
             }
-            catch (Exception ex)
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateAsset([FromBody] Tbl20105AssetMaster updatedAsset)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                return BadRequest(new { message = "An error occurred while updating the asset.", error = ex.Message });
+                try
+                {
+                    if (updatedAsset == null)
+                    {
+                        return BadRequest(new { message = "Invalid asset data." });
+                    }
+
+                    var existingAsset = await dbContext.Tbl20105AssetMasters
+                        .FirstOrDefaultAsync(x => x.AssetLedgerNo == updatedAsset.AssetLedgerNo);
+
+                    if (existingAsset == null)
+                    {
+                        return NotFound(new { message = "Asset not found." });
+                    }
+
+                    existingAsset.AssetDescription = updatedAsset.AssetDescription;
+                    existingAsset.Specifications = updatedAsset.Specifications;
+                    existingAsset.Brand = updatedAsset.Brand;
+                    existingAsset.PlateNo = updatedAsset.PlateNo;
+                    existingAsset.Model = updatedAsset.Model;
+                    existingAsset.Year = updatedAsset.Year;
+                    existingAsset.Ownership = updatedAsset.Ownership;
+                    existingAsset.ValueOfProperty = updatedAsset.ValueOfProperty;
+                    existingAsset.PurchasedAs = updatedAsset.PurchasedAs;
+                    existingAsset.PurchaseDate = updatedAsset.PurchaseDate;
+                    existingAsset.IsFinanced = updatedAsset.IsFinanced;
+                    existingAsset.FinancedFrom = updatedAsset.FinancedFrom;
+                    existingAsset.NoOfInstallments = updatedAsset.NoOfInstallments;
+                    existingAsset.InitialDownPayment = updatedAsset.InitialDownPayment;
+                    existingAsset.InitialDocCharges = updatedAsset.InitialDocCharges;
+                    existingAsset.MonthlyInstallment = updatedAsset.MonthlyInstallment;
+                    existingAsset.FinalInstallment = updatedAsset.FinalInstallment;
+                    existingAsset.InstallmentStartDate = updatedAsset.InstallmentStartDate;
+                    existingAsset.InstallmentEndDate = updatedAsset.InstallmentEndDate;
+                    existingAsset.PurchasedFrom = updatedAsset.PurchasedFrom;
+                    existingAsset.CurrentCondition = updatedAsset.CurrentCondition;
+                    existingAsset.CurrentReading = updatedAsset.CurrentReading;
+                    existingAsset.DepreciationMethod = updatedAsset.DepreciationMethod;
+                    existingAsset.LifeSpanOfProperty = updatedAsset.LifeSpanOfProperty;
+                    existingAsset.ScrapValueOfProperty = updatedAsset.ScrapValueOfProperty;
+                    existingAsset.AssetCategory = updatedAsset.AssetCategory;
+                    existingAsset.AssetLocation = updatedAsset.AssetLocation;
+                    existingAsset.AssetType = updatedAsset.AssetType;
+                    existingAsset.Fmv = updatedAsset.Fmv;
+                    existingAsset.Bmv = updatedAsset.Bmv;
+                    existingAsset.FinancedBy = updatedAsset.FinancedBy;
+                    existingAsset.DepPercentage = updatedAsset.DepPercentage;
+                    existingAsset.PropertyNo = updatedAsset.PropertyNo;
+
+                    existingAsset.ModifiedBy = "Admin"; // Replace with actual current user
+                    existingAsset.ModifiedOn = DateTime.Now;
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { message = "Asset updated successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateAsset: {ex.Message}");
+                    return BadRequest(new { message = "An error occurred while updating the asset.", error = ex.Message });
+                }
             }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost]
         public IActionResult Delete(string assetLedgerNo)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+                try
+                {
+                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @AssetLedgerNo = {0}", assetLedgerNo);
 
-                var result = _context.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @AssetLedgerNo = {0}", assetLedgerNo);
+                    if (result == 0)
+                        return NotFound(new { message = "Asset not found or could not be deleted." });
 
-                if (result == 0)
-                    return NotFound(new { message = "Asset not found or could not be deleted." });
-
-                return Ok(new { message = "Asset deleted successfully." });
+                    return Ok(new { message = "Asset deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in Delete: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while deleting the asset.", error = ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred while deleting the asset.", error = ex.Message });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpPost]
         public IActionResult DeleteAsset(string assetLedgerNo)
         {
-            if (string.IsNullOrEmpty(assetLedgerNo))
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                return BadRequest("AssetLedgerNo is required.");
+                if (string.IsNullOrEmpty(assetLedgerNo))
+                {
+                    return BadRequest("AssetLedgerNo is required.");
+                }
+
+                var asset = dbContext.Tbl20105AssetMasters.FirstOrDefault(a => a.AssetLedgerNo == assetLedgerNo);
+                if (asset == null)
+                {
+                    return NotFound("Asset not found.");
+                }
+
+                dbContext.Tbl20105AssetMasters.Remove(asset);
+                dbContext.SaveChanges();
+
+                return Ok("Asset deleted successfully.");
             }
 
-            // Assuming DbContext is named _context
-            var asset = _context.Tbl20105AssetMasters.FirstOrDefault(a => a.AssetLedgerNo == assetLedgerNo);
-            if (asset == null)
-            {
-                return NotFound("Asset not found.");
-            }
-
-            _context.Tbl20105AssetMasters.Remove(asset);
-            _context.SaveChanges();
-
-            return Ok("Asset deleted successfully.");
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpGet]
         public async Task<ActionResult> GetAssetCategoriesByCode(DataSourceLoadOptions loadOptions)
         {
-            var assetcategory = _context.Tbl20106AssetCategories.Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                i.AssetCategoryCode,
-                i.AssetCategory
+                var assetcategory = dbContext.Tbl20106AssetCategories.Select(i => new
+                {
+                    i.AssetCategoryCode,
+                    i.AssetCategory
+                });
 
+                return Json(await DataSourceLoader.LoadAsync(assetcategory, loadOptions));
+            }
 
-            });
-
-            return Json(await DataSourceLoader.LoadAsync(assetcategory, loadOptions));
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
         public async Task<ActionResult> GetddlAssetlocation(DataSourceLoadOptions loadOptions)
         {
-            var assetlocation = _context.Tbl20107AssetLocations.Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                i.AssetLocationCode,
-                i.AssetLocation
+                var assetlocation = dbContext.Tbl20107AssetLocations.Select(i => new
+                {
+                    i.AssetLocationCode,
+                    i.AssetLocation
+                });
 
+                return Json(await DataSourceLoader.LoadAsync(assetlocation, loadOptions));
+            }
 
-            });
-
-            return Json(await DataSourceLoader.LoadAsync(assetlocation, loadOptions));
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
         public async Task<ActionResult> GetPropertDetails(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Tbl40101PropertyMasters.Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+                var qryListOfAccountlists = dbContext.Tbl40101PropertyMasters.Select(i => new
+                {
+                    i.PropertyNo,
+                    i.PropertyDescription,
+                    i.Specifications,
+                    i.Brand,
+                    i.PlateNo,
+                    i.DoorNo,
+                    i.ChassisNo,
+                    i.Color,
+                    i.Capacity,
+                    i.Model,
+                    i.Year,
+                    i.Ownership,
+                    i.PropertyGroupId,
+                    i.PropertyType
+                });
 
-                i.PropertyNo,
-                i.PropertyDescription,
-                i.Specifications,
-                i.Brand,
-                i.PlateNo,
-                i.DoorNo,
-                i.ChassisNo,
-                i.Color,
-                i.Capacity,
-                i.Model,
-                i.Year,
-                i.Ownership,
-                i.PropertyGroupId,
-                i.PropertyType
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
 
-
-            });
-
-            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpGet]
         public async Task<ActionResult> GetddlAssetMaintanence(DataSourceLoadOptions loadOptions)
         {
-            var assetlocation = _context.Tbl20112AssetMaintenanceTypes.Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                i.AssetMaintenanceTypeId,
-                i.AssetMaintenanceType
+                var assetlocation = dbContext.Tbl20112AssetMaintenanceTypes.Select(i => new
+                {
+                    i.AssetMaintenanceTypeId,
+                    i.AssetMaintenanceType
+                });
 
+                return Json(await DataSourceLoader.LoadAsync(assetlocation, loadOptions));
+            }
 
-            });
-
-            return Json(await DataSourceLoader.LoadAsync(assetlocation, loadOptions));
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
     }
 }

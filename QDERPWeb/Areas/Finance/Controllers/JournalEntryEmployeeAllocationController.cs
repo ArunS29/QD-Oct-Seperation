@@ -2,90 +2,110 @@
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.Areas.Finance.Models;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
-
+using QD.ERP.Web.Service;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-	[Route("api/[controller]/[action]")]
-	[ApiController]
-	public class JournalEntryEmployeeAllocationController : Controller
-	{
-		private ERPMasterWtDataContext _context;
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class JournalEntryEmployeeAllocationController : Controller
+    {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<JournalEntryEmployeeAllocationController> _logger;
 
-		public JournalEntryEmployeeAllocationController(ERPMasterWtDataContext context)
-		{
-			_context = context;
-		}
+        public JournalEntryEmployeeAllocationController(ILogger<JournalEntryEmployeeAllocationController> logger, TenantDbContextHelper tenantDbContextHelper)
+        {
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
+        }
 
-		public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string effectiveDate)
-		{
-			// Log or debug the incoming parameters
-			ViewBag.VoucherNo = voucherNo;
-			ViewBag.AccountHead = accountHead;
-			ViewBag.VoucherAmount = voucherAmount;
-			ViewBag.DrCr = drCr;
-			ViewBag.EffectiveDate = effectiveDate;
+        public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string effectiveDate)
+        {
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.EffectiveDate = effectiveDate;
 
-			return View();
-		}
+            return View();
+        }
 
+        [HttpGet]
+        public IActionResult GetEmployeeName()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var data = dbContext.Tbl101Employees
+                    .Select(c => new
+                    {
+                        c.EmployeeId,
+                        c.EmployeeName,
+                        c.NationalId
+                    }).ToList();
 
-		[HttpGet]
-		public IActionResult GetEmployeeName()
-		{
-			var data = _context.Tbl101Employees
-				.Select(c => new
-				{
-					c.EmployeeId,
-					c.EmployeeName,
-					c.NationalId
+                return Ok(data);
+            }
 
-				}).ToList();
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
-			return Ok(data);
-		}
-		[HttpPost]
-		public async Task<ActionResult> SaveEmployeeAllocation([FromBody] Tbl20129JournalRegisterEmployeeAllocation EM)
-		{
+        [HttpPost]
+        public async Task<ActionResult> SaveEmployeeAllocation([FromBody] Tbl20129JournalRegisterEmployeeAllocation EM)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    dbContext.Tbl20129JournalRegisterEmployeeAllocations.Add(EM);
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { success = true, message = "Data inserted successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in SaveEmployeeAllocation: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
+            }
 
-			try
-			{
-				_context.Tbl20129JournalRegisterEmployeeAllocations.Add(EM);
-				await _context.SaveChangesAsync();
-				//return Json(new { VoucherEntryNo = VE.VoucherNo });
-				return Ok(new { success = true, message = "Data inserted successfully!" });
-			}
-			catch (Exception ex)
-			{
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
-				return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-			}
+        [HttpPost]
+        public IActionResult Delete(List<int> rowKeys)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    foreach (var id in rowKeys)
+                    {
+                        var item = dbContext.Tbl20129JournalRegisterEmployeeAllocations.Find(id);
+                        if (item != null)
+                        {
+                            dbContext.Tbl20129JournalRegisterEmployeeAllocations.Remove(item);
+                        }
+                    }
+                    dbContext.SaveChanges();
+                    return Json(new { success = true });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in Delete: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
+            }
 
-
-		}
-		[HttpPost]
-		public IActionResult Delete(List<int> rowKeys)
-		{
-			try
-			{
-				foreach (var id in rowKeys)
-				{
-					var item = _context.Tbl20129JournalRegisterEmployeeAllocations.Find(id);
-					if (item != null)
-					{
-						_context.Tbl20129JournalRegisterEmployeeAllocations.Remove(item);
-					}
-				}
-				_context.SaveChanges();
-				return Json(new { success = true });
-
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-	}
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+    }
 }
+
+
+
+

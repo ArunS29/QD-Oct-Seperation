@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.Areas.Finance.Models;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -9,36 +14,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     [ApiController]
     public class JournalEntryCostAllocationController : Controller
     {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<JournalEntryCostAllocationController> _logger;
 
-        private ERPMasterWtDataContext _context;
-
-        public JournalEntryCostAllocationController(ERPMasterWtDataContext context)
+        public JournalEntryCostAllocationController(ILogger<JournalEntryCostAllocationController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
-        //[HttpGet("GetCostAllocation")]
-        //public IActionResult GetCostAllocation()
-        //{
-        //    try
-        //    {
-        //        var data = _context.Tbl201CostAllocationMasters.Select(e => new
-        //        {
-        //            e.CostAllocDrCr,
-        //            e.EffectiveDate,
-        //            e.AmountAllocated,
-        //            e.CostAllocRemarks
-        //        }).ToList();
 
-        //        return Json(data);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
-        //    }
-        //}
         public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string effectiveDate)
         {
-            // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
             ViewBag.AccountHead = accountHead;
             ViewBag.VoucherAmount = voucherAmount;
@@ -47,71 +33,84 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return View();
         }
+
         [HttpGet]
         public IActionResult GetCostAllocationUnits()
         {
-            var data = _context.Tbl201CostAllocationUnits
-                .Select(c => new
-                {
-                    c.CostAllocationUnitId,
-                    c.CostAllocationUnit,
-                    c.CostAllocationGroup,
-                    c.IsDisabled
-                }).ToList();
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var data = dbContext.Tbl201CostAllocationUnits
+                    .Select(c => new
+                    {
+                        c.CostAllocationUnitId,
+                        c.CostAllocationUnit,
+                        c.CostAllocationGroup,
+                        c.IsDisabled
+                    }).ToList();
 
-            return Ok(data);
+                return Ok(data);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost]
         public async Task<ActionResult> SaveCostAllocation([FromBody] Tbl20128JournalRegisterCostAllocation CM)
         {
-
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Fetch the latest VoucherEntryID from the database
-                long maxVoucherEntryID = await _context.Tbl20128JournalRegisterCostAllocations
-                    .OrderByDescending(x => x.JournalChildNo)
-                    .Select(x => x.JournalChildNo)
-                    .FirstOrDefaultAsync();
+                try
+                {
+                    long maxVoucherEntryID = await dbContext.Tbl20128JournalRegisterCostAllocations
+                        .OrderByDescending(x => x.JournalChildNo)
+                        .Select(x => x.JournalChildNo)
+                        .FirstOrDefaultAsync();
 
-                // Increment the VoucherEntryID
-                CM.JournalChildNo = maxVoucherEntryID + 1;
+                    CM.JournalChildNo = maxVoucherEntryID + 1;
 
-                _context.Tbl20128JournalRegisterCostAllocations.Add(CM);
-                await _context.SaveChangesAsync();
-                //return Json(new { VoucherEntryNo = VE.VoucherNo });
-                return Ok(new { success = true, message = "Data inserted successfully!" });
+                    dbContext.Tbl20128JournalRegisterCostAllocations.Add(CM);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Data inserted successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in SaveCostAllocation: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
 
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
-
-
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpPost]
         public IActionResult Delete(List<int> rowKeys)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                foreach (var id in rowKeys)
+                try
                 {
-                    var item = _context.Tbl20128JournalRegisterCostAllocations.Find(id);
-                    if (item != null)
+                    foreach (var id in rowKeys)
                     {
-                        _context.Tbl20128JournalRegisterCostAllocations.Remove(item);
+                        var item = dbContext.Tbl20128JournalRegisterCostAllocations.Find(id);
+                        if (item != null)
+                        {
+                            dbContext.Tbl20128JournalRegisterCostAllocations.Remove(item);
+                        }
                     }
+                    dbContext.SaveChanges();
+                    return Json(new { success = true });
                 }
-                _context.SaveChanges();
-                return Json(new { success = true });
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in Delete: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
+            }
 
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
     }
 }
+
+

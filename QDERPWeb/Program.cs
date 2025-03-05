@@ -72,7 +72,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<DbContextFactory>();
 builder.Services.AddMultitenancy<Tenant, TenantResolver>();
-//builder.Services.AddSingleton<DbContextFactory>();
+builder.Services.AddScoped<TenantDbContextHelper>(); // Register TenantDbContextHelper
 builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(typeof(Program)); // AutoMapper registration
 

@@ -8,94 +8,81 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class AccountingRegisterController : Controller
     {
-        private ERPMasterWtDataContext _context;
-        public AccountingRegisterController(ERPMasterWtDataContext context)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<AccountingRegisterController> _logger;
+
+        public AccountingRegisterController(ILogger<AccountingRegisterController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
+
         [HttpGet]
         public async Task<ActionResult> GetVoucherTypes(DataSourceLoadOptions loadOptions)
         {
             try
             {
-                var voucherTypelists = _context.Tbl201VoucherTypes.Select(i => new
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    i.VoucherTypeId,
-                    i.VoucherType,
-                    i.VoucherTypeAr
-                });
+                    var voucherTypelists = dbContext.Tbl201VoucherTypes.Select(i => new
+                    {
+                        i.VoucherTypeId,
+                        i.VoucherType,
+                        i.VoucherTypeAr
+                    });
 
-                return Json(await DataSourceLoader.LoadAsync(voucherTypelists, loadOptions));
+                    return Json(await DataSourceLoader.LoadAsync(voucherTypelists, loadOptions));
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetVoucherTypes: {ex.Message}");
                 return StatusCode(500, new { error = ex.Message });
             }
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult> GetVouchers(string voucherType, string frmDate, string toDate)
-        //{
-        //    try
-        //    {
-        //        DateTime from = new DateTime(2000, 1, 1); 
-        //        DateTime to = DateTime.Now;
-
-        //        if (!string.IsNullOrEmpty(frmDate) && DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedFrom))
-        //        {
-        //            from = parsedFrom;
-        //        }
-
-        //        if (!string.IsNullOrEmpty(toDate) && DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedTo))
-        //        {
-        //            to = parsedTo;
-        //        }
-
-        //        var procedures = new ERPMasterWtDataContextProcedures(_context);
-        //        var ledgerData = await procedures.StProAccountLedgerByVoucherTypeAsync(string.IsNullOrEmpty(voucherType) ? null : voucherType, from, to);
-
-        //        return Json(ledgerData);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { error = ex.Message });
-        //    }
-        //}
         [HttpGet]
         public async Task<ActionResult> GetVouchers(string voucherType, string frmDate, string toDate)
         {
             try
             {
-                DateTime from = new DateTime(2000, 1, 1);
-                DateTime to = DateTime.Now;
-
-                if (!string.IsNullOrEmpty(frmDate) && DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedFrom))
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    from = parsedFrom;
+                    DateTime from = new DateTime(2000, 1, 1);
+                    DateTime to = DateTime.Now;
+
+                    if (!string.IsNullOrEmpty(frmDate) && DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedFrom))
+                    {
+                        from = parsedFrom;
+                    }
+
+                    if (!string.IsNullOrEmpty(toDate) && DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedTo))
+                    {
+                        to = parsedTo;
+                    }
+
+                    var procedures = new ERPMasterWtDataContextProcedures(dbContext);
+                    var ledgerData = await procedures.StProAccountLedgerByVoucherTypeAsync(string.IsNullOrEmpty(voucherType) ? null : voucherType, from, to);
+
+                    var sortedLedgerData = ledgerData.OrderBy(x => x.VoucherDate).ToList();
+
+                    return Json(sortedLedgerData);
                 }
 
-                if (!string.IsNullOrEmpty(toDate) && DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedTo))
-                {
-                    to = parsedTo;
-                }
-
-                var procedures = new ERPMasterWtDataContextProcedures(_context);
-                var ledgerData = await procedures.StProAccountLedgerByVoucherTypeAsync(string.IsNullOrEmpty(voucherType) ? null : voucherType, from, to);
-
-                // Sorting the ledgerData in ascending order by VoucherNo and VoucherDate
-                //  var sortedLedgerData = ledgerData.OrderBy(x => x.VoucherNo).ThenBy(x => x.VoucherDate).ToList();
-                var sortedLedgerData = ledgerData.OrderBy(x => x.VoucherDate).ToList();
-
-                return Json(sortedLedgerData);
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in GetVouchers: {ex.Message}");
                 return StatusCode(500, new { error = ex.Message });
             }
         }

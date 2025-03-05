@@ -1,97 +1,122 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+
 namespace QDWEB.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
+    [ApiController]
     public class VoucherApprovalController : Controller
     {
-        private ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<VoucherApprovalController> _logger;
 
-        public VoucherApprovalController(ERPMasterWtDataContext context)
+        public VoucherApprovalController(ILogger<VoucherApprovalController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
+
         [HttpGet]
         public IActionResult GetVoucherApproval()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-              
-                var data = _context.Qry20136VoucherMasterLists.Select(v => new
+                try
                 {
-                    v.VoucherNo,
-                    VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
-                    v.VoucherRefNo,
-                    v.VoucherNarration,
-                    v.VoucherEnteredBy,
-                    v.VoucherEnteredOn,
-                    v.IsVerified,
-                    v.VoucherVerifiedBy,
-                    v.VoucherVerifiedOn,
-                    v.IsApproved,
-                    v.VoucherApprovedBy,
-                    v.VoucherApprovedOn,
-                    v.VoucherType,
-                    VoucherEffectiveDate = v.VoucherEffectiveDate.HasValue
-                    ? v.VoucherEffectiveDate.Value.ToString("dd-MMM-yyyy")
-                    : string.Empty,
-                    v.VoucherModifiedBy,
-                    v.VoucherModifiedOn,
-                    v.DebitAmount,
-                    v.CreditAmount,
-                    v.AuditVerifiedBy,
-                    v.AuditVerifiedOn,
-                    v.IsAuditVerified
+                    var data = dbContext.Qry20136VoucherMasterLists.Select(v => new
+                    {
+                        v.VoucherNo,
+                        VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
+                        v.VoucherRefNo,
+                        v.VoucherNarration,
+                        v.VoucherEnteredBy,
+                        v.VoucherEnteredOn,
+                        v.IsVerified,
+                        v.VoucherVerifiedBy,
+                        v.VoucherVerifiedOn,
+                        v.IsApproved,
+                        v.VoucherApprovedBy,
+                        v.VoucherApprovedOn,
+                        v.VoucherType,
+                        VoucherEffectiveDate = v.VoucherEffectiveDate.HasValue
+                            ? v.VoucherEffectiveDate.Value.ToString("dd-MMM-yyyy")
+                            : string.Empty,
+                        v.VoucherModifiedBy,
+                        v.VoucherModifiedOn,
+                        v.DebitAmount,
+                        v.CreditAmount,
+                        v.AuditVerifiedBy,
+                        v.AuditVerifiedOn,
+                        v.IsAuditVerified
+                    }).ToList();
 
-                }).ToList();
+                    return Json(data);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetVoucherApproval: {ex.Message}");
+                    return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
+            }
 
-                return Json(data);
-            }
-            catch (Exception ex)
-            {
-                
-                return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
         public IActionResult GetVoucherApprovals(DateTime? startDate, DateTime? endDate)
         {
-            var vouchers = _context.Qry20136VoucherMasterLists.AsQueryable();
-
-            if (startDate.HasValue && endDate.HasValue)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-               
-                vouchers = vouchers.Where(v => v.VoucherDate >= startDate && v.VoucherDate <= endDate);
+                try
+                {
+                    var vouchers = dbContext.Qry20136VoucherMasterLists.AsQueryable();
+
+                    if (startDate.HasValue && endDate.HasValue)
+                    {
+                        vouchers = vouchers.Where(v => v.VoucherDate >= startDate && v.VoucherDate <= endDate);
+                    }
+
+                    return Ok(vouchers.ToList());
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetVoucherApprovals: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
             }
 
-            return Ok(vouchers.ToList());
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpGet]
         public IActionResult GetAssetsSummary()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var assetSummary = _context.Qry20149AssetsRegisterViews
-                    .GroupBy(a => 1) 
-                    .Select(g => new
-                    {
-                        NoOfAssets = g.Count(),
-                        CurrentAssetValue = g.Sum(a => a.NetBookValue) ?? 0 
-                    })
-                    .FirstOrDefault();
+                try
+                {
+                    var assetSummary = dbContext.Qry20149AssetsRegisterViews
+                        .GroupBy(a => 1)
+                        .Select(g => new
+                        {
+                            NoOfAssets = g.Count(),
+                            CurrentAssetValue = g.Sum(a => a.NetBookValue) ?? 0
+                        })
+                        .FirstOrDefault();
 
-                return Ok(assetSummary); 
+                    return Ok(assetSummary);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetAssetsSummary: {ex.Message}");
+                    return StatusCode(500, new { Error = "Failed to fetch asset summary.", Details = ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                
-                return StatusCode(500, new { Error = "Failed to fetch asset summary.", Details = ex.Message });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
-
     }
 }
-

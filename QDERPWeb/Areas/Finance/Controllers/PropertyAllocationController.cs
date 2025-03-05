@@ -1,101 +1,121 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
-
+using QD.ERP.Web.Service;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-	[Route("api/[controller]/[action]")]
-	[ApiController]
-	public class PropertyAllocationController : Controller
-	{
-		private ERPMasterWtDataContext _context;
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class PropertyAllocationController : Controller
+    {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<PropertyAllocationController> _logger;
 
-		public PropertyAllocationController(ERPMasterWtDataContext context)
-		{
-			_context = context;
-		}
+        public PropertyAllocationController(ILogger<PropertyAllocationController> logger, TenantDbContextHelper tenantDbContextHelper)
+        {
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
+        }
 
-		public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string accountId, string effectiveDate)
-		{
-			// Log or debug the incoming parameters
-			ViewBag.VoucherNo = voucherNo;
-			ViewBag.AccountHeadVal = accountHead;
-			ViewBag.VoucherAmount = voucherAmount;
-			ViewBag.DrCr = drCr;
-			ViewBag.AccountID = accountId;
-			ViewBag.EffectiveDate = effectiveDate;
+        public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string accountId, string effectiveDate)
+        {
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHeadVal = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.AccountID = accountId;
+            ViewBag.EffectiveDate = effectiveDate;
 
-			return View();
-		}
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> CheckPropertyAllocation(string AccountHead, string AccountID)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var allocation = await _context.Tbl201ChartOfAccounts
-                    .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsPropertyAllocated == true)
-                    .FirstOrDefaultAsync();
+                try
+                {
+                    var allocation = await dbContext.Tbl201ChartOfAccounts
+                        .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsPropertyAllocated == true)
+                        .FirstOrDefaultAsync();
 
-                if (allocation != null)
-                {
-                    return Ok(new { isAllocated = true });
+                    if (allocation != null)
+                    {
+                        return Ok(new { isAllocated = true });
+                    }
+                    else
+                    {
+                        return Ok(new { isAllocated = false });
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return Ok(new { isAllocated = false });
+                    _logger.LogError($"Error in CheckPropertyAllocation: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
                 }
             }
-            catch (Exception ex)
-            {
-                // Log the error here if necessary
-                return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-		[HttpGet]
-		public IActionResult GetPropertyAllocationUnits()
-		{
-			var data = _context.Qry40102PropertyMasterView2s
-				.Select(c => new
-				{
-					c.PropertyNo,
-					c.PropertyDescription,
-					c.PropertyType,
-					c.PlateNo
-				}).ToList();
 
-			return Ok(data);
-		}
+        [HttpGet]
+        public IActionResult GetPropertyAllocationUnits()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var data = dbContext.Qry40102PropertyMasterView2s
+                    .Select(c => new
+                    {
+                        c.PropertyNo,
+                        c.PropertyDescription,
+                        c.PropertyType,
+                        c.PlateNo
+                    }).ToList();
 
-		[HttpPost]
-		public async Task<ActionResult> SavePropertyAllocation([FromBody] Tbl20122PropertyAllocationMaster CM)
-		{
+                return Ok(data);
+            }
 
-			try
-			{
-				// Fetch the latest VoucherEntryID from the database
-				long maxVoucherEntryID = await _context.Tbl20122PropertyAllocationMasters
-					.OrderByDescending(x => x.VoucherEntryId)
-					.Select(x => x.VoucherEntryId)
-					.FirstOrDefaultAsync();
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
-				// Increment the VoucherEntryID
-				CM.VoucherEntryId = maxVoucherEntryID + 1;
+        [HttpPost]
+        public async Task<ActionResult> SavePropertyAllocation([FromBody] Tbl20122PropertyAllocationMaster CM)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    long maxVoucherEntryID = await dbContext.Tbl20122PropertyAllocationMasters
+                        .OrderByDescending(x => x.VoucherEntryId)
+                        .Select(x => x.VoucherEntryId)
+                        .FirstOrDefaultAsync();
 
-				_context.Tbl20122PropertyAllocationMasters.Add(CM);
-				await _context.SaveChangesAsync();
-				//return Json(new { VoucherEntryNo = VE.VoucherNo });
-				return Ok(new { success = true, message = "Data inserted successfully!" });
-			}
-			catch (Exception ex)
-			{
+                    CM.VoucherEntryId = maxVoucherEntryID + 1;
 
-				return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-			}
+                    dbContext.Tbl20122PropertyAllocationMasters.Add(CM);
+                    await dbContext.SaveChangesAsync();
 
+                    return Ok(new { success = true, message = "Data inserted successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in SavePropertyAllocation: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
+            }
 
-		}
-
-	}
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+    }
 }
+
+
+
+
+

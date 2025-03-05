@@ -11,59 +11,24 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class AccountingLedgersController : Controller
     {
-        private readonly IMemoryCache _cache;
-        private readonly DbContextFactory _dbContextFactory;
-        private readonly IConfiguration _configuration;
-        private readonly ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<AccountingLedgersController> _logger;
 
-        private ILogger<AccountingLedgersController> _logger;
-        public AccountingLedgersController(ILogger<AccountingLedgersController> logger, IMemoryCache cache, DbContextFactory dbContextFactory, IConfiguration configuration)
+        public AccountingLedgersController(ILogger<AccountingLedgersController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _cache = cache;
-            _dbContextFactory = dbContextFactory;
-            _configuration = configuration;
+            _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
-        }
-
-
-        private bool TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext)
-        {
-            tenant = null;
-            dbContext = null;
-
-            var tenantName = HttpContext.Session.GetString("TenantName");
-            if (string.IsNullOrEmpty(tenantName))
-            {
-                return false;
-            }
-
-            if (_cache.TryGetValue("tenant_", out Dictionary<string, Tenant> tenantCache) &&
-                tenantCache.TryGetValue(tenantName.ToLower(), out tenant))
-            {
-                try
-                {
-                    dbContext = _dbContextFactory.CreateDbContext(tenant.ConnectionString);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error: {ex.Message}");
-                }
-            }
-
-            return false;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetLedgerAccounts(DataSourceLoadOptions loadOptions)
         {
-            if (TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 using (dbContext)
                 {
@@ -92,7 +57,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetVouchers(string accountId, string frmDate, string toDate)
         {
-            if (TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
@@ -120,7 +85,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult GetAccountId(string id)
         {
-            if (TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
@@ -135,8 +100,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"This is an error log message from the AccountingLedger controller from GetAccountId(string id) at {DateTime.Now}. Error: {ex.Message}");
                     return Json(new { success = false, message = ex.Message });
-                    _logger.LogError("This is an error log message from the AccountingLedger controller from GetAccountId(string id) at {DateTime}.");
                 }
             }
 

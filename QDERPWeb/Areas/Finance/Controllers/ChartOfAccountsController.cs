@@ -1,109 +1,125 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
-    // [Route("Finapi/[controller]/[action]")]
     [ApiController]
     public class ChartOfAccountsController : Controller
     {
-        private ERPMasterWtDataContext _context;
-        public ChartOfAccountsController(ERPMasterWtDataContext context)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<ChartOfAccountsController> _logger;
+
+        public ChartOfAccountsController(ILogger<ChartOfAccountsController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
+
         [HttpGet]
         public async Task<ActionResult> GetChartOfAccounts()
         {
-            try  
-
-			{
-                var accounts = _context.Qry20107ChartOfAccounts.ToList();
-                return Json(accounts);
-            }
-            catch (Exception ex)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                return StatusCode(500, new { message = "An error occurred while fetching data.", error = ex.Message });
+                try
+                {
+                    var accounts = await dbContext.Qry20107ChartOfAccounts.ToListAsync();
+                    return Json(accounts);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetChartOfAccounts: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
             }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
-
-
 
         [HttpPost]
-        public IActionResult Delete(string accountId)
+        public async Task<IActionResult> Delete(string accountId)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                if (string.IsNullOrEmpty(accountId))
+                try
                 {
-                    return BadRequest(new { success = false, message = "Account ID is required." });
-                }
+                    if (string.IsNullOrEmpty(accountId))
+                    {
+                        return BadRequest(new { success = false, message = "Account ID is required." });
+                    }
 
-                // Check if the account exists in VAT Invoice Master
-                bool hasVATEntries = _context.Tbl20161VatinvoiceMasters.Any(v => v.ClientCode == accountId);
-                if (hasVATEntries)
+                    bool hasVATEntries = await dbContext.Tbl20161VatinvoiceMasters.AnyAsync(v => v.ClientCode == accountId);
+                    if (hasVATEntries)
+                    {
+                        return BadRequest(new { success = false, message = "This Ledger Account has entries in VAT Invoices. Please remove them and try again." });
+                    }
+
+                    bool hasVoucherEntries = await dbContext.Tbl201VoucherEntries.AnyAsync(v => v.AccountHead == accountId);
+                    if (hasVoucherEntries)
+                    {
+                        return BadRequest(new { success = false, message = "Ledger Account has transactions posted (In Vouchers). Please remove them before deleting." });
+                    }
+
+                    bool hasSubLedgerEntries = await dbContext.Tbl201SubLedgerMasters.AnyAsync(s => s.AccountNo == accountId);
+                    if (hasSubLedgerEntries)
+                    {
+                        return BadRequest(new { success = false, message = "Ledger Account has transactions posted (In Sub Ledger). Please remove them before deleting." });
+                    }
+
+                    var item = await dbContext.Tbl201ChartOfAccounts.FirstOrDefaultAsync(p => p.AccountId == accountId);
+                    if (item != null)
+                    {
+                        dbContext.Tbl201ChartOfAccounts.Remove(item);
+                        await dbContext.SaveChangesAsync();
+                        return Ok(new { success = true, message = "Ledger has been successfully removed from the database" });
+                    }
+
+                    return NotFound(new { success = false, message = "Account not found." });
+                }
+                catch (Exception ex)
                 {
-                    return BadRequest(new { success = false, message = "This Ledger Account has entries in VAT Invoices. Please remove them and try again." });
+                    _logger.LogError($"Error in Delete: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred while deleting the account.", error = ex.Message });
                 }
-
-                // Check if the account exists in Voucher Entries
-                bool hasVoucherEntries = _context.Tbl201VoucherEntries.Any(v => v.AccountHead == accountId);
-                if (hasVoucherEntries)
-                {
-                    return BadRequest(new { success = false, message = "Ledger Account has transactions posted (In Vouchers). Please remove them before deleting." });
-                }
-
-                // Check if the account exists in Sub Ledger Master
-                bool hasSubLedgerEntries = _context.Tbl201SubLedgerMasters.Any(s => s.AccountNo == accountId);
-                if (hasSubLedgerEntries)
-                {
-                    return BadRequest(new { success = false, message = "Ledger Account has transactions posted (In Sub Ledger). Please remove them before deleting." });
-                }
-
-                // Find the account in Chart of Accounts
-                var item = _context.Tbl201ChartOfAccounts.FirstOrDefault(p => p.AccountId == accountId);
-                if (item != null)
-                {
-                    _context.Tbl201ChartOfAccounts.Remove(item);
-                    _context.SaveChanges();
-                    return Ok(new { success = true, message = "Ledger has been successfully removed from the database" });
-                }
-
-                return NotFound(new { success = false, message = "Account not found." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "An error occurred while deleting the account.", error = ex.Message });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpGet]
         public IActionResult GetAccountId(string id)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                if (string.IsNullOrEmpty(id))
+                try
                 {
-                    return Json(new { success = false, message = "Invalid Cost Center ID." });
-                }
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        return Json(new { success = false, message = "Invalid Cost Center ID." });
+                    }
 
-                var costCenter = _context.Tbl201ChartOfAccounts.FirstOrDefault(c => c.AccountId == id);
-                if (costCenter == null)
+                    var costCenter = dbContext.Tbl201ChartOfAccounts.FirstOrDefault(c => c.AccountId == id);
+                    if (costCenter == null)
+                    {
+                        return Json(new { success = false, message = "Cost Center not found." });
+                    }
+
+                    return Json(new { success = true, data = costCenter });
+                }
+                catch (Exception ex)
                 {
-                    return Json(new { success = false, message = "Cost Center not found." });
+                    _logger.LogError($"Error in GetAccountId: {ex.Message}");
+                    return Json(new { success = false, message = ex.Message });
                 }
+            }
 
-                return Json(new { success = true, data = costCenter });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
     }
 }

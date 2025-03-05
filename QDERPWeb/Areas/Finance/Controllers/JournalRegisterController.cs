@@ -1,77 +1,108 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using NuGet.Protocol;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
-    //[ApiController]
+    [ApiController]
     public class JournalRegisterController : Controller
     {
-        private ERPMasterWtDataContext _context;
-        public JournalRegisterController(ERPMasterWtDataContext context)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<JournalRegisterController> _logger;
+
+        public JournalRegisterController(ILogger<JournalRegisterController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetJournalview(byte RequesterID, DateTime StartDate, DateTime EndDate, bool IfShowAll)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                ERPMasterWtDataContextProcedures procedure = new ERPMasterWtDataContextProcedures(_context);
-                var result = await procedure.sp20201JournalRegisterViewAsync(RequesterID, StartDate, EndDate, IfShowAll);
-
-                if (result != null && result.Any())
+                try
                 {
-                    return Json(result);
-                }
+                    ERPMasterWtDataContextProcedures procedure = new ERPMasterWtDataContextProcedures(dbContext);
+                    var result = await procedure.sp20201JournalRegisterViewAsync(RequesterID, StartDate, EndDate, IfShowAll);
 
-                return Json(new { success = false, message = "No data found." });
+                    if (result != null && result.Any())
+                    {
+                        return Json(result);
+                    }
+
+                    return Json(new { success = false, message = "No data found." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetJournalview: {ex.Message}");
+                    return Json(new { success = false, message = "An error occurred while fetching the data." });
+                }
             }
-            catch (Exception ex)
-            {
-                // Log error
-                Console.WriteLine($"Error: {ex.Message}");
-                return Json(new { success = false, message = "An error occurred while fetching the data." });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpGet]
         public async Task<ActionResult> GetUser()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Fetch user data from the database
-                var users = await _context.TblUserMasters
-                    .Select(u => new
-                    {
-                        u.UserId,
-                        u.UserName // Ensure this is a valid property
-                    })
-                    .ToListAsync();
+                try
+                {
+                    var users = await dbContext.TblUserMasters
+                        .Select(u => new
+                        {
+                            u.UserId,
+                            u.UserName
+                        })
+                        .ToListAsync();
 
-                return Json(users);
+                    return Json(users);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUser: {ex.Message}");
+                    return Json(new { error = "Unable to fetch user data at this time." });
+                }
             }
-            catch (Exception ex)
-            {
-                // Log the error (implement a logger like Serilog or NLog)
-                Console.WriteLine($"Error fetching users: {ex.Message}");
-                return Json(new { error = "Unable to fetch user data at this time." });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost]
-        public ActionResult UpdateData(QD.ERP.Web.DAL.Entities.sp20201JournalRegisterViewResult updatedItem)
+        public ActionResult UpdateData(sp20201JournalRegisterViewResult updatedItem)
         {
-            // Perform the update logic here.
-            // Example: Update the item in the database.
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Perform the update logic here.
+                    // Example: Update the item in the database.
 
-            return Json(updatedItem);
+                    return Json(updatedItem);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateData: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred while updating the data." });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
     }
 }
+
+
+
+
+

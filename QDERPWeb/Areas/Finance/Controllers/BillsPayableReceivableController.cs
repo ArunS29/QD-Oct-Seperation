@@ -1,36 +1,49 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using QD.ERP.Web.DAL.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormQD.ERP.Web.Areas.Finance.Controllers
 {
-
-    [Route("/pulse/Finance/api/[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
-
     public class BillsPayableReceivableController : Controller
     {
-        private ERPMasterWtDataContext _context;
-        public BillsPayableReceivableController(ERPMasterWtDataContext context)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<BillsPayableReceivableController> _logger;
+
+        public BillsPayableReceivableController(ILogger<BillsPayableReceivableController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
+
         [HttpGet]
         public async Task<ActionResult> GetVoucherEntries(DataSourceLoadOptions loadOptions, string ReferenceNo)
         {
-            var qryListOfAccountlists = _context.Tbl201SubLedgerMasters.Where(p => p.ReferenceNo == ReferenceNo).Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+                var qryListOfAccountlists = dbContext.Tbl201SubLedgerMasters
+                    .Where(p => p.ReferenceNo == ReferenceNo)
+                    .Select(i => new
+                    {
+                        i.DrCr,
+                        i.ReferenceType,
+                        i.ReferenceNo,
+                        i.Amount,
+                        i.SubLedgerId
+                    });
 
-                i.DrCr,
-                i.ReferenceType,
-                i.ReferenceNo,
-                i.Amount,
-                i.SubLedgerId
-            });
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
 
-            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost]
@@ -41,33 +54,35 @@ namespace FormQD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Add the new voucher entry
-                _context.Tbl201SubLedgerMasters.Add(VE);
-                await _context.SaveChangesAsync();
-                var qryListOfAccountlists = _context.Tbl201SubLedgerMasters.Where(p => p.ReferenceNo == VE.ReferenceNo).Select(i => new
+                try
                 {
-                    i.SubLedgerId,
-                    i.DrCr,
-                    i.ReferenceType,
-                    i.ReferenceNo,
-                    i.Amount
-                });
+                    dbContext.Tbl201SubLedgerMasters.Add(VE);
+                    await dbContext.SaveChangesAsync();
 
-                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-                // Provide a success response
-                //return Ok(new { success = true, message = "Data inserted successfully!" });
+                    var qryListOfAccountlists = dbContext.Tbl201SubLedgerMasters
+                        .Where(p => p.ReferenceNo == VE.ReferenceNo)
+                        .Select(i => new
+                        {
+                            i.SubLedgerId,
+                            i.DrCr,
+                            i.ReferenceType,
+                            i.ReferenceNo,
+                            i.Amount
+                        });
+
+                    return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in AddBillsPayableReceivable: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                // Handle errors gracefully
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
-
-
 
         [HttpPost]
         public async Task<ActionResult> UpdateBillsPayableReceivable([FromBody] Tbl201SubLedgerMaster VM)
@@ -77,55 +92,56 @@ namespace FormQD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                _context.Tbl201SubLedgerMasters.Add(VM);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    dbContext.Tbl201SubLedgerMasters.Update(VM);
+                    await dbContext.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Data inserted successfully!" });
+                    return Ok(new { success = true, message = "Data updated successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateBillsPayableReceivable: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
 
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
-
-
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpPost]
-        public IActionResult DeleteRecord(long id)
+        public async Task<IActionResult> DeleteRecord(long id)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Validate the ID
-                if (id <= 0) // Check if id is a valid number
+                try
                 {
-                    return Json(new { success = false, message = "Invalid SubLedgerId provided." });
-                }
+                    if (id <= 0)
+                    {
+                        return Json(new { success = false, message = "Invalid SubLedgerId provided." });
+                    }
 
-                // Find the record in the database
-                var record = _context.Tbl201SubLedgerMasters.FirstOrDefault(r => r.SubLedgerId == id);
-                if (record == null)
+                    var record = await dbContext.Tbl201SubLedgerMasters.FirstOrDefaultAsync(r => r.SubLedgerId == id);
+                    if (record == null)
+                    {
+                        return Json(new { success = false, message = "Record not found." });
+                    }
+
+                    dbContext.Tbl201SubLedgerMasters.Remove(record);
+                    await dbContext.SaveChangesAsync();
+
+                    return Json(new { success = true });
+                }
+                catch (Exception ex)
                 {
-                    return Json(new { success = false, message = "Record not found." });
+                    _logger.LogError($"Error in DeleteRecord: {ex.Message}");
+                    return Json(new { success = false, message = "An error occurred while deleting the record." });
                 }
-
-                // Remove the record from the database
-                _context.Tbl201SubLedgerMasters.Remove(record);
-                _context.SaveChanges();
-
-                return Json(new { success = true });
             }
-            catch (Exception ex)
-            {
-                // Log the exception for debugging
-                // _logger.LogError(ex, "Error occurred while deleting record with Reference No: {id}", id);
-                return Json(new { success = false, message = "An error occurred while deleting the record." });
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
-
     }
 }
-
-

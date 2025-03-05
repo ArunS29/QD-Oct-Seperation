@@ -1,60 +1,70 @@
-﻿using DevExpress.PivotGrid.PivotTable;
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-    [Area("Finance")] // Specify the area if required
-    [Route("api/[controller]")] // Base route will be api/Master
-    [ApiController] // Enable API-specific behavior
+    [Area("Finance")]
+    [Route("api/[controller]")]
+    [ApiController]
     public class MasterController : Controller
     {
-        private readonly ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<MasterController> _logger;
 
-        public MasterController(ERPMasterWtDataContext context)
+        public MasterController(ILogger<MasterController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
 
         [HttpGet]
-     
         public async Task<ActionResult> GetUserddl(DataSourceLoadOptions loadOptions)
         {
-            var users = _context.TblUserMasters.Select(u => new { u.UserId, u.UserName });
-        
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var users = dbContext.TblUserMasters.Select(u => new { u.UserId, u.UserName });
+                    return Json(await DataSourceLoader.LoadAsync(users, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUserddl: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
+            }
 
-
-            return Json(await DataSourceLoader.LoadAsync(users, loadOptions));
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-    
-        // GET: api/Master/GetBranches
+
         [HttpGet("GetBranches")]
         public async Task<IActionResult> GetBranches()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Retrieve branch data
-                var branches = await _context.Tbl20115CompanyBranches.ToListAsync();
+                try
+                {
+                    var branches = await dbContext.Tbl20115CompanyBranches.ToListAsync();
+                    return Ok(branches);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetBranches: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
 
-                // Return the data as JSON
-                return Ok(branches);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/Master/AddBranch
         [HttpPost("AddBranch")]
         public async Task<IActionResult> AddBranch([FromBody] Tbl20115CompanyBranch branch)
         {
@@ -63,39 +73,40 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-
-                // Check if the maintenance type already exists
-                var exists = await _context.Tbl20115CompanyBranches
-                    .AnyAsync(x => x.BranchName == branch.BranchName);
-                if (exists)
+                try
                 {
-                    return BadRequest(new { success = false, message = "Branch Name English already exists." });
+                    var exists = await dbContext.Tbl20115CompanyBranches
+                        .AnyAsync(x => x.BranchName == branch.BranchName);
+                    if (exists)
+                    {
+                        return BadRequest(new { success = false, message = "Branch Name English already exists." });
+                    }
+
+                    var maxBranchCode = dbContext.Tbl20115CompanyBranches
+                        .OrderByDescending(b => b.BranchCode)
+                        .Select(b => b.BranchCode)
+                        .FirstOrDefault();
+
+                    int newBranchCode = string.IsNullOrEmpty(maxBranchCode) ? 1 : int.Parse(maxBranchCode) + 1;
+                    branch.BranchCode = newBranchCode.ToString();
+
+                    dbContext.Tbl20115CompanyBranches.Add(branch);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Branch added successfully." });
                 }
-
-                // Get the max BranchCode and increment
-                var maxBranchCode = _context.Tbl20115CompanyBranches
-                    .OrderByDescending(b => b.BranchCode)
-                    .Select(b => b.BranchCode)
-                    .FirstOrDefault();
-
-                int newBranchCode = string.IsNullOrEmpty(maxBranchCode) ? 1 : int.Parse(maxBranchCode) + 1;
-                branch.BranchCode = newBranchCode.ToString(); // Format as 5-digit number (e.g., "00001")
-
-                // Add the new branch
-                _context.Tbl20115CompanyBranches.Add(branch);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Branch added successfully." });
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in AddBranch: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/Master/UpdateBranch
         [HttpPost("UpdateBranch")]
         public async Task<IActionResult> UpdateBranch([FromBody] Tbl20115CompanyBranch branch)
         {
@@ -104,84 +115,89 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Invalid branch data.");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Retrieve the existing branch using the BranchCode
-                var existingBranch = await _context.Tbl20115CompanyBranches
-                    .FirstOrDefaultAsync(b => b.BranchCode == branch.BranchCode);
-
-                if (existingBranch == null)
+                try
                 {
-                    return NotFound(new { success = false, message = $"Branch with code {branch.BranchCode} not found." });
-                }
+                    var existingBranch = await dbContext.Tbl20115CompanyBranches
+                        .FirstOrDefaultAsync(b => b.BranchCode == branch.BranchCode);
 
-                // Check if the branch name already exists, excluding the current branch being updated
-                var exists = await _context.Tbl20115CompanyBranches
-                    .AnyAsync(b => b.BranchName == branch.BranchName && b.BranchCode != branch.BranchCode);
-                if (exists)
+                    if (existingBranch == null)
+                    {
+                        return NotFound(new { success = false, message = $"Branch with code {branch.BranchCode} not found." });
+                    }
+
+                    var exists = await dbContext.Tbl20115CompanyBranches
+                        .AnyAsync(b => b.BranchName == branch.BranchName && b.BranchCode != branch.BranchCode);
+                    if (exists)
+                    {
+                        return BadRequest(new { success = false, message = "Branch Name already exists." });
+                    }
+
+                    if (!string.IsNullOrEmpty(branch.BranchName))
+                    {
+                        existingBranch.BranchName = branch.BranchName;
+                    }
+
+                    if (!string.IsNullOrEmpty(branch.BranchNameAr))
+                    {
+                        existingBranch.BranchNameAr = branch.BranchNameAr;
+                    }
+
+                    dbContext.Entry(existingBranch).State = EntityState.Modified;
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Branch updated successfully." });
+                }
+                catch (Exception ex)
                 {
-                    return BadRequest(new { success = false, message = "Branch Name already exists." });
+                    _logger.LogError($"Error in UpdateBranch: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
-
-                // Update only the fields that are provided
-                if (!string.IsNullOrEmpty(branch.BranchName))
-                {
-                    existingBranch.BranchName = branch.BranchName;
-                }
-
-                if (!string.IsNullOrEmpty(branch.BranchNameAr))
-                {
-                    existingBranch.BranchNameAr = branch.BranchNameAr;
-                }
-
-                // Save the changes to the database
-                _context.Entry(existingBranch).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Branch updated successfully." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpPost("DeleteBranchMaster")]
         public async Task<IActionResult> DeleteBranchMaster([FromBody] Tbl20115CompanyBranch branch)
         {
-            var BranchToDelete = await _context.Tbl20115CompanyBranches.FindAsync(branch.BranchCode);
-            if (BranchToDelete == null)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                return NotFound();
+                var BranchToDelete = await dbContext.Tbl20115CompanyBranches.FindAsync(branch.BranchCode);
+                if (BranchToDelete == null)
+                {
+                    return NotFound();
+                }
+
+                dbContext.Tbl20115CompanyBranches.Remove(BranchToDelete);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Branch deleted successfully." });
             }
 
-            // Perform delete operation
-            _context.Tbl20115CompanyBranches.Remove(BranchToDelete);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Asset maintenance type deleted successfully." });
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-
-        // GET: api/Master/GetAssetMaintanencetype
         [HttpGet("GetAssetMaintanencetype")]
         public async Task<IActionResult> GetAssetMaintanencetype()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Retrieve all asset maintenance types
-                var assetMaintenanceTypes = await _context.Tbl20112AssetMaintenanceTypes.ToListAsync();
+                try
+                {
+                    var assetMaintenanceTypes = await dbContext.Tbl20112AssetMaintenanceTypes.ToListAsync();
+                    return Ok(assetMaintenanceTypes);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetAssetMaintanencetype: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
 
-                // Return data as JSON
-                return Ok(assetMaintenanceTypes);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpPost("AddAssetMaintanencetype")]
         public async Task<IActionResult> AddAssetMaintanencetype([FromBody] Tbl20112AssetMaintenanceType AssetmaintenanceData)
@@ -191,31 +207,38 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Check if the maintenance type already exists
-            var exists = await _context.Tbl20112AssetMaintenanceTypes
-                .AnyAsync(x => x.AssetMaintenanceType == AssetmaintenanceData.AssetMaintenanceType);
-            if (exists)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                return BadRequest(new { success = false, message = "Asset maintenance type already exists." });
+                try
+                {
+                    var exists = await dbContext.Tbl20112AssetMaintenanceTypes
+                        .AnyAsync(x => x.AssetMaintenanceType == AssetmaintenanceData.AssetMaintenanceType);
+                    if (exists)
+                    {
+                        return BadRequest(new { success = false, message = "Asset maintenance type already exists." });
+                    }
+
+                    var maxId = await dbContext.Tbl20112AssetMaintenanceTypes
+                        .OrderByDescending(x => x.AssetMaintenanceTypeId)
+                        .Select(x => x.AssetMaintenanceTypeId)
+                        .FirstOrDefaultAsync();
+
+                    int newAssetMaintenanceTypeId = maxId + 1;
+                    AssetmaintenanceData.AssetMaintenanceTypeId = (byte)newAssetMaintenanceTypeId;
+
+                    dbContext.Tbl20112AssetMaintenanceTypes.Add(AssetmaintenanceData);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Asset maintenance type added successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in AddAssetMaintanencetype: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
 
-            // Get the maximum AssetMaintenanceTypeId and increment it
-            var maxId = await _context.Tbl20112AssetMaintenanceTypes
-                .OrderByDescending(x => x.AssetMaintenanceTypeId)
-                .Select(x => x.AssetMaintenanceTypeId)
-                .FirstOrDefaultAsync();
-
-            // If the table is empty, start with 1. Otherwise, increment the max value.
-            int newAssetMaintenanceTypeId = maxId + 1;
-
-            // Set the new AssetMaintenanceTypeId (if not auto-generated by the DB)
-            AssetmaintenanceData.AssetMaintenanceTypeId = (byte)newAssetMaintenanceTypeId;
-
-            // Add the new Asset Maintenance Type to the database
-            _context.Tbl20112AssetMaintenanceTypes.Add(AssetmaintenanceData);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Asset maintenance type added successfully." });
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost("UpdateAssetMaintanencetype")]
@@ -226,49 +249,69 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Check if the maintenance type exists
-            var exists = await _context.Tbl20112AssetMaintenanceTypes
-                .AnyAsync(x => x.AssetMaintenanceType == AssetmaintenanceData.AssetMaintenanceType
-                               && x.AssetMaintenanceTypeId != AssetmaintenanceData.AssetMaintenanceTypeId); // Exclude the current record
-            if (exists)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                return BadRequest(new { success = false, message = "Asset maintenance type already exists." });
+                try
+                {
+                    var exists = await dbContext.Tbl20112AssetMaintenanceTypes
+                        .AnyAsync(x => x.AssetMaintenanceType == AssetmaintenanceData.AssetMaintenanceType
+                                       && x.AssetMaintenanceTypeId != AssetmaintenanceData.AssetMaintenanceTypeId);
+                    if (exists)
+                    {
+                        return BadRequest(new { success = false, message = "Asset maintenance type already exists." });
+                    }
+
+                    dbContext.Tbl20112AssetMaintenanceTypes.Update(AssetmaintenanceData);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Asset maintenance type updated successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateAssetMaintanencetype: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
 
-            _context.Tbl20112AssetMaintenanceTypes.Update(AssetmaintenanceData);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Asset maintenance type updated successfully." });
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost("DeleteAssetMaintanencetype")]
         public async Task<IActionResult> DeleteAssetMaintanencetype([FromBody] Tbl20112AssetMaintenanceType AssetmaintenanceData)
         {
-            var assetToDelete = await _context.Tbl20112AssetMaintenanceTypes.FindAsync(AssetmaintenanceData.AssetMaintenanceTypeId);
-            if (assetToDelete == null)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                return NotFound();
+                var assetToDelete = await dbContext.Tbl20112AssetMaintenanceTypes.FindAsync(AssetmaintenanceData.AssetMaintenanceTypeId);
+                if (assetToDelete == null)
+                {
+                    return NotFound();
+                }
+
+                dbContext.Tbl20112AssetMaintenanceTypes.Remove(assetToDelete);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Asset maintenance type deleted successfully." });
             }
 
-            // Perform delete operation
-            _context.Tbl20112AssetMaintenanceTypes.Remove(assetToDelete);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { success = true, message = "Asset maintenance type deleted successfully." });
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // GET: api/Master/GetAssetCategory
         [HttpGet("GetAssetCategory")]
-        public async Task<IActionResult>GetAssetCategory()
+        public async Task<IActionResult> GetAssetCategory()
         {
-            var assetCategories = await _context.Tbl20106AssetCategories
-                .Select(x => new
-                {
-                    x.AssetCategoryCode,
-                    x.AssetCategory
-                })
-                .ToListAsync();
-            return Ok(assetCategories);
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var assetCategories = await dbContext.Tbl20106AssetCategories
+                    .Select(x => new
+                    {
+                        x.AssetCategoryCode,
+                        x.AssetCategory
+                    })
+                    .ToListAsync();
+                return Ok(assetCategories);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost("AddAssetCategory")]
@@ -279,41 +322,42 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Invalid data.");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Normalize the asset category for case-insensitive comparison
-                var normalizedAssetCategory = assetCategory.AssetCategory.Trim().ToLower();
-
-                // Check if the asset category already exists (case-insensitive comparison)
-                var exists = await _context.Tbl20106AssetCategories
-                    .AnyAsync(x => x.AssetCategory.Trim().ToLower() == normalizedAssetCategory);
-
-                if (exists)
+                try
                 {
-                    return BadRequest(new { success = false, message = "Asset Category already exists." });
+                    var normalizedAssetCategory = assetCategory.AssetCategory.Trim().ToLower();
+
+                    var exists = await dbContext.Tbl20106AssetCategories
+                        .AnyAsync(x => x.AssetCategory.Trim().ToLower() == normalizedAssetCategory);
+
+                    if (exists)
+                    {
+                        return BadRequest(new { success = false, message = "Asset Category already exists." });
+                    }
+
+                    var maxId = await dbContext.Tbl20106AssetCategories
+                        .OrderByDescending(a => a.AssetCategoryCode)
+                        .Select(a => a.AssetCategoryCode)
+                        .FirstOrDefaultAsync();
+
+                    assetCategory.AssetCategoryCode = (byte)(maxId == 0 ? 1 : maxId + 1);
+
+                    dbContext.Tbl20106AssetCategories.Add(assetCategory);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Asset category added successfully." });
                 }
-
-                // Retrieve the maximum AssetMaintenanceTypeId from the database
-                var maxId = await _context.Tbl20106AssetCategories
-                    .OrderByDescending(a => a.AssetCategoryCode)
-                    .Select(a => a.AssetCategoryCode)
-                    .FirstOrDefaultAsync();
-
-                // If maxId is 0 (or no data), start with 1
-                assetCategory.AssetCategoryCode = (byte)(maxId == 0 ? 1 : maxId + 1);
-
-                _context.Tbl20106AssetCategories.Add(assetCategory);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Asset category added successfully." });
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in AddAssetCategory: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/Master/UpdateAssetCategory
         [HttpPost("UpdateAssetCategory")]
         public async Task<IActionResult> UpdateAssetCategory([FromBody] Tbl20106AssetCategory assetCategory)
         {
@@ -322,52 +366,59 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Invalid asset category data.");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var normalizedAssetCategory = assetCategory.AssetCategory.Trim().ToLower();
-
-                // Check if the asset category already exists, excluding the current one being updated
-                var exists = await _context.Tbl20106AssetCategories
-                    .AnyAsync(x => x.AssetCategory.Trim().ToLower() == normalizedAssetCategory && x.AssetCategoryCode != assetCategory.AssetCategoryCode);
-
-                if (exists)
+                try
                 {
-                    return BadRequest(new { success = false, message = "Asset Category already exists." });
+                    var normalizedAssetCategory = assetCategory.AssetCategory.Trim().ToLower();
+
+                    var exists = await dbContext.Tbl20106AssetCategories
+                        .AnyAsync(x => x.AssetCategory.Trim().ToLower() == normalizedAssetCategory && x.AssetCategoryCode != assetCategory.AssetCategoryCode);
+
+                    if (exists)
+                    {
+                        return BadRequest(new { success = false, message = "Asset Category already exists." });
+                    }
+
+                    var existingAssetCategory = await dbContext.Tbl20106AssetCategories
+                        .FirstOrDefaultAsync(a => a.AssetCategoryCode == assetCategory.AssetCategoryCode);
+
+                    if (existingAssetCategory == null)
+                    {
+                        return NotFound(new { success = false, message = "Asset category not found." });
+                    }
+
+                    existingAssetCategory.AssetCategory = assetCategory.AssetCategory;
+                    existingAssetCategory.DepreciationLedgerNo = assetCategory.DepreciationLedgerNo;
+                    existingAssetCategory.AccumDepLedgerNo = assetCategory.AccumDepLedgerNo;
+
+                    dbContext.Entry(existingAssetCategory).State = EntityState.Modified;
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Asset category updated successfully." });
                 }
-
-                var existingAssetCategory = await _context.Tbl20106AssetCategories
-                    .FirstOrDefaultAsync(a => a.AssetCategoryCode == assetCategory.AssetCategoryCode);
-
-                if (existingAssetCategory == null)
+                catch (Exception ex)
                 {
-                    return NotFound(new { success = false, message = "Asset category not found." });
+                    _logger.LogError($"Error in UpdateAssetCategory: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
-
-                // Update the asset category fields
-                existingAssetCategory.AssetCategory = assetCategory.AssetCategory;
-                existingAssetCategory.DepreciationLedgerNo = assetCategory.DepreciationLedgerNo;
-                existingAssetCategory.AccumDepLedgerNo = assetCategory.AccumDepLedgerNo;
-
-                _context.Entry(existingAssetCategory).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Asset category updated successfully." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // GET: api/Master/Getassetlocation
         [HttpGet("Getassetlocation")]
         public IActionResult Getassetlocation()
         {
-            var assetLocations = _context.Tbl20107AssetLocations.ToList();
-            return Ok(assetLocations);
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var assetLocations = dbContext.Tbl20107AssetLocations.ToList();
+                return Ok(assetLocations);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/AssetLocation/Addassetlocation
         [HttpPost("Addassetlocation")]
         public IActionResult Add([FromBody] Tbl20107AssetLocation assetLocation)
         {
@@ -376,40 +427,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Asset Location is required.");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Check if the AssetLocation already exists
-                var existingAssetLocation = _context.Tbl20107AssetLocations
-                    .FirstOrDefault(x => x.AssetLocation == assetLocation.AssetLocation);
-
-                if (existingAssetLocation != null)
+                try
                 {
-                    // Return conflict status if duplicate is found
-                    return Conflict("Asset Location already exists.");
+                    var existingAssetLocation = dbContext.Tbl20107AssetLocations
+                        .FirstOrDefault(x => x.AssetLocation == assetLocation.AssetLocation);
+
+                    if (existingAssetLocation != null)
+                    {
+                        return Conflict("Asset Location already exists.");
+                    }
+
+                    var maxAssetLocationCode = dbContext.Tbl20107AssetLocations
+                        .OrderByDescending(x => x.AssetLocationCode)
+                        .FirstOrDefault()?.AssetLocationCode ?? 0;
+
+                    assetLocation.AssetLocationCode = (short)(maxAssetLocationCode + 1);
+
+                    dbContext.Tbl20107AssetLocations.Add(assetLocation);
+                    dbContext.SaveChanges();
+
+                    return Ok(new { message = "Asset Location added successfully." });
                 }
-
-                // Get the maximum AssetLocationCode from the database
-                var maxAssetLocationCode = _context.Tbl20107AssetLocations
-                    .OrderByDescending(x => x.AssetLocationCode)
-                    .FirstOrDefault()?.AssetLocationCode ?? 0;  // Default to 0 if no records are found.
-
-                // Set the new AssetLocationCode to be max + 1
-                assetLocation.AssetLocationCode = (short)(maxAssetLocationCode + 1);
-
-                // Add the new Asset Location to the database
-                _context.Tbl20107AssetLocations.Add(assetLocation);
-                _context.SaveChanges();
-
-                return Ok(new { message = "Asset Location added successfully." });
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in Addassetlocation: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                // Handle any other errors that may occur
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/AssetLocation/UpdateAssetLocation
         [HttpPost("UpdateAssetLocation")]
         public IActionResult Update([FromBody] Tbl20107AssetLocation assetLocation)
         {
@@ -418,47 +468,51 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Asset Location is required.");
             }
 
-            // Check if the AssetLocation already exists with a different AssetLocationCode
-            var existingAssetLocation = _context.Tbl20107AssetLocations
-                .FirstOrDefault(x => x.AssetLocation == assetLocation.AssetLocation && x.AssetLocationCode != assetLocation.AssetLocationCode);
-
-            if (existingAssetLocation != null)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Return conflict status (409) with a message indicating the asset location already exists
-                return BadRequest("Asset Location already exists.");  // Return conflict status if duplicate is found
+                var existingAssetLocation = dbContext.Tbl20107AssetLocations
+                    .FirstOrDefault(x => x.AssetLocation == assetLocation.AssetLocation && x.AssetLocationCode != assetLocation.AssetLocationCode);
+
+                if (existingAssetLocation != null)
+                {
+                    return BadRequest("Asset Location already exists.");
+                }
+
+                var assetLocationToUpdate = dbContext.Tbl20107AssetLocations
+                    .FirstOrDefault(x => x.AssetLocationCode == assetLocation.AssetLocationCode);
+
+                if (assetLocationToUpdate == null)
+                {
+                    return NotFound("Asset Location not found.");
+                }
+
+                assetLocationToUpdate.AssetLocation = assetLocation.AssetLocation;
+                dbContext.SaveChanges();
+
+                return Ok(new { message = "Asset Location updated successfully." });
             }
 
-            var assetLocationToUpdate = _context.Tbl20107AssetLocations
-                .FirstOrDefault(x => x.AssetLocationCode == assetLocation.AssetLocationCode);
-
-            if (assetLocationToUpdate == null)
-            {
-                return NotFound("Asset Location not found.");
-            }
-
-            // Update the Asset Location
-            assetLocationToUpdate.AssetLocation = assetLocation.AssetLocation;
-            _context.SaveChanges();
-
-            return Ok(new { message = "Asset Location updated successfully." });
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // GET: api/Master/GetSalesPersons
         [HttpGet("GetSalesPersons")]
         public async Task<IActionResult> GetSalesPersons()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Retrieve all salesperson records
-                var salesPersons = await _context.Tbl20101SalesPersonMasters.ToListAsync();
+                try
+                {
+                    var salesPersons = await dbContext.Tbl20101SalesPersonMasters.ToListAsync();
+                    return Ok(salesPersons);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetSalesPersons: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
 
-                // Return the data as JSON
-                return Ok(salesPersons);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost("AddSalesPerson")]
@@ -466,7 +520,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Log the validation errors
                 var validationErrors = string.Join(", ", ModelState.Values
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
@@ -474,40 +527,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest($"Validation failed: {validationErrors}");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-
-                var existingAssetLocation = _context.Tbl20101SalesPersonMasters
-                  .FirstOrDefault(x => x.SalesPersonCode == salesPerson.SalesPersonCode);
-
-                if (existingAssetLocation != null)
+                try
                 {
-                    return Conflict("SalesPerson/ Project Manager Code already exists.");  // Return conflict status if duplicate is found
-                }
-                // Log the received data (optional)
-                Console.WriteLine($"Received SalesPerson Data: {JsonConvert.SerializeObject(salesPerson)}");
+                    var existingSalesPerson = dbContext.Tbl20101SalesPersonMasters
+                        .FirstOrDefault(x => x.SalesPersonCode == salesPerson.SalesPersonCode);
 
-                // If userCode is null, ensure proper handling in database
-                if (salesPerson.UserCode == null)
+                    if (existingSalesPerson != null)
+                    {
+                        return Conflict("SalesPerson/ Project Manager Code already exists.");
+                    }
+
+                    dbContext.Tbl20101SalesPersonMasters.Add(salesPerson);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Salesperson added successfully." });
+                }
+                catch (Exception ex)
                 {
-                    salesPerson.UserCode = null; // Ensure it's properly handled as nullable
+                    _logger.LogError($"Error in AddSalesPerson: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
-
-                // Add the new salesperson to the database
-                _context.Tbl20101SalesPersonMasters.Add(salesPerson);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Salesperson added successfully." });
             }
-            catch (Exception ex)
-            {
-                // Log the error and return the exception message
-                Console.WriteLine($"Error: {ex.Message}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/Master/UpdateSalesPerson
         [HttpPost("UpdateSalesPerson")]
         public async Task<IActionResult> UpdateSalesPerson([FromBody] Tbl20101SalesPersonMaster salesPerson)
         {
@@ -516,68 +562,70 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Invalid salesperson data.");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Retrieve the existing salesperson by SalesPersonCode
-                var existingSalesPerson = await _context.Tbl20101SalesPersonMasters
-                    .FirstOrDefaultAsync(s => s.SalesPersonCode == salesPerson.SalesPersonCode);
-
-                if (existingSalesPerson == null)
+                try
                 {
-                    return NotFound(new { success = false, message = $"Salesperson with code {salesPerson.SalesPersonCode} not found." });
-                }
+                    var existingSalesPerson = await dbContext.Tbl20101SalesPersonMasters
+                        .FirstOrDefaultAsync(s => s.SalesPersonCode == salesPerson.SalesPersonCode);
 
-                // Check if the UserCode exists in the database (excluding the current salesperson being updated)
-                if (salesPerson.UserCode.HasValue)
+                    if (existingSalesPerson == null)
+                    {
+                        return NotFound(new { success = false, message = $"Salesperson with code {salesPerson.SalesPersonCode} not found." });
+                    }
+
+                    if (salesPerson.UserCode.HasValue)
+                    {
+                        var userCodeExists = await dbContext.Tbl20101SalesPersonMasters
+                            .AnyAsync(s => s.UserCode == salesPerson.UserCode && s.SalesPersonCode != salesPerson.SalesPersonCode);
+
+                        if (!userCodeExists)
+                        {
+                            return BadRequest(new { success = false, message = $"The provided UserCode {salesPerson.UserCode} does not exist for any other salesperson." });
+                        }
+
+                        if (salesPerson.UserCode < 0 || salesPerson.UserCode > 255)
+                        {
+                            return BadRequest(new { success = false, message = "UserCode must be between 0 and 255." });
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(salesPerson.SalesPersonName))
+                        existingSalesPerson.SalesPersonName = salesPerson.SalesPersonName;
+                    if (salesPerson.UserCode.HasValue)
+                        existingSalesPerson.UserCode = salesPerson.UserCode.Value;
+                    if (!string.IsNullOrEmpty(salesPerson.EmailAddress))
+                        existingSalesPerson.EmailAddress = salesPerson.EmailAddress;
+                    if (!string.IsNullOrEmpty(salesPerson.SalesPersonContactNo))
+                        existingSalesPerson.SalesPersonContactNo = salesPerson.SalesPersonContactNo;
+
+                    dbContext.Entry(existingSalesPerson).State = EntityState.Modified;
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Salesperson updated successfully." });
+                }
+                catch (Exception ex)
                 {
-                    var userCodeExists = await _context.Tbl20101SalesPersonMasters
-                        .AnyAsync(s => s.UserCode == salesPerson.UserCode && s.SalesPersonCode != salesPerson.SalesPersonCode);
-
-                    if (!userCodeExists)
-                    {
-                        return BadRequest(new { success = false, message = $"The provided UserCode {salesPerson.UserCode} does not exist for any other salesperson." });
-                    }
-                    // Validate UserCode range (0 to 255)
-                    if (salesPerson.UserCode.HasValue && (salesPerson.UserCode < 0 || salesPerson.UserCode > 255))
-                    {
-                        return BadRequest(new { success = false, message = "UserCode must be between 0 and 255." });
-                    }
+                    _logger.LogError($"Error in UpdateSalesPerson: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
-
-                // Update only the fields that are provided (check for null or empty)
-                if (!string.IsNullOrEmpty(salesPerson.SalesPersonName))
-                    existingSalesPerson.SalesPersonName = salesPerson.SalesPersonName;
-                if (salesPerson.UserCode.HasValue)
-                    existingSalesPerson.UserCode = salesPerson.UserCode.Value;  // Make sure it's a valid byte
-                if (!string.IsNullOrEmpty(salesPerson.EmailAddress))
-                    existingSalesPerson.EmailAddress = salesPerson.EmailAddress;
-                if (!string.IsNullOrEmpty(salesPerson.SalesPersonContactNo))
-                    existingSalesPerson.SalesPersonContactNo = salesPerson.SalesPersonContactNo;
-
-                // Mark the entity as modified
-                _context.Entry(existingSalesPerson).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Salesperson updated successfully." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
-
-
-
 
         [HttpGet("GetLedgerSubGroups")]
         public IActionResult GetLedgerSubGroups()
         {
-            var subGroups = _context.Tbl20123LedgerSubGroups.ToList();
-            return Ok(subGroups);
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var subGroups = dbContext.Tbl20123LedgerSubGroups.ToList();
+                return Ok(subGroups);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/Master/AddLedgerSubGroup
         [HttpPost("AddLedgerSubGroup")]
         public IActionResult AddLedgerSubGroup([FromBody] Tbl20123LedgerSubGroup subGroup)
         {
@@ -586,147 +634,136 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Invalid data. The subGroup is null.");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Debug log: Check if subGroup is properly received.
-                Console.WriteLine($"Received subGroup: {subGroup.SubGroupName}");
-
-                // Get the max LedgerSubGroupCode and increment it
-                var maxLedgerSubGroupCode = _context.Tbl20123LedgerSubGroups
-                    .OrderByDescending(sg => sg.LedgerSubGroupCode)
-                    .Select(sg => sg.LedgerSubGroupCode)
-                    .FirstOrDefault();
-
-                // Base prefix that will remain constant in the code
-                string codePrefix = "A011-";
-
-                // Generate new LedgerSubGroupCode
-                string newLedgerSubGroupCode;
-
-                if (string.IsNullOrEmpty(maxLedgerSubGroupCode))
+                try
                 {
-                    // If no existing code found, start from "A011-001"
-                    newLedgerSubGroupCode = codePrefix + "001";
-                }
-                else
-                {
-                    // Split the existing LedgerSubGroupCode into prefix and numeric part
-                    var parts = maxLedgerSubGroupCode.Split('-');
+                    var maxLedgerSubGroupCode = dbContext.Tbl20123LedgerSubGroups
+                        .OrderByDescending(sg => sg.LedgerSubGroupCode)
+                        .Select(sg => sg.LedgerSubGroupCode)
+                        .FirstOrDefault();
 
-                    if (parts.Length == 2 && int.TryParse(parts[1], out int currentNumber))
+                    string codePrefix = "A011-";
+                    string newLedgerSubGroupCode;
+
+                    if (string.IsNullOrEmpty(maxLedgerSubGroupCode))
                     {
-                        // Increment the numeric part
-                        currentNumber++;
-
-                        // Format the new number part to be 3 digits long (e.g., "005")
-                        newLedgerSubGroupCode = codePrefix + currentNumber.ToString("D3");
+                        newLedgerSubGroupCode = codePrefix + "001";
                     }
                     else
                     {
-                        // Handle cases where the format is unexpected
-                        return BadRequest("Invalid format for LedgerSubGroupCode.");
+                        var parts = maxLedgerSubGroupCode.Split('-');
+
+                        if (parts.Length == 2 && int.TryParse(parts[1], out int currentNumber))
+                        {
+                            currentNumber++;
+                            newLedgerSubGroupCode = codePrefix + currentNumber.ToString("D3");
+                        }
+                        else
+                        {
+                            return BadRequest("Invalid format for LedgerSubGroupCode.");
+                        }
                     }
+
+                    subGroup.LedgerSubGroupCode = newLedgerSubGroupCode;
+
+                    dbContext.Tbl20123LedgerSubGroups.Add(subGroup);
+                    dbContext.SaveChanges();
+
+                    return Ok(new { success = true, message = "Ledger SubGroup added successfully." });
                 }
-
-                // Set the newly generated LedgerSubGroupCode
-                subGroup.LedgerSubGroupCode = newLedgerSubGroupCode;
-
-                // Debug log: Check the new generated LedgerSubGroupCode.
-                Console.WriteLine($"Generated new LedgerSubGroupCode: {subGroup.LedgerSubGroupCode}");
-
-                // Add the new Ledger SubGroup to the database
-                _context.Tbl20123LedgerSubGroups.Add(subGroup);
-                _context.SaveChanges();
-
-                return Ok(new { success = true, message = "Ledger SubGroup added successfully." });
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in AddLedgerSubGroup: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                // Log the exception for debugging.
-                Console.WriteLine($"Error occurred: {ex.Message}");
 
-                // Return a detailed error message.
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/Master/UpdateLedgerSubGroup
         [HttpPost("UpdateLedgerSubGroup")]
         public async Task<IActionResult> UpdateLedgerSubGroup([FromBody] Tbl20123LedgerSubGroup subGroup)
         {
-            // Check for null data or invalid LedgerSubGroupCode
             if (subGroup == null || string.IsNullOrEmpty(subGroup.LedgerSubGroupCode))
             {
                 return BadRequest("Invalid sub-group data.");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Retrieve the existing LedgerSubGroup using the LedgerSubGroupCode
-                var existingSubGroup = await _context.Tbl20123LedgerSubGroups
-                    .FirstOrDefaultAsync(sg => sg.LedgerSubGroupCode == subGroup.LedgerSubGroupCode);
-
-                if (existingSubGroup == null)
+                try
                 {
-                    return NotFound(new { success = false, message = $"Sub-group with code {subGroup.LedgerSubGroupCode} not found." });
-                }
+                    var existingSubGroup = await dbContext.Tbl20123LedgerSubGroups
+                        .FirstOrDefaultAsync(sg => sg.LedgerSubGroupCode == subGroup.LedgerSubGroupCode);
 
-                // Update only the fields that are provided (checking for null or empty)
-                if (!string.IsNullOrEmpty(subGroup.SubGroupName))
+                    if (existingSubGroup == null)
+                    {
+                        return NotFound(new { success = false, message = $"Sub-group with code {subGroup.LedgerSubGroupCode} not found." });
+                    }
+
+                    if (!string.IsNullOrEmpty(subGroup.SubGroupName))
+                    {
+                        existingSubGroup.SubGroupName = subGroup.SubGroupName;
+                    }
+
+                    if (!string.IsNullOrEmpty(subGroup.SubGroupNameAr))
+                    {
+                        existingSubGroup.SubGroupNameAr = subGroup.SubGroupNameAr;
+                    }
+
+                    dbContext.Entry(existingSubGroup).State = EntityState.Modified;
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Sub-group updated successfully." });
+                }
+                catch (Exception ex)
                 {
-                    existingSubGroup.SubGroupName = subGroup.SubGroupName;
+                    _logger.LogError($"Error in UpdateLedgerSubGroup: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
-
-                if (!string.IsNullOrEmpty(subGroup.SubGroupNameAr))
-                {
-                    existingSubGroup.SubGroupNameAr = subGroup.SubGroupNameAr;
-                }
-
-                // Save the changes to the database
-                _context.Entry(existingSubGroup).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Sub-group updated successfully." });
             }
-            catch (Exception ex)
-            {
-                // If there's any error, return internal server error with message
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpPost("DeleteLedgerSubGroup")]
         public IActionResult DeleteLedgerSubGroup([FromBody] string ledgerSubGroupCode)
         {
-            var subGroup = _context.Tbl20123LedgerSubGroups.FirstOrDefault(x => x.LedgerSubGroupCode == ledgerSubGroupCode);
-            if (subGroup != null)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                _context.Tbl20123LedgerSubGroups.Remove(subGroup);
-                _context.SaveChanges();
+                var subGroup = dbContext.Tbl20123LedgerSubGroups.FirstOrDefault(x => x.LedgerSubGroupCode == ledgerSubGroupCode);
+                if (subGroup != null)
+                {
+                    dbContext.Tbl20123LedgerSubGroups.Remove(subGroup);
+                    dbContext.SaveChanges();
+                }
+                return Ok();
             }
-            return Ok();
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // GET: api/AssetTypeMaster/GetAssetTypes
         [HttpGet("GetAssetTypes")]
         public async Task<IActionResult> GetAssetTypes()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Retrieve asset type data
-                var assetTypes = await _context.Tbl20109AssetsDocTypes.ToListAsync();
+                try
+                {
+                    var assetTypes = await dbContext.Tbl20109AssetsDocTypes.ToListAsync();
+                    return Ok(assetTypes);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetAssetTypes: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
 
-                // Return the data as JSON
-                return Ok(assetTypes);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/AssetTypeMaster/AddAssetType
         [HttpPost("AddAssetType")]
         public async Task<IActionResult> AddAssetType([FromBody] Tbl20109AssetsDocType assetType)
         {
@@ -735,39 +772,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Check if the AssetLocation already exists
-                var existingAssetLocation = _context.Tbl20109AssetsDocTypes
-                    .FirstOrDefault(x => x.DocumentType == assetType.DocumentType);
-
-                if (existingAssetLocation != null)
+                try
                 {
-                    return Conflict("Asset DocumentType already exists.");  // Return conflict status if duplicate is found
+                    var existingAssetType = dbContext.Tbl20109AssetsDocTypes
+                        .FirstOrDefault(x => x.DocumentType == assetType.DocumentType);
+
+                    if (existingAssetType != null)
+                    {
+                        return Conflict("Asset DocumentType already exists.");
+                    }
+
+                    var maxDocumentTypeId = dbContext.Tbl20109AssetsDocTypes
+                        .OrderByDescending(a => a.DocumentTypeId)
+                        .Select(a => a.DocumentTypeId)
+                        .FirstOrDefault();
+
+                    short newDocumentTypeId = (short)(maxDocumentTypeId + 1);
+                    assetType.DocumentTypeId = newDocumentTypeId;
+
+                    dbContext.Tbl20109AssetsDocTypes.Add(assetType);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Asset Type added successfully." });
                 }
-                // Get the max DocumentTypeId and increment
-                var maxDocumentTypeId = _context.Tbl20109AssetsDocTypes
-                    .OrderByDescending(a => a.DocumentTypeId)
-                    .Select(a => a.DocumentTypeId)
-                    .FirstOrDefault();
-
-                short newDocumentTypeId = (short)(maxDocumentTypeId + 1); // Cast to short
-                assetType.DocumentTypeId = newDocumentTypeId; // Assign the new ID to the asset type
-
-
-                // Add the new asset type
-                _context.Tbl20109AssetsDocTypes.Add(assetType);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Asset Type added successfully." });
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in AddAssetType: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        // POST: api/AssetTypeMaster/UpdateAssetType
         [HttpPost("UpdateAssetType")]
         public async Task<IActionResult> UpdateAssetType([FromBody] Tbl20109AssetsDocType assetType)
         {
@@ -776,49 +815,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest("Invalid asset type data.");
             }
 
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Check if the AssetLocation already exists
-                var existingAssetLocation = _context.Tbl20109AssetsDocTypes
-                    .FirstOrDefault(x => x.DocumentType == assetType.DocumentType);
-
-                if (existingAssetLocation != null)
+                try
                 {
-                    return Conflict("Asset DocumentType already exists.");  // Return conflict status if duplicate is found
+                    var existingAssetType = await dbContext.Tbl20109AssetsDocTypes
+                        .FirstOrDefaultAsync(a => a.DocumentTypeId == assetType.DocumentTypeId);
+
+                    if (existingAssetType == null)
+                    {
+                        return NotFound(new { success = false, message = $"Asset Type with ID {assetType.DocumentTypeId} not found." });
+                    }
+
+                    if (!string.IsNullOrEmpty(assetType.DocumentType))
+                    {
+                        existingAssetType.DocumentType = assetType.DocumentType;
+                    }
+
+                    if (assetType.ReminderDays.HasValue)
+                    {
+                        existingAssetType.ReminderDays = assetType.ReminderDays;
+                    }
+
+                    dbContext.Entry(existingAssetType).State = EntityState.Modified;
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Asset Type updated successfully." });
                 }
-
-                // Retrieve the existing asset type using DocumentTypeId
-                var existingAssetType = await _context.Tbl20109AssetsDocTypes
-                    .FirstOrDefaultAsync(a => a.DocumentTypeId == assetType.DocumentTypeId);
-
-                if (existingAssetType == null)
+                catch (Exception ex)
                 {
-                    return NotFound(new { success = false, message = $"Asset Type with ID {assetType.DocumentTypeId} not found." });
+                    _logger.LogError($"Error in UpdateAssetType: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
-
-                // Update only the fields that are provided
-                if (!string.IsNullOrEmpty(assetType.DocumentType))
-                {
-                    existingAssetType.DocumentType = assetType.DocumentType;
-                }
-
-                if (assetType.ReminderDays.HasValue)
-                {
-                    existingAssetType.ReminderDays = assetType.ReminderDays;
-                }
-
-                // Save the changes to the database
-                _context.Entry(existingAssetType).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Asset Type updated successfully." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
     }
-
 }
-

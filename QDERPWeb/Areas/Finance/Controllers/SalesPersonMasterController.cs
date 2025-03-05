@@ -3,91 +3,113 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using QD.ERP.Web.DAL.Entities;
 
 namespace QDERPWeb.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
+    [ApiController]
     public class SalesPersonMasterController : Controller
     {
-        private ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<SalesPersonMasterController> _logger;
 
-        public SalesPersonMasterController(ERPMasterWtDataContext context)
+        public SalesPersonMasterController(ILogger<SalesPersonMasterController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
         {
-            var tbl20101salespersonmasters = _context.Tbl20101SalesPersonMasters.Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                i.SalesPersonCode,
-                i.SalesPersonName,
-                i.UserCode,
-                i.EmailAddress,
-                i.SalesPersonContactNo,
-                i.SalespersonOldCode
-            });
+                var tbl20101salespersonmasters = dbContext.Tbl20101SalesPersonMasters.Select(i => new
+                {
+                    i.SalesPersonCode,
+                    i.SalesPersonName,
+                    i.UserCode,
+                    i.EmailAddress,
+                    i.SalesPersonContactNo,
+                    i.SalespersonOldCode
+                });
 
-            // If underlying data is a large SQL table, specify PrimaryKey and PaginateViaPrimaryKey.
-            // This can make SQL execution plans more efficient.
-            // For more detailed information, please refer to this discussion: https://github.com/DevExpress/DevExtreme.AspNet.Data/issues/336.
-            // loadOptions.PrimaryKey = new[] { "SalesPersonCode" };
-            // loadOptions.PaginateViaPrimaryKey = true;
+                return Json(await DataSourceLoader.LoadAsync(tbl20101salespersonmasters, loadOptions));
+            }
 
-            return Json(await DataSourceLoader.LoadAsync(tbl20101salespersonmasters, loadOptions));
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(string values)
         {
-            var model = new Tbl20101SalesPersonMaster();
-            var valuesDict = JsonConvert.DeserializeObject<IDictionary>(values);
-            PopulateModel(model, valuesDict);
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var model = new Tbl20101SalesPersonMaster();
+                var valuesDict = JsonConvert.DeserializeObject<IDictionary>(values);
+                PopulateModel(model, valuesDict);
 
-            if (!TryValidateModel(model))
-                return BadRequest(GetFullErrorMessage(ModelState));
+                if (!TryValidateModel(model))
+                    return BadRequest(GetFullErrorMessage(ModelState));
 
-            var result = _context.Tbl20101SalesPersonMasters.Add(model);
-            await _context.SaveChangesAsync();
+                var result = dbContext.Tbl20101SalesPersonMasters.Add(model);
+                await dbContext.SaveChangesAsync();
 
-            return Json(new { result.Entity.SalesPersonCode });
+                return Json(new { result.Entity.SalesPersonCode });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPut]
         public async Task<IActionResult> Put(string key, string values)
         {
-            var model = await _context.Tbl20101SalesPersonMasters.FirstOrDefaultAsync(item => item.SalesPersonCode == key);
-            if (model == null)
-                return StatusCode(409, "Object not found");
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var model = await dbContext.Tbl20101SalesPersonMasters.FirstOrDefaultAsync(item => item.SalesPersonCode == key);
+                if (model == null)
+                    return StatusCode(409, "Object not found");
 
-            var valuesDict = JsonConvert.DeserializeObject<IDictionary>(values);
-            PopulateModel(model, valuesDict);
+                var valuesDict = JsonConvert.DeserializeObject<IDictionary>(values);
+                PopulateModel(model, valuesDict);
 
-            if (!TryValidateModel(model))
-                return BadRequest(GetFullErrorMessage(ModelState));
+                if (!TryValidateModel(model))
+                    return BadRequest(GetFullErrorMessage(ModelState));
 
-            await _context.SaveChangesAsync();
-            return Ok();
+                await dbContext.SaveChangesAsync();
+                return Ok();
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpDelete]
-        public async Task Delete(string key)
+        public async Task<IActionResult> Delete(string key)
         {
-            var model = await _context.Tbl20101SalesPersonMasters.FirstOrDefaultAsync(item => item.SalesPersonCode == key);
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var model = await dbContext.Tbl20101SalesPersonMasters.FirstOrDefaultAsync(item => item.SalesPersonCode == key);
 
-            _context.Tbl20101SalesPersonMasters.Remove(model);
-            await _context.SaveChangesAsync();
+                if (model == null)
+                    return StatusCode(409, "Object not found");
+
+                dbContext.Tbl20101SalesPersonMasters.Remove(model);
+                await dbContext.SaveChangesAsync();
+
+                return Ok();
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         private void PopulateModel(Tbl20101SalesPersonMaster model, IDictionary values)
         {
@@ -143,3 +165,13 @@ namespace QDERPWeb.Areas.Finance.Controllers
         }
     }
 }
+
+
+
+
+
+
+
+
+
+

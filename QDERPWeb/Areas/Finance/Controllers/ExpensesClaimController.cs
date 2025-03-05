@@ -1,90 +1,96 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-
-using QD.ERP.Web.DAL.Entities;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
+    [ApiController]
     public class ExpensesClaimController : Controller
     {
-        private ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<ExpensesClaimController> _logger;
 
-        public ExpensesClaimController(ERPMasterWtDataContext context)
+        public ExpensesClaimController(ILogger<ExpensesClaimController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
-
 
         [HttpGet]
         public IActionResult GetExpenseClaims()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-
-                var data = _context.Qry20121ExpenseClaimForms.Select(e => new
+                try
                 {
+                    var data = dbContext.Qry20121ExpenseClaimForms.Select(e => new
+                    {
+                        e.ClaimRefNo,
+                        ClaimDate = e.ClaimDate.HasValue
+                            ? e.ClaimDate.Value.ToString("dd-MMM-yyyy")
+                            : string.Empty,
+                        e.ClaimerName,
+                        e.PaymentVoucherNo,
+                        BillDate = e.BillDate.HasValue
+                            ? e.BillDate.Value.ToString("dd-MMM-yyyy")
+                            : string.Empty,
+                        e.BillRefNo,
+                        e.ExpenseDescription,
+                        e.ClaimedAmount,
+                        e.ApprovedAmount,
+                        e.CostCenterCode,
+                        e.AccountHead,
+                        e.IsTaxIncluded,
+                        e.Discount,
+                        e.TaxAmount,
+                        e.RoundOff,
+                        e.SupplierName,
+                        e.SupplierVatno,
+                        e.EmployeeNo,
+                        e.EmployeeName,
+                        e.PropertyNo,
+                        e.PropertyDescription,
+                        e.CostAllocationUnit,
+                        e.PurchaserName
+                    }).ToList();
 
-                    e.ClaimRefNo,
-                    ClaimDate = e.ClaimDate.HasValue
-                    ? e.ClaimDate.Value.ToString("dd-MMM-yyyy")
-                    : string.Empty,
-                    e.ClaimerName,
-                    e.PaymentVoucherNo,
-                    BillDate = e.BillDate.HasValue
-                    ? e.BillDate.Value.ToString("dd-MMM-yyyy")
-                    : string.Empty,
-                    e.BillRefNo,
-                    e.ExpenseDescription,
-                    e.ClaimedAmount,
-                    e.ApprovedAmount,
-                    e.CostCenterCode,
-                    e.AccountHead,
-                    e.IsTaxIncluded,
-                    e.Discount,
-                    e.TaxAmount,
-                    e.RoundOff,
-                    e.SupplierName,
-                    e.SupplierVatno,
-                    e.EmployeeNo,
-                    e.EmployeeName,
-                    e.PropertyNo,
-                    e.PropertyDescription,
-                    e.CostAllocationUnit,
-                    e.PurchaserName
-                }).ToList();
-
-                return Json(data);
+                    return Json(data);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetExpenseClaims: {ex.Message}");
+                    return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
             }
-            catch (Exception ex)
-            {
 
-                return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
         public IActionResult GetExpensesClaims(DateTime? startDate, DateTime? endDate)
         {
-            var vouchers = _context.Qry20121ExpenseClaimForms.AsQueryable();
-
-            if (startDate.HasValue && endDate.HasValue)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+                var vouchers = dbContext.Qry20121ExpenseClaimForms.AsQueryable();
 
-                vouchers = vouchers.Where(v => v.ClaimDate >= startDate && v.ClaimDate <= endDate);
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    vouchers = vouchers.Where(v => v.ClaimDate >= startDate && v.ClaimDate <= endDate);
+                }
+
+                return Ok(vouchers.ToList());
             }
 
-            return Ok(vouchers.ToList());
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
     }
 }
+
+
