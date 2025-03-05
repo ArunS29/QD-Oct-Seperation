@@ -1115,6 +1115,7 @@
         "Bills Payable":"Bills Payable",
         "Capacity": "Capacity",
         "Model": "Model",
+        "Chart Of Cost Centers":"Chart Of Cost Centers",
         "PropertyNo": "PropertyNo",
         "Asset Register": "Asset Register",
         "Success!": "Success!",
@@ -1145,10 +1146,23 @@
         "Account Ledger to Salary Payable Mapping":"Account Ledger to Salary Payable Mapping",
         "Supplier Payment Requests":"Supplier Payment Requests",
         "Trial Balance":"Trial Balance",
-        "FinancesModules-Trial Balance customaizable Formate":"FinancesModules-Trial Balance customaizable Formate"
+        "FinancesModules-Trial Balance customaizable Formate":"FinancesModules-Trial Balance customaizable Formate",
+        "Account Group Order No":"Account Group Order No",
+        "Account Group":"Account Group",
+        "Account Group Id":"Account Group Id",
+        "Master Group":"Master Group",
+        "Chart Of Accounts Order":"Chart Of Accounts Order",
+        "Accounts  Groups Ordering":"Accounts  Groups Ordering"
 
     },
     "ar": {
+        "Account Group Order No": "رقم ترتيب مجموعة الحساب",
+        "Account Group": "مجموعة الحساب",
+        "Account Group Id": "معرف مجموعة الحساب",
+        "Master Group": "المجموعة الرئيسية",
+        "Chart Of Accounts Order": "ترتيب مخطط الحسابات",
+        "Accounts Groups Ordering": "ترتيب مجموعات الحسابات",
+        "Chart Of Cost Centers": "مخطط مراكز التكلفة",
         "FinancesModules-Trial Balance customizable Format": "وحدات المالية - تنسيق ميزان المراجعة القابل للتخصيص",
         "Trial Balance": "ميزان المراجعة",
         "Supplier Payment Requests": "طلبات دفع الموردين",

@@ -236,6 +236,17 @@
 
 
 <script>
+    $(function () {
+
+										$("#ChartOfCostCenters").dxTextBox({
+													text:formatMessage("Chart Of Cost Centers"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
     function redirectToCostCenterMaster(url) {
 
         const modal = document.getElementById("masterModal");
