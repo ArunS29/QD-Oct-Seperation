@@ -79,7 +79,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         x.CurrentCondition
                     }).ToList();
 
-                    return Json(await DataSourceLoader.LoadAsync(result, loadOptions));
+                    return Json(await DataSourceLoader.LoadAsync(result.AsQueryable(), loadOptions));
                 }
                 catch (Exception ex)
                 {
