@@ -834,7 +834,7 @@
                 <div class="submenu-item" onclick="handleClick('rpt201BillsPayable')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (With Reference No)</span>
-                </div>"
+                </div>
                 <div class="submenu-item" onclick="handleClick('rpt201BillsPayableWithVchNo')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (With Voucher No)</span>
@@ -1530,8 +1530,11 @@
             if (reportMappings[selectedText]) {
                 let reportName = reportMappings[selectedText];
                 console.log(`Redirecting to ${reportName}`);
-                window.location.href = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`;
-            } else {
+        window.open(
+          `/pulse/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
+          '_blank',
+          'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );            } else {
                 console.log("No matching report found for selectedText:", selectedText);
             }
 
