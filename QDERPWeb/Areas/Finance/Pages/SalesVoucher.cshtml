@@ -1576,7 +1576,8 @@
 							DevExpress.ui.notify("Voucher details saved successfully!", "success", 2000);
 							var button = $("#btnSave").dxButton("instance");
 							button.option("text", "Update");
-							window.location.reload();
+						//	window.location.reload();
+							history.back();
 						} else {
 							DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
 						}

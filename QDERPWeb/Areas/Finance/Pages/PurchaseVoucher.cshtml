@@ -1481,7 +1481,8 @@ $(function () {
 						var button = $("#btnSave").dxButton("instance");
 
 						button.option("text", "Update");
-						window.location.reload();
+					//	window.location.reload();
+						history.back();
 
 					} else {
 						DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 2000);
