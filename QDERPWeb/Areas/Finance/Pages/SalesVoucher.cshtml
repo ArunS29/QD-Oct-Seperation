@@ -964,10 +964,12 @@
 				if (!response.success || response.exists) {
 					DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
 					$("#VoucherNo").dxTextBox("instance").option("value", null);
+				} else {
+					DevExpress.ui.notify("Sales Invoice No is available.", "success", 2000);
 				}
 			},
 			error: function () {
-				DevExpress.ui.notify("An error occurred while validating Sales Invoice No.", "error", 3000);
+				DevExpress.ui.notify("Validation error occurred.", "error", 3000);
 			}
 		});
 	}
@@ -985,7 +987,6 @@
 				}
 
 				const data = response.data[0];
-
 				if (data) {
 					$("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
 					$("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
@@ -999,6 +1000,8 @@
 					$("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
 					$("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
 					$("#UseSubmittedDate").dxCheckBox("instance").option("value", data.UseSubmittedDate || false);
+
+					DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
 				}
 			},
 			error: function () {
@@ -1014,27 +1017,25 @@
 			contentType: "application/json",
 			data: { voucherNo: voucherNo },
 			success: function (response) {
-				console.log("Full Response:", response); // Log everything for debugging
-
 				if (!response || !response.data) {
-					console.error("Error: API response does not contain 'data'.");
+					DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
 					return;
 				}
 
-				console.log("Fetched Data:", response.data); // Ensure correct data extraction
-
-				// Bind the extracted data directly to the DataGrid
 				$("#dataGrid").dxDataGrid({
-					dataSource: response.data, // Use the 'data' property from response
-					keyExpr: "VoucherNo", // Adjust based on your primary key
+					dataSource: response.data,
+					keyExpr: "VoucherNo",
 					repaintChangesOnly: true
 				});
+
+				DevExpress.ui.notify("Voucher entries fetched successfully.", "success", 2000);
 			},
 			error: function () {
 				DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
 			}
 		});
 	}
+
 
 
 
@@ -1576,7 +1577,8 @@
 							DevExpress.ui.notify("Voucher details saved successfully!", "success", 2000);
 							var button = $("#btnSave").dxButton("instance");
 							button.option("text", "Update");
-							window.location.reload();
+						//	window.location.reload();
+						history.back();
 						} else {
 							DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
 						}
