@@ -9,6 +9,8 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using QD.ERP.Web.Service;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -71,7 +73,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     }
 
                     var procedures = new ERPMasterWtDataContextProcedures(dbContext);
-                    var ledgerData = await procedures.StProAccountLedgerByVoucherTypeAsync(string.IsNullOrEmpty(voucherType) ? null : voucherType, from, to);
+                    var ledgerData = await dbContext.AccountRegisters
+                       .FromSqlRaw("EXEC StProAccountLedgerByVoucherType @p0, @p1, @p2", voucherType, from, to)
+                       .ToListAsync();
+
+                   // var ledgerData = await procedures.StProAccountLedgerByVoucherTypeAsync(string.IsNullOrEmpty(voucherType) ? null : voucherType, from, to);
 
                     var sortedLedgerData = ledgerData.OrderBy(x => x.VoucherDate).ToList();
 

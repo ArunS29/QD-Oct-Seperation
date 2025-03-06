@@ -3389,6 +3389,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<XxxuploadingSalesInvoiceSubLedger> XxxuploadingSalesInvoiceSubLedgers { get; set; }
 	public virtual DbSet<VoucherResult> VoucherResults { get; set; }
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
+    public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
@@ -3396,7 +3397,9 @@ public partial class ERPMasterWtDataContext : DbContext
 		modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
 		modelBuilder.Entity<AccountMasterAR>().HasNoKey();
 		modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
-		modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
+        modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
+
+        modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
         {
             entity
                 .HasNoKey()

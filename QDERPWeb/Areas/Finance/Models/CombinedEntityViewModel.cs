@@ -65,6 +65,35 @@
         public string frmDate { get; set; }
         public string toDate { get; set; }
     }
+    public class AccountRegister
+    {
+        public string VoucherNo { get; set; }
+        public DateTime VoucherDate { get; set; }
+        public string VoucherRefNo { get; set; }
+        public string VoucherNarration { get; set; }
+        public string VoucherEnteredBy { get; set; }
+        public DateTime? VoucherEnteredOn { get; set; }
+        public string VoucherVerifiedBy { get; set; }
+        public DateTime? VoucherVerifiedOn { get; set; }
+        public string VoucherApprovedBy { get; set; }
+        public DateTime? VoucherApprovedOn { get; set; }
+        public long? VoucherEntryNo { get; set; }
+        public string AccountHead { get; set; }
+        public string AccountHeadName { get; set; }
+        public string DrCr { get; set; }
+        public decimal? DrAmount { get; set; }
+        public decimal? CrAmount { get; set; }
+        public decimal? VoucherAmountFormatted { get; set; }
+        public string EntryNarration { get; set; }
+        public string AccountGroup { get; set; }
+        public string MasterGroup { get; set; }
+        public string VoucherType { get; set; }
+        public string SysRemarks { get; set; }
+        public DateTime? VoucherEffectiveDate { get; set; }
+        public string SubGroupName { get; set; }
+        public string VoucherModifiedBy { get; set; }
+        public DateTime? VoucherModifiedOn { get; set; }
 
+    }
 }
 
