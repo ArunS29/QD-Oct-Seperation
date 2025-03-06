@@ -1424,20 +1424,20 @@
 			return;
 		}
 
-		let formattedVoucher = voucherNo.trim(); // Keep the original case
-		let formattedVoucherType = voucherType.trim(); // Keep the original case
+		let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
+		let formattedVoucherType = voucherType.trim(); // Trim to avoid leading/trailing spaces
 
 		console.log("Formatted VoucherNo:", formattedVoucher, "Formatted VoucherType:", formattedVoucherType); // Debugging
 
 		// Define voucher type-based URLs
 		const voucherRoutes = {
-			"Bank Payment": "/pulse/finance/VoucherBankPayment",
-			"Cash Payment": "/pulse/finance/VoucherCashPayment",
-			"Bank Receipts": "/pulse/finance/VoucherEntryReceipts",
-			"Cash Receipts": "/pulse/finance/VoucherEntryCashReceipts",
-			"Sales": "/pulse/finance/SalesVoucher",
-			"Purchase": "/pulse/finance/PurchaseVoucher",
-			"Journal": "/pulse/finance/Voucherjournal"
+			"Bank Payment": `/${tenantName}/finance/VoucherBankPayment`,
+			"Cash Payment": `/${tenantName}/finance/VoucherCashPayment`,
+			"Bank Receipts": `/${tenantName}/finance/VoucherEntryReceipts`,
+			"Cash Receipts": `/${tenantName}/finance/VoucherEntryCashReceipts`,
+			"Sales": `/${tenantName}/finance/SalesVoucher`,
+			"Purchase": `/${tenantName}/finance/PurchaseVoucher`,
+			"Journal": `/${tenantName}/finance/Voucherjournal`
 		};
 
 		let baseUrl = voucherRoutes[formattedVoucherType];
@@ -1452,35 +1452,31 @@
 		}
 	}
 
+
 	// Function to handle right-click event on the grid
 	$(document).on("contextmenu", ".dx-datagrid-rowsview .dx-row", function (e) {
 		e.preventDefault(); // Prevent default right-click menu
 
 		let dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the grid instance
-		let rowIndex = dataGrid.getRowIndexByKey($(this).attr("data-key")); // Correct way to get row index
-		let rowData = rowIndex !== -1 ? dataGrid.getVisibleRows()[rowIndex]?.data : null;
+		let rowIndex = $(this).index();
+		let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
 
 		console.log("Row Data:", rowData); // Debugging
 
 		if (rowData && rowData.VoucherNo && rowData.VoucherType) {
-			let selectedVoucherNo = rowData.VoucherNo;
-			let selectedVoucherType = rowData.VoucherType;
-
+			selectedVoucherNo = rowData.VoucherNo; // Store selected voucher number
+			selectedVoucherType = rowData.VoucherType; // Store selected voucher type
 			console.log("Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
-
-			// Show context menu at mouse position
-			$("#contextMenu").css({
-				display: "block",
-				left: e.pageX,
-				top: e.pageY
-			});
-
-			// Store selection for later use (if needed)
-			$("#contextMenu").data("selectedVoucherNo", selectedVoucherNo);
-			$("#contextMenu").data("selectedVoucherType", selectedVoucherType);
 		} else {
 			console.log("Voucher data is missing.");
 		}
+
+		// Show context menu at mouse position
+		$("#contextMenu").css({
+			display: "block",
+			left: e.pageX,
+			top: e.pageY
+		});
 	});
 
 	// Hide context menu when clicking elsewhere
@@ -1498,6 +1494,7 @@
 			alert("No voucher selected.");
 		}
 	});
+
 
 
 </script>
