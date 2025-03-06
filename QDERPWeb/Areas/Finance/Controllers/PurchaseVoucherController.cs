@@ -201,6 +201,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 try
                 {
+                    Tbl201VoucherMaster voucherMaster = new();
+
+                    bool isVoucherExists = dbContext.Tbl201VoucherMasters
+                   .Any(v => v.VoucherNo == voucherEntries[0].VoucherNo);
+
+                    if (!isVoucherExists)
+                    {
+                        voucherMaster.VoucherNo = voucherEntries[0].VoucherNo;
+                        voucherMaster.VoucherDate = DateTime.Now;
+                        dbContext.Tbl201VoucherMasters.AddRange(voucherMaster);
+                    }
+
                     dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                     await dbContext.SaveChangesAsync();
 
