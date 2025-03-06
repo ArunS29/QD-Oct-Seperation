@@ -107,7 +107,7 @@
 			</div>
 			<div class="col-md-3">
 				<div class="form-group">
-					<div class="button-alignment-down">
+					<div class="">
 						@(Html.DevExtreme().CheckBox()
 													.Text(new JS("formatMessage('Received Date')"))
 													.ID("UseSubmittedDate")
@@ -164,14 +164,14 @@
 				</div>
 			</div>
 
-		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+		<div class="col-md-1" style="margin-top: 66px;padding-left:0px;padding-right:0px;width: 4%;">
 				@(Html.DevExtreme().Button()
 								.ID("btnAddVoucher")
 								.Icon("plus")
 								.OnClick("navigateToLedger")
 								)
 			</div>
-		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+		<div class="col-md-1" style="margin-top: 66px;padding-left:0px;padding-right:0px;width: 4%;">
 				@(Html.DevExtreme().Button()
 								.ID("btnEditVoucher")
 								.Icon("edit")
@@ -263,14 +263,14 @@
 								.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
 								)
 			</div>
-			<div class="form-group" style="margin-top:43px;">
+			<div class="form-group" style="margin-top:25px;">
 				@(Html.DevExtreme().Button()
 								.ID("btnAddAHead")
 								.Icon("plus")
 								.OnClick("navigateToLedger")
 								)
 			</div>
-			<div class="form-group" style="margin-top:43px;">
+			<div class="form-group" style="margin-top:25px;">
 				@(Html.DevExtreme().Button()
 								.ID("btnEditAHead")
 								.Icon("edit")
@@ -318,7 +318,7 @@
 								.MaxLength(500)
 								)
 			</div>
-			<div class="form-group" style="">
+		<div class="form-group" style="margin-top: 25px;">
 				@(Html.DevExtreme().Button()
 								.ID("btnVoucherEntry")
 								.Text(new JS("formatMessage('ADD')"))

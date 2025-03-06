@@ -59,11 +59,11 @@
         padding-right: 20px;
     }
 
-    .left-text {
-        color: black; /* Sets the text color to blue */
-        text-decoration: underline; /* Underlines the text */
-        margin-right: 20px;
-    }
+    /* .left-text { */
+    /*     color: black; /* Sets the text color to blue */ */
+    /*     text-decoration: underline; /* Underlines the text */ */
+    /*     margin-right: 20px; */
+    /* } */
 
     .col-md-6 {
         margin-top: 20px; /* Adjust this value to control the space */
@@ -77,12 +77,12 @@
 </style>
 
 
-<div class="card">
     <div class="content-container-top">
         <div class="container-fluid"></div>
 
 
         <div id="FinanceManagementDashboard" class="card-header no-border-input"></div>
+        
         <div class="container">
             <div class="row">
                 <!-- Left Text Section -->
@@ -118,7 +118,9 @@
             </div>
         </div>
     </div>
-
+<div class="">
+    @await Html.PartialAsync("_GridFooter2")
+</div>
     <div class="dx-field ledgerResult" style="overflow: hidden; font-family: Inter, Helvetica, Arial, sans-serif">
 
         @(
@@ -250,7 +252,7 @@
 
             .HeaderFilter(filter => filter.Visible(true))
 
-            .Height(300)
+            .Height(660)
 
             .ColumnAutoWidth(true)
             .WordWrapEnabled(false)
@@ -389,11 +391,8 @@
 
 
 
-    <div class="card-footer">
-        @await Html.PartialAsync("_GridFooter2")
-    </div>
+    
 
-</div>
 
 <script>
     $(function () {

@@ -403,13 +403,43 @@
             display: none; /* Hidden by default */
         }
 
-            .loader img {
-                width: 500px; /* Adjust size as needed */
-                height: 500px;
-            }
+        .loader img {
+            width: 500px; /* Adjust size as needed */
+            height: 500px;
+        }
 
-        .menu i {
-            color: black;
+        .hr i {
+            color: #ff5733;
+        }
+        /* Human Resources - Red */
+        .finance i {
+            color: #27ae60;
+        }
+        /* Finance - Green */
+        .vat i {
+            color: #f1c40f;
+        }
+        /* VAT Modules - Yellow */
+        .rentals i {
+            color: #3498db;
+        }
+        /* Equipment Rentals - Blue */
+        .camp i {
+            color: #8e44ad;
+        }
+        /* Camp Management - Purple */
+        .inventory i {
+            color: #2c3e50;
+        }
+        /* Inventory Management - Dark Blue */
+        .projects i {
+            color: #e67e22;
+        }
+        /* Projects Control - Orange */
+
+        /* Hover effect */
+        .menu-item:hover i {
+            color: white; /* Change to black when hovered */
         }
 
         .financeDashboardSubmenu {
@@ -478,7 +508,7 @@
         }
 
         .companyName {
-            /* margin-right: auto; */
+            margin-right: auto;
             padding: 20px;
             font-size: 20px;
             font-weight: bold;
@@ -622,7 +652,6 @@
                 <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
             </div>
             <div class="companyName">
-                @* <p>@CompanyName</p> *@
                 @tenantName
             </div>
             <div>
@@ -935,31 +964,31 @@
 
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu">
-                    <div class="menu-item" onclick="navigate('Human Resources')">
+                    <div class="menu-item hr" onclick="navigate('Human Resources')">
                         <i class="fas fa-users"></i>
                         <div class="text">Human Resources</div>
                     </div>
-                    <div class="menu-item" onclick="navigate('Finance')">
+                    <div class="menu-item finance" onclick="navigate('Finance')">
                         <i class="fas fa-dollar-sign"></i>
                         <div class="text">Finance</div>
                     </div>
-                    <div class="menu-item" onclick="navigate('VAT Modules')">
+                    <div class="menu-item vat" onclick="navigate('VAT Modules')">
                         <i class="fas fa-certificate"></i>
                         <div class="text">VAT Modules</div>
                     </div>
-                    <div class="menu-item" onclick="navigate('Equipment Rentals')">
+                    <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
                         <i class="fas fa-truck"></i>
                         <div class="text">Equipment Rentals</div>
                     </div>
-                    <div class="menu-item" onclick="navigate('Camp Management')">
+                    <div class="menu-item camp" onclick="navigate('Camp Management')">
                         <i class="fas fa-campground"></i>
                         <div class="text">Camp Management</div>
                     </div>
-                    <div class="menu-item" onclick="navigate('Inventory Management')">
+                    <div class="menu-item inventory" onclick="navigate('Inventory Management')">
                         <i class="fas fa-cogs"></i>
                         <div class="text">Inventory Management</div>
                     </div>
-                    <div class="menu-item" onclick="navigate('Projects Control')">
+                    <div class="menu-item projects" onclick="navigate('Projects Control')">
                         <i class="fas fa-project-diagram"></i>
                         <div class="text">Projects Control</div>
                     </div>
