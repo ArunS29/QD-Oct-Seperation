@@ -71,76 +71,77 @@
 <div class="dx-fieldset horizontal-container mt-2">
 
     @(Html.DevExtreme().Button()
-        .ID("btnSave")
-        .Text(new JS("formatMessage('Save')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ID("btnSave")
+                .Text(new JS("formatMessage('Save')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-        )
+                )
     @(Html.DevExtreme().Button()
-        .ID("btnSaveAndClose")
-        .Text(new JS("formatMessage('Save and Close')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("save")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+           .ID("btnSaveAndClose")
+           .Text(new JS("formatMessage('Save and Close')"))
+           .Type(ButtonType.Normal)
+           .StylingMode(ButtonStylingMode.Outlined)
+           .Icon("save")
+           .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+           )
     @(Html.DevExtreme().Button()
-        .ID("btnPreview1")
-        .Text(new JS("formatMessage('Preview')"))
-        .Icon("fullscreen")
-        .OnClick("function() { openPreview(); }")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+                .ID("btnPreview1")
+                .Text(new JS("formatMessage('Preview')"))
+                .Icon("fullscreen")
+                .OnClick("function() { openPreview(); }")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
     <div id="previewModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: aliceblue; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000;">
         <h3>Preview</h3>
         <pre id="previewContent">Loading...</pre>
     </div>
     @(Html.DevExtreme().Button()
-        .ID("btnPrint")
-        .Text(new JS("formatMessage('Print')"))
-        .Icon("print")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+                .ID("btnPrint")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .OnClick("function() { openPrint(); }")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
     @(Html.DevExtreme().Button()
-        .ID("btnDelete")
-        .Text(new JS("formatMessage('Delete')"))
-        .Icon("close")
-        .OnClick("onDeleteButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+                .ID("btnDelete")
+                .Text(new JS("formatMessage('Delete')"))
+                .Icon("close")
+                .OnClick("onDeleteButtonClick")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
     @(Html.DevExtreme().Button()
-        .ID("btnBack")
-        .Text(new JS("formatMessage('Back')"))
-        .Icon("arrowleft")
-        .OnClick("onBackButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .OnClick("onBackButtonClick")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
     @(Html.DevExtreme().Button()
-        .ID("btnVerify")
-        .Text(new JS("formatMessage('Verify')"))
-        .Icon("check")
-        .OnClick("onVerifyButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Verify')"))
+                .Icon("check")
+                .OnClick("onVerifyButtonClick")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-        )
+                )
     @(Html.DevExtreme().Button()
-        .ID("btnApprove")
-        .Text(new JS("formatMessage('Approve')"))
-        .Icon("exportselected")
-        .OnClick("onApproveButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ID("btnApprove")
+                .Text(new JS("formatMessage('Approve')"))
+                .Icon("exportselected")
+                .OnClick("onApproveButtonClick")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-        )
+                )
     @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text(new JS("formatMessage('Attach')"))
-        .Icon("link")
-        .OnClick("onAttachButtonClick")
-        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+                .ID("btnAttach")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("link")
+                .OnClick("onAttachButtonClick")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
 </div>
 <script type="text/javascript">
 
@@ -345,4 +346,283 @@
         }
     });
 
+
+      function onDeleteButtonClick() {
+    var dataGrid = $("#dataGrid").dxDataGrid("instance"); 
+    var rowCount = dataGrid.getVisibleRows().length; 
+    var dataSource = dataGrid.option("dataSource"); 
+
+    if (rowCount === 0 || rowCount===null) {
+        DevExpress.ui.dialog.alert(
+            "No records available to delete. Please enter some transactions.",
+            "Data Not Found"
+        ).done(function () {
+
+        });
+    } else {
+          // Retrieve the unique identifier for the row
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        // **Ask for confirmation before proceeding**
+        confirmToDeleteAllVoucher(function () {
+            // User clicked "Yes", proceed with deletion
+            $.ajax({
+                url: `/api/VoucherMaster/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}`,
+                type: "POST",
+                success: function (response) {
+                    if (response.data) {
+                        $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+                       history.back();
+                    } else {
+                        DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+                }
+            });
+        });
+    }
+}
+
+
+ function confirmToDeleteAllVoucher(onConfirm) {
+        DevExpress.ui.dialog.confirm(
+            "You are about to delete the Voucher Entries from the database. You cannot revert the changes. Are you sure you want to delete?",
+            "Delete Confirm."
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                onConfirm(); // Proceed only if the user clicks "Yes"
+                // DevExpress.ui.dialog.alert(
+                //     "All Entries has been successfully removed from the database.",
+                //     "Data Deleted Successfully"
+                // );
+            }
+        });
+    }
+
+     function onBackButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount === 0) {
+            DevExpress.ui.dialog.confirm(
+                "No entries in the voucher, do you want to clear the voucher completely?",
+                "No line items"
+            ).done(function (dialogResult) {
+                if (dialogResult) {
+                    if (typeof onConfirm === "function") {
+                        onConfirm(); // Ensure onConfirm is defined before calling
+                    }
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has been successfully removed from the database.",
+                        "Data Deleted Successfully"
+                    ).done(function () {
+                        history.back(); // Go back to the previous page
+                    });
+                }
+            });
+        } else {
+          history.back(); // Closes or navigates back
+        }
+    }
+
+
+      function onVerifyButtonClick() {
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    // Ensure dataGrid exists
+    if (!dataGrid) {
+        console.error("DataGrid instance not found.");
+        return;
+    }
+
+    const rowCount = dataGrid.getVisibleRows().length;
+
+    // Check if DataGrid contains rows
+    if (rowCount === 0) {
+        DevExpress.ui.dialog.custom({
+            title: "Voucher verification has failed.",
+            message: "Voucher has not been Verified. Please enter transactions to proceed with verification.",
+            buttons: [{ text: "Ok", onClick: () => false }],
+            showTitle: true
+        }).show();
+    } else {
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Verification",
+           // message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
+            message: "Are you sure you want to verify this voucher?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show().done(function (dialogResult) {
+            if (dialogResult) {
+                proceedWithVerification(); // Proceed if user clicks Yes
+            }
+        });
+    }
+}
+
+
+
+
+   function proceedWithVerification() {
+    // Set VerifiedBy checkbox to true
+    $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+
+    const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+    if (!vno) {
+        DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+        return;
+    }
+
+            const currentDate = new Date();
+
+            const formattedDate = currentDate.toLocaleDateString("en-GB", {
+
+                day: "2-digit",
+
+                month: "short",
+
+                year: "numeric"
+
+            }).replace(/ /g, '-');
+
+    $.ajax({
+        type: "POST",
+        url: "/api/VoucherMaster/VerifyVoucher",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
+        success: function (response) {
+            if (response && response.Message) {
+    DevExpress.ui.dialog.alert(
+        "Voucher has been Verified.",
+        "Verified"
+    ).done(() => {
+        $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
+        $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+    });
+}
+ else {
+                DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+            }
+        },
+        error: function (xhr, status, error) {
+            let errorMessage = xhr.responseJSON && xhr.responseJSON.Message 
+                ? xhr.responseJSON.Message 
+                : "An error occurred.";
+        }
+    });
+}
+
+
+
+        function disableEditing() {
+            // Disable all input fields and buttons except for specific ones
+            $('input, select, textarea').prop('disabled', true);
+
+            $('.dx-button').each(function () {
+                const allowedButtons = ['btnBack', 'btnPreview1', 'btnPrint', 'btnAttach'];
+                if (!allowedButtons.includes($(this).attr('id'))) {
+                    $(this).dxButton('option', 'disabled', true);
+                }
+            });
+        }
+
+
+          function onApproveButtonClick() {
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    // Ensure dataGrid exists
+    if (!dataGrid) {
+        console.error("DataGrid instance not found.");
+        return;
+    }
+
+    const rowCount = dataGrid.getVisibleRows().length;
+
+    // Check if DataGrid contains rows
+    if (rowCount === 0) {
+        DevExpress.ui.dialog.custom({
+            title: "Voucher approval has failed.",
+            message: "Voucher has not been Approved. Please enter transactions to proceed with approval.",
+            buttons: [{ text: "Ok", onClick: () => false }],
+            showTitle: true
+        }).show();
+    } else {
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Approval",
+            message: "Are you sure you want to approve this voucher?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show().done(function (dialogResult) {
+            if (dialogResult) {
+                proceedWithApproval(); // Proceed if user clicks Yes
+            }
+        });
+    }
+}
+
+
+
+
+
+         function proceedWithApproval() {
+    // Set VerifiedBy checkbox to true
+    $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+
+    const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+    if (!vno) {
+        DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+        return;
+    }
+
+            const currentDate = new Date();
+
+            const formattedDate = currentDate.toLocaleDateString("en-GB", {
+
+                day: "2-digit",
+
+                month: "short",
+
+                year: "numeric"
+
+            }).replace(/ /g, '-');
+
+    $.ajax({
+        type: "POST",
+        url: "/api/VoucherMaster/ApproveVoucher",
+        contentType: "application/json",
+        dataType: "json",
+        data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
+        success: function (response) {
+            if (response && response.Message) {
+    DevExpress.ui.dialog.alert(
+        "Voucher has been Approved.",
+        "Approved"
+    ).done(() => {
+        disableEditing()
+        $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+    });
+}
+ else {
+                DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+            }
+        },
+        error: function (xhr, status, error) {
+            let errorMessage = xhr.responseJSON && xhr.responseJSON.Message 
+                ? xhr.responseJSON.Message 
+                : "An error occurred.";
+        }
+    });
+}
 </script>

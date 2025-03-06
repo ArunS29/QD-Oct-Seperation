@@ -8,6 +8,7 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 
@@ -197,6 +198,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                Tbl201VoucherMaster voucherMaster = new();
                 int aEntryAmount = 0;
                 int Amt = 0;
                 bool IsMatchingEntry = false;
@@ -226,12 +228,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     IsMatchingEntry = true;
                 }
 
+                bool isVoucherExists = _context.Tbl201VoucherMasters
+               .Any(v => v.VoucherNo == voucherEntries[0].VoucherNo);
 
-
+                if (!isVoucherExists)
+                {
+                    voucherMaster.VoucherNo = voucherEntries[0].VoucherNo;
+                    voucherMaster.VoucherDate = DateTime.Now;
+                    _context.Tbl201VoucherMasters.AddRange(voucherMaster);
+                }
 
                 // Add entries to the database
                 _context.Tbl201VoucherEntries.AddRange(voucherEntries);
                 await _context.SaveChangesAsync();
+
+                //SaveVoucher(voucherEntries);
 
 
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
@@ -251,9 +262,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     });
 
                 var resultList = await qryListOfAccountlists.ToListAsync();
-
-
-
 
                 int debitamt = 0; // Initialize debit amount
 
@@ -398,6 +406,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                Tbl201VoucherMaster voucherMaster = new();
                 int aEntryAmount = 0;
                 int Amt = 0;
                 bool IsMatchingEntry = false;
@@ -427,12 +436,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     IsMatchingEntry = true;
                 }
 
+                bool isVoucherExists = _context.Tbl201VoucherMasters
+               .Any(v => v.VoucherNo == voucherEntries[0].VoucherNo);
 
-
+                if (!isVoucherExists)
+                {
+                    voucherMaster.VoucherNo = voucherEntries[0].VoucherNo;
+                    voucherMaster.VoucherDate = DateTime.Now;
+                    _context.Tbl201VoucherMasters.AddRange(voucherMaster);
+                }
 
                 // Add entries to the database
                 _context.Tbl201VoucherEntries.AddRange(voucherEntries);
                 await _context.SaveChangesAsync();
+
+                //SaveVoucher(voucherEntries);
 
 
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
@@ -452,9 +470,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     });
 
                 var resultList = await qryListOfAccountlists.ToListAsync();
-
-
-
 
                 int debitamt = 0; // Initialize debit amount
 
@@ -603,17 +618,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                _context.Tbl201VoucherMasters.Add(VM);
-                await _context.SaveChangesAsync();
-                //return Json(new { VoucherEntryNo = VE.VoucherNo });
-                return Ok(new { success = true, message = "Data inserted successfully!" });
+                bool isVoucherExists = _context.Tbl201VoucherMasters
+             .Any(v => v.VoucherNo == VM.VoucherNo);
+
+                if (!isVoucherExists)
+                {
+                    _context.Tbl201VoucherMasters.Add(VM);
+                    await _context.SaveChangesAsync();
+                    //return Json(new { VoucherEntryNo = VE.VoucherNo });
+                    return Ok(new { success = true, message = "Data inserted successfully!" });
+                }
+                return Ok(new { success = true, message = "" });
             }
             catch (Exception ex)
             {
 
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
-
 
         }
 
@@ -931,26 +952,76 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> VerifyVoucher([FromBody] string voucherNo)
+        public async Task<ActionResult> VerifyVoucher(Tbl201VoucherMaster voucherMaster)
         {
             try
             {
-                // Find the voucher by VoucherNo
-                var voucher = _context.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+                var UserName = HttpContext.Session.GetString("UserName");
+
+                if (string.IsNullOrEmpty(voucherMaster.VoucherNo))
+                {
+                    return BadRequest(new { Message = "Voucher number is required." });
+                }
+
+                var voucher = _context.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherMaster.VoucherNo);
 
                 if (voucher == null)
                 {
-                    throw new Exception("Voucher not found.");
+                    return NotFound(new { Message = "Voucher not found." });
                 }
 
                 // Update the fields
                 voucher.IsVerified = true;
-                voucher.VoucherApprovedBy = "Admin";
+                voucher.VoucherVerifiedOn = DateTime.Now;
+
+                _context.SaveChanges();
+
+                return Ok(new
+                {
+                    Message = "Voucher verified successfully.",
+                    VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                    //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> ApproveVoucher(Tbl201VoucherMaster voucherMaster)
+        {
+            try
+            {
+                var UserName = HttpContext.Session.GetString("UserName");
+
+                if (string.IsNullOrEmpty(voucherMaster.VoucherNo))
+                {
+                    return BadRequest(new { Message = "Voucher number is required." });
+                }
+
+                var voucher = _context.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherMaster.VoucherNo);
+
+                if (voucher == null)
+                {
+                    return NotFound(new { Message = "Voucher not found." });
+                }
+
+                // Update the fields
+                voucher.IsApproved = true;
                 voucher.VoucherApprovedOn = DateTime.Now;
 
-                // Save changes to the database
                 _context.SaveChanges();
-                return Ok(new { Message = "Voucher verified successfully." });
+
+                return Ok(new
+                {
+                    Message = "Voucher verified successfully.",
+                    VoucherApprovedBy = UserName,  // Example, replace with actual data if needed
+                    //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                });
             }
             catch (Exception ex)
             {
@@ -1370,10 +1441,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 throw ex;
             }
-
-           
-
         }
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateVoucher([FromBody] Tbl201VoucherMaster VM)
+        {
+            if (VM == null || string.IsNullOrWhiteSpace(VM.VoucherNo))
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                var existingVoucher = await _context.Tbl201VoucherMasters
+                                                    .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
+
+                if (existingVoucher != null)
+                {
+                    // Update existing record
+                    _context.Entry(existingVoucher).CurrentValues.SetValues(VM);
+                }
+                else
+                {
+                    // Insert new record
+                    _context.Tbl201VoucherMasters.Add(VM);
+                }
+
+                await _context.SaveChangesAsync();
+                return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
 
 
     }

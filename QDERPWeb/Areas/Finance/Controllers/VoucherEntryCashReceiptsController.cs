@@ -152,7 +152,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             {
 
+
                 // Add entries to the database
+                Tbl201VoucherMaster voucherMaster = new();
+
+                bool isVoucherExists = _context.Tbl201VoucherMasters
+               .Any(v => v.VoucherNo == voucherEntries[0].VoucherNo);
+
+                if (!isVoucherExists)
+                {
+                    voucherMaster.VoucherNo = voucherEntries[0].VoucherNo;
+                    voucherMaster.VoucherDate = DateTime.Now;
+                    _context.Tbl201VoucherMasters.AddRange(voucherMaster);
+                }
 
                 _context.Tbl201VoucherEntries.AddRange(voucherEntries);
 
@@ -580,14 +592,110 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
         }
-        [HttpPost]
-        public IActionResult CheckIsMaintainBillByBill([FromBody] string accheadname)
-        {
-            var result = _context.Qry201ListOfAccounts
-                .Where(a => a.IsMaintainBillByBill == true && a.AccountHead == accheadname)
-                .Any();
 
-            return Ok(result);
+        [HttpGet]
+        public async Task<IActionResult> GetEditAccountHead(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                var qryListOfAccountlists = _context.Qry201ListOfAccounts
+
+                .Select(i => new
+                {
+                    i.AccountId,
+                    i.AccountHead,
+                    i.AccountHeadArabic
+
+                });
+
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckPropertyAllocation(string AccountHead, string AccountID)
+        {
+            try
+            {
+                var allocation = await _context.Tbl201ChartOfAccounts
+                    .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsPropertyAllocated == true)
+                    .FirstOrDefaultAsync();
+
+                if (allocation != null)
+                {
+                    return Ok(new { isAllocated = true });
+                }
+                else
+                {
+                    return Ok(new { isAllocated = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error here if necessary
+                return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> CheckEmployeeAllocation(string AccountHead, string AccountID)
+        {
+            try
+            {
+                var allocation = await _context.Tbl201ChartOfAccounts
+                    .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsEmployeeAllocated == true)
+                    .FirstOrDefaultAsync();
+
+                if (allocation != null)
+                {
+                    return Ok(new { isAllocated = true });
+                }
+                else
+                {
+                    return Ok(new { isAllocated = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error here if necessary
+                return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
+            }
+        }
+        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.VoucherEntryNo = voucherEntryNo;
+            return PartialView("~/Areas/Finance/Views/_CostAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+        public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.VoucherEntryNo = voucherEntryNo;
+            ViewBag.AccountID = accountId;
+            return PartialView("~/Areas/Finance/Views/_PropertyAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+        public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.VoucherEntryNo = voucherEntryNo;
+            ViewBag.AccountID = accountId;
+            return PartialView("~/Areas/Finance/Views/_EmployeeAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
 
     }
