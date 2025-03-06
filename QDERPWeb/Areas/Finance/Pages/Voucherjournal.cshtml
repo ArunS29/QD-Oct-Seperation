@@ -460,7 +460,7 @@
                 //     DevExpress.ui.notify("Navigating to Accounting Ledgers page...", "success", 2000);
 
                 //     // Redirect to the Accounting Ledgers page in the same window
-                //     window.location.href = "/pulse/Finance/AccountingLedgers";
+                //     window.location.href = `/${tenantName}/Finance/AccountingLedgers`;
                 // }
                 // function editAccountingLedger() {
                 //     // Get the selected account ID from the dropdown
@@ -475,7 +475,7 @@
                 //     DevExpress.ui.notify("Opening Account Ledger for editing...", "success", 2000);
 
                 //     // Redirect to the Accounting Ledger edit page with Account ID as a query parameter
-                //     window.location.href = "/pulse/Finance/AccountingLedgers/GetVouchers?accountId=" + encodeURIComponent(accountId);
+                //     window.location.href = `/${tenantName}/Finance/AccountingLedgers/GetVouchers?accountId=` + encodeURIComponent(accountId);
                 // }
 
 
@@ -1070,7 +1070,7 @@
                     popup.show();
 
                     // Correct URL to your LedgerAccount view
-                    $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+                    $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
                 }
                 function isModal() {
                     return new URLSearchParams(window.location.search).get("modal") === "true";
@@ -1098,7 +1098,7 @@
     function attachMultipleFiles(aVoucherNo) {
         // Logic for attaching multiple files
         DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
-        window.location.href = `/pulse/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
+        window.location.href = `/${tenantName}/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
     }
 
     function onApproveButtonClick() {
@@ -1241,7 +1241,7 @@
         popup.show();
 
         // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+        $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
     }
     $(document).ready(function () {
         $("#btntoggleGroupPanel").click();

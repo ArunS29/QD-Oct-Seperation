@@ -497,7 +497,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: "/pulse/Finance/api/BillsPayableReceivable/AddBillsPayableReceivable",
+			url: `/${tenantName}/Finance/api/BillsPayableReceivable/AddBillsPayableReceivable`,
 			contentType: "application/json",
 			data: JSON.stringify(VE),
 			dataType: "json",
@@ -531,7 +531,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: "/pulse/Finance/api/BillsPayableReceivable/UpdateBillsPayableReceivable",
+			url: `/${tenantName}/Finance/api/BillsPayableReceivable/UpdateBillsPayableReceivable`,
 			contentType: "application/json",
 			data: JSON.stringify(VM),
 			dataType: "json",

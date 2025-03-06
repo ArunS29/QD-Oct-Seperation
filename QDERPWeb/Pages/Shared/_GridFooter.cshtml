@@ -653,10 +653,10 @@
     function addRecipitsButton_click(e) {
         switch (e.itemData.text) {
             case 'Add Cash Receipts':
-                window.open('/pulse/Finance/VoucherEntryCashReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open(`/${tenantName}/Finance/VoucherEntryCashReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
             case 'Add Bank Receipts':
-                window.open('/pulse/Finance/VoucherEntryReceipts', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open(`/${tenantName}/Finance/VoucherEntryReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
             // You can handle other cases here if needed
             default:
@@ -670,7 +670,7 @@
         switch (selectedText) {
             case 'Ledger to Salary Payable Mapping':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/pulse/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
+                    pageUrl = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -684,7 +684,7 @@
 
             case 'Ledger to Receivable/Payable Mapping':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/pulse/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
+                    pageUrl = `/${tenantName}/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -698,7 +698,7 @@
 
             case 'Bank Reconciliation':
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/pulse/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
+                    pageUrl = `/${tenantName}/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
                 } else {
                     Swal.fire({
                         icon: 'warning',
@@ -711,7 +711,7 @@
                 break;
 
             case 'Detailed Transaction Report':
-                window.open('/pulse/Finance/TransactionDetails', 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open(`/${tenantName}/Finance/TransactionDetails`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 return;  // No need to set pageUrl for new window
         }
 
@@ -759,11 +759,11 @@
         let title = "Receipts";
         switch (e.itemData.text) {
             case 'Add Cash Receipts':
-                url = "/pulse/Finance/VoucherEntryCashReceipts";
+                url = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
                 title = "Add Cash Receipts";
                 break;
             case 'Add Bank Receipts':
-                url = "/pulse/Finance/VoucherEntryReceipts";
+                url = `/${tenantName}/Finance/VoucherEntryReceipts`;
                 title = "Add Bank Receipts";
                 break;
             default:
@@ -778,11 +778,11 @@
         let title = "Payments";
         switch (e.itemData.text) {
             case 'Add Cash Payment':
-                url = "/pulse/Finance/VoucherCashPayment";
+                url = `/${tenantName}/Finance/VoucherCashPayment`;
                 title = "Add Cash Payment";
                 break;
             case 'Add Bank Payment':
-                url = "/pulse/Finance/VoucherBankPayment";
+                url = `/${tenantName}/Finance/VoucherBankPayment`;
                 title = "Add Bank Payment";
                 break;
             default:
@@ -797,15 +797,15 @@
         let title = "Vouchers";
         switch (e.itemData.text) {
             case 'Add Purchase Voucher':
-                url = "/pulse/Finance/Purchasevoucher";
+                url = `/${tenantName}/Finance/Purchasevoucher`;
                 title = "Add Purchase Voucher";
                 break;
             case 'Add Sales Voucher':
-                url = "/pulse/Finance/Salesvoucher";
+                url = `/${tenantName}/Finance/Salesvoucher`;
                 title = "Add Sales Voucher";
                 break;
             case 'Add Journal Voucher':
-                url = "/pulse/Finance/Voucherjournal";
+                url = `/${tenantName}/Finance/Voucherjournal`;
                 title = "Add Journal Voucher";
                 break;
             default:
@@ -894,7 +894,7 @@
 
     function AccountGroupsOrdering() {
 
-        window.location.href = "/pulse/Finance/AccountGroupsOrdering";
+        window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
 
     }
     function showSubmenu4(e) {

@@ -1098,7 +1098,7 @@
 
 			// Open the Accounting Ledgers form in a popup window
 			window.open(
-			"/pulse/Finance/LedgerAccount", // URL to the form
+			`/${tenantName}/Finance/LedgerAccount`, // URL to the form
 				"popupWindow", // Window name
 				"width=800,height=600,scrollbars=yes,resizable=yes" // Window features
 			);
@@ -1606,7 +1606,7 @@
 			.frame { display: none !important; }
 			.footerContainer { display: none !important; }
 			.bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
-			.mainContainer { margin-top: 1em; }
+			.mainContainer { margin-top: 1em;width:100% }
 		`;
 		document.head.appendChild(style);
 	}
@@ -1622,7 +1622,7 @@
 	function attachMultipleFiles(aVoucherNo) {
 		// Logic for attaching multiple files
 		DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
-		window.location.href = `/pulse/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
+		window.location.href = `/${tenantName}/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
 	}
 
 	function onApproveButtonClick() {
@@ -1775,7 +1775,7 @@
 		$("#popupContainer").dxPopup({
 			contentTemplate: function (contentElement) {
 				// Construct URL with both AccountId and the global IsCharOfAccounts variable
-				var url = "/pulse/Finance/LedgerAccount?AccountId=" + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
+				var url = `/${tenantName}/Finance/LedgerAccount?AccountId=` + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
 
 				$("<iframe>")
 					.attr("src", url)

@@ -1527,7 +1527,7 @@
                 let reportName = reportMappings[selectedText];
                 console.log(`Redirecting to ${reportName}`);
         window.open(
-          `/pulse/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
+          `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
           '_blank',
           'width=1200,height=800,scrollbars=yes,resizable=yes'
         );            } else {

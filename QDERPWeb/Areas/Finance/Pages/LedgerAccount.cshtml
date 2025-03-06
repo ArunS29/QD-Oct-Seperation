@@ -179,6 +179,7 @@
 
     .mainContainer {
         margin-top: 1em;
+        width:100%;
     }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -3268,7 +3269,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/pulse/Finance/Divmaster`;
+        iframe.src = `/${tenantName}/Finance/Divmaster`;
 
         modal.style.display = "block";
 
@@ -3314,7 +3315,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/pulse/Finance/LedgerSubGroupMaster`;
+        iframe.src = `/${tenantName}/Finance/LedgerSubGroupMaster`;
 
         modal.style.display = "block";
 
@@ -3360,7 +3361,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/pulse/Finance/SalesPersonMaster`;
+        iframe.src = `/${tenantName}/Finance/SalesPersonMaster`;
 
         modal.style.display = "block";
 
@@ -3404,7 +3405,7 @@
     function redirectAccoutledgerMaster() {
 
         const masterFormWindow = window.open(
-            '/pulse/Finance/LedgerAccount?AccountGroupId=A013',
+            `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`,
             'popupWindow',
             'width=1400,height=600,scrollbars=yes,resizable=yes'
         );
@@ -3428,7 +3429,7 @@
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/pulse/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
+        iframe.src = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
 
         modal.style.display = "block";
 

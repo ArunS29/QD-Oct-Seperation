@@ -65,6 +65,7 @@
 
     .mainContainer {
         margin-top: 1em;
+        width:100%;
     }
 
     /* Floating Edit Report Button */
@@ -222,7 +223,7 @@
 
         function openReportDesigner(reportName, accountId, frmDate, toDate) {
 
-        const reportDesignerUrl = `/pulse/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        const reportDesignerUrl = `/${tenantName}/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
 
         window.open(reportDesignerUrl, "_blank");
 

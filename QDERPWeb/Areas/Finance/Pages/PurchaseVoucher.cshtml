@@ -1266,7 +1266,7 @@ $(function () {
 				// Show the button
 				// alert("1");
 
-				//       window.location.href = `/pulse/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
+				//       window.location.href = `/${tenantName}/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
 				// return;
 
 			}
@@ -1489,7 +1489,7 @@ $(function () {
 
 	function redirectToLedgerAccount() {
 		DevExpress.ui.notify("Working on Progress", "success", 2000);
-		window.open('/pulse/Finance/LedgerAccount', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+		window.open(`/${tenantName}/Finance/LedgerAccount`, 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
 	}
 	function onEditorPreparing(e) {
 

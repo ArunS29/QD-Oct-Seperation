@@ -346,7 +346,7 @@
         if (dataGrid) {
             dataGrid.option("dataSource", {
                 load: function () {
-                    return $.getJSON("/pulse/Finance/api/BillsReceivable/Get", { filterType: filterType });
+                    return $.getJSON(`/${tenantName}/Finance/api/BillsReceivable/Get`, { filterType: filterType });
 
                 }
             });
@@ -361,7 +361,7 @@
                     onItemClick: function () {
                         // Navigate to frm201LedgerView with the selected client details
                         const AccountHeadNo = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
-                        const url = `/pulse/Finance/frm201LedgerView?AccountHeadNo=${AccountHeadNo}`;
+                        const url = `/${tenantName}/Finance/frm201LedgerView?AccountHeadNo=${AccountHeadNo}`;
                         window.open(url, '_blank'); // Opens in a new tab
                     }
                 }
@@ -374,11 +374,11 @@
     // Print button functionality (Export as PDF)
     function showReport() {
         // Open the report in a new tab
-        window.open('/pulse/Finance/api/BillsReceivable/GenerateReport', '_blank');
+        window.open(`/${tenantName}/Finance/api/BillsReceivable/GenerateReport`, '_blank');
     }
     function showReport1() {
         // Open the report in a new tab
-        window.open('/pulse/Finance/api/BillsReceivable/GenerateAgeingreportsummaryReport', '_blank');
+        window.open(`/${tenantName}/Finance/api/BillsReceivable/GenerateAgeingreportsummaryReport`, '_blank');
     }
 
 </script>

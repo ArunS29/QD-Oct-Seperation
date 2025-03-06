@@ -683,7 +683,7 @@
         popup.show();
 
         // Set the iframe src to the Ledger Account URL
-        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+        $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
     }
 
     // Document ready function to initialize popups and other controls
@@ -758,7 +758,7 @@
         $("#popupContainer").dxPopup({
             contentTemplate: function (contentElement) {
                 // Construct URL with both AccountId and the global IsCharOfAccounts variable
-                var url = "/pulse/Finance/LedgerAccount?AccountId=" + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
+                var url = `/${tenantName}/Finance/LedgerAccount?AccountId=` + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
 
                 $("<iframe>")
                     .attr("src", url)
@@ -827,7 +827,7 @@
         var rowData = window.selectedRowData;
         if (rowData && rowData.AccountId) {
             // Navigate to frm201LedgerAccount with View Transactions mode
-            window.location.href = `/pulse/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+            window.location.href = `/${tenantName}/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
 
             // window.location.href = `/frm201LedgerAccount?mode=view&accountId=${rowData.AccountId}`;
         } else {

@@ -675,13 +675,13 @@
 
 		// Define base URLs (Fix: Avoid embedding formattedVoucher inside object definition)
 		const voucherRoutes = {
-			"BP-": "/pulse/finance/VoucherBankPayment",
-			"CP-": "/pulse/finance/VoucherCashPayment",
-			"BR-": "/pulse/finance/VoucherEntryReceipts",
-			"CR-": "/pulse/finance/VoucherEntryCashReceipts",
-			"SAL-": "/pulse/finance/SalesVoucher",
-			"PUR-": "/pulse/finance/PurchaseVoucher",
-			"JV-": "/pulse/Finance/Voucherjournal"
+			"BP-": `/${tenantName}/finance/VoucherBankPayment`,
+			"CP-": `/${tenantName}/finance/VoucherCashPayment`,
+			"BR-": `/${tenantName}/finance/VoucherEntryReceipts`,
+			"CR-": `/${tenantName}/finance/VoucherEntryCashReceipts`,
+			"SAL-": `/${tenantName}/finance/SalesVoucher`,
+			"PUR-": `/${tenantName}/finance/PurchaseVoucher`,
+			"JV-": `/${tenantName}/Finance/Voucherjournal`
 		};
 
 		// Match by prefix

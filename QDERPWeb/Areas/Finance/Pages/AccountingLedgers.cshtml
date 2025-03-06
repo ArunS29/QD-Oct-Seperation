@@ -167,14 +167,14 @@
 		<div id="contextMenuContent"></div>
 		<div class="context-menu-item">
 			@(Html.DevExtreme().Button()
-						.ID("btnEditVoucher")
-						.Text("Edit Voucher")
-						.Type(ButtonType.Normal)
-						.StylingMode(ButtonStylingMode.Outlined)
-						.Icon("edit")
-						.Width(180)
-						@* .OnClick("function() { editRow(); }") *@
-						)
+									.ID("btnEditVoucher")
+									.Text("Edit Voucher")
+									.Type(ButtonType.Normal)
+									.StylingMode(ButtonStylingMode.Outlined)
+									.Icon("edit")
+									.Width(180)
+									@* .OnClick("function() { editRow(); }") *@
+									)
 		</div>
 	</div>
 	@* 	<!-- Context Control -->
@@ -209,33 +209,33 @@
 	<div class="dx-fieldset horizontal-container ">
 
 		@(Html.DevExtreme().DropDownBox()
-				.DataSource(d => d.WebApi()
-				.Controller("AccountingLedgers")
-				.LoadAction("GetLedgerAccounts")
-				.LoadMode(DataSourceLoadMode.Raw)
-				.Key("AccountId")
-				)
-				.LabelMode(EditorLabelMode.Outside)
-				.Label(new JS("formatMessage('Select Ledger Account')"))
-				.ID("accountDropDownBox")
-				.ShowClearButton(true)
-				.AcceptCustomValue(true)
-				.OpenOnFieldClick(false)
-				.ValueChangeEvent("input")
-				.HoverStateEnabled(true)
-				.ValueExpr("AccountId")
-				.DisplayExpr("AccountHead")
-				.OnInput("dropDownBoxOnInput")
-				.OnOpened("onOpened")
-				.Width(500)
-				.TabIndex(1)
-				.DropDownOptions(o => o
-				.Width(1400) // Set the desired width for the dropdown content
-				)
-				.OnKeyDown("onKeyDown")
-				.OnValueChanged("dropDownBoxValueChanged")
-				.ContentTemplate(new TemplateName("LedgerContentTemplate"))
-				)
+						.DataSource(d => d.WebApi()
+						.Controller("AccountingLedgers")
+						.LoadAction("GetLedgerAccounts")
+						.LoadMode(DataSourceLoadMode.Raw)
+						.Key("AccountId")
+						)
+						.LabelMode(EditorLabelMode.Outside)
+						.Label(new JS("formatMessage('Select Ledger Account')"))
+						.ID("accountDropDownBox")
+						.ShowClearButton(true)
+						.AcceptCustomValue(true)
+						.OpenOnFieldClick(false)
+						.ValueChangeEvent("input")
+						.HoverStateEnabled(true)
+						.ValueExpr("AccountId")
+						.DisplayExpr("AccountHead")
+						.OnInput("dropDownBoxOnInput")
+						.OnOpened("onOpened")
+						.Width(500)
+						.TabIndex(1)
+						.DropDownOptions(o => o
+						.Width(1400) // Set the desired width for the dropdown content
+						)
+						.OnKeyDown("onKeyDown")
+						.OnValueChanged("dropDownBoxValueChanged")
+						.ContentTemplate(new TemplateName("LedgerContentTemplate"))
+						)
 		@* @(Html.DevExtreme().DropDownBox()
 		.ID("accountDropDownBox")
 		.LabelMode(EditorLabelMode.Outside)
@@ -263,95 +263,95 @@
 		) *@
 		<!-- Button to Open Modal -->
 		@(Html.DevExtreme().Button()
-				.ID("btnAddAccount")
-				.Icon("plus")
-				.ElementAttr("class", "button-alignment-down button-group")
-				.OnClick("showLedgerAccountPopup")
-				)
+						.ID("btnAddAccount")
+						.Icon("plus")
+						.ElementAttr("class", "button-alignment-down button-group")
+						.OnClick("showLedgerAccountPopup")
+						)
 
 		<!-- DevExtreme Popup -->
 		@(Html.DevExtreme().Popup()
-				.ID("ledgerAccountPopup")
-				.Width("80%")
-				.Height("85%")
-				.Title("Add Ledger Account")
-				.ShowTitle(true)
-				.CloseOnOutsideClick(true)
-				.Visible(false)
-				.ResizeEnabled(true)
-				.ContentTemplate(@<text>
+						.ID("ledgerAccountPopup")
+						.Width("80%")
+						.Height("85%")
+						.Title("Add Ledger Account")
+						.ShowTitle(true)
+						.CloseOnOutsideClick(true)
+						.Visible(false)
+						.ResizeEnabled(true)
+						.ContentTemplate(@<text>
 			<div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
 				<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
 			</div>
 		</text>)
-				)
+						)
 
 		@(Html.DevExtreme().Button()
-				.ID("btnEditAccount")
-				.Icon("edit")
-				.ElementAttr("class", "button-alignment-down button-group")
-				.OnClick("showLedgerAccountEditPopup")
-				)
+						.ID("btnEditAccount")
+						.Icon("edit")
+						.ElementAttr("class", "button-alignment-down button-group")
+						.OnClick("showLedgerAccountEditPopup")
+						)
 		@(Html.DevExtreme().Popup()
-				.ID("ledgerEditAccountPopup")
-				.Width("80%")
-				.Height("85%")
-				.Title(new JS("formatMessage('Edit Ledger Account')"))
-				.ShowTitle(true)
-				.CloseOnOutsideClick(true)
-				.Visible(false)  // Hidden by default
-				.ResizeEnabled(true)
-				.ContentTemplate(@<text>
+						.ID("ledgerEditAccountPopup")
+						.Width("80%")
+						.Height("85%")
+						.Title(new JS("formatMessage('Edit Ledger Account')"))
+						.ShowTitle(true)
+						.CloseOnOutsideClick(true)
+						.Visible(false)  // Hidden by default
+						.ResizeEnabled(true)
+						.ContentTemplate(@<text>
 			<div id="popupContent" style="width:100%; height:100%;">
 				<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
 			</div>
 		</text>)
-				)
+						)
 		@(Html.DevExtreme().DateBox()
-				.ID("frmdateBox")
-				.Label(new JS("formatMessage('Start Date')"))
-				.LabelMode(EditorLabelMode.Outside)
-				.InputAttr("aria-label", "Date")
-				.Type(DateBoxType.Date)
-				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-				.DisplayFormat("dd-MMM-yyyy")
-				.TabIndex(2)
-				)
+						.ID("frmdateBox")
+						.Label(new JS("formatMessage('Start Date')"))
+						.LabelMode(EditorLabelMode.Outside)
+						.InputAttr("aria-label", "Date")
+						.Type(DateBoxType.Date)
+						.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+						.DisplayFormat("dd-MMM-yyyy")
+						.TabIndex(2)
+						)
 
 
 		@(Html.DevExtreme().DateBox()
-				.ID("todateBox")
-				.Label(new JS("formatMessage('End Date')"))
-				.LabelMode(EditorLabelMode.Outside)
-				.InputAttr("aria-label", "Time")
-				.Type(DateBoxType.Date)
-				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-				.DisplayFormat("dd-MMM-yyyy")
-				.TabIndex(3)
-				)
+						.ID("todateBox")
+						.Label(new JS("formatMessage('End Date')"))
+						.LabelMode(EditorLabelMode.Outside)
+						.InputAttr("aria-label", "Time")
+						.Type(DateBoxType.Date)
+						.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+						.DisplayFormat("dd-MMM-yyyy")
+						.TabIndex(3)
+						)
 		@(Html.DevExtreme().DropDownButton()
-				.ID("ddBtnShowRecords")
-				.Text(new JS("formatMessage('Show Records')"))
-				.Icon("smalliconslayout")
-				.Width(180)
-				.ElementAttr("class", "button-alignment-down")
-				.TabIndex(4)
-				.DropDownOptions(options => options.Width(230))
-				.Items(items =>
-				{
-					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-					items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-					items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+						.ID("ddBtnShowRecords")
+						.Text(new JS("formatMessage('Show Records')"))
+						.Icon("smalliconslayout")
+						.Width(180)
+						.ElementAttr("class", "button-alignment-down")
+						.TabIndex(4)
+						.DropDownOptions(options => options.Width(230))
+						.Items(items =>
+						{
+							items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+							items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+							items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+							items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+							items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+							items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+							items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+							items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+							items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+							items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 
-				})
-				)
+						})
+						)
 		@* @(Html.DevExtreme().DropDownButton()
 				.ID("ddBtnGenerateReport")
 				.Text("Generate Report")
@@ -378,14 +378,14 @@
 		</div>
 
 		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
-					.ID("dataGrid")
-					.RemoteOperations(false)
-					.DataSource(new JS("[]"))
-					.Columns(columns =>
-					{
-						columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')"))
-					.Alignment(HorizontalAlignment.Center)
-					.CellTemplate(@<text>
+							.ID("dataGrid")
+							.RemoteOperations(false)
+							.DataSource(new JS("[]"))
+							.Columns(columns =>
+							{
+								columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')"))
+							.Alignment(HorizontalAlignment.Center)
+							.CellTemplate(@<text>
 			<div>
 				<a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
 				   onclick="navigateToVoucherPage('<%- data.VoucherNo %>', '<%- data.VoucherType %>')">
@@ -393,140 +393,140 @@
 				</a>
 			</div>
 		</text>)
-					.Visible(true);
+							.Visible(true);
 
 
-						columns.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('VoucherDate')"))
-					.Alignment(HorizontalAlignment.Center)
-					.Format(format => format.Type(Format.ShortDate)
-					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
-					.Visible(true);
+								columns.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('VoucherDate')"))
+							.Alignment(HorizontalAlignment.Center)
+							.Format(format => format.Type(Format.ShortDate)
+							.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
+							.Visible(true);
 
-						columns.AddFor(m => m.VoucherEffectiveDate).Caption(new JS("formatMessage('Effective On')"))
-					.Alignment(HorizontalAlignment.Center)
-					.Format(format => format.Type(Format.ShortDate)
-					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }"))
-					.Visible(true);
+								columns.AddFor(m => m.VoucherEffectiveDate).Caption(new JS("formatMessage('Effective On')"))
+							.Alignment(HorizontalAlignment.Center)
+							.Format(format => format.Type(Format.ShortDate)
+							.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'MMM-yyyy'); }"))
+							.Visible(true);
 
-						columns.AddFor(m => m.AccountHeadName).Caption(new JS("formatMessage('Account Ledger')"))
-					.Alignment(HorizontalAlignment.Left)
-					.Visible(true);
+								columns.AddFor(m => m.AccountHeadName).Caption(new JS("formatMessage('Account Ledger')"))
+							.Alignment(HorizontalAlignment.Left)
+							.Visible(true);
 
-						columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right)
-					.CellTemplate(@<text>
+								columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right)
+							.CellTemplate(@<text>
 			<div style="color: red; font-weight: bold;">
 				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
-					.Visible(true);
+							.Visible(true);
 
-						columns.AddFor(m => m.CrAmount).Caption(new JS("formatMessage('Credit')")).Alignment(HorizontalAlignment.Right)
-					.CellTemplate(@<text>
+								columns.AddFor(m => m.CrAmount).Caption(new JS("formatMessage('Credit')")).Alignment(HorizontalAlignment.Right)
+							.CellTemplate(@<text>
 			<div style="color: green; font-weight: bold;">
 				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
-				.Visible(true);
+						.Visible(true);
 
-						columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('VoucherAmountFormatted')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.Add()
-			.Caption(new JS("formatMessage('Balance')"))
-			.Alignment(HorizontalAlignment.Right)
-			.DataType(GridColumnDataType.Number)
-			.CalculateCellValue("function(rowData) { " +
-			"let balance = 0;" +
-			"let gridInstance = $('#dataGrid').dxDataGrid('instance');" +
-			"if (!gridInstance) return '0.00 Dr'; " +
-			"let dataSource = gridInstance.option('dataSource');" +
-			"if (!dataSource) return '0.00 Dr';" +
+								columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('VoucherAmountFormatted')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.Add()
+					.Caption(new JS("formatMessage('Balance')"))
+					.Alignment(HorizontalAlignment.Right)
+					.DataType(GridColumnDataType.Number)
+					.CalculateCellValue("function(rowData) { " +
+					"let balance = 0;" +
+					"let gridInstance = $('#dataGrid').dxDataGrid('instance');" +
+					"if (!gridInstance) return '0.00 Dr'; " +
+					"let dataSource = gridInstance.option('dataSource');" +
+					"if (!dataSource) return '0.00 Dr';" +
 
-			"for (let i = 0; i <= dataSource.indexOf(rowData); i++) {" +
-			"let item = dataSource[i];" +
-			" let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);" +
-			"  balance += voucherAmount" +
-			"}" +
-			//  "let formattedBalance = balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });"+
-			"let formattedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
+					"for (let i = 0; i <= dataSource.indexOf(rowData); i++) {" +
+					"let item = dataSource[i];" +
+					" let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);" +
+					"  balance += voucherAmount" +
+					"}" +
+					//  "let formattedBalance = balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });"+
+					"let formattedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });" +
 
-			"let balanceType = balance >= 0 ? 'Dr' : 'Cr'; " +
-			" return `${formattedBalance} ${balanceType}`;" +
-			"}").Visible(true);
-						columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('ReferenceNote')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('BillDate')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('BillNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherModifiedOn).Caption(new JS("formatMessage('VoucherModifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('VoucherModifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherType).Caption(new JS("formatMessage('VoucherType')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('MasterGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('EntryNarration')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('DrCr')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('AccountHead')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
-					})
-				.OnCellClick("function(e) {handleCellClick(e);}")
-				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
-				.AllowColumnReordering(true) // Enable column reordering
-				.AllowColumnResizing(true)   // Enable column resizing
-				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-				.HeaderFilter(filter => filter.Visible(false))
-				.Height(435)
-				.ColumnAutoWidth(true)
-				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-				.GroupPanel(groupPanel => groupPanel.Visible(true)) // Display group panel
-				.ShowBorders(true)
-				.ShowRowLines(true) // Enable row lines
-				@* 	.ColumnChooser(columnChooser => columnChooser
+					"let balanceType = balance >= 0 ? 'Dr' : 'Cr'; " +
+					" return `${formattedBalance} ${balanceType}`;" +
+					"}").Visible(true);
+								columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('ReferenceNote')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('BillDate')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('BillNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.VoucherModifiedOn).Caption(new JS("formatMessage('VoucherModifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('VoucherModifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.VoucherType).Caption(new JS("formatMessage('VoucherType')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('MasterGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('EntryNarration')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('DrCr')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('AccountHead')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
+								columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
+							})
+						.OnCellClick("function(e) {handleCellClick(e);}")
+						.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+						.AllowColumnReordering(true) // Enable column reordering
+						.AllowColumnResizing(true)   // Enable column resizing
+						.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+						.HeaderFilter(filter => filter.Visible(false))
+						.Height(435)
+						.ColumnAutoWidth(true)
+						.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+						.GroupPanel(groupPanel => groupPanel.Visible(true)) // Display group panel
+						.ShowBorders(true)
+						.ShowRowLines(true) // Enable row lines
+						@* 	.ColumnChooser(columnChooser => columnChooser
 		.Enabled(false) // Enable the column chooser for hiding and showing columns
 		.Title("Column Chooser") // Optional: Set a custom title
 		.Mode (GridColumnChooserMode.Select)
 		)*@
-				.Width("100%")
-				.Summary(summary =>
-				{
-					summary.TotalItems(totalItems =>
-					{
-						totalItems.Add()
-					.Column("VoucherNo") // Count of VoucherNo
-					.SummaryType(SummaryType.Count)
-					.DisplayFormat(new JS("formatMessage('Count: {0}')")); // Customize the display format
+						.Width("100%")
+						.Summary(summary =>
+						{
+							summary.TotalItems(totalItems =>
+							{
+								totalItems.Add()
+							.Column("VoucherNo") // Count of VoucherNo
+							.SummaryType(SummaryType.Count)
+							.DisplayFormat(new JS("formatMessage('Count: {0}')")); // Customize the display format
 
-						totalItems.Add()
-					.Column("DrAmount") // Sum of DrAmount
-					.SummaryType(SummaryType.Sum)
-					.CustomizeText(
-					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+								totalItems.Add()
+							.Column("DrAmount") // Sum of DrAmount
+							.SummaryType(SummaryType.Sum)
+							.CustomizeText(
+							"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-					);
+							);
 
-						totalItems.Add()
-					.Column("CrAmount") // Sum of CrAmount
-					.SummaryType(SummaryType.Sum)
-					.CustomizeText(
-					"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+								totalItems.Add()
+							.Column("CrAmount") // Sum of CrAmount
+							.SummaryType(SummaryType.Sum)
+							.CustomizeText(
+							"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-					);      // Customize the display format to currency
-					});
-				})
-				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-				.ShowBorders(true)
-				.StateStoring(stateStoring =>
-				{
-					stateStoring
-					.Enabled(true)                       // Enable state storing
-					.Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
-					.StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
-				})
-				.OnInitialized("function(e) { loadGridState(); }")
-				)
+							);      // Customize the display format to currency
+							});
+						})
+						.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+						.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+						.ShowBorders(true)
+						.StateStoring(stateStoring =>
+						{
+							stateStoring
+							.Enabled(true)                       // Enable state storing
+							.Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
+							.StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
+						})
+						.OnInitialized("function(e) { loadGridState(); }")
+						)
 
 
 
@@ -544,39 +544,39 @@
 @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
-									.ID("ledgeraccount-datagrid")
-									.DataSource(d => d.WebApi()
-									.Controller("AccountingLedgers")
-									.LoadAction("GetLedgerAccounts")
-									.LoadMode(DataSourceLoadMode.Raw)
-									.Key("AccountId")
+										.ID("ledgeraccount-datagrid")
+										.DataSource(d => d.WebApi()
+										.Controller("AccountingLedgers")
+										.LoadAction("GetLedgerAccounts")
+										.LoadMode(DataSourceLoadMode.Raw)
+										.Key("AccountId")
+										)
+									.WordWrapEnabled(false)
+										.ShowBorders(true)
+										.SearchPanel(sp => sp.HighlightSearchText(true))
+										.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+										.OnSelectionChanged("dataGridSelectionChanged")
+										.OnInitialized("dataGridInitialized")
+									.HeaderFilter(p => p.Visible(false))
+										.ShowBorders(true)
+										.HoverStateEnabled(true)
+										//.Paging(p => p.PageSize(15))
+										.FilterRow(f => f.Visible(true))
+										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+									.Height(400)
+										.Selection(s => s.Mode(SelectionMode.Single))
+										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+										.Columns(columns =>
+										{
+											columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+											columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width(400);
+											columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+											columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')"));
+											columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
+											columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
+											columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')"));
+										})
 									)
-								.WordWrapEnabled(false)
-									.ShowBorders(true)
-									.SearchPanel(sp => sp.HighlightSearchText(true))
-									.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-									.OnSelectionChanged("dataGridSelectionChanged")
-									.OnInitialized("dataGridInitialized")
-								.HeaderFilter(p => p.Visible(false))
-									.ShowBorders(true)
-									.HoverStateEnabled(true)
-									//.Paging(p => p.PageSize(15))
-									.FilterRow(f => f.Visible(true))
-									.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-								.Height(400)
-									.Selection(s => s.Mode(SelectionMode.Single))
-									.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-									.Columns(columns =>
-									{
-										columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
-										columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width(400);
-										columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
-										columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')"));
-										columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
-										columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
-										columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')"));
-									})
-								)
 }
 
 <script>
@@ -1012,7 +1012,7 @@
 		if (!refno) refno = "";
 		if (!accheadar) accheadar = "";
 
-		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
 		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 
@@ -1044,12 +1044,12 @@
 		function addVoucher_click(form) {
 			let url = "";
 			if (form === "Purchase") {
-				url = "/pulse/Finance/PurchaseVoucher";
+				url = `/${tenantName}/Finance/PurchaseVoucher`;
 			} else if (form === "Sales") {
-				url = "/pulse/Finance/SalesVoucher";
+				url = `/${tenantName}/Finance/SalesVoucher`;
 			}
 			else if (form === "Journal") {
-				url = "/pulse/Finance/JournalVoucher";
+				url = `/${tenantName}/Finance/JournalVoucher`;
 			}
 			var newWindow = window.open(url, '_blank', 'width=1300,height=600');
 
@@ -1205,7 +1205,7 @@
 			popup.show();
 
 			// Correct URL to your LedgerAccount view
-			$("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 		}
 			$(document).ready(function () {
 				$("#btntoggleGroupPanel").click();
@@ -1326,7 +1326,7 @@
 				popup.show();
 
 				// Correct URL to your LedgerAccount view
-			$("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 			}
 				$(document).ready(function () {
 					$("#btntoggleGroupPanel").click();
@@ -1430,13 +1430,13 @@
 
 			// Define voucher type-based URLs
 			const voucherRoutes = {
-				"Bank Payment": "/pulse/finance/VoucherBankPayment",
-				"Cash Payment": "/pulse/finance/VoucherCashPayment",
-				"Bank Receipts": "/pulse/finance/VoucherEntryReceipts",
-				"Cash Receipts": "/pulse/finance/VoucherEntryCashReceipts",
-				"Sales": "/pulse/finance/SalesVoucher",
-				"Purchase": "/pulse/finance/PurchaseVoucher",
-				"Journal": "/pulse/finance/Voucherjournal"
+				"Bank Payment": `/${tenantName}/finance/VoucherBankPayment`,
+				"Cash Payment": `/${tenantName}/finance/VoucherCashPayment`,
+				"Bank Receipts": `/${tenantName}/finance/VoucherEntryReceipts`,
+				"Cash Receipts": `/${tenantName}/finance/VoucherEntryCashReceipts`,
+				"Sales": `/${tenantName}/finance/SalesVoucher`,
+				"Purchase": `/${tenantName}/finance/PurchaseVoucher`,
+				"Journal": `/${tenantName}/finance/Voucherjournal`
 			};
 
 			let baseUrl = voucherRoutes[formattedVoucherType];

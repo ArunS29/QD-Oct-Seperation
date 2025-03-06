@@ -118,8 +118,8 @@
         .Columns(columns =>
         {
             columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-        <div onclick="redirectToCostCenterMaster('/pulse/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>')" style="color: #0398fc; text-decoration: underline;"><%-data.CostAllocationUnitId%></div>
-        @* <a href="/pulse/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank" style="color: #0398fc; text-decoration: underline;"> *@
+        <div onclick="redirectToCostCenterMaster(`/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>`)" style="color: #0398fc; text-decoration: underline;"><%-data.CostAllocationUnitId%></div>
+        @* <a href="/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=<%-data.CostAllocationUnitId%>" target="_blank" style="color: #0398fc; text-decoration: underline;"> *@
         @*     <%-data.CostAllocationUnitId%> *@
         @* </a> *@
     </text>);
@@ -316,7 +316,7 @@
                             alert("No row selected");
                         } else {
                             // Navigate to the EditCostCenter page
-                            window.location.href = `/pulse/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+                            window.location.href = `/${tenantName}/Finance/CostCenterMaster?CostAllocationUnitId=${selectedRowData.CostAllocationUnitId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
                             //&CostAllocationUnit=${encodeURIComponent(selectedRowData.CostAllocationUnit)}&CostAllocationMasterGroup=${encodeURIComponent(selectedRowData.CostAllocationMasterGroup)}&CostAllocationGroup=${encodeURIComponent(selectedRowData.CostAllocationGroup)}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}
                         }
                     }
