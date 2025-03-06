@@ -61,7 +61,7 @@
 </div>
 <div class="content-container-top" style="background-color:#909ead00;">
 	<div class="container1">
-		<div class="row g-4" style="padding:1em;">
+		<div class="row g-4">
 			<div class="col-md-3">
 				<div class="form-group">
 					@(
@@ -107,7 +107,7 @@
 			</div>
 			<div class="col-md-3">
 				<div class="form-group">
-					<div class="button-alignment-down">
+					<div class="">
 						@(Html.DevExtreme().CheckBox()
 													.Text(new JS("formatMessage('Received Date')"))
 													.ID("UseSubmittedDate")
@@ -164,7 +164,7 @@
 				</div>
 			</div>
 
-		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+		<div class="col-md-1" style="margin-top: 67px;padding-left:0px;padding-right:0px;width: 4%;">
 			@* 	@(Html.DevExtreme().Button()
 								.ID("btnAddVoucher")
 								.Icon("plus")
@@ -195,7 +195,7 @@
 										)
 									
 			</div>
-		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+		<div class="col-md-1" style="margin-top: 67px;padding-left:0px;padding-right:0px;width: 4%;">
 	@* 			@(Html.DevExtreme().Button()
 								.ID("btnEditVoucher")
 								.Icon("edit")
@@ -308,7 +308,7 @@
 								.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
 								)
 			</div>
-			<div class="form-group" style="margin-top:43px;">
+			<div class="form-group" style="margin-top:25px;">
 			@* 	@(Html.DevExtreme().Button()
 								.ID("btnAddAHead")
 								.Icon("plus")
@@ -338,7 +338,7 @@
                     </text>)
 													)
 			</div>
-			<div class="form-group" style="margin-top:43px;">
+			<div class="form-group" style="margin-top:25px;">
 			@* 	@(Html.DevExtreme().Button()
 								.ID("btnEditAHead")
 								.Icon("edit")
@@ -407,7 +407,7 @@
 								.MaxLength(500)
 								)
 			</div>
-			<div class="form-group" style="">
+			<div class="form-group" style="margin-top:25px;">
 				@(Html.DevExtreme().Button()
 								.ID("btnVoucherEntry")
 								.Text(new JS("formatMessage('ADD')"))
@@ -1623,7 +1623,7 @@
 			.frame { display: none !important; }
 			.footerContainer { display: none !important; }
 			.bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
-			.mainContainer { margin-top: 1em; }
+			.mainContainer { margin-top: 1em;width:100%; }
 		`;
 		document.head.appendChild(style);
 	}
