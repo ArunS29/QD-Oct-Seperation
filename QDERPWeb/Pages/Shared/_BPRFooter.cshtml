@@ -89,7 +89,7 @@
         .ID("btnBackERP")
         .Text("Back")
         .Icon("arrowleft")
-        // .OnClick("function() { hidePopup(); }")
+        .OnClick("closeBill")
         )
 
 </div>
@@ -294,4 +294,8 @@
             reader.readAsText(file);
         }
     });
+    function closeBill() {
+        let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
+        popupInstance.hide();
+    }
 </script>

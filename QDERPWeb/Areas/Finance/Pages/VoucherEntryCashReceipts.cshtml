@@ -278,7 +278,7 @@
             @(Html.DevExtreme().Button()
                         .ID("btnAddAHead")
                         .Icon("plus")
-                        .OnClick("showPopup") // Attach the onClick event handler
+                            .OnClick("showLedgerAccountPopup") // Attach the onClick event handler
                         )
 
             <!-- DevExtreme Popup -->
@@ -303,7 +303,7 @@
             @(Html.DevExtreme().Button()
                         .ID("btnEditAHead")
                         .Icon("edit")
-                        .OnClick("showLedgerAccountEditPopup")
+                            .OnClick("showLedgerAccountEditPopup")
                         )
 
             @(Html.DevExtreme().Popup()
@@ -1648,7 +1648,7 @@
 
                 "VoucherNarration": $("#VoucherNarration").dxTextBox("instance").option("value") || null,
 
-
+                 "VoucherType": $("#VoucherType").dxSelectBox("instance").option("value") || null,
 
                 "BillRemarks": $("#Remarks").dxTextBox("instance").option("value") || null,
 
@@ -1666,7 +1666,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/api/VoucherEntryCashReceipts/SaveVoucher",
+                    url: "/api/VoucherMaster/SaveVoucher",
                     contentType: "application/json",
                     data: JSON.stringify(VM),
                     dataType: "json",
@@ -1935,6 +1935,38 @@
         });
     });
 
+   
+
+        function showLedgerAccountPopup() {
+        var popup = $("#ledgerAccountPopup").dxPopup("instance");
+        popup.show();
+
+        // Correct URL to your LedgerAccount view
+        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+    }
+    $(document).ready(function () {
+        $("#btntoggleGroupPanel").click();
+
+        $("#errorPopup").dxPopup({
+            width: 350,
+            height: 300,
+            title: "⚠ Error",
+            visible: false,
+            showCloseButton: true,
+            dragEnabled: false,
+            closeOnOutsideClick: true
+        });
+
+        $("#errorCloseBtn").dxButton({
+            text: "Close",
+            type: "danger",
+            onClick: function () {
+                $("#errorPopup").dxPopup("instance").hide();
+            }
+        });
+    });
+
+
     function showLedgerAccountEditPopup() {
         var dropDownBox = $("#AccountHeadDropDown").dxDropDownBox("instance");
 
@@ -1948,12 +1980,12 @@
         accgroupid = accgroupid || "";
 
         // Validate AccountHead selection
-        if (accheadid == null || accheadid == undefined || accheadid == "") { // Checks for both null and undefined
+        if (accheadid == null || accheadid == undefined || accheadid=="") { // Checks for both null and undefined
             DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
             return;
         }
 
-        const url = `/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+        const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
         // Show the popup
         var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
