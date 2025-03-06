@@ -1,6 +1,5 @@
-﻿using DevExpress.XtraReports.UI;
-using DevExpress.DataAccess.Sql;
-using System;
+﻿using DevExpress.DataAccess.Sql;
+using DevExpress.XtraReports.UI;
 
 namespace QD.ERP.Web.Reports
 {

@@ -796,6 +796,7 @@
 
                     <span>Statement of Accounts (With Narration)</span>
                 </div>
+                
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format)')">
 
                     <span>Statement of Accounts (Export Format)</span>
@@ -804,6 +805,10 @@
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format2)')">
 
                     <span>Statement of Accounts (Export Format2)</span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('AccountDetails')">
+
+                    <span>Statement of Accounts - With Details</span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
 
@@ -842,6 +847,7 @@
                <span>Bills Receivable (With Retention)</span>
            </div>
            <div class="submenu-item" onclick="handleClick('BillsReceivablelandscapeformat')">
+                    <i class="fa fa-file"></i>
                <span>BillsReceivablelandscapeformat</span>
            </div>
            <div class="submenu-item" onclick="handleClick('BillsReceivableLedgerBalance')">
@@ -864,11 +870,11 @@
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (With Voucher No)</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('AgeingToday')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (Ageing as on Today)</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('EndDate')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (Ageing as on End Date)</span>
                 </div>
@@ -1543,12 +1549,15 @@
                  "BillsReceivableAll" : "BillsReceivableAll",
                 "BillsReceivableByAccount": "BillsReceivableByAccount",
                 "BillsReceivableAgeingToday": "BillsReceivableAgeingToday",
-                // "Report4": "Report4",
+                "Report4": "Report4",
                 "BillsReceivableRentation": "BillsReceivableRentation",
                 "BillsReceivableLedgerBalance": "BillsReceivableLedgerBalance",
                 "BillsReceivableFormat": "BillsReceivableFormat",
                 "rpt201BillsPayable": "rpt201BillsPayable",
-                "rpt201BillsPayableWithVchNo": "rpt201BillsPayableWithVchNo"
+                "rpt201BillsPayableWithVchNo": "rpt201BillsPayableWithVchNo",
+                "AccountDetails":"AccountDetails",
+                "AgeingToday":"AgeingToday",
+                "EndDate":"EndDate"
             };
 
             // Check if selectedText matches any report name

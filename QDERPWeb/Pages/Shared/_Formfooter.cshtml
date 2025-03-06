@@ -570,10 +570,6 @@
     }
 }
 
-
-
-
-
          function proceedWithApproval() {
     // Set VerifiedBy checkbox to true
     $("#ApprovedBy").dxCheckBox("instance").option("value", true);
@@ -625,4 +621,55 @@
         }
     });
 }
+
+function onAttachButtonClick() {
+
+     // Show an options dialog for Single/Multiple selection
+
+     DevExpress.ui.dialog.custom({
+
+         title: "Select Attachment Option",
+
+         messageHtml: "<p>How would you like to attach files?</p>",
+
+         buttons: [
+
+             { text: "Single File", onClick: () => handleFileSelection(false) },
+
+             { text: "Multiple Files", onClick: () => handleFileSelection(true) }
+
+         ]
+
+     }).show();
+
+}
+
+
+function handleFileSelection(isMultiple) {
+
+     // Configure the file input
+
+     const fileInput = document.getElementById("fileInput");
+
+     fileInput.multiple = isMultiple; // Allow multiple files if selected
+
+     fileInput.click(); // Trigger file input click
+
+}
+
+// File Input Change Handler (Optional: Log or Process Files)
+
+document.getElementById("fileInput").addEventListener("change", function () {
+
+     const files = this.files;
+
+     console.log("Selected files:", files);
+
+     // Handle file upload logic here
+
+});
+
+
+
+
 </script>

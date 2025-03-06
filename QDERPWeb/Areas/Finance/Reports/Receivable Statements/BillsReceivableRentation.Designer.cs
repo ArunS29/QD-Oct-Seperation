@@ -196,7 +196,7 @@
             // 
             // xrLabel11
             // 
-            this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(782.85F, 10.00001F);
+            this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(805.0403F, 10F);
             this.xrLabel11.Multiline = true;
             this.xrLabel11.Name = "xrLabel11";
             this.xrLabel11.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -207,11 +207,11 @@
             // 
             // xrLabel8
             // 
-            this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(9.999996F, 10.00001F);
+            this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(0F, 10F);
             this.xrLabel8.Multiline = true;
             this.xrLabel8.Name = "xrLabel8";
             this.xrLabel8.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel8.SizeF = new System.Drawing.SizeF(190.2175F, 23F);
+            this.xrLabel8.SizeF = new System.Drawing.SizeF(176.0509F, 23F);
             this.xrLabel8.StylePriority.UseTextAlignment = false;
             this.xrLabel8.Text = "QuickDice ERP Solutiion";
             this.xrLabel8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
@@ -228,9 +228,9 @@
             // 
             // pageInfo2
             // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(448.4782F, 10.00001F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(448.4782F, 10F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(95F, 23F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(95.00003F, 23F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.StylePriority.UseTextAlignment = false;
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
@@ -247,13 +247,13 @@
             // 
             // xrLabel20
             // 
-            this.xrLabel20.Font = new DevExpress.Drawing.DXFont("Arial", 15F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel20.Font = new DevExpress.Drawing.DXFont("Arial", 16F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel20.ForeColor = System.Drawing.Color.LightSkyBlue;
-            this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(332.5533F, 67.8478F);
+            this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(0F, 58.84053F);
             this.xrLabel20.Multiline = true;
             this.xrLabel20.Name = "xrLabel20";
             this.xrLabel20.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel20.SizeF = new System.Drawing.SizeF(491.3407F, 36.04348F);
+            this.xrLabel20.SizeF = new System.Drawing.SizeF(1069F, 25.21018F);
             this.xrLabel20.StylePriority.UseFont = false;
             this.xrLabel20.StylePriority.UseForeColor = false;
             this.xrLabel20.StylePriority.UseTextAlignment = false;
@@ -263,12 +263,12 @@
             // xrLabel19
             // 
             this.xrLabel19.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel19.Font = new DevExpress.Drawing.DXFont("Arial", 14F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel19.Font = new DevExpress.Drawing.DXFont("Bahnschrift SemiLight", 12F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel19.ForeColor = System.Drawing.Color.DimGray;
-            this.xrLabel19.LocationFloat = new DevExpress.Utils.PointFloat(158.3139F, 0F);
+            this.xrLabel19.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrLabel19.Multiline = true;
             this.xrLabel19.Name = "xrLabel19";
-            this.xrLabel19.SizeF = new System.Drawing.SizeF(910.6862F, 103.8913F);
+            this.xrLabel19.SizeF = new System.Drawing.SizeF(1069F, 103.8913F);
             this.xrLabel19.StylePriority.UseBorderColor = false;
             this.xrLabel19.StylePriority.UseFont = false;
             this.xrLabel19.StylePriority.UseForeColor = false;

@@ -781,7 +781,7 @@
 
 
                         <!-- Voucher Narration -->
-                        <div class="col-md-8" style="position:relative;right:70px;">
+                        <div class="col-md-8" style="position:relative;right:102px;">
                             <div class="form-group">
                                 @(
                                             Html.DevExtreme().TextBox()
@@ -797,15 +797,17 @@
 
                         <!-- Button to the right -->
 
-                        <div class="d-flex justify-content-end" style="position:relative;top: -54px;right: 420px;">
+                        <div class="d-flex justify-content-end" style="position:relative;top: -54px;right: 640px;">
                             <div class="form-group">
                                 @(Html.DevExtreme().Button()
                                             .ID("btnAttachment")
                                             .Icon("fa fa-paperclip")
                                             .Height(50)
                                             .Width(70)
+                                                .OnClick("onAttachButtonClick")
                                             )
                             </div>
+                             <input type="file" id="fileInput" style="display:none;" />
                         </div>
 
                     </div>
@@ -1764,22 +1766,7 @@
             });
         });
 
-        function onAttachButtonClick() {
-            $("#attachOptionsPopup").dxPopup("instance").show();
-        }
-
-        function attachSingleFile() {
-            // Logic for attaching a single file
-            DevExpress.ui.notify("Single file attach initiated.", "info", 2000);
-        }
-
-        function attachMultipleFiles(aVoucherNo) {
-            // Logic for attaching multiple files
-            DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
-        window.location.href = `/${tenantName}/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
-        }
-
-
+       
 
         $(function () {
             $.ajax({
@@ -2346,7 +2333,7 @@ function addVoucherEntry() {
                     .map(key => `${key}=${params[key]}`)
                     .join("&");
 
-                            $("#CostAllocationContent").load(`/${tenantName}/Finance/AE?${queryString}`, function () {
+                            $("#CostAllocationContent").load(`/pulse/Finance/AE?${queryString}`, function () {
                     $("#CostAllocationModal").modal("show");
                     $(".close").on("click", function () {
                         $("#CostAllocationModal").modal("hide");
@@ -2388,7 +2375,7 @@ function addVoucherEntry() {
                                 .map(key => `${key}=${params[key]}`)
                                 .join('&');
 
-                                        $("#PropertyAllocationContent").load(`/${tenantName}/Finance/PropertyAllocation?${queryString}`, function () {
+                                        $("#PropertyAllocationContent").load(`/pulse/Finance/PropertyAllocation?${queryString}`, function () {
                                 $("#PropertyAllocationModal").modal('show');
                                 $(".close").on("click", function () {
                                     $("#PropertyAllocationModal").modal('hide');
@@ -3075,7 +3062,7 @@ function addVoucherEntry() {
         popup.show();
 
         // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
     }
     $(document).ready(function () {
         $("#btntoggleGroupPanel").click();
@@ -3118,7 +3105,7 @@ function addVoucherEntry() {
             return;
         }
 
-        const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+        const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
         // Show the popup
         var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");

@@ -246,25 +246,6 @@ namespace QD.ERP.Web.Pages
                 Report = new BillsReceivableAgeingToday(AccountId, FrmDate, ToDate);
             }
 
-
-
-            //else if (reportName == " Report4")
-            //{
-            //    // Ensure required parameters are provided for StatementOfAccountReport
-            //    if (accountId == null || frmDate == null || toDate == null)
-            //    {
-            //        return BadRequest("Missing required parameters for BillsReceivableAll.");
-            //    }
-
-            //    // Set the properties for the report
-            //    AccountId = accountId;
-            //    FrmDate = frmDate.Value;
-            //    ToDate = toDate.Value;
-
-
-            //    Report = new Report4(AccountId, FrmDate, ToDate);
-            //}
-
             else if (reportName == "BillsReceivableRentation")
             {
                 // Ensure required parameters are provided for StatementOfAccountReport
@@ -368,7 +349,100 @@ namespace QD.ERP.Web.Pages
                 Report = new rpt201BillsPayableWithVchNo(AccountId, FrmDate, ToDate);
 
             }
+            else if (reportName == "AccountDetails")
 
+            {
+
+                // Ensure required parameters are provided for StatementOfAccountReport
+
+                if (accountId == null || frmDate == null || toDate == null)
+
+                {
+
+                    return BadRequest("Missing required parameters for AccountDetails.");
+
+                }
+
+                // Set the properties for the report
+
+                AccountId = accountId;
+
+                FrmDate = frmDate.Value;
+
+                ToDate = toDate.Value;
+
+
+                Report = new AccountDetails(AccountId, FrmDate, ToDate);
+
+            }
+            else if (reportName == "AgeingToday")
+
+            {
+
+                // Ensure required parameters are provided for StatementOfAccountReport
+
+                if (accountId == null || frmDate == null || toDate == null)
+
+                {
+
+                    return BadRequest("Missing required parameters for AgeingToday.");
+
+                }
+
+                // Set the properties for the report
+
+                AccountId = accountId;
+
+                FrmDate = frmDate.Value;
+
+                ToDate = toDate.Value;
+
+
+                Report = new AgeingToday(AccountId, FrmDate, ToDate);
+
+            }
+            else if (reportName == "EndDate")
+
+            {
+
+                // Ensure required parameters are provided for StatementOfAccountReport
+
+                if (accountId == null || frmDate == null || toDate == null)
+
+                {
+
+                    return BadRequest("Missing required parameters for EndDate.");
+
+                }
+
+                // Set the properties for the report
+
+                AccountId = accountId;
+
+                FrmDate = frmDate.Value;
+
+                ToDate = toDate.Value;
+
+
+                Report = new EndDate(AccountId, FrmDate, ToDate);
+
+            }
+            else if (reportName == "Report4")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for BillsReceivableAll.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new Report4(AccountId, FrmDate, ToDate);
+            }
             else
             {
                 switch (reportName)

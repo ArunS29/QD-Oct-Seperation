@@ -6,6 +6,7 @@ using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
 using QD.ERP.Web.Reports;
 using System;
+using System.Collections.Generic;
 
 namespace QD.ERP.Web.Pages
 {
@@ -14,84 +15,71 @@ namespace QD.ERP.Web.Pages
         public XtraReport Report { get; private set; }
         public string ReportName { get; private set; }
 
+        private static readonly HashSet<string> reportsRequiringParameters = new()
+        {
+            "StatementOfAccountReport", "AccountWithNarration", "AccountExportFromatReport",
+            "AccountExportLandscapeReport", "AccountStatementFormat2Report",
+            "AccountOrderbyVchNoWONarrationReport", "BillsReceivablelandscapeformat",
+            "BillsReceivableLedgerBalance", "BillsReceivableRentation",
+            "BillsReceivableAgeingToday", "BillsReceivableByAccount",
+            "BillsReceivableAll", "BillsReceivableFormat", "rpt201BillsPayable",
+            "rpt201BillsPayableWithVchNo", "AgeingToday", "EndDate", "Report4",
+            "AccountDetails","AccountOrderByVoucherNo"
+        };
+
+        private static readonly Dictionary<string, Func<string, DateTime, DateTime, XtraReport>> parameterizedReports =
+            new()
+            {
+                { "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to) },
+                { "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to) },
+                { "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to) },
+                { "AccountExportLandscapeReport", (id, from, to) => new AccountExportLandscapeReport(id, from, to) },
+                { "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to) },
+                { "AccountOrderbyVchNoWONarrationReport", (id, from, to) => new AccountOrderbyVchNoWONarrationReport(id, from, to) },
+                { "BillsReceivablelandscapeformat", (id, from, to) => new BillsReceivablelandscapeformat(id, from, to) },
+                { "BillsReceivableLedgerBalance", (id, from, to) => new BillsReceivableLedgerBalance(id, from, to) },
+                { "BillsReceivableRentation", (id, from, to) => new BillsReceivableRentation(id, from, to) },
+                { "BillsReceivableAgeingToday", (id, from, to) => new BillsReceivableAgeingToday(id, from, to) },
+                { "BillsReceivableByAccount", (id, from, to) => new BillsReceivableByAccount(id, from, to) },
+                { "BillsReceivableAll", (id, from, to) => new BillsReceivableAll(id, from, to) },
+                { "BillsReceivableFormat", (id, from, to) => new BillsReceivableFormat(id, from, to) },
+                { "rpt201BillsPayable", (id, from, to) => new rpt201BillsPayable(id, from, to) },
+                { "rpt201BillsPayableWithVchNo", (id, from, to) => new rpt201BillsPayableWithVchNo(id, from, to) },
+                { "AgeingToday", (id, from, to) => new AgeingToday(id, from, to) },
+                { "EndDate", (id, from, to) => new EndDate(id, from, to) },
+                { "Report4", (id, from, to) => new Report4(id, from, to) },
+                { "AccountDetails", (id, from, to) => new AccountDetails(id, from, to) },
+                {"AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to) }
+            };
+
+        private static readonly Dictionary<string, Func<XtraReport>> simpleReports = new()
+        {
+            { "XtraReportBillsReceivableAgeingReport", () => new XtraReportBillsReceivableAgeingReport() },
+            { "XtraReportAgeingreportsummary", () => new XtraReportAgeingreportsummary() }
+        };
+
         public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
         {
             if (string.IsNullOrEmpty(reportName))
-            {
                 return BadRequest("Invalid report name.");
-            }
 
             ReportName = reportName;
 
-            if (NeedsParameters(reportName))
+            if (reportsRequiringParameters.Contains(reportName))
             {
-                if (accountId == null || frmDate == null || toDate == null)
-                {
+                if (string.IsNullOrEmpty(accountId) || frmDate == null || toDate == null)
                     return BadRequest($"Missing required parameters for {reportName}.");
-                }
 
-                DateTime fromDate = frmDate.Value;
-                DateTime endDate = toDate.Value;
-
-                Report = reportName switch
-                {
-                    "StatementOfAccountReport" => new StatementOfAccountReport(accountId, fromDate, endDate),
-                    "AccountWithNarration" => new AccountWithNarration(accountId, fromDate, endDate),
-                    "AccountExportFromatReport" => new AccountExportFromatReport(accountId, fromDate, endDate),
-                    "AccountExportLandscapeReport" => new AccountExportLandscapeReport(accountId, fromDate, endDate),
-                    "AccountStatementFormat2Report" => new AccountStatementFormat2Report(accountId, fromDate, endDate),
-                    "AccountOrderbyVchNoWONarrationReport" => new AccountOrderbyVchNoWONarrationReport(accountId, fromDate, endDate),
-                    "BillsReceivablelandscapeformat" => new BillsReceivablelandscapeformat(accountId, fromDate, endDate),
-                    "BillsReceivableLedgerBalance" => new BillsReceivableLedgerBalance(accountId, fromDate, endDate),
-                    "BillsReceivableRentation" => new BillsReceivableRentation(accountId, fromDate, endDate),
-                    "BillsReceivableAgeingToday" => new BillsReceivableAgeingToday(accountId, fromDate, endDate),
-                    "BillsReceivableByAccount" => new BillsReceivableByAccount(accountId, fromDate, endDate),
-                    "BillsReceivableAll" => new BillsReceivableAll(accountId, fromDate, endDate),
-                    "BillsReceivableFormat" => new BillsReceivableFormat(accountId, fromDate, endDate),
-                    "rpt201BillsPayable" => new rpt201BillsPayable(accountId, fromDate, endDate),
-                    "rpt201BillsPayableWithVchNo" => new rpt201BillsPayableWithVchNo(accountId, fromDate, endDate),
-                    _ => null
-                };
+                Report = parameterizedReports.ContainsKey(reportName)
+                    ? parameterizedReports[reportName](accountId, frmDate.Value, toDate.Value)
+                    : null;
             }
             else
             {
-                Report = reportName switch
-                {
-                    "XtraReportBillsReceivableAgeingReport" => new XtraReportBillsReceivableAgeingReport(),
-                    "XtraReportAgeingreportsummary" => new XtraReportAgeingreportsummary(),
-                    _ => null
-                };
+                Report = simpleReports.ContainsKey(reportName) ? simpleReports[reportName]() : null;
             }
 
-            if (Report == null)
-            {
-                return NotFound("Report not found.");
-            }
-
-            return Page();
-        }
-
-        private bool NeedsParameters(string reportName)
-        {
-            return reportName switch
-            {
-                "StatementOfAccountReport" => true,
-                "AccountWithNarration" => true,
-                "AccountExportFromatReport" => true,
-                "AccountExportLandscapeReport" => true,
-                "AccountStatementFormat2Report" => true,
-                "AccountOrderbyVchNoWONarrationReport" => true,
-                "BillsReceivablelandscapeformat" => true,
-                "BillsReceivableLedgerBalance" => true,
-                "BillsReceivableRentation" => true,
-                "BillsReceivableAgeingToday" => true,
-                "BillsReceivableByAccount" => true,
-                "BillsReceivableAll" => true,
-                "BillsReceivableFormat" => true,
-                "rpt201BillsPayable" => true,
-                "rpt201BillsPayableWithVchNo" => true,
-                _ => false
-            };
+            return Report == null ? NotFound("Report not found.") : Page();
         }
     }
 }

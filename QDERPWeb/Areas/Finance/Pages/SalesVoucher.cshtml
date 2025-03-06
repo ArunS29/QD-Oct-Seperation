@@ -60,7 +60,7 @@
 	</div>
 </div>
 <div class="content-container-top" style="background-color:#909ead00;">
-	<div class="container">
+	<div class="container1">
 		<div class="row g-4" style="padding:1em;">
 			<div class="col-md-3">
 				<div class="form-group">
@@ -107,7 +107,7 @@
 			</div>
 			<div class="col-md-3">
 				<div class="form-group">
-					<div class="">
+					<div class="button-alignment-down">
 						@(Html.DevExtreme().CheckBox()
 													.Text(new JS("formatMessage('Received Date')"))
 													.ID("UseSubmittedDate")
@@ -164,18 +164,63 @@
 				</div>
 			</div>
 
-		<div class="col-md-1" style="margin-top: 66px;padding-left:0px;padding-right:0px;width: 4%;">
-				@(Html.DevExtreme().Button()
+		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+			@* 	@(Html.DevExtreme().Button()
 								.ID("btnAddVoucher")
 								.Icon("plus")
 								.OnClick("navigateToLedger")
-								)
+								) *@
+
+			@(Html.DevExtreme().Button()
+														.ID("btnAddVoucher")
+													.Icon("plus")
+													.OnClick("showLedgerAccountPopup")
+													)
+
+					<!-- DevExtreme Popup -->
+			@(Html.DevExtreme().Popup()
+										.ID("ledgerAccountPopup")
+										.Width("93%")
+										.Height("85%")
+										.Title("Add Ledger Account")
+										.ShowTitle(true)
+										.CloseOnOutsideClick(true)
+										.Visible(false)
+										.ResizeEnabled(true)
+										.ContentTemplate(@<text>
+                        <div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
+                            <iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
+                        </div>
+                    </text>)
+										)
+									
 			</div>
-		<div class="col-md-1" style="margin-top: 66px;padding-left:0px;padding-right:0px;width: 4%;">
-				@(Html.DevExtreme().Button()
+		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+	@* 			@(Html.DevExtreme().Button()
 								.ID("btnEditVoucher")
 								.Icon("edit")
-								)
+								) *@
+			@(Html.DevExtreme().Button()
+													.ID("btnEditVoucher")
+													.Icon("edit")
+													.OnClick("showLedgerAccountEditPopup")
+													)
+
+			@(Html.DevExtreme().Popup()
+										.ID("ledgerEditAccountPopup")
+										.Width("93%")
+										.Height("85%")
+										.Title("Edit Ledger Account")
+										.ShowTitle(true)
+										.CloseOnOutsideClick(true)
+										.Visible(false)  // Hidden by default
+										.ResizeEnabled(true)
+										.ContentTemplate(@<text>
+                        <div id="popupContent" style="width:100%; height:100%;">
+                            <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+                        </div>
+                    </text>)
+										)
 			</div>
 			<div class="col-md-3">
 				<div class="form-group">
@@ -263,18 +308,62 @@
 								.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
 								)
 			</div>
-			<div class="form-group" style="margin-top:25px;">
-				@(Html.DevExtreme().Button()
+			<div class="form-group" style="margin-top:43px;">
+			@* 	@(Html.DevExtreme().Button()
 								.ID("btnAddAHead")
 								.Icon("plus")
 								.OnClick("navigateToLedger")
-								)
+								) *@
+
+			@(Html.DevExtreme().Button()
+																	.ID("btnAddAHead")
+																	.Icon("plus")
+																	.OnClick("showLedgerAccountPopup")
+																	)
+
+					<!-- DevExtreme Popup -->
+			@(Html.DevExtreme().Popup()
+													.ID("ledgerAccountPopup")
+													.Width("93%")
+													.Height("85%")
+													.Title("Add Ledger Account")
+													.ShowTitle(true)
+													.CloseOnOutsideClick(true)
+													.Visible(false)
+													.ResizeEnabled(true)
+													.ContentTemplate(@<text>
+                        <div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
+                            <iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
+                        </div>
+                    </text>)
+													)
 			</div>
-			<div class="form-group" style="margin-top:25px;">
-				@(Html.DevExtreme().Button()
+			<div class="form-group" style="margin-top:43px;">
+			@* 	@(Html.DevExtreme().Button()
 								.ID("btnEditAHead")
 								.Icon("edit")
-								)
+								) *@
+			@(Html.DevExtreme().Button()
+																	.ID("btnEditAHead")
+																	.Icon("edit")
+																	.OnClick("showLedgerAccountHeadEditPopup")
+																	)
+
+			@(Html.DevExtreme().Popup()
+													.ID("ledgerEditAccountPopup")
+													.Width("93%")
+													.Height("85%")
+													.Title("Edit Ledger Account")
+													.ShowTitle(true)
+													.CloseOnOutsideClick(true)
+													.Visible(false)  // Hidden by default
+													.ResizeEnabled(true)
+													.ContentTemplate(@<text>
+                        <div id="popupContent" style="width:100%; height:100%;">
+                            <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+                        </div>
+                    </text>)
+													)
 			</div>
 			<div class="form-group">
 
@@ -318,7 +407,7 @@
 								.MaxLength(500)
 								)
 			</div>
-		<div class="form-group" style="margin-top: 25px;">
+			<div class="form-group" style="">
 				@(Html.DevExtreme().Button()
 								.ID("btnVoucherEntry")
 								.Text(new JS("formatMessage('ADD')"))
@@ -521,8 +610,10 @@
 						.Icon("fa fa-book")
 						.Height(70)
 						.Width(70)
+											.OnClick("openAttachmentOptions")
 						)
 					</div>
+					 <input type="file" id="fileInput" style="display:none;" />
 				</div>
 			</div>
 		<div>
@@ -637,6 +728,8 @@
 
 	</div>
 	<script>
+			let refno,accheadar,accgroup,accgroupid,accheadid,accheadname,supplierId,suprefno,supaccheadar,supaccgroup,supaccgroupid,suppliername;
+
 		$(function () {
                                         $("#EditCostAllocation").dxTextBox({
                                                     text:formatMessage("Edit Cost Allocation"),
@@ -825,98 +918,126 @@
 			}
 		});
 
-		function onVoucherNoChanged(e) {
-			const paramVoucherNo = getQueryParam('VoucherNo');
-			$.ajax({
-				type: "GET",
-				url: "/api/SalesVoucher/GetVoucherDetails",
-				contentType: "application/json",
-				data: {
-					voucherNo: e.value
-				},
-				success: function (response) {
-					if (response.success === false && paramVoucherNo) {
-						DevExpress.ui.notify(response.message, "error", 2000); // Notify if voucher not found
-						return;
-					}
-					console.log(response);
-					// Populate fields with the response data
-					$("#VoucherDate").dxDateBox("instance").option("value", response.data[0].VoucherDate);
-					$("#VoucherEffectiveDate").dxDateBox("instance").option("value", response.data[0].VoucherEffectiveDate);
-					$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", response.data[0].InvoiceSubmittedDate);
-					$("#InvoiceDueDate").dxDateBox("instance").option("value", response.data[0].InvoiceDueDate);
-					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", response.data[0].InvoiceNoOfDays || null);
-					$("#VoucherRefNo").dxTextBox("instance").option("value", response.data[0].VoucherRefNo || "");
-					$("#VoucharNarration").dxTextBox("instance").option("value", response.data[0].VoucharNarration || "");
-					$("#VoucherType").dxSelectBox("instance").option("value", response.data[0].VoucherType || null);
-					$("#BillRemarks").dxTextBox("instance").option("value", response.data[0].BillRemarks || "");
-					$("#IsVerified").dxCheckBox("instance").option("value", response.data[0].IsVerified || false);
-					$("#IsApproved").dxCheckBox("instance").option("value", response.data[0].IsApproved || false);
-					$("#UseSubmittedDate").dxCheckBox("instance").option("value", response.data[0].UseSubmittedDate || false);
-				},
-				error: function (xhr, status, error) {
-					if (paramVoucherNo) {
-						DevExpress.ui.notify(response.message, "error", 2000);
-						return;
-					}
+	$(document).ready(function () {
+		const urlParams = new URLSearchParams(window.location.search);
+		const argsledno = urlParams.get("argsledno");
+
+		console.log("Formatted Voucher in ready block:", argsledno);
+
+		if (argsledno) {
+			setTimeout(function () {
+				const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+				if (voucherNoField) {
+					voucherNoField.option("value", argsledno);
+					onVoucherNoChanged({ value: argsledno }); // Trigger data fetching
+				} else {
+					console.error("VoucherNo TextBox instance not found.");
 				}
-			});
-			$.ajax({
-				type: "GET",
-				url: "/api/SalesVoucher/GetVoucherEntries",
-				contentType: "application/json",
-				data: {
-					voucherNo: e.value
-				},
-				success: function (response) {
-					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-				},
-				error: function (xhr, status, error) {
-					alert("Error occurred while updating data: " + error);
-				}
-			});
+			}, 500);
 		}
+	});
 
 	function onVoucherNoChanged(e) {
 		const voucherNo = e.value;
 
+		if (!voucherNo) return;
+
 		const urlParams = new URLSearchParams(window.location.search);
 		const argsledno = urlParams.get("argsledno");
 
-		// If the voucher number is coming from the URL, accept it without validation
-		if (argsledno && argsledno === voucherNo) {
-			return;
+		// If the voucher is from the URL, skip validation
+		if (!argsledno || argsledno !== voucherNo) {
+			validateVoucherNo(voucherNo);
 		}
 
-		// Make an AJAX request to check if the Sales Invoice No exists
+		fetchVoucherDetails(voucherNo);
+		fetchVoucherEntries(voucherNo);
+	}
+
+	function validateVoucherNo(voucherNo) {
 		$.ajax({
 			type: "GET",
-			url: "/api/SalesVoucher/CheckVoucherExists", // API endpoint to validate voucher existence
+			url: "/api/SalesVoucher/CheckVoucherExists",
 			contentType: "application/json",
 			data: { voucherNo: voucherNo },
 			success: function (response) {
-				if (!response.success) {
-					// Show error notification if the input is invalid or empty
-					DevExpress.ui.notify(response.message, "error", 3000);
-
-					// Clear the TextBox value
-					$("#VoucherNo").dxTextBox("instance").option("value", null);
-					return;
-				}
-
-				if (response.exists) {
-					// Show error notification if the voucher already exists
-					DevExpress.ui.notify("Sales Invoice No already exists. Please use a different number.", "error", 3000);
-
-					// Clear the TextBox value
+				if (!response.success || response.exists) {
+					DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
 					$("#VoucherNo").dxTextBox("instance").option("value", null);
 				}
 			},
-			error: function (xhr, status, error) {
+			error: function () {
 				DevExpress.ui.notify("An error occurred while validating Sales Invoice No.", "error", 3000);
 			}
 		});
 	}
+
+	function fetchVoucherDetails(voucherNo) {
+		$.ajax({
+			type: "GET",
+			url: "/api/SalesVoucher/GetVoucherDetails",
+			contentType: "application/json",
+			data: { voucherNo: voucherNo },
+			success: function (response) {
+				if (!response.success) {
+					DevExpress.ui.notify(response.message, "error", 2000);
+					return;
+				}
+
+				const data = response.data[0];
+
+				if (data) {
+					$("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
+					$("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
+					$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", data.InvoiceSubmittedDate);
+					$("#InvoiceDueDate").dxDateBox("instance").option("value", data.InvoiceDueDate);
+					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", data.InvoiceNoOfDays || null);
+					$("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
+					$("#VoucharNarration").dxTextBox("instance").option("value", data.VoucharNarration || "");
+					$("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
+					$("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+					$("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
+					$("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
+					$("#UseSubmittedDate").dxCheckBox("instance").option("value", data.UseSubmittedDate || false);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+			}
+		});
+	}
+
+	function fetchVoucherEntries(voucherNo) {
+		$.ajax({
+			type: "GET",
+			url: "/api/SalesVoucher/GetVoucherEntries",
+			contentType: "application/json",
+			data: { voucherNo: voucherNo },
+			success: function (response) {
+				console.log("Full Response:", response); // Log everything for debugging
+
+				if (!response || !response.data) {
+					console.error("Error: API response does not contain 'data'.");
+					return;
+				}
+
+				console.log("Fetched Data:", response.data); // Ensure correct data extraction
+
+				// Bind the extracted data directly to the DataGrid
+				$("#dataGrid").dxDataGrid({
+					dataSource: response.data, // Use the 'data' property from response
+					keyExpr: "VoucherNo", // Adjust based on your primary key
+					repaintChangesOnly: true
+				});
+			},
+			error: function () {
+				DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+			}
+		});
+	}
+
+
+
 
 
 		function addVoucherEntry() {
@@ -1071,6 +1192,17 @@
 				if (ddbInstance.option("opened")) {
 					ddbInstance.close();
 				}
+
+				var selectedRowData = $("#clientname-datagrid").dxDataGrid("instance").getSelectedRowsData();
+			// Get ReferenceNo from selected row
+			if (selectedRowData.length > 0) {
+				supplierId = selectedRowData[0].AccountId;
+				suppliername = selectedRowData[0].AccountHead;
+				suprefno = selectedRowData[0].ReferenceNo;
+				 supaccheadar = selectedRowData[0].AccountHeadArabic;
+				 supaccgroup = selectedRowData[0].AccountGroup;
+				 supaccgroupid =  selectedRowData[0].AccountGroupId;
+			}
 			}
 
 		}
@@ -1083,6 +1215,17 @@
 				if (ddbInstance.option("opened")) {
 					ddbInstance.close();
 				}
+				var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
+			// Get ReferenceNo from selected row
+			if (selectedRowData.length > 0) {
+				accheadid = selectedRowData[0].AccountId;
+				accheadname = selectedRowData[0].AccountHead;
+				refno = selectedRowData[0].ReferenceNo;
+				accheadar = selectedRowData[0].AccountHeadArabic;
+				accgroup = selectedRowData[0].AccountGroup;
+				accgroupid =  selectedRowData[0].AccountGroupId;
+
+			}
 			}
 
 		}
@@ -1098,7 +1241,7 @@
 
 			// Open the Accounting Ledgers form in a popup window
 			window.open(
-			`/${tenantName}/Finance/LedgerAccount`, // URL to the form
+			"/pulse/Finance/LedgerAccount", // URL to the form
 				"popupWindow", // Window name
 				"width=800,height=600,scrollbars=yes,resizable=yes" // Window features
 			);
@@ -1137,135 +1280,7 @@
 			dueDateBox.option("value", newDueDate);
 		}
 
-
-		function onVerifyButtonClick() {
-			const dataGrid = $("#dataGrid").dxDataGrid("instance");
-			const rowCount = dataGrid.getVisibleRows().length;
-
-			// Check if dataGrid exists and contains rows
-			if (rowCount == 0) {
-				Swal.fire({
-					title: "Voucher is not Verified",
-					text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-					icon: "warning",
-					showCancelButton: true,
-					confirmButtonText: "Yes",
-					cancelButtonText: "No"
-				})
-			} else {
-				proceedWithVerification(); // If data exists, proceed with verification
-			}
-		}
-
-		function proceedWithVerification() {
-			// Set VerifiedBy checkbox to true
-			$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-			const vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-			// Prepare data for verification
-			const currentDate = new Date();
-			const formattedDate = currentDate.toLocaleDateString("en-GB", {
-				day: "2-digit",
-				month: "short",
-				year: "numeric"
-			}).replace(/ /g, '-');
-
-			const data = {
-				voucherNo: vno,
-				verifiedBy: "Admin",
-				verifiedOn: new Date().toISOString()
-			};
-
-			$.ajax({
-				data: JSON.stringify(data),
-				success: function (response) {
-					Swal.fire({
-						title: "Success!",
-						text: `Voucher has been Verified.`,
-						icon: "success",
-						confirmButtonText: "OK"
-					}).then(() => {
-						$("#VerifiedBytext").dxTextBox("instance").option("value", "Admin");
-						$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
-					});
-				},
-				error: function () {
-					Swal.fire({
-						title: "Error",
-						text: "Please save the transactions after proceeding!!",
-						icon: "error",
-						confirmButtonText: "OK"
-					});
-				}
-			});
-		}
-
-
-		function disableEditing() {
-			// Disable all input fields and buttons except for specific ones
-			$('input, select, textarea').prop('disabled', true);
-
-			$('.dx-button').each(function () {
-				const allowedButtons = ['btnBack', 'btnPreview', 'btnPrint', 'btnAttach'];
-				if (!allowedButtons.includes($(this).attr('id'))) {
-					$(this).dxButton('option', 'disabled', true);
-				}
-			});
-		}
-
-		function onApproveButtonClick() {
-			const dataGrid = $("#dataGrid").dxDataGrid("instance");
-			const rowCount = dataGrid.getVisibleRows().length;
-
-			if (rowCount == 0) {
-				Swal.fire({
-					title: "Voucher is not Approved",
-					text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-					icon: "warning",
-					showCancelButton: true,
-					confirmButtonText: "Yes",
-					cancelButtonText: "No"
-				})
-			} else {
-				proceedWithApproval();
-			}
-		}
-
-		function proceedWithApproval() {
-			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-			var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-			const currentDate = new Date();
-			const formattedDate = currentDate.toLocaleDateString("en-GB", {
-				day: "2-digit",
-				month: "short",
-				year: "numeric"
-			}).replace(/ /g, '-');
-
-			$.ajax({
-				success: function () {
-
-					Swal.fire({
-						title: "Success!",
-						text: "Voucher has been Approved.",
-						icon: "success",
-						confirmButtonText: "OK"
-					}).then(() => {
-						disableEditing();
-						$("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-						$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-					});
-				},
-				error: function () {
-					Swal.fire({
-						title: "Error",
-						text: "Please save the transactions after proceeding!",
-						icon: "error",
-						confirmButtonText: "OK"
-					});
-				}
-			});
-		}
+		
 		function updateDueDate() {
 			// Get checkbox value and "No of Days"
 			const useSubmittedDate = $("#UseSubmittedDate").dxCheckBox("instance").option("value");
@@ -1606,77 +1621,27 @@
 			.frame { display: none !important; }
 			.footerContainer { display: none !important; }
 			.bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
-			.mainContainer { margin-top: 1em;width:100% }
+			.mainContainer { margin-top: 1em; }
 		`;
 		document.head.appendChild(style);
 	}
-	function onAttachButtonClick() {
-		$("#attachOptionsPopup").dxPopup("instance").show();
-	}
 
-	function attachSingleFile() {
-		// Logic for attaching a single file
-		DevExpress.ui.notify("Single file attach initiated.", "info", 2000);
-	}
+	// function onAttachButtonClick() {
+	// 	$("#attachOptionsPopup").dxPopup("instance").show();
+	// }
 
-	function attachMultipleFiles(aVoucherNo) {
-		// Logic for attaching multiple files
-		DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
-		window.location.href = `/${tenantName}/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
-	}
+	// function attachSingleFile() {
+	// 	// Logic for attaching a single file
+	// 	DevExpress.ui.notify("Single file attach initiated.", "info", 2000);
+	// }
 
-	function onApproveButtonClick() {
-		const dataGrid = $("#dataGrid").dxDataGrid("instance");
-		const rowCount = dataGrid.getVisibleRows().length;
+	// function attachMultipleFiles(aVoucherNo) {
+	// 	// Logic for attaching multiple files
+	// 	DevExpress.ui.notify(`Multiple file attach initiated for Voucher No: ${aVoucherNo}`, "info", 2000);
+	// 	window.location.href = `/pulse/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
+	// }
 
-		if (rowCount == 0) {
-			Swal.fire({
-				title: "Voucher is not Approved",
-				text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-				icon: "warning",
-				showCancelButton: true,
-				confirmButtonText: "Yes",
-				cancelButtonText: "No"
-			})
-		} else {
-			proceedWithApproval();
-		}
-	}
-
-	function proceedWithApproval() {
-		$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-		var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-		const currentDate = new Date();
-		const formattedDate = currentDate.toLocaleDateString("en-GB", {
-			day: "2-digit",
-			month: "short",
-			year: "numeric"
-		}).replace(/ /g, '-');
-
-		$.ajax({
-			success: function () {
-				Swal.fire({
-					title: "Success!",
-					text: "Voucher has been Approved.",
-					icon: "success",
-					confirmButtonText: "OK"
-				}).then(() => {
-					disableEditing();
-					$("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-					$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-				});
-			},
-			error: function () {
-				Swal.fire({
-					title: "Error",
-					text: "Please save the transactions after proceeding!",
-					icon: "error",
-					confirmButtonText: "OK"
-				});
-			}
-		});
-	}
+	
 	function openAttachmentOptions() {
 		// Show an options dialog using SweetAlert for Single/Multiple selection
 		Swal.fire({
@@ -1710,55 +1675,9 @@
 	});
 
 
-	function onBackButtonClick() {
-		const dataGrid = $("#dataGrid").dxDataGrid("instance");
-		const rowCount = dataGrid.getVisibleRows().length;
+	
 
-		if (rowCount === 0) {
-			DevExpress.ui.dialog.confirm(
-				"No entries in the voucher, do you want to clear the voucher completely?",
-				"No line items"
-			).done(function (dialogResult) {
-				if (dialogResult) {
-					if (typeof onConfirm === "function") {
-						onConfirm(); // Ensure onConfirm is defined before calling
-					}
-					DevExpress.ui.dialog.alert(
-						"Voucher has been successfully removed from the database.",
-						"Data Deleted Successfully"
-					).done(function () {
 
-						history.back(); // Go back to the previous page
-					});
-				}
-			});
-		} else {
-
-			history.back(); // Closes or navigates back
-		}
-	}
-
-	function onDeleteButtonClick() {
-		// const dataGrid = $("#dataGrid").dxDataGrid("instance");
-		// const rowCount = dataGrid.getVisibleRows().length;
-		DevExpress.ui.dialog.confirm(
-			"You are about to delete the Voucher from the database,Click yes if you would like to continue.",
-			"Delete Confirmation"
-		).done(function (dialogResult) {
-			if (dialogResult) {
-				if (typeof onConfirm === "function") {
-					onConfirm(); // Ensure onConfirm is defined before calling
-				}
-				DevExpress.ui.dialog.alert(
-					"Voucher has been successfully removed from the database.",
-					"Data Deleted Successfully"
-				).done(function () {
-					// window.location.href = `/Home/Dashboard`; // Uncomment if redirecting
-
-				});
-			}
-		});
-	}
 	function editLedger() {
 		var rowData = window.selectedRowData;
 		if (rowData && rowData.AccountId) {
@@ -1775,7 +1694,7 @@
 		$("#popupContainer").dxPopup({
 			contentTemplate: function (contentElement) {
 				// Construct URL with both AccountId and the global IsCharOfAccounts variable
-				var url = `/${tenantName}/Finance/LedgerAccount?AccountId=` + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
+				var url = "/pulse/Finance/LedgerAccount?AccountId=" + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
 
 				$("<iframe>")
 					.attr("src", url)
@@ -1793,6 +1712,101 @@
 				location.reload();  // ✅ Reloads the page after closing popup
 			}
 		}).dxPopup("instance").show();
+	}
+
+
+	   function showLedgerAccountPopup() {
+		var popup = $("#ledgerAccountPopup").dxPopup("instance");
+		popup.show();
+
+		// Correct URL to your LedgerAccount view
+		$("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+	}
+
+	   function showLedgerAccountHeadEditPopup() {
+		var dropDownBox = $("#AccountHeadDropDown").dxDropDownBox("instance");
+
+		IsEdit = true;
+
+		// Initialize variables to avoid reference errors
+		refno = refno || "";
+		accheadar = accheadar || "";
+		accheadname = accheadname || "";
+		accgroup = accgroup || "";
+		accgroupid = accgroupid || "";
+
+		// Validate AccountHead selection
+		if (accheadid == null || accheadid == undefined || accheadid=="") { // Checks for both null and undefined
+			DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+			return;
+		}
+
+		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+
+		// Show the popup
+		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popupInstance.show();
+
+		// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+		popupInstance.option("onShown", function () {
+			var iframe = document.getElementById("ledgerEditAccountFrame");
+
+			if (!iframe) {
+				console.error("Error: ledgerEditAccountFrame not found!");
+				return;
+			}
+
+			// Set iframe src when popup is shown
+			iframe.onload = function () {
+				console.log("Iframe loaded successfully.");
+			};
+
+			iframe.src = url;
+		});
+	}
+
+
+	  function showLedgerAccountEditPopup() {
+
+		var dropDownBox = $("#SupplierNameDropDown").dxDropDownBox("instance");
+
+		IsEdit = true;
+
+		// Initialize variables to avoid reference errors
+		suprefno = suprefno || "";
+		supaccheadar = supaccheadar || "";
+		suppliername = suppliername || "";
+		supaccgroup = supaccgroup || "";
+		supaccgroupid = supaccgroupid || "";
+
+		// Validate AccountHead selection
+		if (supplierId == null || supplierId == undefined || supplierId=="") { // Checks for both null and undefined
+			DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+			return;
+		}
+
+		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
+
+		// Show the popup
+		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popupInstance.show();
+
+		// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+		popupInstance.option("onShown", function () {
+			var iframe = document.getElementById("ledgerEditAccountFrame");
+
+			if (!iframe) {
+				console.error("Error: ledgerEditAccountFrame not found!");
+				return;
+			}
+
+			// Set iframe src when popup is shown
+			iframe.onload = function () {
+				console.log("Iframe loaded successfully.");
+			};
+
+			iframe.src = url;
+		});
 	}
 
 

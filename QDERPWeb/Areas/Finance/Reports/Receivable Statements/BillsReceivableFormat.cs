@@ -2,8 +2,6 @@
 
 using DevExpress.XtraReports.UI;
 
-using System;
-
 namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
 {

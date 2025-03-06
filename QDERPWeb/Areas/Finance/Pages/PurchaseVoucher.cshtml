@@ -71,7 +71,7 @@
 		</div>
 </div>
 <div class="content-container-top">
-	<div class="container">
+	<div class="container1">
 		<div class="row g-4">
 			<div class="col-md-3">
 				<div class="form-group">
@@ -174,19 +174,64 @@
 												)
 
 			</div>
+
+
 		</div>
 
-		<div class="col-md-1" style="margin-top: 66px;padding-left:0px;padding-right:0px;width: 4%;">
-			@(Html.DevExtreme().Button()
+		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+			@* @(Html.DevExtreme().Button()
 									.ID("btnAddVoucher")
 									.Icon("plus")
-									)
-		</div>
-		<div class="col-md-1" style="margin-top: 66px;padding-left:0px;padding-right:0px;width: 4%;">
+									) *@
 			@(Html.DevExtreme().Button()
+											 .ID("btnAddVoucher")
+											.Icon("plus")
+											.OnClick("showLedgerAccountPopup")
+											)
+
+					<!-- DevExtreme Popup -->
+			@(Html.DevExtreme().Popup()
+							.ID("ledgerAccountPopup")
+							.Width("93%")
+							.Height("85%")
+							.Title("Add Ledger Account")
+							.ShowTitle(true)
+							.CloseOnOutsideClick(true)
+							.Visible(false)
+							.ResizeEnabled(true)
+							.ContentTemplate(@<text>
+                        <div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
+                            <iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
+                        </div>
+                    </text>)
+							)
+		</div>
+		<div class="col-md-1" style="margin-top: 62px;padding-left:0px;padding-right:0px;width: 4%;">
+	@* 		@(Html.DevExtreme().Button()
 									.ID("btnEditVoucher")
 									.Icon("edit")
-									)
+									) *@
+			@(Html.DevExtreme().Button()
+											.ID("btnEditVoucher")
+											.Icon("edit")
+											.OnClick("showLedgerAccountEditPopup")
+											)
+
+			@(Html.DevExtreme().Popup()
+							.ID("ledgerEditAccountPopup")
+							.Width("93%")
+							.Height("85%")
+							.Title("Edit Ledger Account")
+							.ShowTitle(true)
+							.CloseOnOutsideClick(true)
+							.Visible(false)  // Hidden by default
+							.ResizeEnabled(true)
+							.ContentTemplate(@<text>
+                        <div id="popupContent" style="width:100%; height:100%;">
+                            <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+                        </div>
+                    </text>)
+							)
 		</div>
 		<div class="col-md-3">
 			<div class="form-group">
@@ -235,6 +280,7 @@
 									.Value("Dr")
 									.Placeholder(new JS("formatMessage('Select Transaction Type')"))
 									.Width(90)
+									//.Disabled(true)
 									)
 		</div>
 		<div class="form-group">
@@ -272,18 +318,63 @@
 									.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
 									)
 		</div>
-		<div class="form-group" style="margin-top:25px;">
-			@(Html.DevExtreme().Button()
+		<div class="form-group" style="margin-top:52px;">
+			@* @(Html.DevExtreme().Button()
 									.ID("btnAddAHead")
 									.Icon("plus")
 									.OnClick("redirectToLedgerAccount")
-									)
-		</div>
-		<div class="form-group" style="margin-top:25px;">
+									) *@
+
 			@(Html.DevExtreme().Button()
+																.ID("btnAddAHead")
+															.Icon("plus")
+															.OnClick("showLedgerAccountPopup")
+															)
+
+					<!-- DevExtreme Popup -->
+			@(Html.DevExtreme().Popup()
+										.ID("ledgerAccountPopup")
+										.Width("93%")
+										.Height("85%")
+										.Title("Add Ledger Account")
+										.ShowTitle(true)
+										.CloseOnOutsideClick(true)
+										.Visible(false)
+										.ResizeEnabled(true)
+										.ContentTemplate(@<text>
+                        <div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
+                            <iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
+                        </div>
+                    </text>)
+										)
+		</div>
+		<div class="form-group" style="margin-top:52px;">
+			@* @(Html.DevExtreme().Button()
 									.ID("btnEditAHead")
 									.Icon("edit")
-									)
+									) *@
+
+			@(Html.DevExtreme().Button()
+														.ID("btnEditAHead")
+														.Icon("edit")
+														.OnClick("showLedgerAccountHeadEditPopup")
+														)
+
+			@(Html.DevExtreme().Popup()
+										.ID("ledgerEditAccountPopup")
+										.Width("93%")
+										.Height("85%")
+										.Title("Edit Ledger Account")
+										.ShowTitle(true)
+										.CloseOnOutsideClick(true)
+										.Visible(false)  // Hidden by default
+										.ResizeEnabled(true)
+										.ContentTemplate(@<text>
+                        <div id="popupContent" style="width:100%; height:100%;">
+                            <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+                        </div>
+                    </text>)
+										)
 		</div>
 		<div class="form-group">
 			@(
@@ -326,7 +417,7 @@
 									.MaxLength(500)
 									)
 		</div>
-		<div class="form-group" style="margin-top: 25px;">
+		<div class="form-group" style="">
 			@(Html.DevExtreme().Button()
 									.ID("btnVoucherEntry")
 									.Text(new JS("formatMessage('ADD')"))
@@ -563,8 +654,10 @@
 																		.Icon("fa fa-book")
 																		.Height(70)
 																		.Width(70)
+																		.OnClick("onAttachButtonClick")
 																		)
 				</div>
+				 <input type="file" id="fileInput" style="display:none;" />
 			</div>
 		</div>
 
@@ -660,6 +753,8 @@
 
 </div>
 <script>
+	let refno,accheadar,accgroup,accgroupid,accheadid,accheadname,supplierId,suprefno,supaccheadar,supaccgroup,supaccgroupid;
+
 $(function () {
 										$("#EditCostAllocation").dxTextBox({
 													text:formatMessage("Edit Cost Allocation"),
@@ -1266,7 +1361,7 @@ $(function () {
 				// Show the button
 				// alert("1");
 
-				//       window.location.href = `/${tenantName}/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
+				//       window.location.href = `/pulse/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
 				// return;
 
 			}
@@ -1453,7 +1548,10 @@ $(function () {
 			if (selectedRowData.length > 0) {
 				supplierId = selectedRowData[0].AccountId;
 				suppliername = selectedRowData[0].AccountHead;
-
+				suprefno = selectedRowData[0].ReferenceNo;
+				 supaccheadar = selectedRowData[0].AccountHeadArabic;
+		         supaccgroup = selectedRowData[0].AccountGroup;
+			     supaccgroupid =  selectedRowData[0].AccountGroupId;
 			}
 		}
 
@@ -1473,6 +1571,10 @@ $(function () {
 			if (selectedRowData.length > 0) {
 				accheadid = selectedRowData[0].AccountId;
 				accheadname = selectedRowData[0].AccountHead;
+				refno = selectedRowData[0].ReferenceNo;
+				accheadar = selectedRowData[0].AccountHeadArabic;
+				accgroup = selectedRowData[0].AccountGroup;
+				accgroupid =  selectedRowData[0].AccountGroupId;
 
 			} else {
 				DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -1489,7 +1591,7 @@ $(function () {
 
 	function redirectToLedgerAccount() {
 		DevExpress.ui.notify("Working on Progress", "success", 2000);
-		window.open(`/${tenantName}/Finance/LedgerAccount`, 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+		window.open('/pulse/Finance/LedgerAccount', 'popupWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
 	}
 	function onEditorPreparing(e) {
 
@@ -1673,6 +1775,99 @@ $(function () {
 	});
 
 
+	   function showLedgerAccountPopup() {
+		var popup = $("#ledgerAccountPopup").dxPopup("instance");
+		popup.show();
+
+		// Correct URL to your LedgerAccount view
+		$("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+	}
+
+	   function showLedgerAccountHeadEditPopup() {
+		var dropDownBox = $("#AccountHeadDropDown").dxDropDownBox("instance");
+
+		IsEdit = true;
+
+		// Initialize variables to avoid reference errors
+		refno = refno || "";
+		accheadar = accheadar || "";
+		accheadname = accheadname || "";
+		accgroup = accgroup || "";
+		accgroupid = accgroupid || "";
+
+		// Validate AccountHead selection
+		if (accheadid == null || accheadid == undefined || accheadid=="") { // Checks for both null and undefined
+			DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+			return;
+		}
+
+		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+
+		// Show the popup
+		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popupInstance.show();
+
+		// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+		popupInstance.option("onShown", function () {
+			var iframe = document.getElementById("ledgerEditAccountFrame");
+
+			if (!iframe) {
+				console.error("Error: ledgerEditAccountFrame not found!");
+				return;
+			}
+
+			// Set iframe src when popup is shown
+			iframe.onload = function () {
+				console.log("Iframe loaded successfully.");
+			};
+
+			iframe.src = url;
+		});
+	}
+
+
+	  function showLedgerAccountEditPopup() {
+		  
+		var dropDownBox = $("#SupplierNameDropDown").dxDropDownBox("instance");
+
+		IsEdit = true;
+
+		// Initialize variables to avoid reference errors
+		suprefno = suprefno || "";
+		supaccheadar = supaccheadar || "";
+		suppliername = suppliername || "";
+		supaccgroup = supaccgroup || "";
+		supaccgroupid = supaccgroupid || "";
+
+		// Validate AccountHead selection
+		if (supplierId == null || supplierId == undefined || supplierId=="") { // Checks for both null and undefined
+			DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+			return;
+		}
+
+		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
+
+		// Show the popup
+		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popupInstance.show();
+
+		// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+		popupInstance.option("onShown", function () {
+			var iframe = document.getElementById("ledgerEditAccountFrame");
+
+			if (!iframe) {
+				console.error("Error: ledgerEditAccountFrame not found!");
+				return;
+			}
+
+			// Set iframe src when popup is shown
+			iframe.onload = function () {
+				console.log("Iframe loaded successfully.");
+			};
+
+			iframe.src = url;
+		});
+	}
 	
 
 </script>

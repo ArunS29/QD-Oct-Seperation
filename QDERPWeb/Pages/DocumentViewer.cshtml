@@ -24,7 +24,6 @@
     .Width("110em")
 
     .Bind(Model.Report)
-
 )
 
 @* Floating Edit Report Button with Icon and Text *@
@@ -35,11 +34,11 @@
     <i class="fa fa-pencil-alt"></i>
 </a>
 
-<!-- Floating Close Button -->
+@* <!-- Floating Close Button -->
 <a href="javascript:void(0);" id="btnClose" class="btn-close-report" data-tooltip="Close">
-    <span class="btn-text">Close</span>
-    <i class="fa fa-times"></i>
-</a>
+<span class="btn-text">Close</span>
+<i class="fa fa-times"></i>
+</a> *@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
@@ -65,7 +64,10 @@
 
     .mainContainer {
         margin-top: 1em;
-        width:100%;
+    }
+
+    .dxrd-preview .dxrd-preview-page {
+        width: 100% !important;
     }
 
     /* Floating Edit Report Button */
@@ -115,40 +117,6 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
 
             color: #0056b3; /* Darker color on hover */
-        }
-
-        /* Tooltip Styling */
-
-        .btn-edit-report[data-tooltip]:hover::after {
-            content: attr(data-tooltip); /* Tooltip text */
-
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 5px;
-            border-radius: 5px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            opacity: 1;
-        }
-
-        /* Optional: Tooltip arrow */
-
-        .btn-edit-report[data-tooltip]:hover::before {
-            content: '';
-            position: absolute;
-            top: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-bottom: 5px solid #333;
         }
 
     /* Floating Close Button */
@@ -205,31 +173,10 @@
 
 <script>
 
-    $(function () {
-
-        $("#webDocumentViewer").dxWebDocumentViewer({
-
-            reportUrl: '@Url.Action("Viewer", "Report", new { reportName = "ReportName" })',
-
-            height: 600,
-
-            width: '100%',
-
-            showParameterPanel: false
-
-        });
-
-    });
-
-        function openReportDesigner(reportName, accountId, frmDate, toDate) {
-
-        const reportDesignerUrl = `/${tenantName}/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
-
-        window.open(reportDesignerUrl, "_blank");
-
+    function openReportDesigner(reportName, accountId, frmDate, toDate) {
+        const reportDesignerUrl = `/pulse/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
-
-
 
     document.getElementById("btnClose").addEventListener("click", function () {
 
@@ -237,6 +184,4 @@
 
     });
 
-    document.getElementById("btnOpenDesigner").addEventListener("click", openReportDesigner);
 </script>
-

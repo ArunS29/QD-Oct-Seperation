@@ -65,8 +65,20 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+              //      Tbl201VoucherMaster voucherMaster = new();
+              //      bool isVoucherExists = dbContext.Tbl201VoucherMasters
+              //.Any(v => v.VoucherNo == VE.VoucherNo);
+
+              //      if (!isVoucherExists)
+              //      {
+              //          voucherMaster.VoucherNo = VE.VoucherNo;
+              //          voucherMaster.VoucherDate = DateTime.Now;
+              //          dbContext.Tbl201VoucherMasters.Add(voucherMaster);
+              //      }
+
                     dbContext.Tbl201VoucherEntries.Add(VE);
                     await dbContext.SaveChangesAsync();
+
                     var qryListOfAccountlists = dbContext.Qry201VoucherEntryScreenDisplays
                         .Where(p => p.VoucherNo == VE.VoucherNo)
                         .Select(i => new

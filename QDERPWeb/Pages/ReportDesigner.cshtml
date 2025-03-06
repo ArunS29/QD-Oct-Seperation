@@ -1,7 +1,11 @@
 ﻿@page
+
 @using DevExpress.AspNetCore
+
 @using QD.ERP.Web.Areas.Finance.Reports
+
 @using QD.ERP.Web.Reports
+
 @model QD.ERP.Web.Pages.ReportDesignerModel
 
 <link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
@@ -9,9 +13,13 @@
 
 <!-- DevExpress Report Designer -->
 @(Html.DevExpress().ReportDesigner("reportDesigner")
+
     .Height("50em")
+
     .Width("105em")
+
     .Bind(Model.Report)
+
 )
 
 <!-- Reset Button -->
@@ -21,20 +29,30 @@
 </a>
 
 <style>
+
     /* Reset Report Button */
+
     .btn-reset-report {
         position: fixed;
-        top: 100px; /* Positioning below the designer button */
-        right: 210px; /* Positioning from the right */
+        top: 30px; /* Positioning below the designer button */
+
+        right: 250px; /* Positioning from the right */
+
         background-color: transparent;
         border: 1px solid #28a745; /* Border color */
+
         padding: 5px 15px; /* Padding */
+
         font-size: 14px;
         color: #28a745; /* Button color */
+
         border-radius: 15px; /* Curved edges */
+
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow */
+
         cursor: pointer;
         z-index: 9999; /* Ensure it stays on top */
+
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
@@ -43,6 +61,7 @@
 
         .btn-reset-report .btn-text {
             margin-right: 10px; /* Space between text and icon */
+
             font-weight: bold;
         }
 
@@ -51,13 +70,17 @@
         }
 
         /* Change on Hover */
+
         .btn-reset-report:hover {
             background-color: rgba(40, 167, 69, 0.1); /* Light green background on hover */
+
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
+
             color: #218838; /* Darker color on hover */
         }
 
         /* Tooltip Styling */
+
         .btn-reset-report[data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -75,14 +98,42 @@
             transition: opacity 0.3s ease;
             opacity: 1;
         }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
 </style>
 
 <script>
+
     // Function to reload the page (reset the Report Designer)
+
     function resetReportDesigner() {
+
         location.reload();  // This will reload the page
+
     }
 
     // Attach the reset function to the reset button
+
     document.getElementById("btnReset").addEventListener("click", resetReportDesigner);
 </script>
+
