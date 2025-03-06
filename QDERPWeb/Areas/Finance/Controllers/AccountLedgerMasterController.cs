@@ -8,6 +8,7 @@ using QD.ERP.Web.Service;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -319,7 +320,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-    
 
 
 
@@ -329,135 +329,199 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
-//[HttpPost("Insert")]
-//public IActionResult Insert([FromBody] Tbl201ChartOfAccount chartAccount)
-//{
-//	if (chartAccount == null)
-//	{
-//		return BadRequest("Invalid data.");
-//	}
 
-//	//var LedgerAccountEntries = _context.Tbl201ChartOfAccounts.Add(chartAccount);
+        //[HttpPost("Insert")]
+        //public IActionResult Insert([FromBody] Tbl201ChartOfAccount chartAccount)
+        //{
+        //	if (chartAccount == null)
+        //	{
+        //		return BadRequest("Invalid data.");
+        //	}
 
-//	//_context.SaveChanges();
+        //	//var LedgerAccountEntries = _context.Tbl201ChartOfAccounts.Add(chartAccount);
 
-//	var LedgerAccuntEntry = new Tbl201ChartOfAccount
-//	{
-//		AccountId = chartAccount.AccountId,
-//		ReferenceNo = chartAccount.ReferenceNo,
-//		AccountHead = chartAccount.AccountHead,
-//		AccountGroupId = chartAccount.AccountGroupId,
-//		OpeningBalance = chartAccount.OpeningBalance,
-//		OpeningBalanceDrCr = chartAccount.OpeningBalanceDrCr,
-//		IsDefaultForCash = chartAccount.IsDefaultForCash,
-//		VoucherAbbr = chartAccount.VoucherAbbr,
-//		IsMaintainBillByBill = chartAccount.IsMaintainBillByBill,
-//		NoOfDaysCreditPeriod = chartAccount.NoOfDaysCreditPeriod,
-//		IsEmployeeAllocated = chartAccount.IsEmployeeAllocated,
-//		IsPropertyAllocated = chartAccount.IsPropertyAllocated,
-//		IsEmployeePaymentAc = chartAccount.IsEmployeePaymentAc,
-//		IsLedgerObselete = chartAccount.IsLedgerObselete,
-//		//ContactDetails
-//		AccountBranch = chartAccount.AccountBranch,
-//		AccountSubGroup = chartAccount.AccountSubGroup,
-//		SalesPersonCode = chartAccount.SalesPersonCode,
-//		AccountsContactName = chartAccount.AccountsContactName,
-//		AccountsContactTitle = chartAccount.AccountsContactTitle,
-//		AccountsContactMobile = chartAccount.AccountsContactMobile,
-//		EmailAddress = chartAccount.EmailAddress,
-//		LedgerRemarks = chartAccount.LedgerRemarks,
-//		//BankDetails
-//		BankAccountName = chartAccount.BankAccountName,
-//		BankName = chartAccount.BankName,
-//		BankBranch = chartAccount.BankBranch,
-//		BankAccountNo = chartAccount.BankAccountNo,
-//		BankIban = chartAccount.BankIban,
-//		BankSwiftCode = chartAccount.BankSwiftCode,
-//		//ClientDetails
-//		BillingName = chartAccount.BillingName,
-//		VatregistrationNo = chartAccount.VatregistrationNo,
-//		ClientGroupVatnumber = chartAccount.ClientGroupVatnumber,
-//		ClientOtherIdtype = chartAccount.ClientOtherIdtype,
-//		ClientOtherId = chartAccount.ClientOtherId,
-//		ClientAddressStreet = chartAccount.ClientAddressStreet,
-//		ClientAdditionalStreet = chartAccount.ClientAdditionalStreet,
-//		ClientBuildingNumber = chartAccount.ClientBuildingNumber,
-//		ClientCity = chartAccount.ClientCity,
-//		ClientProvince = chartAccount.ClientProvince,
-//		ClientPostalCode = chartAccount.ClientPostalCode,
-//		ClientNeighborhood = chartAccount.ClientNeighborhood,
-//		//ClientCountryCode = chartAccount.ClientCountryCode,
-//		//Supplier Details
-//		SupplierName = chartAccount.SupplierName,
-//		SupplierVatno = chartAccount.SupplierVatno,
-//		SupplierGroupVatnumber = chartAccount.SupplierGroupVatnumber,
-//		//SupplierOtherIdtype = chartAccount.SupplierOtherIdtype,
-//		//SupplierOtherId = chartAccount.SupplierOtherId,
-//		SupplierAddressStreet = chartAccount.SupplierAddressStreet,
-//		SupplierAdditionalStreet = chartAccount.SupplierAdditionalStreet,
-//		SupplierBuildingNumber = chartAccount.SupplierBuildingNumber,
-//		SupplierCity = chartAccount.SupplierCity,
-//		SupplierProvince = chartAccount.SupplierProvince,
-//		SupplierPostalCode = chartAccount.SupplierPostalCode,
-//		SupplierNeighborhood = chartAccount.SupplierNeighborhood,
-//		//SupplierCountryCode = chartAccount.SupplierCountryCode,
-//		//Billing Details
-//		//BillingName = chartAccount.BillingNameAr
-//		BillingAddress = chartAccount.BillingAddress,
-//		ClientTin = chartAccount.ClientTin,
-//		BillingContactPerson = chartAccount.BillingContactPerson,
-//		BillingPhoneNo = chartAccount.BillingPhoneNo,
-//		BillingFaxNo = chartAccount.BillingFaxNo,
-//		ClientVendorNo = chartAccount.ClientVendorNo,
-//		BillingContactPersonTitle = chartAccount.BillingContactPersonTitle,
-//		BillingBankAccount = chartAccount.BillingBankAccount,
-//		//Obselete details
-//		SupplierAddress = chartAccount.SupplierAddress
-//	};
+        //	//_context.SaveChanges();
 
-//	var LedgerAccountEntries = _context.Tbl201ChartOfAccounts.Add(LedgerAccuntEntry);
+        //	var LedgerAccuntEntry = new Tbl201ChartOfAccount
+        //	{
+        //		AccountId = chartAccount.AccountId,
+        //		ReferenceNo = chartAccount.ReferenceNo,
+        //		AccountHead = chartAccount.AccountHead,
+        //		AccountGroupId = chartAccount.AccountGroupId,
+        //		OpeningBalance = chartAccount.OpeningBalance,
+        //		OpeningBalanceDrCr = chartAccount.OpeningBalanceDrCr,
+        //		IsDefaultForCash = chartAccount.IsDefaultForCash,
+        //		VoucherAbbr = chartAccount.VoucherAbbr,
+        //		IsMaintainBillByBill = chartAccount.IsMaintainBillByBill,
+        //		NoOfDaysCreditPeriod = chartAccount.NoOfDaysCreditPeriod,
+        //		IsEmployeeAllocated = chartAccount.IsEmployeeAllocated,
+        //		IsPropertyAllocated = chartAccount.IsPropertyAllocated,
+        //		IsEmployeePaymentAc = chartAccount.IsEmployeePaymentAc,
+        //		IsLedgerObselete = chartAccount.IsLedgerObselete,
+        //		//ContactDetails
+        //		AccountBranch = chartAccount.AccountBranch,
+        //		AccountSubGroup = chartAccount.AccountSubGroup,
+        //		SalesPersonCode = chartAccount.SalesPersonCode,
+        //		AccountsContactName = chartAccount.AccountsContactName,
+        //		AccountsContactTitle = chartAccount.AccountsContactTitle,
+        //		AccountsContactMobile = chartAccount.AccountsContactMobile,
+        //		EmailAddress = chartAccount.EmailAddress,
+        //		LedgerRemarks = chartAccount.LedgerRemarks,
+        //		//BankDetails
+        //		BankAccountName = chartAccount.BankAccountName,
+        //		BankName = chartAccount.BankName,
+        //		BankBranch = chartAccount.BankBranch,
+        //		BankAccountNo = chartAccount.BankAccountNo,
+        //		BankIban = chartAccount.BankIban,
+        //		BankSwiftCode = chartAccount.BankSwiftCode,
+        //		//ClientDetails
+        //		BillingName = chartAccount.BillingName,
+        //		VatregistrationNo = chartAccount.VatregistrationNo,
+        //		ClientGroupVatnumber = chartAccount.ClientGroupVatnumber,
+        //		ClientOtherIdtype = chartAccount.ClientOtherIdtype,
+        //		ClientOtherId = chartAccount.ClientOtherId,
+        //		ClientAddressStreet = chartAccount.ClientAddressStreet,
+        //		ClientAdditionalStreet = chartAccount.ClientAdditionalStreet,
+        //		ClientBuildingNumber = chartAccount.ClientBuildingNumber,
+        //		ClientCity = chartAccount.ClientCity,
+        //		ClientProvince = chartAccount.ClientProvince,
+        //		ClientPostalCode = chartAccount.ClientPostalCode,
+        //		ClientNeighborhood = chartAccount.ClientNeighborhood,
+        //		//ClientCountryCode = chartAccount.ClientCountryCode,
+        //		//Supplier Details
+        //		SupplierName = chartAccount.SupplierName,
+        //		SupplierVatno = chartAccount.SupplierVatno,
+        //		SupplierGroupVatnumber = chartAccount.SupplierGroupVatnumber,
+        //		//SupplierOtherIdtype = chartAccount.SupplierOtherIdtype,
+        //		//SupplierOtherId = chartAccount.SupplierOtherId,
+        //		SupplierAddressStreet = chartAccount.SupplierAddressStreet,
+        //		SupplierAdditionalStreet = chartAccount.SupplierAdditionalStreet,
+        //		SupplierBuildingNumber = chartAccount.SupplierBuildingNumber,
+        //		SupplierCity = chartAccount.SupplierCity,
+        //		SupplierProvince = chartAccount.SupplierProvince,
+        //		SupplierPostalCode = chartAccount.SupplierPostalCode,
+        //		SupplierNeighborhood = chartAccount.SupplierNeighborhood,
+        //		//SupplierCountryCode = chartAccount.SupplierCountryCode,
+        //		//Billing Details
+        //		//BillingName = chartAccount.BillingNameAr
+        //		BillingAddress = chartAccount.BillingAddress,
+        //		ClientTin = chartAccount.ClientTin,
+        //		BillingContactPerson = chartAccount.BillingContactPerson,
+        //		BillingPhoneNo = chartAccount.BillingPhoneNo,
+        //		BillingFaxNo = chartAccount.BillingFaxNo,
+        //		ClientVendorNo = chartAccount.ClientVendorNo,
+        //		BillingContactPersonTitle = chartAccount.BillingContactPersonTitle,
+        //		BillingBankAccount = chartAccount.BillingBankAccount,
+        //		//Obselete details
+        //		SupplierAddress = chartAccount.SupplierAddress
+        //	};
 
-//	_context.SaveChanges();
+        //	var LedgerAccountEntries = _context.Tbl201ChartOfAccounts.Add(LedgerAccuntEntry);
 
-//	// You can now work with the 'person' object, which is deserialized from the JSON.
-//	// For example, log or return the data:
-//	return Json(new { success = true, message = "Ledger account inserted successfully" });
-//}
-            [HttpPost("InsertOpeningBalance")]
-            public IActionResult InsertOpeningBalance([FromBody] Tbl201ChartOfAccount chartAccount)
+        //	_context.SaveChanges();
+
+        //	// You can now work with the 'person' object, which is deserialized from the JSON.
+        //	// For example, log or return the data:
+        //	return Json(new { success = true, message = "Ledger account inserted successfully" });
+        //}
+        [HttpPost("InsertOpeningBalance")]
+        public async Task<IActionResult> InsertOpeningBalance([FromBody] Tbl201ChartOfAccount chartAccount)
+        {
+            try
             {
+                // Fetch the tenant and DbContext based on the current tenant context
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return StatusCode(500, new { success = false, message = "Tenant context could not be determined." });
+                }
+
+                // Check if 'data' is null or invalid
                 if (chartAccount == null)
                 {
                     return BadRequest("Invalid data.");
                 }
 
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                // Validate individual properties are not null
+                if (chartAccount.AccountId == null || chartAccount.OpeningBalance == null || chartAccount.OpeningBalanceDrCr == null)
+                {
+                    return BadRequest("Missing required fields.");
+                }
+
+                // Assign values from the model
+                string accountID = chartAccount.AccountId;
+                decimal? openingBalance = chartAccount.OpeningBalance;
+                string openingBalanceDrCr = chartAccount.OpeningBalanceDrCr;
+
+                // Remove the 'SYS-OP-' prefix from both DebitAccount and CreditAccount if they have it
+                string debitAccount = accountID.Replace("SYS-OP-", "");
+                string creditAccount = accountID.Replace("SYS-OP-", "");  // Remove 'SYS-OP-' from CreditAccount as well
+
+                // Get today's date
+                var todayDate = DateTime.Now;
+
+                // Get the AccountBooksOpeningDate (assuming CompanyId is 1)
+                var accountBooksOpeningDate = await dbContext.Tbl901CompanyDetails02s
+                                                            .Where(c => c.CompanyId == 1)
+                                                            .Select(c => c.AccountBooksOpeningDate)
+                                                            .FirstOrDefaultAsync();
+
+                // If AccountBooksOpeningDate is null, return an error
+                if (accountBooksOpeningDate == null)
+                {
+                    return NotFound("AccountBooksOpeningDate not found.");
+                }
+
+                // Calculate the voucher date
+                var voucherDate = accountBooksOpeningDate.Value.AddDays(-1);
+
+                // Transaction handling to ensure consistency
+                using (var transaction = await dbContext.Database.BeginTransactionAsync())
                 {
                     try
                     {
-                        var newAccount = new Tbl201ChartOfAccount
-                        {
-                            AccountId = chartAccount.AccountId,
-                            OpeningBalance = chartAccount.OpeningBalance,
-                            OpeningBalanceDrCr = chartAccount.OpeningBalanceDrCr
-                        };
+                        // Execute the stored procedure
+                        await dbContext.Database.ExecuteSqlRawAsync(
+                            "EXEC sp20115InsertOpeningBalanceVoucher @VoucherNo, @VoucherDate, @DebitAccount, @CreditAccount, @AddedBy, @AddedOn, @TotalAmount",
+                            new SqlParameter("@VoucherNo", accountID),
+                            new SqlParameter("@VoucherDate", voucherDate),
+                            new SqlParameter("@DebitAccount", debitAccount),
+                            new SqlParameter("@CreditAccount", creditAccount),
+                            new SqlParameter("@AddedBy", "admin"),
+                            new SqlParameter("@AddedOn", todayDate),
+                            new SqlParameter("@TotalAmount", openingBalance)
+                        );
 
-                        dbContext.Tbl201ChartOfAccounts.Add(newAccount);
-                        dbContext.SaveChanges();
+                        // Save changes
+                        await dbContext.SaveChangesAsync();
 
-                        return Json(new { success = true, message = "Ledger account inserted successfully" });
+                        // Commit the transaction if everything goes well
+                        await transaction.CommitAsync();
+
+                        // Return success response
+                        return Json(new { success = true, message = "Opening balance voucher inserted successfully." });
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Error in InsertOpeningBalance: {ex.Message}");
-                        return StatusCode(500, $"Internal server error: {ex.Message}");
+                        // Rollback the transaction in case of an error
+                        await transaction.RollbackAsync();
+
+                        // Log the error for debugging
+                        // _logger.LogError($"Error inserting opening balance voucher: {ex.Message}");
+
+                        // Return error response with exception message
+                        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
                     }
                 }
-
-                return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
+            catch (Exception ex)
+            {
+                // Catch any unexpected exceptions and log them
+                // _logger.LogError($"Unexpected error: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "An unexpected error occurred." });
+            }
+        }
 
-            [HttpPost("InsertOrUpdate")]
+        [HttpPost("InsertOrUpdate")]
             public IActionResult InsertOrUpdate([FromBody] Tbl201ChartOfAccount chartAccount, string AccountGroupID)
             {
                 if (chartAccount == null)

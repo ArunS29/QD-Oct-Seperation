@@ -340,7 +340,7 @@
     .Caption(new JS("formatMessage('Record Modified On')"))
 
     .Alignment(HorizontalAlignment.Center)
-     
+
     .Visible(false);
 
                 columns.AddFor(m => m.NoOfDaysCreditPeriod)
@@ -678,45 +678,73 @@
 
 <script type="text/javascript">
 
+
+    // Initialize the Ledger Account Popup
+    $("#ledgerAccountPopup").dxPopup({
+        width: 1200,
+        height: 600,
+        title: "Ledger Account Details",
+        showCloseButton: true,  // Show close button
+        visible: false,  // Initially hidden
+        closeOnOutsideClick: true,  // Allow closing when clicking outside
+        onHiding: function () {
+            // Trigger DataGrid refresh when the popup is closed
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            dataGrid.refresh(); // Refresh the DataGrid
+        }
+    });
+
+    // Initialize the Error Popup
+    $("#errorPopup").dxPopup({
+        width: 350,
+        height: 300,
+        title: "⚠ Error",
+        visible: false,  // Initially hidden
+        showCloseButton: true,  // Show close button
+        dragEnabled: false,  // Disable dragging for the popup
+        closeOnOutsideClick: true  // Allow closing when clicking outside
+    });
+
+    // Initialize the close button for the error popup
+    $("#errorCloseBtn").dxButton({
+        text: "Close",  // Button text
+        type: "danger",  // Button style type
+        onClick: function () {
+            // Hide the error popup when the close button is clicked
+            $("#errorPopup").dxPopup("instance").hide();
+            // Trigger DataGrid refresh after closing the popup
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            dataGrid.refresh(); // Refresh the DataGrid
+        }
+    });
+
+    // Function to show Ledger Account popup
     function showLedgerAccountPopup() {
         var popup = $("#ledgerAccountPopup").dxPopup("instance");
         popup.show();
 
         // Set the iframe src to the Ledger Account URL
+   
         $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+   
+            $("#ledgerAccountFrame").attr("src", "/development/Finance/LedgerAccount");
+
+            // Close and refresh the DataGrid when the popup is closed
+            popup.option("onHiding", function () {
+                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                dataGrid.refresh(); // Refresh the DataGrid
+            });
+    
     }
-
-    // Document ready function to initialize popups and other controls
-    $(document).ready(function () {
-
-
-        // Initialize the Error Popup
-        $("#errorPopup").dxPopup({
-            width: 350,
-            height: 300,
-            title: "⚠ Error",
-            visible: false,  // Initially hidden
-            showCloseButton: true,  // Show close button in popup
-            dragEnabled: false,  // Disable dragging for the popup
-            closeOnOutsideClick: true  // Allow closing when clicking outside
-        });
-
-        // Initialize the close button for the error popup
-        $("#errorCloseBtn").dxButton({
-            text: "Close",  // Button text
-            type: "danger",  // Button style type
-            onClick: function () {
-                // Hide the error popup when the close button is clicked
-                $("#errorPopup").dxPopup("instance").hide();
-            }
-        });
-    });
 
     // Call this function wherever you need to show the Ledger Account popup
     // Example: When a button is clicked, you can trigger the showLedgerAccountPopup()
     $("#btnAddNewAccount").on("click", function () {
         showLedgerAccountPopup();
     });
+
+
+
 
 
     $(function () {
@@ -744,9 +772,9 @@
         $("#ChartOfAccounts").dxTextBox({
             text: formatMessage("Chart Of Accounts"),
             readOnly: true,
-						onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
 
         });
     });
@@ -901,7 +929,7 @@
                     "background-color": "white",
                     "color": "green",
                     "font-weight": "bold"
-                
+
                 });
             }
         }

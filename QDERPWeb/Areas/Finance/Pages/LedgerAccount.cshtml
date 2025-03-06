@@ -3621,9 +3621,9 @@
         $("#tab-content-" + (selectedTabIndex + 1)).show();
     }
 
-    function onPostButtonClick(e) {
-        alert("Opening Balance Entry Posted successfully");
-    }
+    // function onPostButtonClick(e) {
+    //     alert("Opening Balance Entry Posted successfully");
+    // }
 
     function txtAccountHeadFocusOut(e) {
 
@@ -4109,6 +4109,42 @@
 
         history.back();
     }
+     function onPostButtonClick(e) {
+     debugger;
+     var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
+
+     // Format the AccountId with the desired prefix
+     var formattedAccountId = "SYS-OP-" + sAccountID;
+     console.log(formattedAccountId);
+
+     var sOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
+     var sCreditDebit = $('#ddlCreditDebit').dxDropDownBox('option', 'value');
+
+     const data = {
+         AccountID: formattedAccountId,
+         OpeningBalance: sOpeningBalance,
+         OpeningBalanceDrCr: sCreditDebit
+     };
+
+     const values = JSON.stringify(data);
+
+     $.ajax({
+         url: "/api/AccountLedgerMaster/InsertOpeningBalance",
+         type: 'POST',
+         contentType: 'application/json',  // Set the content type to JSON
+         data: values,  // Convert the object to JSON
+         success: function (response) {
+             if (response.success) {
+                 DevExpress.ui.notify(response.message, "success", 3000);
+             } else {
+                 DevExpress.ui.notify(response.message, "error", 3000);
+             }
+         },
+         error: function (xhr, status, error) {
+             console.log("Error: " + error);
+         }
+     });
+ }
     function onsaveLedgerAccountClick(e) {
 
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
