@@ -279,17 +279,20 @@
 
             <!-- DevExtreme Popup -->
             @(Html.DevExtreme().Popup()
-                        .ID("LedgerAccountPopup")
-                        .Title("Ledger Account")
-                        .Width(1300)
-                        .Height(500)
-                        .Visible(false)
-                        .ShowCloseButton(true)
-                        .ResizeEnabled(true)
-                        .DragEnabled(true)
-                        .ShowTitle(true)
-
-                        )
+                .ID("ledgerAccountPopup")
+                .Width("93%")
+                .Height("85%")
+                .Title("Add Ledger Account")
+                .ShowTitle(true)
+                .CloseOnOutsideClick(true)
+                .Visible(false)
+                .ResizeEnabled(true)
+                .ContentTemplate(@<text>
+                <div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
+                    <iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
+                </div>
+            </text>)
+                )
         </div>
         <div id="popupContainer"></div>
         <div class="form-group" style="margin-top:56px;margin-left:-10px">
@@ -1711,20 +1714,7 @@
         // Handle file upload logic here
     });
     // Initialize the popup
-    $(function () {
-        $("#popupContainer").dxPopup({
-            title: "Ledger Account",
-            visible: false, // Start hidden
-            width: 400,
-            height: 300,
-            showCloseButton: true,
-            dragEnabled: true,
-            closeOnOutsideClick: true,
-            contentTemplate: function () {
-                return $("<div>").text("The Ledger Account Form is in Under Progress.Soon it will added to this Function");
-            }
-        });
-    });
+    
 
     // Function to show the popup
     // function showPopup() {
@@ -1732,31 +1722,11 @@
     // }
 
     function showPopup() {
-        $.ajax({
-            url: `/api/VoucherEntryReceipts/LedgerAccount`, // Load the partial view
-            type: "GET",
-            dataType: "html",
-            success: function (data) {
-                let popupInstance = $("#LedgerAccountPopup").dxPopup("instance");
+        var popup = $("#ledgerAccountPopup").dxPopup("instance");
+        popup.show();
 
-                popupInstance.option("contentTemplate", function () {
-                    let $content = $("<div>").html(data);
-                    setTimeout(function () {
-                        $content.find("script").each(function () {
-                            $.globalEval(this.text || this.textContent || this.innerHTML || "");
-                        });
-                    }, 100); // Delay execution to ensure DOM is updated
-
-                    return $content;
-                });
-
-                popupInstance.show();
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading Ledger Account view:", error);
-                alert("Failed to load Ledger Account details.");
-            }
-        });
+        // Correct URL to your LedgerAccount view
+        $("#ledgerAccountFrame").attr("src", "/Finance/LedgerAccount");
     }
 
 
@@ -2027,7 +1997,7 @@
             const rowElement = e.target.closest(".dx-data-row");
 
             if (rowElement) {
-                const rowIndex = rowElement.getAttribute("aria-rowindex");
+                let rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
                 contextMenu.dataset.rowIndex = rowIndex;
 
                 let mouseX = e.clientX;
@@ -2056,24 +2026,7 @@
             contextMenu.style.display = "none";
         });
 
-        // function openPopup(action, title) {
-        //     fetch(`/api/VoucherEntryReceipts/${action}`)
-        //         .then(response => {
-        //             if (!response.ok) {
-        //                 throw new Error("Page not found");
-        //             }
-        //             return response.text();
-        //         })
-        //         .then(html => {
-        //             let popupInstance = $("#allocationPopup").dxPopup("instance");
-        //             popupInstance.option("contentTemplate", function () {
-        //                 return $("<div>").html(html);
-        //             });
-        //             popupInstance.option("title", title);
-        //             popupInstance.show();
-        //         })
-        //         .catch(error => console.error("Error loading page:", error));
-        // }
+        
 
         window.editCostAllocation = function () {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
@@ -2119,32 +2072,128 @@
 
 
         window.editPropertyAllocation = function () {
-            let popupInstance = $("#propertyAllocationPopup").dxPopup("instance");
+            let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-            if (popupInstance) {
-                popupInstance.show(); // Just show the existing popup
+            if (!rowIndex || rowIndex < 0) {
+                console.error("Invalid row index detected.");
+                return;
+            }
+
+            let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+            let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+
+            if (!rowData || !rowData.VoucherEntryNo) {
+                console.error("No valid row selected for Cost Allocation.");
+                return;
+            }
+
+            let drCr = rowData.DrCr;
+            let accountHead = rowData.AccountHead;
+            let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+            let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            let accountid = accheadid;
+            // Selecting VoucherEntryNo based on DrCr value
+            let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+
+            let popupId = `PropertyAllocationPopup-${voucherEntryNo}`;
+            let params = {
+                VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+                VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+                DrCr: drCr,
+                AccountHead: accountHead,
+                VoucherAmount: amount,
+                AccountID:accountid
+            };
+            debugger;
+            if (openedPopups[popupId]) {
+                openedPopups[popupId].show();
             } else {
-                console.error("Popup instance not found!");
+                openPropertyAllocationPopup(params);
             }
         };
 
         window.editEmployeeAllocation = function () {
-            let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
+            let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-            if (popupInstance) {
-                popupInstance.show(); // Just show the existing popup
+            if (!rowIndex || rowIndex < 0) {
+                console.error("Invalid row index detected.");
+                return;
+            }
+
+            let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+            let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+
+            if (!rowData || !rowData.VoucherEntryNo) {
+                console.error("No valid row selected for Cost Allocation.");
+                return;
+            }
+
+            let drCr = rowData.DrCr;
+            let accountHead = rowData.AccountHead;
+            let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+            let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            let accountid = accheadid;
+            // Selecting VoucherEntryNo based on DrCr value
+            let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+
+            let popupId = `EmployeeAllocationPopup-${voucherEntryNo}`;
+            let params = {
+                VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+                VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+                DrCr: drCr,
+                AccountHead: accountHead,
+                VoucherAmount: amount,
+                AccountID: accountid
+            };
+            debugger;
+            if (openedPopups[popupId]) {
+                openedPopups[popupId].show();
             } else {
-                console.error("Popup instance not found!");
+                openEmployeeAllocationPopup(params);
             }
         };
         window.editBillsReceivable = function () {
-            let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
+            let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-            if (popupInstance) {
-                popupInstance.show(); // Just show the existing popup
-            } else {
-                console.error("Popup instance not found!");
+            if (!rowIndex || rowIndex < 0) {
+                console.error("Invalid row index detected.");
+                return;
             }
+
+            let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+            let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+
+            if (!rowData || !rowData.VoucherEntryNo) {
+                console.error("No valid row selected for Cost Allocation.");
+                return;
+            }
+
+            let drCr = rowData.DrCr;
+            let accountHead = rowData.AccountHead;
+            let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+            let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+            // Selecting VoucherEntryNo based on DrCr value
+            let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+
+            let popupId = `BillsReceivablePopup-${voucherEntryNo}`;
+            let params = {
+                VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+                VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+                DrCr: drCr,
+                AccountHead: accountHead,
+                VoucherAmount: amount
+            };
+            debugger;
+            if (openedPopups[popupId]) {
+                openedPopups[popupId].show();
+            } else {
+                openBillsReceivablePopup(params);
+            }
+       
         };
 
     });
@@ -2315,6 +2364,7 @@
     }
 
     function openPropertyAllocationPopup(params) {
+        debugger;
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
@@ -2435,7 +2485,10 @@
         let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
         popupInstance.hide();
     }
-
+    function closeBill() {
+        let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
+        popupInstance.hide();
+    }
     function CloseEmployeeModel() {
         let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
         popupInstance.hide();
@@ -2485,7 +2538,7 @@
         }
     }
 
-
+  
     // Function to check if the page is inside a modal
     function isModal() {
         return new URLSearchParams(window.location.search).get("modal") === "true";
@@ -2498,12 +2551,12 @@
         if (isModal()) {
             const style = document.createElement("style");
             style.innerHTML = `
-                    .container { display: none !important; }
-                    .frame { display: none !important; }
-                    .footerContainer { display: none !important; }
-                    .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
-                    .mainContainer { margin-top: 1em; }
-                `;
+                      .container { display: none !important; }
+                      .frame { display: none !important; }
+                      .footerContainer { display: none !important; }
+                      .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+                      .mainContainer { margin-top: 1em; }
+                  `;
             document.head.appendChild(style);
         }
 

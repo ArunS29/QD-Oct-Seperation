@@ -672,6 +672,7 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.AccountID = accountId;
             return PartialView("~/Areas/Finance/Views/_PropertyAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
+
         public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
         {
             // Log or debug the incoming parameters
@@ -682,6 +683,65 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.VoucherEntryNo = voucherEntryNo;
             ViewBag.AccountID = accountId;
             return PartialView("~/Areas/Finance/Views/_EmployeeAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+        public IActionResult BillsReceivable(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.VoucherEntryNo = voucherEntryNo;
+
+            return PartialView("~/Areas/Finance/Views/_BillsReceivables.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+        [HttpGet]
+        public async Task<IActionResult> CheckIsMaintainBillByBill(string AccountHead, string AccountID)
+        {
+            try
+            {
+                var allocation = await _context.Qry201ListOfAccounts
+                    .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsMaintainBillByBill == true)
+                    .FirstOrDefaultAsync();
+
+                if (allocation != null)
+                {
+                    return Ok(new { isAllocated = true });
+                }
+                else
+                {
+                    return Ok(new { isAllocated = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error here if necessary
+                return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> CheckPropertyAllocation(string AccountHead, string AccountID)
+        {
+            try
+            {
+                var allocation = await _context.Tbl201ChartOfAccounts
+                    .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsPropertyAllocated == true)
+                    .FirstOrDefaultAsync();
+
+                if (allocation != null)
+                {
+                    return Ok(new { isAllocated = true });
+                }
+                else
+                {
+                    return Ok(new { isAllocated = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error here if necessary
+                return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
+            }
         }
     }
 }
