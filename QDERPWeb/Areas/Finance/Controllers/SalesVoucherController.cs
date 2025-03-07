@@ -154,8 +154,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+		[HttpGet]
+		public async Task<ActionResult> GetVoucherDetails(DataSourceLoadOptions loadOptions, string voucherNo)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				if (string.IsNullOrEmpty(voucherNo))
+				{
+					return BadRequest(new { success = false, message = "Invalid data received." });
+				}
+				try
+				{
+					var voucherDetails = dbContext.Tbl201VoucherMasters
+						.Where(p => p.VoucherNo.ToLower() == voucherNo.ToLower());
 
-        [HttpGet]
+					if (!voucherDetails.Any())
+					{
+						return NotFound(new { success = false, message = "Voucher not found." });
+					}
+
+					var result = await DataSourceLoader.LoadAsync(voucherDetails, loadOptions);
+					return Json(result);
+				}
+				catch (Exception ex)
+				{
+					_logger.LogError($"Error in GetVoucherDetails: {ex.Message}");
+					return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+
+		[HttpGet]
         public IActionResult CheckVoucherExists(string voucherNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

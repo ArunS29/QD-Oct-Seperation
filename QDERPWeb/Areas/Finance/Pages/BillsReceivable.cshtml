@@ -87,11 +87,12 @@
             .Width(200)
             .GroupIndex(0); // Group by this column
 
-                // Reference No column with hyperlink
                 band.AddFor(m => m.ReferenceNo)
             .Caption(new JS("formatMessage('Reference No')"))
             .CellTemplate(@<text>
-        <a href="/Finance/SalesVoucher?VoucherNo=<%-data.ReferenceNo%>" target="_blank"> <%-data.ReferenceNo%></a>
+        <a href="/<%- tenantName %>/Finance/SalesVoucher?argsledno=<%- data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
+            <%- data.ReferenceNo %>
+        </a>
     </text>)
         .Width(150);
 
@@ -326,6 +327,7 @@
     }
 
     function switchButtons(buttonId) {
+        debugger;
         let hideBtn, showBtn, filterType;
 
         // Determine which buttons to toggle and set the filter type
@@ -357,6 +359,8 @@
             dataGrid.refresh();
         }
     }
+
+
     function onContextMenuPreparing(e) {
         if (e.row && e.row.rowType === "data") { // Only for data rows
             e.items = [
@@ -365,13 +369,14 @@
                     onItemClick: function () {
                         // Navigate to frm201LedgerView with the selected client details
                         const AccountHeadNo = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
-                        const url = `/${tenantName}/Finance/frm201LedgerView?AccountHeadNo=${AccountHeadNo}`;
+                        const url = `/${tenantName}/Finance/AccountingLedgers?AccountId=${AccountHeadNo}`;
                         window.open(url, '_blank'); // Opens in a new tab
                     }
                 }
             ];
         }
     }
+ 
     // Print button functionality (Export as PDF)
     document.getElementById("RptReceivableAgeing").addEventListener("click", showReport);
     document.getElementById("RptReceivableAgeingSummary").addEventListener("click", showReport1);
