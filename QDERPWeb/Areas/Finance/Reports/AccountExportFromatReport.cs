@@ -41,7 +41,6 @@ namespace QD.ERP.Web.Reports
             AddSqlQueryParameters(accountId, frmDate, toDate);
         }
 
-        // Helper method to add or update report parameters
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
         {
             if (Parameters[paramName] == null)
@@ -50,14 +49,17 @@ namespace QD.ERP.Web.Reports
                 {
                     Name = paramName,
                     Type = paramType,
-                    Value = paramValue
+                    Value = paramValue,
+                    Visible = false // Hide parameter panel
                 });
             }
             else
             {
                 Parameters[paramName].Value = paramValue;
+                Parameters[paramName].Visible = false; // Ensure it's hidden
             }
         }
+
 
         // Method to dynamically set SQL query parameters
         private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)

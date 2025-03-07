@@ -1,10 +1,16 @@
-﻿using DevExpress.DataAccess.Sql;
+﻿using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
 using DevExpress.XtraReports.UI;
+using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 {
     public partial class BillsReceivableLedgerBalance : XtraReport
     {
+        private const string QueryName = "qry205_027AgeingBillsReceivableWtColumns";
+
         public BillsReceivableLedgerBalance(string accountId, DateTime frmDate, DateTime toDate)
         {
             InitializeComponent();
@@ -27,7 +33,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             AddReportParameter("EndDate", typeof(DateTime), toDate);
 
             // Set up SQL query
-            AddSqlQueryParameters(accountId, frmDate, toDate);
+            if (!DesignMode)
+            {
+                AddSqlQueryParameters(accountId, frmDate, toDate);
+            }
         }
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
@@ -38,12 +47,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
                 {
                     Name = paramName,
                     Type = paramType,
-                    Value = paramValue
+                    Value = paramValue ?? DBNull.Value,
+                    Visible = false
                 });
             }
             else
             {
-                Parameters[paramName].Value = paramValue;
+                Parameters[paramName].Value = paramValue ?? DBNull.Value;
+                Parameters[paramName].Visible = false;
             }
         }
 
@@ -52,37 +63,40 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             // Define the SQL query
             CustomSqlQuery selectQuery = new CustomSqlQuery()
             {
-                Name = "qry205_027AgeingBillsReceivableWtColumns",
+                Name = QueryName,
                 Sql = @"SELECT * FROM qry205_027AgeingBillsReceivableWtColumns
                         WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
                         AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 
             // Add query parameters
-            selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId));
-            selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(DateTime), frmDate.ToString("yyyy-MM-dd")));
-            selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(DateTime), toDate.ToString("yyyy-MM-dd")));
+            selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId ?? (object)DBNull.Value));
+            selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(string), frmDate.ToString("yyyy-MM-dd")));
+            selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(string), toDate.ToString("yyyy-MM-dd")));
 
             // Attach query to SqlDataSource
             sqlDataSource1.Queries.Clear();
             sqlDataSource1.Queries.Add(selectQuery);
             sqlDataSource1.Fill();
 
-            // Validate Data Source
-            ValidateQueryResult();
+            // Check for empty data and show a message
+            CheckForEmptyData();
         }
 
-        private void ValidateQueryResult()
+        private void CheckForEmptyData()
         {
-            var result = sqlDataSource1.Result["qry205_027AgeingBillsReceivableWtColumns"];
-
-            // Ensure the result is not null and check the row count via IList
-            if (result == null || ((System.Collections.IList)result).Count == 0)
+            if (sqlDataSource1.Result[QueryName] is IList result && result.Count == 0)
             {
-                throw new InvalidOperationException("No data returned from the SQL query. Please check the query and parameters.");
+                XRLabel noDataLabel = new XRLabel()
+                {
+                    Text = "No records found to display.",
+                    BoundsF = new RectangleF(0, 0, 650, 50),
+                    TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+                    Font = new Font("Arial", 14, FontStyle.Bold)
+                };
+
+                this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
             }
         }
-
-
     }
 }

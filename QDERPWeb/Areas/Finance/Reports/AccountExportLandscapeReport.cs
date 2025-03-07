@@ -50,12 +50,14 @@ namespace QD.ERP.Web.Reports
                 {
                     Name = paramName,
                     Type = paramType,
-                    Value = paramValue
+                    Value = paramValue,
+                    Visible = false // Hide parameter panel
                 });
             }
             else
             {
                 Parameters[paramName].Value = paramValue;
+                Parameters[paramName].Visible = false; // Ensure it's hidden
             }
         }
 

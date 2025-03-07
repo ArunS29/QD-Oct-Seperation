@@ -1,148 +1,102 @@
-﻿using DevExpress.DataAccess.Sql;
-
+﻿using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
 using DevExpress.XtraReports.UI;
+using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
-
 {
-
     public partial class BillsReceivableFormat : XtraReport
-
     {
+        private const string QueryName = "qry201SubLedgerReceivablesMaster";
 
         public BillsReceivableFormat(string accountId, DateTime frmDate, DateTime toDate)
-
         {
-
             InitializeComponent();
-
             SetReportParameters(accountId, frmDate, toDate);
-
         }
 
         public BillsReceivableFormat()
-
         {
-
             InitializeComponent();
 
             DateTime defaultDate = new DateTime(1753, 1, 1);
-
             SetReportParameters(null, defaultDate, defaultDate);
-
         }
 
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate)
-
         {
-
             // Create and set report parameters
-
             AddReportParameter("AccountID", typeof(string), accountId);
-
             AddReportParameter("StartDate", typeof(DateTime), frmDate);
-
             AddReportParameter("EndDate", typeof(DateTime), toDate);
 
             // Set up SQL query
-
-            AddSqlQueryParameters(accountId, frmDate, toDate);
-
+            if (!DesignMode)
+            {
+                AddSqlQueryParameters(accountId, frmDate, toDate);
+            }
         }
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
-
         {
-
             if (Parameters[paramName] == null)
-
             {
-
                 Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
-
                 {
-
                     Name = paramName,
-
                     Type = paramType,
-
-                    Value = paramValue
-
+                    Value = paramValue ?? DBNull.Value,
+                    Visible = false // Hide parameter panel
                 });
-
             }
-
             else
-
             {
-
-                Parameters[paramName].Value = paramValue;
-
+                Parameters[paramName].Value = paramValue ?? DBNull.Value;
+                Parameters[paramName].Visible = false; // Ensure it's hidden
             }
-
         }
 
         private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
-
         {
-
             // Define the SQL query
-
             CustomSqlQuery selectQuery = new CustomSqlQuery()
-
             {
-
-                Name = "qry201SubLedgerReceivablesMaster",
-
+                Name = QueryName,
                 Sql = @"SELECT * FROM qry201SubLedgerReceivablesMaster
-
                         WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
-
                         AND VoucherDate BETWEEN @StartDate AND @EndDate"
-
             };
 
             // Add query parameters
-
-            selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId));
-
-            selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(DateTime), frmDate.ToString("yyyy-MM-dd")));
-
-            selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(DateTime), toDate.ToString("yyyy-MM-dd")));
+            selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId ?? (object)DBNull.Value));
+            selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(string), frmDate.ToString("yyyy-MM-dd")));
+            selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(string), toDate.ToString("yyyy-MM-dd")));
 
             // Attach query to SqlDataSource
-
             sqlDataSource1.Queries.Clear();
-
             sqlDataSource1.Queries.Add(selectQuery);
-
             sqlDataSource1.Fill();
 
-            // Validate Data Source
-
-            ValidateQueryResult();
-
+            // Check for empty data and show a message
+            CheckForEmptyData();
         }
 
-        private void ValidateQueryResult()
-
+        private void CheckForEmptyData()
         {
-
-            var result = sqlDataSource1.Result["qry201SubLedgerReceivablesMaster"];
-
-            // Ensure the result is not null and check the row count via IList
-
-            if (result == null || ((System.Collections.IList)result).Count == 0)
-
+            if (sqlDataSource1.Result[QueryName] is IList result && result.Count == 0)
             {
+                XRLabel noDataLabel = new XRLabel()
+                {
+                    Text = "No records found to display.",
+                    BoundsF = new RectangleF(0, 0, 650, 50),
+                    TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+                    Font = new Font("Arial", 14, FontStyle.Bold)
+                };
 
-                throw new InvalidOperationException("No data returned from the SQL query. Please check the query and parameters.");
-
+                this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
             }
-
         }
-
     }
-
 }
-

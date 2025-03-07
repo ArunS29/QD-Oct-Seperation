@@ -1,5 +1,9 @@
-﻿using DevExpress.DataAccess.Sql;
+﻿using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
 using DevExpress.XtraReports.UI;
+using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
@@ -38,12 +42,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 {
                     Name = paramName,
                     Type = paramType,
-                    Value = paramValue
+                    Value = paramValue,
+                    Visible = false // Hide parameter panel
                 });
             }
             else
             {
                 Parameters[paramName].Value = paramValue;
+                Parameters[paramName].Visible = false; // Ensure it's hidden
             }
         }
 

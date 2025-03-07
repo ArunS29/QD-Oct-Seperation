@@ -676,7 +676,7 @@
                     .ItemTemplate(new JS("customItemTemplate"))
                     )
 
-            </div>
+            </div> *@
             @* <button id="themeToggle">Toggle Dark Mode</button> *@
             <button id="fullscreenToggle">
                 <i class="fas fa-expand" id="fullscreenIcon"></i>
@@ -891,7 +891,7 @@
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (With Retention)</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('Payablelandscape')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (Landscape Format)</span>
                 </div>
@@ -1566,7 +1566,8 @@
                 "rpt201BillsPayableWithVchNo": "rpt201BillsPayableWithVchNo",
                 "AccountDetails":"AccountDetails",
                 "AgeingToday":"AgeingToday",
-                "EndDate":"EndDate"
+                "EndDate":"EndDate",
+                 "Payablelandscape":"Payablelandscape"
             };
 
             // Check if selectedText matches any report name

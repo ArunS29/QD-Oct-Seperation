@@ -1,6 +1,9 @@
-﻿using DevExpress.DataAccess.Sql;
+﻿using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
 using DevExpress.XtraReports.UI;
-using System;
+using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 {
@@ -29,7 +32,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             AddReportParameter("EndDate", typeof(DateTime), toDate);
 
             // Set up SQL query
-            AddSqlQueryParameters(accountId, frmDate, toDate);
+            if (!DesignMode)
+            {
+                AddSqlQueryParameters(accountId, frmDate, toDate);
+            }
         }
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
@@ -40,12 +46,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 {
                     Name = paramName,
                     Type = paramType,
-                    Value = paramValue ?? DBNull.Value
+                    Value = paramValue ?? DBNull.Value,
+                      Visible = false
                 });
             }
             else
             {
                 Parameters[paramName].Value = paramValue ?? DBNull.Value;
+                Parameters[paramName].Visible = false;
             }
         }
 
@@ -62,35 +70,33 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             // Add query parameters (use DBNull.Value for null values)
             selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId ?? (object)DBNull.Value));
-            selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(DateTime), frmDate.ToString("yyyy-MM-dd")));
-            selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(DateTime), toDate.ToString("yyyy-MM-dd")));
+            selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(string), frmDate.ToString("yyyy-MM-dd")));
+            selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(string), toDate.ToString("yyyy-MM-dd")));
 
-          
-                // Attach query to SqlDataSource and fetch data
-                sqlDataSource1.Queries.Clear();
-                sqlDataSource1.Queries.Add(selectQuery);
-                sqlDataSource1.Fill();
+            // Attach query to SqlDataSource and fetch data
+            sqlDataSource1.Queries.Clear();
+            sqlDataSource1.Queries.Add(selectQuery);
+            sqlDataSource1.Fill();
 
-                CheckForEmptyData();
-            }
+            CheckForEmptyData();
+        }
 
         private void CheckForEmptyData()
         {
-            var result = sqlDataSource1.Result["qry201SubLedgerPayablesMaster"];
-
-            // Ensure the result is not null and check the row count via IList
-            if (result == null || ((System.Collections.IList)result).Count == 0)
+            if (sqlDataSource1.Result[QueryName] is IList result && result.Count == 0)
             {
                 XRLabel noDataLabel = new XRLabel()
                 {
                     Text = "No records found to display.",
-                    BoundsF = new System.Drawing.RectangleF(0, 0, 650, 50),
+                    BoundsF = new RectangleF(0, 0, 650, 50),
                     TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
-                    Font = new System.Drawing.Font("Arial", 14, System.Drawing.FontStyle.Bold)
+                    Font = new Font("Arial", 14, FontStyle.Bold)
                 };
 
                 this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
             }
         }
+
+
     }
 }

@@ -2,7 +2,7 @@
 using System.Drawing;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
-
+using System.ComponentModel;
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
     public partial class AccountDetails : XtraReport
@@ -47,12 +47,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 {
                     Name = paramName,
                     Type = paramType,
-                    Value = paramValue
+                    Value = paramValue,
+                    Visible = false // Hide parameter panel
                 });
             }
             else
             {
                 Parameters[paramName].Value = paramValue;
+                Parameters[paramName].Visible = false; // Ensure it's hidden
             }
         }
 
@@ -60,24 +62,37 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
         {
             // Initialize the query parameters
-            queryParameter1 = new QueryParameter("@ParamAccountNo", typeof(string), accountId ?? "L00567");
+            queryParameter1 = new QueryParameter();
+            queryParameter2 = new QueryParameter();
+            queryParameter3 = new QueryParameter();
 
-            queryParameter2 = new QueryParameter("@StartDate", typeof(DateTime),
-                frmDate == DateTime.MinValue ? DateTime.Today.ToString("yyyy-MM-dd") : frmDate.ToString("yyyy-MM-dd"));
+            // Set the values for SQL query parameters
+            queryParameter1.Name = "@ParamAccountNo";
+            queryParameter1.Type = typeof(string);
+            queryParameter1.ValueInfo = accountId ?? "L00567"; // Default value for AccountNo
 
-            queryParameter3 = new QueryParameter("@EndDate", typeof(DateTime),
-                toDate == DateTime.MinValue ? DateTime.Today.ToString("yyyy-MM-dd") : toDate.ToString("yyyy-MM-dd"));
+            queryParameter2.Name = "@StartDate";
+            queryParameter2.Type = typeof(DateTime);
+            queryParameter2.ValueInfo = frmDate == DateTime.MinValue ? "2020-01-01" : frmDate.ToString("yyyy-MM-dd");
+
+            queryParameter3.Name = "@EndDate";
+            queryParameter3.Type = typeof(DateTime);
+            queryParameter3.ValueInfo = toDate == DateTime.MinValue ? "2021-12-01" : toDate.ToString("yyyy-MM-dd");
 
             // Initialize the stored procedure query and set the StoredProcName
             storedProcQuery1 = new StoredProcQuery
             {
-                Name = "StProAccountLedger",
+                Name = "StProAccountLedger", // Stored procedure name
                 StoredProcName = "StProAccountLedger" // Replace with your actual stored procedure name
             };
 
             // Clear existing parameters and add the new ones
             storedProcQuery1.Parameters.Clear();
-            storedProcQuery1.Parameters.AddRange(new[] { queryParameter1, queryParameter2, queryParameter3 });
+            storedProcQuery1.Parameters.AddRange(new QueryParameter[] {
+                queryParameter1,
+                queryParameter2,
+                queryParameter3
+            });
 
             // Re-assign the query to the SQL data source
             this.sqlDataSource1.Queries.Clear();
@@ -86,6 +101,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             // Set the connection string for the data source
             this.sqlDataSource1.ConnectionName = "DBConnection"; // Your connection string name
             this.sqlDataSource1.Name = "sqlDataSource1";
+
+            // Set the result schema (optional)
         }
     }
 }

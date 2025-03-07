@@ -1,8 +1,10 @@
 ﻿using System;
-
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
 
-using DevExpress.XtraReports.UI;
 
 namespace QD.ERP.Web.Reports
 
@@ -57,35 +59,22 @@ namespace QD.ERP.Web.Reports
         }
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
-
         {
-
             if (Parameters[paramName] == null)
-
             {
-
                 Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
-
                 {
-
                     Name = paramName,
-
                     Type = paramType,
-
-                    Value = paramValue
-
+                    Value = paramValue,
+                    Visible = false // Hide parameter panel
                 });
-
             }
-
             else
-
             {
-
                 Parameters[paramName].Value = paramValue;
-
+                Parameters[paramName].Visible = false; // Ensure it's hidden
             }
-
         }
 
         private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
