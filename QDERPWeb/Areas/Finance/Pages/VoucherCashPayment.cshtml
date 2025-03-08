@@ -98,7 +98,8 @@
                             .LabelMode(EditorLabelMode.Outside)
                             .ID("VoucherNo")
                             .Value("")
-                            .Disabled(true)
+                    .Disabled(true)
+                    .OnValueChanged("onVoucherNoChanged")
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired()
@@ -115,6 +116,7 @@
                             .Type(DateBoxType.Date)
                             .DisplayFormat("dd-MMM-yyyy")
                             .Value(DateTime.Now)
+                    .OnValueChanged("onVoucherDateChanged") // JS function name
 
                             )
             </div>
@@ -1768,29 +1770,7 @@
 
        
 
-        $(function () {
-            $.ajax({
-                url: "/api/VoucherMaster/GetNewCPVoucherNo",
-                type: 'GET',
-                success: function (data) {
-                    // Set the value in the VoucherNo TextBox
-                    $("#VoucherNo").dxTextBox("instance").option("value", data);
-
-                    // Retrieve the value from the TextBox
-                    var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-                    // Set the value in the PopVoucherNo TextBox
-                    // $("#PopVoucherNo").dxTextBox("instance").option("value", popvno);
-
-                    // // Show the alert with the value
-                    // alert(popvno);
-                    // console.log.println(popvno);
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error loading Voucher No:", error);
-                }
-            });
-        });
+    
 
         function showChequePopup() {
 
@@ -3407,41 +3387,7 @@ function addVoucherEntry() {
     //     });
     // }
 
-       $(function () {
-    var voucherDate = $("#VoucherDate").dxDateBox("instance");
-    var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
-
-    voucherDate.option("onValueChanged", function (e) {
-        let voucherDateval = e.value; // Get Date from DevExtreme DateBox
-
-        // Check if voucherDateval is valid
-        if (!voucherDateval) return;
-
-        // Set effectiveDate to the same value as voucherDate
-        effectiveDate.option("value", voucherDateval);
-
-        // Convert to 'yyyy-MM-dd' format
-        let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
-
-        // Define the cutoff date (2021-12-31)
-        let cutoffDate = new Date("2021-12-31");
-
-        // Get the current date to set if the voucher date is blocked
-        let currentdate = new Date();
-        let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
-
-        // Check if the formatted voucher date is before the cutoff date
-        if (new Date(formattedDate) < cutoffDate) {
-            // Show alert for blocked entry
-            DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
-
-            // Set both voucherDate and effectiveDate to the current date
-            voucherDate.option("value", formattedCurrentDate);
-            effectiveDate.option("value", formattedCurrentDate);
-        }
-    });
-});
-
+     
 
 
         // function checkVoucherLockStatus() {
@@ -3630,9 +3576,140 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
 });
+    //  $(document).ready(function () {
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const argsledno = urlParams.get("argsledno");
+
+    //     console.log("Formatted Voucher in ready block:", argsledno);
+    //     debugger;
+
+    //     if (argsledno) {
+    //         // If argsledno is passed in URL, don't generate a new voucher number
+    //         const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+    //         if (voucherNoField) {
+    //             voucherNoField.option("value", argsledno);
+    //             onVoucherNoChanged({ value: argsledno }); // Trigger data fetching
+    //         } else {
+    //             console.error("VoucherNo TextBox instance not found.");
+    //         }
+    //     } else {
+    //         // If argsledno is not present, generate a new voucher number
+    //         $.ajax({
+    //             url: "/api/VoucherMaster/GetNewCPVoucherNo",
+    //             type: 'GET',
+    //             success: function (data) {
+    //                 // Set the value in the VoucherNo TextBox
+    //                 $("#VoucherNo").dxTextBox("instance").option("value", data);
+
+    //                 // Optionally, you can trigger voucher number change handler here if needed
+    //                 onVoucherNoChanged({ value: data });
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 console.error("Error loading Voucher No:", error);
+    //             }
+    //         });
+    //     }
+    // });
+
+    // function onVoucherNoChanged(e) {
+    //     const voucherNo = e.value;
+
+    //     if (!voucherNo) return;
+
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const argsledno = urlParams.get("argsledno");
+
+    //     // If the voucher is from the URL, skip validation
+    //     if (!argsledno || argsledno !== voucherNo) {
+    //         validateVoucherNo(voucherNo);
+    //     }
+
+    //     fetchVoucherDetails(voucherNo);
+    //     fetchVoucherEntries(voucherNo);
+    // }
+
+    // function fetchVoucherDetails(voucherNo) {
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/api/PurchaseVoucher/GetVoucherDetails",
+    //         contentType: "application/json",
+    //         data: { voucherNo: voucherNo },
+    //         success: function (response) {
+    //             if (!response.success) {
+    //                 DevExpress.ui.notify(response.message, "error", 2000);
+    //                 return;
+    //             }
+
+    //             const data = response.data[0];
+    //             if (data) {
+    //                 // Ensure VoucherDate and VoucherEffectiveDate are properly converted to Date objects
+    //                 const voucherDate = new Date(data.VoucherDate);
+    //                 const effectiveDate = new Date(data.VoucherEffectiveDate);
+
+    //                 // Check for invalid dates and log the errors
+    //                 if (!isNaN(voucherDate)) {
+    //                     $("#VoucherDate").dxDateBox("instance").option("value", voucherDate);
+    //                 } else {
+    //                     console.error("Invalid VoucherDate:", data.VoucherDate);
+    //                 }
+
+    //                 if (!isNaN(effectiveDate)) {
+    //                     $("#VoucherEffectiveDate").dxDateBox("instance").option("value", effectiveDate);
+    //                 } else {
+    //                     console.error("Invalid VoucherEffectiveDate:", data.VoucherEffectiveDate);
+    //                 }
+
+    //                 // Set other form fields based on the fetched data
+    //                 $("#VoucherNo").dxTextBox("instance").option("value", data.VoucherNo || "");
+    //                 $("#VoucherNarration").dxNumberBox("instance").option("value", data.VoucherNarration || null);
+    //                 $("#BillNo").dxTextBox("instance").option("value", data.BillNo || "");
+    //                 $("#BillDate").dxTextBox("instance").option("value", data.BillDate || "");
+    //                 $("#BillPaidTo").dxSelectBox("instance").option("value", data.BillPaidTo || null);
+    //                 $("#VoucherType").dxTextBox("instance").option("value", data.VoucherType || "");
+    //                 $("#Remarks").dxCheckBox("instance").option("value", data.Remarks || false);
+
+    //                 // Notify that voucher details were fetched successfully
+    //                 DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
+    //             }
+    //         },
+    //         error: function () {
+    //             DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+    //         }
+    //     });
+    // }
+
+    // function fetchVoucherEntries(voucherNo) {
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/api/SalesVoucher/GetVoucherEntries",
+    //         contentType: "application/json",
+    //         data: { voucherNo: voucherNo },
+    //         success: function (response) {
+    //             if (!response || !response.data) {
+    //                 DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
+    //                 return;
+    //             }
+
+    //             $("#dataGrid").dxDataGrid({
+    //                 dataSource: response.data,
+    //                 keyExpr: "VoucherNo",
+    //                 repaintChangesOnly: true
+    //             });
+
+    //             DevExpress.ui.notify("Voucher entries fetched successfully.", "success", 2000);
+    //         },
+    //         error: function () {
+    //             DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+    //         }
+    //     });
+    // }
+
     $(document).ready(function () {
+
+
         const urlParams = new URLSearchParams(window.location.search);
         const argsledno = urlParams.get("argsledno");
+   
 
         console.log("Formatted Voucher in ready block:", argsledno);
 
@@ -3641,46 +3718,170 @@ document.addEventListener("DOMContentLoaded", function () {
                 const voucherNoField = $("#VoucherNo").dxTextBox("instance");
                 if (voucherNoField) {
                     voucherNoField.option("value", argsledno);
-
+                    onVoucherNoChanged({ value: argsledno }); // Trigger data fetching
                 } else {
                     console.error("VoucherNo TextBox instance not found.");
                 }
-            }, 500); // Small delay to ensure the textbox is ready
-        } else { // If no argsledno, generate a new voucher number
-            $.ajax({
-                url: "/api/VoucherMaster/GetNewCPVoucherNo",
-                type: 'GET',
-                success: function (data) {
-                    setTimeout(function () {
-                        const voucherNoField = $("#VoucherNo").dxTextBox("instance");
-                        if (voucherNoField) {
-                            voucherNoField.option("value", data);
+            }, 500);
+        }
+        else if(argsledno==null)
+        {
+            $(function () {
+                $.ajax({
+                    url: "/api/VoucherMaster/GetNewCPVoucherNo",
+                    type: 'GET',
+                    success: function (data) {
+                        // Set the value in the VoucherNo TextBox
+                        $("#VoucherNo").dxTextBox("instance").option("value", data);
 
-                        } else {
-                            console.error("VoucherNo TextBox instance not found.");
-                        }
-                    }, 500);
-                },
-                error: function () {
-                    alert("Error generating voucher number.");
-                }
+                        // Retrieve the value from the TextBox
+                        var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error loading Voucher No:", error);
+                    }
+                });
             });
         }
     });
-    function isModal() {
-            return new URLSearchParams(window.location.search).get("modal") === "true";
+
+    function onVoucherNoChanged(e) {
+        const voucherNo = e.value;
+        if (!voucherNo) return;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const argsledno = urlParams.get("argsledno");
+        
+
+        // If the voucher is from the URL, skip validation
+        if (!argsledno || argsledno !== voucherNo) {
+            validateVoucherNo(voucherNo);
         }
 
-        if (isModal()) {
-            const style = document.createElement("style");
-            style.innerHTML = `
-                .container { display: none !important; }
-                .frame { display: none !important; }
-                .footerContainer { display: none !important; }
-                .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
-                .mainContainer { margin-top: 1em;width:100%; }
-            `;
-            document.head.appendChild(style);
-        }
+        fetchVoucherDetails(voucherNo);
+        fetchVoucherEntries(voucherNo);
+    }
 
+    function validateVoucherNo(voucherNo) {
+
+        $.ajax({
+            type: "GET",
+            url: "/api/SalesVoucher/CheckVoucherExists",
+            contentType: "application/json",
+            data: { voucherNo: voucherNo },
+            success: function (response) {
+                if (!response.success || response.exists) {
+                    DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
+                    $("#VoucherNo").dxTextBox("instance").option("value", null);
+                } else {
+                    DevExpress.ui.notify("Sales Invoice No is available.", "success", 2000);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Validation error occurred.", "error", 3000);
+            }
+        });
+    }
+
+    function fetchVoucherDetails(voucherNo) {
+
+
+        $.ajax({
+            type: "GET",
+            url: "/api/PurchaseVoucher/GetVoucherDetails",
+            contentType: "application/json",
+            data: { voucherNo: voucherNo },
+            success: function (response) {
+                if (!response.success) {
+                    // DevExpress.ui.notify(response.message, "error", 2000);
+                    //return;
+                }
+                debugger
+                console.log(response.data[0]);
+                const data = response.data[0];
+                if (data) {
+             
+                     $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
+                    $("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
+                  
+                    $("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
+                    $("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
+                    $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
+                    $("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+                    $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
+                    $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
+                 
+
+                  //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
+                }
+            },
+            error: function () {
+              //  DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+            }
+        });
+    }
+
+    function fetchVoucherEntries(voucherNo) {
+        $.ajax({
+            type: "GET",
+            url: "/api/SalesVoucher/GetVoucherEntries",
+            contentType: "application/json",
+            data: { voucherNo: voucherNo },
+            success: function (response) {
+                if (!response || !response.data) {
+                    DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
+                    //return;
+                }
+
+                $("#dataGrid").dxDataGrid({
+                    dataSource: response.data,
+                    keyExpr: "VoucherNo",
+                    repaintChangesOnly: true
+                });
+
+            //    DevExpress.ui.notify("Voucher entries fetched successfully.", "success", 2000);
+            },
+            error: function () {
+               // DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+            }
+        });
+    }
+
+
+    function onVoucherDateChanged(e) {
+        console.log("Selected Date:", e.value);
+        var voucherDate = $("#VoucherDate").dxDateBox("instance");
+        var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
+
+        voucherDate.option("onValueChanged", function (e) {
+            let voucherDateval = e.value; // Get Date from DevExtreme DateBox
+
+            // Check if voucherDateval is valid
+            if (!voucherDateval) return;
+
+            // Set effectiveDate to the same value as voucherDate
+            effectiveDate.option("value", voucherDateval);
+
+            // Convert to 'yyyy-MM-dd' format
+            let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
+
+            // Define the cutoff date (2021-12-31)
+            let cutoffDate = new Date("2021-12-31");
+
+            // Get the current date to set if the voucher date is blocked
+            let currentdate = new Date();
+            let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+
+            // Check if the formatted voucher date is before the cutoff date
+            if (new Date(formattedDate) < cutoffDate) {
+                // Show alert for blocked entry
+                DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+                // Set both voucherDate and effectiveDate to the current date
+                voucherDate.option("value", formattedCurrentDate);
+                effectiveDate.option("value", formattedCurrentDate);
+            }
+        });
+    }
 </script>

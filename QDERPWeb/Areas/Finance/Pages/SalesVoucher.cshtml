@@ -259,7 +259,7 @@
 
 
 		<div class="dx-fieldset horizontal-container" style="margin-top:15px;margin-bottom:0px;">
-			<div class="form-group" style="padding-left:20px">
+			<div class="form-group" >
 				<div class="button-alignment-down">
 				</div>
 				@(
@@ -392,7 +392,7 @@
 			</div>
 		</div>
 		<div class="dx-fieldset horizontal-container" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px">
-			<div class="form-group" style="padding-left:20px">
+			<div class="form-group" >
 			</div>
 			<div class="form-group">
 				@(
@@ -982,12 +982,12 @@
 
 		$.ajax({
 			type: "GET",
-			url: "/api/SalesVoucher/GetVoucherDetails",
+			url: "/api/PurchaseVoucher/GetVoucherDetails",
 			contentType: "application/json",
 			data: { voucherNo: voucherNo },
 			success: function (response) {
 				if (!response.success) {
-					DevExpress.ui.notify(response.message, "error", 2000);
+					// DevExpress.ui.notify(response.message, "error", 2000);
 					//return;
 				}
 				console.log(response.data[0]);
@@ -1251,7 +1251,7 @@
 
 			// Open the Accounting Ledgers form in a popup window
 			window.open(
-			"/pulse/Finance/LedgerAccount", // URL to the form
+			`/${tenantName}/Finance/LedgerAccount`, // URL to the form
 				"popupWindow", // Window name
 				"width=800,height=600,scrollbars=yes,resizable=yes" // Window features
 			);
@@ -1639,7 +1639,7 @@
 
 	// function onAttachButtonClick() {
 	// 	$("#attachOptionsPopup").dxPopup("instance").show();
-	// }
+	// }`````````````
 
 	// function attachSingleFile() {
 	// 	// Logic for attaching a single file
@@ -1705,7 +1705,7 @@
 		$("#popupContainer").dxPopup({
 			contentTemplate: function (contentElement) {
 				// Construct URL with both AccountId and the global IsCharOfAccounts variable
-				var url = "/pulse/Finance/LedgerAccount?AccountId=" + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
+				var url = `/${tenantName}/Finance/LedgerAccount?AccountId=` + accountId + "&IsCharOfAccounts=" + IsCharOfAccounts;
 
 				$("<iframe>")
 					.attr("src", url)
@@ -1731,7 +1731,7 @@
 		popup.show();
 
 		// Correct URL to your LedgerAccount view
-		$("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 	}
 
 	   function showLedgerAccountHeadEditPopup() {
@@ -1752,7 +1752,7 @@
 			return;
 		}
 
-		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
 		// Show the popup
 		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
@@ -1796,7 +1796,7 @@
 			return;
 		}
 
-		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
 
 		// Show the popup
 		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
