@@ -919,6 +919,8 @@
 		});
 
 	$(document).ready(function () {
+	
+		
 		const urlParams = new URLSearchParams(window.location.search);
 		const argsledno = urlParams.get("argsledno");
 
@@ -955,6 +957,7 @@
 	}
 
 	function validateVoucherNo(voucherNo) {
+		
 		$.ajax({
 			type: "GET",
 			url: "/api/SalesVoucher/CheckVoucherExists",
@@ -975,6 +978,8 @@
 	}
 
 	function fetchVoucherDetails(voucherNo) {
+		
+
 		$.ajax({
 			type: "GET",
 			url: "/api/SalesVoucher/GetVoucherDetails",
@@ -983,18 +988,22 @@
 			success: function (response) {
 				if (!response.success) {
 					DevExpress.ui.notify(response.message, "error", 2000);
-					return;
+					//return;
 				}
-
+				console.log(response.data[0]);
 				const data = response.data[0];
 				if (data) {
+					//alert(data.VoucherEffectiveDate);
+					//alert(data.VoucherDate);
+					//alert(data.InvoiceSubmittedDate);
+					//alert(data.VoucherNarration);
 					$("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
 					$("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
 					$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", data.InvoiceSubmittedDate);
 					$("#InvoiceDueDate").dxDateBox("instance").option("value", data.InvoiceDueDate);
 					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", data.InvoiceNoOfDays || null);
 					$("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
-					$("#VoucharNarration").dxTextBox("instance").option("value", data.VoucharNarration || "");
+					$("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
 					$("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
 					$("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
 					$("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
@@ -1019,7 +1028,7 @@
 			success: function (response) {
 				if (!response || !response.data) {
 					DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
-					return;
+					//return;
 				}
 
 				$("#dataGrid").dxDataGrid({
