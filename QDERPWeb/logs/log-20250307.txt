@@ -6760,3 +6760,56 @@ System.NullReferenceException: Object reference not set to an instance of an obj
 2025-03-07 16:35:20.376 +05:30 [DBG] TenantContext Not Resolved.
 2025-03-07 16:35:20.386 +05:30 [INF] HTTP GET /api/SalesVoucher/GetVoucherEntries responded 200 in 11.2798 ms
 2025-03-07 16:35:20.398 +05:30 [INF] HTTP GET /api/PurchaseVoucher/GetVoucherDetails responded 200 in 22.4430 ms
+2025-03-07 14:39:09.619 +00:00 [INF] AspNetCoreThreadingTimerStoragesCleaner.StartCore
+
+2025-03-07 14:39:10.986 +00:00 [WRN] The page at '/Areas/Finance/Views/_BillsReceivables.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-07 14:39:10.988 +00:00 [WRN] The page at '/Areas/Finance/Views/_CostAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-07 14:39:10.988 +00:00 [WRN] The page at '/Areas/Finance/Views/_EmployeeAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-07 14:39:10.988 +00:00 [WRN] The page at '/Areas/Finance/Views/_LedgerAccount.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-07 14:39:10.988 +00:00 [WRN] The page at '/Areas/Finance/Views/_PropertyAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-07 14:39:12.595 +00:00 [WRN] Failed to determine the https port for redirect.
+2025-03-07 14:39:13.427 +00:00 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-07 14:39:16.578 +00:00 [DBG] TenantContext Resolved. Adding to HttpContext.
+2025-03-07 14:39:16.720 +00:00 [INF] HTTP GET /pulse/Security/Login responded 200 in 134.0779 ms
+2025-03-07 14:39:16.736 +00:00 [WRN] Unable to configure Browser Link script injection on the response. 
+2025-03-07 14:39:16.736 +00:00 [WRN] Unable to configure browser refresh script injection on the response. Consider manually adding '<script src="/_framework/aspnetcore-browser-refresh.js"></script>' to the body of the page.
+2025-03-07 14:39:16.949 +00:00 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-07 14:39:17.040 +00:00 [DBG] TenantContext Not Resolved.
+2025-03-07 14:39:17.047 +00:00 [INF] HTTP GET /favicon.ico/Security/Login responded 200 in 6.2090 ms
+2025-03-07 14:39:27.550 +00:00 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-07 14:39:27.551 +00:00 [DBG] TenantContext Not Resolved.
+2025-03-07 14:39:33.359 +00:00 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-07 14:39:33.359 +00:00 [DBG] TenantContext Not Resolved.
+2025-03-07 14:39:42.613 +00:00 [INF] HTTP POST /api/Login/SignIn responded 200 in 9253.1805 ms
+2025-03-07 14:39:42.614 +00:00 [INF] HTTP POST /api/Login/SignIn responded 200 in 15061.0591 ms
+2025-03-07 14:39:42.777 +00:00 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-07 14:39:42.778 +00:00 [DBG] TenantContext Resolved. Adding to HttpContext.
+2025-03-07 14:39:43.403 +00:00 [INF] HTTP GET /pulse/Finance/Index responded 200 in 624.3445 ms
+2025-03-07 14:39:45.120 +00:00 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-07 14:39:45.221 +00:00 [DBG] TenantContext Not Resolved.
+2025-03-07 14:39:45.867 +00:00 [ERR] An unhandled exception occurred.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at QD.ERP.Web.Pages.Shared.Pages_Shared__Layout.<>c__DisplayClass26_0.<<ExecuteAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at QD.ERP.Web.Pages.Shared.Pages_Shared__Layout.ExecuteAsync() in F:\Prem\Git\UI\qd.erp.web\QDERPWeb\Pages\Shared\_Layout.cshtml:line 40
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderLayoutAsync(ViewContext context, ViewBufferTextWriter bodyWriter)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at QD.ERP.Web.Middlewares.ExceptionHandler.InvokeAsync(HttpContext httpContext) in F:\Prem\Git\UI\qd.erp.web\QDERPWeb\Middlewares\ExceptionHandler.cs:line 21
+2025-03-07 14:39:45.957 +00:00 [ERR] HTTP GET /favicon.ico responded 500 in 735.8736 ms
