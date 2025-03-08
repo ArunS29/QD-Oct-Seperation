@@ -887,7 +887,7 @@
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (Ageing as on End Date)</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('payableRetention')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (With Retention)</span>
                 </div>
@@ -895,11 +895,11 @@
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (Landscape Format)</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('Balance')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (Ageing as per Ledger Balance)</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleClick('BillsPayablePaid')">
                     <i class="fa fa-file"></i>
                     <span>Bills Payables (All Including Paid)</span>
                 </div>
@@ -1567,7 +1567,10 @@
                 "AccountDetails":"AccountDetails",
                 "AgeingToday":"AgeingToday",
                 "EndDate":"EndDate",
-                 "Payablelandscape":"Payablelandscape"
+                 "Payablelandscape":"Payablelandscape",
+                 "payableRetention":"payableRetention",
+                 "Balance":"Balance",
+                 "BillsPayablePaid":"BillsPayablePaid"
             };
 
             // Check if selectedText matches any report name

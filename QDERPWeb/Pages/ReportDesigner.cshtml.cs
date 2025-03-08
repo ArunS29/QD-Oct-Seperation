@@ -24,7 +24,7 @@ namespace QD.ERP.Web.Pages
             "BillsReceivableAgeingToday", "BillsReceivableByAccount",
             "BillsReceivableAll", "BillsReceivableFormat", "rpt201BillsPayable",
             "rpt201BillsPayableWithVchNo", "AgeingToday", "EndDate", "Report4",
-            "AccountDetails","AccountOrderByVoucherNo"
+            "AccountDetails","AccountOrderByVoucherNo","Payablelandscape","payableRetention","Balance","BillsPayablePaid"
         };
 
         private static readonly Dictionary<string, Func<string, DateTime, DateTime, XtraReport>> parameterizedReports =
@@ -49,7 +49,11 @@ namespace QD.ERP.Web.Pages
                 { "EndDate", (id, from, to) => new EndDate(id, from, to) },
                 { "Report4", (id, from, to) => new Report4(id, from, to) },
                 { "AccountDetails", (id, from, to) => new AccountDetails(id, from, to) },
-                {"AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to) }
+                {"AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to) },
+                {"Payablelandscape",( id, from, to)=> new Payablelandscape(id, from, to) },
+                {"payableRetention",(id,from,to )=>new payableRetention(id, from, to) },
+                {"Balance",(id,from,to )=>new Balance(id, from, to)   },
+                {"BillsPayablePaid",(id,from,to )=>new BillsPayablePaid(id, from, to)   }
             };
 
         private static readonly Dictionary<string, Func<XtraReport>> simpleReports = new()

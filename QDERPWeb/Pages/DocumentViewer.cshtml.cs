@@ -443,6 +443,70 @@ namespace QD.ERP.Web.Pages
 
                 Report = new Report4(AccountId, FrmDate, ToDate);
             }
+            else if (reportName == "Payablelandscape")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Payablelandscape.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new Payablelandscape(AccountId, FrmDate, ToDate);
+            }
+            else if (reportName == "payableRetention")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Payablelandscape.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new payableRetention(AccountId, FrmDate, ToDate);
+            }
+            else if (reportName == "Balance")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Balance.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new Balance(AccountId, FrmDate, ToDate);
+            }
+            else if (reportName == "BillsPayablePaid")
+            {
+                // Ensure required parameters are provided for StatementOfAccountReport
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for BillsPayablePaid.");
+                }
+
+                // Set the properties for the report
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                Report = new BillsPayablePaid(AccountId, FrmDate, ToDate);
+            }
             else
             {
                 switch (reportName)
