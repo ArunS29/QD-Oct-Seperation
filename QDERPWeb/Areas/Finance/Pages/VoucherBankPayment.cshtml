@@ -3724,7 +3724,7 @@
         else if (argsledno == null) {
             $(function () {
                 $.ajax({
-                    url: "/api/VoucherMaster/GetNewBPVoucherNo",
+                    url: "/api/VoucherMaster/GetNewCPVoucherNo",
                     type: 'GET',
                     success: function (data) {
                         // Set the value in the VoucherNo TextBox
@@ -3817,33 +3817,66 @@
             }
         });
     }
-
     function fetchVoucherEntries(voucherNo) {
         $.ajax({
             type: "GET",
-            url: "/api/SalesVoucher/GetVoucherEntries",
+            url: "/api/VoucherMaster/LoadVoucherEntries",
             contentType: "application/json",
             data: { voucherNo: voucherNo },
             success: function (response) {
-                if (!response || !response.data) {
+                if (!response || !response.data || response.data.length === 0) {
                     DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
-                    //return;
+                    return;
                 }
 
-                $("#dataGrid").dxDataGrid({
-                    dataSource: response.data,
-                    keyExpr: "VoucherNo",
-                    repaintChangesOnly: true
-                });
-
-                //    DevExpress.ui.notify("Voucher entries fetched successfully.", "success", 2000);
+                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                if (dataGrid) {
+                    dataGrid.option("dataSource", response.data);
+                } else {
+                    $("#dataGrid").dxDataGrid({
+                        dataSource: response.data,
+                        keyExpr: "VoucherEntryNo",
+                        repaintChangesOnly: true,
+                        editing: {
+                            mode: "cell",
+                            allowUpdating: true, // Enable editing
+                        },
+                        onRowUpdated: function (e) {
+                            saveUpdatedVoucherEntry(e.data);
+                        },
+                        columns: [
+                            { dataField: "VoucherEntryNo", caption: "Entry No", allowEditing: false },
+                            { dataField: "DrCr", caption: "Dr/Cr", allowEditing: false },
+                            {
+                                dataField: "AccountHead",
+                                caption: "Account Head",
+                                allowEditing: true, // Make this column editable
+                                lookup: {
+                                    dataSource: new DevExpress.data.CustomStore({
+                                        loadMode: "raw",
+                                        key: "AccountId",
+                                        load: function () {
+                                            return $.getJSON("/api/VoucherMaster/GetEditAccountHead");
+                                        }
+                                    }),
+                                    valueExpr: "AccountId",
+                                    displayExpr: "AccountHead"
+                                }
+                            },
+                            { dataField: "DrAmount", caption: "Debit Amount", dataType: "number", allowEditing: false },
+                            { dataField: "CrAmount", caption: "Credit Amount", dataType: "number", allowEditing: false },
+                            { dataField: "EntryNarration", caption: "Narration", allowEditing: false },
+                            { dataField: "SysRemarks", caption: "Remarks", allowEditing: false }
+                        ]
+                    });
+                }
             },
-            error: function () {
-                // DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+            error: function (xhr, status, error) {
+                console.error("Error fetching voucher entries:", error);
+                DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
             }
         });
     }
-
 
     function onVoucherDateChanged(e) {
         console.log("Selected Date:", e.value);

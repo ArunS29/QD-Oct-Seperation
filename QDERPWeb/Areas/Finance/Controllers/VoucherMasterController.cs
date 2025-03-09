@@ -394,6 +394,58 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
+        [HttpGet]
+        public async Task<ActionResult> LoadVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(voucherNo))
+                {
+                    return BadRequest(new { success = false, message = "Invalid Voucher Number." });
+                }
+
+                var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+                    .Where(p => p.VoucherNo == voucherNo)
+                    .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
+                    .Select(i => new
+                    {
+                        i.VoucherNo,
+                        i.VoucherEntryNo,
+                        i.DrCr,
+                        i.DrAmount,
+                        i.CrAmount,
+                        i.EntryNarration,
+                        i.AccountHead,
+                        i.SysRemarks
+                    })
+                    .ToList();
+
+                // Fetch AccountHead names for mapping
+                var accountIds = qryListOfAccountlists.Select(i => i.AccountHead).Distinct().ToList();
+                var accountHeadMap = _context.Qry201ListOfAccounts
+                    .Where(a => accountIds.Contains(a.AccountId))
+                    .ToDictionary(a => a.AccountId, a => a.AccountHead);
+
+                // Map AccountId to AccountHead
+                var resultList = qryListOfAccountlists.Select(i => new VoucherEntryDisplayDTO
+                {
+                    VoucherNo = i.VoucherNo,
+                    VoucherEntryNo = i.VoucherEntryNo,
+                    DrCr = i.DrCr,
+                    DrAmount = i.DrAmount,
+                    CrAmount = i.CrAmount,
+                    EntryNarration = i.EntryNarration,
+                    AccountHead = accountHeadMap.ContainsKey(i.AccountHead) ? accountHeadMap[i.AccountHead] : i.AccountHead,
+                    SysRemarks = i.SysRemarks
+                }).ToList();
+
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
 
 
         [HttpPost]
@@ -1476,6 +1528,35 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> UpdateVoucherEntry([FromBody] Tbl201VoucherEntry updatedEntry)
+        {
+            if (updatedEntry == null || updatedEntry.VoucherEntryNo == 0)
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                var existingEntry = await _context.Tbl201VoucherEntries
+                                                  .FirstOrDefaultAsync(v => v.VoucherEntryNo == updatedEntry.VoucherEntryNo);
+
+                if (existingEntry != null)
+                {
+                    _context.Entry(existingEntry).CurrentValues.SetValues(updatedEntry);
+                    await _context.SaveChangesAsync();
+                    return Ok(new { success = true, message = "Voucher entry updated successfully!" });
+                }
+                else
+                {
+                    return NotFound(new { success = false, message = "Voucher entry not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
 
 
     }
