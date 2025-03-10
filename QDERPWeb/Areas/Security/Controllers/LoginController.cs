@@ -184,11 +184,20 @@ namespace QD.ERP.Web.Areas.Security.Controllers
         [HttpGet]
         public IActionResult ConnectionString(string tenantName)
         {
-            if (_cache.TryGetValue(tenantName, out string connectionString))
+            // Ensure the tenant name is not null or empty.
+            if (string.IsNullOrWhiteSpace(tenantName))
             {
-                return Ok(new { connectionString });
+                return BadRequest(new { message = "Tenant name is required.", success = false });
             }
 
+            // Attempt to fetch the tenant object from the cache.
+            if (_cache.TryGetValue("tenant_", out Dictionary<string, Tenant> tenantCache) &&
+                tenantCache.TryGetValue(tenantName.ToLower(), out Tenant tenant))
+            {
+                return Ok(new { connectionString = tenant.ConnectionString });
+            }
+
+            // Return an error if the tenant is not found.
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
