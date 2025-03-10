@@ -2313,7 +2313,7 @@ function addVoucherEntry() {
                     .map(key => `${key}=${params[key]}`)
                     .join("&");
 
-                            $("#CostAllocationContent").load(`/pulse/Finance/AE?${queryString}`, function () {
+                                $("#CostAllocationContent").load(`/${tenantName}/Finance/AE?${queryString}`, function () {
                     $("#CostAllocationModal").modal("show");
                     $(".close").on("click", function () {
                         $("#CostAllocationModal").modal("hide");
@@ -2355,7 +2355,7 @@ function addVoucherEntry() {
                                 .map(key => `${key}=${params[key]}`)
                                 .join('&');
 
-                                        $("#PropertyAllocationContent").load(`/pulse/Finance/PropertyAllocation?${queryString}`, function () {
+                                            $("#PropertyAllocationContent").load(`/${tenantName}/Finance/PropertyAllocation?${queryString}`, function () {
                                 $("#PropertyAllocationModal").modal('show');
                                 $(".close").on("click", function () {
                                     $("#PropertyAllocationModal").modal('hide');
@@ -3042,7 +3042,7 @@ function addVoucherEntry() {
         popup.show();
 
         // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+            $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
     }
     $(document).ready(function () {
         $("#btntoggleGroupPanel").click();
@@ -3085,7 +3085,7 @@ function addVoucherEntry() {
             return;
         }
 
-        const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+            const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
         // Show the popup
         var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
