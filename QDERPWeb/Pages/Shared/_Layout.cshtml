@@ -163,30 +163,26 @@
             display: none; /* Hide text */
         }
 
-        /* Menu item hover effect */
         .menu-item:hover {
             background-color: var(--hover-bg);
             border-radius: 4px;
-        }
-
-        /* Change text color to white on hover */
-        .menu-item:hover {
-            color: white;
-                i{
             color: white;
         }
 
-        }
+            .menu-item:hover i {
+                color: white;
+            }
 
+        /* Icon styles */
         .menu-item i {
             width: 22.5px;
             height: 18.4px;
-            font-size: 18px; /* Adjust as needed for consistent sizing */
+            font-size: 18px; 
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative; 
         }
-
 
         .menu-item {
             color: var(--text-color);
@@ -194,12 +190,36 @@
             font-weight: 500;
         }
 
-            /* Active menu item */
             .menu-item.active .text {
                 color: var(--highlight-color);
             }
 
-        /* Toggle button */
+            .menu-item i::after {
+                content: attr(data-tooltip);
+                position: absolute;
+                top: 130%; 
+                left: 350%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 6px 10px;
+                border-radius: 5px;
+                font-size: 10px !important;
+                white-space: nowrap;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
+                z-index: 1000;
+                pointer-events: none;
+                letter-spacing: 1px;
+            }
+
+            .menu-item i:hover::after {
+                opacity: 1;
+                visibility: visible;
+                transform: translateX(-50%) translateY(5px);
+            }
+
         .toggle-btn {
             position: fixed;
             top: 70px;
@@ -492,17 +512,6 @@
             font-size: 16px;
             color: #333;
         }
-
-        /* Styling for the avatar (User Profile Button) */
-        /* .avatar { */
-        /*     width: 40px; */
-        /*     height: 40px; */
-        /*     background-color: #ccc; */
-        /*     border-radius: 50%; */
-        /*     cursor: pointer; */
-        /* } */
-
-        /* Special styling for the Profile Popup */
         .profile-popup {
             width: 350px;
             top: 15%;
@@ -517,13 +526,26 @@
         }
 
         .companyName {
+            /* font-family: 'Poppins', sans-serif; */
+            font-family: 'book antiqua', sans-serif;
+            /* font-size: 48px; */
+            /* font-weight: 700; */
+            color: #2C3E50;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
             margin-right: auto;
-            padding: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            /* text-transform: uppercase; */
+            background: linear-gradient(45deg, #ffc107, #532f8f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+             font-size: 20px; 
+             font-weight: bold;
         }
 
+            .companyName:hover {
+            transform: scale(1.1);
+            transition: 0.3s ease-in-out;
+        }
 
         /* Ensure iframe takes full size */
         #contentIframe {
@@ -534,7 +556,7 @@
 
         /* Main Content */
         .mainContainer {
-            margin-top: 6em;
+            margin-top: 5em;
             /* width: 85%; */
             /* padding: 20px; */
         }
@@ -654,6 +676,7 @@
     </style>
 </head>
 <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="~/js/layouticon.js"></script>
     <div class="bodyContainer">
         <div class="frame">
@@ -661,8 +684,8 @@
                 <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
             </div>
             <div class="companyName">
-                @tenantName
-            </div>
+                 @tenantName 
+            </div> 
             <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("languageSelectBox")
@@ -980,31 +1003,31 @@
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu">
                     <div class="menu-item hr" onclick="navigate('Human Resources')">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-users" data-tooltip="Human Resources"></i>
                         <div class="text">Human Resources</div>
                     </div>
                     <div class="menu-item finance" onclick="navigate('Finance')">
-                        <i class="fas fa-dollar-sign"></i>
+                        <i class="fas fa-dollar-sign" data-tooltip="Finance"></i>
                         <div class="text">Finance</div>
                     </div>
                     <div class="menu-item vat" onclick="navigate('VAT Modules')">
-                        <i class="fas fa-certificate"></i>
+                        <i class="fas fa-certificate" data-tooltip="VAT Modules"></i>
                         <div class="text">VAT Modules</div>
                     </div>
                     <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
-                        <i class="fas fa-truck"></i>
+                        <i class="fas fa-truck" data-tooltip="Equipment Rentals"></i>
                         <div class="text">Equipment Rentals</div>
                     </div>
                     <div class="menu-item camp" onclick="navigate('Camp Management')">
-                        <i class="fas fa-campground"></i>
+                        <i class="fas fa-campground" data-tooltip="Camp Management"></i>
                         <div class="text">Camp Management</div>
                     </div>
                     <div class="menu-item inventory" onclick="navigate('Inventory Management')">
-                        <i class="fas fa-cogs"></i>
+                        <i class="fas fa-cogs" data-tooltip="Inventory Management"></i>
                         <div class="text">Inventory Management</div>
                     </div>
                     <div class="menu-item projects" onclick="navigate('Projects Control')">
-                        <i class="fas fa-project-diagram"></i>
+                        <i class="fas fa-project-diagram" data-tooltip="Projects Control"></i>
                         <div class="text">Projects Control</div>
                     </div>
                 </div>
@@ -1623,6 +1646,16 @@
                 })
                 .catch(error => console.error("Error:", error));
         }
+        document.addEventListener("DOMContentLoaded", function() {
+          gsap.from(".companyName", {
+            duration: 3,
+            opacity: 0,
+            x: -150,
+            stagger: 0.1,
+            ease: "power3.out"
+          });
+        });
+
     </script>
 </body>
 </html>
