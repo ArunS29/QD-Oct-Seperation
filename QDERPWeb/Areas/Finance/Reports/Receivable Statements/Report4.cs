@@ -13,6 +13,7 @@ namespace QD.ERP.Web.Reports
     public partial class Report4 : DevExpress.XtraReports.UI.XtraReport
 
     {
+        private const string QueryName = "qry205_027AgeingBillsReceivableWtColumns";
 
         public Report4(string accountId, DateTime frmDate, DateTime toDate)
 
@@ -36,103 +37,83 @@ namespace QD.ERP.Web.Reports
 
         }
 
+
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate)
-
-        {
-
-            // Create and set report parameters
-
-            AddReportParameter("AccountID", typeof(string), accountId);
-
-            AddReportParameter("StartDate", typeof(DateTime), frmDate);
-
-            AddReportParameter("EndDate", typeof(DateTime), toDate);
-
-            // Set up SQL query
-
-            AddSqlQueryParameters(accountId, frmDate, toDate);
-
-            // Validate Data Source
-
-            ValidateQueryResult();
-
-        }
-
-        private void AddReportParameter(string paramName, Type paramType, object paramValue)
-        {
-            if (Parameters[paramName] == null)
             {
-                Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+                // Add report parameters
+                AddReportParameter("AccountID", typeof(string), accountId);
+                AddReportParameter("StartDate", typeof(DateTime), frmDate);
+                AddReportParameter("EndDate", typeof(DateTime), toDate);
+
+                // Set up SQL query
+                if (!DesignMode)
                 {
-                    Name = paramName,
-                    Type = paramType,
-                    Value = paramValue,
-                    Visible = false // Hide parameter panel
-                });
+                    AddSqlQueryParameters(accountId, frmDate, toDate);
+                }
             }
-            else
+
+            private void AddReportParameter(string paramName, Type paramType, object paramValue)
             {
-                Parameters[paramName].Value = paramValue;
-                Parameters[paramName].Visible = false; // Ensure it's hidden
+                if (Parameters[paramName] == null)
+                {
+                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+                    {
+                        Name = paramName,
+                        Type = paramType,
+                        Value = paramValue ?? DBNull.Value,
+                        Visible = false
+                    });
+                }
+                else
+                {
+                    Parameters[paramName].Value = paramValue ?? DBNull.Value;
+                    Parameters[paramName].Visible = false;
+                }
             }
-        }
 
-        private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
-
-        {
-
-            // Define the SQL query
-
-            CustomSqlQuery selectQuery = new CustomSqlQuery()
-
+            private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
             {
-
-                Name = "qry205_027AgeingBillsReceivableWtColumns",
-
-                Sql = @"SELECT * FROM qry205_027AgeingBillsReceivableWtColumns 
-
-                        WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID) 
-
+                // Define the SQL query
+                CustomSqlQuery selectQuery = new CustomSqlQuery()
+                {
+                    Name = QueryName,
+                    Sql = @"SELECT * FROM qry205_027AgeingBillsReceivableWtColumns
+                        WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
                         AND VoucherDate BETWEEN @StartDate AND @EndDate"
+                };
 
-            };
+                // Add query parameters
+                selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId ?? (object)DBNull.Value));
+                selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(string), frmDate.ToString("yyyy-MM-dd")));
+                selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(string), toDate.ToString("yyyy-MM-dd")));
 
-            // Add query parameters
+                // Attach query to SqlDataSource
+                sqlDataSource1.Queries.Clear();
+                sqlDataSource1.Queries.Add(selectQuery);
+                sqlDataSource1.Fill();
 
-            selectQuery.Parameters.Add(new QueryParameter() { Name = "@AccountID", Type = typeof(string), ValueInfo = accountId });
-
-            selectQuery.Parameters.Add(new QueryParameter() { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = frmDate.ToString("yyyy-MM-dd") });
-
-            selectQuery.Parameters.Add(new QueryParameter() { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = toDate.ToString("yyyy-MM-dd") });
-
-            // Attach query to SqlDataSource
-
-            this.sqlDataSource1.Queries.Clear();
-
-            this.sqlDataSource1.Queries.Add(selectQuery);
-
-            this.sqlDataSource1.Fill();
-
-        }
-
-        private void ValidateQueryResult()
-
-        {
-
-            var result = sqlDataSource1.Result["qry205_027AgeingBillsReceivableWtColumns"];
-
-            // Ensure the result is not null and check the row count via IList
-
-            if (result == null || ((System.Collections.IList)result).Count == 0)
-
-            {
-
-                throw new InvalidOperationException("No data returned from the SQL query. Please check the query and parameters.");
-
+                // Check for empty data and show a message
+                CheckForEmptyData();
             }
 
-        }
+            private void CheckForEmptyData()
+            {
+                if (sqlDataSource1.Result[QueryName] is IList result && result.Count == 0)
+                {
+                    XRLabel noDataLabel = new XRLabel()
+                    {
+                        Text = "No records found to display.",
+                        BoundsF = new RectangleF(0, 0, 650, 50),
+                        TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+                        Font = new Font("Arial", 14, FontStyle.Bold)
+                    };
 
-    }
+                    this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
+                }
+            }
+
+
+
+        }
 
 }

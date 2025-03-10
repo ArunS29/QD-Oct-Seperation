@@ -1300,6 +1300,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                   i.AccountId,
                   i.AccountHead,
                   i.AccountHeadArabic
+
               });
 
                 return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
@@ -1527,35 +1528,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
-
         [HttpPost]
-        public async Task<ActionResult> UpdateVoucherEntry([FromBody] Tbl201VoucherEntry updatedEntry)
+        public IActionResult UpdateVoucherEntry([FromBody] Tbl201VoucherEntry model)
         {
-            if (updatedEntry == null || updatedEntry.VoucherEntryNo == 0)
+            if (model == null || string.IsNullOrEmpty(model.AccountHead))
             {
-                return BadRequest(new { success = false, message = "Invalid data received." });
+                return BadRequest("Invalid data: AccountHead is missing or null.");
             }
 
-            try
-            {
-                var existingEntry = await _context.Tbl201VoucherEntries
-                                                  .FirstOrDefaultAsync(v => v.VoucherEntryNo == updatedEntry.VoucherEntryNo);
+            var existingEntry = _context.Tbl201VoucherEntries
+                .FirstOrDefault(v => v.VoucherEntryNo == model.VoucherEntryNo);
 
-                if (existingEntry != null)
-                {
-                    _context.Entry(existingEntry).CurrentValues.SetValues(updatedEntry);
-                    await _context.SaveChangesAsync();
-                    return Ok(new { success = true, message = "Voucher entry updated successfully!" });
-                }
-                else
-                {
-                    return NotFound(new { success = false, message = "Voucher entry not found." });
-                }
-            }
-            catch (Exception ex)
+            var accountID = _context.Tbl201ChartOfAccounts
+                .Where(a => a.AccountHead == model.AccountHead)
+                .Select(a => a.AccountId)
+                .FirstOrDefault();
+
+            if (existingEntry != null)
             {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                existingEntry.DrCr = model.DrCr;
+                existingEntry.AccountHead = accountID; // Assign single account ID
+                existingEntry.EntryNarration = model.EntryNarration;
+
+                _context.SaveChanges();
+                return Ok(new { message = "" });
             }
+
+            return NotFound("Voucher Entry not found.");
         }
 
 

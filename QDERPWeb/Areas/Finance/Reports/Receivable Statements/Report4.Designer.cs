@@ -246,11 +246,13 @@
             // 
             this.xrLabel20.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountHead]")});
+            this.xrLabel20.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F, DevExpress.Drawing.DXFontStyle.Italic);
             this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(96.18522F, 62.16219F);
             this.xrLabel20.Multiline = true;
             this.xrLabel20.Name = "xrLabel20";
             this.xrLabel20.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel20.SizeF = new System.Drawing.SizeF(292.7928F, 32.99997F);
+            this.xrLabel20.StylePriority.UseFont = false;
             this.xrLabel20.StylePriority.UseTextAlignment = false;
             this.xrLabel20.Text = "xrLabel20";
             this.xrLabel20.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
@@ -271,7 +273,7 @@
             // xrLabel1
             // 
             this.xrLabel1.BackColor = System.Drawing.Color.LightGray;
-            this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(2.543131E-05F, 60.45054F);
             this.xrLabel1.Multiline = true;
             this.xrLabel1.Name = "xrLabel1";
@@ -318,7 +320,7 @@
             this.tableCell1.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.tableCell1.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.tableCell1.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell1.ForeColor = System.Drawing.Color.Black;
             this.tableCell1.Name = "tableCell1";
             this.tableCell1.StyleName = "DetailCaption1";
@@ -338,7 +340,7 @@
             this.tableCell2.BorderColor = System.Drawing.Color.Black;
             this.tableCell2.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.tableCell2.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.tableCell2.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell2.ForeColor = System.Drawing.Color.Black;
             this.tableCell2.Name = "tableCell2";
             this.tableCell2.StyleName = "DetailCaption1";
@@ -358,16 +360,18 @@
             this.tableCell3.BorderColor = System.Drawing.Color.Black;
             this.tableCell3.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell3.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell3.ForeColor = System.Drawing.Color.Black;
             this.tableCell3.Name = "tableCell3";
             this.tableCell3.StyleName = "DetailCaption1";
             this.tableCell3.StylePriority.UseBackColor = false;
             this.tableCell3.StylePriority.UseBorderColor = false;
             this.tableCell3.StylePriority.UseBorders = false;
+            this.tableCell3.StylePriority.UseFont = false;
             this.tableCell3.StylePriority.UseForeColor = false;
             this.tableCell3.StylePriority.UseTextAlignment = false;
             this.tableCell3.Text = "Due Date";
-            this.tableCell3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell3.Weight = 0.092727890014648442D;
             // 
             // tableCell4
@@ -376,16 +380,18 @@
             this.tableCell4.BorderColor = System.Drawing.Color.Black;
             this.tableCell4.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell4.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell4.ForeColor = System.Drawing.Color.Black;
             this.tableCell4.Name = "tableCell4";
             this.tableCell4.StyleName = "DetailCaption1";
             this.tableCell4.StylePriority.UseBackColor = false;
             this.tableCell4.StylePriority.UseBorderColor = false;
             this.tableCell4.StylePriority.UseBorders = false;
+            this.tableCell4.StylePriority.UseFont = false;
             this.tableCell4.StylePriority.UseForeColor = false;
             this.tableCell4.StylePriority.UseTextAlignment = false;
             this.tableCell4.Text = "OverDue Days";
-            this.tableCell4.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell4.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell4.Weight = 0.078046323988172739D;
             // 
             // tableCell5
@@ -394,7 +400,7 @@
             this.tableCell5.BorderColor = System.Drawing.Color.Black;
             this.tableCell5.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.tableCell5.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.tableCell5.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell5.ForeColor = System.Drawing.Color.Black;
             this.tableCell5.Name = "tableCell5";
             this.tableCell5.StyleName = "DetailCaption1";
@@ -405,7 +411,7 @@
             this.tableCell5.StylePriority.UseForeColor = false;
             this.tableCell5.StylePriority.UseTextAlignment = false;
             this.tableCell5.Text = "Invoiced Amount";
-            this.tableCell5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell5.Weight = 0.07777684308975262D;
             // 
             // tableCell6
@@ -414,7 +420,7 @@
             this.tableCell6.BorderColor = System.Drawing.Color.Black;
             this.tableCell6.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.tableCell6.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.tableCell6.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell6.ForeColor = System.Drawing.Color.Black;
             this.tableCell6.Name = "tableCell6";
             this.tableCell6.StyleName = "DetailCaption1";
@@ -425,7 +431,7 @@
             this.tableCell6.StylePriority.UseForeColor = false;
             this.tableCell6.StylePriority.UseTextAlignment = false;
             this.tableCell6.Text = "Amount   Received";
-            this.tableCell6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell6.Weight = 0.098061287029413607D;
             // 
             // tableCell7
@@ -434,7 +440,7 @@
             this.tableCell7.BorderColor = System.Drawing.Color.Black;
             this.tableCell7.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.tableCell7.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.tableCell7.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell7.ForeColor = System.Drawing.Color.Black;
             this.tableCell7.Name = "tableCell7";
             this.tableCell7.StyleName = "DetailCaption1";
@@ -445,7 +451,7 @@
             this.tableCell7.StylePriority.UseForeColor = false;
             this.tableCell7.StylePriority.UseTextAlignment = false;
             this.tableCell7.Text = "Balance";
-            this.tableCell7.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell7.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell7.Weight = 0.10566306968869427D;
             // 
             // xrTableCell1
@@ -454,6 +460,7 @@
             this.xrTableCell1.BorderColor = System.Drawing.Color.Black;
             this.xrTableCell1.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell1.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell1.ForeColor = System.Drawing.Color.Black;
             this.xrTableCell1.Multiline = true;
             this.xrTableCell1.Name = "xrTableCell1";
@@ -461,10 +468,11 @@
             this.xrTableCell1.StylePriority.UseBackColor = false;
             this.xrTableCell1.StylePriority.UseBorderColor = false;
             this.xrTableCell1.StylePriority.UseBorders = false;
+            this.xrTableCell1.StylePriority.UseFont = false;
             this.xrTableCell1.StylePriority.UseForeColor = false;
             this.xrTableCell1.StylePriority.UseTextAlignment = false;
             this.xrTableCell1.Text = "NotOver Due";
-            this.xrTableCell1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrTableCell1.Weight = 0.085555240960953224D;
             // 
             // tableCell8
@@ -473,16 +481,19 @@
             this.tableCell8.BorderColor = System.Drawing.Color.Black;
             this.tableCell8.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell8.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell8.ForeColor = System.Drawing.Color.Black;
+            this.tableCell8.Multiline = true;
             this.tableCell8.Name = "tableCell8";
             this.tableCell8.StyleName = "DetailCaption1";
             this.tableCell8.StylePriority.UseBackColor = false;
             this.tableCell8.StylePriority.UseBorderColor = false;
             this.tableCell8.StylePriority.UseBorders = false;
+            this.tableCell8.StylePriority.UseFont = false;
             this.tableCell8.StylePriority.UseForeColor = false;
             this.tableCell8.StylePriority.UseTextAlignment = false;
-            this.tableCell8.Text = "Overdue     <30 Days";
-            this.tableCell8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell8.Text = "Overdue   \r\n  < 30 Days";
+            this.tableCell8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell8.Weight = 0.1028409311448464D;
             // 
             // tableCell9
@@ -491,8 +502,9 @@
             this.tableCell9.BorderColor = System.Drawing.Color.Black;
             this.tableCell9.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.tableCell9.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.tableCell9.Font = new DevExpress.Drawing.DXFont("Arial", 8F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell9.ForeColor = System.Drawing.Color.Black;
+            this.tableCell9.Multiline = true;
             this.tableCell9.Name = "tableCell9";
             this.tableCell9.StyleName = "DetailCaption1";
             this.tableCell9.StylePriority.UseBackColor = false;
@@ -501,8 +513,8 @@
             this.tableCell9.StylePriority.UseFont = false;
             this.tableCell9.StylePriority.UseForeColor = false;
             this.tableCell9.StylePriority.UseTextAlignment = false;
-            this.tableCell9.Text = "Overdue 31 to 60 Days";
-            this.tableCell9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell9.Text = "Overdue \r\n31 to 60 Days";
+            this.tableCell9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell9.Weight = 0.091666719959796653D;
             // 
             // tableCell10
@@ -511,15 +523,18 @@
             this.tableCell10.BorderColor = System.Drawing.Color.Black;
             this.tableCell10.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell10.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Bold);
             this.tableCell10.ForeColor = System.Drawing.Color.Black;
+            this.tableCell10.Multiline = true;
             this.tableCell10.Name = "tableCell10";
             this.tableCell10.StyleName = "DetailCaption1";
             this.tableCell10.StylePriority.UseBackColor = false;
             this.tableCell10.StylePriority.UseBorderColor = false;
             this.tableCell10.StylePriority.UseBorders = false;
+            this.tableCell10.StylePriority.UseFont = false;
             this.tableCell10.StylePriority.UseForeColor = false;
             this.tableCell10.StylePriority.UseTextAlignment = false;
-            this.tableCell10.Text = "OverDue    61 to 90    Days";
+            this.tableCell10.Text = "OverDue \r\n   61 to 90   Days";
             this.tableCell10.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.tableCell10.Weight = 0.095144429058487551D;
             // 
@@ -529,16 +544,19 @@
             this.tableCell11.BorderColor = System.Drawing.Color.Black;
             this.tableCell11.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell11.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell11.ForeColor = System.Drawing.Color.Black;
+            this.tableCell11.Multiline = true;
             this.tableCell11.Name = "tableCell11";
             this.tableCell11.StyleName = "DetailCaption1";
             this.tableCell11.StylePriority.UseBackColor = false;
             this.tableCell11.StylePriority.UseBorderColor = false;
             this.tableCell11.StylePriority.UseBorders = false;
+            this.tableCell11.StylePriority.UseFont = false;
             this.tableCell11.StylePriority.UseForeColor = false;
             this.tableCell11.StylePriority.UseTextAlignment = false;
-            this.tableCell11.Text = "OverDue 91 to 180 Days";
-            this.tableCell11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell11.Text = "OverDue \r\n91 to 180 Days";
+            this.tableCell11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell11.Weight = 0.10014596944341253D;
             // 
             // tableCell12
@@ -547,16 +565,19 @@
             this.tableCell12.BorderColor = System.Drawing.Color.Black;
             this.tableCell12.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell12.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell12.ForeColor = System.Drawing.Color.Black;
+            this.tableCell12.Multiline = true;
             this.tableCell12.Name = "tableCell12";
             this.tableCell12.StyleName = "DetailCaption1";
             this.tableCell12.StylePriority.UseBackColor = false;
             this.tableCell12.StylePriority.UseBorderColor = false;
             this.tableCell12.StylePriority.UseBorders = false;
+            this.tableCell12.StylePriority.UseFont = false;
             this.tableCell12.StylePriority.UseForeColor = false;
             this.tableCell12.StylePriority.UseTextAlignment = false;
-            this.tableCell12.Text = "OverDue  181 to 365  Days";
-            this.tableCell12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell12.Text = "OverDue \r\n 181 to 365 Days";
+            this.tableCell12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell12.Weight = 0.096490524843288877D;
             // 
             // tableCell13
@@ -565,16 +586,18 @@
             this.tableCell13.BorderColor = System.Drawing.Color.Black;
             this.tableCell13.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell13.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell13.ForeColor = System.Drawing.Color.Black;
             this.tableCell13.Name = "tableCell13";
             this.tableCell13.StyleName = "DetailCaption1";
             this.tableCell13.StylePriority.UseBackColor = false;
             this.tableCell13.StylePriority.UseBorderColor = false;
             this.tableCell13.StylePriority.UseBorders = false;
+            this.tableCell13.StylePriority.UseFont = false;
             this.tableCell13.StylePriority.UseForeColor = false;
             this.tableCell13.StylePriority.UseTextAlignment = false;
             this.tableCell13.Text = "More365";
-            this.tableCell13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.tableCell13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell13.Weight = 0.099311291675388019D;
             // 
             // Detail
@@ -621,10 +644,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[VoucherDate]")});
+            this.tableCell14.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell14.Name = "tableCell14";
             this.tableCell14.StyleName = "DetailData1";
             this.tableCell14.StylePriority.UseBorderColor = false;
             this.tableCell14.StylePriority.UseBorders = false;
+            this.tableCell14.StylePriority.UseFont = false;
             this.tableCell14.StylePriority.UseTextAlignment = false;
             this.tableCell14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell14.TextFormatString = "{0:dd-MMM-yy}";
@@ -637,10 +662,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell15.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[ReferenceNo]")});
+            this.tableCell15.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell15.Name = "tableCell15";
             this.tableCell15.StyleName = "DetailData1";
             this.tableCell15.StylePriority.UseBorderColor = false;
             this.tableCell15.StylePriority.UseBorders = false;
+            this.tableCell15.StylePriority.UseFont = false;
             this.tableCell15.StylePriority.UseTextAlignment = false;
             this.tableCell15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.tableCell15.TextFormatString = "{0:C2}";
@@ -653,10 +680,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell16.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[VoucherDate]")});
+            this.tableCell16.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell16.Name = "tableCell16";
             this.tableCell16.StyleName = "DetailData1";
             this.tableCell16.StylePriority.UseBorderColor = false;
             this.tableCell16.StylePriority.UseBorders = false;
+            this.tableCell16.StylePriority.UseFont = false;
             this.tableCell16.StylePriority.UseTextAlignment = false;
             this.tableCell16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.tableCell16.TextFormatString = "{0:dd-MMM-yy}";
@@ -669,10 +698,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell17.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[OverDueDays]")});
+            this.tableCell17.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell17.Name = "tableCell17";
             this.tableCell17.StyleName = "DetailData1";
             this.tableCell17.StylePriority.UseBorderColor = false;
             this.tableCell17.StylePriority.UseBorders = false;
+            this.tableCell17.StylePriority.UseFont = false;
             this.tableCell17.StylePriority.UseTextAlignment = false;
             this.tableCell17.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.tableCell17.Weight = 0.078523038079372068D;
@@ -684,10 +715,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell18.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[InvoiceAmount]")});
+            this.tableCell18.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell18.Name = "tableCell18";
             this.tableCell18.StyleName = "DetailData1";
             this.tableCell18.StylePriority.UseBorderColor = false;
             this.tableCell18.StylePriority.UseBorders = false;
+            this.tableCell18.StylePriority.UseFont = false;
             this.tableCell18.StylePriority.UseTextAlignment = false;
             this.tableCell18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell18.TextFormatString = "{0:0.00}";
@@ -700,10 +733,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell19.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[ReceivedAmount]")});
+            this.tableCell19.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell19.Name = "tableCell19";
             this.tableCell19.StyleName = "DetailData1";
             this.tableCell19.StylePriority.UseBorderColor = false;
             this.tableCell19.StylePriority.UseBorders = false;
+            this.tableCell19.StylePriority.UseFont = false;
             this.tableCell19.StylePriority.UseTextAlignment = false;
             this.tableCell19.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell19.TextFormatString = "{0:0.00}";
@@ -717,11 +752,13 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell20.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[BalanceAmount]")});
+            this.tableCell20.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell20.Name = "tableCell20";
             this.tableCell20.StyleName = "DetailData1";
             this.tableCell20.StylePriority.UseBackColor = false;
             this.tableCell20.StylePriority.UseBorderColor = false;
             this.tableCell20.StylePriority.UseBorders = false;
+            this.tableCell20.StylePriority.UseFont = false;
             this.tableCell20.StylePriority.UseTextAlignment = false;
             this.tableCell20.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell20.TextFormatString = "{0:0.00}";
@@ -734,10 +771,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell21.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[NotOverdue]")});
+            this.tableCell21.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell21.Name = "tableCell21";
             this.tableCell21.StyleName = "DetailData1";
             this.tableCell21.StylePriority.UseBorderColor = false;
             this.tableCell21.StylePriority.UseBorders = false;
+            this.tableCell21.StylePriority.UseFont = false;
             this.tableCell21.StylePriority.UseTextAlignment = false;
             this.tableCell21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell21.TextFormatString = "{0:0.00}";
@@ -750,11 +789,13 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell2.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less30]")});
+            this.xrTableCell2.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.xrTableCell2.Multiline = true;
             this.xrTableCell2.Name = "xrTableCell2";
             this.xrTableCell2.StyleName = "DetailData1";
             this.xrTableCell2.StylePriority.UseBorderColor = false;
             this.xrTableCell2.StylePriority.UseBorders = false;
+            this.xrTableCell2.StylePriority.UseFont = false;
             this.xrTableCell2.StylePriority.UseTextAlignment = false;
             this.xrTableCell2.Text = "xrTableCell2";
             this.xrTableCell2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -768,10 +809,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell22.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less30to60]")});
+            this.tableCell22.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell22.Name = "tableCell22";
             this.tableCell22.StyleName = "DetailData1";
             this.tableCell22.StylePriority.UseBorderColor = false;
             this.tableCell22.StylePriority.UseBorders = false;
+            this.tableCell22.StylePriority.UseFont = false;
             this.tableCell22.StylePriority.UseTextAlignment = false;
             this.tableCell22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell22.TextFormatString = "{0:0.00}";
@@ -784,10 +827,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell23.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less60to90]")});
+            this.tableCell23.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell23.Name = "tableCell23";
             this.tableCell23.StyleName = "DetailData1";
             this.tableCell23.StylePriority.UseBorderColor = false;
             this.tableCell23.StylePriority.UseBorders = false;
+            this.tableCell23.StylePriority.UseFont = false;
             this.tableCell23.StylePriority.UseTextAlignment = false;
             this.tableCell23.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell23.TextFormatString = "{0:0.00}";
@@ -800,10 +845,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell24.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less90to180]")});
+            this.tableCell24.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell24.Name = "tableCell24";
             this.tableCell24.StyleName = "DetailData1";
             this.tableCell24.StylePriority.UseBorderColor = false;
             this.tableCell24.StylePriority.UseBorders = false;
+            this.tableCell24.StylePriority.UseFont = false;
             this.tableCell24.StylePriority.UseTextAlignment = false;
             this.tableCell24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell24.TextFormatString = "{0:0.00}";
@@ -816,10 +863,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell25.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less180to365]")});
+            this.tableCell25.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell25.Name = "tableCell25";
             this.tableCell25.StyleName = "DetailData1";
             this.tableCell25.StylePriority.UseBorderColor = false;
             this.tableCell25.StylePriority.UseBorders = false;
+            this.tableCell25.StylePriority.UseFont = false;
             this.tableCell25.StylePriority.UseTextAlignment = false;
             this.tableCell25.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell25.TextFormatString = "{0:0.00}";
@@ -832,10 +881,12 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell26.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[More365]")});
+            this.tableCell26.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell26.Name = "tableCell26";
             this.tableCell26.StyleName = "DetailData1";
             this.tableCell26.StylePriority.UseBorderColor = false;
             this.tableCell26.StylePriority.UseBorders = false;
+            this.tableCell26.StylePriority.UseFont = false;
             this.tableCell26.StylePriority.UseTextAlignment = false;
             this.tableCell26.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell26.TextFormatString = "{0:0.00}";
@@ -999,7 +1050,7 @@
             this.xrLabel17.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.xrLabel17.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel17.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel17.LocationFloat = new DevExpress.Utils.PointFloat(96.1852F, 0F);
             this.xrLabel17.Multiline = true;
             this.xrLabel17.Name = "xrLabel17";
@@ -1022,7 +1073,7 @@
             this.xrLabel16.BorderWidth = 0.5F;
             this.xrLabel16.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([InvoiceAmount])")});
-            this.xrLabel16.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel16.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel16.LocationFloat = new DevExpress.Utils.PointFloat(371.7244F, 0F);
             this.xrLabel16.Name = "xrLabel16";
             this.xrLabel16.SizeF = new System.Drawing.SizeF(108.6634F, 50.17113F);
@@ -1047,7 +1098,7 @@
             this.xrLabel15.BorderWidth = 0.5F;
             this.xrLabel15.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([ReceivedAmount])")});
-            this.xrLabel15.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel15.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(480.3878F, 0F);
             this.xrLabel15.Name = "xrLabel15";
             this.xrLabel15.SizeF = new System.Drawing.SizeF(108.1189F, 50.17113F);
@@ -1072,7 +1123,7 @@
             this.xrLabel14.BorderWidth = 0.5F;
             this.xrLabel14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([BalanceAmount])")});
-            this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(586.8401F, 0F);
             this.xrLabel14.Name = "xrLabel14";
             this.xrLabel14.SizeF = new System.Drawing.SizeF(116.5005F, 50.17113F);
@@ -1097,7 +1148,7 @@
             this.xrLabel11.BorderWidth = 0.5F;
             this.xrLabel11.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([Less60to90])")});
-            this.xrLabel11.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel11.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(1016.456F, 0F);
             this.xrLabel11.Name = "xrLabel11";
             this.xrLabel11.SizeF = new System.Drawing.SizeF(100.9513F, 50.17113F);
@@ -1122,7 +1173,7 @@
             this.xrLabel12.BorderWidth = 0.5F;
             this.xrLabel12.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([NotOverdue])")});
-            this.xrLabel12.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel12.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(705.0073F, 0F);
             this.xrLabel12.Name = "xrLabel12";
             this.xrLabel12.SizeF = new System.Drawing.SizeF(94.33038F, 50.17113F);
@@ -1147,7 +1198,7 @@
             this.xrLabel13.BorderWidth = 0.5F;
             this.xrLabel13.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([Less30])")});
-            this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(799.3377F, 0F);
             this.xrLabel13.Name = "xrLabel13";
             this.xrLabel13.SizeF = new System.Drawing.SizeF(113.389F, 50.17113F);
@@ -1172,7 +1223,7 @@
             this.xrLabel8.BorderWidth = 0.5F;
             this.xrLabel8.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([Less30to60])")});
-            this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(911.6735F, 0F);
             this.xrLabel8.Name = "xrLabel8";
             this.xrLabel8.SizeF = new System.Drawing.SizeF(104.7827F, 50.17113F);
@@ -1197,7 +1248,7 @@
             this.xrLabel9.BorderWidth = 0.5F;
             this.xrLabel9.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([Less90to180])")});
-            this.xrLabel9.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel9.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel9.LocationFloat = new DevExpress.Utils.PointFloat(1117.408F, 0F);
             this.xrLabel9.Name = "xrLabel9";
             this.xrLabel9.SizeF = new System.Drawing.SizeF(111.7074F, 50.17113F);
@@ -1222,7 +1273,7 @@
             this.xrLabel10.BorderWidth = 0.5F;
             this.xrLabel10.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([More365])")});
-            this.xrLabel10.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel10.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel10.LocationFloat = new DevExpress.Utils.PointFloat(1333.962F, 0F);
             this.xrLabel10.Name = "xrLabel10";
             this.xrLabel10.SizeF = new System.Drawing.SizeF(111.038F, 50.17113F);
@@ -1247,7 +1298,7 @@
             this.xrLabel6.BorderWidth = 0.5F;
             this.xrLabel6.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([More180])")});
-            this.xrLabel6.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel6.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(1227.575F, 0F);
             this.xrLabel6.Name = "xrLabel6";
             this.xrLabel6.SizeF = new System.Drawing.SizeF(106.3872F, 50.17113F);
@@ -1273,7 +1324,7 @@
             this.xrLabel7.BorderWidth = 0.5F;
             this.xrLabel7.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Count()")});
-            this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Calibri", 11F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrLabel7.Name = "xrLabel7";
             this.xrLabel7.SizeF = new System.Drawing.SizeF(95.60927F, 50.17113F);

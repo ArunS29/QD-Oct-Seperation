@@ -23,6 +23,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             SetReportParameters(null, defaultDate, defaultDate);
         }
 
+       
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate)
         {
             // Create and set report parameters
@@ -32,9 +33,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
             // Set up SQL query
             AddSqlQueryParameters(accountId, frmDate, toDate);
-
-            // Validate Data Source
-            ValidateQueryResult();
         }
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
@@ -62,8 +60,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             CustomSqlQuery selectQuery = new CustomSqlQuery()
             {
                 Name = "qry201SubLedgerReceivablesMaster",
-                Sql = @"SELECT * FROM qry201SubLedgerReceivablesMaster
-                        WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
+                Sql = @"SELECT * FROM qry201SubLedgerReceivablesMaster 
+                        WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID) 
                         AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 
@@ -76,17 +74,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             this.sqlDataSource1.Queries.Clear();
             this.sqlDataSource1.Queries.Add(selectQuery);
             this.sqlDataSource1.Fill();
-        }
-
-        private void ValidateQueryResult()
-        {
-            var result = sqlDataSource1.Result["qry201SubLedgerReceivablesMaster"];
-
-            // Ensure the result is not null and check the row count via IList
-            if (result == null || ((System.Collections.IList)result).Count == 0)
-            {
-                throw new InvalidOperationException("No data returned from the SQL query. Please check the query and parameters.");
-            }
         }
     }
 }
