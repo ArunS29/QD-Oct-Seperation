@@ -453,30 +453,42 @@
 <script>
 		
 
+	$(document).ready(function () {
+		// Make an AJAX request to check the condition
+		$.ajax({
+			url: '/api/VoucherEntryReceipts/CheckEmployeeAllocation',
+			method: 'GET',
+			data: { AccountHead: '@accountHead', AccountID: '@accountId' }, // Pass accountHead as a parameter
+			success: function (response) {
+				if (response.isAllocated) {  // Assuming API returns { allowExecution: true/false }
+					employeeinitializePage();  // Call function to execute the necessary logic
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error('Error checking employee allocation:', error);
+			}
+		});
+	});
 
-		   $(document).ready(function () {
+	function employeeinitializePage() {
 		// Capture the initial value of the NumberBox
 		const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-		VocuherAmount = initialVoucherAmount.toFixed(2)
+
 		// Sample data with initial value of VoucherAmount
 		const costData = [
 			{
-				DrCr: '@drCr',  // Ensure @drCr is correctly rendered as a string value
-
+				DrCr: '@drCr',
 				EffectiveDate: new Date().toLocaleDateString('en-GB', {
 					day: 'numeric',
 					month: 'short',
 					year: 'numeric',
 				}),
-				EmployeeName:'',
 				VoucherAmount: initialVoucherAmount.toFixed(2),
 				Remarks: ''
-
 			}
 		];
 
-		// Debug to check the formatted data
-		console.log('Cost Data:', costData);
+		// console.log('Cost Data:', costData);
 
 		// Get the DataGrid instance
 		const costdataGrid = $('#AEdataGrid').dxDataGrid('instance');
@@ -492,9 +504,8 @@
 
 				// Update the data in the DataGrid
 				if (costdataGrid) {
-					// Find the first row (assuming only one row in this case)
 					const updatedData = [{
-						DrCr: '@drCr', // Make sure @drCr is a valid string
+						DrCr: '@drCr',
 						CostAllocated: '',
 						EffectiveDate: new Date().toLocaleDateString('en-GB', {
 							day: 'numeric',
@@ -509,15 +520,81 @@
 				}
 			}
 		});
-		// Function to format the EffectiveDate
-		function formatEffectiveDate(dateString) {
-			if (!dateString) return 'N/A'; // Handle null or empty dates
+	}
 
-			const dateObj = new Date(dateString);
-			const options = { day: 'numeric', month: 'short', year: 'numeric' };
-			return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
-		}
-	});
+	function formatEffectiveDate(dateString) {
+		if (!dateString) return 'N/A';
+
+		const dateObj = new Date(dateString);
+		const options = { day: 'numeric', month: 'short', year: 'numeric' };
+		return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+	}
+
+
+	// 	   $(document).ready(function () {
+	// 	// Capture the initial value of the NumberBox
+	// 	const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+	// 	VocuherAmount = initialVoucherAmount.toFixed(2)
+	// 	// Sample data with initial value of VoucherAmount
+	// 	const costData = [
+	// 		{
+	// 			DrCr: '@drCr',  // Ensure @drCr is correctly rendered as a string value
+
+	// 			EffectiveDate: new Date().toLocaleDateString('en-GB', {
+	// 				day: 'numeric',
+	// 				month: 'short',
+	// 				year: 'numeric',
+	// 			}),
+	// 			EmployeeName:'',
+	// 			VoucherAmount: initialVoucherAmount.toFixed(2),
+	// 			Remarks: ''
+
+	// 		}
+	// 	];
+
+	// 	// Debug to check the formatted data
+	// 	console.log('Cost Data:', costData);
+
+	// 	// Get the DataGrid instance
+	// 	const costdataGrid = $('#AEdataGrid').dxDataGrid('instance');
+
+	// 	if (costdataGrid) {
+	// 		costdataGrid.option('dataSource', costData);
+	// 	}
+
+	// 	// Function to handle changes to the NumberBox value
+	// 	$('#vAmount').dxNumberBox({
+	// 		valueChanged: function (e) {
+	// 			const newVoucherAmount = e.value.toFixed(2);
+
+	// 			// Update the data in the DataGrid
+	// 			if (costdataGrid) {
+	// 				// Find the first row (assuming only one row in this case)
+	// 				const updatedData = [{
+	// 					DrCr: '@drCr', // Make sure @drCr is a valid string
+	// 					CostAllocated: '',
+	// 					EffectiveDate: new Date().toLocaleDateString('en-GB', {
+	// 						day: 'numeric',
+	// 						month: 'short',
+	// 						year: 'numeric',
+	// 					}),
+	// 					VoucherAmount: newVoucherAmount,
+	// 					Remarks: 'N/A'
+	// 				}];
+
+	// 				costdataGrid.option('dataSource', updatedData);
+	// 			}
+	// 		}
+	// 	});
+	// 	// Function to format the EffectiveDate
+	// 	function formatEffectiveDate(dateString) {
+	// 		if (!dateString) return 'N/A'; // Handle null or empty dates
+
+	// 		const dateObj = new Date(dateString);
+	// 		const options = { day: 'numeric', month: 'short', year: 'numeric' };
+	// 		return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+	// 	}
+	// });
 
 		// $(function () {
 		// const voucherNo = getQueryParam('VoucherNo');

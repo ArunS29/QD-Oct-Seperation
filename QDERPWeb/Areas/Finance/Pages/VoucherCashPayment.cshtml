@@ -475,13 +475,13 @@
             <li onclick="editCostAllocation()">
                 <i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation" class="no-border-input"></div>
             </li>
-            <li onclick="editBillReceivable()">
+            <li onclick="editBillsReceivable()">
                 <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable" class="no-border-input"></div>
             </li>
             <li onclick="editBillReceivable1()">
                 <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditSalaryPayable" class="no-border-input"></div>
             </li>
-            <li onclick="editBillReceivable2()">
+            <li onclick="editEmployeeAllocation()">
                 <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditEmployeeAllocation" class="no-border-input"></div>
             </li>
             <li onclick="editPropertyAllocation()">
@@ -496,57 +496,115 @@
         </ul>
 
         <div id="popupContainer">
-
             @(Html.DevExtreme().Popup()
-
                 .ID("CostAllocationPopup")
-
                 .Title("Cost Allocation")
-
                 .Width(1300)
-
                 .Height(500)
-
                 .Visible(false)
-
                 .ShowCloseButton(true)
-
                 .ResizeEnabled(true)
-
                 .DragEnabled(true)
-
                 .ShowTitle(true)
-
                 @* .ToolbarItems(toolbar =>
-
-         {
-
-             toolbar.Add()
-
-             .Widget(w => w.Button()
-
-             .Icon("minus")
-
-             .OnClick("minimizePopup")
-
-             )
-
-             .Location(ToolbarItemLocation.After);
-
-             toolbar.Add()
-
-             .Widget(w => w.Button()
-
-             .Icon("expand")
-
-             .OnClick("maximizePopup")
-
-             )
-
-             .Location(ToolbarItemLocation.After);
-
-         }) *@
-
+            {
+            toolbar.Add()
+            .Widget(w => w.Button()
+            .Icon("minus")
+            .OnClick("minimizePopup")
+            )
+            .Location(ToolbarItemLocation.After);
+            toolbar.Add()
+            .Widget(w => w.Button()
+            .Icon("expand")
+            .OnClick("maximizePopup")
+            )
+            .Location(ToolbarItemLocation.After);
+            }) *@
+                )
+        </div>
+        <div id="popupContainer">
+            @(Html.DevExtreme().Popup()
+                .ID("PropertyAllocationPopup")
+                .Title("Property Allocation")
+                .Width(1300)
+                .Height(500)
+                .Visible(false)
+                .ShowCloseButton(true)
+                .ResizeEnabled(true)
+                .DragEnabled(true)
+                .ShowTitle(true)
+                @* .ToolbarItems(toolbar =>
+            {
+            toolbar.Add()
+            .Widget(w => w.Button()
+            .Icon("minus")
+            .OnClick("minimizePopup")
+            )
+            .Location(ToolbarItemLocation.After);
+            toolbar.Add()
+            .Widget(w => w.Button()
+            .Icon("expand")
+            .OnClick("maximizePopup")
+            )
+            .Location(ToolbarItemLocation.After);
+            }) *@
+                )
+        </div>
+        <div id="popupContainer">
+            @(Html.DevExtreme().Popup()
+                .ID("EmployeeAllocationPopup")
+                .Title("Employee Allocation")
+                .Width(1300)
+                .Height(500)
+                .Visible(false)
+                .ShowCloseButton(true)
+                .ResizeEnabled(true)
+                .DragEnabled(true)
+                .ShowTitle(true)
+                @* .ToolbarItems(toolbar =>
+            {
+            toolbar.Add()
+            .Widget(w => w.Button()
+            .Icon("minus")
+            .OnClick("minimizePopup")
+            )
+            .Location(ToolbarItemLocation.After);
+            toolbar.Add()
+            .Widget(w => w.Button()
+            .Icon("expand")
+            .OnClick("maximizePopup")
+            )
+            .Location(ToolbarItemLocation.After);
+            }) *@
+                )
+        </div>
+        <div id="popupContainer">
+            @(Html.DevExtreme().Popup()
+                .ID("BillsReceivablePopup")
+                .Title("Finance Module: Receivables / Payables")
+                .Width(1300)
+                .Height(500)
+                .Visible(false)
+                .ShowCloseButton(true)
+                .ResizeEnabled(true)
+                .DragEnabled(true)
+                .ShowTitle(true)
+                @* .ToolbarItems(toolbar =>
+            {
+            toolbar.Add()
+            .Widget(w => w.Button()
+            .Icon("minus")
+            .OnClick("minimizePopup")
+            )
+            .Location(ToolbarItemLocation.After);
+            toolbar.Add()
+            .Widget(w => w.Button()
+            .Icon("expand")
+            .OnClick("maximizePopup")
+            )
+            .Location(ToolbarItemLocation.After);
+            }) *@
                 )
         </div>
 
@@ -2323,55 +2381,53 @@
 
                   else if (accheadname && accheadname.startsWith("Cost")) {
 
-                         const params = {
-                               VoucherNo: encodeURIComponent(voucherNo),
-                               VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                               AccountHead: encodeURIComponent(accheadname),
-                               VoucherAmount: encodeURIComponent(amount),
-                               DrCr: encodeURIComponent(sbDrCr)
-            };
-            openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
-        }
-                else if (accheadname) {
-                    $.ajax({
-                        type: "GET",
-                        url: `/api/PropertyAllocation/CheckPropertyAllocation`,
-                        data: {
-                            AccountHead: accheadname,
-                            AccountID: accheadid
-                        },
-                        success: function (response) {
-                            if (response.isAllocated) {
-                                const params = {
-                                    AccountHeadVal: encodeURIComponent(accheadname),
-                                    VoucherAmount: encodeURIComponent(amount),
-                                    DrCr: encodeURIComponent(sbDrCr),
-                                    AccountID: encodeURIComponent(accheadid),
-                                    VoucherNo: encodeURIComponent(voucherNo)
-                                };
-
-                                const queryString = Object.keys(params)
-                                    .map(key => `${key}=${params[key]}`)
-                                    .join('&');
-
-                                            $("#PropertyAllocationContent").load(`/${tenantName}/Finance/PropertyAllocation?${queryString}`, function () {
-                                    $("#PropertyAllocationModal").modal('show');
-                                    $(".close").on("click", function () {
-                                        $("#PropertyAllocationModal").modal('hide');
-                                    });
-                                    $("#btnPropertyBack").on("click", function () {
-                                        $("#PropertyAllocationModal").modal('hide');
-                                    });
-                                    DevExpress.ui.repaintFloatingActionButton();
+                     const params = {
+                           VoucherNo: encodeURIComponent(voucherNo),
+                           VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                           AccountHead: encodeURIComponent(accheadname),
+                           VoucherAmount: encodeURIComponent(amount),
+                           DrCr: encodeURIComponent(sbDrCr)
+        };
+        openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
+    }
+            else if (accheadname) {
+                            // Function to check allocation
+                            function checkAllocation(url, successCallback) {
+                                $.ajax({
+                                    type: "GET",
+                                    url: url,
+                                    data: {
+                                        AccountHead: accheadname,
+                                        AccountID: accheadid
+                                    },
+                                    success: function (response) {
+                                        if (response.isAllocated) {
+                                            const params = {
+                                                VoucherNo: encodeURIComponent(voucherNo),
+                                                VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                                                AccountHead: encodeURIComponent(accheadname),
+                                                VoucherAmount: encodeURIComponent(amount),
+                                                DrCr: encodeURIComponent(sbDrCr),
+                                                AccountID: encodeURIComponent(accheadid)
+                                            };
+                                            successCallback(params);
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error(`Error checking allocation: ${error}`);
+                                    }
                                 });
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error checking property allocation:", error);
-                        }
-                    });
-                }
+
+                            // Check Property Allocation
+                            checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
+
+                            // Check Employee Allocation
+                            checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
+
+                            checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
             }
+        }
 
                         var button = $("#btnSave").dxButton("instance");
                         button.option("text", "Update");
@@ -2548,51 +2604,16 @@
 
 
 
-            document.addEventListener("DOMContentLoaded", function () {
-                const grid = document.getElementById("dataGrid");
-                const contextMenu = document.getElementById("contextMenu");
-
-                // Show context menu on right-click
-                grid.addEventListener("contextmenu", function (e) {
-                    e.preventDefault();
-
-                    // Set menu position
-                    contextMenu.style.display = "block";
-                    contextMenu.style.left = `${e.pageX}px`;
-                    contextMenu.style.top = `${e.pageY}px`;
-                });
-
-                // Hide context menu on click anywhere else
-                document.addEventListener("click", function () {
-                    contextMenu.style.display = "none";
-                });
-
-                // Functions for menu actions
-                window.editCostAllocation = function () {
-                    alert("Edit Cost Allocation clicked");
-                };
-
-                window.editBillReceivable = function () {
-                    alert("Edit Bill Receivable clicked");
-                };
-
-                window.editPropertyAllocation = function () {
-                    alert("Edit Property Allocation clicked");
-                };
-
-                // window.deleteLineItems = function () {
-                // 	alert("Delete Line Items clicked");
-                // };
-            });
+       
 
 
 
 
-            // function onRowRemoving(e) {
-            //     var rowData = e.data; // Get the row data being removed
-            //     var voucherEntryNo = rowData.VoucherEntryNo; // Retrieve the unique identifier for the row
-            //     var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-            //     confirmDelete();
+        // function onRowRemoving(e) {
+        //     var rowData = e.data; // Get the row data being removed
+        //     var voucherEntryNo = rowData.VoucherEntryNo; // Retrieve the unique identifier for the row
+        //     var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        //     confirmDelete();
 
             //     if (!voucherEntryNo) {
             //         DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
@@ -3450,27 +3471,21 @@
     });
 
 
-    function closeParentModal() {
-            let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
-            popupInstance.hide();
-        }
-        var openedPopups = {};  // A map to store instances of opened popups by their unique identifier
-        var popupId = null;
+    var openedPopups = {};
     // Function to open a popup (Cost Allocation)
     function openCostAllocationPopup(params) {
         const queryString = Object.keys(params)
             .map(key => `${key}=${params[key]}`)
             .join('&');
-
         debugger;
         $.ajax({
-            url: `/api/VoucherMaster/CostAllocation?${queryString}`,
+            url: `/api/VoucherEntryReceipts/CostAllocation?${queryString}`,
             type: "GET",
             dataType: "html",
             success: function (data) {
                 // Get the popup's unique identifier, for example, use the voucher number
                 const popupId = `CostAllocationPopup-${params.VoucherEntryNo}`;
-
+                debugger;
                 // Check if the popup is already opened
                 if (!openedPopups[popupId]) {
                     // Create and store the popup instance
@@ -3481,8 +3496,8 @@
 
                     // Store the popup instance in the openedPopups map
                     openedPopups[popupId] = popupInstance;
-                     // popupInstance.popupId = popupId;
-                     console.log(openedPopups);
+                    // popupInstance.popupId = popupId;
+                    console.log(openedPopups);
                     popupInstance.show();
                 } else {
                     // If the popup is already opened, just show it
@@ -3494,6 +3509,181 @@
                 alert("Failed to load cost allocation details.");
             }
         });
+    }
+
+    function openPropertyAllocationPopup(params) {
+        debugger;
+        const queryString = Object.keys(params)
+            .map(key => `${key}=${params[key]}`)
+            .join('&');
+
+        $.ajax({
+            url: `/api/VoucherEntryReceipts/PropertyAllocation?${queryString}`,
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                // Get the popup's unique identifier, for example, use the voucher number
+                const popupId = `PropertyAllocationPopup-${params.VoucherEntryNo}`;
+                debugger;
+                // Check if the popup is already opened
+                if (!openedPopups[popupId]) {
+                    // Create and store the popup instance
+                    let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
+                    popupInstance.option("contentTemplate", function () {
+                        return $("<div>").html(data);
+                    });
+
+                    // Store the popup instance in the openedPopups map
+                    openedPopups[popupId] = popupInstance;
+                    // popupInstance.popupId = popupId;
+                    console.log(openedPopups);
+                    popupInstance.show();
+                } else {
+                    // If the popup is already opened, just show it
+                    openedPopups[popupId].show();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading Cost Allocation view:", error);
+                alert("Failed to load cost allocation details.");
+            }
+        });
+    }
+    function openEmployeeAllocationPopup(params) {
+        const queryString = Object.keys(params)
+            .map(key => `${key}=${params[key]}`)
+            .join('&');
+
+        $.ajax({
+            url: `/api/VoucherEntryReceipts/EmployeeAllocation?${queryString}`,
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                // Get the popup's unique identifier, for example, use the voucher number
+                const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
+                debugger;
+                // Check if the popup is already opened
+                if (!openedPopups[popupId]) {
+                    // Create and store the popup instance
+                    let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
+                    popupInstance.option("contentTemplate", function () {
+                        return $("<div>").html(data);
+                    });
+
+                    // Store the popup instance in the openedPopups map
+                    openedPopups[popupId] = popupInstance;
+                    // popupInstance.popupId = popupId;
+                    console.log(openedPopups);
+                    popupInstance.show();
+                } else {
+                    // If the popup is already opened, just show it
+                    openedPopups[popupId].show();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading Cost Allocation view:", error);
+                alert("Failed to load cost allocation details.");
+            }
+        });
+    }
+    function openBillsReceivablePopup(params) {
+        const queryString = Object.keys(params)
+            .map(key => `${key}=${params[key]}`)
+            .join('&');
+
+        $.ajax({
+            url: `/api/VoucherEntryReceipts/BillsReceivable?${queryString}`,
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                // Get the popup's unique identifier, for example, use the voucher number
+                const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
+                debugger;
+                // Check if the popup is already opened
+                if (!openedPopups[popupId]) {
+                    // Create and store the popup instance
+                    let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
+                    popupInstance.option("contentTemplate", function () {
+                        return $("<div>").html(data);
+                    });
+
+                    // Store the popup instance in the openedPopups map
+                    openedPopups[popupId] = popupInstance;
+                    // popupInstance.popupId = popupId;
+                    console.log(openedPopups);
+                    popupInstance.show();
+                } else {
+                    // If the popup is already opened, just show it
+                    openedPopups[popupId].show();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading Cost Allocation view:", error);
+                alert("Failed to load cost allocation details.");
+            }
+        });
+    }
+
+    function closeParentModal() {
+        let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+
+    function ClosePropertyModel() {
+        let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+    function closeBill() {
+        let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+    function CloseEmployeeModel() {
+        let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+    function onContextMenuPreparing(e) {
+        if (e.row && e.row.rowType === "data") {
+            // Row is right-clicked
+            selectedRowData = e.row.data;
+            //  alert(selectedRowData.SubLedgerId);
+            e.items = [
+                {
+                    text: "Delete Line Entry",
+                    onItemClick: function () {
+
+                        if (confirm(`You are about to delete the Bills Payable Records from the database. You cannot revert the changes. Are you sure you want to delete?`)) {
+
+                            // Call server-side delete method
+                            $.post(`/Finance/api/BillsPayableReceivable/DeleteRecord?id=${selectedRowData.SubLedgerId}`, function (response) {
+
+                                if (response.success) {
+                                    alert("Bills Payable Records have been successfully removed from the database");
+
+                                    // Remove the selected row from the DataGrid
+                                    if (dataGridInstance2) {
+                                        // Remove the row directly from the grid data source
+                                        let dataSource = dataGridInstance2.option('dataSource');  // Get the current data source
+
+                                        // Filter out the deleted record based on SubLedgerId
+                                        let updatedDataSource = dataSource.filter(function (item) {
+                                            return item.SubLedgerId !== selectedRowData.SubLedgerId;  // Remove the row by matching SubLedgerId
+                                        });
+
+                                        // Update the grid's data source to the new filtered data (which no longer includes the deleted row)
+                                        dataGridInstance2.option('dataSource', updatedDataSource);
+                                    }
+
+                                } else {
+                                    alert(`Error: ${response.message}`);
+                                }
+                            }).fail(function () {
+                                alert("An error occurred while processing your request.");
+                            });
+                        }
+                    }
+                }
+            ];
+        }
     }
     document.addEventListener("DOMContentLoaded", function () {
         const grid = document.getElementById("dataGrid");
@@ -3507,7 +3697,7 @@
             const rowElement = e.target.closest(".dx-data-row");
 
             if (rowElement) {
-                const rowIndex = rowElement.getAttribute("aria-rowindex");
+                let rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
                 contextMenu.dataset.rowIndex = rowIndex;
 
                 let mouseX = e.clientX;
@@ -3536,48 +3726,180 @@
             contextMenu.style.display = "none";
         });
 
-        function openPopup(action, title) {
-            fetch(`/api/VoucherMaster/${action}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Page not found");
-                    }
-                    return response.text();
-                })
-                .then(html => {
-                    let popupInstance = $("#allocationPopup").dxPopup("instance");
-                    popupInstance.option("contentTemplate", function () {
-                        return $("<div>").html(html);
-                    });
-                    popupInstance.option("title", title);
-                    popupInstance.show();
-                })
-                .catch(error => console.error("Error loading page:", error));
-        }
+
 
         window.editCostAllocation = function () {
-            let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+            let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-            if (popupInstance) {
-                popupInstance.show(); // Just show the existing popup
+            if (!rowIndex || rowIndex < 0) {
+                console.error("Invalid row index detected.");
+                return;
+            }
+
+            let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+            let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+
+            if (!rowData || !rowData.VoucherEntryNo) {
+                console.error("No valid row selected for Cost Allocation.");
+                return;
+            }
+
+            let drCr = rowData.DrCr;
+            let accountHead = rowData.AccountHead;
+            let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+            let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+            // Selecting VoucherEntryNo based on DrCr value
+            let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+
+            let popupId = `CostAllocationPopup-${voucherEntryNo}`;
+            let params = {
+                VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+                VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+                DrCr: drCr,
+                AccountHead: accountHead,
+                VoucherAmount: amount
+            };
+            debugger;
+            if (openedPopups[popupId]) {
+                openedPopups[popupId].show();
             } else {
-                console.error("Popup instance not found!");
+                openCostAllocationPopup(params);
             }
         };
 
 
+
         window.editPropertyAllocation = function () {
-            openPopup("PropertyAllocation", "Edit Property Allocation");
+            let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            if (!rowIndex || rowIndex < 0) {
+                console.error("Invalid row index detected.");
+                return;
+            }
+
+            let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+            let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+
+            if (!rowData || !rowData.VoucherEntryNo) {
+                console.error("No valid row selected for Cost Allocation.");
+                return;
+            }
+
+            let drCr = rowData.DrCr;
+            let accountHead = rowData.AccountHead;
+            let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+            let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            let accountid = accheadid;
+            // Selecting VoucherEntryNo based on DrCr value
+            let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+
+            let popupId = `PropertyAllocationPopup-${voucherEntryNo}`;
+            let params = {
+                VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+                VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+                DrCr: drCr,
+                AccountHead: accountHead,
+                VoucherAmount: amount,
+                AccountID: accountid
+            };
+            debugger;
+            if (openedPopups[popupId]) {
+                openedPopups[popupId].show();
+            } else {
+                openPropertyAllocationPopup(params);
+            }
         };
 
         window.editEmployeeAllocation = function () {
-            openPopup("EmployeeAllocation", "Edit Employee Allocation");
+            let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            if (!rowIndex || rowIndex < 0) {
+                console.error("Invalid row index detected.");
+                return;
+            }
+
+            let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+            let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+
+            if (!rowData || !rowData.VoucherEntryNo) {
+                console.error("No valid row selected for Cost Allocation.");
+                return;
+            }
+
+            let drCr = rowData.DrCr;
+            let accountHead = rowData.AccountHead;
+            let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+            let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            let accountid = accheadid;
+            // Selecting VoucherEntryNo based on DrCr value
+            let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+
+            let popupId = `EmployeeAllocationPopup-${voucherEntryNo}`;
+            let params = {
+                VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+                VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+                DrCr: drCr,
+                AccountHead: accountHead,
+                VoucherAmount: amount,
+                AccountID: accountid
+            };
+            debugger;
+            if (openedPopups[popupId]) {
+                openedPopups[popupId].show();
+            } else {
+                openEmployeeAllocationPopup(params);
+            }
+        };
+        window.editBillsReceivable = function () {
+            let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            if (!rowIndex || rowIndex < 0) {
+                console.error("Invalid row index detected.");
+                return;
+            }
+
+            let visibleRows = dataGrid.getVisibleRows(); // Get all visible rows
+            let rowData = visibleRows[rowIndex]?.data; // Fetch the correct row's data
+
+            if (!rowData || !rowData.VoucherEntryNo) {
+                console.error("No valid row selected for Cost Allocation.");
+                return;
+            }
+
+            let drCr = rowData.DrCr;
+            let accountHead = rowData.AccountHead;
+            let amount = drCr === "Cr" ? rowData.CrAmount : rowData.DrAmount;
+            let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+            // Selecting VoucherEntryNo based on DrCr value
+            let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
+
+            let popupId = `BillsReceivablePopup-${voucherEntryNo}`;
+            let params = {
+                VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
+                VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
+                DrCr: drCr,
+                AccountHead: accountHead,
+                VoucherAmount: amount
+            };
+            debugger;
+            if (openedPopups[popupId]) {
+                openedPopups[popupId].show();
+            } else {
+                openBillsReceivablePopup(params);
+            }
+
         };
 
     });
-        //  $(document).ready(function () {
-        //     const urlParams = new URLSearchParams(window.location.search);
-        //     const argsledno = urlParams.get("argsledno");
+    //  $(document).ready(function () {
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const argsledno = urlParams.get("argsledno");
 
         //     console.log("Formatted Voucher in ready block:", argsledno);
         //     debugger;

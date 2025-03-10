@@ -470,6 +470,11 @@
 
 
     $(document).ready(function () {
+        // Check if accountHead starts with "Cost"
+        var accountHead = '@accountHead';
+        if (!accountHead.startsWith("Cost")) {
+            return; // Exit if condition is not met
+        }
         // Capture the initial value of the NumberBox
         const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
 

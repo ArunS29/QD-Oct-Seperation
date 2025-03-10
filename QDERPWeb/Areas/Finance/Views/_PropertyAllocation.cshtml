@@ -469,38 +469,60 @@
 </script>
 <script>
 	
-
 	$(document).ready(function () {
-		// Parse voucherAmount safely
-		let initialVoucherAmount = parseFloat('@(voucherAmountParsed ?? 0)') || 0;
-		Amount = initialVoucherAmount.toFixed(2);
+		// Make an AJAX request to check the condition
+		$.ajax({
+			url: '/api/VoucherEntryReceipts/CheckPropertyAllocation',
+			method: 'GET',
+			data: { AccountHead: '@accountHead',AccountID : '@accountId' }, // Pass accountHead as a parameter
+			success: function (response) {
+				if (response.isAllocated) {  // Assuming API returns { allowExecution: true/false }
+					initializePage();  // Call function to execute the necessary logic
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error('Error checking employee allocation:', error);
+			}
+		});
+	});
 
-		// Initialize costData
-		let costData = [{
-			DrCr: '@drCr',
-			EffectiveDate: new Date().toLocaleDateString('en-GB', {
-				day: 'numeric',
-				month: 'short',
-				year: 'numeric',
-			}),
-			VoucherAmount: Amount,
-			Remarks: ''
-		}];
+	function initializePage() {
+		// Capture the initial value of the NumberBox
+		const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
 
-		// Initialize DataGrid
-		let costdataGrid = $('#propertydataGrid').dxDataGrid('instance');
+		// Sample data with initial value of VoucherAmount
+		const costData = [
+			{
+				DrCr: '@drCr',
+				EffectiveDate: new Date().toLocaleDateString('en-GB', {
+					day: 'numeric',
+					month: 'short',
+					year: 'numeric',
+				}),
+				VoucherAmount: initialVoucherAmount.toFixed(2),
+				Remarks: ''
+			}
+		];
+
+		// console.log('Cost Data:', costData);
+
+		// Get the DataGrid instance
+		const costdataGrid = $('#propertydataGrid').dxDataGrid('instance');
+
 		if (costdataGrid) {
 			costdataGrid.option('dataSource', costData);
 		}
 
-		// Handle NumberBox value changes
+		// Function to handle changes to the NumberBox value
 		$('#propertyAmount').dxNumberBox({
-			value: Amount,
 			valueChanged: function (e) {
-				let newVoucherAmount = e.value ? e.value.toFixed(2) : "0.00";
+				const newVoucherAmount = e.value.toFixed(2);
+
+				// Update the data in the DataGrid
 				if (costdataGrid) {
-					costdataGrid.option('dataSource', [{
+					const updatedData = [{
 						DrCr: '@drCr',
+						CostAllocated: '',
 						EffectiveDate: new Date().toLocaleDateString('en-GB', {
 							day: 'numeric',
 							month: 'short',
@@ -508,20 +530,74 @@
 						}),
 						VoucherAmount: newVoucherAmount,
 						Remarks: 'N/A'
-					}]);
+					}];
+
+					costdataGrid.option('dataSource', updatedData);
 				}
 			}
 		});
-	});
+	}
 
-	// Format Effective Date
 	function formatEffectiveDate(dateString) {
-		debugger;
 		if (!dateString) return 'N/A';
-		let dateObj = new Date(dateString);
-		let options = { day: 'numeric', month: 'short', year: 'numeric' };
+
+		const dateObj = new Date(dateString);
+		const options = { day: 'numeric', month: 'short', year: 'numeric' };
 		return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
 	}
+
+	// $(document).ready(function () {
+	// 	// Parse voucherAmount safely
+	// 	let initialVoucherAmount = parseFloat('@(voucherAmountParsed ?? 0)') || 0;
+	// 	Amount = initialVoucherAmount.toFixed(2);
+
+	// 	// Initialize costData
+	// 	let costData = [{
+	// 		DrCr: '@drCr',
+	// 		EffectiveDate: new Date().toLocaleDateString('en-GB', {
+	// 			day: 'numeric',
+	// 			month: 'short',
+	// 			year: 'numeric',
+	// 		}),
+	// 		VoucherAmount: Amount,
+	// 		Remarks: ''
+	// 	}];
+
+	// 	// Initialize DataGrid
+	// 	let costdataGrid = $('#propertydataGrid').dxDataGrid('instance');
+	// 	if (costdataGrid) {
+	// 		costdataGrid.option('dataSource', costData);
+	// 	}
+
+	// 	// Handle NumberBox value changes
+	// 	$('#propertyAmount').dxNumberBox({
+	// 		value: Amount,
+	// 		valueChanged: function (e) {
+	// 			let newVoucherAmount = e.value ? e.value.toFixed(2) : "0.00";
+	// 			if (costdataGrid) {
+	// 				costdataGrid.option('dataSource', [{
+	// 					DrCr: '@drCr',
+	// 					EffectiveDate: new Date().toLocaleDateString('en-GB', {
+	// 						day: 'numeric',
+	// 						month: 'short',
+	// 						year: 'numeric',
+	// 					}),
+	// 					VoucherAmount: newVoucherAmount,
+	// 					Remarks: 'N/A'
+	// 				}]);
+	// 			}
+	// 		}
+	// 	});
+	// });
+
+	// // Format Effective Date
+	// function formatEffectiveDate(dateString) {
+	// 	debugger;
+	// 	if (!dateString) return 'N/A';
+	// 	let dateObj = new Date(dateString);
+	// 	let options = { day: 'numeric', month: 'short', year: 'numeric' };
+	// 	return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+	// }
 
 	// Handle DataGrid Selection
 	function dataGridSelectionChanged(e) {
