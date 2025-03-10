@@ -1013,7 +1013,7 @@
 		if (!refno) refno = "";
 		if (!accheadar) accheadar = "";
 
-		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
 		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 
@@ -1045,12 +1045,12 @@
 	function addVoucher_click(form) {
 		let url = "";
 		if (form === "Purchase") {
-			url = "/pulse/Finance/PurchaseVoucher";
+			url = '/${tenantName}/Finance/PurchaseVoucher';
 		} else if (form === "Sales") {
-			url = "/pulse/Finance/SalesVoucher";
+			url = '/${tenantName}/Finance/SalesVoucher';
 		}
 		else if (form === "Journal") {
-			url = "/pulse/Finance/JournalVoucher";
+			url = '/${tenantName}/Finance/JournalVoucher';
 		}
 		var newWindow = window.open(url, '_blank', 'width=1300,height=600');
 
@@ -1206,7 +1206,7 @@
 		popup.show();
 
 		// Correct URL to your LedgerAccount view
-		$("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+		$("#ledgerAccountFrame").attr("src", '/${tenantName}/Finance/LedgerAccount');
 	}
 	$(document).ready(function () {
 		$("#btntoggleGroupPanel").click();
@@ -1327,7 +1327,7 @@
 		popup.show();
 
 		// Correct URL to your LedgerAccount view
-		$("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+		$("#ledgerAccountFrame").attr("src", '/${tenantName}/Finance/LedgerAccount');
 	}
 	$(document).ready(function () {
 		$("#btntoggleGroupPanel").click();
