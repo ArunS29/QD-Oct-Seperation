@@ -3428,21 +3428,48 @@
         }
     }
 
+    // function redirectAccoutledgerMaster() {
+
+    //     const masterFormWindow = window.open(
+    //         `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`,
+    //         'popupWindow',
+    //         'width=1400,height=600,scrollbars=yes,resizable=yes'
+    //     );
+
+
+    //     const interval = setInterval(() => {
+    //         if (masterFormWindow.closed) {
+    //             clearInterval(interval);
+    //             refreshaccountledgerSelectBox();
+    //         }
+    //     }, 500);
+    // }
+
     function redirectAccoutledgerMaster() {
+        if (["M5", "M6", "M7", "M8", "M2", "M9", "M4", "M1"].includes(accgrpunder)) {
+            disableTabs(["tab-content-1", "tab-content-2", "tab-content-3", "tab-content-7"]);
+        } else if (["M3"].includes(accgrpunder)) {
+            disableTabs(["tab-content-3", "tab-content-7"]);
+        }
 
-        const masterFormWindow = window.open(
-            `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`,
-            'popupWindow',
-            'width=1400,height=600,scrollbars=yes,resizable=yes'
-        );
+        const modal = document.getElementById("ledgerAccountMasterModal");
+        const iframe = document.getElementById("ledgerAccountMasterIframe");
 
+        iframe.src = `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`
+        modal.style.display = "block";
 
-        const interval = setInterval(() => {
-            if (masterFormWindow.closed) {
-                clearInterval(interval);
+        const closeBtn = modal.querySelector(".close");
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+            refreshaccountledgerSelectBox();
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
                 refreshaccountledgerSelectBox();
             }
-        }, 500);
+        };
     }
 
     function redirectledgerAccountMaster() {

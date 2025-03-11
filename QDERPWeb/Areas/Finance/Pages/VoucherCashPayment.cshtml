@@ -4256,5 +4256,37 @@
         });
     }
 
+     function isModal() {
+        return new URLSearchParams(window.location.search).get("modal") === "true";
+    }
 
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const argsledno = urlParams.get("argsledno");
+
+        if (isModal()) {
+            const style = document.createElement("style");
+            style.innerHTML = `
+                      .container { display: none !important; }
+                      .frame { display: none !important; }
+                      .footerContainer { display: none !important; }
+                      .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+                      .mainContainer { margin-top: 1em;width:100%; }
+                  `;
+            document.head.appendChild(style);
+        }
+
+        console.log("Formatted Voucher in ready block:", argsledno);
+
+        if (argsledno) {
+            setTimeout(function () {
+                const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                if (voucherNoField) {
+                    voucherNoField.option("value", argsledno);
+                } else {
+                    console.error("VoucherNo TextBox instance not found.");
+                }
+            }, 500); // Small delay to ensure the textbox is ready
+        }
+    });
 </script>

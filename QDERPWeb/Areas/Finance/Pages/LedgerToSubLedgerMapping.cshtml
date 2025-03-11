@@ -70,13 +70,37 @@
         width: 250px; /* Adjust the width as needed */
     }
 
+    .container {
+        display: none !important;
+    }
 
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
 </style>
-<div class="card">
+<div class="title">
+    <div class="header-container">
     <div id="AccountLedgertoSalaryPayableMapping" class="no-border-title"></div>
-
-    
-    <div class="card-body">
+    </div>
+</div>
+<div>
+    @await Html.PartialAsync("SalaryPayableMappingFooter")
+</div>
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
 
             <div>
@@ -163,23 +187,17 @@
 
 
 
-        <div>
-            @await Html.PartialAsync("SalaryPayableMappingFooter")
-        </div>
-    </div>
-
-
     <script>
         $(function () {
-                                $("#AccountLedgertoSalaryPayableMapping").dxTextBox({
-                                            text:formatMessage("Account Ledger to Salary Payable Mapping"),
-                                            readOnly: truereadOnly: true,
+                $("#AccountLedgertoSalaryPayableMapping").dxTextBox({
+                        text:formatMessage("Account Ledger to Salary Payable Mapping"),
+                        readOnly: truereadOnly: true,
 						onContentReady: function(e) {
 						$(e.element).addClass("dx-textbox-heading");
 				}
 
-                            });
-                    });
+                });
+        });
                 $(document).ready(function () {
                 // Function to get URL parameters
                 function getQueryParam(name) {
