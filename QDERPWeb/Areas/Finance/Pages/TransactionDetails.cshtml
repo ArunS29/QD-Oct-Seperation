@@ -51,11 +51,8 @@
     }
 </style>
 
-<div class="card">
-    <div class="card-header">
-        Accounting Transaction - Detailed Reporting Tool
-    </div>
-    <div class="card-body">
+
+    <div class="dx-field ledgerResult">
         @*    <div class="horizontal-container">
             @foreach (var btn in new[] {
                 "Voucher Date", "Voucher Ref No", "Voucher Narration", "Voucher Entered By", "Voucher Verified By", "Voucher Verified On", "Voucher Approved By",
@@ -72,16 +69,15 @@
         </div>
  *@
 
-    </div>
-    <!-- Single Container for Title, PivotGrid & Footer -->
-<div class="finance-container">
+@*     </div> *@
+@*     <!-- Single Container for Title, PivotGrid & Footer --> *@
+@* <div class="finance-container"> *@
         @*    <div class="pivot-title">Cash Inflow & Outflow</div> *@
     <div id="pivotGridContainer"></div>
      <div>
             @await Html.PartialAsync("TransactionDetailsFooter")
         </div>
 
-</div>
 
 <!-- Include DevExtreme Scripts & Styles -->
 <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2/css/dx.light.css">
@@ -193,7 +189,39 @@
 </div>
 
 <script>
- 
+    function isModal() {
+           return new URLSearchParams(window.location.search).get("modal") === "true";
+       }
+
+       $(document).ready(function () {
+           const urlParams = new URLSearchParams(window.location.search);
+           const argsledno = urlParams.get("argsledno");
+
+           if (isModal()) {
+               const style = document.createElement("style");
+               style.innerHTML = `
+                         .container { display: none !important; }
+                         .frame { display: none !important; }
+                         .footerContainer { display: none !important; }
+                         .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+                         .mainContainer { margin-top: 1em;width:100%; }
+                     `;
+               document.head.appendChild(style);
+           }
+
+           console.log("Formatted Voucher in ready block:", argsledno);
+
+           if (argsledno) {
+               setTimeout(function () {
+                   const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                   if (voucherNoField) {
+                       voucherNoField.option("value", argsledno);
+                   } else {
+                       console.error("VoucherNo TextBox instance not found.");
+                   }
+               }, 500); // Small delay to ensure the textbox is ready
+           }
+       });
 
 
 </script>

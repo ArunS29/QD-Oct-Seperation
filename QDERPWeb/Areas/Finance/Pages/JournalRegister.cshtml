@@ -190,7 +190,7 @@
             ).Visible(true);
                     columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
                 })
-
+                .Width("102em")
             .Height(440)
             .Paging(p => p.PageSize(10))
             //.WordWrapEnabled(true)

@@ -41,9 +41,9 @@
         padding: 0 !important;
     }
 
-
-
-
+    /* .modalTitle{ */
+    /*     display:none; */
+    /* } */
     .horizontal-container {
         display: flex;
         gap: 10px; /* Adds spacing between buttons */
@@ -360,7 +360,7 @@
     <div id="customModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Modal Title</h2>
+                <h2 id="modalTitle" class="modalTitle">Modal Title</h2>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <iframe id="modalIframe" src="" frameborder="0"></iframe>
@@ -714,6 +714,9 @@
                 window.open(`/${tenantName}/Finance/TransactionDetails`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 return;  // No need to set pageUrl for new window
         }
+        if (pageUrl) {
+            openModal(pageUrl, selectedText); // Open modal with the URL and title
+        }
 
         // Handle Account Statement Cases
         const reportMapping = {
@@ -727,9 +730,6 @@
 
         if (reportMapping[selectedText]) {
             window.location.href = `/DocumentViewer?reportName=${reportMapping[selectedText]}`;
-        } else if (pageUrl !== '') {
-            $("#overlay-frame").attr("src", pageUrl);
-            $("#overlay").fadeIn();
         }
     }
 

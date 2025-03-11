@@ -56,14 +56,39 @@
     #AccountHeadName {
         width: 250px;
     }
-</style>
 
-<div class="card">
-    <div id="Bank Reconciliation" class="card-header no-border-input">
-        
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="BankReconciliation" class="no-border-title"></div>
     </div>
-    <div class="card-body">
-        <div class="dx-fieldset horizontal-container">
+</div>
+<div>
+    @await Html.PartialAsync("BankReconcialiationFooter")
+</div>
+            <div class="dx-fieldset horizontal-container">
             <div style="padding-top: 15px" id="titleHeader"></div>
         </div>
 
@@ -182,17 +207,11 @@
     </div>
 </div>
 
-
-        <div>
-            @await Html.PartialAsync("BankReconcialiationFooter")
-        </div>
-    </div>
-</div>
-
+      
 <script>
     $(function () {
 
-										$("#Bank Reconciliation").dxTextBox({
+										$("#BankReconciliation").dxTextBox({
 													text:formatMessage("Bank Reconciliation"),
                                                         readOnly: true,
 													onContentReady: function(e) {
