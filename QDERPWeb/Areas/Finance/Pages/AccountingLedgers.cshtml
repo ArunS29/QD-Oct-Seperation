@@ -148,7 +148,7 @@
 		<div class="footer">@await Html.PartialAsync("_GridFooter")</div>
 	</div>
 </div>
-<div id="errorPopup">
+@* <div id="errorPopup">
 	<div style="text-align: center; padding: 20px;">
 		<img src="https://i.gifer.com/origin/f7/f748a43312487000f282968b97aa60fe_w200.gif" alt="Doll Error" style="width: 100px; height: 100px;" />
 		<h5 style="margin-top: 10px; color: #ff5f5f;">Please Select AccountID</h5>
@@ -158,7 +158,7 @@
 		</div>
 	</div>
 </div>
-
+ *@
 
 
 <div id="inputPopupContainer"></div>
@@ -374,9 +374,7 @@
 
 	<div class="dx-field ledgerResult">
 		<!-- Toolbar for Column Chooser and Filter -->
-		<div class="custom-toolbar">
-			<div id="columnChooser"></div>
-		</div>
+	
 
 		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
 					.ID("dataGrid")
@@ -473,7 +471,8 @@
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
 					})
 				.OnCellClick("function(e) {handleCellClick(e);}")
-				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+				.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+
 				.AllowColumnReordering(true) // Enable column reordering
 				.AllowColumnResizing(true)   // Enable column resizing
 				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
@@ -489,6 +488,8 @@
 		.Title("Column Chooser") // Optional: Set a custom title
 		.Mode (GridColumnChooserMode.Select)
 		)*@
+
+
 				.Width("100%")
 				.Summary(summary =>
 				{
@@ -799,36 +800,36 @@
 			contextMenu.hide();
 		});
 
-		$("#gridContainer").dxDataGrid({
-			columnChooser: {
-				enabled: true,
-				mode: "select",  // or 'dragAndDrop'
-				allowSearch: true, // Enables search
-				height: 400,
-				width: 300,
-				position: {
-					my: "left top",
-					at: "left bottom",
-					of: "#gridContainer"
-				}
-			},
-			toolbar: {
-				items: [
-					{
-						location: "before",
-						widget: "dxButton",
-						options: {
-							text: "Column Chooser",
-							icon: "columnchooser",
-							onClick: function () {
-								var grid = $("#gridContainer").dxDataGrid("instance");
-								grid.showColumnChooser();
-							}
-						}
-					}
-				]
-			}
-		});
+		// $("#gridContainer").dxDataGrid({
+		// 	columnChooser: {
+		// 		enabled: true,
+		// 		mode: "select",  // or 'dragAndDrop'
+		// 		allowSearch: true, // Enables search
+		// 		height: 400,
+		// 		width: 300,
+		// 		position: {
+		// 			my: "left top",
+		// 			at: "left bottom",
+		// 			of: "#gridContainer"
+		// 		}
+		// 	},
+		// 	toolbar: {
+		// 		items: [
+		// 			{
+		// 				location: "before",
+		// 				widget: "dxButton",
+		// 				options: {
+		// 					text: "Column Chooser",
+		// 					icon: "columnchooser",
+		// 					onClick: function () {
+		// 						var grid = $("#gridContainer").dxDataGrid("instance");
+		// 						grid.showColumnChooser();
+		// 					}
+		// 				}
+		// 			}
+		// 		]
+		// 	}
+		// });
 
 		// Apply the custom context menu plugin
 		$("#dataGrid").customizeGridContextMenu();
@@ -1208,27 +1209,27 @@
 		// Correct URL to your LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 	}
-	$(document).ready(function () {
-		$("#btntoggleGroupPanel").click();
+	// $(document).ready(function () {
+	// 	$("#btntoggleGroupPanel").click();
 
-		$("#errorPopup").dxPopup({
-			width: 350,
-			height: 300,
-			title: "⚠ Error",
-			visible: false,
-			showCloseButton: true,
-			dragEnabled: false,
-			closeOnOutsideClick: true
-		});
+	// 	$("#errorPopup").dxPopup({
+	// 		width: 350,
+	// 		height: 300,
+	// 		title: "⚠ Error",
+	// 		visible: false,
+	// 		showCloseButton: true,
+	// 		dragEnabled: false,
+	// 		closeOnOutsideClick: true
+	// 	});
 
-		$("#errorCloseBtn").dxButton({
-			text: "Close",
-			type: "danger",
-			onClick: function () {
-				$("#errorPopup").dxPopup("instance").hide();
-			}
-		});
-	});
+	// 	$("#errorCloseBtn").dxButton({
+	// 		text: "Close",
+	// 		type: "danger",
+	// 		onClick: function () {
+	// 			$("#errorPopup").dxPopup("instance").hide();
+	// 		}
+	// 	});
+	// });
 	function updateBankReconciliationState(accheadname) {
 		let dropdown = $("#ddReports").dxDropDownButton("instance");
 		let items = dropdown.option("items");
@@ -1329,27 +1330,27 @@
 		// Correct URL to your LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 	}
-	$(document).ready(function () {
-		$("#btntoggleGroupPanel").click();
+	// $(document).ready(function () {
+	// 	$("#btntoggleGroupPanel").click();
 
-		$("#errorPopup").dxPopup({
-			width: 350,
-			height: 300,
-			title: "⚠ Error",
-			visible: false,
-			showCloseButton: true,
-			dragEnabled: false,
-			closeOnOutsideClick: true
-		});
+	// 	$("#errorPopup").dxPopup({
+	// 		width: 350,
+	// 		height: 300,
+	// 		title: "⚠ Error",
+	// 		visible: false,
+	// 		showCloseButton: true,
+	// 		dragEnabled: false,
+	// 		closeOnOutsideClick: true
+	// 	});
 
-		$("#errorCloseBtn").dxButton({
-			text: "Close",
-			type: "danger",
-			onClick: function () {
-				$("#errorPopup").dxPopup("instance").hide();
-			}
-		});
-	});
+	// 	$("#errorCloseBtn").dxButton({
+	// 		text: "Close",
+	// 		type: "danger",
+	// 		onClick: function () {
+	// 			$("#errorPopup").dxPopup("instance").hide();
+	// 		}
+	// 	});
+	// });
 
 
 
