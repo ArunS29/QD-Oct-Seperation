@@ -1557,7 +1557,46 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return NotFound("Voucher Entry not found.");
         }
 
+        public IActionResult LoadChequePopup()
+        {
+            return PartialView("~/Areas/Finance/Views/_ChequePopup.cshtml");
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> CheckIsMaintainSalary(string AccountHead, string AccountID)
+        {
+            try
+            {
+                var allocation = await _context.Tbl201ChartOfAccounts
+                    .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsEmployeePaymentAc == true)
+                    .FirstOrDefaultAsync();
+
+                if (allocation != null)
+                {
+                    return Ok(new { isAllocated = true });
+                }
+                else
+                {
+                    return Ok(new { isAllocated = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error here if necessary
+                return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
+            }
+        }
+        public IActionResult SalaryEntry(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.VoucherEntryNo = voucherEntryNo;
+
+            return PartialView("~/Areas/Finance/Views/_SalaryPayable.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
     }
 
 }

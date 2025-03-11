@@ -1,0 +1,308 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Views._ChequePopupModel
+@{
+    Layout = null; // This ensures it's loaded as a partial
+}
+
+<div id="chequePopupContainer">
+    @(
+        Html.DevExtreme().Popup()
+        .ID("chequePopup")
+        .Title(new JS("formatMessage('Bank Cheque Printing')"))
+        .Visible(false)
+        .HideOnOutsideClick(false)
+        .ShowCloseButton(true) // Display close button
+        .Width(1000)
+        .Height(450)
+
+        .ContentTemplate(@<div style="background-color: #c0dceb; padding: 10px;">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Cheque No')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("ChequeNo")
+                    .Value(null)
+                    .ValidationRules(rules =>
+                    {
+                    rules.AddRequired()
+                    .Message(new JS("formatMessage('ChequeNo is required')"));
+                    })
+                    .ElementAttr(new { style = "background-color: lightGrey; color: darkgrey;" })
+                    )
+
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Voucher No')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("PopVoucherNo")
+                    .Value(null)
+                    .Disabled(true)
+                    .ElementAttr(new { style = "background-color: lightGrey; color: darkgrey;" }) // Set color styles
+
+                    )
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Cheque Date')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("ChequeDate")
+                    .InputAttr("aria-label", "Date")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("dd-MMM-yyyy")
+                    .Value(DateTime.Now)
+                    )
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Place of Issue')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("PlaceofIssue")
+                    .ValidationRules(rules =>
+                    {
+                    rules.AddRequired()
+                    .Message("PlaceofIssue is required");
+                    })
+                    .Value(null)
+                    )
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="form-group">
+                    <label for="ChequeIssuedinfavourof" class="button-alignment-down">Cheque Issued in favour of</label>
+                    <div class="btn" style="position:relative;left:650px;">
+                        @(Html.DevExtreme().Button()
+                        .ID("popupbtnAddAHead")
+                        .Icon("plus")
+                        .OnClick("function() { onPopupAddButtonClick(); }")
+                        )
+                    </div>
+
+                    @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Use Ledger Account Name')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("ChequeIssuedinfavourof")
+                    .ValidationRules(rules =>
+                    {
+                    rules.AddRequired()
+                    .Message("Cheque Issued in favour of is required");
+                    })
+                    .Value(null) )
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('AmountinWords')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("AmountinWords")
+                    .Value("No Riyals Only.")
+                    .ValidationRules(rules =>
+                    {
+                    rules.AddRequired()
+                    .Message("Amount in Words is required");
+                    })
+                    )
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @(Html.DevExtreme().NumberBox()
+                    .Label(new JS("formatMessage('AmountinSAR')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("AmountinSAR")
+                    .Width(100)
+                    .Value(0)
+                    .ShowSpinButtons(true)
+                    .Min(0)
+                    .Max(1000)
+                    .Step(1))
+                </div>
+            </div>
+
+
+        </div>
+
+        @*  <div>
+        @await Html.PartialAsync("_ChequeFooter")
+        </div> *@
+
+        <div class="dx-fieldset horizontal-container mt-2">
+
+            @(Html.DevExtreme().Button()
+            .ID("PopSave")
+            .Text(new JS("formatMessage('Save')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("save")
+            .OnClick("function() { SavePopVoucherEntry(); }")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+            @(Html.DevExtreme().Button()
+            .ID("btnSaveAndClose")
+            .Text(new JS("formatMessage('Save and Close')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("save")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+            @(Html.DevExtreme().Button()
+            .ID("btnPreview")
+            .Text(new JS("formatMessage('Preview')"))
+            .Icon("fullscreen")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+            )
+            @(Html.DevExtreme().Button()
+            .ID("btnPrint")
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+            @(Html.DevExtreme().Button()
+            .ID("btnDelete")
+            .Text(new JS("formatMessage('Delete')"))
+            .Icon("close")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+            @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Icon("arrowleft")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+
+        </div>
+    </div>)
+        )
+</div>
+
+<script>
+    function closeChequePopup() {
+        $("#chequePopup").dxPopup("instance").hide();
+    }
+
+    function SavePopVoucherEntry() {
+        var chequeNo = $("#ChequeNo").dxTextBox("instance").option("value");
+        if (!chequeNo) {
+            DevExpress.ui.notify("Cheque No is required", "error", 2000);
+            return;
+        }
+
+        var data = {
+            "ChequeNo": chequeNo,
+            "VoucherNo": $("#PopVoucherNo").dxTextBox("instance").option("value"),
+            "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
+            "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/VoucherMaster/SaveChequeDetails",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify("Data Saved Successfully!", "success", 2000);
+                    closeChequePopup();
+                } else {
+                    alert("Update failed: " + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while updating data: " + error);
+            }
+        });
+    }
+    $(function () {
+        const popup = $("#chequePopup").dxPopup("instance"); // Popup instance
+
+        // Initialize event when popup is shown
+        popup.on("shown", function () {
+            const amountInSAR = $("#AmountinSAR").dxNumberBox("instance");
+            const amountInWords = $("#AmountinWords").dxTextBox("instance");
+
+            if (amountInSAR && amountInWords) {
+                // Attach valueChanged event to AmountinSAR NumberBox
+                amountInSAR.on("valueChanged", function (e) {
+                    const numValue = e.value || 0; // Get the new value, default to 0
+
+                    const words = numberToWords(numValue) + " Saudi Riyals Only"; // Convert to words and append
+                    amountInWords.option("value", words); // Update AmountinWords TextBox
+                });
+            }
+        });
+
+        // Number-to-words conversion function
+        function numberToWords(number) {
+            const units = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+            const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+            const scales = ["", "Thousand", "Million", "Billion"];
+
+            if (number === 0) return "Zero";
+
+            let words = "";
+
+            const numToWords = (n) => {
+                if (n < 10) return units[n];
+                if (n < 20) return teens[n - 10];
+                if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 > 0 ? " " + units[n % 10] : "");
+                if (n < 1000)
+                    return (
+                        units[Math.floor(n / 100)] +
+                        " Hundred" +
+                        (n % 100 > 0 ? " " + numToWords(n % 100) : "")
+                    );
+            };
+
+            let scaleIndex = 0;
+
+            while (number > 0) {
+                const chunk = number % 1000;
+                if (chunk > 0) {
+                    words =
+                        numToWords(chunk) +
+                        (scales[scaleIndex] ? " " + scales[scaleIndex] : "") +
+                        (words ? " " + words : "");
+                }
+                number = Math.floor(number / 1000);
+                scaleIndex++;
+            }
+
+            return words.trim();
+        }
+    });
+    function onPopupAddButtonClick() {
+        if (accheadname == null) {
+            DevExpress.ui.notify("Please select an Account Head...!", "error", 2000);
+        }
+        else {
+            $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value", accheadname);
+
+        }
+
+    }
+</script>
