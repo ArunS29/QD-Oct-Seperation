@@ -4068,26 +4068,26 @@
             fetchVoucherEntries(voucherNo);
         }
 
-        // function validateVoucherNo(voucherNo) {
+        function validateVoucherNo(voucherNo) {
 
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "/api/SalesVoucher/CheckVoucherExists",
-        //         contentType: "application/json",
-        //         data: { voucherNo: voucherNo },
-        //         success: function (response) {
-        //             if (!response.success || response.exists) {
-        //                 DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
-        //                 $("#VoucherNo").dxTextBox("instance").option("value", null);
-        //             } else {
-        //                 DevExpress.ui.notify("Sales Invoice No is available.", "success", 2000);
-        //             }
-        //         },
-        //         error: function () {
-        //             DevExpress.ui.notify("Validation error occurred.", "error", 3000);
-        //         }
-        //     });
-        // }
+            $.ajax({
+                type: "GET",
+                url: "/api/SalesVoucher/CheckVoucherExists",
+                contentType: "application/json",
+                data: { voucherNo: voucherNo },
+                success: function (response) {
+                    if (!response.success || response.exists) {
+                        DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
+                        $("#VoucherNo").dxTextBox("instance").option("value", null);
+                    } else {
+                        DevExpress.ui.notify("Sales Invoice No is available.", "success", 2000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Validation error occurred.", "error", 3000);
+                }
+            });
+        }
 
         function fetchVoucherDetails(voucherNo) {
 
@@ -4134,7 +4134,7 @@
                 data: { voucherNo: voucherNo },
                 success: function (response) {
                     if (!response || !response.data || response.data.length === 0) {
-                        // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
+                        DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                         return;
                     }
 
