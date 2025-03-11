@@ -4089,43 +4089,43 @@
         //     });
         // }
 
-        function fetchVoucherDetails(voucherNo) {
+         function fetchVoucherDetails(voucherNo) {
 
 
-            $.ajax({
-                type: "GET",
-                url: "/api/PurchaseVoucher/GetVoucherDetails",
-                contentType: "application/json",
-                data: { voucherNo: voucherNo },
-                success: function (response) {
-                    if (!response.success) {
-                        // DevExpress.ui.notify(response.message, "error", 2000);
-                        //return;
-                    }
-                    debugger
-                    console.log(response.data[0]);
-                    const data = response.data[0];
-                    if (data) {
-
-                         $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
-                        $("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
-
-                        $("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
-                        $("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
-                        $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
-                        $("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
-                        $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
-                        $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
-
-
-                      //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
-                    }
-                },
-                error: function () {
-                  //  DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+        $.ajax({
+            type: "GET",
+            url: "/api/PurchaseVoucher/GetVoucherDetails",
+            contentType: "application/json",
+            data: { voucherNo: voucherNo },
+            success: function (response) {
+                if (!response.success) {
+                    // DevExpress.ui.notify(response.message, "error", 2000);
+                    //return;
                 }
-            });
-        }
+                debugger
+                console.log(response.data[0]);
+                const data = response.data[0];
+                if (data) {
+
+                    $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
+                    $("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
+
+                    $("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
+                    $("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
+                    $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
+                    $("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+                    $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
+                    $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
+
+
+                    //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
+                }
+            },
+            error: function () {
+                //  DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+            }
+        });
+    }
         function fetchVoucherEntries(voucherNo) {
             $.ajax({
                 type: "GET",
