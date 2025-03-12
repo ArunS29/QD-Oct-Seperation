@@ -614,6 +614,27 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpDelete("DeleteSalesPerson/{salesPersonCode}")]
+        public async Task<IActionResult> DeleteSalesPerson(string salesPersonCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var salesPersonToDelete = await dbContext.Tbl20101SalesPersonMasters.FindAsync(salesPersonCode);
+                if (salesPersonToDelete == null)
+                {
+                    return NotFound(new { success = false, message = "Salesperson not found." });
+                }
+
+                dbContext.Tbl20101SalesPersonMasters.Remove(salesPersonToDelete);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Salesperson deleted successfully." });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
         [HttpGet("GetLedgerSubGroups")]
         public IActionResult GetLedgerSubGroups()
         {
