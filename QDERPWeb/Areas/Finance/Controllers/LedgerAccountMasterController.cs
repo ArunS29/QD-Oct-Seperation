@@ -802,6 +802,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         }
+        [HttpPost]
+        public async Task<ActionResult> DeleteLedgerMasterDetails(string accountGroupId)
+        {
+            // Look up the record in your DbContext
+            var record = await _context.Tbl201AccountGroups.FindAsync(accountGroupId);
+            if (record == null)
+            {
+                return NotFound(new { success = false, message = "Record not found." });
+            }
+
+            try
+            {
+                _context.Tbl201AccountGroups.Remove(record);
+                await _context.SaveChangesAsync();
+                return Ok(new { success = true, message = "Record deleted successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
 
 
     }

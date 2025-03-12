@@ -516,86 +516,6 @@
         </div>
     </div>
 
-    <!-- Card 4: Arabic Section -->
-    @* <div class="card">
-    <div class="dx-fieldset vertical-container">
-    <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-    <div class="form-group">
-    <label>مجموعة المبيعات</label>
-    </div>
-    <div class="form-group">
-    <div class="col-md-12" style="text-align: right;">
-    <div style="display: flex; align-items: center; justify-content: flex-start;">
-    @(Html.DevExtreme().CheckBox()
-    .ID("ChooseifthisgrouptobeunderSales1")
-    .Value(true)
-
-    )
-    <span style="margin-right: 5px;">اختر ما إذا كانت هذه المجموعة ضمن المبيعات</span>
-    </div>
-    </div>
-    </div>
-    </div>
-
-    <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-    <div class="form-group">
-    <label>مجموعة الشراء</label>
-    </div>
-    <div class="form-group">
-    <div class="col-md-12" style="text-align: right;">
-    <div style="display: flex; align-items: center; justify-content: flex-start;">
-    @(Html.DevExtreme().CheckBox()
-    .ID("ChooseifthisgrouptobeunderPurchases1")
-    .Value(true)
-
-    )
-    <span style="margin-right: 5px;">اختر ما إذا كانت هذه المجموعة تحت راتب الراتب</span>
-    </div>
-    </div>
-    </div>
-    </div>
-
-    <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-    <div class="form-group">
-    <label>مجموعة الرواتب المستحقة</label>
-    </div>
-    <div class="form-group">
-    <div class="col-md-13" style="text-align: right;">
-    <div style="display: flex; align-items: center; justify-content: flex-start;">
-    @(Html.DevExtreme().CheckBox()
-    .ID("ChooseifthisgrouptobeunderSalaryPayable1")
-    .Value(true)
-
-    )
-    <span style="margin-right: 5px;">اختر ما إذا كانت هذه المجموعة تحت راتب الراتب</span>
-    </div>
-    </div>
-    </div>
-    </div>
-
-    <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-    <div class="form-group">
-    <label>تسوية الحسابات المصرفية</label>
-    </div>
-    <div class="form-group">
-    <div class="col-md-12" style="text-align: right;">
-    <div style="display: flex; align-items: center; justify-content: flex-start;">
-    @(Html.DevExtreme().CheckBox()
-    .ID("ChooseifthisgroupwanttobeReconcilied1")
-    .Value(true)
-
-    )
-    <span style="margin-right: 5px;">اختر ما إذا كانت هذه المجموعة تحت بند تسوية البنك</span>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div> *@
-
-
-
-
     <!-- Card 5: CreatedOn Details -->
     <div class="content-container" style="width: 190%; max-width: 1500px;">
         <div class="dx-fieldset horizontal-container">
@@ -933,12 +853,13 @@
         }
     });
 
-    $("#btnBack").on("click", function (e) {
-        e.preventDefault();
-        alert("Are you sure want to exit?");
-        window.location.href = "http://localhost:5000/";
-        // debugger;
-    });
+    // $("#btnBack").on("click", function (e) {
+    //     e.preventDefault();
+    //     history.back();
+    //     //alert("Are you sure want to exit?");
+    //     //window.location.href = "http://localhost:5000/";
+    //     // debugger;
+    // });
 
 
     function addCostAllocation() {
@@ -1232,6 +1153,62 @@
     }
 
 
+$("#btnDelete").on("click", function (e) {
+    e.preventDefault();
+
+    var accountMasterValidator = $("#accountMasterDropDownBox").dxValidator("instance");
+    var accountGroupValidator = $("#AccountGroup").dxValidator("instance");
+
+    var isAccountMasterValid = accountMasterValidator.validate();
+    var isAccountGroupValid = accountGroupValidator.validate();
+
+    if (isAccountMasterValid.isValid && isAccountGroupValid.isValid) {
+        // Get the AccountGroupId to delete
+        var accountGroupId = $("#AccountGroupID").dxTextBox("instance").option("value");
+    
+
+        $.ajax({
+            type: "POST",
+            // Pass the id as part of the URL
+         //   url: "/api/LedgerAccountMaster/DeleteLedgerMasterDetails/" + accountGroupId,
+            url: `/api/LedgerAccountMaster/DeleteLedgerMasterDetails?accountGroupId=${encodeURIComponent(accountGroupId)}`,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
+                   // history.back();
+                   window.parent.document.getElementById("ledgerAccountMasterModal").style.display = "none";
+                } else {
+                    alert("Deletion failed: " + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while deleting record: " + error);
+            }
+        });
+    } else {
+        DevExpress.ui.dialog.custom({
+            title: "Validation Errors",
+            messageHtml: `
+                <div style="display: flex; align-items: center;">
+                    <i class="dx-icon-warning" style="font-size: 24px; margin-right: 10px; color: #e74c3c;"></i>
+                    <span>Cannot delete record while there are validation errors. Please correct them first.</span>
+                </div>
+            `,
+            buttons: [{
+                text: "OK",
+                onClick: () => { return true; },
+            }],
+        }).show();
+    }
+});
+
+
+  function closeForm() {
+      // Hide the form container. You can also use .remove() if you want to remove it from the DOM.
+   window.parent.document.getElementById("ledgerAccountMasterModal").style.display = "none";
+  }
 
 
 </script>
