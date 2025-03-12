@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
@@ -127,7 +128,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBankReconciliation(DataSourceLoadOptions loadOptions, string accid)
+        public IActionResult GetBankReconciliation(string accid)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -157,19 +158,22 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                     CrAmount = t1.DrCr == "Cr" ? t1.VoucherAmount : 0
                                 };
 
-                    var result = await DataSourceLoader.LoadAsync(query.AsQueryable(), loadOptions);
+                   // var result = await DataSourceLoader.LoadAsync(query.AsQueryable(), loadOptions);
 
-                    return Json(result);
+                    return Json(query);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetBankReconciliation: {ex.Message}");
-                    return StatusCode(500, $"An error occurred: {ex.Message}");
+                    _logger.LogError($"Error in GetSalaryMapping: {ex.Message}");
+                    return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+      
 
         [HttpPost]
         public IActionResult UpdateBankClearedOn(string VoucherEntryNo, DateTime BankClearedOn)

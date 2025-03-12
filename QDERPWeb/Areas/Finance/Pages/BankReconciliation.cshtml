@@ -98,10 +98,10 @@
                     .ID("dataGrid")
                     .KeyExpr("AccountHeadNo")
                     .RemoteOperations(false)
-                    .DataSource(ds => ds.Mvc()
-                        .Controller("SalaryPayableMapping")
+                      .DataSource(ds => ds.Mvc()
+                    .Controller("SalaryPayableMapping")
                         .LoadAction("GetBankReconciliation")
-                        .LoadParams(new { accid = "0" })
+                    .LoadParams(new { accid = "0" }) // Add dynamic parameters
                     )
                     .Columns(columns =>
                     {
@@ -307,27 +307,25 @@ function formatDate(date) {
         const firstRowBalanceVal = parseFloat(cleanedBalanceFR) || 0;
 
 
+        
+
         // Ensure the textboxes are properly initialized before setting values
-        const balanceOurBooksInstance = $("#BalanceAsPerOurBooks").dxTextBox("instance");
-        const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
-        const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
+        // const balanceOurBooksInstance = $("#BalanceAsPerOurBooks").dxTextBox("instance");
+        // const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
+        // const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
 
-        if (balanceOurBooksInstance) {
-            const LastAmt = Math.abs(lastRowBalanceVal);
-            //alert(lastRowBalance);
-            balanceOurBooksInstance.option("value", LastAmt);
-        }
-        if (balanceBankStatementInstance) {
-            const FirstAmt = Math.abs(firstRowBalanceVal);
-            balanceBankStatementInstance.option("value", FirstAmt);
-        }
+        // if (balanceOurBooksInstance) {
+        //     const LastAmt = Math.abs(lastRowBalanceVal);
+        //     //alert(lastRowBalance);
+        //     balanceOurBooksInstance.option("value", LastAmt);
+        // }
+        // if (balanceBankStatementInstance) {
+        //     const FirstAmt = Math.abs(firstRowBalanceVal);
+        //     balanceBankStatementInstance.option("value", FirstAmt);
+        // }
 
 
-    // const AmountNotReflectedinBank = VoucherAmtFormatted - firstrowVoucherAmountFormatted;
-    // if (amountNotReflectedInstance) {
-    //     amountNotReflectedInstance.option("value", AmountNotReflectedinBank);
-    // }
-
+ 
     if (accheadname && ToDate) {
         $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
     }
@@ -335,15 +333,28 @@ function formatDate(date) {
         if (accheadname && ToDate) {
             $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
         }
+ 
+    
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+dataGrid.option("dataSource", {
+    store: DevExpress.data.AspNet.createStore({
+        // key: "AccountHeadNo",
+        loadUrl: "/api/SalaryPayableMapping/GetBankReconciliation", // Absolute URL (Fixes the issue)
+        loadParams: { accid: accid }
+    })
+});
 
-        let dataGrid = $("#dataGrid").dxDataGrid("instance");
-        dataGrid.option("dataSource", {
-            load: function () {
-                return $.getJSON("/api/SalaryPayableMapping/GetBankReconciliation", { accid: accid });
-            }
-        });
+// Optionally, if you want to log the load parameters:
+console.log({ accid: accid });
+
+    
         dataGrid.refresh();
     });
+
+
+
+
+
 
     function ddBtnShowRecords_click(filterType) {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
