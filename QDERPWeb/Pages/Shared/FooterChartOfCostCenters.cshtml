@@ -136,6 +136,58 @@
             display: inline-block;
         }
 
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 1200px;
+        height: 90%;
+        max-height: 800px;
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden; /* Prevents content overflow */
+    }
+
+    /* Modal Header */
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff; /* Blue header */
+        color: #000;
+        padding: 10px 20px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* Close Button */
+    .close {
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    /* Fullscreen iframe */
+    #modalIframe {
+        width: 100%;
+        height: calc(100% - 50px); /* Adjusted for header height */
+        border: none;
+    }
 </style>
 <div class="dx-fieldset horizontal-container">
     <div class="btn-container">
@@ -228,9 +280,38 @@
 
 
 </div>
-
+<div id="masterModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <iframe id="modalIframe" src="" frameborder="0"></iframe>
+    </div>
+</div>
 <script type="text/javascript">
+    function createNewCostCenter() {
 
+        const modal = document.getElementById("masterModal");
+        const iframe = document.getElementById("modalIframe");
+
+        iframe.src = `/${tenantName}/Finance/CostCenterMaster`;
+
+        modal.style.display = "block";
+
+        const closeBtn = modal.querySelector(".close");
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+            refreshChartOfCostCenters();
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+                refreshChartOfCostCenters();
+            }
+        };
+    }
+    function refreshChartOfCostCenters() {
+        console.log("test");
+    }
     // Hide context menu on click outside
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");
@@ -639,10 +720,10 @@
     function AddNewAccount() {
         window.location.href = `/${tenantName}/Finance/LedgerAccount`;
     }
-    function createNewCostCenter() {
+    // function createNewCostCenter() {
 
-        window.location.href = `/${tenantName}/Finance/CostCenterMaster`;
-    }
+    //     window.location.href = `/${tenantName}/Finance/CostCenterMaster`;
+    // }
 
 
     let isHeaderFilterEnabled = false;
