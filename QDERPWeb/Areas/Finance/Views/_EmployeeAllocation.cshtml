@@ -42,67 +42,75 @@
 	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script> *@
 
 <style type="text/css">
-		
 
 
 
-		.horizontal-container {
-			display: flex;
-			gap: 10px; /* Adds spacing between buttons */
-			justify-content: start; /* Aligns buttons to the left */
-			align-items: center; /* Vertically centers the buttons */
-			margin: 15px;
-		}
 
-		.dx-selectbox .dx-texteditor-input {
-			text-align: center; /* Centers the text inside the input */
-		}
+	.horizontal-container {
+		display: flex;
+		gap: 10px; /* Adds spacing between buttons */
+		justify-content: start; /* Aligns buttons to the left */
+		align-items: center; /* Vertically centers the buttons */
+		margin: 15px;
+	}
+
+	.dx-selectbox .dx-texteditor-input {
+		text-align: center; /* Centers the text inside the input */
+	}
 
 	/* 	.backgroundcolor {
-			background-color: #89f0b5;
-		} */
+				background-color: #89f0b5;
+			} */
 
-		.button-alignment-down {
-			margin-top: 23px;
-		}
+	.button-alignment-down {
+		margin-top: 23px;
+	}
 
-		.button-group {
-			margin-left: -10px !important;
-		}
-
-
-		.dx-button {
-			background-color: whitesmoke;
-		}
+	.button-group {
+		margin-left: -10px !important;
+	}
 
 
-		.content-container-top, .content-container-Middle, .content-container-bottom {
-			background-color: white;
-			border-top-left-radius: 10px; /* Radius for top-left corner */
-			border-top-right-radius: 10px; /* Radius for top-right corner */
-			padding: 5px;
-		}
-
-		.card-header {
-			background-color: aliceblue; /* Blue background */
-			color: black; /* White text */
-			padding: 20px; /* Padding around the header */
-			font-weight: bold;
-			display: flex; /* Flex container for alignment */
-			align-items: center; /* Vertically align icon and text */
-		}
-
-		.header-icon {
-			font-size: 40px; /* Icon size */
-			margin-right: 15px; /* Space between icon and text */
-			color: goldenrod; /* Golden color for the icon */
-			text-shadow: 2px 2px 4px black; /* Black shadow around the icon for contrast */
-		}
+	.dx-button {
+		background-color: whitesmoke;
+	}
 
 
-		.header-text {
-			font-size: 25px; /* Font size for text */
-		}
+	.content-container-top, .content-container-Middle, .content-container-bottom {
+		background-color: white;
+		border-top-left-radius: 10px; /* Radius for top-left corner */
+		border-top-right-radius: 10px; /* Radius for top-right corner */
+		padding: 5px;
+	}
+
+	.card-header {
+		background-color: aliceblue; /* Blue background */
+		color: black; /* White text */
+		padding: 20px; /* Padding around the header */
+		font-weight: bold;
+		display: flex; /* Flex container for alignment */
+		align-items: center; /* Vertically align icon and text */
+	}
+
+	.header-icon {
+		font-size: 40px; /* Icon size */
+		margin-right: 15px; /* Space between icon and text */
+		color: goldenrod; /* Golden color for the icon */
+		text-shadow: 2px 2px 4px black; /* Black shadow around the icon for contrast */
+	}
+
+
+	.header-text {
+		font-size: 25px; /* Font size for text */
+	}
+
+	.container2 {
+		background-color: aliceblue;
+	}
+
+	.container5 {
+		background-color: aliceblue;
+	}
 
 </style>
 @* <div id="costAllocationPopup" style="display:none;">
@@ -115,107 +123,79 @@
 				)
 	</div>
 </div> *@
-<div class="content-container-top">
-	<div class="card-header">
-		<i class="fas fa-pen-nib header-icon"></i> <!-- Font Awesome pen nib icon -->
-		<span class="header-text">Expenses /Reimbursement-Allocation for Employees</span>
-	</div>
+<div class="container5">
 
-	<br />
-	<div class="container">
-		<div class="row align-items-center">
-			<!-- Align items vertically -->
-			<!-- Dr/Cr Dropdown -->
-			<div class="col-md-1">
-				<!-- Adjust width as necessary -->
-				<div class="form-group">
-					<label for="DrCr">Dr/Cr</label>
-					@(
-												Html.DevExtreme().SelectBox()
-												.ID("EADrCr")
-												.DataSource(new[] { drCr })
-												.Value(drCr)
-												.Placeholder("Select Transaction Type")
-												.Width(90)
-												)
-				</div>
-			</div>
-
-			<!-- Expenses / Returns -->
-			<div class="col-md-3">
-				<div class="form-group">
-					<label for="VoucherRefNo">Expenses / Returns for</label>
-					@(
-												Html.DevExtreme().TextBox()
-												.ID("AccountHd")
-												.Value(accountHead)
-												.ReadOnly(true)
-												)
-				</div>
-			</div>
-
-			<!-- Amount -->
-			<div class="col-md-2">
-				<div class="form-group">
-					<label for="txtVoucherAmount">Amount</label>
-					@(
-												Html.DevExtreme().NumberBox()
-												.ID("vAmount")
-												.Value(voucherAmountParsed)
-
-
-												.Format("#,##0.000")
-
-												)
-				</div>
-			</div>
-
-			<!-- IsApproved Checkbox -->
-			<div class="col-md-2">
-				<div class="form-group">
-					<div>
-						@(
-													Html.DevExtreme().CheckBox()
-													.ID("IsApproved1")
-													)
-						<span style="margin-left:5px">Approved By:</span>
-					</div>
-					<div style="margin-left:25px">
-						Approved On: <span id="VoucherApprovedOn"></span>
-					</div>
-				</div>
-			</div>
-
-			<!-- VoucherNo and VoucherNo1 -->
-			<div class="col-md-3">
-				<div class="form-group">
-
-					<div>
-						@(
-													Html.DevExtreme().TextBox()
-													.ID("AEVoucherNo")
-													.Value(VoucherNo)
-													//.OnValueChanged("onVoucherNoChanged")
-													.Disabled(true)
-													)
-					</div>
-					<div style="margin-top: 5px;">
-						@(
-													Html.DevExtreme().TextBox()
-													.ID("AEVoucherNo1")
-													.Value(accountId)
-													//.OnValueChanged("onVoucherNoChanged")
-													.Disabled(true)
-													)
-					</div>
-				</div>
-			</div>
+	<div class="title">
+		<div class="header-container" style="gap:10px;padding:10px">
+			<i class="fa-duotone fa-solid fas fa-pen-nib" style="font-size: 1.5rem; color: goldenrod;"></i>
+			<div id="CostAllocationPopup" class="no-border-title">Expenses /Reimbursement-Allocation for Employees</div>
 		</div>
 	</div>
-	<br />
-	<div class="clear"></div>
+
+	<div class="container2">
+		<div class="dx-fieldset horizontal-container ">
+			<label for="DrCr">Dr/Cr</label>
+			@(
+						Html.DevExtreme().SelectBox()
+						.ID("EADrCr")
+						.DataSource(new[] { drCr })
+						.Value(drCr)
+						.Placeholder("Select Transaction Type")
+						.Width(90)
+						)
+
+			<label for="VoucherRefNo">Expenses / Returns for</label>
+			@(
+						Html.DevExtreme().TextBox()
+						.ID("AccountHd")
+						.Value(accountHead)
+						.ReadOnly(true)
+						)
+
+			<label for="txtVoucherAmount">Amount</label>
+			@(
+						Html.DevExtreme().NumberBox()
+						.ID("vAmount")
+						.Value(voucherAmountParsed)
 
 
+						.Format("#,##0.000")
+
+						)
+
+			@(
+						Html.DevExtreme().CheckBox()
+						.ID("IsApproved1")
+						)
+			<span style="margin-left:5px">Approved By:</span>
+		</div>
+		<div style="display:flex;gap:15px">
+		<div style="margin-left:25px">
+			Approved On: <span id="VoucherApprovedOn"></span>
+		</div>
+
+		<div>
+			@(
+						Html.DevExtreme().TextBox()
+						.ID("AEVoucherNo")
+						.Value(VoucherNo)
+						//.OnValueChanged("onVoucherNoChanged")
+						.Disabled(true)
+						.Width(250)
+						)
+		</div>
+		<div>
+			@(
+						Html.DevExtreme().TextBox()
+						.ID("AEVoucherNo1")
+						.Value(accountId)
+						//.OnValueChanged("onVoucherNoChanged")
+						.Disabled(true)
+						.Width(250)
+						)
+		</div>
+		</div>
+	</div>
 
 	<!-- DataGrid Section -->
 	<div class="dx-field ledgerResult" style="padding-top:20px">
@@ -353,18 +333,6 @@
 				)
 				)
 	</div>
-
-
-
-
-
-	<div class="clear"></div>
-
-
-
-
-	<br />
-
 	<div class="container">
 		<div class="card-footer">
 			<div class="dx-fieldset horizontal-container mt-2">
@@ -443,15 +411,15 @@
 
 
 	</div>
-
 </div>
+
 <script>
 
 	let VocuherAmount=null;
 	   let employeeId = null;
 </script>
 <script>
-		
+
 
 	$(document).ready(function () {
 		// Make an AJAX request to check the condition
@@ -798,12 +766,12 @@
 					dataType: "json",
 					success: function (response) {
 						if (response.success) {
-					            DevExpress.ui.notify("Employee Allocation Details updated Successfully.", "success", 2000);
-					
-					            let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
-					            popupInstance.hide();
-					
-					
+								DevExpress.ui.notify("Employee Allocation Details updated Successfully.", "success", 2000);
+
+								let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
+								popupInstance.hide();
+
+
 
 						} else {
 							alert("Update failed: " + response.message);

@@ -40,10 +40,13 @@
         text-align: center !important;
     }
 
-    .dx-button {
-        background-color: whitesmoke;
+    .container2 {
+        background-color: aliceblue;
     }
 
+    .container5 {
+        background-color: aliceblue;
+    }
 
 
     .horizontal-container {
@@ -63,7 +66,7 @@
         margin-left: -10px !important;
     }
 
-    
+
     /* Custom styles for context menu */
     .context-menu {
         display: none;
@@ -99,240 +102,199 @@
     }
 
 </style>
-<div id="CostAllocationPopup" class="card shadow-sm" style="border-radius: 8px;">
-    <!-- Header Section -->
-    <div class="card-header text-black"
-         style="
-    background-color:aliceblue ; /* Light orange at the top and maroon at the bottom */
-    height: 60px; /* Adjusts the height for a larger header */
-    display: flex; /* Centers content */
-    align-items: center; /* Vertically aligns the content */
-    padding-left: 20px; /* Adds space to the left for alignment */
-    gap: 10px; /* Adds space between logo and text */
-  ">
-        <!-- Add the Font Awesome icon -->
-        <i class="fa-duotone fa-solid fa-clipboard"
-           style="font-size: 2.5rem; color: goldenrod;"></i>
-        <!-- Header text -->
-        <h5 class="mb-0" style="font-size: 1.5rem;">Cost Allocation</h5>
+<div class="container5">
+
+    <div class="title">
+        <div class="header-container" style="gap:10px;padding:10px">
+            <i class="fa-duotone fa-solid fa-clipboard" style="font-size: 1.5rem; color: goldenrod;"></i>
+            <div id="CostAllocationPopup" class="no-border-title">Cost Allocation</div>
+        </div>
     </div>
 
 
-
     <!-- Inputs and DataGrid Combined -->
-    <div class="Card-container" style=" padding: 10px 20px;">
+    <div class="container2">
+        <div class="dx-fieldset horizontal-container ">
 
-        <!-- Input Fields Section -->
-        <div class="row" style="padding:5px">
-
-            <div class="col-md-1" style="margin-top: 5px;">
-                <label for="DrCr" style="color: maroon;">Dr/Cr</label>
-                @(Html.DevExtreme().SelectBox()
-                    .ID("DrCr")
-                    .DataSource(new[] { drCr })
-                    .Value(drCr)
-                    .ReadOnly(true)
-                    )
-            </div>
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="col-md-8">
-                        <label for="CostAllocationExpense" style="color: maroon;">
-                            Cost Allocation for the Expenses:
-                        </label>
-                    </div>
-                    <div class="col-md-4" style="margin-top: -8px;">
-                        @(Html.DevExtreme().TextBox()
-                            .ID("Textbox")
-                            .Value(voucherNo)
-                            .ReadOnly(true)
-                            )
-                    </div>
-                </div>
-
-
-
-                @(Html.DevExtreme().SelectBox()
-                    .ID("CostAllocationExpense")
-                    .DataSource(new[] { accountHead }) // Only the selected AccountHead
-                    .Value(accountHead) // Pre-selected value
-                    .ReadOnly(true) // Make the dropdown read-onlyr
-
-                    )
-            </div>
-            <div class="col-md-2" style="margin-top: 5px;">
-                <label for="Amount" style="color: maroon;">Amount</label>
-                @(Html.DevExtreme().NumberBox()
-                    .ID("CostAmount")
-                    .Value(voucherAmountParsed)
-                    .ShowSpinButtons(true)
-                    .ReadOnly(true)
-                    .Format("#,##0.00")
-                    )
-            </div>
-            <div class="col-md-2" style="margin-top: 5px;">
-                <!-- Approved By Section -->
-                @(Html.DevExtreme().CheckBox().ID("ApprovedBy"))
-                <span style="margin-left:5px;color:black">Approved By:</span>
-                @*  @(Html.DevExtreme().TextBox()
-                .ID("ApprovedBytext")
-                .Value(null)
-                .Disabled(true)
-                .Width("200px")
+            <label for="DrCr">Dr/Cr</label>
+            @(Html.DevExtreme().SelectBox()
+                .ID("DrCr")
+                .DataSource(new[] { drCr })
+                .Value(drCr)
+                .Width(150)
+                .ReadOnly(true)
                 )
-                *@
-                <!-- Approved On Section -->
-                <div class="mt-2" style="margin-left: 40px;">
-                    <span style="color:black">Approved On:</span>
-                    @* @(Html.DevExtreme().TextBox()
-                    .ID("ApprovedOntext")
-                    .Value(null)
-                    .Disabled(true)
-                    .Width("200px")
-                    .ElementAttr(new { style = "margin-left: 10px;" })
-                    ) *@
-                </div>
-            </div>
+            <label for="CostAllocationExpense">
+                Cost Allocation for the Expenses:
+            </label>
 
+            <!-- DevExtreme Popup -->
+            @(Html.DevExtreme().TextBox()
+                .ID("Textbox")
+                .Value(voucherNo)
+                .Width(150)
+                .ReadOnly(true)
+                )
 
-            <!-- DataGrid Section -->
-            <div class="dx-field ledgerResult" style="padding-top:20px">
-                @(
-                        Html.DevExtreme().DataGrid()
-                        .ID("costdataGrid")
-
-                        .RemoteOperations(false)
-                        .RowAlternationEnabled(true)
-                        .DataSource(new object[] { })
-                        .Columns(columns =>
-                        {
-                            columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-                            columns.Add()
-                        .DataField("CostAllocationUnit")
-                        .Caption("Cost Allocated (Projects/Jobs)")
-                        .Width(500)
-                        .AllowEditing(true)
-                        // Normal Grid Mode
-                        .CellTemplate(@<text>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="account-head-span">
-                            <%- data.CostAllocationUnit ? data.CostAllocationUnit : 'Common Overheads' %>
-                        </span>
-                        <div style="display: flex; gap: 0px;">
-                            @(Html.DevExtreme().Button()
-                            .ID("btnAddcost_" + new JS("data.rowIndex"))
-                            .Icon("plus")
-                            @* .OnClick("onAddCost") *@
-                            .Hint("Add Cost Allocation")
-                            .Width(40)
-                            )
-                            @(Html.DevExtreme().Button()
-                            .ID("btnEditcost_" + new JS("data.rowIndex"))
-                            .Icon("edit")
-                            @* .OnClick("onEditCost") *@
-                            .Hint("Edit Cost Allocation")
-                            .Width(40)
-                            )
-                        </div>
-                    </div>
-                </text>)
-                    // Edit Mode
-                    .EditCellTemplate(@<text>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("CostAllocation")
-                        .LoadAction("GetCostAllocationUnits")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("CostAllocationUnitId"))
-                        .LabelMode(EditorLabelMode.Outside)
-                        .ID("Costgriddropdown_{rowIndex}")
-                        .ShowClearButton(false)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
-                        .HoverStateEnabled(true)
-                        .OnValueChanged("gridBox_valueChanged")
-                        .ValueExpr("CostAllocationUnitId")
-                        .DisplayExpr("CostAllocationUnit")
-                        .Placeholder("Select Cost Allocation")
-                        .Width(350)
-                        .DropDownOptions(o => o.Width(800))
-                        .Value(new JS("data.CostAllocationUnit || 'Common Overheads'"))
-                        .ContentTemplate(new TemplateName("JournalcostAllocationDropdownContentTemplate"))
-                        )
-
-                        <div style="display: flex; ">
-                            @(Html.DevExtreme().Button()
-                            .ID("btnAddcost_" + new JS("data.rowIndex"))
-                            .Icon("plus")
-                            @* .OnClick("onAddCost") *@
-                            .Hint("Add Cost Allocation")
-                            .Width(40)
-                            )
-                            @(Html.DevExtreme().Button()
-                            .ID("btnEditcost_" + new JS("data.rowIndex"))
-                            .Icon("edit")
-                            @* .OnClick("onEditCost") *@
-                            .Hint("Edit Cost Allocation")
-                            .Width(40)
-                            )
-                        </div>
-                    </div>
-
-                </text>);
-                            columns.Add()
-                        .Caption("Effective Date")
-                        .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
-                        .AllowEditing(true)
-                        // Normal Grid Mode
-                        .CellTemplate(@<text>
-                    <span>
-                        <%- data.EffectiveDate ? DevExpress.localization.formatDate(new Date(data.EffectiveDate), "dd-MMM-yyyy") : DevExpress.localization.formatDate(new Date(), "dd-MMM-yyyy") %>
-                    </span>
-                </text>)
-                    // Edit Mode
-                    .EditCellTemplate(@<text>
-                    @(Html.DevExtreme().DateBox()
-                    .Type(DateBoxType.Date)
-                    .Value(new JS("data.EffectiveDate ? new Date(data.EffectiveDate) : new Date()")) // Default to today
-                    .OnValueChanged("setEffectiveDate") // Pass full data object
-                    .DisplayFormat("dd-MMM-yyyy")
-                    )
-                </text>);
-                            columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-                            columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
-
-                        })
-                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
-                    .AllowColumnReordering(true) // Enable column reordering
-                    .AllowColumnResizing(true)   // Enable column resizing
-                    .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                    .HeaderFilter(filter => filter.Visible(true))
-                    .ColumnAutoWidth(true)
-                    .Height(250)
-                    .ColumnAutoWidth(true)
-                    .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-                    .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-                    .ShowBorders(true)
-                    .Width("100%")
-                    .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)) // Enable selection
-                    .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
-                    // Add Summary
-                    .Summary(s => s
-                    .TotalItems(items =>
-                    {
-                        items.Add()
-                        .Column("VoucherAmount") // The column for which summary is shown
-                        .SummaryType(SummaryType.Sum) // Calculates the sum
-                        .ValueFormat("#,##0.00") // Format the value
-                        .DisplayFormat(" {0}"); // Display format
-
-                    })
-                    )
-
-                    )
-            </div>
+            
+            <label for="Amount">Amount</label>
+            @(Html.DevExtreme().NumberBox()
+                .ID("CostAmount")
+                .Value(voucherAmountParsed)
+                .ShowSpinButtons(true)
+                .ReadOnly(true)
+                .Format("#,##0.00")
+                )
+            @(Html.DevExtreme().CheckBox().ID("ApprovedBy"))
+            <span style="margin-left:5px;">Approved By:</span>
 
         </div>
+        <div class="dx-fieldset horizontal-container ">
+            <label for="Account Head">Account Head</label>
+            @(Html.DevExtreme().SelectBox()
+                .ID("CostAllocationExpense")
+                .DataSource(new[] { accountHead }) // Only the selected AccountHead
+                .Value(accountHead) // Pre-selected value
+                .ReadOnly(true) // Make the dropdown read-onlyr
+                .Width(250)
+                )
+        </div>
+        <div class="dx-field ledgerResult" style="padding-top:20px">
+            @(
+                    Html.DevExtreme().DataGrid()
+                    .ID("costdataGrid")
+
+                    .RemoteOperations(false)
+                    .RowAlternationEnabled(true)
+                    .DataSource(new object[] { })
+                    .Columns(columns =>
+                    {
+                        columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
+                        columns.Add()
+                    .DataField("CostAllocationUnit")
+                    .Caption("Cost Allocated (Projects/Jobs)")
+                    .Width(500)
+                    .AllowEditing(true)
+                    // Normal Grid Mode
+                    .CellTemplate(@<text>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="account-head-span">
+                        <%- data.CostAllocationUnit ? data.CostAllocationUnit : 'Common Overheads' %>
+                    </span>
+                    <div style="display: flex; gap: 0px;">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnAddcost_" + new JS("data.rowIndex"))
+                        .Icon("plus")
+                            @* .OnClick("onAddCost") *@
+                        .Hint("Add Cost Allocation")
+                        .Width(40)
+                        )
+                        @(Html.DevExtreme().Button()
+                        .ID("btnEditcost_" + new JS("data.rowIndex"))
+                        .Icon("edit")
+                            @* .OnClick("onEditCost") *@
+                        .Hint("Edit Cost Allocation")
+                        .Width(40)
+                        )
+                    </div>
+                </div>
+            </text>)
+                // Edit Mode
+                .EditCellTemplate(@<text>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    @(Html.DevExtreme().DropDownBox()
+                    .DataSource(d => d.WebApi().Controller("CostAllocation")
+                    .LoadAction("GetCostAllocationUnits")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("CostAllocationUnitId"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("Costgriddropdown_{rowIndex}")
+                    .ShowClearButton(false)
+                    .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .HoverStateEnabled(true)
+                    .OnValueChanged("gridBox_valueChanged")
+                    .ValueExpr("CostAllocationUnitId")
+                    .DisplayExpr("CostAllocationUnit")
+                    .Placeholder("Select Cost Allocation")
+                    .Width(350)
+                    .DropDownOptions(o => o.Width(800))
+                    .Value(new JS("data.CostAllocationUnit || 'Common Overheads'"))
+                    .ContentTemplate(new TemplateName("JournalcostAllocationDropdownContentTemplate"))
+                    )
+
+                    <div style="display: flex; ">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnAddcost_" + new JS("data.rowIndex"))
+                        .Icon("plus")
+                            @* .OnClick("onAddCost") *@
+                        .Hint("Add Cost Allocation")
+                        .Width(40)
+                        )
+                        @(Html.DevExtreme().Button()
+                        .ID("btnEditcost_" + new JS("data.rowIndex"))
+                        .Icon("edit")
+                            @* .OnClick("onEditCost") *@
+                        .Hint("Edit Cost Allocation")
+                        .Width(40)
+                        )
+                    </div>
+                </div>
+
+            </text>);
+                        columns.Add()
+                    .Caption("Effective Date")
+                    .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
+                    .AllowEditing(true)
+                    // Normal Grid Mode
+                    .CellTemplate(@<text>
+                <span>
+                    <%- data.EffectiveDate ? DevExpress.localization.formatDate(new Date(data.EffectiveDate), "dd-MMM-yyyy") : DevExpress.localization.formatDate(new Date(), "dd-MMM-yyyy") %>
+                </span>
+            </text>)
+                // Edit Mode
+                .EditCellTemplate(@<text>
+                @(Html.DevExtreme().DateBox()
+                .Type(DateBoxType.Date)
+                .Value(new JS("data.EffectiveDate ? new Date(data.EffectiveDate) : new Date()")) // Default to today
+                .OnValueChanged("setEffectiveDate") // Pass full data object
+                .DisplayFormat("dd-MMM-yyyy")
+                )
+            </text>);
+                        columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+                        columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
+
+                    })
+                //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                .AllowColumnReordering(true) // Enable column reordering
+                .AllowColumnResizing(true)   // Enable column resizing
+                .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                .HeaderFilter(filter => filter.Visible(true))
+                .ColumnAutoWidth(true)
+                .Height(250)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                .ShowBorders(true)
+                .Width("100%")
+                .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)) // Enable selection
+                .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
+                // Add Summary
+                .Summary(s => s
+                .TotalItems(items =>
+                {
+                    items.Add()
+                    .Column("VoucherAmount") // The column for which summary is shown
+                    .SummaryType(SummaryType.Sum) // Calculates the sum
+                    .ValueFormat("#,##0.00") // Format the value
+                    .DisplayFormat(" {0}"); // Display format
+
+                })
+                )
+
+                )
+        </div>
+
 
 
         @*  <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: #F5F5F5; color: white; padding: 5px 10px; margin-top: -3px; font-size: 14px;">
@@ -355,8 +317,8 @@
     </div>
 
 
-    <div class="card-footer text-center">
-        <div class="dx-fieldset horizontal-container mt-2">
+    <div class="container2">
+        <div class="dx-fieldset horizontal-container mt-2" style="padding:5px;">
 
 
             @(Html.DevExtreme().Button()
