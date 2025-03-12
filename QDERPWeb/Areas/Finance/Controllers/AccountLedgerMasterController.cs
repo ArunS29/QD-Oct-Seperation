@@ -842,7 +842,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.ClientVendorNo,
                             i.BillingContactPersonTitle,
                             i.BillingBankAccount,
-                            i.SupplierAddress
+                            i.SupplierAddress,
+                            i.SupplierOtherId,
+                            i.SupplierOtherIdtype,
+                            i.SupplierCountryCode,
+                            i.ClientCountryCode,
+
+
+
                         })
                         .ToListAsync();
 
