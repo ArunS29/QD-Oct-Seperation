@@ -4633,7 +4633,8 @@
 <script>
     function PageClose() {
 
-        history.back();
+          window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
+       window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
     }
      function onPostButtonClick(e) {
      debugger;
