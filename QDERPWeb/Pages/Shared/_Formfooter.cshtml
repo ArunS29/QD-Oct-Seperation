@@ -144,7 +144,7 @@
                 )
 </div>
 <script type="text/javascript">
-
+    let IsDirect=true;
     // Hide context menu on click outside
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");
@@ -430,7 +430,7 @@
 
       function onVerifyButtonClick() {
     const dataGrid = $("#dataGrid").dxDataGrid("instance");
-
+    IsDirect=false;
     // Ensure dataGrid exists
     if (!dataGrid) {
         console.error("DataGrid instance not found.");
@@ -570,8 +570,69 @@
     }
 }
 
-         function proceedWithApproval() {
-    // Set VerifiedBy checkbox to true
+//          function proceedWithApproval() {
+//     // Set VerifiedBy checkbox to true
+//     $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+
+//     const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+//     if (!vno) {
+//         DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+//         return;
+//     }
+
+//             const currentDate = new Date();
+
+//             const formattedDate = currentDate.toLocaleDateString("en-GB", {
+
+//                 day: "2-digit",
+
+//                 month: "short",
+
+//                 year: "numeric"
+
+//             }).replace(/ /g, '-');
+
+//     $.ajax({
+//         type: "POST",
+//         url: `/api/VoucherMaster/ApproveVoucher?VoucherNo=${encodeURIComponent(voucherNo)}&IsDirect=${encodeURIComponent(IsDirect)}`,
+//         contentType: "application/json",
+//         dataType: "json",
+//        // data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
+//         success: function (response) {
+//             if (response && response.Message) {
+//     DevExpress.ui.dialog.alert(
+//         "Voucher has been Approved.",
+//         "Approved"
+//     ).done(() => {
+//         disableEditing()
+//         $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+//         $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");IsDirect
+//         if(IsDirect==true)
+//         {
+//                 $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+
+//               $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+//               $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+//         }
+      
+//     });
+// }
+//  else {
+//                 DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+//             }
+//         },
+//         error: function (xhr, status, error) {
+//             let errorMessage = xhr.responseJSON && xhr.responseJSON.Message 
+//                 ? xhr.responseJSON.Message 
+//                 : "An error occurred.";
+//         }
+//     });
+// }
+
+function proceedWithApproval() {
+    // Set ApprovedBy checkbox to true
     $("#ApprovedBy").dxCheckBox("instance").option("value", true);
 
     const vno = $("#VoucherNo").dxTextBox("instance").option("value");
@@ -581,46 +642,52 @@
         return;
     }
 
-            const currentDate = new Date();
+    // Define IsDirect if not already defined (adjust as needed)
+    const IsDirect = true; // or false, depending on your logic
 
-            const formattedDate = currentDate.toLocaleDateString("en-GB", {
-
-                day: "2-digit",
-
-                month: "short",
-
-                year: "numeric"
-
-            }).replace(/ /g, '-');
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    }).replace(/ /g, '-');
 
     $.ajax({
         type: "POST",
-        url: "/api/VoucherMaster/ApproveVoucher",
+        url: `/api/VoucherMaster/ApproveVoucher?VoucherNo=${encodeURIComponent(vno)}&IsDirect=${encodeURIComponent(IsDirect)}`,
         contentType: "application/json",
         dataType: "json",
-        data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
+        // Uncomment the following line if the API expects data in the request body:
+        // data: JSON.stringify({ voucherNo: vno }),
         success: function (response) {
             if (response && response.Message) {
-    DevExpress.ui.dialog.alert(
-        "Voucher has been Approved.",
-        "Approved"
-    ).done(() => {
-        disableEditing()
-        $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
-    });
-}
- else {
+                DevExpress.ui.dialog.alert(
+                    "Voucher has been Approved.",
+                    "Approved"
+                ).done(() => {
+                    disableEditing();
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+                    if (IsDirect === true) {
+                        $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+                        $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+                        $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+                    }
+                });
+            } else {
                 DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
             }
         },
         error: function (xhr, status, error) {
-            let errorMessage = xhr.responseJSON && xhr.responseJSON.Message 
+            let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message) 
                 ? xhr.responseJSON.Message 
                 : "An error occurred.";
+            DevExpress.ui.notify(errorMessage, "error", 2000);
         }
     });
 }
+
 
 function onAttachButtonClick() {
 

@@ -191,18 +191,18 @@ namespace Form.Areas.Finance.Controllers
 
             {
 
-               // // Add entries to the database
-               // Tbl201VoucherMaster voucherMaster = new();
+                // Add entries to the database
+                Tbl201VoucherMaster voucherMaster = new();
 
-               // bool isVoucherExists = _context.Tbl201VoucherMasters
-               //.Any(v => v.VoucherNo == voucherEntries[0].VoucherNo);
+                bool isVoucherExists = _context.Tbl201VoucherMasters
+               .Any(v => v.VoucherNo == voucherEntries[0].VoucherNo);
 
-               // if (!isVoucherExists)
-               // {
-               //     voucherMaster.VoucherNo = voucherEntries[0].VoucherNo;
-               //     voucherMaster.VoucherDate = DateTime.Now;
-               //     _context.Tbl201VoucherMasters.AddRange(voucherMaster);
-               // }
+                if (!isVoucherExists)
+                {
+                    voucherMaster.VoucherNo = voucherEntries[0].VoucherNo;
+                    voucherMaster.VoucherDate = DateTime.Now;
+                    _context.Tbl201VoucherMasters.AddRange(voucherMaster);
+                }
 
                 _context.Tbl201VoucherEntries.AddRange(voucherEntries);
                 await _context.SaveChangesAsync();

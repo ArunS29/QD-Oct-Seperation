@@ -896,7 +896,7 @@
 
 				$.ajax({
 					type: "POST",
-					url: "/api/PurchaseVoucher/SaveVoucher",
+					url: "/api/SalesVoucher/UpdateSalesVoucher",
 					contentType: "application/json",
 					data: JSON.stringify(VM),
 					dataType: "json",
@@ -1014,7 +1014,7 @@
 				}
 			},
 			error: function () {
-				DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+			//	DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
 			}
 		});
 	}
@@ -1130,7 +1130,7 @@
 						voucherAmtValidator.reset();
 					},
 					error: function (xhr, status, error) {
-						alert("Error occurred while updating data: " + error);
+						///alert("Error occurred while updating data: " + error);
 					}
 				});
 
@@ -1153,7 +1153,7 @@
 						voucherAmtValidator.reset();
 					},
 					error: function (xhr, status, error) {
-						alert("Error occurred while updating data: " + error);
+						//alert("Error occurred while updating data: " + error);
 					}
 				});
 			}
