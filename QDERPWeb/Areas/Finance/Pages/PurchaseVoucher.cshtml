@@ -1781,7 +1781,7 @@ $(function () {
 		popup.show();
 
 		// Correct URL to your LedgerAccount view
-		$("#ledgerAccountFrame").attr("src", "/pulse/Finance/LedgerAccount");
+		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 	}
 
 	   function showLedgerAccountHeadEditPopup() {
@@ -1802,7 +1802,7 @@ $(function () {
 			return;
 		}
 
-		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
 		// Show the popup
 		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
@@ -1846,7 +1846,7 @@ $(function () {
 			return;
 		}
 
-		const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
 
 		// Show the popup
 		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
