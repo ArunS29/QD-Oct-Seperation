@@ -15,7 +15,7 @@
         .Width(1000)
         .Height(450)
 
-        .ContentTemplate(@<div style="background-color: #c0dceb; padding: 10px;">
+        .ContentTemplate(@<div style="background-color: aliceblue; padding: 10px;">
         <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
@@ -84,8 +84,20 @@
             <div class="col-md-12">
 
                 <div class="form-group">
-                    <label for="ChequeIssuedinfavourof" class="button-alignment-down">Cheque Issued in favour of</label>
-                    <div class="btn" style="position:relative;left:650px;">
+                    <label for="ChequeIssuedinfavourof" class="button-alignment-down"></label>
+                    <div class="btn" style="position:relative;display:flex;gap: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Cheque Issued in favour of')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ChequeIssuedinfavourof")
+                        .Width(550)
+                        .ValidationRules(rules =>
+                        {
+                        rules.AddRequired()
+                        .Message("Cheque Issued in favour of is required");
+                        })
+                        .Value(null) )
+                        <div style="margin-top:10px;color:blue" >Use Ledger Account Name</div>
                         @(Html.DevExtreme().Button()
                         .ID("popupbtnAddAHead")
                         .Icon("plus")
@@ -93,16 +105,7 @@
                         )
                     </div>
 
-                    @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Use Ledger Account Name')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("ChequeIssuedinfavourof")
-                    .ValidationRules(rules =>
-                    {
-                    rules.AddRequired()
-                    .Message("Cheque Issued in favour of is required");
-                    })
-                    .Value(null) )
+                   
                 </div>
             </div>
 
@@ -132,7 +135,7 @@
                     .Label(new JS("formatMessage('AmountinSAR')"))
                     .LabelMode(EditorLabelMode.Outside)
                     .ID("AmountinSAR")
-                    .Width(100)
+                    .Width(150)
                     .Value(0)
                     .ShowSpinButtons(true)
                     .Min(0)

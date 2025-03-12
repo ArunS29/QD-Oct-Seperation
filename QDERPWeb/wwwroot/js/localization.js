@@ -1156,10 +1156,12 @@
         "Account Group Id": "Account Group Id",
         "Master Group": "Master Group",
         "Chart Of Accounts Order": "Chart Of Accounts Order",
-        "Accounts  Groups Ordering": "Accounts  Groups Ordering"
+        "Accounts  Groups Ordering": "Accounts  Groups Ordering",
+        "Cheque Issued in favour of":"Cheque Issued in favour of"
 
     },
     "ar": {
+        "Cheque Issued in favour of":"",
         "Account Group Order No": "رقم ترتيب مجموعة الحساب",
         "Account Group": "مجموعة الحساب",
         "Account Group Id": "معرف مجموعة الحساب",
