@@ -28,11 +28,9 @@
 }
 
 <!-- Popup Content (Your existing content here) -->
-<div class="container2 my-3">
+<div class="container2 my-3" style="background:aliceblue;">
     <div class="row g-3">
         <div class="col-12">
-            <div class="card p-3 shadow-sm bg-blue text-danger" style="background-color: #B4E1F5;margin-bottom: -10px;">
-
                 <!-- Row for Voucher Entry ID, Payment Account, Amount, Dr/Cr, Salary Paid -->
                 <div class="row mb-3">
                     <!-- Voucher Entry ID -->
@@ -113,11 +111,9 @@
                     </div>
                 </div>
             </div>
-        </div>
 
         <!-- Card -->
         <div class="col-12">
-            <div class="card p-3 shadow-sm" style="margin-top:0px;">
                 <!-- Row for Employee, Buttons, Payable, Amount, Add Button -->
                 <div class="row mb-3 align-items-end">
                     <!-- Employee Dropdown -->
@@ -266,7 +262,6 @@
                             .Width("100%")
                             .OnClick("function() { addSalaryPaidEntry(); }"))
                     </div>
-                </div>
                 <!-- DataGrid -->
                 <div>
                     @(

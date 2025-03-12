@@ -26,17 +26,15 @@
         voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
     }
 }
+<div class="content-container-top" style="background:aliceblue;">
 <div class="title">
     <div class="header-container">
         <div class="title">Bills Receivables / Salary Payable </div>
     </div>
 </div>
-<div class="content-container-top" style="background-color:#909ead00;">
     <div class="dx-fieldset horizontal-container" style="margin-bottom:0px">
-
-
         <div class="form-group">
-                    <label for="SalesInvoiceNo" class="button-alignment-down">Voucher Entry ID:</label>
+                    <label for="SalesInvoiceNo">Voucher Entry ID:</label>
                     @(
                         Html.DevExtreme().TextBox()
                         .ID("VoucherNoId")
@@ -48,7 +46,7 @@
             
 
             
-                <div class="form-group" style="width:500px">
+                <div class="form-group" style="width:300px">
                     <label for="PaymentAccount" class="">Payment Account:</label>
                     @(Html.DevExtreme().SelectBox()
                     .ID("PaymentNameDropdown")
@@ -59,9 +57,9 @@
                     )
 
                 </div>
-          
 
-            <div class="form-group" style="width:5%">
+
+        <div class="form-group button-alignment-down" style="width:5%">
                 @(Html.DevExtreme().Button()
                     .ID("btnAddPaymentAccount")
                     .Icon("plus")
@@ -70,7 +68,7 @@
             </div>
             
                 <div class="form-group">
-                    <label for="Amount" class="button-alignment-down">Amount</label>
+                    <label for="Amount" >Amount</label>
                     @(Html.DevExtreme().NumberBox()
                         .ID("AmountId")
                         .Value(voucherAmountParsed)
@@ -115,8 +113,8 @@
                 
                 )
         </div>
-        <div class="form-group" style=" width:500px">
-            <label for="AccountHead" class="button-alignment-down">Reference No:</label>
+        <div class="form-group" style="width:300px">
+            <label for="AccountHead">Reference No:</label>
             @(Html.DevExtreme().DropDownBox()
                 .DataSource(new[] {
             new { AccountId = "2024-00088", AccountHead = "Account 2024-00088" },
@@ -142,15 +140,15 @@
                 )
 
         </div>
-        <div class="form-group" style="margin-top:30px;margin-left:-10px">
+        <div class="form-group">
             @(Html.DevExtreme().Button()
                 .ID("btnAddAHead")
                 .Icon("plus")
                 )
         </div>
 
-        <div class="form-group" style=" width:300px">
-            <label for="Amount2" class="button-alignment-down">Amount</label>
+        <div class="form-group">
+            <label for="Amount2">Amount</label>
             @(
                 Html.DevExtreme().NumberBox()
                 .ID("txtAmount2")
@@ -172,7 +170,7 @@
                 )
 
         </div>
-        <div class="form-group" style="width:200px">
+        <div class="form-group button-alignment-down">
             @(Html.DevExtreme().Button()
                 .ID("btnVoucherEntry")
                 .Text("ADD")
@@ -182,18 +180,13 @@
                 .OnClick("function() { addBillsPayableReceivable(); }")
                 )
         </div>
+        <div style="display:flex;" class="button-alignment-down">
+        @(Html.DevExtreme().CheckBox()
+            .ID("IsVerified1")
+            )
+
+            <label for="Amount">Show Retained Value</label>
     </div>
-    <div class="dx-fieldset horizontal-container">
-
-        <div class="form-group" style="padding-left:300px">
-            <divstyle ="display:flex;>
-            @(Html.DevExtreme().CheckBox()
-                .ID("IsVerified1")
-                )
-
-                <label for="Amount">Show Retained Value</label>
-        </div>
-
     </div>
 
     <div class="dx-field ledgerResult" >
@@ -238,13 +231,14 @@
             .Width("100%")
             )
     </div>
+    <div>
+        @await Html.PartialAsync("_BPRFooter")
+    </div>
+    </div>
     
    
 
 
-    <div>
-        @await Html.PartialAsync("_BPRFooter")
-    </div>
     <!-- Drop Down Account Head Grid Template -->
             @using (Html.DevExtreme().NamedTemplate("ReferenceNoContentTemplate"))
             {
