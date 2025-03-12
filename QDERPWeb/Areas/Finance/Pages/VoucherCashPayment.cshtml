@@ -3433,7 +3433,7 @@
                 validateVoucherNo(voucherNo);
             }
 
-            
+            fetchVoucherDetails(voucherNo);
             fetchVoucherEntries(voucherNo);
         }
 
@@ -3446,10 +3446,10 @@
                 data: { voucherNo: voucherNo },
                 success: function (response) {
                     if (!response.success || response.exists) {
-                        DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
+                        // DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
                         $("#VoucherNo").dxTextBox("instance").option("value", null);
                     } else {
-                        DevExpress.ui.notify("Sales Invoice No is available.", "success", 2000);
+                        // DevExpress.ui.notify("Sales Invoice No is available.", "success", 2000);
                     }
                 },
                 error: function () {
@@ -3467,7 +3467,7 @@
                 data: { voucherNo: voucherNo },
                 success: function (response) {
                     if (!response || !response.data || response.data.length === 0) {
-                        DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
+                        // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
                         return;
                     }
 
@@ -3617,5 +3617,76 @@
             $("#chequePopup").dxPopup("instance").show();
         }
     }
+     function isModal() {
+        return new URLSearchParams(window.location.search).get("modal") === "true";
+    }
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const argsledno = urlParams.get("argsledno");
+
+        if (isModal()) {
+            const style = document.createElement("style");
+            style.innerHTML = `
+                      .container { display: none !important; }
+                      .frame { display: none !important; }
+                      .footerContainer { display: none !important; }
+                      .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+                      .mainContainer { margin-top: 1em;width:100%; }
+                  `;
+            document.head.appendChild(style);
+        }
+
+        console.log("Formatted Voucher in ready block:", argsledno);
+
+        if (argsledno) {
+            setTimeout(function () {
+                const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                if (voucherNoField) {
+                    voucherNoField.option("value", argsledno);
+                } else {
+                    console.error("VoucherNo TextBox instance not found.");
+                }
+            }, 500); // Small delay to ensure the textbox is ready
+        }
+    });
+
+        function fetchVoucherDetails(voucherNo) {
+
+
+            $.ajax({
+                type: "GET",
+            url: "/api/PurchaseVoucher/GetVoucherDetails",
+                contentType: "application/json",
+                data: { voucherNo: voucherNo },
+                success: function (response) {
+                if (!response.success) {
+                    // DevExpress.ui.notify(response.message, "error", 2000);
+                    //return;
+                }
+                debugger
+                console.log(response.data[0]);
+                const data = response.data[0];
+                if (data) {
+
+                    $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
+                    $("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
+
+                    $("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
+                    $("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
+                    $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
+                    $("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+                    $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
+                    $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
+
+
+                    //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
+                    }
+                },
+                error: function () {
+                //  DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+                }
+            });
+        }
 
 </script>

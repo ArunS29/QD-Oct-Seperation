@@ -2642,7 +2642,6 @@
         });
     }
 
-
                  $(document).ready(function () {
 
 
@@ -2667,7 +2666,7 @@
                     {
                         $(function () {
                             $.ajax({
-                                    url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+                                    url: "/api/VoucherEntryCashReceipts/GetNewBRVoucherNo",
                                 type: 'GET',
                                 success: function (data) {
                                     // Set the value in the VoucherNo TextBox
@@ -2748,6 +2747,7 @@
                             $("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
                             $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
                             $("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+
                             $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
                             $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
 
@@ -2824,7 +2824,7 @@
                  function onVoucherDateChanged(e) {
                     console.log("Selected Date:", e.value);
                     var voucherDate = $("#VoucherDate").dxDateBox("instance");
-                        var effectiveDate = $("#EffectiveDate").dxDateBox("instance");
+                    var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
                     voucherDate.option("onValueChanged", function (e) {
                         let voucherDateval = e.value; // Get Date from DevExtreme DateBox
