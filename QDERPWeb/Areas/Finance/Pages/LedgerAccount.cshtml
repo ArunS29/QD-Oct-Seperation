@@ -894,6 +894,9 @@
                             <td>
                                 <div id="ClientBilling" class="no-border-input"></div>
                             </td>
+                        
+                            <tr>
+
                             <td colspan="3">
                                 <div style="display: flex; align-items: center;">
                                     @(Html.DevExtreme().Button()
@@ -907,9 +910,9 @@
                                         .ID("txtClientBilling")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Billing")
-                                        .ValidationRules(rules => rules
+                                       @*  .ValidationRules(rules => rules
                                         .AddRequired()  // This adds the required validation rule
-                                        )
+                                        ) *@
                                         )
 
                                 </div>
@@ -941,22 +944,33 @@
                                 <div id="ClientVATNo" class="no-border-input"></div>
                             </td>
                             <td colspan="3">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtClientVATNo")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtClientVATNo")
+                                    @(Html.DevExtreme().NumberBox()
+                                        .ID("txtClientVATNo") // Keep the same ID
+                                        .Width("50%") // Set the width to 50%
+                                        .InputAttr("aria-label", "txtClientVATNo")
+                                        .Min(0) // No negative numbers allowed
+                                        .Max(999999999999999) // Max limit of 15 digits
+                                        .InputAttr("maxlength", "15") // Set the max length attribute to 15
+                                        .Format("###########") // Ensures only integers (up to 15 digits)
+                                       // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                                        )
 
-                                    )
                             </td>
                             <td>
                                 <div id="GrouptVATNo" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtGrouptVATNo")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtGrouptVATNo")
-                                    )
+                                    @(Html.DevExtreme().NumberBox()
+                                        .ID("txtGrouptVATNo") // Keep the same ID
+                                        .Width("100%") // Set width to 100%
+                                        .InputAttr("aria-label", "txtGrouptVATNo")
+                                        .Min(0) // No negative numbers allowed
+                                        .Max(999999999999999) // Max limit of 15 digits
+                                        .InputAttr("maxlength", "15") // Set max length to 15
+                                        .Format("###########") // Format for numeric input (max 15 digits)
+                                      //  .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                                        )
+
                             </td>
                         </tr>
 
@@ -968,9 +982,9 @@
                                 @(Html.DevExtreme().DropDownBox()
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
-                                    .LoadAction("getOtherIDTypes")
+                                        .LoadAction("getOtherIDTypes")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("BuyerOtherIDType")
+                                        .Key("BuyerOtherIdtype")
                                     )
                                     .ID("ddlOtherType")
                                     .ShowClearButton(true)
@@ -978,8 +992,8 @@
                                     .OpenOnFieldClick(false)
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("BuyerOtherIDType")
-                                    .DisplayExpr("BuyerIDTypeName")
+                                        .ValueExpr("BuyerOtherIdtype")
+                                        .DisplayExpr("BuyerIdtypeName")
                                     .OnInput("ddlOtherTypeOnInput")
                                     .OnOpened("ddlOtherTypeonOpened")
                                     .Width("100%")
@@ -999,9 +1013,9 @@
                                     .ID("txtOtherId")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtOtherId")
-                                    .ValidationRules(rules => rules
+                                   @*  .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
-                                    )
+                                    ) *@
                                     )
                             </td>
                         </tr>
@@ -1075,14 +1089,20 @@
                                 <div id="BuildingNo" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBuildingNo")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtBuildingNo")
-                                    .ValidationRules(rules => rules
-                                    .AddRequired()  // This adds the required validation rule
-                                    )
-                                    )
+                                    @(Html.DevExtreme().NumberBox()
+                                        .ID("txtBuildingNo") // Keep the same ID
+                                        .Width("100%") // Set width to 100%
+                                        .Min(0) // No negative numbers allowed
+                                        .Max(9999) // Max limit of 4 digits for building number
+                                        .InputAttr("aria-label", "txtBuildingNo")
+                                        .InputAttr("maxlength", "4") // Set max length to 4
+                                        .Format("####") // Format for numeric input (max 4 digits)
+                                       // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                                        .ValidationRules(rules => rules
+                                        .AddRequired()  // This adds the required validation rule
+                                        )
+                                        )
+
                             </td>
                             <td>
                                 <div id="ClientCity" class="no-border-input"></div>
@@ -1092,9 +1112,9 @@
                                     .ID("txtClientCity")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientCity")
-                                    .ValidationRules(rules => rules
+                                   @*  .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
-                                    )
+                                    ) *@
                                     )
                             </td>
                             <td>
@@ -1122,12 +1142,17 @@
                                 <div id="AdditionalNo" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtAdditionalNo")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtAdditionalNo")
+                                    @(Html.DevExtreme().NumberBox()
+                                        .ID("txtAdditionalNo") // Keep the same ID
+                                        .Width("100%") // Set width to 100%
+                                        .Min(0) // No negative numbers allowed
+                                        .Max(9999) // Max limit of 4 digits
+                                        .InputAttr("aria-label", "txtAdditionalNo")
+                                        .InputAttr("maxlength", "4") // Set max length to 4
+                                        .Format("####") // Format for numeric input (max 4 digits)
+                                        //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                                        )
 
-                                    )
                             </td>
                             <td>
                                 <div id="State" class="no-border-input"></div>
@@ -1164,14 +1189,20 @@
                                 <div id="PostalCode" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtPostalCode")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtPostalCode")
-                                    .ValidationRules(rules => rules
-                                    .AddRequired()  // This adds the required validation rule
-                                    )
-                                    )
+                                    @(Html.DevExtreme().NumberBox()
+                                        .ID("txtPostalCode") // Keep the same ID
+                                        .Width("100%") // Set width to 100%
+                                        .Min(0) // No negative numbers allowed
+                                        .Max(99999) // Max limit of 5 digits for postal code
+                                        .InputAttr("aria-label", "txtPostalCode")
+                                        .InputAttr("maxlength", "5") // Set max length to 5
+                                        .Format("#####") // Format for numeric input (max 5 digits)
+                                       // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                                        .ValidationRules(rules => rules
+                                        .AddRequired()  // This adds the required validation rule
+                                        )
+                                        )
+
                             </td>
                             <td>
                                 <div id="District" class="no-border-input"></div>
@@ -1181,9 +1212,9 @@
                                     .ID("txtDistrict")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtDistrict")
-                                    .ValidationRules(rules => rules
+                                  @*   .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
-                                    )
+                                    ) *@
                                     )
                             </td>
                             <td>
@@ -1201,10 +1232,53 @@
                                         .ID("txtDistrictAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "District")
-                                        .ValidationRules(rules => rules.AddRequired())
+                                      @*   .ValidationRules(rules => rules.AddRequired()) *@
                                         )
                                 </div>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="ClientCountryCode" class="no-border-input"></div>
+                            </td>
+                            <td>
+                                    @(Html.DevExtreme().DropDownBox()
+                                        .DataSource(d => d.WebApi()
+                                        .Controller("AccountLedgerMaster")
+                                        .LoadAction("getCountryCode")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("CountryCodeAlpha2")
+                                        )
+                                        .ID("ddlCountryCode")
+                                        .ShowClearButton(true)
+                                        .AcceptCustomValue(true)
+                                        .OpenOnFieldClick(false)
+                                        .ValueChangeEvent("input")
+                                        .HoverStateEnabled(true)
+                                        .ValueExpr("CountryCodeAlpha2")
+                                        .DisplayExpr("CountryName")
+                                        .OnInput("ddlCountryCodeOnInput")
+                                        .OnOpened("ddlCountryCodeonOpened")
+                                        .Width("100%")
+                                        .TabIndex(4)
+                                        .DropDownOptions(o => o
+                                        .Width("100%")
+                                        )
+                                        .OnKeyDown("ddlCountryCodeonKeyDown")
+                                        .OnValueChanged("ddlCountryCodeValueChanged")
+                                        .ContentTemplate(new TemplateName("CountryCodeContentTemplate"))
+                                        )
+
+                            </td>
+                            <td>
+                                    @(Html.DevExtreme().Button()
+                                        .ID("btnAddCountryCode")
+                                        .Icon("plus")
+                                        .ElementAttr("class", "button-alignment-down button-group")
+                                        .OnClick("redirectAccoutledgerMaster")
+                                        )
+                            </td>
+
                         </tr>
                     </table>
                 </div>
@@ -1264,26 +1338,86 @@
 
                             </td>
                             <td colspan="3">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtSupVATNo")
-                                    .Width("100%")
+                                @(Html.DevExtreme().NumberBox()
+                                    .ID("txtSupVATNo") // Keep the same ID
+                                    .Width("100%") // Set width to 100%
+                                    .Min(0) // No negative numbers allowed
+                                    .Max(999999999999999) // Max limit of 15 digits for VAT number
                                     .InputAttr("aria-label", "txtSupVATNo")
+                                    .InputAttr("maxlength", "15") // Set max length to 15
+                                    .Format("###########") // Format for numeric input (max 15 digits)
+                                    //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                     .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     )
                                     )
+
                             </td>
                             <td>
                                 <div id="SupGroupVATNo" class="no-border-input"></div>
                             </td>
                             <td colspan="2">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtSupGroupVATNo")
+                               @(Html.DevExtreme().NumberBox()
+    .ID("txtSupGroupVATNo") // Keep the same ID
+    .Width("100%") // Set width to 100%
+    .Min(0) // No negative numbers allowed
+    .Max(999999999999999) // Max limit of 15 digits for VAT number
+    .InputAttr("aria-label", "txtSupGroupVATNo")
+    .InputAttr("maxlength", "15") // Set max length to 15
+    .Format("###########") // Format for numeric input (max 15 digits)
+   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+)
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div id="SupOtherType" class="no-border-input"></div>
+                            </td>
+                            <td colspan="3">
+                                @(Html.DevExtreme().DropDownBox()
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                    .LoadAction("getOtherIDTypes")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("BuyerOtherIdtype")
+                                    )
+                                    .ID("ddlSupOtherType")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("BuyerOtherIdtype")
+                                    .DisplayExpr("BuyerIdtypeName")
+                                    .OnInput("ddlSupOtherTypeOnInput")
+                                    .OnOpened("ddlSupOtherTypeonOpened")
                                     .Width("100%")
-                                    .InputAttr("aria-label", "txtSupGroupVATNo")
+                                    .DropDownOptions(o => o
+                                    .Width("100%") // Set the desired width for the dropdown content*@
+                                    )
+                                    .OnKeyDown("ddlSupOtherTypeonKeyDown")
+                                    .OnValueChanged("ddlSupOtherTypeValueChanged")
+                                    .ContentTemplate(new TemplateName("SupOtherTypeContentTemplate"))
+                                    )
+                            </td>
+                            <td>
+                                <div id="SuprOtherId" class="no-border-input"></div>
+                            </td>
+                            <td>
+                                @(Html.DevExtreme().TextBox()
+                                    .ID("txtSupOtherId")
+                                    .Width("100%")
+                                    .InputAttr("aria-label", "txtSupOtherId")
+                                 @*    .ValidationRules(rules => rules
+                                    .AddRequired()  // This adds the required validation rule
+                                    ) *@
                                     )
                             </td>
                         </tr>
+
+
 
                         <tr>
                             <td>
@@ -1352,14 +1486,20 @@
                                 <div id="SupBuildingNo" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtSupBuildingNo")
-                                    .Width("100%")
+                                @(Html.DevExtreme().NumberBox()
+                                    .ID("txtSupBuildingNo") // Keep the same ID
+                                    .Width("100%") // Set width to 100%
+                                    .Min(0) // No negative numbers allowed
+                                    .Max(9999) // Max limit of 4 digits for building number
                                     .InputAttr("aria-label", "txtSupBuildingNo")
+                                    .InputAttr("maxlength", "4") // Set max length to 4
+                                    .Format("####") // Format for numeric input (max 4 digits)
+                                    //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                     .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     )
                                     )
+
                             </td>
                             <td>
                                 <div id="SupCity" class="no-border-input"></div>
@@ -1397,12 +1537,17 @@
                                 <div id="SupAdditionalNo" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtSupAdditionalNo")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtSupAdditionalNo")
+                               @(Html.DevExtreme().NumberBox()
+    .ID("txtSupAdditionalNo") // Keep the same ID
+    .Width("100%") // Set width to 100%
+    .Min(0) // No negative numbers allowed
+    .Max(9999) // Max limit of 4 digits for additional number
+    .InputAttr("aria-label", "txtSupAdditionalNo")
+    .InputAttr("maxlength", "4") // Set max length to 4
+    .Format("####") // Format for numeric input (max 4 digits)
+    //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+)
 
-                                    )
                             </td>
                             <td>
                                 <div id="SupState" class="no-border-input"></div>
@@ -1437,14 +1582,20 @@
                                 <div id="SupPostalCode" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtSupPostalCode")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtSupPostalCode")
-                                    .ValidationRules(rules => rules
-                                    .AddRequired()  // This adds the required validation rule
-                                    )
-                                    )
+                               @(Html.DevExtreme().NumberBox()
+    .ID("txtSupPostalCode") // Keep the same ID
+    .Width("100%") // Set width to 100%
+    .Min(0) // No negative numbers allowed
+    .Max(99999) // Max limit of 5 digits for postal code
+    .InputAttr("aria-label", "txtSupPostalCode")
+    .InputAttr("maxlength", "5") // Set max length to 5
+    .Format("#####") // Format for numeric input (max 5 digits)
+   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+    .ValidationRules(rules => rules
+        .AddRequired()  // This adds the required validation rule
+    )
+)
+
                             </td>
                             <td>
                                 <div id="SupDistrict" class="no-border-input"></div>
@@ -1475,6 +1626,49 @@
                                     .Width("100%")
                                     )
                             </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="SupCountryCode" class="no-border-input"></div>
+                            </td>
+                            <td>
+                                @(Html.DevExtreme().DropDownBox()
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AccountLedgerMaster")
+                                    .LoadAction("getCountryCode")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("CountryCodeAlpha2")
+                                    )
+                                    .ID("ddlSupCountryCode")
+                                    .ShowClearButton(true)
+                                    .AcceptCustomValue(true)
+                                    .OpenOnFieldClick(false)
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("CountryCodeAlpha2")
+                                    .DisplayExpr("CountryName")
+                                    .OnInput("ddlSupCountryCodeOnInput")
+                                    .OnOpened("ddlSupCountryCodeonOpened")
+                                    .Width("100%")
+                                    .TabIndex(4)
+                                    .DropDownOptions(o => o
+                                    .Width("100%")
+                                    )
+                                    .OnKeyDown("ddlSupCountryCodeonKeyDown")
+                                    .OnValueChanged("ddlSupCountryCodeValueChanged")
+                                    .ContentTemplate(new TemplateName("SupCountryCodeContentTemplate"))
+                                    )
+
+                            </td>
+                            <td>
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnAddSupCountryCode")
+                                    .Icon("plus")
+                                    .ElementAttr("class", "button-alignment-down button-group")
+                                    .OnClick("redirectAccoutledgerMaster")
+                                    )
+                            </td>
+
                         </tr>
                     </table>
                 </div>
@@ -1555,6 +1749,7 @@
                                 </div>
 
                             </td>
+
                             <td>
                                 <div id="ClientBillingNameArabic" class="no-border-input"></div>
                             </td>
@@ -1623,22 +1818,35 @@
                                 <div id="BillingVATRegNo" class="no-border-input"></div>
                             </td>
                             <td colspan="2">
-                                @(Html.DevExtreme().TextBox()
+
+                                @(Html.DevExtreme().NumberBox()
                                     .ID("txtBillingVATRegNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingVATRegNo")
+                                    .InputAttr("maxlength", "15")
+                                    .Min(0) // No negative numbers
+                                    .Max(999999999999999) // Max limit of 15 digits
+                                   // .ShowSpinButtons(false) // Hide increment/decrement buttons
+                                    .Format("###########") // Ensures only integers (15 digits max)
                                     )
+
                             </td>
                             <td>
                                 <div id="BillingVATRegNoArabic" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBillingVATRegNoArabic")
+                                @(Html.DevExtreme().NumberBox()
+                                    .ID("txtBillingVATRegNoArabic") // Keep the same ID
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingVATRegNoArabic")
-                                    .RtlEnabled(true)  // Enable RTL for Arabic VAT Registration Number
+                                    .RtlEnabled(true) // Enable RTL for Arabic VAT Registration Number
+                                    .Min(0) // No negative numbers allowed
+                                    .Max(999999999999999) // Max limit of 15 digits
+                                    .InputAttr("maxlength", "15") // Set the max length attribute
+                                    .Format("###########") // Ensures only integers (15 digits max)
+                                   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                     )
+
                             </td>
                         </tr>
                         <tr>
@@ -1646,11 +1854,17 @@
                                 <div id="BillingTIN" class="no-border-input"></div>
                             </td>
                             <td colspan="4">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBillingTIN")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtBillingTIN")
-                                    )
+                             @(Html.DevExtreme().NumberBox()
+                        .ID("txtBillingTIN") // Keep the same ID
+                    .Width("100%")
+    .InputAttr("aria-label", "txtBillingTIN")
+    .Min(0) // No negative numbers allowed
+    .Max(9999999999) // Max limit of 10 digits
+    .InputAttr("maxlength", "10") // Set the max length attribute
+    .Format("##########") // Ensures only integers (max 10 digits)
+    //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+)
+
                             </td>
                         </tr>
                         <tr>
@@ -1714,10 +1928,10 @@
                             <td>
                                 @(Html.DevExtreme().DropDownBox()
                                     .DataSource(d => d.WebApi()
-                                    .Controller("AccountLedger")
+                                    .Controller("AccountLedgerMaster")
                                     .LoadAction("getBillingPayments")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("BillingAccountID")
+                                    .Key("AccountId")
                                     )
                                     .ID("ddlBillingPayment")
                                     .ShowClearButton(true)
@@ -1725,8 +1939,8 @@
                                     .OpenOnFieldClick(false)
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("BillingAccountID")
-                                    .DisplayExpr("BillingAccountHead")
+                                    .ValueExpr("AccountId")
+                                    .DisplayExpr("AccountHead")
                                     .OnInput("ddlBillingPaymentOnInput")
                                     .OnOpened("ddlBillingPaymentonOpened")
                                     .Width("100%")
@@ -1791,11 +2005,17 @@
                                 <div id="ObsSupRegNo" class="no-border-input"></div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtObsSupRegNo")
-                                    .Width("100%")
-                                    .InputAttr("aria-label", "txtObsSupRegNo")
-                                    )
+                               @(Html.DevExtreme().NumberBox()
+    .ID("txtObsSupRegNo") // Keep the same ID
+    .Width("100%") // Set width to 100%
+    .Min(0) // No negative numbers allowed
+    .Max(999999999999999) // Max limit of 15 digits
+    .InputAttr("aria-label", "txtObsSupRegNo")
+    .InputAttr("maxlength", "15") // Set max length to 15
+    .Format("###############") // Format for numeric input (max 15 digits)
+   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+)
+
                             </td>
                             <td>
                                 <div id="ObsSupRegNoArabic" class="no-border-input"></div>
@@ -1822,7 +2042,7 @@
 
 
         </div>
-        
+
         <!-- Card 5: CreatedOn Details -->
         <div class="content-container" style="width: 100%; max-width: 1200px;">
             <div class="dx-fieldset horizontal-container">
@@ -2022,7 +2242,7 @@
             .Controller("AccountLedgerMaster")
             .LoadAction("getOtherIDTypes")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("BuyerOtherIDType")
+            .Key("BuyerOtherIdtype")
             )
             .WordWrapEnabled(true)
             .ShowBorders(true)
@@ -2040,10 +2260,41 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BuyerIDTypeName");
+                columns.Add().DataField("BuyerIdtypeName");
             })
             )
     }
+    @using (Html.DevExtreme().NamedTemplate("SupOtherTypeContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("Supothertype-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getOtherIDTypes")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("BuyerOtherIdtype")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("SupothertypedataGridSelectionChanged")
+            .OnInitialized("SupothertypedataGridInitialized")
+            @* .HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("BuyerIdtypeName");
+            })
+            )
+    }
+
 
     @using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
     {
@@ -2053,7 +2304,7 @@
             .Controller("AccountLedgerMaster")
             .LoadAction("getBillingPayments")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("BillingAccountID")
+            .Key("AccountId")
             )
             .WordWrapEnabled(true)
             .ShowBorders(true)
@@ -2067,26 +2318,65 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BillingAccountHead");
+                columns.Add().DataField("AccountHead");
             })
             )
     }
-  
+
+    @using (Html.DevExtreme().NamedTemplate("CountryCodeContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("CountryCode-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getCountryCode")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CountryCodeAlpha2")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("CountryCodedataGridSelectionChanged")
+            .OnInitialized("CountryCodedataGridInitialized")
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("CountryName");
+            })
+            )
+    }
+    @using (Html.DevExtreme().NamedTemplate("SupCountryCodeContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("SupCountryCode-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getCountryCode")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CountryCodeAlpha2")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("SupCountryCodedataGridSelectionChanged")
+            .OnInitialized("SupCountryCodedataGridInitialized")
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("CountryName");
+            })
+            )
+    }
+
 </div>
-@* <div class="row mt-3">
-    <div class="col-md-3">
-        <label>Created By: </label>
-    </div>
-    <div class="col-md-3">
-        <label>Created On: </label>
-    </div>
-    <div class="col-md-3">
-        <label>Modified By: </label>
-    </div>
-    <div class="col-md-3">
-        <label>Modified On: </label>
-    </div>
-</div> *@
 <!-- Modal Structure -->
 <div id="ledgerAccountMasterModal" class="modal">
     <div class="modal-content">
@@ -2095,6 +2385,9 @@
     </div>
 </div>
 <script>
+
+
+   
     $(function () {
         $("#DefaultEntry").dxTextBox({
             text: formatMessage("Default For Entry:"),
@@ -2313,9 +2606,31 @@
         });
     });
     $(function () {
+        $("#SupOtherType").dxTextBox({
+            text: formatMessage("Other ID Type: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#ClientCountryCode").dxTextBox({
+            text: formatMessage("Country Code: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SupCountryCode").dxTextBox({
+            text: formatMessage("Country Code: *"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
         $("#ClientAddress").dxTextBox({
             text: formatMessage("Client Address - Street Name: *"),
             readOnly: true
+           
 
         });
     });
@@ -2340,6 +2655,8 @@
 
         });
     });
+   
+     
     $(function () {
         $("#GrouptVATNo").dxTextBox({
             text: formatMessage("Group VAT Number:"),
@@ -2442,6 +2759,13 @@
     $(function () {
         $("#SupGroupVATNo").dxTextBox({
             text: formatMessage("Group VAT Number:"),
+            readOnly: true
+
+        });
+    });
+    $(function () {
+        $("#SuprOtherId").dxTextBox({
+            text: formatMessage("Supplier Other ID: *"),
             readOnly: true
 
         });
@@ -2945,12 +3269,12 @@
 
                     }
 
-                    var txtClientVATNo = $('#txtClientVATNo').dxTextBox("instance");
+                    var txtClientVATNo = $('#txtClientVATNo').dxNumberBox("instance");
                     if (txtClientVATNo) {
                         txtClientVATNo.option("value", account.VatregistrationNo);
 
                     }
-                    var txtGrouptVATNo = $('#txtGrouptVATNo').dxTextBox("instance");
+                    var txtGrouptVATNo = $('#txtGrouptVATNo').dxNumberBox("instance");
                     if (txtGrouptVATNo) {
                         txtGrouptVATNo.option("value", account.ClientGroupVatnumber);
 
@@ -2981,7 +3305,7 @@
                         txtClientAdditionalAddressAr.option("value", account.ClientAdditionalStreetAr);
 
                     }
-                    var txtBuildingNo = $('#txtBuildingNo').dxTextBox("instance");
+                    var txtBuildingNo = $('#txtBuildingNo').dxNumberBox("instance");
                     if (txtBuildingNo) {
                         txtBuildingNo.option("value", account.ClientBuildingNumber);
 
@@ -2996,7 +3320,7 @@
                         txtClientCityAr.option("value", account.ClientCityAr);
 
                     }
-                    var txtAdditionalNo = $('#txtAdditionalNo').dxTextBox("instance");
+                    var txtAdditionalNo = $('#txtAdditionalNo').dxNumberBox("instance");
                     if (txtAdditionalNo) {
                         txtAdditionalNo.option("value", account.ClientAdditionalNumber);
 
@@ -3011,7 +3335,7 @@
                         txtStateAr.option("value", account.ClientProvinceAr);
 
                     }
-                    var txtPostalCode = $('#txtPostalCode').dxTextBox("instance");
+                    var txtPostalCode = $('#txtPostalCode').dxNumberBox("instance");
                     if (txtPostalCode) {
                         txtPostalCode.option("value", account.ClientPostalCode);
 
@@ -3021,6 +3345,13 @@
                         txtDistrict.option("value", account.ClientNeighborhood);
 
                     }
+                    var txtDistrictAr = $('#txtDistrictAr').dxTextBox("instance");
+                    if (txtDistrictAr) {
+                        txtDistrictAr.option("value", account.ClientNeighborhoodAr);
+
+                    }
+                    CountryCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCountryCode] });
+                    SupCountryCodedataGridSelectionChanged({ selectedRowKeys: [account.SupplierCountryCode] });
 
                     //SupplierDetails Tab
 
@@ -3034,14 +3365,20 @@
                         txtSupBillingAr.option("value", account.SupplierNameAr);
 
                     }
-                    var txtSupVATNo = $('#txtSupVATNo').dxTextBox("instance");
+                    var txtSupVATNo = $('#txtSupVATNo').dxNumberBox("instance");
                     if (txtSupVATNo) {
                         txtSupVATNo.option("value", account.SupplierVatno);
 
                     }
-                    var txtSupGroupVATNo = $('#txtSupGroupVATNo').dxTextBox("instance");
+                    var txtSupGroupVATNo = $('#txtSupGroupVATNo').dxNumberBox("instance");
                     if (txtSupGroupVATNo) {
                         txtSupGroupVATNo.option("value", account.SupplierGroupVATNumber);
+
+                    }
+                    SupothertypedataGridSelectionChanged({ selectedRowKeys: [account.SupplierOtherIdtype] });
+                    var txtSupOtherId = $('#txtSupOtherId').dxTextBox("instance");
+                    if (txtSupOtherId) {
+                        txtSupOtherId.option("value", account.SupplierOtherId);
 
                     }
                     var txtSupAddress = $('#txtSupAddress').dxTextBox("instance");
@@ -3064,7 +3401,7 @@
                         txtSupAdditionalAddressAr1.option("value", account.SupplierAdditionalStreetAr);
 
                     }
-                    var txtSupBuildingNo = $('#txtSupBuildingNo').dxTextBox("instance");
+                    var txtSupBuildingNo = $('#txtSupBuildingNo').dxNumberBox("instance");
                     if (txtSupBuildingNo) {
                         txtSupBuildingNo.option("value", account.SupplierBuildingNumber);
 
@@ -3079,7 +3416,7 @@
                         txtSupCityAr1.option("value", account.SupplierCityAr);
 
                     }
-                    var txtSupAdditionalNo = $('#txtSupAdditionalNo').dxTextBox("instance");
+                    var txtSupAdditionalNo = $('#txtSupAdditionalNo').dxNumberBox("instance");
                     if (txtSupAdditionalNo) {
                         txtSupAdditionalNo.option("value", account.SupplierAdditionalNumber);
 
@@ -3094,7 +3431,7 @@
                         txtSupStateAr1.option("value", account.SupplierProvinceAr);
 
                     }
-                    var txtSupPostalCode = $('#txtSupPostalCode').dxTextBox("instance");
+                    var txtSupPostalCode = $('#txtSupPostalCode').dxNumberBox("instance");
                     if (txtSupPostalCode) {
                         txtSupPostalCode.option("value", account.SupplierPostalCode);
 
@@ -3134,12 +3471,12 @@
                         txtBillingAddress.option("value", account.BillingAddressAr);
 
                     }
-                    var txtBillingVATRegNo = $('#txtBillingVATRegNo').dxTextBox("instance");
+                    var txtBillingVATRegNo = $('#txtBillingVATRegNo').dxNumberBox("instance");
                     if (txtBillingVATRegNo) {
                         txtBillingVATRegNo.option("value", account.VATRegistrationNo);
 
                     }
-                    var txtBillingTIN = $('#txtBillingTIN').dxTextBox("instance");
+                    var txtBillingTIN = $('#txtBillingTIN').dxNumberBox("instance");
                     if (txtBillingTIN) {
                         txtBillingTIN.option("value", account.ClientTin);
 
@@ -3170,7 +3507,7 @@
                         txtObsSupAddress.option("value", account.SupplierAddress);
 
                     }
-                    var txtObsSupRegNo = $('#txtObsSupRegNo').dxTextBox("instance");
+                    var txtObsSupRegNo = $('#txtObsSupRegNo').dxNumberBox("instance");
                     if (txtObsSupRegNo) {
                         txtObsSupRegNo.option("value", account.SupplierVatno);
 
@@ -3428,48 +3765,21 @@
         }
     }
 
-    // function redirectAccoutledgerMaster() {
-
-    //     const masterFormWindow = window.open(
-    //         `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`,
-    //         'popupWindow',
-    //         'width=1400,height=600,scrollbars=yes,resizable=yes'
-    //     );
-
-
-    //     const interval = setInterval(() => {
-    //         if (masterFormWindow.closed) {
-    //             clearInterval(interval);
-    //             refreshaccountledgerSelectBox();
-    //         }
-    //     }, 500);
-    // }
-
     function redirectAccoutledgerMaster() {
-        if (["M5", "M6", "M7", "M8", "M2", "M9", "M4", "M1"].includes(accgrpunder)) {
-            disableTabs(["tab-content-1", "tab-content-2", "tab-content-3", "tab-content-7"]);
-        } else if (["M3"].includes(accgrpunder)) {
-            disableTabs(["tab-content-3", "tab-content-7"]);
-        }
 
-        const modal = document.getElementById("ledgerAccountMasterModal");
-        const iframe = document.getElementById("ledgerAccountMasterIframe");
+        const masterFormWindow = window.open(
+            `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`,
+            'popupWindow',
+            'width=1400,height=600,scrollbars=yes,resizable=yes'
+        );
 
-        iframe.src = `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`
-        modal.style.display = "block";
 
-        const closeBtn = modal.querySelector(".close");
-        closeBtn.onclick = () => {
-            modal.style.display = "none";
-            refreshaccountledgerSelectBox();
-        };
-
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
+        const interval = setInterval(() => {
+            if (masterFormWindow.closed) {
+                clearInterval(interval);
                 refreshaccountledgerSelectBox();
             }
-        };
+        }, 500);
     }
 
     function redirectledgerAccountMaster() {
@@ -4049,11 +4359,19 @@
 
     // Other Type List Dropdown Events
     let dataGrid5;
+    let dataGrid55;
 
     function ddlOtherTypeValueChanged(e) {
         e.component.close();
         if (!e.value) {
             dataGrid5.clearSelection();
+            return;
+        }
+    }
+     function ddlSupOtherTypeValueChanged(e) {
+        e.component.close();
+        if (!e.value) {
+            dataGrid55.clearSelection();
             return;
         }
     }
@@ -4074,6 +4392,22 @@
             e.component.focus();
         });
     }
+    function ddlSupOtherTypeOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        // Update the DataGrid search panel text with the DropDownBox text
+        const text = ddbInstance.option("text");
+        if (dataGrid55) {
+            dataGrid55.option("searchPanel.text", text);
+        }
+    }
+
+    function ddlSupOtherTypeonOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
 
     function ddlOtherTypeonKeyDown(e) {
         const ddbInstance = e.component;
@@ -4085,6 +4419,18 @@
             let visibleRows = dataGrid5.getVisibleRows().length - 1;
             if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
             dataGrid5.focus(dataGrid5.getRowElement(focusedIndex));
+        }
+    }
+    function ddlSupOtherTypeonKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid55.option("focusedRowIndex");
+            let visibleRows = dataGrid55.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid55.focus(dataGrid55.getRowElement(focusedIndex));
         }
     }
 
@@ -4100,10 +4446,23 @@
     function othertypedataGridInitialized(e) {
         dataGrid5 = e.component;
     }
+    function SupothertypedataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddlSupOtherType").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+        }
+    }
+
+    function SupothertypedataGridInitialized(e) {
+        dataGrid55 = e.component;
+    }
 
     // Billing Payment Dropdown Events
     let dataGrid6;
-
+    let dataGrid66;
+     let dataGrid666;
     function ddlBillingPaymentValueChanged(e) {
         e.component.close();
         if (!e.value) {
@@ -4154,6 +4513,120 @@
     function billingdataGridInitialized(e) {
         dataGrid6 = e.component;
     }
+    function ddlBillingPaymentValueChanged(e) {
+        e.component.close();
+        if (!e.value) {
+            dataGrid6.clearSelection();
+            return;
+        }
+    }
+
+
+    function ddlCountryCodeValueChanged(e) {
+        e.component.close();
+        if (!e.value) {
+            dataGrid66.clearSelection();
+            return;
+        }
+    }
+
+    function ddlCountryCodeOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        // Update the DataGrid search panel text with the DropDownBox text
+        const text = ddbInstance.option("text");
+        if (dataGrid66) {
+            dataGrid66.option("searchPanel.text", text);
+        }
+    }
+
+    function ddlCountryCodeonOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+    function ddlCountryCodeonKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid66.option("focusedRowIndex");
+            let visibleRows = dataGrid66.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid66.focus(dataGrid66.getRowElement(focusedIndex));
+        }
+    }
+
+    function CountryCodedataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddlCountryCode").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+        }
+    }
+
+    function CountryCodedataGridInitialized(e) {
+        dataGrid66 = e.component;
+    }
+
+
+    //
+
+    function ddlSupCountryCodeValueChanged(e) {
+        e.component.close();
+        if (!e.value) {
+            dataGrid666.clearSelection();
+            return;
+        }
+    }
+
+    function ddlSupCountryCodeOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        // Update the DataGrid search panel text with the DropDownBox text
+        const text = ddbInstance.option("text");
+        if (dataGrid666) {
+            dataGrid666.option("searchPanel.text", text);
+        }
+    }
+
+    function ddlSupCountryCodeonOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+    function ddlSupCountryCodeonKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid666.option("focusedRowIndex");
+            let visibleRows = dataGrid666.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid666.focus(dataGrid666.getRowElement(focusedIndex));
+        }
+    }
+
+    function SupCountryCodedataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddlSupCountryCode").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+        }
+    }
+
+    function SupCountryCodedataGridInitialized(e) {
+        dataGrid666 = e.component;
+    }
+
 
 </script>
 
@@ -4240,42 +4713,47 @@
         //Client Details Tab
         var cntBillingName = $('#txtClientBilling').dxTextBox('option', 'value');
         var cntBillingNamear = $('#txtClientBillingAr').dxTextBox('option', 'value');
-        var cntVATNo = $('#txtClientVATNo').dxTextBox('option', 'value');
-        var cntGroupVATNo = $('#txtGrouptVATNo').dxTextBox('option', 'value');
+        var cntVATNo = $('#txtClientVATNo').dxNumberBox('option', 'value');
+        var cntGroupVATNo = $('#txtGrouptVATNo').dxNumberBox('option', 'value');
         var cntOtherType = $('#ddlOtherType').dxDropDownBox('option', 'value');
         var cntOtherID = $('#txtOtherId').dxTextBox('option', 'value');
         var cntAddress = $('#txtClientAddress').dxTextBox('option', 'value');
         var cntAddressar = $('#txtClientAddressAr').dxTextBox('option', 'value');
         var cntAdditionalAddress = $('#txtClientAdditionalAddress').dxTextBox('option', 'value');
         var cntAdditionalAddressar = $('#txtClientAdditionalAddressAr').dxTextBox('option', 'value');
-        var cntBuildingNo = $('#txtBuildingNo').dxTextBox('option', 'value');
+        var cntBuildingNo = $('#txtBuildingNo').dxNumberBox('option', 'value');
         var cntCity = $('#txtClientCity').dxTextBox('option', 'value');
         var cntCityar = $('#txtClientCityAr').dxTextBox('option', 'value');
-        var cntAdditionalNo = $('#txtAdditionalNo').dxTextBox('option', 'value');
+        var cntAdditionalNo = $('#txtAdditionalNo').dxNumberBox('option', 'value');
         var cntState = $('#txtState').dxTextBox('option', 'value');
         var cntStatear = $('#txtStateAr').dxTextBox('option', 'value');
-        var cntPostalCode = $('#txtPostalCode').dxTextBox('option', 'value');
+        var cntPostalCode = $('#txtPostalCode').dxNumberBox('option', 'value');
         var cntDistrict = $('#txtDistrict').dxTextBox('option', 'value');
+        var cntDistrictAr = $('#txtDistrictAr').dxTextBox('option', 'value');
+        var cntCountryCode = $('#ddlCountryCode').dxDropDownBox('option', 'value');
         //SupplierDetails Tab
         var supBillingName = $('#txtSupBilling').dxTextBox('option', 'value');
         var supBillingNamear = $('#txtSupBillingAr').dxTextBox('option', 'value');
-        var supVATNo = $('#txtSupVATNo').dxTextBox('option', 'value');
-        var supGroupVATNo = $('#txtSupGroupVATNo').dxTextBox('option', 'value');
+        var supVATNo = $('#txtSupVATNo').dxNumberBox('option', 'value');
+        var supGroupVATNo = $('#txtSupGroupVATNo').dxNumberBox('option', 'value');
+        var cntSupOtherType = $('#ddlSupOtherType').dxDropDownBox('option', 'value');
+        var cntSupOtherID = $('#txtSupOtherId').dxTextBox('option', 'value');
         var supAddress = $('#txtSupAddress').dxTextBox('option', 'value');
         var supAddressAr = $('#txtSupAddressAr1').dxTextBox('option', 'value');
 
         var supAdditionalAddress = $('#txtSupAdditionalAddress').dxTextBox('option', 'value');
         var supAdditionalAddressAr = $('#txtSupAdditionalAddressAr1').dxTextBox('option', 'value');
 
-        var supBuildingNo = $('#txtSupBuildingNo').dxTextBox('option', 'value');
+        var supBuildingNo = $('#txtSupBuildingNo').dxNumberBox('option', 'value');
         var supCity = $('#txtSupCity').dxTextBox('option', 'value');
-        var supCityAr = $('#txtSupCityAr').dxTextBox('option', 'value');
-        var supAdditionalNo = $('#txtSupAdditionalNo').dxTextBox('option', 'value');
+        var supCityAr = $('#txtSupCityAr1').dxTextBox('option', 'value');
+        var supAdditionalNo = $('#txtSupAdditionalNo').dxNumberBox('option', 'value');
         var supState = $('#txtSupState').dxTextBox('option', 'value');
         var supStateAr = $('#txtSupStateAr1').dxTextBox('option', 'value');
-        var supPostalCode = $('#txtSupPostalCode').dxTextBox('option', 'value');
+        var supPostalCode = $('#txtSupPostalCode').dxNumberBox('option', 'value');
         var supDistrict = $('#txtSupDistrict').dxTextBox('option', 'value');
         var supDistrictAr = $('#txtSupDistrictAr1').dxTextBox('option', 'value');
+        var cntSupCountryCode = $('#ddlSupCountryCode').dxDropDownBox('option', 'value');
 
         // AttachmentTab
         // --Right now Attachment details values is not completed.
@@ -4284,8 +4762,11 @@
 
         var bBillingAddress = $('#txtBillingAddress').dxTextArea('option', 'value');
         var bBillingAddressAr = $('#txtBillingAddressAr').dxTextArea('option', 'value');
-        var bVATNO = $('#txtBillingVATRegNo').dxTextBox('option', 'value');
-        var bTIN = $('#txtBillingTIN').dxTextBox('option', 'value');
+
+        var bVATNO = $('#txtBillingVATRegNo').dxNumberBox('option', 'value');
+   
+       // var bVATNOAR = $('#txtBillingVATRegNoArabic').dxNumberBox('option', 'value');
+        var bTIN = $('#txtBillingTIN').dxNumberBox('option', 'value');
         var bContactPerson = $('#txtBillingContactPerson').dxTextBox('option', 'value');
         var bContactNo = $('#txtBillingContactNumber').dxTextBox('option', 'value');
         var bFaxNo = $('#txtBillingFaxNo').dxTextBox('option', 'value');
@@ -4296,7 +4777,7 @@
         var obAddress = $('#txtObsSupAddress').dxTextBox('option', 'value');
         //   var obAddressar = $('#txtObsSupAddressAr').dxTextBox('option', 'value');
 
-        var obVATNo = $('#txtObsSupRegNo').dxTextBox('option', 'value');
+        var obVATNo = $('#txtObsSupRegNo').dxNumberBox('option', 'value');
 
         // if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
         //     alert("Account Head Name cannot be empty");
@@ -4355,44 +4836,50 @@
                 BillingName: cntBillingName,
                 BillingNameAr: cntBillingNamear,
 
-                VATRegistrationNo: cntVATNo,
-                ClientGroupVATNumber: cntGroupVATNo,
+                VATRegistrationNo: String(cntVATNo),
+                ClientGroupVATNumber:String(cntGroupVATNo),
                 ClientOtherIDType: cntOtherType,
                 ClientOtherID: cntOtherID,
                 ClientAddressStreet: cntAddress,
                 ClientAddressStreetAr: cntAddressar,
                 ClientAdditionalStreet: cntAdditionalAddress,
                 ClientAdditionalStreetAr: cntAdditionalAddressar,
-                ClientBuildingNumber: cntBuildingNo,
+                ClientBuildingNumber:String(cntBuildingNo),
                 ClientCity: cntCity,
                 ClientCityAr: cntCityar,
-                ClientAdditionalNumber: cntAdditionalNo,
+                ClientAdditionalNumber:String(cntAdditionalNo),
                 ClientProvince: cntState,
                 ClientProvinceAr: cntStatear,
-                ClientPostalCode: cntPostalCode,
+                ClientPostalCode:String(cntPostalCode),
                 ClientNeighborhood: cntDistrict,
+               ClientNeighborhoodAr: cntDistrictAr,
+
+                ClientCountryCode: cntCountryCode,
                 SupplierName: supBillingName,
                 SupplierNameAr: supBillingNamear,
-                SupplierVATNo: supVATNo,
-                SupplierGroupVATNumber: supGroupVATNo,
+                SupplierVATNo: String(supVATNo),
+                SupplierGroupVATNumber:String(supGroupVATNo),
+                SupplierOtherIdtype: cntSupOtherType,
+                SupplierOtherId: cntSupOtherID,
                 SupplierAddressStreet: supAddress,
                 SupplierAddressStreetAr: supAddressAr,
                 SupplierAdditionalStreet: supAdditionalAddress,
                 SupplierAdditionalStreetAr: supAdditionalAddressAr,
-                SupplierBuildingNumber: supBuildingNo,
+                SupplierBuildingNumber:String(supBuildingNo),
                 SupplierCity: supCity,
                 SupplierCityAr: supCityAr,
-                SupplierAdditionalNumber: supAdditionalNo,
+                SupplierAdditionalNumber:String(supAdditionalNo),
                 SupplierProvince: supState,
                 SupplierProvinceAr: supStateAr,
-                SupplierPostalCode: supPostalCode,
+                SupplierPostalCode:String(supPostalCode),
                 SupplierNeighborhood: supDistrict,
                 SupplierNeighborhoodAr: supDistrictAr,
+                SupplierCountryCode: cntSupCountryCode,
                 BillingName: bClientBillingName,
                 BillingAddress: bBillingAddress,
                 BillingAddressAr: bBillingAddressAr,
-                VATRegistrationNo: bVATNO,
-                ClientTIN: bTIN,
+                VATRegistrationNo: String(bVATNO),
+                ClientTIN:String(bTIN),
                 BillingContactPerson: bContactPerson,
                 BillingPhoneNo: bContactNo,
                 BillingFaxNo: bFaxNo,
@@ -4400,10 +4887,13 @@
                 BillingContactPersonTitle: bBillingTitle,
                 BillingBankAccount: bBillingPayment,
                 SupplierAddress: obAddress,
-                SupplierVATNo: obVATNo
+                SupplierVATNo:String(obVATNo)
             };
 
+            console.log(data);
+
             const values = JSON.stringify(data);
+            // console.log("val: " + values);
 
 
             $.ajax({
