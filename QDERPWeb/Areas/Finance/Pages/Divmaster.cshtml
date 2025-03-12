@@ -100,7 +100,7 @@
 
     .mainContainer {
         margin-top: 1em;
-        width:100%;
+        width: 100%;
     }
 </style>
 
@@ -110,59 +110,60 @@
     </div>
 </div>
 <div class="content-container-top">
-        <div class="form-group">
-           
-            @(
-                Html.DevExtreme().TextBox()
+    <div class="form-group">
+
+        @(
+            Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Type a New Branch & Add to the Existing List')"))
             .LabelMode(EditorLabelMode.Outside)
-                .ID("txtbranchName")
-                .Value(null)
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message(new JS("formatMessage('Branch Name is required')"));
-                })
-                )
+            .ID("txtbranchName")
+            .Value(null)
+            .ValidationRules(rules =>
+            {
+                rules.AddRequired()
+                .Message(new JS("formatMessage('Branch Name is required')"));
+            })
+            )
 
-        </div>
+    </div>
 
-            <div class="col-md-8">
-                <div class="form-group">
-                    @(
-                        Html.DevExtreme().TextBox()
+    <div class="col-md-8">
+        <div class="form-group">
+            @(
+                Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Branch In Arabic')"))
                 .LabelMode(EditorLabelMode.Outside)
-                        .ID("txtarabName")
-                        .Value(null)
-                        )
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    @(Html.DevExtreme().Button()
-                        .ID("btnadd")
-                        .Text(new JS("formatMessage('ADD')"))
-                        .Height(40)
-                        .Width(178)
-                        .Icon("plus")
-                        .OnClick("function() { adddivmaster(); }")
-                        .ElementAttr(new { @class = "dx-button-add" })
-                        )
-                </div>
-
-
+                .ID("txtarabName")
+                .Value(null)
+                )
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @(Html.DevExtreme().Button()
+                .ID("btnadd")
+                .Text(new JS("formatMessage('ADD')"))
+                .Height(40)
+                .Width(178)
+                .Icon("plus")
+                .OnClick("function() { adddivmaster(); }")
+                .ElementAttr(new { @class = "dx-button-add" })
+                )
         </div>
 
-        <div id="gridContainer"></div>
+
+    </div>
+
+    <div id="gridContainer"></div>
 
 
-<div id="gridContainer"></div>
+    <div id="gridContainer"></div>
 </div>
 
 <script type="text/javascript">
     $(function () {
         var updatedRows = []; // To store the updated rows
+        var searchPanelVisible = false; // Track the visibility of the search panel
 
         // Initialize DevExtreme DataGrid with CustomStore
         $("#gridContainer").dxDataGrid({
@@ -191,7 +192,7 @@
                             // SweetAlert on success
                             Swal.fire({
                                 icon: 'success',
-                                title:formatMessage('Branch Updated'),
+                                title: formatMessage('Branch Updated'),
                                 text: formatMessage('The branch has been successfully updated.'),
                                 confirmButtonText: 'OK'
                             });
@@ -302,7 +303,7 @@
                 showInfo: true
             },
             filterRow: {
-                visible: false,
+                visible: searchPanelVisible, // Set initial visibility of the filter row
                 applyFilter: "auto"
             },
             toolbar: {
@@ -325,22 +326,46 @@
                             text: formatMessage("Cancel"),  // Text for Cancel button
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
-                            }
+                            },
+                            visible: false // Initially hide the cancel button
                         },
-                        location: "after"
+                        location: "after",
+                        name: "cancelButton"
                     },
                     {
-                        widget: "dxButton", // Add the Back button
+                        widget: "dxButton",  // Adding Search Toggle button
                         options: {
-                            icon: "arrowleft", // You can choose another icon if you'd like
-                            text: formatMessage("Back"),
+                            icon: "search",  // Icon for Search button
+                            text: formatMessage("Toggle Search"),  // Text for Search button
                             onClick: function () {
-                                window.close(); // This closes the current window/tab
+                                searchPanelVisible = !searchPanelVisible; // Toggle the visibility
+                                $("#gridContainer").dxDataGrid("instance").option("filterRow.visible", searchPanelVisible); // Update the grid
                             }
                         },
                         location: "after"
                     }
                 ]
+            },
+            onEditingStart: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = true; // Show the cancel button when editing starts
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+            onSaved: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = false; // Hide the cancel button when editing ends
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+            onEditCanceling: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = false; // Hide the cancel button when editing is canceled
+                dataGrid.option("toolbar.items", toolbarItems);
             },
 
             onRowUpdated: function (e) {
@@ -472,9 +497,9 @@
         $("#BranchMaster").dxTextBox({
             text: formatMessage("Branch Master"),
             readOnly: true,
-						onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
         });
     });
 </script>
