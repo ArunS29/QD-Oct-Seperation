@@ -747,7 +747,7 @@
                                 .Icon("attach")
                                 .Height(150)
                                 .Width(100)
-                                .OnClick("openAttachmentOptions")
+                                .OnClick("onAttachButtonClick")
                                 )
                 </div>
                 <input type="file" id="fileInput" style="display:none;" />
@@ -1702,51 +1702,7 @@
 
 
 
-    function openAttachmentOptions() {
-        // Show an options dialog for Single/Multiple selection
-        DevExpress.ui.dialog.custom({
-            title: "Select Attachment Option",
-            messageHtml: "<p>How would you like to attach files?</p>",
-            buttons: [
-                { text: "Single File", onClick: () => handleFileSelection(false) },
-                { text: "Multiple Files", onClick: () => handleFileSelection(true) }
-            ]
-        }).show();
-    }
-
-    function handleFileSelection(isMultiple) {
-        // Configure the file input
-        const fileInput = document.getElementById("fileInput");
-        fileInput.multiple = isMultiple; // Allow multiple files if selected
-        fileInput.click(); // Trigger file input click
-    }
-
-    // File Input Change Handler (Optional: Log or Process Files)
-    document.getElementById("fileInput").addEventListener("change", function () {
-        const files = this.files;
-        console.log("Selected files:", files);
-        // Handle file upload logic here
-    });
-    // Initialize the popup
-    $(function () {
-        $("#popupContainer").dxPopup({
-            title: "Ledger Account",
-            visible: false, // Start hidden
-            width: 400,
-            height: 300,
-            showCloseButton: true,
-            dragEnabled: true,
-            closeOnOutsideClick: true,
-            contentTemplate: function () {
-                return $("<div>").text("The Ledger Account Form is in Under Progress.Soon it will added to this Function");
-            }
-        });
-    });
-
-    // Function to show the popup
-    // function showPopup() {
-    //     $("#popupContainer").dxPopup("instance").show();
-    // }
+    
 
     function showPopup() {
         var popup = $("#ledgerAccountPopup").dxPopup("instance");

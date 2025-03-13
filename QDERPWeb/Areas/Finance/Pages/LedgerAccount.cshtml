@@ -1271,7 +1271,7 @@
                                         )
 
                             </td>
-                            <td>
+                           @*  <td>
                                     @(Html.DevExtreme().Button()
                                         .ID("btnAddCountryCode")
                                         .Icon("plus")
@@ -1279,7 +1279,7 @@
                                         .OnClick("redirectAccoutledgerMaster")
                                         )
                             </td>
-
+ *@
                         </tr>
                     </table>
                 </div>
@@ -1662,14 +1662,14 @@
                                     )
 
                             </td>
-                            <td>
+                            @* <td>
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAddSupCountryCode")
                                     .Icon("plus")
                                     .ElementAttr("class", "button-alignment-down button-group")
                                     .OnClick("redirectAccoutledgerMaster")
                                     )
-                            </td>
+                            </td> *@
 
                         </tr>
                     </table>
@@ -4687,6 +4687,7 @@ function syncSupVATNumbers(e) {
     function PageClose() {
 
           window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
+       window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
        window.parent.$("#popupContainer").dxPopup("instance").hide();
     }
      function onPostButtonClick(e) {
@@ -4962,9 +4963,9 @@ function syncSupVATNumbers(e) {
                         //alert(response.message);
                         DevExpress.ui.notify(response.message, "success", 3000);
                         //  window.location.reload(); // This is for only particular page reload
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 3000);
+                        // setTimeout(function () {
+                        //     window.location.reload();
+                        // }, 3000);
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }

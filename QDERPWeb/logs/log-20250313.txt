@@ -1,0 +1,14 @@
+2025-03-13 09:39:24.977 +00:00 [INF] AspNetCoreThreadingTimerStoragesCleaner.StartCore
+
+2025-03-13 09:39:25.493 +00:00 [WRN] The page at '/Areas/Finance/Views/_BillsReceivables.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-13 09:39:25.497 +00:00 [WRN] The page at '/Areas/Finance/Views/_ChequePopup.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-13 09:39:25.497 +00:00 [WRN] The page at '/Areas/Finance/Views/_CostAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-13 09:39:25.498 +00:00 [WRN] The page at '/Areas/Finance/Views/_EmployeeAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-13 09:39:25.498 +00:00 [WRN] The page at '/Areas/Finance/Views/_LedgerAccount.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-13 09:39:25.499 +00:00 [WRN] The page at '/Areas/Finance/Views/_PropertyAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-13 09:39:25.499 +00:00 [WRN] The page at '/Areas/Finance/Views/_SalaryPayable.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-13 09:39:26.304 +00:00 [WRN] Failed to determine the https port for redirect.
+2025-03-13 09:39:26.658 +00:00 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-13 09:39:26.670 +00:00 [DBG] TenantContext Not Resolved.
+2025-03-13 09:39:26.689 +00:00 [INF] HTTP GET / responded 302 in 12.4274 ms
+2025-03-13 09:39:26.744 +00:00 [DBG] Resolving TenantContext using TenantResolver.

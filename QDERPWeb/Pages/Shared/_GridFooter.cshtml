@@ -220,6 +220,7 @@
             .Text(new JS("formatMessage('Print')"))
             .ElementAttr(new { style = "display: none;" })
             .Width(50)
+            .OnClick("exportGridToPDF")
             )
     </div>
 
@@ -369,6 +370,9 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -451,9 +455,63 @@
                 alert('An error occurred while fetching permissions. Please try again.');
             }
         });
-
+        showColumnChooser();
         console.log('End permission handling');
     });
+
+
+ 
+    function exportGridToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
+
+        // Get the instance of the DataGrid
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        // Extract headers
+        var headers = dataGrid.getVisibleColumns().map(column => column.caption);
+
+        // Extract data
+        var data = dataGrid.getVisibleRows().map(row => {
+            return dataGrid.getVisibleColumns().map(column => {
+                let value = row.data[column.dataField];
+                if (column.dataType === 'date' && value) {
+                    // Format date as dd-MMM-yyyy
+                    let date = new Date(value);
+                    let day = String(date.getDate()).padStart(2, '0');
+                    let month = date.toLocaleString('default', { month: 'short' });
+                    let year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+                return value;
+            });
+        });
+
+        // Generate PDF
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            styles: { overflow: 'linebreak' },
+            theme: 'grid',
+            tableWidth: 'auto', // Adjust table width to fit the page
+            columnStyles: {
+                0: { cellWidth: 'wrap' }, // Adjust the first column width
+                // Add more column styles if needed
+            },
+            margin: { top: 10, right: 10, bottom: 10, left: 10 }, // Adjust margins if needed
+            didDrawPage: function (data) {
+                // Adjust the table to fit the full width of the page
+                doc.setFontSize(10);
+                doc.text('DataGrid Export', data.settings.margin.left, 10);
+            }
+        });
+
+        // Open PDF in a new window
+        var string = doc.output('datauristring');
+        var newWindow = window.open();
+        newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
+    }
+
 
     // Hide context menu on click outside
     let isHeaderFilterEnabled = false;
