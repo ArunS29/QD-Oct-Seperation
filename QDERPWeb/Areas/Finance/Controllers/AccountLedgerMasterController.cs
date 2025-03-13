@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using SkiaSharp;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -870,7 +871,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-    }
+		[HttpGet("GetCreditPeriod")]
+		public IActionResult GetCreditPeriod(string accountId)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+
+            {
+                try
+                {
+					var creditPeriod = dbContext.Tbl201ChartOfAccounts
+				.Where(a => a.AccountId == accountId)
+				.Select(a => a.NoOfDaysCreditPeriod)
+				.FirstOrDefault();
+
+					return Json(new { noOfDays = creditPeriod });
+                }
+                catch (Exception ex)
+                {
+					return StatusCode(500, new { Message = "An unexpected error occurred.", Error = ex.Message });
+				}
+				
+			}
+
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+	}
 }
 
 

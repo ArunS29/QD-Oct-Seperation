@@ -147,9 +147,7 @@
 
         </div>
 
-        @*  <div>
-        @await Html.PartialAsync("_ChequeFooter")
-        </div> *@
+        
 
         <div class="dx-fieldset horizontal-container mt-2">
 
@@ -194,6 +192,7 @@
             .Text(new JS("formatMessage('Back')"))
             .Icon("arrowleft")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .OnClick("function() { closeChequePopup(); }")
             )
 
         </div>

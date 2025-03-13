@@ -157,7 +157,7 @@
 												.OnOpened("onOpened")
 												.TabIndex(1)
 												.OnKeyDown("onKeyDown")
-
+												.OnValueChanged("onSupplierNameChanged")
 												.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
 												)
 
@@ -304,7 +304,7 @@
 								.Width(1000)
 								)
 								.OnKeyDown("onKeyDown")
-
+						
 								.ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
 								)
 			</div>
@@ -1821,7 +1821,31 @@
 			iframe.src = url;
 		});
 	}
+	function onSupplierNameChanged(e) {
+		var accountId = e.value; // Get selected AccountId
+		if (!accountId) {
+			$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", 0);
+			return;
+		}
 
+		// Make AJAX request to fetch NoOfDaysCreditPeriod
+		$.ajax({
+			url: "/api/AccountLedgerMaster/GetCreditPeriod",
+			type: "GET",
+			data: { accountId: accountId },
+			success: function (response) {
+				if (response && response.noOfDays !== null) {
+					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", response.noOfDays);
+				} else {
+					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", 0);
+				}
+			},
+			error: function () {
+				console.error("Failed to fetch NoOfDaysCreditPeriod");
+				$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", 0);
+			}
+		});
+	}
 
 	</script>
 
