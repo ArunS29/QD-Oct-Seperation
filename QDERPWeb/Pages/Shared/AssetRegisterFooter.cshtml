@@ -211,12 +211,14 @@
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnPrint")
-            .Icon("print")
-            .Text(new JS("formatMessage('Print')"))
-            .Width(40)
-            )
+        @(
+            Html.DevExtreme().Button()
+                        .ID("btnPrint")
+                        .Icon("print")
+                        .Text(new JS("formatMessage('Print')"))
+                        .Width(40)
+                        .OnClick("exportGridToPDF")
+        )
     </div>
 
     <div class="btn-container">
@@ -315,6 +317,9 @@
     </div>
 </div>
 <script type="text/javascript">
+    $(document).ready(function () {
+        showColumnChooser();
+    });
     let isHeaderFilterEnabled = false;
 
     function toggleHeaderFilter() {
@@ -401,6 +406,74 @@
             reader.readAsText(file);
         }
     });
+    function exportGridToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
+
+        // Get the instance of the DataGrid
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        // Extract headers
+        var headers = dataGrid.getVisibleColumns().map(column => column.caption);
+
+        // Extract data and calculate sums
+        var creditSum = 0;
+        var debitSum = 0;
+        var data = dataGrid.getVisibleRows().map(row => {
+            return dataGrid.getVisibleColumns().map(column => {
+                let value = row.data[column.dataField];
+                if (column.dataType === 'date' && value) {
+                    // Format date as dd-MMM-yyyy
+                    let date = new Date(value);
+                    let day = String(date.getDate()).padStart(2, '0');
+                    let month = date.toLocaleString('default', { month: 'short' });
+                    let year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+                if (column.dataField === 'CrAmount') {
+                    creditSum += value || 0;
+                }
+                if (column.dataField === 'DrAmount') {
+                    debitSum += value || 0;
+                }
+                return value;
+            });
+        });
+
+        // Generate PDF
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            styles: { overflow: 'linebreak' },
+            theme: 'grid',
+            tableWidth: 'auto', // Adjust table width to fit the page
+            columnStyles: {
+                0: { cellWidth: 'wrap' }, // Adjust the first column width
+                // Add more column styles if needed
+            },
+            margin: { top: 10, right: 10, bottom: 30, left: 10 }, // Adjust margins if needed
+            didDrawPage: function (data) {
+                // Remove the "DataGrid Export" text
+                // doc.setFontSize(10);
+                // doc.text('DataGrid Export', data.settings.margin.left, 10);
+
+                // Add footer
+                var pageCount = doc.internal.getNumberOfPages();
+                doc.setFontSize(8);
+                doc.text(`Page ${data.pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 20);
+
+                // Add sum of credit and debit, and row count
+                doc.text(`Total Rows: ${dataGrid.getVisibleRows().length}`, data.settings.margin.left, doc.internal.pageSize.height - 15);
+                doc.text(`Total Credit: ${creditSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 50, doc.internal.pageSize.height - 15);
+                doc.text(`Total Debit: ${debitSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 150, doc.internal.pageSize.height - 15);
+            }
+        });
+
+        // Open PDF in a new window
+        var string = doc.output('datauristring');
+        var newWindow = window.open();
+        newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
+    }
     function saveLayoutClick() {
         var grid = $("#dataGrid").dxDataGrid("instance");
         var layout = grid.option("columns"); // Get current column configuration

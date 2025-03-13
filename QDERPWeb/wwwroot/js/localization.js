@@ -1158,11 +1158,14 @@
         "Chart Of Accounts Order": "Chart Of Accounts Order",
         "Accounts  Groups Ordering": "Accounts  Groups Ordering",
         "Cheque Issued in favour of": "Cheque Issued in favour of",
-        "Receivables Reports(with Effective Date')":"Receivables Reports(with Effective Date')"
-
+        "Receivables Reports with Effective Date":"Receivables Reports with Effective Date",
+        "Receivables with unmapped Vouchers": "Receivables with unmapped Vouchers",
+        "Bills Payable":"Bills Payable"
     },
     "ar": {
-        "Receivables Reports(with Effective Date')":"تقارير المستحقات (مع تاريخ السريان)",
+        "Bills Payable":"الفواتير المستحقة الدفع",
+        "Receivables with unmapped Vouchers":"مستحقات مع قسائم غير مخصصة",
+        "Receivables Reports with Effective Date":"تقارير المستحقات مع تاريخ السريان",
         "Cheque Issued in favour of":"شيك صادر لصالح",
         "Account Group Order No": "رقم ترتيب مجموعة الحساب",
         "Account Group": "مجموعة الحساب",

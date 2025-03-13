@@ -211,6 +211,7 @@
         .OnInitialized("dataGridInitialized") // Store the DataGrid instance
         .OnContextMenuPreparing("onContextMenuPreparing") // Handle right-click event
         .OnRowPrepared("onRowPrepared")       // Handle row appearance dynamically
+        .OnCellPrepared("oncellPrepared")
         .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
         .Paging(paging => paging.Enabled(true))
         .Scrolling(scrolling => scrolling
@@ -356,6 +357,11 @@
         if (e.rowType === "data" && e.rowElement && e.data.IsDisabled) {
             // Set the background color for the row
             $(e.rowElement).css("background-color", "rgb(255, 192, 192)"); // Light red for disabled rows
+        }
+    }
+        function oncellPrepared(e) {
+        if (e.rowType === "group" && (e.column.dataField === "CostAllocationMasterGroup" || e.column.dataField === "CostAllocationGroup")) {
+            e.cellElement.css("font-weight", "bold");
         }
     }
 
