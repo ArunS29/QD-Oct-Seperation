@@ -736,7 +736,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         dbContext.Tbl201ChartOfAccounts.Add(newAccount);
                         dbContext.SaveChanges();
-                        return Json(new { success = true, message = "Ledger account inserted successfully" });
+                        return Json(new { success = true, message = "Account Ledger Information Saved Successfully" });
                     }
                 }
                 catch (Exception ex)

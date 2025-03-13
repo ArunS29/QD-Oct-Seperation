@@ -5001,8 +5001,8 @@ function syncSupVATNumbers(e) {
                         // window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
                             
                     } else {
-                        DevExpress.ui.notify(response.message, "error", 3000);
-                    }
+                        DevExpress.ui.notify("Please Fill All the Required Fields", "error", 3000);
+                    } 
                 },
                 error: function (xhr, status, error) {
                     // Handle any error that occurred during the request
@@ -5012,7 +5012,9 @@ function syncSupVATNumbers(e) {
 
 
 
-        }
+        }else {
+                        DevExpress.ui.notify("Please Fill All the Required Fields", "error", 3000);
+                    }
     }
 
 

@@ -637,11 +637,7 @@
                     @(
                                 Html.DevExtreme().TextBox()
                                 .ID("ChequeNoReferenceNo")
-                                .ValidationRules(rules =>
-                                {
-                                    rules.AddRequired()
-                                    .Message("Cheque No is required");
-                                })
+                                
                                 .Value(null)
                                 )
                 </div>
@@ -663,11 +659,7 @@
                     @(
                                 Html.DevExtreme().TextBox()
                                 .ID("VoucherNarration")
-                                .ValidationRules(rules =>
-                                {
-                                    rules.AddRequired()
-                                    .Message("Voucher Narration is required");
-                                })
+                                 
                                 .Value(null)
 
                                 )
@@ -678,11 +670,7 @@
                                 Html.DevExtreme().TextBox()
                                 .ID("Remarks")
                                 .Value(null)
-                                .ValidationRules(rules =>
-                                {
-                                    rules.AddRequired()
-                                    .Message("Remarks is required");
-                                })
+                                
 
                                 )
 
@@ -2655,10 +2643,10 @@
                         $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
                         $("#EffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
 
-                        $("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
-                        $("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
+                        $("#ChequeNoReferenceNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
+                        $("#VoucherNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
                         $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
-                        $("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+                        $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
                         $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
                         $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
 
