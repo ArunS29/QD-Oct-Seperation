@@ -537,7 +537,7 @@
                             <td>
                                 @(Html.DevExtreme().Switch()
                                     .ID("schLedgerActive")
-                                    .Value(true)  // Set initial state to "on"
+                                    .Value(false)  // Set initial state to "on"
                                     .SwitchedOffText("No") // Text to display when the toggle is on
                                     .SwitchedOnText("Yes") // Text to display when the toggle is off
                                     .Width(100) // Width of the toggle switch
@@ -1684,7 +1684,7 @@
                                 @(Html.DevExtreme().Button()
                                     .Text(new JS("formatMessage('Attach File')"))  // The button's text
                                     .Icon("attach")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
-                                    .OnClick("function() { alert('Attachment clicked!'); }")
+                                    .OnClick("GoToAttachment")
                                     .Width("100%")
                                     )
                             </td>
@@ -2466,14 +2466,41 @@ function syncSupVATNumbers(e) {
 
         });
     });
-    $(function () {
-        $("#LedgerActive").dxTextBox({
-            text: formatMessage("Ledger is Currently Active:"),
-            readOnly: true
+    // $(function () {
+    //     $("#LedgerActive").dxTextBox({
+    //         text: formatMessage("Ledger is Currently Active:"),
+    //         readOnly: true
 
 
-        });
+    //     });
+    // });
+   $(function () {
+    // Initialize the TextBox with default text
+    $("#LedgerActive").dxTextBox({
+        value: "Ledger is Currently Active:",
+        readOnly: true
     });
+
+    // Get the instance of the switch
+    let switchInstance = $("#schLedgerActive").dxSwitch("instance");
+
+    // Handle value change event
+    switchInstance.option("onValueChanged", function (e) {
+        let textBoxInstance = $("#LedgerActive").dxTextBox("instance");
+
+        if (e.value) {
+            // When switched ON, update text and apply red color
+            textBoxInstance.option("value", "Ledger is set as obsolete:");
+            $("#LedgerActive .dx-texteditor-input").css("color", "red");
+        } else {
+            // When switched OFF, update text and reset color
+            textBoxInstance.option("value", "Ledger is Currently Active:");
+            $("#LedgerActive .dx-texteditor-input").css("color", "black");
+        }
+    });
+});
+
+
     $(function () {
         $("#branch").dxTextBox({
             text: formatMessage("Division / Branch:"),
@@ -4690,6 +4717,9 @@ function syncSupVATNumbers(e) {
        window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
        window.parent.$("#popupContainer").dxPopup("instance").hide();
     }
+    function GoToAttachment(){
+        window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
+    }
      function onPostButtonClick(e) {
      debugger;
      var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
@@ -4949,7 +4979,7 @@ function syncSupVATNumbers(e) {
             console.log(data);
 
             const values = JSON.stringify(data);
-            // console.log("val: " + values);
+            // console.log("val: " + values);   
 
 
             $.ajax({
@@ -4961,11 +4991,15 @@ function syncSupVATNumbers(e) {
                 success: function (response) {
                     if (response.success) {
                         //alert(response.message);
-                        DevExpress.ui.notify(response.message, "success", 3000);
-                        //  window.location.reload(); // This is for only particular page reload
-                        // setTimeout(function () {
-                        //     window.location.reload();
-                        // }, 3000);
+                        DevExpress.ui.notify(response.message, "success", 3000)
+                      setTimeout(function () {
+            window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
+            window.parent.$("#popupContainer").dxPopup("instance").hide();
+        }, 2000);
+                         // window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
+                         // window.parent.$("#popupContainer").dxPopup("instance").hide();
+                        // window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
+                            
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }
