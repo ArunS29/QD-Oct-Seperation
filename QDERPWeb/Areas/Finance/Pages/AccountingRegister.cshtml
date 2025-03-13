@@ -273,6 +273,7 @@
 		@(
 					Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerByVoucherTypeResult>()
 					.ID("dataGrid")
+			.Paging(p => p.Enabled(false))
 					.RemoteOperations(false)
 					.DataSource(new JS("[]"))
 					.Columns(columns =>
