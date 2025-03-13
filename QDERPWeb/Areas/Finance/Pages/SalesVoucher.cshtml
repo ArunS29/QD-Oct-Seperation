@@ -884,7 +884,7 @@
 					"InvoiceDueDate": $("#InvoiceDueDate").dxDateBox("instance").option("value"),
 					"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),
 					"VoucherRefNo": $("#VoucherRefNo").dxTextBox("instance").option("value"),
-					"VoucharNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
+					"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
 					"VoucherType": $("#VoucherType").dxSelectBox("instance").option("value"),
 					"BillRemarks": $("#BillRemarks").dxTextBox("instance").option("value"),
 					"UseSubmittedDate": $("#UseSubmittedDate").dxCheckBox("instance").option("value"),
@@ -896,15 +896,14 @@
 
 				$.ajax({
 					type: "POST",
-					url: "/api/SalesVoucher/UpdateSalesVoucher",
+					url: "/api/VoucherMaster/UpdateVoucher",
 					contentType: "application/json",
 					data: JSON.stringify(VM),
 					dataType: "json",
 					success: function (response) {
 						if (response.success) {
 							DevExpress.ui.notify("Voucher details saved successfully!", "success", 2000);
-							var button = $("#btnSave").dxButton("instance");
-							button.option("text", "Update");
+							
 						} else {
 							DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
 						}
@@ -996,7 +995,7 @@
 					//alert(data.VoucherEffectiveDate);
 					//alert(data.VoucherDate);
 					//alert(data.InvoiceSubmittedDate);
-					//alert(data.VoucherNarration);
+				  
 					$("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
 					$("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
 					$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", data.InvoiceSubmittedDate);
@@ -1030,6 +1029,7 @@
 					DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
 					//return;
 				}
+
 
 				$("#dataGrid").dxDataGrid({
 					dataSource: response.data,
@@ -1128,6 +1128,9 @@
 						// Reset validation states
 						accountHeadValidator.reset();
 						voucherAmtValidator.reset();
+
+							var button = $("#btnSave").dxButton("instance");
+							button.option("text", "Update");
 					},
 					error: function (xhr, status, error) {
 						///alert("Error occurred while updating data: " + error);
@@ -1584,8 +1587,7 @@
 					success: function (response) {
 						if (response.success) {
 							DevExpress.ui.notify("Voucher details saved successfully!", "success", 2000);
-							var button = $("#btnSave").dxButton("instance");
-							button.option("text", "Update");
+						
 						//	window.location.reload();
 						history.back();
 						} else {

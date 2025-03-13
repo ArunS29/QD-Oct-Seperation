@@ -571,8 +571,8 @@
 																		.Label(new JS("formatMessage('Voucher Type')"))
 																		.LabelMode(EditorLabelMode.Outside)
 																		.ID("VoucherType")
-																		.DataSource(new[] { "Sales", "Purchase", "Journal" })
-																		.Value("Purchase")
+																		.DataSource(new[] { "Sales", "Purchases", "Journal" })
+																		.Value("Purchases")
 																		.Disabled(true)
 																		)
 				</div>
@@ -1094,7 +1094,7 @@ $(function () {
 					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", data.InvoiceNoOfDays || null);
 					$("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
 					$("#ReferenceNote").dxTextBox("instance").option("value", data.ReferenceNote || "");
-					$("#VoucharNarration").dxTextBox("instance").option("value", data.VoucharNarration || "");
+					$("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
 					$("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
 					$("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
 					$("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
@@ -1329,13 +1329,22 @@ $(function () {
 					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
 					// Reset fields after successful entry
-					$("#ddAccountHead").dxDropDownBox("instance").option("value", "");
-					$("#txtEntryNarration").dxTextArea("instance").option("value", "");
-					$("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00");
+					// $("#ddAccountHead").dxDropDownBox("instance").option("value", "");
+					// $("#txtEntryNarration").dxTextArea("instance").option("value", "");
+					// $("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00");
 
 					// Reset validation states
+					// Clear AccountHead and VoucherAmount after successful response
+						accountHead.option("value", null); // Clear AccountHead
+						txtVoucherAmt.option("value", null); // Clear VoucherAmount
 
-					accountHeadValidator.reset();
+						// Reset validation states
+						accountHeadValidator.reset();
+						voucherAmtValidator.reset();
+
+							var button = $("#btnSave").dxButton("instance");
+							button.option("text", "Update");
+				
 
 
 					DevExpress.ui.notify("Voucher entry saved successfully!", "success", 2000);
@@ -1348,10 +1357,6 @@ $(function () {
 			DevExpress.ui.notify("Please fill required details!", "error", 2000);
 		}
 		if (accheadname != null) {
-			const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
-			ddbInstance.option("value", "-");
-			$("#txtEntryNarration").dxTextArea("instance").option("value", "");
-			$("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00")
 			if (accheadname.startsWith("Salary Payable")) {
 				var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
 
@@ -1393,7 +1398,7 @@ $(function () {
 				"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),
 				"VoucherRefNo": $("#VoucherRefNo").dxTextBox("instance").option("value"),
 				"ReferenceNote": $("#ReferenceNote").dxTextBox("instance").option("value"),
-				"VoucharNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
+				"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
 				"VoucherType": $("#VoucherType").dxSelectBox("instance").option("value"),
 				"BillRemarks": $("#BillRemarks").dxTextBox("instance").option("value"),
 				"UseSubmittedDate": $("#UseSubmittedDate").dxCheckBox("instance").option("value"),
@@ -1402,10 +1407,9 @@ $(function () {
 				"VoucherVerifiedOn": new Date(),
 				"VoucherApprovedOn": new Date()
 			};
-
 			$.ajax({
 				type: "POST",
-				url: "/api/SalesVoucher/UpdateSalesVoucher",
+				url: "/api/VoucherMaster/UpdateVoucher",
 				contentType: "application/json",
 				data: JSON.stringify(VM),
 				dataType: "json",
