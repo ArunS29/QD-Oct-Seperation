@@ -136,11 +136,11 @@ namespace QD.ERP.Web.Pages
             {
                 switch (reportName)
                 {
-                    case "XtraReportBillsReceivableAgeingReport":
-                        Report = new XtraReportBillsReceivableAgeingReport();
+                    case "ReceivableReport(EffectiveDate)":
+                        Report = new ReceivableReport_EffectiveDate_();
                         break;
-                    case "XtraReportAgeingreportsummary":
-                        Report = new XtraReportAgeingreportsummary();
+                    case "XtraRecivableReport":
+                        Report = new XtraRecivableReport();
                         break;
 
                     default:

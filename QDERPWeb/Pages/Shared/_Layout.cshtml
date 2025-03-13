@@ -744,11 +744,11 @@
         <!-- Submenu-->
         <div id="submenuContainer1" class="context-menu" style="display:none;">
             <div class="context-menu-item1">
-                <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
+                <div id="RptReceivableAgeing" onclick="handleClick(XtraReportAgeingreportsummary)">
                     <i class="fa fa-th-list"></i>
                     <span>Receivables Ageing Report</span>
                 </div>
-                <div onclick="ChangeRowHeight(70)">
+                <div onclick="handleClick(XtraReportBillsReceivableAgeingReport)">
                     <i class="fa fa-th-list"></i>
                     <span>Receivables Ageing Report (By Sales Person)</span>
                 </div>
@@ -1598,7 +1598,9 @@
                  "Payablelandscape":"Payablelandscape",
                  "payableRetention":"payableRetention",
                  "Balance":"Balance",
-                 "BillsPayablePaid":"BillsPayablePaid"
+                 "BillsPayablePaid":"BillsPayablePaid",
+                 "XtraReportBillsReceivableAgeingReport":"XtraReportBillsReceivableAgeingReport",
+                 "XtraReportAgeingreportsummary":"XtraReportAgeingreportsummary"
             };
 
             // Check if selectedText matches any report name

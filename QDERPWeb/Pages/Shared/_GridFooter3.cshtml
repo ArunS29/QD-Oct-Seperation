@@ -182,11 +182,11 @@
         .Text(new JS("formatMessage('Report')"))
         .Icon("textdocument")
         .Width(180)
-        .DropDownOptions(options => options.Width(230))
+        .DropDownOptions(options => options.Width(350))
         .Items(items =>
         {
             items.Add().Text(new JS("formatMessage('Receivables Reports')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Receivables Reports(with Effective Date')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Icon("textdocument");
             items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").OnClick("showSubmenu1");
             items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Icon("textdocument");
             items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete");
@@ -197,6 +197,7 @@
 
         })
         .ShowArrowIcon(true)
+        .OnItemClick("handleReportsClick") 
         )
 </div>
 </div>
@@ -466,6 +467,31 @@
         window.location.href = `/${tenantName}/Finance/ReportsByClients`;
     }
 
+        const reportMappings = {
+        "Receivables Reports": "XtraRecivableReport",
+        "Receivables Reports (with Effective Date)": "ReceivableReport(EffectiveDate)",
+        "Receivables Summary Reports": "ReceivablesSummaryReport",
+        "Receivables By Client": "ReceivablesByClientReport",
+        "Receivables By Sales Person": "ReceivablesBySalesPersonReport",
+        "Receivables By Branch/Division": "ReceivablesByBranchDivisionReport",
+        "Invoice Collection Report": "InvoiceCollectionReport",
+        "Receivables with Unmapped Vouchers": "ReceivablesUnmappedVouchersReport"
+    };
+
+    function handleReportsClick(e) {
+        const selectedText = e.itemData.text;
+
+        // Check if report exists in mappings
+        if (reportMappings[selectedText]) {
+            const reportName = reportMappings[selectedText];
+            console.log(`Opening report: ${reportName}`);
+
+            // Open Document Viewer without parameters
+            window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } else {
+            console.warn('No report mapping found for:', selectedText);
+        }
+    }
 
 
 </script>
