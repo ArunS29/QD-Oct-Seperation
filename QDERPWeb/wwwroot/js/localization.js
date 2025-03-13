@@ -1163,7 +1163,7 @@
     },
     "ar": {
         "Receivables Reports(with Effective Date')":"تقارير المستحقات (مع تاريخ السريان)",
-        "Cheque Issued in favour of":"",
+        "Cheque Issued in favour of":"شيك صادر لصالح",
         "Account Group Order No": "رقم ترتيب مجموعة الحساب",
         "Account Group": "مجموعة الحساب",
         "Account Group Id": "معرف مجموعة الحساب",
