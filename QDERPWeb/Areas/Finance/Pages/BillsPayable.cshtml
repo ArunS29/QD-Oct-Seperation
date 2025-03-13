@@ -166,7 +166,7 @@
 
                     band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('ReferenceNo')")).Alignment(HorizontalAlignment.Center)
                 .Width(120).CellTemplate(@<text>
-                <a href="/<%= tenantName %>/Finance/PurchaseVoucher?VoucherNo=<%= data.ReferenceNo %>" target="_blank">
+        <a href="/<%= tenantName %>/Finance/PurchaseVoucher?argsledno=<%= data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
                     <%= data.ReferenceNo %>
                 </a>
         </text>);
@@ -464,8 +464,8 @@
                     text: "View Ledger Transactions",
                     onItemClick: function () {
                         // Navigate to frm201LedgerView with the selected client details
-                        const clientID = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
-                        const url = `/${tenantName}/Finance/frm201LedgerView?clientID=${clientID}`;
+                        const AccountHeadNo = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
+                        const url = `/${tenantName}/Finance/AccountingLedgers?AccountId=${AccountHeadNo}`;
                         window.open(url, '_blank'); // Opens in a new tab
                     }
                 }
