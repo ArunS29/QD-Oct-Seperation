@@ -16,7 +16,7 @@ namespace QD.ERP.Web.Pages
 
         public string ReportName { get; private set; }
 
-        public string voucherType { get; private set; }
+        public string VoucherType { get; private set; }
         public DateTime FrmDate { get; private set; }
         public DateTime ToDate { get; private set; }
 
@@ -37,7 +37,7 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("Missing required parameters for PreviewRegister.");
                 }
 
-                voucherType = voucherType;
+                VoucherType = voucherType;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
@@ -54,7 +54,7 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("Missing required parameters for OrderByVchNoRegister.");
                 }
 
-                voucherType = voucherType;
+                VoucherType = voucherType;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
@@ -71,7 +71,7 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("Missing required parameters for OrderbyVchNoWIthVchNarration.");
                 }
 
-                voucherType = voucherType;
+                VoucherType = voucherType;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
@@ -88,7 +88,7 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("Missing required parameters for Register4line.");
                 }
 
-                voucherType = voucherType;
+                VoucherType = voucherType;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
@@ -105,7 +105,7 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("Missing required parameters for RegisterLineEntryNarration.");
                 }
 
-                voucherType = voucherType;
+                VoucherType = voucherType;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
@@ -122,7 +122,7 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("Missing required parameters for RegisterWithVchNarration.");
                 }
 
-                voucherType = voucherType;
+                VoucherType = voucherType;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 

@@ -18,13 +18,18 @@ namespace QD.ERP.Web.Pages
 
         private static readonly HashSet<string> reportsRequiringParameters = new()
         {
-            "PreviewRegister"
+            "PreviewRegister","OrderByVchNoRegister","OrderbyVchNoWIthVchNarration","Register4line","RegisterLineEntryNarration","RegisterWithVchNarration"
         };
 
         private static readonly Dictionary<string, Func<string, DateTime, DateTime, XtraReport>> parameterizedReports =
             new()
             {
-                { "PreviewRegister", (type, from, to) => new PreviewRegister(type, from, to) }
+                { "PreviewRegister", (voucherType, from, to) => new PreviewRegister(voucherType, from, to) },
+                { "OrderByVchNoRegister", (voucherType, from, to) => new OrderByVchNoRegister(voucherType, from, to) },
+                 { "OrderbyVchNoWIthVchNarration", (voucherType, from, to) => new OrderbyVchNoWIthVchNarration(voucherType, from, to) },
+                  { "Register4line", (voucherType, from, to) => new Register4line(voucherType, from, to) },
+                   { "RegisterLineEntryNarration", (voucherType, from, to) => new RegisterLineEntryNarration(voucherType, from, to) },
+                    { "RegisterWithVchNarration", (voucherType, from, to) => new RegisterWithVchNarration(voucherType, from, to) }
             };
 
         private static readonly Dictionary<string, Func<XtraReport>> simpleReports = new()
@@ -35,6 +40,8 @@ namespace QD.ERP.Web.Pages
 
         public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate)
         {
+            Console.WriteLine($"Incoming Parameters: reportName={reportName}, voucherType={voucherType}, frmDate={frmDate}, toDate={toDate}");
+
             if (string.IsNullOrWhiteSpace(reportName))
             {
                 return BadRequest("Invalid report name.");
@@ -66,5 +73,6 @@ namespace QD.ERP.Web.Pages
 
             return Page();
         }
+
     }
 }
