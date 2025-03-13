@@ -82,44 +82,37 @@
 
 
         <div id="FinanceManagementDashboard" class="card-header no-border-input"></div>
-        
-        <div class="container">
-            <div class="row">
-                <!-- Left Text Section -->
-                <div class="col-md-6" style="padding-top: 10px; padding-bottom: 10px;">
-                    <h4 id="BillsPayable" class="left-text no-border-input"></h4>
-                </div>
-
-                <!-- Right Button Section -->
-                <div class="form-group col-md-6" style="padding-top: 10px; padding-bottom: 10px; text-align: right;">
-                    <div>
-                        @(Html.DevExtreme().Button()
-                            .ID("btnBillsWithBalance")
-                            .Text(new JS("formatMessage('Show All Bills(Only with Balance)')"))
-                            .Height(30)
-                            .Width(350)
-                            .Icon("checklist")
-                            .OnClick("function() { switchButtons('btnBillsWithBalance'); }")
-                            )
-                    </div>
-
-                    <div>
-                        @(Html.DevExtreme().Button()
-                            .ID("btnBillsFullyPaid")
-                            .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
-                            .Height(30)
-                            .Width(350)
-                            .Icon("checklist")
-                            .Visible(false)//Initially hidden
-                            .OnClick("function() { switchButtons('btnBillsFullyPaid'); }")
-                            )
-                    </div>
-                </div>
-            </div>
+    <div class="title">
+        <div class="header-container">
+            <div id="BillsPayable" class="no-border-title"></div>
         </div>
     </div>
-<div class="">
+    </div>
+<div class="card-footer" style="display: flex;justify-content: space-between;background-color: aliceblue;">
     @await Html.PartialAsync("_GridFooter2")
+    <div class="form-group col-md-6" style="padding-top: 10px; padding-bottom: 10px; text-align: right;">
+        <div>
+            @(Html.DevExtreme().Button()
+                .ID("btnBillsWithBalance")
+                .Text(new JS("formatMessage('Show All Bills(Only with Balance)')"))
+                .Height(30)
+                .Width(350)
+                .Icon("checklist")
+                .OnClick("function() { switchButtons('btnBillsWithBalance'); }")
+                )
+        </div>
+    </div>
+</div>
+<div>
+    @(Html.DevExtreme().Button()
+        .ID("btnBillsFullyPaid")
+        .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
+        .Height(30)
+        .Width(350)
+        .Icon("checklist")
+        .Visible(false)//Initially hidden
+        .OnClick("function() { switchButtons('btnBillsFullyPaid'); }")
+        )
 </div>
     <div class="dx-field ledgerResult" style="overflow: hidden; font-family: Inter, Helvetica, Arial, sans-serif">
 

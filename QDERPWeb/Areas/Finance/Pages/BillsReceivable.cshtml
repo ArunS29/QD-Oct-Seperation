@@ -11,7 +11,6 @@
 
 <div class="container-fluid"></div>
 
-<div class="container">
     @* <div class="col-md-6" style="padding-bottom: 10px; display: flex; align-items: center;"> *@
     @*     <!-- Icon --> *@
     @*     <i class="fas fa-clone" style="margin-right: 10px; color: #ffcc00;"></i> *@
@@ -20,12 +19,12 @@
     @* </div> *@
     <div class="title">
         <div class="header-container">
-            <div id="BillsReceivable" class="no-border-input"></div>
+            <div id="BillsReceivable" class="no-border-title"></div>
         </div>
     </div>
+<div class="card-footer" style="display: flex;justify-content: space-between;">
+    @await Html.PartialAsync("_GridFooter3")
     <div class="row">
-        <!-- Left Text Section -->
-        <!-- Right Button Section -->
         <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;">
             <div>
                 @(Html.DevExtreme().Button()
@@ -38,24 +37,21 @@
                     )
             </div>
 
-            <div>
-                @(Html.DevExtreme().Button()
-                    .ID("btnBillsFullyReceived")
-                    .Text(new JS("formatMessage('Show Bills Receivable(Including fully Received)')"))
-                    .Height(30)
-                    .Width(750)
-                    .Icon("checklist")
-                    .Visible(false)//Initially hidden
-                    .OnClick("function() { switchButtons('btnBillsFullyReceived'); }")
-                    )
-            </div>
+           
         </div>
     </div>
 </div>
-<div class="card-footer">
-    @await Html.PartialAsync("_GridFooter3")
+<div>
+    @(Html.DevExtreme().Button()
+        .ID("btnBillsFullyReceived")
+        .Text(new JS("formatMessage('Show Bills Receivable(Including fully Received)')"))
+        .Height(30)
+        .Width(750)
+        .Icon("checklist")
+        .Visible(false)//Initially hidden
+        .OnClick("function() { switchButtons('btnBillsFullyReceived'); }")
+        )
 </div>
-
 <div class="dx-field ledgerResult" style="width: 98%; overflow: hidden;">
 
     @(Html.DevExtreme().DataGrid<Qry20105BillsReceivableAgeingView>()
