@@ -476,7 +476,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 // Remove the 'SYS-OP-' prefix from both DebitAccount and CreditAccount if they have it
                 string debitAccount = accountID.Replace("SYS-OP-", "");
-                string creditAccount = accountID.Replace("SYS-OP-", "");  // Remove 'SYS-OP-' from CreditAccount as well
+                string creditAccount = "L00503";
+                    //accountID.Replace("SYS-OP-", "");  // Remove 'SYS-OP-' from CreditAccount as well
 
                 // Get today's date
                 var todayDate = DateTime.Now;
