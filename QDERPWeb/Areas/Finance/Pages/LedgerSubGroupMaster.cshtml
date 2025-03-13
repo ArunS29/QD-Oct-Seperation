@@ -88,7 +88,7 @@
 
     .mainContainer {
         margin-top: 1em;
-        width:100%;
+        width: 100%;
     }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -98,57 +98,59 @@
     </div>
 </div>
 <div class="content-container-top">
-                    <div class="form-group">
-                        @(
-                            Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Enter New Sub Group & Add to the Existing List')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("txtSubGroupName")
-                            .Value(null)
-                            )
-                    </div>
-            </div>
+    <div class="form-group">
+        @(
+            Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Enter New Sub Group & Add to the Existing List')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("txtSubGroupName")
+            .Value(null)
+            )
+    </div>
+</div>
 
-                <div class="col-md-8">
-                    <div class="form-group">
-                        @(
-                            Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Sub Group Name (Arabic)')"))
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("txtSubGroupNameAr")
-                            .Value(null)
-                            )
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @(Html.DevExtreme().Button()
-                            .ID("btnAdd")
-                            .Text(new JS("formatMessage('ADD')"))
-                            .Height(70)
-                            .Width(178)
-                            .Icon("plus")
-                            .OnClick("function() { addLedgerSubGroup(); }")
-                            .ElementAttr(new { @class = "dx-button-add" })
-                            )
-                    </div>
-                </div>
-            <div class="clear"></div>
-            <br />
-            <div id="gridContainer"></div>
+<div class="col-md-8">
+    <div class="form-group">
+        @(
+            Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Sub Group Name (Arabic)')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("txtSubGroupNameAr")
+            .Value(null)
+            )
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="form-group">
+        @(Html.DevExtreme().Button()
+            .ID("btnAdd")
+            .Text(new JS("formatMessage('ADD')"))
+            .Height(70)
+            .Width(178)
+            .Icon("plus")
+            .OnClick("function() { addLedgerSubGroup(); }")
+            .ElementAttr(new { @class = "dx-button-add" })
+            )
+    </div>
+</div>
+<div class="clear"></div>
+<br />
+<div id="gridContainer"></div>
 <script type="text/javascript">
     $(function () {
-                                $("#LedgerSubGroupMaster").dxTextBox({
-                                            text:formatMessage("Ledger Sub Group Master"),
-                                            readOnly: true,
-						onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
+        $("#LedgerSubGroupMaster").dxTextBox({
+            text: formatMessage("Ledger Sub Group Master"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
 
-                            });
-                    });
+        });
+    });
     $(function () {
         var updatedRows = []; // To store the updated rows
+        var searchPanelVisible = false; // Track the visibility of the search panel
+
 
         // Initialize DevExtreme DataGrid with CustomStore
         $("#gridContainer").dxDataGrid({
@@ -221,7 +223,7 @@
                 showInfo: true
             },
             filterRow: {
-                visible: false,
+                visible: searchPanelVisible, // Set initial visibility of the filter row
                 applyFilter: "auto"
             },
             toolbar: {
@@ -229,39 +231,62 @@
                     {
                         widget: "dxButton",
                         options: {
-                            icon: "save",
-                            text: formatMessage("Update"),
+                            icon: "save",  // Icon for the Save button
+                            text: formatMessage("Update"),  // Text alongside the icon
                             onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").saveEditData();
+                                $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
                             }
                         },
                         location: "after"
                     },
                     {
-                        widget: "dxButton",
+                        widget: "dxButton",  // Adding Cancel button
                         options: {
-                            icon: "close",
-                            text: formatMessage("Cancel"),
+                            icon: "close",  // Icon for Cancel button
+                            text: formatMessage("Cancel"),  // Text for Cancel button
                             onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").cancelEditData();
-                            }
+                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
+                            },
+                            visible: false // Initially hide the cancel button
                         },
-                        location: "after"
+                        location: "after",
+                        name: "cancelButton"
                     },
                     {
-                        widget: "dxButton",
+                        widget: "dxButton",  // Adding Search Toggle button
                         options: {
-                            icon: "arrowleft",
-                            text: formatMessage("Back"),
+                            icon: "search",  // Icon for Search button
+                            text: formatMessage("Toggle Search"),  // Text for Search button
                             onClick: function () {
-                                window.close();
+                                searchPanelVisible = !searchPanelVisible; // Toggle the visibility
+                                $("#gridContainer").dxDataGrid("instance").option("filterRow.visible", searchPanelVisible); // Update the grid
                             }
                         },
                         location: "after"
                     }
                 ]
             },
-
+            onEditingStart: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = true; // Show the cancel button when editing starts
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+            onSaved: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = false; // Hide the cancel button when editing ends
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+            onEditCanceling: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = false; // Hide the cancel button when editing is canceled
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
             onRowUpdated: function (e) {
                 Swal.fire({
                     icon: 'success',

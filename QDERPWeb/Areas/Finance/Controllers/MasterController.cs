@@ -83,13 +83,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         return BadRequest(new { success = false, message = "Branch Name English already exists." });
                     }
-
                     var maxBranchCode = dbContext.Tbl20115CompanyBranches
-                        .OrderByDescending(b => b.BranchCode)
-                        .Select(b => b.BranchCode)
-                        .FirstOrDefault();
+                        .AsEnumerable() // Switch to in-memory processing
+                        .Select(b => int.TryParse(b.BranchCode, out int code) ? code : 0) // Convert BranchCode to integer
+                        .OrderByDescending(code => code) // Order by the integer value
+                        .FirstOrDefault(); // Get the maximum value
 
-                    int newBranchCode = string.IsNullOrEmpty(maxBranchCode) ? 1 : int.Parse(maxBranchCode) + 1;
+                    int newBranchCode = maxBranchCode + 1;
                     branch.BranchCode = newBranchCode.ToString();
 
                     dbContext.Tbl20115CompanyBranches.Add(branch);

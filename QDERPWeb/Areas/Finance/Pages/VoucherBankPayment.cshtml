@@ -501,7 +501,7 @@
             @(Html.DevExtreme().Popup()
                 .ID("CostAllocationPopup")
                 .Title("Cost Allocation")
-                .Width(1300)
+                .Width("90%")
                 .Height(500)
                 .Visible(false)
                 .ShowCloseButton(true)
@@ -529,7 +529,7 @@
             @(Html.DevExtreme().Popup()
                 .ID("PropertyAllocationPopup")
                 .Title("Property Allocation")
-                .Width(1200)
+                .Width("90%")
                 .Height(500)
                 .Visible(false)
                 .ShowCloseButton(true)
@@ -557,7 +557,7 @@
             @(Html.DevExtreme().Popup()
                 .ID("EmployeeAllocationPopup")
                 .Title("Employee Allocation")
-                .Width(1200)
+                .Width("90%")
                 .Height(500)
                 .Visible(false)
                 .ShowCloseButton(true)
@@ -585,7 +585,7 @@
             @(Html.DevExtreme().Popup()
                 .ID("BillsReceivablePopup")
                 .Title("Finance Module: Receivables / Payables")
-                .Width(1200)
+                .Width("90%")
                 .Height(500)
                 .Visible(false)
                 .ShowCloseButton(true)
@@ -614,7 +614,7 @@
             @(Html.DevExtreme().Popup()
                 .ID("SalaryPaidEntryPopup")
                 .Title("Finance Module: Receivables / Payables")
-                .Width(1200)
+                .Width("90%")
                 .Height(500)
                 .Visible(false)
                 .ShowCloseButton(true)
@@ -646,9 +646,8 @@
                     <div class="row align-items-start">
                         <!-- Cheque No/Reference No with Popup Button -->
 
-                        <div class="col-12 col-md-6 col-lg-4 mb-3">
-                            <div class="form-group">
-                                <div class="input-group">
+                        <div class="col-12 col-md-6 col-lg-5 mb-3">
+                            <div class="form-group" style="display: flex;justify-content: center;align-items: end;gap: 16px;position: relative;z-index: 1500;">
                                     @(
                                         Html.DevExtreme().TextBox()
                                         .Label(new JS("formatMessage('Cheque No/Reference No')"))
@@ -657,7 +656,6 @@
                                         .LabelMode(EditorLabelMode.Outside)
                                         .Width(257)
                                         )
-                                    <div class="form-group" style="position:relative;top: 10px;">
                                         @(Html.DevExtreme().Button()
                                             .ID("btnChequePopup")
                                             .Icon("money")
@@ -665,30 +663,19 @@
                                             .Width(60)
                                             .OnClick("showChequePopup")
                                             )
-                                    </div>
-                                </div>
-
-
+                                        @(
+                                            Html.DevExtreme().TextBox()
+                                            .Label(new JS("formatMessage('Voucher Narration')"))
+                                            .LabelMode(EditorLabelMode.Outside)
+                                            .ID("VoucherNarration")
+                                            .Value(null)
+                                            .Height(50)
+                                            .Width(325)
+                                            .ReadOnly(false)
+                                            )
                             </div>
                         </div>
 
-
-                        <!-- Voucher Narration -->
-                        <div class="col-md-8" style="position:relative;">
-                            <div class="form-group">
-                                @(
-                                    Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Voucher Narration')"))
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .ID("VoucherNarration")
-                                    .Value(null)
-                                    .Height(50)
-                                    .Width(325)
-                                    )
-                            </div>
-                        </div>
-
-                        <!-- Button to the right -->
 
                         <div class="d-flex justify-content-end" style="position:relative;top: -54px;right: 100px;">
                             <div class="form-group">
@@ -701,7 +688,7 @@
                                     )
                             </div>
                             <input type="file" id="fileInput" style="display:none;" />
-                        </div>
+                    </div>
 
                     </div>
                 </div>
@@ -1200,7 +1187,7 @@
 
                         // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
 
-                        "ChequeNoReferenceNo": $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null,
+                        "VoucherRefNo": $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null,
 
                         "VoucherNarration": $("#VoucherNarration").dxTextBox("instance").option("value") || null,
 
@@ -1212,7 +1199,7 @@
 
                          "VoucherType": $("#VoucherType").dxSelectBox("instance").option("value") || null,
 
-                        "Remarks": $("#Remarks").dxTextBox("instance").option("value") || null,
+                        "BillRemarks": $("#Remarks").dxTextBox("instance").option("value") || null,
 
                         // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
                         "IsVerified": $("#VerifiedBy").dxCheckBox("instance").option("value"),
@@ -1304,7 +1291,7 @@
 
                         // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
 
-                        "ChequeNoReferenceNo": $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null,
+                        "VoucherRefNo": $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null,
 
                         "VoucherNarration": $("#VoucherNarration").dxTextBox("instance").option("value") || null,
 
@@ -1316,7 +1303,7 @@
 
                         "VoucherType": $("#VoucherType").dxSelectBox("instance").option("value") || null,
 
-                        "Remarks": $("#Remarks").dxTextBox("instance").option("value") || null,
+                        "BillRemarks": $("#Remarks").dxTextBox("instance").option("value") || null,
 
                         // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
                         "IsVerified": $("#VerifiedBy").dxCheckBox("instance").option("value"),
@@ -3460,8 +3447,7 @@
         //     });
 
         // }
-
-         function fetchVoucherDetails(voucherNo) {
+    function fetchVoucherDetails(voucherNo) {
 
 
             $.ajax({
@@ -3481,11 +3467,13 @@
 
                     $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
                     $("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
-
-                    $("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
-                    $("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
+                    $("#BillDate").dxDateBox("instance").option("value", data.BillDate || "");
+                    $("#BillPaidTo").dxTextBox("instance").option("value", data.BillPaidTo || "");
+                     $("#BillNo").dxTextBox("instance").option("value", data.BillNo || "");
+                    $("#ChequeNoReferenceNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
+                    $("#VoucherNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
                     $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
-                    $("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+                    $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
                     $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
                     $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
 

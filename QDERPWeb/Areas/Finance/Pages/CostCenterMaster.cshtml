@@ -146,110 +146,48 @@
                 )
         </div>
     </div>
-
-    <div class="content-container1-top">
-        <div class="card-header">
-            <i class="fas fa-pen-nib header-icon"></i> <!-- Font Awesome pen nib icon -->
-            <span class="header-text">Cost Center's</span>
+        <div class="title">
+            <div class="header-container" style="gap:10px;padding:10px">
+                <i class="fas fa-pen-nib header-icon" style="font-size: 1.5rem; color: goldenrod;"></i>
+                <div id="CostAllocationPopup" class="no-border-title">Cost Center's</div>
+            </div>
         </div>
+        <div class="container5">
+            <div class="dx-fieldset horizontal-container ">
+            <label for="CostAllocationUnitID">Cost Center Code:</label>
+            @(Html.DevExtreme()
+                .TextBox()
+                .ID("CostAllocationUnitID")
+                .Value(null)
+                .Width("30%")
+                .MaxLength(50)
+                )
 
-        <br />
-        @*         <div class="container1">
-        <div class="card">
-        <h5 style="margin-left:10px;">Cost Center Details</h5>
-        </div>
-        </div> *@
+            <label for="CostAllocationUnit">Cost Center Unit:</label>
+            @(Html.DevExtreme()
+                .TextBox()
+                .ID("CostAllocationUnit")
+                .Value(null)
+                .Width("30%")
+                )
 
-
-        <div class="container1">
-
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-md-2">
-                        <label for="CostAllocationUnitID">
-                            Cost Center Code:
-                        </label>
-                    </div>
-
-                    <div class="col-md-6">
-                        @(Html.DevExtreme()
-                            .TextBox()
-                            .ID("CostAllocationUnitID")
-                            .Value(null)
-                            .Width("100%")
-                            .MaxLength(50)
-                            )
-                    </div>
-                </div>
+            <label for="CostCenterGroup">Cost Center Group:</label>
+            <div id="costCenterComboBox"></div>
+            <label for="CostAllocationMasterGroup">Cost Center Master:</label>
+            <div id="costCenterMaster1"></div>
+            </div>
+        <div class="dx-fieldset horizontal-container ">
+            <label for="CostUnitRemarks">Cost Center Remarks:</label>
+            @(Html.DevExtreme()
+                .TextBox()
+                .ID("CostUnitRemarks")
+                .Value(null)
+                .Width("100%")
+                .MaxLength(250)
+                )
             </div>
 
-
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-md-2">
-                        <label for="CostAllocationUnit">
-                            Cost Center Unit:
-                        </label>
-                    </div>
-                    <div class="col-md-10">
-                        @(Html.DevExtreme()
-                            .TextBox()
-                            .ID("CostAllocationUnit")
-                            .Value(null)
-                            .Width("100%")
-                            )
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-md-2">
-                        <label for="CostCenterGroup">
-                            Cost Center Group:
-                        </label>
-                    </div>
-                    <div class="col-md-10">
-
-                        <!-- ComboBox for Cost Center Group -->
-                        <div id="costCenterComboBox"></div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-md-2">
-
-                        <label for="CostAllocationMasterGroup">
-                            Cost Center Master
-                            :
-                        </label>
-                    </div>
-                    <div class="col-md-10">
-                        <!-- ComboBox for Cost Center Group -->
-                        <div id="costCenterMaster1"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-md-2">
-                        <label for="CostUnitRemarks">
-                            Cost Center Remarks:
-                        </label>
-                    </div>
-                    <div class="col-md-10">
-                        @(Html.DevExtreme()
-                            .TextBox()
-                            .ID("CostUnitRemarks")
-                            .Value(null)
-                            .Width("100%")
-                            .MaxLength(250)
-                            )
-                    </div>
-                </div>
-            </div>
+        <div class="dx-fieldset horizontal-container ">
             <div class="row">
                 <div class="col-md-5">
                     <div class="form-group">
@@ -267,7 +205,7 @@
                 )
                 </div> *@
                 <div class="col-md-5">
-                    <div class="form-group">
+                    <div class="form-group" style="width: 120%;">
                         <label for="Branch" style=" display: flex; justify-content: space-between; align-items: center;">
                             <span>Project:</span>
                             <a class="right-text" style="color: #0398fc; text-decoration: underline;">Add from the Project</a>
@@ -309,7 +247,7 @@
             <div class="row">
                 <!-- Dropdown Section -->
                 <div class="col-md-5">
-                    <div class="form-group">
+                    <div class="form-group" style="width: 100%;">
                         <label for="Branch">Division/Branch:</label>
                         @(Html.DevExtreme().DropDownBox()
                             .DataSource(d => d.WebApi()
@@ -346,15 +284,14 @@
                     </div>
                 </div>
             </div>
-
+        </div>
 
 
         </div>
 
     </div>
-    <br />
     <hr />
-    <div class="container1">
+    <div class="container5">
         <div class="row">
             <div class="col-md-2">
                 <label for="CreatedBy">Created By:</label>

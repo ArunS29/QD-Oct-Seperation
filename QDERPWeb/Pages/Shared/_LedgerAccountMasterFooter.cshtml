@@ -73,19 +73,28 @@
         .Icon("save")
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
-
+   
     @(Html.DevExtreme().Button()
         .ID("btnDelete")
         .Text("Delete")
         .Icon("close")
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
+
     @(Html.DevExtreme().Button()
+        .ID("btnBack")
+    .Text("Close")
+    .Icon("arrowleft")
+    .ElementAttr(new { @class = "bold-button" })
+    .OnClick("closeForm")  // Attach the click event handler
+)
+
+  @*   @(Html.DevExtreme().Button()
         .ID("btnBack")
         .Text("Close")
         .Icon("arrowleft")
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-        )
+        ) *@
 </div>
 <script type="text/javascript">
     // Hide context menu on click outside
@@ -288,4 +297,6 @@
             reader.readAsText(file);
         }
     });
+
+  
 </script>

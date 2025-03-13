@@ -65,16 +65,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-              //      Tbl201VoucherMaster voucherMaster = new();
-              //      bool isVoucherExists = dbContext.Tbl201VoucherMasters
-              //.Any(v => v.VoucherNo == VE.VoucherNo);
+                    Tbl201VoucherMaster voucherMaster = new();
+                    bool isVoucherExists = dbContext.Tbl201VoucherMasters
+              .Any(v => v.VoucherNo == VE.VoucherNo);
 
-              //      if (!isVoucherExists)
-              //      {
-              //          voucherMaster.VoucherNo = VE.VoucherNo;
-              //          voucherMaster.VoucherDate = DateTime.Now;
-              //          dbContext.Tbl201VoucherMasters.Add(voucherMaster);
-              //      }
+                    if (!isVoucherExists)
+                    {
+                        voucherMaster.VoucherNo = VE.VoucherNo;
+                        voucherMaster.VoucherDate = DateTime.Now;
+                        dbContext.Tbl201VoucherMasters.Add(voucherMaster);
+                    }
 
                     dbContext.Tbl201VoucherEntries.Add(VE);
                     await dbContext.SaveChangesAsync();
@@ -248,5 +248,96 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        //[HttpPost]
+        //public async Task<ActionResult> UpdateSalesVoucher([FromBody] Tbl201VoucherMaster VM)
+        //{
+        //    if (VM == null || string.IsNullOrWhiteSpace(VM.VoucherNo))
+        //    {
+        //        return BadRequest(new { success = false, message = "Invalid data received." });
+        //    }
+
+        //    try
+        //    {
+
+        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            var existingVoucher = await dbContext.Tbl201VoucherMasters
+        //                                            .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
+
+        //            if (existingVoucher != null)
+        //            {
+        //                // Update existing record
+        //                dbContext.Entry(existingVoucher).CurrentValues.SetValues(VM);
+        //            }
+        //            else
+        //            {
+        //                // Insert new record
+        //                dbContext.Tbl201VoucherMasters.Add(VM);
+        //            }
+
+        //            await dbContext.SaveChangesAsync();
+        //            return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Error in UpdateAssetDocument: {ex.Message}");
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+        //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        //}
+
+
+         [HttpPost]
+        public async Task<ActionResult> UpdateSalesVoucher([FromBody] Tbl201VoucherMaster VM)
+        {
+            
+            if (VM == null || string.IsNullOrWhiteSpace(VM.VoucherNo))
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var voucherNo = VM.VoucherNo?.Trim(); // Remove whitespace and prevent null issues
+                    if (string.IsNullOrEmpty(voucherNo))
+                    {
+                        return BadRequest(new { success = false, message = "Voucher number is required." });
+                    }
+
+                    var existingVoucher = await dbContext.Tbl201VoucherMasters
+                                                         .FirstOrDefaultAsync(v => v.VoucherNo == voucherNo);
+
+                    if (existingVoucher != null)
+                    {
+                        dbContext.Entry(existingVoucher).CurrentValues.SetValues(VM);
+
+
+                        //dbContext.Tbl201VoucherMasters.Update(existingVoucher);
+                    }
+                    else
+                    {
+                        // Insert new record
+                        dbContext.Tbl201VoucherMasters.Add(VM);
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in UpdateSalesVoucher: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+
     }
 }

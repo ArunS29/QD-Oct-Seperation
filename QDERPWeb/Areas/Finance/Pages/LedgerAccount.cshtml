@@ -952,6 +952,7 @@
                                         .Max(999999999999999) // Max limit of 15 digits
                                         .InputAttr("maxlength", "15") // Set the max length attribute to 15
                                         .Format("###########") // Ensures only integers (up to 15 digits)
+.OnValueChanged("syncVATNumbers")
                                        // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                         )
 
@@ -1350,6 +1351,7 @@
                                     .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     )
+                                    .OnValueChanged("syncSupVATNumbers")
                                     )
 
                             </td>
@@ -1996,7 +1998,7 @@
                                     @(Html.DevExtreme().TextBox()
                                         .ID("txtObsSupAddressAr")
                                         .Width("100%")
-                                        .InputAttr("aria-label", "Arabic Supplier Address"))
+                                        .InputAttr("aria-label", "txtObsSupAddressAr"))
                                 </div>
                             </td>
                         </tr>
@@ -2029,10 +2031,19 @@
                                         .Icon("fas fa-language")
                                         .OnClick("onObsSupRegNoArabicClick")
                                         )
-                                    @(Html.DevExtreme().TextBox()
-                                        .ID("txtObsSupRegNoAr")
-                                        .Width("100%")
-                                        .InputAttr("aria-label", "Arabic Supplier VAT Registration No"))
+                                   
+
+                                           @(Html.DevExtreme().NumberBox()
+    .ID("txtObsSupRegNoAr") // Keep the same ID
+    .Width("100%") // Set width to 100%
+    .Min(0) // No negative numbers allowed
+    .Max(999999999999999) // Max limit of 15 digits
+    .InputAttr("aria-label", "txtObsSupRegNoAr")
+    .InputAttr("maxlength", "15") // Set max length to 15
+    .Format("###############") // Format for numeric input (max 15 digits)
+   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+)
+
                                 </div>
                             </td>
                         </tr>
@@ -2386,7 +2397,14 @@
 </div>
 <script>
 
-
+    function syncVATNumbers(e) {
+    // Set the value of txtBillingVATRegNo to the value of txtClientVATNo
+    $("#txtBillingVATRegNo").dxNumberBox("instance").option("value", e.value);
+}
+function syncSupVATNumbers(e) {
+    // Set the value of txtBillingVATRegNo to the value of txtClientVATNo
+    $("#txtObsSupRegNo").dxNumberBox("instance").option("value", e.value);
+}
    
     $(function () {
         $("#DefaultEntry").dxTextBox({
@@ -3351,8 +3369,21 @@
 
                     }
                     CountryCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCountryCode] });
-                    SupCountryCodedataGridSelectionChanged({ selectedRowKeys: [account.SupplierCountryCode] });
+                     SupCountryCodedataGridSelectionChanged({ selectedRowKeys: [account.SupplierCountryCode] });
 
+                    //   CountryCodedataGridSelectionChanged({ selectedRowKeys: [account.SupplierOtherIdtype] });
+                    // var txtSupOtherId = $('#txtSupOtherId').dxTextBox("instance");
+                    // if (txtSupOtherId) {
+                    //     txtSupOtherId.option("value", account.SupplierOtherId);
+
+                    // }
+
+                    //   SupCountryCodedataGridSelectionChanged({ selectedRowKeys: [account.CountryName] });
+                    // var ddlSupCountryCode = $('#ddlSupCountryCode').dxTextBox("instance");
+                    // if (ddlSupCountryCode) {
+                    //     ddlSupCountryCode.option("value", account.SupplierCountryCode);
+
+                    // }
                     //SupplierDetails Tab
 
                     var txtSupBilling = $('#txtSupBilling').dxTextBox("instance");
@@ -3372,7 +3403,7 @@
                     }
                     var txtSupGroupVATNo = $('#txtSupGroupVATNo').dxNumberBox("instance");
                     if (txtSupGroupVATNo) {
-                        txtSupGroupVATNo.option("value", account.SupplierGroupVATNumber);
+                        txtSupGroupVATNo.option("value", account.SupplierGroupVatnumber);
 
                     }
                     SupothertypedataGridSelectionChanged({ selectedRowKeys: [account.SupplierOtherIdtype] });
@@ -3473,7 +3504,12 @@
                     }
                     var txtBillingVATRegNo = $('#txtBillingVATRegNo').dxNumberBox("instance");
                     if (txtBillingVATRegNo) {
-                        txtBillingVATRegNo.option("value", account.VATRegistrationNo);
+                        txtBillingVATRegNo.option("value", account.VatregistrationNo);
+
+                    }
+                      var txtBillingVATRegNoArabic = $('#txtBillingVATRegNoArabic').dxNumberBox("instance");
+                    if (txtBillingVATRegNoArabic) {
+                        txtBillingVATRegNoArabic.option("value", account.VatregistrationNo);
 
                     }
                     var txtBillingTIN = $('#txtBillingTIN').dxNumberBox("instance");
@@ -3487,7 +3523,8 @@
 
                     }
                     billingdataGridSelectionChanged({ selectedRowKeys: [account.BillingContactPersonTitle] });
-                    var txtBillingVendorNo = $('#txtBillingVendorNo').dxTextArea("instance");
+
+                    var txtBillingVendorNo = $('#txtBillingVendorNo').dxTextBox("instance");
                     if (txtBillingVendorNo) {
                         txtBillingVendorNo.option("value", account.ClientVendorNo);
 
@@ -3497,6 +3534,11 @@
                         txtBillingFaxNo.option("value", account.BillingFaxNo);
 
                     }
+                      var txtBillingContactPersonTitle = $('#txtBillingContactPersonTitle').dxTextBox("instance");
+                    if (txtBillingContactPersonTitle) {
+                        txtBillingContactPersonTitle.option("value", account.BillingContactPersonTitle);
+
+                    }
                     var txtBillingContactNumber = $('#txtBillingContactNumber').dxTextBox("instance");
                     if (txtBillingContactNumber) {
                         txtBillingContactNumber.option("value", account.BillingPhoneNo);
@@ -3504,12 +3546,23 @@
                     }
                     var txtObsSupAddress = $('#txtObsSupAddress').dxTextBox("instance");
                     if (txtObsSupAddress) {
-                        txtObsSupAddress.option("value", account.SupplierAddress);
+                        txtObsSupAddress.option("value", account.SupplierAddressStreet);
 
                     }
+                       var txtObsSupAddressAr = $('#txtObsSupAddressAr').dxTextBox("instance");
+                    if (txtObsSupAddressAr) {
+                        txtObsSupAddressAr.option("value", account.SupplierAddressStreetAr);
+
+                    }
+
                     var txtObsSupRegNo = $('#txtObsSupRegNo').dxNumberBox("instance");
                     if (txtObsSupRegNo) {
                         txtObsSupRegNo.option("value", account.SupplierVatno);
+
+                    }
+                     var txtObsSupRegNoAr = $('#txtObsSupRegNoAr').dxNumberBox("instance");
+                    if (txtObsSupRegNoAr) {
+                        txtObsSupRegNoAr.option("value", account.SupplierVatno);
 
                     }
 
@@ -4633,7 +4686,8 @@
 <script>
     function PageClose() {
 
-        history.back();
+          window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
+       window.parent.$("#popupContainer").dxPopup("instance").hide();
     }
      function onPostButtonClick(e) {
      debugger;
@@ -4778,6 +4832,7 @@
         //   var obAddressar = $('#txtObsSupAddressAr').dxTextBox('option', 'value');
 
         var obVATNo = $('#txtObsSupRegNo').dxNumberBox('option', 'value');
+        //var obVATNoAr = $('#txtObsSupRegNoAr').dxNumberBox('option', 'value');
 
         // if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
         //     alert("Account Head Name cannot be empty");

@@ -23,6 +23,7 @@
         public string AccountHead { get; set; }
         public string SysRemarks { get; set; }
         public long VoucherEntryNo { get; set; }
+        public decimal? VoucherAmountFormatted { get; set; }
     }
     public class AccountLedger
     {
