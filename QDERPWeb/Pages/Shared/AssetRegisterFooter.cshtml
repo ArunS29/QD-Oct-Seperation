@@ -274,8 +274,10 @@
                 items.Add().Text(new JS("formatMessage('Preview Register (With Voucher Narration - Order by Voucher No)')")).Icon("product");
             })
             .ShowArrowIcon(false)
-            )
+            .OnItemClick("handleReportClick") 
+        )
     </div>
+
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -753,53 +755,69 @@
             reader.readAsText(file);
         }
     });
-    // function addReportsButton_click(e) {
-    //     var selectedText = e.itemData.text; // Get selected item text
 
+            function handleReportClick(e) {
+        var selectedText = e.itemData.text;
 
-    //     if (selectedText === "Account Statements") {
-    //         window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
-    //     } else if (selectedText === "Statement Of Account With Narration") {
-    //         window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
-    //     } else if (selectedText === "Statement Of Account Export Formate") {
-    //         window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
-    //     } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
-    //         window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
-    //     }
-    // }
-    
+        var selectBox = $("#voucherTypeSelect").dxSelectBox("instance");
+        var voucherType = selectBox ? selectBox.option("value") : null;
 
-    // function addReportsButton_click(e) {
-    //     var selectedItem = e.itemData.text;
+        var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+        var toDateBox = $("#todateBox").dxDateBox("instance");
 
-    //     switch (selectedItem) {
-    //         case "Preview Register":
-    //             previewReport("previewRegister");
-    //             break;
-    //         case "Preview Register (Order By VoucherNo)":
-    //             previewReport("previewRegisterOrderByVoucherNo");
-    //             break;
-    //         case "Preview Register (With Line Entry Narration)":
-    //             previewReport("previewRegisterWithLineEntryNarration");
-    //             break;
-    //         case "Preview Register (With Line Entry Narration Order by VoucherNo)":
-    //             previewReport("previewRegisterWithLineEntryNarrationOrderByVoucherNo");
-    //             break;
-    //         case "Preview Register (With Voucher Narration)":
-    //             previewReport("previewRegisterWithVoucherNarration");
-    //             break;
-    //         case "Preview Register (With Voucher Narration - Order by Voucher No)":
-    //             previewReport("previewRegisterWithVoucherNarrationOrderByVoucherNo");
-    //             break;
-    //         default:
-    //             console.log("Unknown report selected");
-    //     }
-    // }
+        var frmDate = frmDateBox ? frmDateBox.option("value") : null;
+        var toDate = toDateBox ? toDateBox.option("value") : null;
 
-    // function previewReport(reportType) {
-    //     // Example: You can redirect to a report page or call an API
-    //     console.log("Generating report:", reportType);
-    //     window.location.href = "/Reports/Generate?reportType=" + reportType;
-    // }
+        if (!voucherType) {
+            alert("Please select a voucher type.");
+            return;
+        }
+
+        function formatDate(date) {
+            if (!date) return "";
+            let dateObj = new Date(date);
+            let day = dateObj.getDate();
+            let month = dateObj.toLocaleString('en-US', { month: 'short' });
+            let year = dateObj.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        var frmDateStr = formatDate(frmDate);
+        var toDateStr = formatDate(toDate);
+
+        console.log("Selected Report Type:", selectedText);
+        console.log("Voucher Type:", voucherType);
+        console.log("Formatted From Date:", frmDateStr);
+        console.log("Formatted To Date:", toDateStr);
+
+        var tenantName = window.tenantName || "defaultTenant";
+
+        const reportMappings = {
+            "Preview Register": "PreviewRegister",
+            "Preview Register (Order By VoucherNo)": "OrderByVchNoRegister",
+            "Preview Register (With Line Entry Narration)": "RegisterLineEntryNarration",
+            "Preview Register (With Line Entry Narration Order by VoucherNo)": "Register4line",
+            "Preview Register (With Voucher Narration)": "RegisterWithVchNarration",
+            "Preview Register (With Voucher Narration - Order by Voucher No)": "OrderbyVchNoWIthVchNarration"
+        };
+
+        if (reportMappings[selectedText]) {
+            let reportName = reportMappings[selectedText];
+            console.log(`Redirecting to ${reportName}`);
+
+            window.open(
+                `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(voucherType)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
+                '_blank',
+                'width=1200,height=800,scrollbars=yes,resizable=yes'
+            );
+        } else {
+            console.error("No matching report found for selectedText:", selectedText);
+        }
+
+        if (typeof ChangeRowHeight === "function") {
+            ChangeRowHeight(70);
+        }
+    }
+
 
 </script>

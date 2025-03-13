@@ -238,7 +238,7 @@ namespace QD.ERP.Web.Reports
             this.xrLabel10.StylePriority.UseBorderColor = false;
             this.xrLabel10.StylePriority.UseFont = false;
             this.xrLabel10.StylePriority.UseForeColor = false;
-            this.xrLabel10.Text = "Reported By:[AccountHeadName]";
+            this.xrLabel10.Text = "Reported By:[Parameters.TenantName]";
             // 
             // pageInfo2
             // 
@@ -268,6 +268,8 @@ namespace QD.ERP.Web.Reports
             // xrLabel15
             // 
             this.xrLabel15.Borders = DevExpress.XtraPrinting.BorderSide.None;
+            this.xrLabel15.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.TenantName]\n")});
             this.xrLabel15.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
             this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(0.0002288818F, 42.6666F);
             this.xrLabel15.Name = "xrLabel15";
@@ -306,6 +308,8 @@ namespace QD.ERP.Web.Reports
             // xrPictureBox1
             // 
             this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
+            this.xrPictureBox1.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "ImageSource", "[Parameters.CompanyLogo]\n")});
             this.xrPictureBox1.ImageSource = new DevExpress.XtraPrinting.Drawing.ImageSource("img", resources.GetString("xrPictureBox1.ImageSource"));
             this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrPictureBox1.Name = "xrPictureBox1";

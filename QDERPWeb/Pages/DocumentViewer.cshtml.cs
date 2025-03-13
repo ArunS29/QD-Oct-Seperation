@@ -11,13 +11,10 @@ namespace QD.ERP.Web.Pages
 {
     public class DocumentViewerModel : PageModel
     {
-        // Property to hold the dynamically generated report
         public XtraReport Report { get; private set; }
 
-        // Property to hold the report name
         public string ReportName { get; private set; }
 
-        // Properties to hold parameters for StatementOfAccountReport
         public string AccountId { get; private set; }
         public DateTime FrmDate { get; private set; }
         public DateTime ToDate { get; private set; }
@@ -29,35 +26,34 @@ namespace QD.ERP.Web.Pages
                 return BadRequest("Invalid report name.");
             }
 
-            ReportName = reportName;  // Set the ReportName property
+            ReportName = reportName;
 
 
             if (reportName == "StatementOfAccountReport")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
-                if (accountId == null || frmDate == null || toDate == null)
+                if (string.IsNullOrEmpty(accountId) || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for StatementOfAccountReport.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var companyName = HttpContext.Session.GetString("CompanyName") ?? "Default Company";
+                var LogoUrl = HttpContext.Session.GetString("LogoUrl") ?? string.Empty;
 
-                Report = new StatementOfAccountReport(AccountId, FrmDate, ToDate);
-
+                Report = new StatementOfAccountReport(AccountId, FrmDate, ToDate, tenantName, companyName, LogoUrl);
             }
+
             else if (reportName == "AccountWithNarration")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for AccountWithNarration.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -67,13 +63,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "AccountStatementFormat2Report")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for AccountStatementFormat2Report.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -83,13 +77,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "AccountExportFromatReport")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for AccountExportFromatReport.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -99,13 +91,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "AccountOrderbyVchNoWONarrationReport")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for AccountOrderbyVchNoWONarrationReport.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -115,13 +105,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "AccountExportLandscapeReport")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for AccountExportLandscapeReport.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -131,13 +119,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "AccountOrderbyVchNoWONarrationReport")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for AccountOrderbyVchNoWONarrationReport.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -145,31 +131,14 @@ namespace QD.ERP.Web.Pages
 
                 Report = new AccountOrderbyVchNoWONarrationReport(AccountId, FrmDate, ToDate);
             }
-            //else if (reportName == "BillsReceivablelandscapeformat")
-            //{
-            //    // Ensure required parameters are provided for StatementOfAccountReport
-            //    if (accountId == null || frmDate == null || toDate == null)
-            //    {
-            //        return BadRequest("Missing required parameters for BillsReceivablelandscapeformat.");
-            //    }
 
-            //    // Set the properties for the report
-            //    AccountId = accountId;
-            //    FrmDate = frmDate.Value;
-            //    ToDate = toDate.Value;
-
-
-            //    Report = new BillsReceivablelandscapeformat(AccountId, FrmDate, ToDate);
-            //}
             else if (reportName == "AccountOrderByVoucherNo")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for AccountOrderByVoucherNo.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -178,18 +147,13 @@ namespace QD.ERP.Web.Pages
                 Report = new AccountOrderByVoucherNo(AccountId, FrmDate, ToDate);
             }
 
-
-
-
             else if (reportName == "BillsReceivablelandscapeformat")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsReceivablelandscapeformat.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -199,13 +163,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "BillsReceivableAll")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -215,13 +177,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "BillsReceivableByAccount")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -231,13 +191,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "BillsReceivableAgeingToday")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -248,13 +206,11 @@ namespace QD.ERP.Web.Pages
 
             else if (reportName == "BillsReceivableRentation")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -265,13 +221,11 @@ namespace QD.ERP.Web.Pages
 
             else if (reportName == "BillsReceivableLedgerBalance")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -282,13 +236,11 @@ namespace QD.ERP.Web.Pages
 
             else if (reportName == "BillsReceivableFormat")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -300,7 +252,6 @@ namespace QD.ERP.Web.Pages
 
             {
 
-                // Ensure required parameters are provided for StatementOfAccountReport
 
                 if (accountId == null || frmDate == null || toDate == null)
 
@@ -310,7 +261,6 @@ namespace QD.ERP.Web.Pages
 
                 }
 
-                // Set the properties for the report
 
                 AccountId = accountId;
 
@@ -327,7 +277,6 @@ namespace QD.ERP.Web.Pages
 
             {
 
-                // Ensure required parameters are provided for StatementOfAccountReport
 
                 if (accountId == null || frmDate == null || toDate == null)
 
@@ -337,7 +286,6 @@ namespace QD.ERP.Web.Pages
 
                 }
 
-                // Set the properties for the report
 
                 AccountId = accountId;
 
@@ -353,7 +301,6 @@ namespace QD.ERP.Web.Pages
 
             {
 
-                // Ensure required parameters are provided for StatementOfAccountReport
 
                 if (accountId == null || frmDate == null || toDate == null)
 
@@ -363,7 +310,6 @@ namespace QD.ERP.Web.Pages
 
                 }
 
-                // Set the properties for the report
 
                 AccountId = accountId;
 
@@ -379,7 +325,6 @@ namespace QD.ERP.Web.Pages
 
             {
 
-                // Ensure required parameters are provided for StatementOfAccountReport
 
                 if (accountId == null || frmDate == null || toDate == null)
 
@@ -389,7 +334,6 @@ namespace QD.ERP.Web.Pages
 
                 }
 
-                // Set the properties for the report
 
                 AccountId = accountId;
 
@@ -405,7 +349,6 @@ namespace QD.ERP.Web.Pages
 
             {
 
-                // Ensure required parameters are provided for StatementOfAccountReport
 
                 if (accountId == null || frmDate == null || toDate == null)
 
@@ -415,7 +358,6 @@ namespace QD.ERP.Web.Pages
 
                 }
 
-                // Set the properties for the report
 
                 AccountId = accountId;
 
@@ -429,13 +371,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "Report4")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -445,13 +385,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "Payablelandscape")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for Payablelandscape.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -461,13 +399,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "payableRetention")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for Payablelandscape.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -477,13 +413,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "Balance")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for Balance.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -493,13 +427,11 @@ namespace QD.ERP.Web.Pages
             }
             else if (reportName == "BillsPayablePaid")
             {
-                // Ensure required parameters are provided for StatementOfAccountReport
                 if (accountId == null || frmDate == null || toDate == null)
                 {
                     return BadRequest("Missing required parameters for BillsPayablePaid.");
                 }
 
-                // Set the properties for the report
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
@@ -517,33 +449,11 @@ namespace QD.ERP.Web.Pages
                     case "XtraReportAgeingreportsummary":
                         Report = new XtraReportAgeingreportsummary();
                         break;
-                    //case "StatementOfAccountReport":
-                    //    //Report = new StatementOfAccountReport();
-                    //    break;
-                    //case "AccountWithNarration":
-                    //    Report = new AccountWithNarration();
-                    //    break;
-                    //case "AccountExportFormatReport":
-                    //    Report = new AccountExportFromatReport();
-                    //    break;
-                    //case "AccountExportLandscapeReport":
-                    //    Report = new AccountExportLandscapeReport();
-                    //    break;
-                    //case "AccountStatementFormat2Report":
-                    //    Report = new AccountStatementFormat2Report();
-                    //    break;
-                    ////case "AccountOrderbyVchNoWONarrationReport":
-                    ////    Report = new AccountOrderbyVchNoWONarrationReport();
-                    ////    break;
+                    
                     default:
                         return NotFound("Report not found.");
                 }
             }
-
-            // Dynamically set the Report based on the provided reportName
-
-
-            // Return the page and bind the Report to the Razor page
             return Page();
         }
     }

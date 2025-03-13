@@ -1,0 +1,180 @@
+﻿@page
+
+@using DevExpress.AspNetCore
+
+@using QD.ERP.Web.Areas.Finance.Reports
+
+@using QD.ERP.Web.Reports
+
+@model QD.ERP.Web.Pages.RegisterViewerModel
+
+<link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
+<script src="~/js/reporting.designer.part.bundle.js"></script>
+
+<!-- Dynamically set the current report name based on the model -->
+<script>
+
+    var currentReportName = '@Model.ReportName';
+</script>
+
+@(Html.DevExpress().WebDocumentViewer("documentViewer")
+
+    .Height("50em")
+
+    .Width("110em")
+
+    .Bind(Model.Report)
+)
+
+@* Floating Edit Report Button with Icon and Text *@
+<a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report"
+   data-tooltip="Open Designer"
+   onclick="openReportDesigner('@Model.ReportName', '@Model.voucherType', '@Model.FrmDate', '@Model.ToDate')">
+    <span class="btn-text">Open Designer</span>
+    <i class="fa fa-pencil-alt"></i>
+</a>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+<style>
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+
+    .dxrd-preview .dxrd-preview-page {
+        width: 100% !important;
+    }
+
+    /* Floating Edit Report Button */
+
+    .btn-edit-report {
+        position: fixed;
+        top: 30px; /* Positioning from the top */
+
+        right: 20px; /* Positioning from the right */
+
+        background-color: transparent;
+        border: 1px solid #007bff; /* Border to make it rectangular */
+
+        padding: 5px 15px; /* Adjusting padding for rectangular shape */
+
+        font-size: 14px;
+        color: #007bff; /* Button color */
+
+        border-radius: 15px; /* Curved edges */
+
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+
+        cursor: pointer;
+        z-index: 9999; /* Ensure it's on top of other elements */
+
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        height: 35px; /* Height set between 10-15px */
+    }
+
+        .btn-edit-report .btn-text {
+            margin-right: 10px; /* Space between the text and the icon */
+
+            font-weight: bold;
+        }
+
+        .btn-edit-report i {
+            font-size: 16px;
+        }
+
+        /* Change on Hover */
+
+        .btn-edit-report:hover {
+            background-color: rgba(0, 123, 255, 0.1); /* Light blue background on hover */
+
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
+
+            color: #0056b3; /* Darker color on hover */
+        }
+
+    /* Floating Close Button */
+
+    .btn-close-report {
+        position: fixed;
+        top: 30px; /* Positioning from the top */
+
+        left: 11px; /* Adjusting position from the right (so it doesn't overlap with Open Designer button) */
+
+        background-color: transparent;
+        border: 1px solid #dc3545; /* Border to make it rectangular */
+
+        padding: 5px 15px; /* Adjusting padding */
+
+        font-size: 14px;
+        color: #dc3545; /* Button color */
+
+        border-radius: 15px; /* Curved edges */
+
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+
+        cursor: pointer;
+        z-index: 9999; /* Ensure it's on top of other elements */
+
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        height: 35px;
+    }
+
+        .btn-close-report .btn-text {
+            margin-right: 10px; /* Space between the text and the icon */
+
+            font-weight: bold;
+        }
+
+        .btn-close-report i {
+            font-size: 16px;
+        }
+
+        /* Change on Hover */
+
+        .btn-close-report:hover {
+            background-color: rgba(220, 53, 69, 0.1); /* Light red background on hover */
+
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
+
+            color: #c82333; /* Darker red color on hover */
+        }
+</style>
+
+<div id="webDocumentViewer"></div>
+
+<script>
+
+    function openReportDesigner(reportName, accountId, frmDate, toDate) {
+        const reportDesignerUrl = `/pulse/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
+    }
+
+    document.getElementById("btnClose").addEventListener("click", function () {
+
+        window.history.back();
+
+    });
+
+</script>
