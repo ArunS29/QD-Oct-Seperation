@@ -1157,10 +1157,12 @@
         "Master Group": "Master Group",
         "Chart Of Accounts Order": "Chart Of Accounts Order",
         "Accounts  Groups Ordering": "Accounts  Groups Ordering",
-        "Cheque Issued in favour of":"Cheque Issued in favour of"
+        "Cheque Issued in favour of": "Cheque Issued in favour of",
+        "Receivables Reports(with Effective Date')":"Receivables Reports(with Effective Date')"
 
     },
     "ar": {
+        "Receivables Reports(with Effective Date')":"تقارير المستحقات (مع تاريخ السريان)",
         "Cheque Issued in favour of":"",
         "Account Group Order No": "رقم ترتيب مجموعة الحساب",
         "Account Group": "مجموعة الحساب",

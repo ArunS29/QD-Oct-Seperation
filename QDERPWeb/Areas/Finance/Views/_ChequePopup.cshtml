@@ -85,24 +85,24 @@
 
                 <div class="form-group">
                     <label for="ChequeIssuedinfavourof" class="button-alignment-down"></label>
-                    <div class="btn" style="position:relative;display:flex;gap: 10px;">
+                    <div class="btn" style="position:relative;display:flex;gap: 10px;justify-content: start;align-items: baseline;">
                         @(Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Cheque Issued in favour of')"))
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("ChequeIssuedinfavourof")
-                        .Width(550)
+                        .Width(650)
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
                         .Message("Cheque Issued in favour of is required");
                         })
                         .Value(null) )
-                        <div style="margin-top:10px;color:blue" >Use Ledger Account Name</div>
                         @(Html.DevExtreme().Button()
                         .ID("popupbtnAddAHead")
                         .Icon("plus")
                         .OnClick("function() { onPopupAddButtonClick(); }")
                         )
+                        <div style="margin-top:10px;color:blue" >Use Ledger Account Name</div>
                     </div>
 
                    
