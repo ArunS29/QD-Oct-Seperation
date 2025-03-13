@@ -816,7 +816,9 @@
     });
 
     function navigateToHome() {
-        window.location.href = `/${tenantName}/Finance/ChartOfCostCenters`;
+
+        window.parent.document.getElementById("masterModal").style.display = "none";
+        
     }
 
 </script>
