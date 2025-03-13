@@ -670,7 +670,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 Tbl201VoucherMaster voucherMaster = new();
                 int aEntryAmount = 0;
-                int Amt = 0;
+                int Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
                 bool IsMatchingEntry = false;
 
                 //var matchingEntries;
@@ -686,17 +686,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         DrCr = i.DrCr,
                         DrAmount = i.DrAmount,
                         CrAmount = i.CrAmount,
+                        VoucherAmountFormatted = i.VoucherAmountFormatted,
                         EntryNarration = i.EntryNarration,
                         AccountHead = i.AccountHead,
                         SysRemarks = i.SysRemarks
                     });
 
                 var resultList1 = await qryListOfAccountlists1.ToListAsync();
-                int crCount1 = resultList1.Count(i => i.DrCr == "Dr");
+                int crCount1 = resultList1.Count(i => i.DrCr == "Cr");
                 if (crCount1 >= 2)
                 {
                     matchingEntries = resultList1.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
-                    IsMatchingEntry = true;
+                    if (matchingEntries.Count != 0)
+                    {
+                        ExistingCrMinusAmt = (int)matchingEntries[0].CrAmount;
+                        IsMatchingEntry = true;
+                    }
+
                 }
 
                 bool isVoucherExists = _context.Tbl201VoucherMasters
@@ -727,10 +733,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         DrCr = i.DrCr,
                         DrAmount = i.DrAmount,
                         CrAmount = i.CrAmount,
+
+                        VoucherAmountFormatted = i.VoucherAmountFormatted,
                         EntryNarration = i.EntryNarration,
                         AccountHead = i.AccountHead,
                         SysRemarks = i.SysRemarks
                     });
+
 
                 var resultList = await qryListOfAccountlists.ToListAsync();
 
@@ -741,7 +750,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 //var lastCrEntry = resultList.LastOrDefault(i => i.DrCr == "Cr");
 
                 var newCrEntry = resultList
-    .Where(i => i.DrCr == "Dr")
+    .Where(i => i.DrCr == "Cr")
     .OrderByDescending(i => i.VoucherEntryNo) // Assuming this is sequential
     .FirstOrDefault();
 
@@ -753,10 +762,36 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 foreach (var petty in newlist)
                 {
                     pettycashid = petty.AccountHead;
+                    NewCrMinusAmt = (int)petty.CrAmount;
                 }
 
                 foreach (var entry in resultList)
                 {
+
+                    if (!entry.SysRemarks.Contains("Paid thru:"))
+                    {
+                        CrMinusAmt = (int)entry.VoucherAmountFormatted;
+
+                        entry.CrAmount = CrMinusAmt;
+                        if (IsMatchingEntry == true)
+                        {
+                            //CrMinusAmt = (int)entry.VoucherAmountFormatted + NewCrMinusAmt;
+                            CrMinusAmt = NewCrMinusAmt + ExistingCrMinusAmt;
+
+
+                            var existingEntry = _context.Tbl201VoucherEntries
+                                      .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                        && v.DrCr == "Cr"
+                                                        && v.VoucherNo == entry.VoucherNo);
+
+                            // Optionally update the existing entry in the database
+                            existingEntry.VoucherAmount = CrMinusAmt;
+                            entry.CrAmount = -CrMinusAmt;
+                            _context.Tbl201VoucherEntries.Update(existingEntry);
+                            _context.SaveChanges();
+
+                        }
+                    }
 
 
                     if (!string.IsNullOrEmpty(entry.AccountHead))
@@ -767,92 +802,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                                   .Select(a => a.AccountHead)
                                                   .FirstOrDefault();
 
-
-
-                        if (Gridcount != 0)
-                        {
-                            // Calculate Debit Amount (DrAmount)
-
-                            debitamt = (int)(debitamt + entry.DrAmount);
-
-                            // If Dr/Cr is Credit ("Cr"), perform specific logic
-                            if (entry.DrCr == "Cr" && crCount == 1)
-                            // if (crCount==1)
-                            {
-                                // Check if an existing entry matches
-                                var existingEntry = _context.Tbl201VoucherEntries
-                                                            .FirstOrDefault(v => v.AccountHead == entry.AccountHead
-                                                                              && v.DrCr == "Dr"
-                                                                              && v.VoucherNo == entry.VoucherNo);
-
-                                if (existingEntry != null)
-                                {
-                                    // Update CrAmount by adding the calculated debit amount
-                                    entry.CrAmount = debitamt;
-
-                                    // Optionally update the existing entry in the database
-                                    existingEntry.VoucherAmount = entry.CrAmount;
-                                    _context.Tbl201VoucherEntries.Update(existingEntry);
-                                    _context.SaveChanges();
-
-                                }
-                                else
-                                {
-                                    // If no existing entry, assign CrAmount as debitamt
-                                    entry.CrAmount = debitamt;
-                                }
-                            }
-                            else if (newCrEntry != null && crCount >= 2 && entry.AccountHead == pettycashid)
-                            {
-                                if (entry.DrCr == "Dr")
-                                {
-
-                                    if (IsMatchingEntry == true)
-                                    {
-                                        // Accumulate `aEntryAmount` correctly
-                                        foreach (var mEntry in matchingEntries)
-                                        {
-                                            aEntryAmount += (int)mEntry.CrAmount; // Accumulate CrAmount correctly
-                                        }
-
-                                        // Process voucherEntries
-                                        foreach (var mVoucherEntry in voucherEntries)
-                                        {
-                                            int eAmount = (int)mVoucherEntry.VoucherAmount;
-                                            Amt = aEntryAmount + eAmount;
-
-                                            // Do something with Amt if required
-                                        }
-
-                                        // Check if an existing entry matches
-                                        var existingEntry = _context.Tbl201VoucherEntries
-                                                                    .FirstOrDefault(v => v.AccountHead == entry.AccountHead
-                                                                                      && v.DrCr == "Dr"
-                                                                                      && v.VoucherNo == entry.VoucherNo);
-
-                                        if (existingEntry != null)
-                                        {
-                                            // Update CrAmount by adding the calculated debit amount
-                                            entry.CrAmount = Amt;
-
-                                            // Optionally update the existing entry in the database
-                                            existingEntry.VoucherAmount = entry.CrAmount;
-                                            _context.Tbl201VoucherEntries.Update(existingEntry);
-                                            _context.SaveChanges();
-
-                                        }
-                                        else
-                                        {
-                                            // If no existing entry, assign CrAmount as debitamt
-                                            // entry.CrAmount = debitamt;
-                                        }
-                                    }
-
-                                }
-
-                            }
-
-                        }
                         entry.AccountHead = accountHead;
                     }
 
@@ -867,6 +816,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<ActionResult> AddCPCrVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName, int Gridcount)
         {
@@ -879,7 +829,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 Tbl201VoucherMaster voucherMaster = new();
                 int aEntryAmount = 0;
-                int Amt = 0, Crmt=0, CrMinusAmt=0, NewCrMinusAmt=0;
+                int Amt = 0, Crmt=0, CrMinusAmt=0, NewCrMinusAmt=0, ExistingCrMinusAmt=0;
                 bool IsMatchingEntry = false;
 
                 //var matchingEntries;
@@ -902,11 +852,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     });
 
                 var resultList1 = await qryListOfAccountlists1.ToListAsync();
-                int crCount1 = resultList1.Count(i => i.DrCr == "Dr");
+                int crCount1 = resultList1.Count(i => i.DrCr == "Cr");
                 if (crCount1 >= 2)
                 {
                     matchingEntries = resultList1.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
-                    IsMatchingEntry = true;
+                    if(matchingEntries.Count!=0)
+                    {
+                        ExistingCrMinusAmt = (int)matchingEntries[0].CrAmount;
+                        IsMatchingEntry = true;
+                    }
+          
                 }
 
                 bool isVoucherExists = _context.Tbl201VoucherMasters
@@ -937,6 +892,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         DrCr = i.DrCr,
                         DrAmount = i.DrAmount,
                         CrAmount = i.CrAmount,
+                     
                         VoucherAmountFormatted = i.VoucherAmountFormatted,
                         EntryNarration = i.EntryNarration,
                         AccountHead = i.AccountHead,
@@ -953,7 +909,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 //var lastCrEntry = resultList.LastOrDefault(i => i.DrCr == "Cr");
 
                 var newCrEntry = resultList
-    //.Where(i => i.DrCr == "Cr")
+    .Where(i => i.DrCr == "Cr")
     .OrderByDescending(i => i.VoucherEntryNo) // Assuming this is sequential
     .FirstOrDefault();
 
@@ -965,24 +921,37 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 foreach (var petty in newlist)
                 {
                     pettycashid = petty.AccountHead;
-                    NewCrMinusAmt = (int)petty.VoucherAmountFormatted;
+                    NewCrMinusAmt = (int)petty.CrAmount;
                 }
 
                 foreach (var entry in resultList)
                 {
 
-                    if (!entry.SysRemarks.Contains("Paid thru:")&& Gridcount==0)
+                    if (!entry.SysRemarks.Contains("Paid thru:"))
                     {
                          CrMinusAmt = (int)entry.VoucherAmountFormatted;
                       
                         entry.CrAmount = CrMinusAmt;
+                        if(IsMatchingEntry == true)
+                        {
+                            //CrMinusAmt = (int)entry.VoucherAmountFormatted + NewCrMinusAmt;
+                            CrMinusAmt =  NewCrMinusAmt + ExistingCrMinusAmt;
+                           
+
+                            var existingEntry = _context.Tbl201VoucherEntries
+                                      .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                        && v.DrCr == "Cr"
+                                                        && v.VoucherNo == entry.VoucherNo);
+
+                            // Optionally update the existing entry in the database
+                            existingEntry.VoucherAmount = CrMinusAmt;
+                            entry.CrAmount = -CrMinusAmt;
+                            _context.Tbl201VoucherEntries.Update(existingEntry);
+                            _context.SaveChanges();
+                           
+                        }
                     }
-                    else if (!entry.SysRemarks.Contains("Paid thru:"))
-                    {
-                        CrMinusAmt = (int)entry.VoucherAmountFormatted + NewCrMinusAmt;
-                        entry.CrAmount = CrMinusAmt;
-                    }
-                    
+                
 
                     if (!string.IsNullOrEmpty(entry.AccountHead))
                     {
@@ -991,102 +960,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                                   .Where(a => a.AccountId == entry.AccountHead)
                                                   .Select(a => a.AccountHead)
                                                   .FirstOrDefault();
-
-
-
-                        //if (Gridcount != 0)
-                        //{
-                        //    // Calculate Debit Amount (DrAmount)
-                        //   // Crmt += (int)entry.CrAmount;
-                        //    //if (entry.SysRemarks.Contains("Paid thru:"))
-                        //    //{
-                        //    //    Crmt += (int)entry.CrAmount;
-
-                        //    //   // debitamt = (int)(Crmt + entry.CrAmount);
-                        //    //}
-                        //    //else if(!entry.SysRemarks.Contains("Paid thru:"))
-                        //    //{
-                        //    //    entry.CrAmount = -Crmt;
-                        //    //}
-
-                        //    // If Dr/Cr is Credit ("Cr"), perform specific logic
-                        //    if (entry.DrCr == "Cr" && crCount == 1)
-                        //    // if (crCount==1)
-                        //    {
-                        //        // Check if an existing entry matches
-                        //        var existingEntry = _context.Tbl201VoucherEntries
-                        //                                    .FirstOrDefault(v => v.AccountHead == entry.AccountHead
-                        //                                                      && v.DrCr == "Dr"
-                        //                                                      && v.VoucherNo == entry.VoucherNo);
-
-                        //        if (existingEntry != null && !entry.SysRemarks.Contains("Paid thru:"))
-                        //        {
-                        //            // Update CrAmount by adding the calculated debit amount
-                        //            entry.CrAmount = Crmt;
-
-                        //            // Optionally update the existing entry in the database
-                        //            existingEntry.VoucherAmount = entry.CrAmount;
-                        //            _context.Tbl201VoucherEntries.Update(existingEntry);
-                        //            _context.SaveChanges();
-
-                        //        }
-                        //        else
-                        //        {
-                        //            // If no existing entry, assign CrAmount as debitamt
-                        //            entry.CrAmount = debitamt;
-                        //        }
-                        //    }
-                        //    else if (newCrEntry != null && crCount >= 2 && entry.AccountHead == pettycashid)
-                        //    {
-                        //        if (entry.DrCr == "Dr")
-                        //        {
-
-                        //            if (IsMatchingEntry == true)
-                        //            {
-                        //                // Accumulate `aEntryAmount` correctly
-                        //                foreach (var mEntry in matchingEntries)
-                        //                {
-                        //                    aEntryAmount += (int)mEntry.CrAmount; // Accumulate CrAmount correctly
-                        //                }
-
-                        //                // Process voucherEntries
-                        //                foreach (var mVoucherEntry in voucherEntries)
-                        //                {
-                        //                    int eAmount = (int)mVoucherEntry.VoucherAmount;
-                        //                    Amt = aEntryAmount + eAmount;
-
-                        //                    // Do something with Amt if required
-                        //                }
-
-                        //                // Check if an existing entry matches
-                        //                var existingEntry = _context.Tbl201VoucherEntries
-                        //                                            .FirstOrDefault(v => v.AccountHead == entry.AccountHead
-                        //                                                              && v.DrCr == "Dr"
-                        //                                                              && v.VoucherNo == entry.VoucherNo);
-
-                        //                if (existingEntry != null)
-                        //                {
-                        //                    // Update CrAmount by adding the calculated debit amount
-                        //                    entry.CrAmount = Amt;
-
-                        //                    // Optionally update the existing entry in the database
-                        //                    existingEntry.VoucherAmount = entry.CrAmount;
-                        //                    _context.Tbl201VoucherEntries.Update(existingEntry);
-                        //                    _context.SaveChanges();
-
-                        //                }
-                        //                else
-                        //                {
-                        //                    // If no existing entry, assign CrAmount as debitamt
-                        //                    // entry.CrAmount = debitamt;
-                        //                }
-                        //            }
-
-                        //        }
-
-                        //    }
-
-                        //}
+                        
                         entry.AccountHead = accountHead;
                     }
 

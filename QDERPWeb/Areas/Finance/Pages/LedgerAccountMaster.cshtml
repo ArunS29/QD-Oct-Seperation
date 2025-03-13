@@ -710,6 +710,8 @@
         const accountGroup = urlParams.get('AccountGroup');
         const accountGroupUnder = urlParams.get('AccountGroupUnder');
 
+       
+
         if (accountGroup) {
             // Wait for DevExtreme TextBox to initialize
             let retryCount = 0; // Retry counter
@@ -1184,23 +1186,26 @@ $("#btnDelete").on("click", function (e) {
                 }
             },
             error: function (xhr, status, error) {
-                alert("Error occurred while deleting record: " + error);
+               // alert("Error occurred while deleting record: " + error);
+                  window.parent.document.getElementById("ledgerAccountMasterModal").style.display = "none";
+
             }
         });
     } else {
-        DevExpress.ui.dialog.custom({
-            title: "Validation Errors",
-            messageHtml: `
-                <div style="display: flex; align-items: center;">
-                    <i class="dx-icon-warning" style="font-size: 24px; margin-right: 10px; color: #e74c3c;"></i>
-                    <span>Cannot delete record while there are validation errors. Please correct them first.</span>
-                </div>
-            `,
-            buttons: [{
-                text: "OK",
-                onClick: () => { return true; },
-            }],
-        }).show();
+        // Delete includin icon 
+        // DevExpress.ui.dialog.custom({
+        //     title: "Validation Errors",
+        //     messageHtml: `
+        //         <div style="display: flex; align-items: center;">
+        //             <i class="dx-icon-warning" style="font-size: 24px; margin-right: 10px; color: #e74c3c;"></i>
+        //             <span>Cannot delete record while there are validation errors. Please correct them first.</span>
+        //         </div>
+        //     `,
+        //     buttons: [{
+        //         text: "OK",
+        //         onClick: () => { return true; },
+        //     }],
+        // }).show();
     }
 });
 

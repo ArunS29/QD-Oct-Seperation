@@ -279,6 +279,7 @@
 									.DataSource(new[] { "Dr", "Cr" })
 									.Value("Dr")
 									.Placeholder(new JS("formatMessage('Select Transaction Type')"))
+								    .OnValueChanged("onVoucherDrCrValueChanged") // JS function name
 									.Width(90)
 									//.Disabled(true)
 									)
@@ -753,7 +754,7 @@
 
 </div>
 <script>
-	let refno,accheadar,accgroup,accgroupid,accheadid,accheadname,supplierId,suprefno,supaccheadar,supaccgroup,supaccgroupid;
+	let refno,accheadar,accgroup,accgroupid,accheadid,accheadname,supplierId,suprefno,supaccheadar,supaccgroup,supaccgroupid,IsDrCr=false;
 
 $(function () {
 										$("#EditCostAllocation").dxTextBox({
@@ -1293,7 +1294,7 @@ $(function () {
 						"VoucherNo": voucherNo,
 						"AccountHead": SupplierName.option("value"),
 						"VoucherAmount": txtVoucherAmt.option("value"),
-						"DrCr": ($("#sbDrCr").dxSelectBox("instance").option("value") === "Cr") ? "Dr" : "Cr",
+						"DrCr": ($("#sbDrCr").dxSelectBox("instance").option("value") === "Cr") ? "Cr" : "Cr",
 						"AddedBy": "102",
 						"AddedOn": new Date(),
 						"EntryNarration": entryNarration,
@@ -1317,10 +1318,12 @@ $(function () {
 				];
 			}
 
-			// Perform the AJAX request
+			if(IsDrCr===false)
+			{
+				// Perform the AJAX request
 			$.ajax({
 				type: "POST",
-				url: `/api/PurchaseVoucher/AddVoucherEntry?AccountHead=${encodeURIComponent(sysRemarks2)}&PaymentAccoutHeadName=${encodeURIComponent(suppliername)}&Gridcount=${encodeURIComponent(griddatacount)}`,
+				url: `/api/PurchaseVoucher/AddVoucherEntry?AccountHead=${encodeURIComponent(sysRemarks2)}&PaymentAccoutHeadName=${encodeURIComponent(supplierId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
 				contentType: "application/json",
 				data: JSON.stringify(VE),
 				dataType: "json",
@@ -1344,7 +1347,7 @@ $(function () {
 
 							var button = $("#btnSave").dxButton("instance");
 							button.option("text", "Update");
-				
+
 
 
 					DevExpress.ui.notify("Voucher entry saved successfully!", "success", 2000);
@@ -1353,6 +1356,47 @@ $(function () {
 					alert("Error occurred while updating data: " + error);
 				}
 			});
+			}
+			else if(IsDrCr===true)
+			{
+	// Perform the AJAX request
+			$.ajax({
+				type: "POST",
+				url: `/api/PurchaseVoucher/AddPurchaseCrVoucherEntry?AccountHead=${encodeURIComponent(sysRemarks2)}&PaymentAccoutHeadName=${encodeURIComponent(supplierId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
+				contentType: "application/json",
+				data: JSON.stringify(VE),
+				dataType: "json",
+				success: function (response) {
+					// Update grid with new data
+					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+
+					// Reset fields after successful entry
+					// $("#ddAccountHead").dxDropDownBox("instance").option("value", "");
+					// $("#txtEntryNarration").dxTextArea("instance").option("value", "");
+					// $("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00");
+
+					// Reset validation states
+					// Clear AccountHead and VoucherAmount after successful response
+						accountHead.option("value", null); // Clear AccountHead
+						txtVoucherAmt.option("value", null); // Clear VoucherAmount
+
+						// Reset validation states
+						accountHeadValidator.reset();
+						voucherAmtValidator.reset();
+
+							var button = $("#btnSave").dxButton("instance");
+							button.option("text", "Update");
+
+
+
+					DevExpress.ui.notify("Voucher entry saved successfully!", "success", 2000);
+				},
+				error: function (xhr, status, error) {
+					alert("Error occurred while updating data: " + error);
+				}
+			});
+			}
+			
 		} else {
 			DevExpress.ui.notify("Please fill required details!", "error", 2000);
 		}
@@ -1898,5 +1942,27 @@ $(function () {
 			}
 		});
 	}
+
+	  function onVoucherDrCrValueChanged(e) {
+	// Retrieve the new selected value from the event argument.
+	var selectedValue = e.value;
+
+	// Log the selected value for debugging purposes.
+	console.log("Transaction type selected: " + selectedValue);
+
+	// Add your custom logic based on the selected value.
+	if (selectedValue === "Dr") {
+		// Code to handle Debit logic.
+		console.log("Debit selected");
+		IsDrCr=false;
+		// Example: update another control or perform a calculation.
+	} else if (selectedValue === "Cr") {
+		// Code to handle Credit logic.
+		console.log("Credit selected");
+		IsDrCr=true;
+		// Example: update another control or perform a calculation.
+	}
+}
+	
 
 </script>
