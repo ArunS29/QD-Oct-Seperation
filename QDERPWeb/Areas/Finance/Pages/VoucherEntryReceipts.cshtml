@@ -226,6 +226,8 @@
                         .Value("Cr")
                         .Placeholder("Select Transaction Type")
                         .Width(90)
+                             .OnValueChanged("onVoucherDrCrValueChanged") // JS function name
+
                         )
         </div>
 
@@ -1005,7 +1007,7 @@
 <script>
 
     let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName, refno, accgroup, IsEdit = false, accgroupid, accheadar, vouentryid,
-        IsNotification = false, storedAccountHead, IsObeselete = false;
+        IsNotification = false, storedAccountHead, IsObeselete = false,IsDrCr=false;
 
     function addVoucherEntry() {
 
@@ -1190,6 +1192,8 @@
 
             }
 
+            if(IsDrCr===false)
+            {
             // Perform the AJAX request
 
             $.ajax({
@@ -1289,6 +1293,109 @@
                 }
 
             });
+            }
+             else if(IsDrCr===true)
+            {
+                  $.ajax({
+
+                type: "POST",
+
+                url: `/api/VoucherEntryReceipts/AddCRDrVoucherEntry?AccountHead=${encodeURIComponent(accheadname)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
+
+                contentType: "application/json",
+
+                data: JSON.stringify(VE),
+
+                dataType: "json",
+
+                success: function (response) {
+
+
+                     $("#Narration").dxTextArea("instance").option("value", "");
+                     var accountHeadValidator = $("#AccountHeadDropDown").dxValidator("instance");
+                     accountHeadValidator.reset();
+                     var voucherAmtValidator = $("#Amount").dxValidator("instance");
+                     voucherAmtValidator.reset();
+
+                    $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+
+                     var button = $("#btnSave").dxButton("instance");
+                    button.option("text", "Update");
+                    //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+
+                    //console.log(response.data);
+                    // Retrieve the newly added row from response or datagrid instance
+                    var updatedGridData = $("#dataGrid").dxDataGrid("instance").option("dataSource");
+
+                    // Filter entries where DrCr is "Cr"
+                    var filteredData = updatedGridData.filter(entry => entry.DrCr === "Cr");
+
+                    // Get the latest entry from the filtered data
+                    var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
+                    console.log(latestEntry);
+                    if (accheadname && accheadname.startsWith("Cost")) {
+
+                        const params = {
+                            VoucherNo: encodeURIComponent(voucherNo),
+                            VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                            AccountHead: encodeURIComponent(accheadname),
+                            VoucherAmount: encodeURIComponent(amount),
+                            DrCr: encodeURIComponent(sbDrCr)
+
+                        };
+                        openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
+                    } else if (accheadname) {
+                        debugger;
+
+                        // Function to check allocation
+                        function checkAllocation(url, successCallback) {
+                            $.ajax({
+                                type: "GET",
+                                url: url,
+                                data: {
+                                    AccountHead: accheadname,
+                                    AccountID: accheadid
+                                },
+                                success: function (response) {
+                                    if (response.isAllocated) {
+                                        const params = {
+                                            VoucherNo: encodeURIComponent(voucherNo),
+                                            VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+                                            AccountHead: encodeURIComponent(accheadname),
+                                            VoucherAmount: encodeURIComponent(amount),
+                                            DrCr: encodeURIComponent(sbDrCr),
+                                            AccountID: encodeURIComponent(accheadid)
+                                        };
+                                        successCallback(params);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error(`Error checking allocation: ${error}`);
+                                }
+                            });
+                        
+                        }
+
+                        // Check Property Allocation
+                        checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
+
+                        // Check Employee Allocation
+                        checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
+
+                        checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+                    }
+
+                },
+
+                error: function (xhr, status, error) {
+
+                    alert("Error occurred while updating data: " + error);
+
+                }
+
+            });
+
+            }
 
         } else {
             IsNotification=true;
@@ -2704,9 +2811,12 @@
                             $("#VoucherNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
                             $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
                             $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
-
-                            $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
-                            $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
+                               $("#VerifiedBy").dxCheckBox("instance").option("value", data.IsVerified || false);
+                            $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || "");
+                    $("#VerifiedOnDate").dxTextBox("instance").option("value", data.VoucherVerifiedOn || "");
+                    $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
+                     $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
+                      $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
 
 
                             //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
@@ -2880,5 +2990,26 @@
                     }, 500); // Small delay to ensure the textbox is ready
                 }
             });
+
+             function onVoucherDrCrValueChanged(e) {
+    // Retrieve the new selected value from the event argument.
+    var selectedValue = e.value;
+
+    // Log the selected value for debugging purposes.
+    console.log("Transaction type selected: " + selectedValue);
+
+    // Add your custom logic based on the selected value.
+    if (selectedValue === "Dr") {
+        // Code to handle Debit logic.
+        console.log("Debit selected");
+        IsDrCr=false;
+        // Example: update another control or perform a calculation.
+    } else if (selectedValue === "Cr") {
+        // Code to handle Credit logic.
+        console.log("Credit selected");
+        IsDrCr=true;
+        // Example: update another control or perform a calculation.
+    }
+}
 
 </script>

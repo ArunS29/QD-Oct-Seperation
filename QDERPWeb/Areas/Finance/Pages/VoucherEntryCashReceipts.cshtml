@@ -2647,9 +2647,12 @@
                         $("#VoucherNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
                         $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
                         $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
-                        $("#IsVerified").dxCheckBox("instance").option("value", data.IsVerified || false);
-                        $("#IsApproved").dxCheckBox("instance").option("value", data.IsApproved || false);
-
+                               $("#VerifiedBy").dxCheckBox("instance").option("value", data.IsVerified || false);
+                            $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || "");
+                    $("#VerifiedOnDate").dxTextBox("instance").option("value", data.VoucherVerifiedOn || "");
+                    $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
+                     $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
+                      $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
 
                         //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
