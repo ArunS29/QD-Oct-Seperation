@@ -1,0 +1,151 @@
+2025-03-14 18:48:59.717 +05:30 [INF] AspNetCoreThreadingTimerStoragesCleaner.StartCore
+
+2025-03-14 18:48:59.967 +05:30 [WRN] The page at '/Areas/Finance/Views/_BillsReceivables.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-14 18:48:59.968 +05:30 [WRN] The page at '/Areas/Finance/Views/_ChequePopup.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-14 18:48:59.968 +05:30 [WRN] The page at '/Areas/Finance/Views/_CostAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-14 18:48:59.969 +05:30 [WRN] The page at '/Areas/Finance/Views/_EmployeeAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-14 18:48:59.969 +05:30 [WRN] The page at '/Areas/Finance/Views/_LedgerAccount.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-14 18:48:59.969 +05:30 [WRN] The page at '/Areas/Finance/Views/_PropertyAllocation.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-14 18:48:59.969 +05:30 [WRN] The page at '/Areas/Finance/Views/_SalaryPayable.cshtml' is located under the area root directory '/Areas/' but does not follow the path format '/Areas/AreaName/Pages/Directory/FileName.cshtml
+2025-03-14 18:49:00.325 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-03-14 18:49:00.453 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:00.458 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:00.469 +05:30 [INF] HTTP GET / responded 302 in 7.5484 ms
+2025-03-14 18:49:00.513 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:01.151 +05:30 [DBG] TenantContext Resolved. Adding to HttpContext.
+2025-03-14 18:49:01.197 +05:30 [INF] HTTP GET /Pulse/Security/Login responded 200 in 44.7062 ms
+2025-03-14 18:49:01.197 +05:30 [WRN] Unable to configure Browser Link script injection on the response. 
+2025-03-14 18:49:01.197 +05:30 [WRN] Unable to configure browser refresh script injection on the response. Consider manually adding '<script src="/_framework/aspnetcore-browser-refresh.js"></script>' to the body of the page.
+2025-03-14 18:49:01.270 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:01.284 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:01.484 +05:30 [ERR] An unhandled exception occurred.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at QD.ERP.Web.Pages.Shared.Pages_Shared__Layout.<>c__DisplayClass26_0.<<ExecuteAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at QD.ERP.Web.Pages.Shared.Pages_Shared__Layout.ExecuteAsync() in G:\Pulse\March\14032025\qd.erp.web\QDERPWeb\Pages\Shared\_Layout.cshtml:line 40
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderLayoutAsync(ViewContext context, ViewBufferTextWriter bodyWriter)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeResultAsync>g__Logged|22_0(ResourceInvoker invoker, IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at QD.ERP.Web.Middlewares.ExceptionHandler.InvokeAsync(HttpContext httpContext) in G:\Pulse\March\14032025\qd.erp.web\QDERPWeb\Middlewares\ExceptionHandler.cs:line 21
+2025-03-14 18:49:01.520 +05:30 [ERR] HTTP GET /favicon.ico responded 500 in 235.0532 ms
+2025-03-14 18:49:06.040 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:06.040 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:12.668 +05:30 [INF] HTTP POST /api/Login/SignIn responded 200 in 6627.0567 ms
+2025-03-14 18:49:12.705 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:12.705 +05:30 [DBG] TenantContext Resolved. Adding to HttpContext.
+2025-03-14 18:49:12.757 +05:30 [INF] HTTP GET /Pulse/Finance/Index responded 200 in 52.0676 ms
+2025-03-14 18:49:13.396 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:13.447 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:13.564 +05:30 [ERR] An unhandled exception occurred.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at QD.ERP.Web.Pages.Shared.Pages_Shared__Layout.<>c__DisplayClass26_0.<<ExecuteAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at QD.ERP.Web.Pages.Shared.Pages_Shared__Layout.ExecuteAsync() in G:\Pulse\March\14032025\qd.erp.web\QDERPWeb\Pages\Shared\_Layout.cshtml:line 40
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderLayoutAsync(ViewContext context, ViewBufferTextWriter bodyWriter)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeResultAsync>g__Logged|22_0(ResourceInvoker invoker, IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at QD.ERP.Web.Middlewares.ExceptionHandler.InvokeAsync(HttpContext httpContext) in G:\Pulse\March\14032025\qd.erp.web\QDERPWeb\Middlewares\ExceptionHandler.cs:line 21
+2025-03-14 18:49:13.567 +05:30 [ERR] HTTP GET /favicon.ico responded 500 in 119.8616 ms
+2025-03-14 18:49:16.275 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:16.275 +05:30 [DBG] TenantContext Resolved. Adding to HttpContext.
+2025-03-14 18:49:16.327 +05:30 [INF] HTTP GET /Pulse/Finance/AccountingLedgers responded 200 in 52.4990 ms
+2025-03-14 18:49:16.592 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:16.593 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:16.649 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:16.650 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:16.712 +05:30 [ERR] Error in LoadLayout: Invalid column name 'LayoutJson'.
+2025-03-14 18:49:16.716 +05:30 [ERR] HTTP GET /api/Utility/LoadLayout responded 500 in 123.0023 ms
+2025-03-14 18:49:16.771 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:16.772 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:16.822 +05:30 [INF] HTTP GET /api/Permissions/GetAccessDetails responded 200 in 171.7324 ms
+2025-03-14 18:49:16.821 +05:30 [ERR] An unhandled exception occurred.
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at QD.ERP.Web.Pages.Shared.Pages_Shared__Layout.<>c__DisplayClass26_0.<<ExecuteAsync>b__1>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext.SetOutputContentAsync()
+   at QD.ERP.Web.Pages.Shared.Pages_Shared__Layout.ExecuteAsync() in G:\Pulse\March\14032025\qd.erp.web\QDERPWeb\Pages\Shared\_Layout.cshtml:line 40
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderLayoutAsync(ViewContext context, ViewBufferTextWriter bodyWriter)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeResultAsync>g__Logged|22_0(ResourceInvoker invoker, IActionResult result)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at QD.ERP.Web.Middlewares.ExceptionHandler.InvokeAsync(HttpContext httpContext) in G:\Pulse\March\14032025\qd.erp.web\QDERPWeb\Middlewares\ExceptionHandler.cs:line 21
+2025-03-14 18:49:16.824 +05:30 [ERR] HTTP GET /favicon.ico responded 500 in 51.6555 ms
+2025-03-14 18:49:16.824 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:16.824 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:16.842 +05:30 [INF] HTTP GET /api/Permissions/GetAccessDetails responded 200 in 17.1547 ms
+2025-03-14 18:49:17.740 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:17.740 +05:30 [DBG] TenantContext Resolved. Adding to HttpContext.
+2025-03-14 18:49:17.782 +05:30 [INF] HTTP GET /Pulse/Finance/LedgerAccount responded 200 in 42.3174 ms
+2025-03-14 18:49:18.186 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:18.186 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:18.190 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:18.190 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:18.252 +05:30 [INF] HTTP GET /api/AccountLedgerMaster/GetMaxLedgerAccountID responded 200 in 61.8358 ms
+2025-03-14 18:49:18.273 +05:30 [INF] HTTP GET /api/AccountLedgerMaster/GetAccountDetails responded 404 in 86.6618 ms
+2025-03-14 18:49:21.735 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:21.735 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:21.791 +05:30 [INF] HTTP GET /api/AccountLedgerMaster/FindDuplicatesOnAccountHead responded 200 in 56.3110 ms
+2025-03-14 18:49:22.927 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:22.927 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:22.982 +05:30 [INF] HTTP GET /api/AccountLedgerMaster/getAccountingLedger responded 200 in 54.8265 ms
+2025-03-14 18:49:22.999 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:22.999 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:23.032 +05:30 [INF] HTTP GET /api/AccountLedgerMaster/getAccountingLedger responded 200 in 33.5555 ms
+2025-03-14 18:49:27.229 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:27.229 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:27.261 +05:30 [INF] HTTP GET /api/AccountLedgerMaster/getCreditDebit responded 200 in 32.3330 ms
+2025-03-14 18:49:28.255 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:28.255 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:28.272 +05:30 [INF] HTTP GET /api/AccountLedgerMaster/getCreditDebit responded 200 in 16.7978 ms
+2025-03-14 18:49:29.489 +05:30 [DBG] Resolving TenantContext using TenantResolver.
+2025-03-14 18:49:29.489 +05:30 [DBG] TenantContext Not Resolved.
+2025-03-14 18:49:32.002 +05:30 [ERR] HTTP POST /api/AccountLedgerMaster/InsertOpeningBalance responded 500 in 2512.6257 ms
