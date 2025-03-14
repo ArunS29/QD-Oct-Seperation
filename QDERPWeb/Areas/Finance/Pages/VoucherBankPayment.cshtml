@@ -1205,8 +1205,8 @@
 
                         "IsApproved": $("#ApprovedBy").dxCheckBox("instance").option("value"),
 
-                        "VoucherVerifiedOn": new Date(),
-                        "VoucherApprovedOn": new Date()
+                        "VoucherVerifiedOn": null,
+                        "VoucherApprovedOn": null
                     };
 
                     $.ajax({
@@ -3684,6 +3684,8 @@
                 }
                 debugger
                 console.log(response.data[0]);
+                
+
                 const data = response.data[0];
                 if (data) {
 
@@ -3697,12 +3699,12 @@
                     $("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
                     $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
                     $("#VerifiedBy").dxCheckBox("instance").option("value", data.IsVerified || false);
-                    $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || "");
-                    $("#VerifiedOnDate").dxTextBox("instance").option("value", data.VoucherVerifiedOn || "");
-                    $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
+                     $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || "");
+                     $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
                      $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
-                      $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
-
+                     $("#VerifiedOnDate").dxTextBox("instance").option("value", data.VoucherVerifiedOn || "");
+                     $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
+                    
 
                     //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
