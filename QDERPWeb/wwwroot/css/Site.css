@@ -14,21 +14,6 @@
     background-color: #c0dceb;
     padding: 5px;
 }
-
-.dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
-    background-color: aliceblue !important;
-}
-#dataGrid .dx-header-row .dx-datagrid-text-content {
-    font-weight: bold;
-    color: black;
-    background-color: aliceblue !important;
-}
-
-
-.dx-datagrid-header-panel {
-    background-color: aliceblue !important;
-/*    background-color: #909ead00;*/
-}
 .content-container-bottom {
     background-color: #c0dceb;
     border-bottom-left-radius: 10px; /* Radius for top-left corner */

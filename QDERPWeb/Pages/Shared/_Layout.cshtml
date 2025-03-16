@@ -74,7 +74,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        <style >
         * {
             color: var(--Global-Color-Grey-32, #525252); /* Default color */
             font-family: var(--Font-family-Base, 'Inter', sans-serif); /* Font family */
@@ -90,12 +89,46 @@
             font-family: "Inter", Helvetica, Arial, sans-serif;
             --highlight-color: #0f6cbd;
             --text-color: #525252;
-            --hover-bg: darkblue;
+            --hover-bg-color: var(--hover-bg-color);
             --sidebar-bg: #909ead00;
             --breadcrumb-color: #808080;
+            --menu-color: var(--menu-color-1);
+            --header-color: var(--header-color-1);
+            --primary-color: var(--primary-color-1);
+            --background-color: var(--background-color-1);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--background-color);
+            color: #333;
+            transition: all 0.3s ease;
+            margin: 0;
+            display: flex;
+        }
+
+        .color-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
+            background-color: var(--header-color) !important;
+        }
+
+        #dataGrid .dx-header-row .dx-datagrid-text-content {
+            font-weight: bold;
+            color: black;
+            background-color: var(--header-color) !important;
         }
 
 
+        .dx-datagrid-header-panel {
+            background-color: var(--header-color) !important;
+        }
 
         .container {
             display: flex;
@@ -121,7 +154,7 @@
         /* Sidebar 1 styles */
         .sidebar {
             width: 250px;
-            background-color: #fff;
+            background-color: var(--menu-color);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
@@ -138,7 +171,7 @@
             /* Hidden state of sidebar */
             .sidebar.hidden {
                 width: 60px; /* Minimized width to show icons only */
-                background-color: white;
+                background-color: var(--menu-color);
                 height: inherit;
             }
 
@@ -166,7 +199,7 @@
         }
 
         .menu-item:hover {
-            background-color: var(--hover-bg);
+            background-color: var(--hover-bg-color);
             border-radius: 4px;
             color: white;
         }
@@ -228,7 +261,7 @@
             /* left: calc(var(--sidebar-width, 17em)); /* Use the sidebar width */
             width: 30px;
             height: 30px;
-            background-color: #ffffff;
+            background-color: var(--header-color);
             border: 1px solid #ddd;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
             border-radius: 50%;
@@ -254,7 +287,7 @@
         /* Sidebar 2 styles */
         .sidebar2 {
             transition: background-color 0.3s ease;
-            background-color: #fff;
+            background-color: var(--menu-color);
             display: flex;
             flex-direction: column;
             border-left: 1px solid #ddd;
@@ -360,7 +393,7 @@
         }
 
             .submenu-item:hover {
-                background-color: var(--hover-bg);
+                background-color: var(--hover-bg-color);
                 border-radius: 4px;
             }
 
@@ -383,7 +416,7 @@
             width: 100%; /* Occupy the full width of the screen */
             padding: 10px; /* Add some spacing */
             padding-bottom: 0px;
-            background-color: #ffffff; /* Optional background color */
+            background-color: var(--header-color); /* Optional background color */
             position: fixed; /* Make it fixed to stay visible on scroll */
             top: 0; /* Position at the top */
             left: 0; /* Start from the very left */
@@ -523,7 +556,7 @@
 
         .userName {
             padding: 5px;
-            background-color: aliceblue;
+            background-color: var(--background-color);
             width: 15em;
         }
 
@@ -575,7 +608,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #fff;
+            background-color: var(--footer-color);
             border: 1px solid #ddd;
         }
 
@@ -979,6 +1012,21 @@
             <div class="popup-content">
                 <!-- Add settings content here -->
                 <p>Adjust your preferences here.</p>
+                <div class="switcher-section">
+                    <h3>Predefined Themes:</h3>
+                    <button class="color-btn" style="background: #FFDDC1;" onclick="applyTheme('light-orange')"></button>
+                    <button class="color-btn" style="background: #FFD3E0;" onclick="applyTheme('light-pink')"></button>
+                    <button class="color-btn" style="background: #C3E8F7;" onclick="applyTheme('light-cyan')"></button>
+                    <button class="color-btn" style="background: #D4A5A5;" onclick="applyTheme('light-rose')"></button>
+                    <button class="color-btn" style="background: #FFF7D6;" onclick="applyTheme('light-gold')"></button>
+                    <button class="color-btn" style="background: #E1F7D5;" onclick="applyTheme('light-mint')"></button>
+                    <button class="color-btn" style="background: #FAE1DD;" onclick="applyTheme('light-peach')"></button>
+                    <button class="color-btn" style="background: #E6F0FF;" onclick="applyTheme('light-sky')"></button>
+                    <button class="color-btn" style="background: #D9E4DD;" onclick="applyTheme('light-olive')"></button>
+                    <button class="color-btn" style="background: #FDE2E4;" onclick="applyTheme('light-coral')"></button>
+                    <button class="color-btn" style="background: #E3D5CA;" onclick="applyTheme('light-sand')"></button>
+
+                </div>
             </div>
         </div>
 
@@ -1664,7 +1712,104 @@
             ease: "power3.out"
           });
         });
+                 function applyTheme(theme) {
+                    let themes = {
+            "light-orange": {
+                "--header-color": "#FFDDC1",
+                "--footer-color": "#FFDDC1",
+                "--nav-color": "#FFB899",
+                "--background-color": "#FFF4E1",
+                "--hover-bg-color": "#FFC49C"
+            },
+            "light-pink": {
+                "--header-color": "#FFD3E0",
+                "--footer-color": "#FFD3E0",
+                "--nav-color": "#FF9FB9",
+                "--background-color": "#FFECF2",
+                "--hover-bg-color": "#FFB6C9"
+            },
+            "light-cyan": {
+                "--header-color": "#C3E8F7",
+                "--footer-color": "#C3E8F7",
+                "--nav-color": "#91D6ED",
+                "--background-color": "#E8F8FF",
+                "--hover-bg-color": "#A5DAEE"
+            },
+            "light-rose": {
+                "--header-color": "#D4A5A5",
+                "--footer-color": "#D4A5A5",
+                "--nav-color": "#B97F7F",
+                "--background-color": "#EFD8D8",
+                "--hover-bg-color": "#C78C8C"
+            },
+            "light-gold": {
+                "--header-color": "#FFF7D6",
+                "--footer-color": "#FFF7D6",
+                "--nav-color": "#FFEB99",
+                "--background-color": "#FFFBEA",
+                "--hover-bg-color": "#FFDE88"
+            },
+            "light-mint": {
+                "--header-color": "#E1F7D5",
+                "--footer-color": "#E1F7D5",
+                "--nav-color": "#B3E99F",
+                "--background-color": "#F3FBED",
+                "--hover-bg-color": "#C8F3B8"
+            },
+            "light-peach": {
+                "--header-color": "#FAE1DD",
+                "--footer-color": "#FAE1DD",
+                "--nav-color": "#F5BFB8",
+                "--background-color": "#FFF2EF",
+                "--hover-bg-color": "#F7C9C2"
+            },
+            "light-sky": {
+                "--header-color": "#E6F0FF",
+                "--footer-color": "#E6F0FF",
+                "--nav-color": "#B3D1FF",
+                "--background-color": "#F5FAFF",
+                "--hover-bg-color": "#C3DBFF"
+            },
+            "light-olive": {
+                "--header-color": "#D9E4DD",
+                "--footer-color": "#D9E4DD",
+                "--nav-color": "#B3C6B9",
+                "--background-color": "#EDF5F0",
+                "--hover-bg-color": "#C3D5C7"
+            },
+            "light-coral": {
+                "--header-color": "#FDE2E4",
+                "--footer-color": "#FDE2E4",
+                "--nav-color": "#FAB6B8",
+                "--background-color": "#FFF4F5",
+                "--hover-bg-color": "#FBC8CA"
+            },
+            "light-sand": {
+                "--header-color": "#E3D5CA",
+                "--footer-color": "#E3D5CA",
+                "--nav-color": "#C5A994",
+                "--background-color": "#F7F2ED",
+                "--hover-bg-color": "#D6BFAE"
+            }
+        };
 
+
+                    if (themes[theme]) {
+                        for (let property in themes[theme]) {
+                            document.documentElement.style.setProperty(property, themes[theme][property]);
+                            localStorage.setItem(property, themes[theme][property]); // Save the theme in LocalStorage
+                        }
+                    }
+                }
+
+                window.onload = function() {
+                    document.documentElement.style.setProperty("--header-color", localStorage.getItem("--header-color") || "#ffffff");
+                    document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "#ffffff");
+                    document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#2c3e50");
+                    document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#ecf0f1");
+                    document.documentElement.style.setProperty("--hover-bg-color", themes[theme]["--hover-bg-color"]);localStorage.setItem("--hover-bg-color", themes[theme]["--hover-bg-color"]);
+
+                };
     </script>
 </body>
 </html>
