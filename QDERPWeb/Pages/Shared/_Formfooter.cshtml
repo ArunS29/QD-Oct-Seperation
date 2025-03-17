@@ -7,13 +7,6 @@
         text-align: center !important;
     }
 
-    .dx-button {
-        background-color: aliceblue;
-        border-color: aliceblue
-    }
-
-
-
     .horizontal-container {
         display: flex;
         gap: 10px; /* Adds spacing between buttons */
@@ -31,15 +24,12 @@
         margin-left: -10px !important;
     }
 
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid aliceblue; /* Border between rows */
-    }
-    /* Custom styles for context menu */
+        /* Custom styles for context menu */
     .context-menu {
         display: none;
         position: absolute;
-        background-color: aliceblue;
-        border: 1px solid aliceblue;
+        /* background-color: aliceblue;
+        border: 1px solid aliceblue; */
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         z-index: 1000;
     }
@@ -60,9 +50,9 @@
         display: none; /* Keep it hidden until needed */
     }
 
-    #previewModal {
+    /* #previewModal {
         border: 1px solid aliceblue;
-    }
+    } */
 
     .bold-button .dx-button-text {
         font-weight: bold;
@@ -94,7 +84,7 @@
                 .OnClick("function() { openPreview(); }")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                 )
-    <div id="previewModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: aliceblue; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000;">
+    <div id="previewModal" class="background" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000;">
         <h3>Preview</h3>
         <pre id="previewContent">Loading...</pre>
     </div>

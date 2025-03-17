@@ -238,8 +238,8 @@
                         .Visible(false)
                         .ResizeEnabled(true)
                         .ContentTemplate(@<text>
-                        <div id="popupContent" style="width:100%; height:100%;background-color: aliceblue;">
-                            <iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;background-color: aliceblue;"></iframe>
+                        <div id="popupContent" class="background" style="width:100%; height:100%;">
+                            <iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
                         </div>
                     </text>)
                         )
@@ -3649,7 +3649,7 @@
                       .container { display: none !important; }
                       .frame { display: none !important; }
                       .footerContainer { display: none !important; }
-                      .bodyContainer { display: flex; justify-content: center; background-color: aliceblue; }
+                      .bodyContainer { display: flex; justify-content: center; }
                       .mainContainer { margin-top: 1em;width:100%; }
                   `;
             document.head.appendChild(style);
