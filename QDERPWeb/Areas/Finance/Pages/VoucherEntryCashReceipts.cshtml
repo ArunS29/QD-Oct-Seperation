@@ -1646,15 +1646,15 @@
 
                 "IsApproved": $("#ApprovedBy").dxCheckBox("instance").option("value"),
 
-                "VoucherVerifiedOn": new Date(),
+                "VoucherVerifiedOn": null,
 
-                "VoucherApprovedOn": new Date()
+                "VoucherApprovedOn": null
 
             };
 
                 $.ajax({
                     type: "POST",
-                    url: "/api/VoucherMaster/SaveVoucher",
+                    url: "/api/VoucherMaster/UpdateVoucher",
                     contentType: "application/json",
                     data: JSON.stringify(VM),
                     dataType: "json",

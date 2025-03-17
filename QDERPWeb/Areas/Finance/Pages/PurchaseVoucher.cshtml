@@ -1517,13 +1517,13 @@ $(function () {
 				"UseSubmittedDate": $("#UseSubmittedDate").dxCheckBox("instance").option("value"),
 				"IsVerified": $("#VerifiedBy").dxCheckBox("instance").option("value"),
 				"IsApproved": $("#ApprovedBy").dxCheckBox("instance").option("value"),
-				"VoucherVerifiedOn": new Date(),
-				"VoucherApprovedOn": new Date()
+				"VoucherVerifiedOn": null,
+				"VoucherApprovedOn": null
 			};
 
 			$.ajax({
 				type: "POST",
-				url: "/api/PurchaseVoucher/SaveVoucher",
+				url: "/api/PurchaseVoucher/UpdateVoucher",
 				contentType: "application/json",
 				data: JSON.stringify(VM),
 				dataType: "json",

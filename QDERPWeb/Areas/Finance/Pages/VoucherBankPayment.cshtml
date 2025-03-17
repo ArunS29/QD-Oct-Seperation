@@ -430,12 +430,13 @@
                     .Editing(editing => editing
                     .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
                     .AllowUpdating(true)   // Enable editing of existing rows
-                                           // .AllowDeleting(true)   // Enable deleting rows
-                                           //.UseIcons(true) // Enables icons for editing buttons
+                     .AllowDeleting(true)   // Enable deleting rows
+                     .UseIcons(true) // Enables icons for editing buttons
                     )
                     .OnEditorPreparing("onEditorPreparing")
                     .OnRowUpdating("onRowUpdating")
-                    .OnRowPrepared(@"
+                    .OnRowRemoving("onRowRemoving") // Ensure correct capitalization
+                        .OnRowPrepared(@"
             function(e) {
             if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
             $(e.rowElement).css('background-color', 'lightgray');
@@ -488,9 +489,9 @@
             <li onclick="editPropertyAllocation()">
                 <i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation" class="no-border-input"></div>
             </li>
-            <li onclick="onRowRemoving()">
+          @*   <li onclick="onRowRemoving()">
                 <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteLineEntry" class="no-border-input"></div>
-            </li>
+            </li> *@
             <li onclick="onAllRowRemoving()">
                 <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteAllLineEntries" class="no-border-input"></div>
             </li>
@@ -1040,7 +1041,7 @@
                         });
             $(function () {
                                             $("#EditBillReceivable").dxTextBox({
-                                                    text:formatMessage("Edit Bill Receivable"),
+                                                    text:formatMessage("Edit Bills Payable"),
                                                 readOnly: true
 
                                 });
@@ -1309,13 +1310,13 @@
 
                         "IsApproved": $("#ApprovedBy").dxCheckBox("instance").option("value"),
 
-                        "VoucherVerifiedOn": new Date(),
-                        "VoucherApprovedOn": new Date()
+                        "VoucherVerifiedOn": null,
+                        "VoucherApprovedOn": null
                     };
 
                     $.ajax({
                         type: "POST",
-                        url: "/api/VoucherMaster/SaveVoucher",
+                        url: "/api/VoucherMaster/UpdateVoucher",
                         contentType: "application/json",
                         data: JSON.stringify(VM),
                         dataType: "json",
@@ -2420,73 +2421,11 @@
             });
         }
 
-
-
-        function onRowRemoving() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-            // Get the selected row's data
-            var selectedRows = dataGrid.getSelectedRowsData();
-            var selectedRowData = selectedRows.length > 0 ? selectedRows[0] : null;
-
-            if (!selectedRowData) {
-                DevExpress.ui.notify("No row selected. Please select a row first.", "error", 2000);
-                return;
-            }
-
-            // Retrieve the unique identifier for the row
-            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-            var voucherEntryNo = selectedRowData.VoucherEntryNo;
-
-            // Validate VoucherEntryNo
-            if (!voucherEntryNo) {
-                DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
-                return;
-            }
-
-            // **Ask for confirmation before proceeding**
-            confirmDelete(function () {
-                // User clicked "Yes", proceed with deletion
-                $.ajax({
-                    url: `/api/VoucherMaster/DeleteBPVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadname)}`,
-                    type: "POST",
-                    success: function (response) {
-                        if (response.data) {
-                            $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                           // DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
-                        } else {
-                            DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
-                    }
-                });
-            });
-        }
-
-
         function onAllRowRemoving() {
             var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-            // Get the selected row's data
-            var selectedRows = dataGrid.getSelectedRowsData();
-            var selectedRowData = selectedRows.length > 0 ? selectedRows[0] : null;
-
-            if (!selectedRowData) {
-                DevExpress.ui.notify("No row selected. Please select a row first.", "error", 2000);
-                return;
-            }
-
             // Retrieve the unique identifier for the row
             var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-            var voucherEntryNo = selectedRowData.VoucherEntryNo;
-
-            // Validate VoucherEntryNo
-            if (!voucherEntryNo) {
-                DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
-                return;
-            }
 
             // **Ask for confirmation before proceeding**
             confirmDeleteAll(function () {
@@ -3736,5 +3675,38 @@
     }
 }
 
+
+ function onRowRemoving(e) {
+    // Show confirmation dialog before deleting
+    // let isConfirmed = confirm("Are you sure you want to delete this record?");
+
+
+    // if (!isConfirmed) {
+    //     e.cancel = true; // Prevent deletion if user cancels
+    // } else {
+        console.log("Deleting row with data:", e.data);
+
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        var voucherEntryNo =  e.data.VoucherEntryNo;
+        // Optionally, call API to delete from the backend
+        $.ajax({
+           url: `/api/VoucherMaster/DeleteBPVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadname)}`,
+
+           // url: "/api/VoucherMaster/DeleteVoucherEntry", // Change to your actual API
+            type: "POST",
+            contentType: "application/json",
+          //  data: JSON.stringify({ id: e.data.VoucherEntryNo }), // Pass ID for deletion
+            success: function (response) {
+                 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+               // DevExpress.ui.notify("Record deleted successfully", "success", 2000);
+            },
+            error: function (xhr, status, error) {
+                e.cancel = true; // Stop deletion if API fails
+                console.error("Error deleting record:", error);
+                DevExpress.ui.notify("Failed to delete record", "error", 2000);
+            }
+        });
+   // }
+}
 
 </script>

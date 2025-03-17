@@ -978,35 +978,40 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
-        [HttpPost]
-        public async Task<ActionResult> SaveVoucher([FromBody] Tbl201VoucherMaster VM)
-        {
-            if (VM == null)
-            {
-                return BadRequest(new { success = false, message = "Invalid data received." });
-            }
+        //[HttpPost]
+        //public async Task<ActionResult> SaveVoucher([FromBody] Tbl201VoucherMaster VM)
+        //{
+        //    if (VM == null)
+        //    {
+        //        return BadRequest(new { success = false, message = "Invalid data received." });
+        //    }
 
-            try
-            {
-                bool isVoucherExists = _context.Tbl201VoucherMasters
-             .Any(v => v.VoucherNo == VM.VoucherNo);
+        //    try
+        //    {
+        //        bool isVoucherExists = _context.Tbl201VoucherMasters
+        //     .Any(v => v.VoucherNo == VM.VoucherNo);
 
-                if (!isVoucherExists)
-                {
-                    _context.Tbl201VoucherMasters.Add(VM);
-                    await _context.SaveChangesAsync();
-                    //return Json(new { VoucherEntryNo = VE.VoucherNo });
-                    return Ok(new { success = true, message = "Data inserted successfully!" });
-                }
-                return Ok(new { success = true, message = "" });
-            }
-            catch (Exception ex)
-            {
+        //        var existingVoucher = await _context.Tbl201VoucherMasters
+        //                                .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
 
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
+        //        if (!isVoucherExists)
+        //        {
+        //            _context.Tbl201VoucherMasters.Add(VM);
+        //            await _context.SaveChangesAsync();
+        //            //return Json(new { VoucherEntryNo = VE.VoucherNo });
+        //            return Ok(new { success = true, message = "Data inserted successfully!" });
+        //        }
+        //        // Update existing record
+        //        _context.Entry(existingVoucher).CurrentValues.SetValues(VM);
+        //        return Ok(new { success = true, message = "" });
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-        }
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+
+        //}
 
         [HttpGet]
         public async Task<ActionResult> GetNewCPVoucherNo(DataSourceLoadOptions loadOptions)

@@ -175,7 +175,7 @@
 							rules.AddRequired().Message("Account Head is required");
 						})
 						.LabelMode(EditorLabelMode.Outside)
-						.ID("ddAccountHead")
+						.ID("ddAccountHeadBills")
 						.ShowClearButton(true)
 						.AcceptCustomValue(true)
 						.OpenOnFieldClick(false)
@@ -456,7 +456,7 @@
 	}
 	function dataGridAccountHeadSelectionChanged(e) {
 		const selectedKey = e.selectedRowKeys[0];
-		const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+		const ddbInstance = $("#ddAccountHeadBills").dxDropDownBox("instance");
 
 		if (selectedKey) {
 			ddbInstance.option("value", selectedKey);
@@ -478,7 +478,7 @@
 
 		var DrCr = $("#DrCrId").dxSelectBox("instance").option("value");
 		var ReferenceType = $("#Reference").dxSelectBox("instance").option("value");
-		var ReferenceNo = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+		var ReferenceNo = $("#ddAccountHeadBills").dxDropDownBox("instance").option("value");
 		var Amount = $("#txtAmount2").dxNumberBox("instance").option("value");
 
 		if (!DrCr || !ReferenceType || !ReferenceNo || !Amount) {
@@ -525,7 +525,7 @@
 			"VoucherNo": $("#VoucherNoId").dxTextBox("instance").option("value"),
 			"DrCr": $("#DrCrId").dxSelectBox("instance").option("value"),
 			"ReferenceType": $("#Reference").dxSelectBox("instance").option("value"),
-			"ReferenceNo": $("#ddAccountHead").dxDropDownBox("instance").option("value"),
+			"ReferenceNo": $("#ddAccountHeadBills").dxDropDownBox("instance").option("value"),
 			"Amount": $("#txtAmount2").dxNumberBox("instance").option("value")
 		};
 
