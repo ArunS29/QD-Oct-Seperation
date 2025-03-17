@@ -6,9 +6,6 @@
     font-family: "Inter", Helvetica, Arial, sans-serif;
 }
 
-.card-header {
-    background-color: aliceblue;
-}
 
 .content-container-Middle {
     background-color: #c0dceb;
@@ -61,7 +58,6 @@
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
     margin: 15px;
-/*    padding-bottom:20px;*/
 }
 * {
     /*    color: #525252;*/
@@ -95,7 +91,6 @@ a {
 body {
     font-family: var(--font-family);
     margin: 0;
-    background-color: aliceblue;
     color: black;
     display: flex;
     height: 100vh;

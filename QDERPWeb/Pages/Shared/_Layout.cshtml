@@ -377,9 +377,15 @@
                 color: var(--highlight-color);
                 text-decoration: underline;
             }
-
-
-
+        .background{
+            background-color:var(--background-color);
+        }
+        .bodyContainer {
+               background-color:var(--background-color);
+        }
+        .card{
+            background-color: var(--background-color);
+        }
 
         /* Submenu styles */
         .submenu-item {
@@ -1807,7 +1813,7 @@
                     document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "#ffffff");
                     document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#2c3e50");
                     document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#ecf0f1");
-                    document.documentElement.style.setProperty("--hover-bg-color", themes[theme]["--hover-bg-color"]);localStorage.setItem("--hover-bg-color", themes[theme]["--hover-bg-color"]);
+                    document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color")|| "transparent");
 
                 };
     </script>
