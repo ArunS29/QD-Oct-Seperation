@@ -7,13 +7,6 @@
         text-align: center !important;
     }
 
-    .dx-button {
-        background-color: aliceblue;
-        border-color: aliceblue;
-    }
-
-
-
     .horizontal-container {
         display: flex;
         gap: 30px; /* Adds spacing between buttons */
@@ -31,15 +24,9 @@
         margin-left: -10px !important;
     }
 
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid aliceblue; /* Border between rows */
-    }
-    /* Custom styles for context menu */
     .context-menu {
         display: none;
         position: absolute;
-        background-color: aliceblue;
-        border: 1px solid aliceblue;
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         z-index: 1000;
     }
@@ -60,7 +47,7 @@
         display: none; /* Keep it hidden until needed */
     }
 </style>
-<div class="dx-fieldset horizontal-container mt-2" style="background-color:aliceblue">
+<div class="dx-fieldset horizontal-container mt-2" class="background">
 
     @(Html.DevExtreme().Button()
         .ID("btnSave")
