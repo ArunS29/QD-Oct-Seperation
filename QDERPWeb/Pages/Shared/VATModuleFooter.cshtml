@@ -279,30 +279,14 @@
             )
     </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonReceipts")
-            .Icon("tags")
-            .Width(50)
-            .Text(new JS("formatMessage('Add Receipt')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add Cash Receipts')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('Add Bank Receipts')")).Icon("product");
-            })
-            .OnItemClick("addRecipitsButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
+
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonPayment")
             .Icon("money")
             .Width(50)
-            .Text(new JS("formatMessage('Add Payment')"))
+            .Text("Add New")
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
@@ -321,16 +305,11 @@
             .ID("ddOtherVouchers")
             .Icon("card")
             .Width(50)
-            .Text(new JS("formatMessage('Other Vouchers')"))
+            .Text("Invoice Details ")
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add Purchase Voucher')")).Icon("add");
-                items.Add().Text(new JS("formatMessage('Add Sales Voucher')")).Icon("add");
-                items.Add().Text(new JS("formatMessage('Add Journal Voucher')")).Icon("add");
-            })
-            .OnItemClick("otherVoucherButton_click")
+          
+          @*   .OnItemClick("otherVoucherButton_click") *@
             .ShowArrowIcon(false)
             )
     </div>
@@ -345,13 +324,9 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Account Statements')")).Icon("file").OnClick("showSubmenu4");
-                items.Add().Text(new JS("formatMessage('Receivable Statements')")).Icon("file").OnClick("showSubmenu5");
-                items.Add().Text(new JS("formatMessage('Payable Statements')")).Icon("file").OnClick("showSubmenu6");
-                items.Add().Text(new JS("formatMessage('Cost Reports')")).Icon("file").OnClick("showSubmenu7");
-                items.Add().Text(new JS("formatMessage('Bank Reconciliation')")).Icon("product");
-                items.Add().Text(new JS("formatMessage('Ledger to Receivable/Payable Mapping')")).Icon("product");
-                items.Add().Text(new JS("formatMessage('Ledger to Salary Payable Mapping')")).Icon("product");
+                items.Add().Text("Tax Report").Icon("file").OnClick("showSubmenu8");
+                items.Add().Text("Inventory Report").Icon("file").OnClick("showSubmenu9");
+             
             })
             .OnItemClick("addReportsButton_click")
             .ShowArrowIcon(false)
@@ -868,28 +843,7 @@
         openModal(url, title);
     }
 
-    function otherVoucherButton_click(e) {
-        let url = "";
-        let title = "Vouchers";
-        switch (e.itemData.text) {
-            case 'Add Purchase Voucher':
-                url = `/${tenantName}/Finance/Purchasevoucher`;
-                title = "Add Purchase Voucher";
-                break;
-            case 'Add Sales Voucher':
-                url = `/${tenantName}/Finance/Salesvoucher`;
-                title = "Add Sales Voucher";
-                break;
-            case 'Add Journal Voucher':
-                url = `/${tenantName}/Finance/Voucherjournal`;
-                title = "Add Journal Voucher";
-                break;
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-                return;
-        }
-        openModal(url, title);
-    }
+
 
     // Close modal when clicking outside
     window.onclick = function(event) {
@@ -973,10 +927,10 @@
         window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
 
     }
-    function showSubmenu4(e) {
+    function showSubmenu8(e) {
         e.event.stopPropagation();
         hideAllSubmenus(); // Hide all submenus before showing the selected one
-        var $submenu = $('#submenuContainer4');
+        var $submenu = $('#submenuContainer8');
         var $target = $(e.event.target).closest('.dx-item-content');
         var offset = $target.offset();
         var submenuWidth = $submenu.outerWidth();
@@ -1011,10 +965,10 @@
         });
     }
 
-    function showSubmenu5(e) {
+    function showSubmenu9(e) {
         e.event.stopPropagation();
         hideAllSubmenus(); // Hide all submenus before showing the selected one
-        var $submenu = $('#submenuContainer5');
+        var $submenu = $('#submenuContainer9');
         var $target = $(e.event.target).closest('.dx-item-content');
         var offset = $target.offset();
         var submenuWidth = $submenu.outerWidth();
