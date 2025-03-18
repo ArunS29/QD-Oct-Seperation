@@ -125,7 +125,7 @@
                     rules.AddRequired().Message("Account Head is required");
                 })
                 .LabelMode(EditorLabelMode.Outside)
-                .ID("ddAccountHead")
+                .ID("ReferenceAcountHead")
                 .ShowClearButton(true)
                 .AcceptCustomValue(true)
                 .OpenOnFieldClick(false)
@@ -172,7 +172,7 @@
         </div>
         <div class="form-group button-alignment-down">
             @(Html.DevExtreme().Button()
-                .ID("btnVoucherEntry")
+                .ID("btnBillsVoucherEntry")
                 .Text("ADD")
                 .Height(50)
                 .Width(150)
@@ -331,7 +331,7 @@
     }
     function dataGridEPRAccountHeadSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
-        const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+        const ddbInstance = $("#ReferenceAcountHead").dxDropDownBox("instance");
 
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
@@ -344,7 +344,7 @@
     function dataGridEPRPaymentInitialized(e) {
         dataGrid = e.component;
     }
-    function dataGridAccountEPRHeadInitialized(e) {
+    function dataGridEPRAccountHeadInitialized(e) {
         dataGrid = e.component;
     }
 
@@ -352,7 +352,7 @@
 
         var DrCr = $("#DrCrId").dxSelectBox("instance").option("value");
         var ReferenceType = $("#Reference").dxSelectBox("instance").option("value");
-        var ReferenceNo = $("#ddAccountHead").dxDropDownBox("instance").option("value");
+        var ReferenceNo = $("#ReferenceAcountHead").dxDropDownBox("instance").option("value");
         var Amount = $("#txtAmount2").dxNumberBox("instance").option("value");
 
         if (!DrCr || !ReferenceType || !ReferenceNo || !Amount) {
@@ -393,7 +393,7 @@
             "VoucherNo": $("#VoucherNoId").dxTextBox("instance").option("value"),
             "DrCr": $("#DrCrId").dxSelectBox("instance").option("value"),
             "ReferenceType": $("#Reference").dxSelectBox("instance").option("value"),
-            "ReferenceNo": $("#ddAccountHead").dxDropDownBox("instance").option("value"),
+            "ReferenceNo": $("#ReferenceAcountHead").dxDropDownBox("instance").option("value"),
             "Amount": $("#txtAmount2").dxNumberBox("instance").option("value")
         };
 

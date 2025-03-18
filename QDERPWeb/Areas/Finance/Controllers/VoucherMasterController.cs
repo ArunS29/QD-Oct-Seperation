@@ -1727,6 +1727,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existingEntry.AccountHead = accountID; // Assign single account ID
                 existingEntry.EntryNarration = model.EntryNarration;
 
+
+
                 _context.SaveChanges();
                 return Ok(new { message = "" });
             }
@@ -1774,6 +1776,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return PartialView("~/Areas/Finance/Views/_SalaryPayable.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
+        [HttpGet]
+        public IActionResult GetVoucherEntry(long VoucherEntryNo)
+        {
+            try
+            {
+                // Fetch updated data and join with Qry201ListOfAccounts to get AccountHead
+                var voucherEntry = (from v in _context.Qry201VoucherEntryScreenDisplays
+                                    join a in _context.Qry201ListOfAccounts
+                                    on v.AccountHead equals a.AccountId // Assuming AccountHead stores AccountId
+                                    where v.VoucherEntryNo == VoucherEntryNo
+                                    select new
+                                    {
+                                        v.VoucherEntryNo,
+                                        v.DrCr,
+                                        AccountHead = a.AccountHead, // Get Account Name instead of AccountId
+                                        v.DrAmount,
+                                        v.CrAmount,
+                                        v.EntryNarration,
+                                        v.SysRemarks
+                                    }).FirstOrDefault();
+
+                if (voucherEntry == null)
+                {
+                    return NotFound(new { message = "Voucher Entry not found" });
+                }
+
+                return Ok(voucherEntry);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+
     }
 
 }
