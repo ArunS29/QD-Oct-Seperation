@@ -989,7 +989,7 @@
         "Supplier Address Street Arabic": "Supplier Address Street Arabic",
         "Is Ledger Obselete": "Is Ledger Obselete",
         "Account Head Arabic": "Account Head Arabic",
-        "Edit Bill Receivable": "Edit Bill Receivable",
+        "Edit Bills Payable": "Edit Bills Payable",
         "Edit Salary Payable": "Edit Salary Payable",
         "Edit Employee Allocation": "Edit Employee Allocation",
         "Edit Property Allocation": "Edit Property Allocation",
@@ -1161,14 +1161,11 @@
         "Receivables Reports with Effective Date":"Receivables Reports with Effective Date",
         "Receivables with unmapped Vouchers": "Receivables with unmapped Vouchers",
         "Bills Payable": "Bills Payable",
-        "Not Overdue": "Not Overdue",
-        "Less 30 Days": "Less 30 Days",
-        "Less 30 to 60": "Less 30 to 60",
-        "Less 60 to 90": "Less 60 to 90",
-        "Less 90 to 120": "Less 90 to 120",
-        "Less 180 to 365": "Less 180 to 365",
-        "More 365": "More 365",
-        "Receivable Amount":"Receivable Amount"
+        "Invoice Details": "Invoice Details",
+        "Add New Standard Tax Invoice(B2B Invoice)": "Add New Standard Tax Invoice(B2B Invoice)",
+        "Add New Simplified Tax Invoice(B2C Invoice)": "Add New Simplified Tax Invoice(B2C Invoice)",
+        "Add New Prepayment Tax Invoice(B2B Invoice) for Advance Payments":"Add New Prepayment Tax Invoice(B2B Invoice) for Advance Payments"
+
     },
     "ar": {
         "Bills Payable":"الفواتير المستحقة الدفع",
@@ -1344,7 +1341,7 @@
         "Buyer ID Type Name": "اسم نوع هوية المشتري",
         "Branch Name": "اسم الفرع",
         "Billing Account Head": "رئيس حساب الفواتير",
-        "Edit Bill Receivable": "تعديل الذمم المدينة",
+        "Edit Bills Payable": "تعديل الذمم المدينة",
         "Edit Salary Payable": "تعديل الرواتب المستحقة الدفع",
         "Edit Employee Allocation": "تعديل تخصيص الموظفين",
         "Edit Property Allocation": "تعديل تخصيص الممتلكات",
@@ -2303,7 +2300,11 @@
         "Voucher Entry No": "رقم إدخال القسيمة",
         "Voucher Modified By": "تم تعديل القسيمة بواسطة",
         "Choose if you want this account to link with Employee Database": "اختر ما إذا كنت تريد ربط هذا الحساب بقاعدة بيانات الموظفين",
-        "Choose if you want this account to link with Employee's Salary Advance": "اختر ما إذا كنت تريد ربط هذا الحساب بسلفة راتب الموظف"
+        "Choose if you want this account to link with Employee's Salary Advance": "اختر ما إذا كنت تريد ربط هذا الحساب بسلفة راتب الموظف",
+        "Invoice Details": "تفاصيل الفاتورة",
+        "Add New Standard Tax Invoice(B2B Invoice)": "إضافة فاتورة ضريبية قياسية جديدة (فاتورة B2B)",
+        "Add New Simplified Tax Invoice(B2C Invoice)": "إضافة فاتورة ضريبية مبسطة جديدة (فاتورة B2C)",
+        "Add New Prepayment Tax Invoice(B2B Invoice) for Advance Payments": "أضف فاتورة ضريبة الدفع المسبق الجديدة (فاتورة B2B) للدفعات المقدمة"
     }
 };
 
