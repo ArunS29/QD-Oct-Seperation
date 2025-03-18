@@ -42,6 +42,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         i.ReceivableAmount,
                         i.Received,
                         i.Balance,
+                        i.NotOverdue,
+                        i.Less30,
+                        i.Less30to60,
+                        i.Less60to90,
+                        i.Less90to180,
+                        i.Less180to365,
+                        i.More365,
                         i.OverdueDays
                     });
 

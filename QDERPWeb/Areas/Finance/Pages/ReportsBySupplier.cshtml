@@ -233,7 +233,8 @@
             @(Html.DevExtreme().Button()
                 .Text("Print")
                 .Icon("print")
-               // .OnClick("printGrid1")
+                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                // .OnClick("printGrid1")
                 )
         </div>
     </div>

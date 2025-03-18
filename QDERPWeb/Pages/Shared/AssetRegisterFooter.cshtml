@@ -216,7 +216,7 @@
                         .Icon("print")
                         .Text(new JS("formatMessage('Print')"))
                         .Width(40)
-                        .OnClick("exportGridToPDF")
+            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
         )
     </div>
 

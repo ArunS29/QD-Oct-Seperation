@@ -335,7 +335,7 @@
 								.Type(ButtonType.Normal)
 								.StylingMode(ButtonStylingMode.Outlined)
 								.Icon("print")
-
+								.OnClick("function() { exportDataGridToPDF('dataGrid'); }")
 								)
 				@(Html.DevExtreme().Button()
 								.ID("AEbtnBack")

@@ -129,16 +129,24 @@
         )
         </div>
     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnPrint")
-        .Text(new JS("formatMessage('Print')"))
-        .Icon("print")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Width(180)
-        //.OnClick("function() { printData(); }")
-        )
-        </div>
+        @(Html.DevExtreme().Button()
+            .ID("btnExportPDF")
+            .Text("Export PDF")
+            .Icon("exportpdf")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Width(180)
+            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+            )
+    </div>
+
+
+
+
+
+
+
+
     <div class="btn-container">
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")
@@ -457,7 +465,7 @@
 
         const reportMappings = {
         "Receivables Reports": "XtraRecivableReport",
-        "Receivables Reports (with Effective Date)": "ReceivableReport(EffectiveDate)",
+        "Receivables Reports with Effective Date": "ReceivableReport(EffectiveDate)",
         "Receivables Summary Reports": "ReceivablesSummaryReport",
         "Receivables By Client": "ReceivablesByClientReport",
         "Receivables By Sales Person": "ReceivablesBySalesPersonReport",
