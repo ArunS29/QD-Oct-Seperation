@@ -1336,9 +1336,10 @@
                 sidebar2.style.display = 'none';
             } else if (name === 'VAT Modules') {
                 breadcrumbTrail.length = 0;
+                showVATModuleSubmenu();
                 updateBreadcrumb();
                 updateBreadcrumbFromSidebar2('');
-                sidebar2.style.display = 'none';
+                //sidebar2.style.display = 'none';
             } else if (name === 'Equipment Rentals') {
                 breadcrumbTrail.length = 0;
                 updateBreadcrumb();
@@ -1458,6 +1459,16 @@
                             <i class="fas fa-newspaper"></i>
                             <div class="text">Journal Register</div>
                         </a>`;
+        }
+
+         function showVATModuleSubmenu() {
+            const sidebar2 = document.getElementById('sidebar2');
+            sidebar2.innerHTML = `
+                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalesRegisterVAT">
+                            <i class="fas fa-book"></i>
+                            <div class="text">VAT Sales Invoice Register</div>
+                        </a>
+                       `;
         }
 
 
