@@ -142,7 +142,15 @@ namespace QD.ERP.Web.Pages
                     case "XtraRecivableReport":
                         Report = new XtraRecivableReport();
                         break;
-
+                    case "XtraReportAgeingreportsummary":
+                        Report = new XtraReportAgeingreportsummary();
+                        break;
+                    case "XtraReportBillsReceivableAgeingReport":
+                        Report = new XtraReportBillsReceivableAgeingReport();
+                        break;
+                    case "BIllsPayable":
+                        Report = new BIllsPayable();
+                        break;
                     default:
                         return NotFound("Report not found.");
                 }

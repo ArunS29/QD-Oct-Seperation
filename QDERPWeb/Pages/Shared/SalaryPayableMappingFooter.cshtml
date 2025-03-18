@@ -91,6 +91,7 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("print")
         .Width(180)
+        .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
         )
     @(Html.DevExtreme().Button()
         .ID("btnToggleSearch")

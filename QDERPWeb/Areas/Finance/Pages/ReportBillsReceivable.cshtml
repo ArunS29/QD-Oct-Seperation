@@ -3,26 +3,40 @@
 @using QD.ERP.Web.DAL.Entities;
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script src="~/js/global/print.js"></script>
 
 <style type="text/css">
+    .container {
+        display: none !important;
+    }
 
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        padding-left:500px;
+    }
 
 </style>
 
 <div class="container-fluid"></div>
 
-    @* <div class="col-md-6" style="padding-bottom: 10px; display: flex; align-items: center;"> *@
-    @*     <!-- Icon --> *@
-    @*     <i class="fas fa-clone" style="margin-right: 10px; color: #ffcc00;"></i> *@
-    @*     <!-- Text styled with .left-text --> *@
-    @*     <h4 id="BillsReceivable" class="left-text no-border-input" style="color:black"></h4> *@
-    @* </div> *@
-    <div class="title">
-        <div class="header-container">
-            <div id="BillsReceivable" class="no-border-title"></div>
-        </div>
+
+<div class="title">
+    <div class="header-container">
+        <div id="ReportBillsReceivable" class="no-border-title"></div>
     </div>
+</div>
 <div class="card-footer" style="display: flex;justify-content: space-between;">
     @await Html.PartialAsync("_GridFooter3")
     <div class="row">
@@ -38,7 +52,7 @@
                     )
             </div>
 
-           
+
         </div>
     </div>
 </div>
@@ -53,22 +67,14 @@
         .OnClick("function() { switchButtons('btnBillsFullyReceived'); }")
         )
 </div>
-<div id="printSection">
-<div class="dx-field ledgerResult" style="width: 98%; overflow: hidden;">
+<div class="dx-field ledgerResult" style="width: 108%; overflow: hidden;">
 
     @(Html.DevExtreme().DataGrid<Qry20105BillsReceivableAgeingView>()
-
             .ID("dataGrid")
-
             .DataSource(ds => ds.Mvc()
-
-            .Controller("BillsReceivable") // Specify the controller name
-
-            .LoadAction("Get")) // Specify the action that returns data
-
-            .RemoteOperations(false) // Enable remote data operations
-
-
+            .Controller("BillsReceivable")
+            .LoadAction("Get"))
+            .RemoteOperations(false)
             .Columns(columns =>
             {
                 // Grid Band: Bills Receivable
@@ -77,32 +83,37 @@
                 band.AddFor(m => m.AccountHead)
             .Caption(new JS("formatMessage('Ledger Account')"))
             .Alignment(HorizontalAlignment.Left)
-            .Width(200);
-                // Account Head column
-                band.AddFor(m => m.AccountHead)
-            .Caption(new JS("formatMessage('Ledger Account')"))
-            .Alignment(HorizontalAlignment.Left)
             .Width(200)
-            .GroupIndex(0); // Group by this column
+            .GroupIndex(0);
+                            band.AddFor(m => m.AccountHeadNo)
+            .Caption(new JS("formatMessage('Ledger No')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Width(150);
+
+                band.AddFor(m => m.AccountHead)
+            .Caption(new JS("formatMessage('Account Head')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Width(150);
 
                 band.AddFor(m => m.ReferenceNo)
             .Caption(new JS("formatMessage('Reference No')"))
             .CellTemplate(@<text>
-        <a href="/<%- tenantName %>/Finance/SalesVoucher?argsledno=<%- data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
+        <a href="/<%- tenantName %>/Finance/SalesVoucher?argsledno=<%- data.ReferenceNo %>"
+           target="_blank" style="color: #0398fc; text-decoration: underline;">
             <%- data.ReferenceNo %>
         </a>
     </text>)
         .Width(150);
 
-                // Voucher Reference No column
-                band.AddFor(m => m.VoucherRefNo)
-    .Caption(new JS("formatMessage('Voucher Ref No')"))
-    .Alignment(HorizontalAlignment.Center)
-    .Width(150);
 
-                band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Width(140).Format(format => format
-    .Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                // Invoice Due Date column
+                band.AddFor(m => m.VoucherDate)
+    .Caption(new JS("formatMessage('Voucher Date')"))
+    .Alignment(HorizontalAlignment.Center)
+    .Width(140)
+    .Format(format => format
+    .Type(Format.ShortDate)
+    .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+
                 band.AddFor(m => m.InvoiceDueDate)
     .Caption(new JS("formatMessage('Invoice Due Date')"))
     .Alignment(HorizontalAlignment.Center)
@@ -110,68 +121,94 @@
     .Type(Format.ShortDate)
     .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
     .Width(140);
-            });
 
-                // Grid Band: Amount
-                columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(band =>
-    {
-        // Receivable Amount column
                 band.AddFor(m => m.ReceivableAmount)
-            .Caption(new JS("formatMessage('Invoice Amount')"))
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText(@"
+    .Caption(new JS("formatMessage('Receivable Amount')"))
+    .Alignment(HorizontalAlignment.Right)
+    .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
+    return '';
     }
-    let positiveValue = Math.abs(e.value); // Ensure positive values
-    return positiveValue.toLocaleString(undefined, {
+    return Math.abs(e.value).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
     });
     }")
-            .Width(140);
+    .Width(140);
 
-        // Paid Amount column
                 band.AddFor(m => m.Received)
-            .Caption(new JS("formatMessage('Received')"))
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText(@"
+    .Caption(new JS("formatMessage('Received')"))
+    .Alignment(HorizontalAlignment.Right)
+    .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
+    return '';
     }
-    let positiveValue = Math.abs(e.value); // Convert to positive
-    let formattedValue = positiveValue.toLocaleString(undefined, {
+    return '(' + Math.abs(e.value).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')'; // Add parentheses around the value
-    }
-    ")
-            .Width(140);
+    }) + ')';
+    }")
+    .Width(140);
 
-        // Balance Amount column
                 band.AddFor(m => m.Balance)
-            .Caption(new JS("formatMessage('Balance')"))
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText(@"
+    .Caption(new JS("formatMessage('Balance')"))
+    .Alignment(HorizontalAlignment.Right)
+    .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
+    return '';
     }
-    let positiveValue = Math.abs(e.value); // Ensure positive values
-    return positiveValue.toLocaleString(undefined, {
+    return Math.abs(e.value).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
     });
     }")
-            .Width(140);
-                band.AddFor(m => m.OverdueDays).Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width(100);
+    .Width(140);
+
+                band.AddFor(m => m.NotOverdue)
+    .Caption(new JS("formatMessage('Not Overdue')"))
+    .Alignment(HorizontalAlignment.Center)
+    .Width(100);
+
+                band.AddFor(m => m.OverdueDays)
+    .Caption(new JS("formatMessage('Overdue Days')"))
+    .Alignment(HorizontalAlignment.Center)
+    .Width(100);
+
+                
+                band.AddFor(m => m.Less30)
+    .Caption(new JS("formatMessage('Less 30 Days')"))
+    .Alignment(HorizontalAlignment.Right)
+    .Width(120);
+
+                band.AddFor(m => m.Less30to60)
+    .Caption(new JS("formatMessage('Less 30 to 60')"))
+    .Alignment(HorizontalAlignment.Right)
+    .Width(120);
+
+                band.AddFor(m => m.Less60to90)
+    .Caption(new JS("formatMessage('Less 60 to 90')"))
+    .Alignment(HorizontalAlignment.Right)
+    .Width(120);
+
+                band.AddFor(m => m.Less90to180)
+    .Caption(new JS("formatMessage('Less 90 to 120')"))
+    .Alignment(HorizontalAlignment.Right)
+    .Width(120);
+
+                band.AddFor(m => m.Less180to365)
+    .Caption(new JS("formatMessage('Less 180 to 365')"))
+    .Alignment(HorizontalAlignment.Right)
+    .Width(120);
+
+                band.AddFor(m => m.More365)
+    .Caption(new JS("formatMessage('More 365')"))
+    .Alignment(HorizontalAlignment.Right)
+    .Width(120);
             });
             })
-
-
         .Paging(p => p.PageSize(10))
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
@@ -187,64 +224,6 @@
         .Width("100%")
         .Summary(summary =>
         {
-            // Group-level summaries (for each group footer)
-            summary.GroupItems(items =>
-            {
-                items.Add().Column("VoucherRefNo")
-            .SummaryType(SummaryType.Count)
-            .ShowInGroupFooter(true)
-            .DisplayFormat("No of Invoices: {0}");
-
-                items.Add().Column("ReceivableAmount")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if(e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    return e.value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }
-    ");
-
-                items.Add().Column("Received")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    let positiveValue = Math.abs(e.value); // Convert to positive
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')'; // Add parentheses around the value
-    }
-    ");
-
-
-                items.Add().Column("Balance")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if(e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    return e.value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }
-    ");
-            });
-
-            // Total summary (for grid-wide totals)
             summary.TotalItems(items =>
             {
                 items.Add().Column("VoucherRefNo")
@@ -256,67 +235,61 @@
             .CustomizeText(@"
     function(e) {
     if(e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
+    return '';
     }
     return e.value.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
     });
-    }
-    ");
+    }");
+
                 items.Add().Column("Received")
             .SummaryType(SummaryType.Sum)
             .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
+    return '';
     }
-    let positiveValue = Math.abs(e.value); // Convert to positive
-    let formattedValue = positiveValue.toLocaleString(undefined, {
+    return '(' + Math.abs(e.value).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')'; // Add parentheses around the value
-    }
-    ");
+    }) + ')';
+    }");
 
                 items.Add().Column("Balance")
             .SummaryType(SummaryType.Sum)
             .CustomizeText(@"
     function(e) {
     if(e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
+    return '';
     }
     return e.value.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
     });
-    }
-    ");
-
+    }");
             });
         })
-
-        // Store the DataGrid instance
         .OnInitialized("dataGridInitialized")
-        .OnContextMenuPreparing("onContextMenuPreparing") // Bind the context menu event
+        .OnContextMenuPreparing("onContextMenuPreparing")
         )
 </div>
-</div>
+
+
 
 
 <script>
     $(function () {
 
-                                        $("#BillsReceivable").dxTextBox({
-                                                    text:formatMessage("Bills Receivable"),
-                                                        readOnly: true,
-                                                    onContentReady: function(e) {
+        $("#BillsReceivable").dxTextBox({
+            text: formatMessage("Bills Receivable"),
+            readOnly: true,
+            onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");
-        }
+            }
 
-                                    });
-                                    });
+        });
+    });
     let dataGrid; // Global reference to the DataGrid instance
 
     // Initialize the DataGrid and store its instance
@@ -374,19 +347,8 @@
             ];
         }
     }
- 
-    // Print button functionality (Export as PDF)
-    document.getElementById("RptReceivableAgeing").addEventListener("click", showReport);
-    document.getElementById("RptReceivableAgeingSummary").addEventListener("click", showReport1);
-    // Print button functionality (Export as PDF)
-    function showReport() {
-        // Open the report in a new tab
-        window.open(`/${tenantName}/Finance/api/BillsReceivable/GenerateReport`, '_blank');
-    }
-    function showReport1() {
-        // Open the report in a new tab
-        window.open(`/${tenantName}/Finance/api/BillsReceivable/GenerateAgeingreportsummaryReport`, '_blank');
-    }
+
+
 
 </script>
 

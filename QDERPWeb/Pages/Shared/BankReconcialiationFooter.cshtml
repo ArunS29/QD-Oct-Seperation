@@ -91,6 +91,7 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("print") // Correct icon for printing
         .Width(180)
+        .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
     )
 
     @(Html.DevExtreme().Button()

@@ -72,6 +72,13 @@
     <script src="~/js/jwt-decode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script src="~/js/global/print.js"></script>
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- DevExpress PDF Exporter -->
+    <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
+
 
     <style>
         * {
@@ -791,28 +798,29 @@
         </div>
         <!-- Submenu-->
         <div id="submenuContainer1" class="context-menu" style="display:none;">
-            <div class="context-menu-item1">
-                <div id="RptReceivableAgeing" class="submenu-item" onclick="handleClick(XtraReportAgeingreportsummary)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report</span>
-                </div>
-                <div class="submenu-item" onclick="handleClick(XtraReportBillsReceivableAgeingReport)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report (By Sales Person)</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report (Customizable)</span>
-                </div>
-                <div class="submenu-item" id="RptReceivableAgeingSummary" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Summary</span>
-                </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
-                    <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Summary (Customizable)</span>
-                </div>
+        <div class="context-menu-item1">
+            <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Report')">
+                <i class="fa fa-th-list"></i>
+                <span>Receivables Ageing Report</span>
             </div>
+            <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Report (By Sales Person)')">
+                <i class="fa fa-th-list"></i>
+                <span>Receivables Ageing Report (By Sales Person)</span>
+            </div>
+            <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Report (Customizable)')">
+                <i class="fa fa-th-list"></i>
+                <span>Receivables Ageing Report (Customizable)</span>
+            </div>
+            <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Summary')">
+                <i class="fa fa-th-list"></i>
+                <span>Receivables Ageing Summary</span>
+            </div>
+            <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Summary (Customizable)')">
+                <i class="fa fa-th-list"></i>
+                <span>Receivables Ageing Summary (Customizable)</span>
+            </div>
+        </div>
+
         </div>
         <div id="submenuContainer2" class="context-menu" style="display:none;">
             <div class="context-menu-item2">
@@ -1823,6 +1831,35 @@
                     document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color")|| "transparent");
 
                 };
+
+
+        // Report Mappings for Ageing Reports
+        const ageingReportMappings = {
+            "Receivables Ageing Report": "XtraReportAgeingreportsummary",
+            "Receivables Ageing Report (By Sales Person)": "XtraReportBillsReceivableAgeingReport",
+            "Receivables Ageing Report (Customizable)": "XtraReportAgeingCustomizable",
+            "Receivables Ageing Summary": "XtraReportAgeingreportsummary",
+            "Receivables Ageing Summary (Customizable)": "RptReceivableAgeingSummaryCustomizable"
+        };
+
+        // Function to handle submenu report clicks
+        function handleClickreport(reportKey) {
+            if (reportKey === "Receivables Ageing Report (Customizable)") {
+                
+                window.location.href = `/${tenantName}/Finance/ReportBillsReceivable`;
+            } else if (ageingReportMappings[reportKey]) {
+                const reportName = ageingReportMappings[reportKey];
+                console.log(`Opening report: ${reportName}`);
+
+                // Open Document Viewer with selected report
+                window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            } else {
+                console.warn('No report mapping found for:', reportKey);
+            }
+        }
+
+
     </script>
+
 </body>
 </html>

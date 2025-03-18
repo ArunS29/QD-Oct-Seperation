@@ -1160,7 +1160,15 @@
         "Cheque Issued in favour of": "Cheque Issued in favour of",
         "Receivables Reports with Effective Date":"Receivables Reports with Effective Date",
         "Receivables with unmapped Vouchers": "Receivables with unmapped Vouchers",
-        "Bills Payable":"Bills Payable"
+        "Bills Payable": "Bills Payable",
+        "Not Overdue": "Not Overdue",
+        "Less 30 Days": "Less 30 Days",
+        "Less 30 to 60": "Less 30 to 60",
+        "Less 60 to 90": "Less 60 to 90",
+        "Less 90 to 120": "Less 90 to 120",
+        "Less 180 to 365": "Less 180 to 365",
+        "More 365": "More 365",
+        "Receivable Amount":"Receivable Amount"
     },
     "ar": {
         "Bills Payable":"الفواتير المستحقة الدفع",

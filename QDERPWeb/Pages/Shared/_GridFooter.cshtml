@@ -219,7 +219,7 @@
             .Text(new JS("formatMessage('Print')"))
             .ElementAttr(new { style = "display: none;" })
             .Width(50)
-            .OnClick("exportGridToPDF")
+            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
 
