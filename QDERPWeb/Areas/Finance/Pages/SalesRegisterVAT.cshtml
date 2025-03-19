@@ -189,7 +189,7 @@
 		.LabelMode(EditorLabelMode.Outside)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
 		.DisplayFormat("dd-MMM-yyyy")
 		.TabIndex(2)
 		)
@@ -198,12 +198,13 @@
 		.ID("todateBox")
 		.Label(new JS("formatMessage('End Date')"))
 		.LabelMode(EditorLabelMode.Outside)
-		.InputAttr("aria-label", "Time")
+		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
 		.DisplayFormat("dd-MMM-yyyy")
 		.TabIndex(3)
 		)
+
 
 	@(Html.DevExtreme().DropDownButton()
 		.ID("ddBtnShowRecords")
