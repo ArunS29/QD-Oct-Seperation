@@ -822,25 +822,26 @@
         }
         openModal(url, title);
     }
-
     function addPaymentButton_click(e) {
-        let url = "";
-        let title = "Payments";
-        switch (e.itemData.text) {
-            case formatMessage('Add New Standard Tax Invoice(B2B Invoice)'):
-                url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-               
-                title = formatMessage('Add New Standard Tax Invoice(B2B Invoice)');
-                break;
-            // case 'Add Bank Payment':
-            //     url = `/${tenantName}/Finance/VoucherBankPayment`;
-            //     title = "Add Bank Payment";
-            //     break;
-            default:
-                console.log("Clicked item: ", e.itemData.text);
-                return;
-        }
-        openModal(url, title);
+         let url = "";
+         let title = "Payments";
+         switch (e.itemData.text) {
+             case formatMessage('Add New Standard Tax Invoice(B2B Invoice)'):
+                 url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+                window.location.href = url; // Navigate
+
+               // window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
+                 title = formatMessage('Add New Standard Tax Invoice(B2B Invoice)');
+                 break;
+             // case 'Add Bank Payment':
+             //     url = `/${tenantName}/Finance/VoucherBankPayment`;
+             //     title = "Add Bank Payment";
+             //     break;
+             default:
+                 console.log("Clicked item: ", e.itemData.text);
+                 return;
+         }
+       //  openModal(url, title);
     }
 
 
