@@ -430,11 +430,11 @@
 
 
 
-                                columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).CustomizeText(
+                                columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(
                             "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
                                 ).AllowEditing(false);
-                                columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).CustomizeText(
+                                columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(
                             "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
                                 ).AllowEditing(false);
@@ -2726,7 +2726,7 @@
                     {
                         $(function () {
                             $.ajax({
-                                    url: "/api/VoucherEntryCashReceipts/GetNewBRVoucherNo",
+                                    url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
                                 type: 'GET',
                                 success: function (data) {
                                     // Set the value in the VoucherNo TextBox
@@ -2838,6 +2838,8 @@
                             var dataGrid = $("#dataGrid").dxDataGrid("instance");
                             if (dataGrid) {
                                 dataGrid.option("dataSource", response.data);
+                                var button = $("#btnSave").dxButton("instance");
+                                button.option("text", "Update");
                             } else {
                                 $("#dataGrid").dxDataGrid({
                                     dataSource: response.data,
@@ -2921,37 +2923,74 @@
                 }
 
                   function onRowUpdating(e) {
-                const updatedData = e.newData;
-                const key = e.key; // Get primary key value if needed
+        const updatedData = e.newData;
+        const key = e.key; // Get primary key value if needed
 
-                const requestData = {
-                    VoucherEntryNo: updatedData.VoucherEntryNo || e.oldData.VoucherEntryNo,
-                    DrCr: updatedData.DrCr || e.oldData.DrCr,
-                  //  AccountHead: updatedData.AccountHead || e.oldData.AccountHead,
-                   AccountHead: Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead,
-                    DrAmount: updatedData.DrAmount || e.oldData.DrAmount,
-                    CrAmount: updatedData.CrAmount || e.oldData.CrAmount,
-                    EntryNarration: updatedData.EntryNarration || e.oldData.EntryNarration,
-                    SysRemarks: updatedData.SysRemarks || e.oldData.SysRemarks
-                };
+        const requestData = {
+            VoucherEntryNo: updatedData.VoucherEntryNo || e.oldData.VoucherEntryNo,
+            DrCr: updatedData.DrCr || e.oldData.DrCr,
+          //  AccountHead: updatedData.AccountHead || e.oldData.AccountHead,
+           AccountHead: updatedData.AccountHead !== undefined 
+        ? (Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead) 
+        : e.oldData.AccountHead,
+            DrAmount: (updatedData.DrCr === "Dr") 
+        ? (updatedData.DrAmount !== undefined ? updatedData.DrAmount : e.oldData.CrAmount) 
+        : (updatedData.DrAmount !== undefined ? updatedData.DrAmount : e.oldData.DrAmount),
+    CrAmount: (updatedData.DrCr === "Cr") 
+        ? (updatedData.CrAmount !== undefined ? updatedData.CrAmount : e.oldData.DrAmount) 
+        : (updatedData.CrAmount !== undefined ? updatedData.CrAmount : e.oldData.CrAmount),
+            EntryNarration: updatedData.EntryNarration || e.oldData.EntryNarration,
+            SysRemarks: updatedData.SysRemarks || e.oldData.SysRemarks
+        };
 
-                console.log("Request Payload:", requestData); // Debug the payload
+        console.log("Request Payload:", requestData); // Debug the payload
 
-                $.ajax({
-                    url: "/api/VoucherMaster/UpdateVoucherEntry",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(requestData),
-                    success: function(response) {
-                        DevExpress.ui.notify("Voucher Entry updated successfully", "success", 2000);
-                        $("#dataGrid").dxDataGrid("instance").refresh();
-                    },
-                    error: function(xhr) {
-                        DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
-                        console.error("Error Response:", xhr.responseText); // Log error response
-                    }
-                });
+        $.ajax({
+            url: "/api/VoucherMaster/UpdateVoucherEntry",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            success: function(response) {
+                
+                // Fetch the updated data after successful update
+            fetchUpdatedData(requestData.VoucherEntryNo);
+            
+            },
+            error: function(xhr) {
+                DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
+                console.error("Error Response:", xhr.responseText); // Log error response
             }
+        });
+    }
+    // Function to fetch updated data from Qry201VoucherEntryScreenDisplay
+function fetchUpdatedData(voucherEntryNo) {
+    $.ajax({
+        url: "/api/VoucherMaster/GetVoucherEntry?VoucherEntryNo=" + voucherEntryNo, // Adjust API endpoint as needed
+        type: "GET",
+        success: function(data) {
+            console.log("Updated Data:", data); // Debug response
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            // Find the row index of the updated VoucherEntryNo and update that row
+            let allData = dataGrid.option("dataSource");
+            let rowIndex = allData.findIndex(row => row.VoucherEntryNo === voucherEntryNo);
+
+            if (rowIndex !== -1) {
+                allData[rowIndex] = data; // Update the specific row with new data
+                dataGrid.option("dataSource", allData); // Set updated data
+                dataGrid.refresh(); // Refresh the DataGrid
+                DevExpress.ui.notify("Voucher Entry updated successfully", "success", 2000);
+            } else {
+                // If row not found, reload the entire grid
+                dataGrid.refresh();
+            }
+        },
+        error: function(xhr) {
+            DevExpress.ui.notify("Error fetching updated data", "error", 2000);
+            console.error("Fetch Error:", xhr.responseText); // Log error response
+        }
+    });
+}
 
              function isModal() {
                 return new URLSearchParams(window.location.search).get("modal") === "true";

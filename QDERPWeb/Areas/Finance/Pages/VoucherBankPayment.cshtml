@@ -3431,6 +3431,8 @@
                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
                     if (dataGrid) {
                         dataGrid.option("dataSource", response.data);
+                        var button = $("#btnSave").dxButton("instance");
+                                button.option("text", "Update");
                     } else {
                         $("#dataGrid").dxDataGrid({
                             dataSource: response.data,
@@ -3521,7 +3523,9 @@
             VoucherEntryNo: updatedData.VoucherEntryNo || e.oldData.VoucherEntryNo,
             DrCr: updatedData.DrCr || e.oldData.DrCr,
           //  AccountHead: updatedData.AccountHead || e.oldData.AccountHead,
-           AccountHead: Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead,
+           AccountHead: updatedData.AccountHead !== undefined 
+        ? (Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead) 
+        : e.oldData.AccountHead,
             DrAmount: updatedData.DrAmount || e.oldData.DrAmount,
             CrAmount: updatedData.CrAmount || e.oldData.CrAmount,
             EntryNarration: updatedData.EntryNarration || e.oldData.EntryNarration,
