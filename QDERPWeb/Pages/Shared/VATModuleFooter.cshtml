@@ -301,18 +301,16 @@
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddOtherVouchers")
+        @(Html.DevExtreme().Button()
+            .ID("btnInvoiceDetails")
+            .Text("Invoice Details")
             .Icon("card")
-            .Width(50)
-            .Text("Invoice Details ")
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-          
-          @*   .OnItemClick("otherVoucherButton_click") *@
-            .ShowArrowIcon(false)
+            .Width(150)
+            .OnClick("navigateToInvoiceEdit")
             )
     </div>
+
+
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -446,6 +444,12 @@
 
 
 <script type="text/javascript">
+
+         function navigateToInvoiceEdit() {
+           // Replace with the actual tenant name dynamically
+                var url = `/${tenantName}/Finance/VATInvoiceWithDetails`;
+            window.location.href = url; // Navigate to the page
+        }
 
     $(document).ready(function () {
         console.log('Start permission handling');

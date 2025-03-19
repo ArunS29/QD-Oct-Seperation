@@ -1,7 +1,6 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
 <style>
-/* Overlay Styling */
 .overlay {
 	display: none;
 	position: fixed;
@@ -26,12 +25,13 @@
 	overflow: hidden;
 }
 
+	.limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddButtonPayment,#btnInvoiceDetails,#ddReports)) {
+		display: none !important;
+	}
 #overlay-frame {
 	width: 100%;
 	height: 100%;
 }
-
-/* DataGrid Header Styling */
 .dx-datagrid-headers {
 	border: 1px solid #686868 !important;
 }
@@ -49,7 +49,6 @@
 	color: black;
 }
 
-/* Close Button */
 .close-btn {
 	position: absolute;
 	top: 10px;
@@ -58,7 +57,6 @@
 	cursor: pointer;
 }
 
-/* Toolbar Styling */
 .custom-toolbar {
 	display: flex;
 	align-items: center;
@@ -79,7 +77,6 @@
 	background-color: #0056b3;
 }
 
-/* Text Editor Styling */
 .dx-texteditor {
 	background-color: transparent !important;
 	border: 1px solid #d6e4f0 !important;
@@ -102,7 +99,6 @@
 	border-color: #508ae1 !important;
 }
 
-/* Readonly Input */
 .no-border-input {
 	border: none !important;
 	outline: none !important;
@@ -114,7 +110,6 @@
 	pointer-events: none;
 }
 
-/* Context Menu */
 .context-menu {
 	position: absolute;
 	background: #fff;
@@ -159,11 +154,13 @@
 	</div>
 </div>
 
-<div class="Head">
-	<div class="header-container">
-		<div class="footer">@await Html.PartialAsync("VATModuleFooter")</div>
+
+	<div class="Head">
+		<div class="limited-footer">
+			@await Html.PartialAsync("VATModuleFooter")
+		</div>
 	</div>
-</div>
+
 <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item" onclick="viewInvoice()">
 		<i class="dx-icon-search"></i> View e-Invoice
@@ -306,7 +303,7 @@
 		.ColumnFixing(fixing => fixing.Enabled(true)) 
 		.HeaderFilter(filter => filter.Visible(false))
 		.Height(500)
-		.ColumnAutoWidth(true)
+		@* .ColumnAutoWidth(true) *@
 		.FilterRow(filterRow => filterRow.Visible(false)) 
 		.GroupPanel(groupPanel => groupPanel.Visible(false)) 
 		.ShowBorders(true)
@@ -437,6 +434,11 @@
 
 
 <script>
+		  function viewInvoice(tenantName) {
+				let url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+			window.location.href = url; // Navigate to the form
+		}
+
 	
 $(document).ready(function () {
 		console.log('Start permission handling AccountingLedgers');
@@ -638,4 +640,11 @@ $(document).ready(function () {
 
 		return [day, strmonth, year].join('-');
 	}
+			$(document).ready(function () {
+		$(".limited-footer .btn-container").each(function () {
+				if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddButtonPayment,#btnInvoiceDetails,#ddReports").length) {
+				$(this).remove();
+			}
+		});
+	});
 </script>
