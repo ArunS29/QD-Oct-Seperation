@@ -1,0 +1,251 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@using QD.ERP.Web.DAL.Entities;
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style type="text/css">
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+      
+    }
+
+</style>
+
+<div class="container-fluid"></div>
+
+
+<div class="title">
+    <div class="header-container">
+        <div id="ReportBillsReceivable" class="no-border-title"></div>
+    </div>
+</div>
+
+<div class="dx-field ledgerResult" style="width: 108%; overflow: hidden;">
+    @await Html.PartialAsync("_GridFooter3")
+    @(
+        Html.DevExtreme().DataGrid<Qry20105BillsReceivableAgeingView>()
+        .ID("dataGrid")
+        .DataSource(ds => ds.Mvc()
+        .Controller("BillsReceivable")
+        .LoadAction("Get"))
+        .RemoteOperations(false)
+        .Columns(columns =>
+        {
+            columns.Add().Caption(new JS("formatMessage('Bills Receivable')")).Columns(band =>
+            {
+                band.AddFor(m => m.AccountHeadNo)
+            .Caption(new JS("formatMessage('Ledger No')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Width(150);
+
+                band.AddFor(m => m.AccountHead)
+            .Caption(new JS("formatMessage('Account Head')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Width(150);
+
+                band.AddFor(m => m.ReceivableAmount)
+            .Caption(new JS("formatMessage('Total Receivable')"))
+            .Alignment(HorizontalAlignment.Right)
+            .Width(140);
+
+                band.AddFor(m => m.Received)
+            .Caption(new JS("formatMessage('Total Received')"))
+            .Alignment(HorizontalAlignment.Right)
+            .Width(140);
+
+                band.AddFor(m => m.Balance)
+            .Caption(new JS("formatMessage('Total Balance')"))
+            .Alignment(HorizontalAlignment.Right)
+            .Width(140);
+            });
+
+            // Grid Band: Amount
+            columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(band =>
+            {
+                band.AddFor(m => m.NotOverdue)
+            .Caption(new JS("formatMessage('Not Overdue')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Width(100);
+
+                band.AddFor(m => m.Less30)
+            .Caption(new JS("formatMessage('Less 30 Days')"))
+            .Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { if (e.value === null || e.value === undefined) { return ''; } return Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+            .Width(120);
+
+                band.AddFor(m => m.Less30to60)
+            .Caption(new JS("formatMessage('Less 30 to 60')"))
+            .Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { if (e.value === null || e.value === undefined) { return ''; } return Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+            .Width(120);
+
+                band.AddFor(m => m.Less60to90)
+            .Caption(new JS("formatMessage('Less 60 to 90')"))
+            .Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { if (e.value === null || e.value === undefined) { return ''; } return Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+            .Width(120);
+
+                band.AddFor(m => m.Less90to180)
+            .Caption(new JS("formatMessage('Less 90 to 180')"))
+            .Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { if (e.value === null || e.value === undefined) { return ''; } return Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+            .Width(120);
+
+                band.AddFor(m => m.Less180to365)
+            .Caption(new JS("formatMessage('Less 180 to 365')"))
+            .Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { if (e.value === null || e.value === undefined) { return ''; } return Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+            .Width(120);
+
+                band.AddFor(m => m.More365)
+            .Caption(new JS("formatMessage('More 365')"))
+            .Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { if (e.value === null || e.value === undefined) { return ''; } return Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+            .Width(120);
+
+            });
+        })
+
+        .Paging(p => p.PageSize(10))
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(true))
+        .Height(660)
+        .ColumnAutoWidth(true)
+        .WordWrapEnabled(false)
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+        .Width("100%")
+        .Summary(summary =>
+        {
+            summary.TotalItems(items =>
+            {
+        items.Add().Column("VoucherRefNo")
+        .SummaryType(SummaryType.Count)
+        .DisplayFormat("No of Invoices: {0}");
+
+        items.Add().Column("Less30")
+        .SummaryType(SummaryType.Sum)
+        .CustomizeText("function(e) { if(e.value === null || e.value === undefined) { return ''; } return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+        items.Add().Column("Less30to60")
+        .SummaryType(SummaryType.Sum)
+        .CustomizeText("function(e) { if (e.value === null || e.value === undefined) { return ''; } return '(' + Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ')'; }");
+
+        items.Add().Column("Less60to90")
+        .SummaryType(SummaryType.Sum)
+        .CustomizeText("function(e) { if(e.value === null || e.value === undefined) { return ''; } return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+        items.Add().Column("Less90to180")
+        .SummaryType(SummaryType.Sum)
+        .CustomizeText("function(e) { if(e.value === null || e.value === undefined) { return ''; } return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+        items.Add().Column("Less180to365")
+        .SummaryType(SummaryType.Sum)
+        .CustomizeText("function(e) { if(e.value === null || e.value === undefined) { return ''; } return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+        items.Add().Column("More365")
+        .SummaryType(SummaryType.Sum)
+        .CustomizeText("function(e) { if(e.value === null || e.value === undefined) { return ''; } return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+        });
+		})
+        .OnInitialized("dataGridInitialized")
+        .OnContextMenuPreparing("onContextMenuPreparing")
+        )
+</div>
+
+<script>
+    $(function () {
+
+        $("#BillsReceivable").dxTextBox({
+            text: formatMessage("Bills Receivable"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+
+        });
+    });
+    let dataGrid; // Global reference to the DataGrid instance
+
+    // Initialize the DataGrid and store its instance
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
+
+    function switchButtons(buttonId) {
+        debugger;
+        let hideBtn, showBtn, filterType;
+
+        // Determine which buttons to toggle and set the filter type
+        if (buttonId === "btnBillsWithBalance") {
+            showBtn = "btnBillsFullyReceived";
+            hideBtn = "btnBillsWithBalance";
+            filterType = "WithBalance"; // Filter: Balance > 0
+        } else if (buttonId === "btnBillsFullyReceived") {
+            showBtn = "btnBillsWithBalance";
+            hideBtn = "btnBillsFullyReceived";
+            filterType = "FullyReceived"; // Filter: Balance = 0
+        }
+
+        // Use DevExtreme APIs to toggle button visibility
+        const hideButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(hideBtn));
+        const showButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(showBtn));
+
+        hideButtonInstance.option("visible", false);
+        showButtonInstance.option("visible", true);
+
+        // Reload the DataGrid with the appropriate filter based on the button clicked
+        if (dataGrid) {
+            dataGrid.option("dataSource", {
+                load: function () {
+                    return $.getJSON(`/${tenantName}/Finance/api/BillsReceivable/Get`, { filterType: filterType });
+
+                }
+            });
+            dataGrid.refresh();
+        }
+    }
+
+
+    function onContextMenuPreparing(e) {
+        if (e.row && e.row.rowType === "data") { // Only for data rows
+            e.items = [
+                {
+                    text: "View Ledger Transactions",
+                    onItemClick: function () {
+                        // Navigate to frm201LedgerView with the selected client details
+                        const AccountHeadNo = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
+                        const url = `/${tenantName}/Finance/AccountingLedgers?AccountId=${AccountHeadNo}`;
+                        window.open(url, '_blank'); // Opens in a new tab
+                    }
+                }
+            ];
+        }
+    }
+
+
+
+</script>
+
