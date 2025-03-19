@@ -598,26 +598,26 @@
 	// 	return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
 	// }
 
-	// Handle DataGrid Selection
-	function dataGridSelectionChanged(e) {
-		const selectedKey = e.selectedRowKeys[0];
-		const ddbInstance = $("#Propertygriddropdown").dxDropDownBox("instance");
+	// // Handle DataGrid Selection
+	// function dataGridSelectionChanged(e) {
+	// 	const selectedKey = e.selectedRowKeys[0];
+	// 	const ddbInstance = $("#Propertygriddropdown").dxDropDownBox("instance");
 
-		if (selectedKey) {
-			ddbInstance.option("value", selectedKey);
-			ddbInstance.close();
+	// 	if (selectedKey) {
+	// 		ddbInstance.option("value", selectedKey);
+	// 		ddbInstance.close();
 
-			let selectedRowData = $("#propertyAllocationDropdownGrid").dxDataGrid("instance").getSelectedRowsData();
-			if (selectedRowData.length > 0) {
-				propertyno = selectedRowData[0].PropertyNo;
-			}
-		}
-	}
+	// 		let selectedRowData = $("#propertyAllocationDropdownGrid").dxDataGrid("instance").getSelectedRowsData();
+	// 		if (selectedRowData.length > 0) {
+	// 			propertyno = selectedRowData[0].PropertyNo;
+	// 		}
+	// 	}
+	// }
 
-	// Initialize DataGrid
-	function dataGridInitialized(e) {
-		window.dataGrid = e.component;
-	}
+	// // Initialize DataGrid
+	// function dataGridInitialized(e) {
+	// 	window.dataGrid = e.component;
+	// }
 
 	// Save Button Click
 	$("#btnpropertySave").on("click", function (e) {

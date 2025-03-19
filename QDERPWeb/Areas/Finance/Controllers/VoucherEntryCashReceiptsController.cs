@@ -478,119 +478,164 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         //    }
         //}
         [HttpPost]
-
         public async Task<ActionResult> DeleteVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo, string PaymentAccoutHeadName)
-
         {
-
             try
-
             {
-
+                int debitamt = 0; // Initialize debit amount
                 // Find the record to delete
-
                 var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
-
                 if (record == null)
-
                 {
-
                     return NotFound(new { message = "Record not found!" });
+                }
+
+                if (record.DrCr != "Dr")
+                {
+                    // Remove the record
+                    _context.Tbl201VoucherEntries.Remove(record);
+                    await _context.SaveChangesAsync();
 
                 }
 
-                // Remove the record
-
-                _context.Tbl201VoucherEntries.Remove(record);
-
-                await _context.SaveChangesAsync();
-
                 // Get the list of updated vouchers
-
                 var voucherEntries = _context.Tbl201VoucherEntries
-
                                               .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
-
                                               .ToList();
 
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
 
                 // Query the display list
-
                 var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
-
                                                     .Where(p => voucherNos.Contains(p.VoucherNo))
-
+                                                    .OrderBy(i => i.DrCr == "Dr")
                                                     .Select(i => new VoucherEntryDisplayDTO
-
                                                     {
-
                                                         VoucherNo = i.VoucherNo,
-
                                                         VoucherEntryNo = i.VoucherEntryNo,
-
                                                         DrCr = i.DrCr,
-
                                                         DrAmount = i.DrAmount,
-
                                                         CrAmount = i.CrAmount,
-
                                                         EntryNarration = i.EntryNarration,
-
                                                         AccountHead = i.AccountHead,
-
                                                         SysRemarks = i.SysRemarks
-
                                                     });
 
                 var resultList = await qryListOfAccountLists.ToListAsync();
 
                 // Update the fields in the result list
-
                 foreach (var entry in resultList)
-
                 {
+                    debitamt = (int)(debitamt + entry.DrAmount);
+
+                    // If Dr/Cr is Credit ("Cr"), perform specific logic
+                    if (entry.DrCr == "Dr" & PaymentAccoutHeadName == "Petty Cash - Shabbir")
+                    {
+                        // Check if an existing entry matches
+                        var existingEntry = _context.Tbl201VoucherEntries
+                                                    .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                                      && v.DrCr == "Dr"
+                                                                      && v.VoucherNo == entry.VoucherNo);
+
+                        if (existingEntry != null)
+                        {
+                            // Update CrAmount by adding the calculated debit amount
+                            entry.DrAmount = debitamt;
+
+                            // Optionally update the existing entry in the database
+                            existingEntry.VoucherAmount = entry.DrAmount;
+                            _context.Tbl201VoucherEntries.Update(existingEntry);
+                            _context.SaveChanges();
+
+                        }
+                        else
+                        {
+                            // If no existing entry, assign CrAmount as debitamt
+                            entry.DrAmount = debitamt;
+                        }
+                    }
 
                     if (!string.IsNullOrEmpty(entry.AccountHead))
-
                     {
-
                         // Find the account head
-
                         var accountHead = _context.Qry201ListOfAccounts
-
                                                   .Where(a => a.AccountId == entry.AccountHead)
-
                                                   .Select(a => a.AccountHead)
-
                                                   .FirstOrDefault();
 
                         // Update AccountHead and SysRemarks
-
                         entry.AccountHead = accountHead ?? PaymentAccoutHeadName;
+                        if (resultList.Count == 1)
+                        {
+                            entry.DrAmount = 0;
+                            entry.CrAmount = 0;
+                        }
 
                         //entry.SysRemarks = PaymentAccoutHeadName;
-
                     }
-
                 }
 
                 // Return the modified list for DataSourceLoader
-
                 return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
-
             }
-
             catch (Exception ex)
-
             {
-
                 // Return a detailed error response
-
                 return StatusCode(500, new { message = "An error occurred while deleting the record.", error = ex.Message });
-
             }
+        }
+        [HttpPost]
+        public async Task<ActionResult> DeleteAllVoucherEntry(DataSourceLoadOptions loadOptions, string VoucherNo)
+        {
+            try
+            {
+                // Find all records matching the given VoucherNo
+                var records = await _context.Tbl201VoucherEntries
+                                            .Where(v => v.VoucherNo == VoucherNo)
+                                            .ToListAsync();
 
+                if (records == null || !records.Any())
+                {
+                    return NotFound(new { message = "No records found for the provided VoucherNo!" });
+                }
+
+                // Remove all matching records
+                _context.Tbl201VoucherEntries.RemoveRange(records);
+                await _context.SaveChangesAsync();
+
+                // Fetch updated voucher list
+                var voucherEntries = await _context.Tbl201VoucherEntries
+                                                   .Where(ve => ve.VoucherNo == VoucherNo)
+                                                   .ToListAsync();
+
+                var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct().ToList();
+
+                // Query the updated display list
+                var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
+                                                    .Where(p => voucherNos.Contains(p.VoucherNo))
+                                                    .OrderBy(i => i.DrCr == "Cr")
+                                                    .Select(i => new VoucherEntryDisplayDTO
+                                                    {
+                                                        VoucherNo = i.VoucherNo,
+                                                        VoucherEntryNo = i.VoucherEntryNo,
+                                                        DrCr = i.DrCr,
+                                                        DrAmount = i.DrAmount,
+                                                        CrAmount = i.CrAmount,
+                                                        EntryNarration = i.EntryNarration,
+                                                        AccountHead = i.AccountHead,
+                                                        SysRemarks = i.SysRemarks
+                                                    });
+
+                var resultList = await qryListOfAccountLists.ToListAsync();
+
+                // Return the modified list for DataSourceLoader
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                // Return a detailed error response
+                return StatusCode(500, new { message = "An error occurred while deleting the records.", error = ex.Message });
+            }
         }
 
         [HttpGet]

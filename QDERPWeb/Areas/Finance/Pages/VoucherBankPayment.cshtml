@@ -884,11 +884,12 @@
                             columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                         .CellTemplate(@<text>
             <div class="dx-icon">
-                <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>);
 
                         })
+                        .OnRowPrepared("onAccountHeadRowPrepared")
                     )
         }
         @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
@@ -929,11 +930,12 @@
                             columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                         .CellTemplate(@<text>
             <div class="dx-icon">
-                <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>);
 
                         })
+                        .OnRowPrepared("onAccountHeadRowPrepared")
                     )
         }
 
@@ -1632,6 +1634,11 @@
                          accountHeadValidator.reset();
                          var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
                          voucherAmtValidator.reset();
+                         // Get accounthead-datagrid instance
+    var accountGrid = $("#accounthead-datagrid").dxDataGrid("instance");
+
+    // Unselect the selected row
+    accountGrid.clearSelection();  
 
                                //console.log(response.data);
                              // Retrieve the newly added row from response or datagrid instance
@@ -3716,6 +3723,11 @@
             }
         });
    // }
+}
+function onAccountHeadRowPrepared(e) {
+    if (e.rowType === "data" && e.data.IsLedgerObselete) {
+        e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color
+    }
 }
 
 </script>

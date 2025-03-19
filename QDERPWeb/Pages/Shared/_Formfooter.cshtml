@@ -362,7 +362,11 @@
                 success: function (response) {
                     if (response.data) {
                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                       history.back();
+                        DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.",
+                        "Data Deleted Successfully").done(function() {
+                          history.back(); // Execute only when "OK" is clicked
+                        });
+                       
                     } else {
                         DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
                     }
