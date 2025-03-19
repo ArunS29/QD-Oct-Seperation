@@ -3148,7 +3148,7 @@
                 VoucherAmount: amount,
                 AccountID: accountid
             };
-            debugger;
+           
             if (openedPopups[popupId]) {
                 openedPopups[popupId].show();
             } else {
@@ -3505,7 +3505,7 @@
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching voucher entries:", error);
-                    DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+                    // DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
                 }
             });
         }

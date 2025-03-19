@@ -2378,48 +2378,53 @@
             });
         });
 
+    function showLedgerAccountEditPopup() {
+        var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance"); // Get DropDownBox instance
+        var accheadid = dropDownBox.option("value"); // Get the selected value
 
-        function showLedgerAccountEditPopup() {
-            var dropDownBox = $("#AccountHeadDropDown").dxDropDownBox("instance");
+        IsEdit = true;
 
-            IsEdit = true;
+        // Ensure variables are initialized properly
+        refno = refno || "";
+        accheadar = accheadar || "";
+        accheadname = accheadname || "";
+        accgroup = accgroup || "";
+        accgroupid = accgroupid || "";
 
-            // Initialize variables to avoid reference errors
-            refno = refno || "";
-            accheadar = accheadar || "";
-            accheadname = accheadname || "";
-            accgroup = accgroup || "";
-            accgroupid = accgroupid || "";
+        // Validate AccountHead selection
+        if (!accheadid) {
+            DevExpress.ui.notify("Please select an Account Head before editing.", "error", 2000);
+            return;
+        }
 
-            // Validate AccountHead selection
-            if (accheadid == null || accheadid == undefined || accheadid=="") { // Checks for both null and undefined
-                DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+        // Construct the URL only if AccountHeadID is valid
+        const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+
+        // Show the popup
+        var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+        popupInstance.show();
+
+        // Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+        popupInstance.option("onShown", function () {
+            var iframe = document.getElementById("ledgerEditAccountFrame");
+
+            if (!iframe) {
+                console.error("Error: ledgerEditAccountFrame not found!");
                 return;
             }
 
-            const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+            // Clear iframe src to prevent caching issues
+            iframe.src = "";
 
-            // Show the popup
-            var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
-            popupInstance.show();
+            // Set new iframe src
+            iframe.onload = function () {
+                console.log("Iframe loaded successfully.");
+            };
 
-            // Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
-            popupInstance.option("onShown", function () {
-                var iframe = document.getElementById("ledgerEditAccountFrame");
+            iframe.src = url;
+        });
+    }
 
-                if (!iframe) {
-                    console.error("Error: ledgerEditAccountFrame not found!");
-                    return;
-                }
-
-                // Set iframe src when popup is shown
-                iframe.onload = function () {
-                    console.log("Iframe loaded successfully.");
-                };
-
-                iframe.src = url;
-            });
-        }
 
         function onAllRowRemoving() {
             var dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -3474,7 +3479,7 @@
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching voucher entries:", error);
-                    DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+                    // DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
                 }
             });
         }
