@@ -1935,7 +1935,7 @@
 
         // Report Mappings for Ageing Reports
         const ageingReportMappings = {
-            "Receivables Ageing Report": "XtraReportAgeingreportsummary",
+            "Receivables Ageing Report": "AgeingReport",
             "Receivables Ageing Report (By Sales Person)": "XtraReportBillsReceivableAgeingReport",
             "Receivables Ageing Report (Customizable)": "XtraReportAgeingCustomizable",
             "Receivables Ageing Summary": "XtraReportAgeingreportsummary",
@@ -1945,18 +1945,24 @@
         // Function to handle submenu report clicks
         function handleClickreport(reportKey) {
             if (reportKey === "Receivables Ageing Report (Customizable)") {
-
                 window.location.href = `/${tenantName}/Finance/ReportBillsReceivable`;
+            } else if (reportKey === "Receivables Ageing Summary (Customizable)") {
+                window.location.href = `/${tenantName}/Finance/SalesBillsReceivable`;
             } else if (ageingReportMappings[reportKey]) {
                 const reportName = ageingReportMappings[reportKey];
                 console.log(`Opening report: ${reportName}`);
 
                 // Open Document Viewer with selected report
-                window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.open(
+                    `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`,
+                    '_blank',
+                    'width=1200,height=800,scrollbars=yes,resizable=yes'
+                );
             } else {
                 console.warn('No report mapping found for:', reportKey);
             }
         }
+
 
     </script>
 

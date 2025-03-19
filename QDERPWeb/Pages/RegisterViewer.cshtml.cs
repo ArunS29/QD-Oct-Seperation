@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
+using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
 using QD.ERP.Web.Reports;
@@ -150,6 +151,9 @@ namespace QD.ERP.Web.Pages
                         break;
                     case "BIllsPayable":
                         Report = new BIllsPayable();
+                        break;
+                    case "AgeingReport":
+                        Report = new AgeingReport();
                         break;
                     default:
                         return NotFound("Report not found.");
