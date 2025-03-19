@@ -1221,8 +1221,15 @@
         "Payment Terms": "Payment Terms",
         "Quotation No": "Quotation No",
         "Delivery Date": "Delivery Date",
-        "Client GRN Reference": "Client GRN Reference"
-
+        "Client GRN Reference": "Client GRN Reference",
+        "Not Overdue": "Not Overdue",
+        "Less 30 Days": "Less 30 Days",
+        "Less 30 to 60": "Less 30 to 60",
+        "Less 60 to 90": "Less 60 to 90",
+        "Less 90 to 120": "Less 90 to 120",
+        "Less 180 to 365": "Less 180 to 365",
+        "More 365": "More 365",
+        "Receivable Amount": "Receivable Amount"
 
 
     },

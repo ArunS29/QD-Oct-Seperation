@@ -15,14 +15,15 @@
 <script>
 
     var currentReportName = '@Model.ReportName';
+
+    function onDocumentViewerReady(s, e) {
+        s.preview.zoom(1); // 100% zoom
+    }
 </script>
-
 @(Html.DevExpress().WebDocumentViewer("documentViewer")
-
-    .Height("50em")
-
+    .Height("100em")
     .Width("110em")
-
+    .ClientSideEvents(events => events.DocumentReady("onDocumentViewerReady"))
     .Bind(Model.Report)
 )
 
