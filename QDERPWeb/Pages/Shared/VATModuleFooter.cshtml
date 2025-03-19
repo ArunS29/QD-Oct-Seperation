@@ -332,6 +332,104 @@
             .ShowArrowIcon(false)
             )
     </div>
+ 
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                        .ID("btnSave")
+                        .Text(new JS("formatMessage('Save')"))
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("save")
+                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+                        )
+
+                        </div>
+                 
+
+     <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+                   .ID("btnSaveAndClose")
+                   .Text(new JS("formatMessage('Save and Close')"))
+                   .Type(ButtonType.Normal)
+                   .StylingMode(ButtonStylingMode.Outlined)
+                   .Icon("save")
+                   .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                   )
+      </div>
+    
+       <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                        .ID("btnPreview1")
+                        .Text(new JS("formatMessage('Preview')"))
+                        .Icon("fullscreen")
+                        //.OnClick("function() { openPreview(); }")
+                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                        )
+                       
+    <div id="previewModal" class="background" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000;">
+        <h3>Preview</h3>
+        <pre id="previewContent">Loading...</pre>
+    </div>
+    </div>
+     <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                        .ID("btnPrint1")
+                        .Text(new JS("formatMessage('Print')"))
+                        .Icon("print")
+                       // .OnClick("function() { openPrint(); }")
+                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                        )
+                        </div>
+        <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                        .ID("btnDelete")
+                        .Text(new JS("formatMessage('Delete')"))
+                        .Icon("close")
+                      //  .OnClick("onDeleteButtonClick")
+                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                        )
+                        </div>
+         <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+                        .ID("btnBack")
+                        .Text(new JS("formatMessage('Back')"))
+                        .Icon("arrowleft")
+                       // .OnClick("onBackButtonClick")
+                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                        )
+                         </div>
+						 <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                        .ID("btnVerify")
+                        .Text(new JS("formatMessage('Verify')"))
+                        .Icon("check")
+                       // .OnClick("onVerifyButtonClick")
+                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+                        )
+                        </div>
+						<div class="btn-container">
+        @(Html.DevExtreme().Button()
+                        .ID("btnApprove")
+                        .Text(new JS("formatMessage('Approve')"))
+                        .Icon("exportselected")
+                     //   .OnClick("onApproveButtonClick")
+                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                        )
+                        </div>
+                        <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                        .ID("btnAttach")
+                        .Text(new JS("formatMessage('Attach')"))
+                        .Icon("link")
+                        //.OnClick("onAttachButtonClick")
+                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                        )
+                       </div>
+
     <!-- Modal Structure -->
     <div id="customModal" class="modal">
         <div class="modal-content">
@@ -376,7 +474,8 @@
                         "ddButtonReceipts": { "Visible": false, "Enabled": false },
                         "ddButtonPayment": { "Visible": false, "Enabled": false },
                         "ddOtherVouchers": { "Visible": false, "Enabled": false },
-                        "ddReports": { "Visible": false, "Enabled": false }
+                        "ddReports": { "Visible": false, "Enabled": false },
+                      //  "btnSave":{ "Visible": false, "Enabled": false }
                     };
 
 
@@ -829,14 +928,13 @@
              case formatMessage('Add New Standard Tax Invoice(B2B Invoice)'):
                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
                 window.location.href = url; // Navigate
-
-               // window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
                  title = formatMessage('Add New Standard Tax Invoice(B2B Invoice)');
+              case formatMessage('Add New Simplified Tax Invoice(B2C Invoice)'):
+                 url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
+                window.location.href = url; // Navigate
+                 title = formatMessage('Add New Simplified Tax Invoice(B2C Invoice)');
                  break;
-             // case 'Add Bank Payment':
-             //     url = `/${tenantName}/Finance/VoucherBankPayment`;
-             //     title = "Add Bank Payment";
-             //     break;
+            
              default:
                  console.log("Clicked item: ", e.itemData.text);
                  return;
