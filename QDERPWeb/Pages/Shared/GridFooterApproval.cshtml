@@ -119,16 +119,26 @@
         .Width(180)
         .OnClick("toggleGroupPanel")
         )
-    @(Html.DevExtreme().Button()
-        .ID("btnChooseVoucher")
-        .Text(new JS("formatMessage('Choose Voucher')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("fa fa-clipboard") // You can use FontAwesome icons here too
-        .Width(180)
-        .OnClick("function() { chooseVoucher(); }")
-        )
-    
+
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonVoucher")
+            .Icon("contentlayout")
+            .Width(180)
+            .Text("Choose Voucher")
+            .DropDownOptions(options => options.Width(250))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('All Vouchers')")).Icon("file");
+                items.Add().Text(new JS("formatMessage('Payments')")).Icon("money");
+                items.Add().Text(new JS("formatMessage('Receipts')")).Icon("product");
+                items.Add().Text(new JS("formatMessage('Client Receivables')")).Icon("user");
+                items.Add().Text(new JS("formatMessage('Supplier Payables')")).Icon("box");
+                items.Add().Text(new JS("formatMessage('Other Vouchers')")).Icon("folder");
+            })
+            .OnItemClick("onVoucherSelection")
+            .ShowArrowIcon(true)
+            )
+
 
  @*    @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonReceipts")
@@ -387,6 +397,38 @@
         location.reload(); // Reloads the entire page
         // Or refresh a specific grid, for example:
         // $("#YourGridID").dxDataGrid("instance").refresh();
+    }
+        function onVoucherSelection(e) {
+        var selectedText = e.itemData.text;
+
+        console.log("Selected Option:", selectedText);
+
+        switch (selectedText) {
+            case formatMessage("AllVouchers"):
+                showVoucherList("all");
+                break;
+            case formatMessage("Payments"):
+                showVoucherList("payments");
+                break;
+            case formatMessage("Receipts"):
+                showVoucherList("receipts");
+                break;
+            case formatMessage("ClientReceivables"):
+                showVoucherList("clientReceivables");
+                break;
+            case formatMessage("SupplierPayables"):
+                showVoucherList("supplierPayables");
+                break;
+            case formatMessage("OtherVouchers"):
+                showVoucherList("otherVouchers");
+                break;
+        }
+    }
+
+    function showVoucherList(type) {
+        console.log("Fetching vouchers for:", type);
+        // Implement logic to show popup or fetch vouchers
+        $("#voucherPopup").dxPopup("instance").show();
     }
 
 </script>
