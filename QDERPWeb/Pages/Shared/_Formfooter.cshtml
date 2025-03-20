@@ -78,12 +78,20 @@
            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
            )
     
-    @(Html.DevExtreme().Button()
+    @(Html.DevExtreme().DropDownButton()
         .ID("btnPreview1")
         .Text("Preview")
         .Icon("fullscreen")
         .ElementAttr(new { @class = "bold-button" })
-        .OnClick("handlePreviewClick") // Call the function on click
+        .Width(180)
+        .DropDownOptions(options => options.Width(220))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Preview Format 2')")).Icon("textdocument");
+            
+        })
+        .OnItemClick("handlePreviewClick")
         )
 
 
@@ -762,7 +770,7 @@ document.getElementById("fileInput").addEventListener("change", function () {
         }
 
 
-            function handlePreviewClick() {
+    function handlePreviewClick(e) {
         var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
         var voucherNo = voucherNoBox.option("value");
 
@@ -772,16 +780,32 @@ document.getElementById("fileInput").addEventListener("change", function () {
             return;
         }
 
-        // Debugging: Log Voucher No
-        console.log("Voucher No:", voucherNo);
+        // Get the selected item text
+        var selectedText = e.itemData.text;
+        console.log("Selected Report:", selectedText);
+
+        // Determine the report name based on the selected text
+        var reportName = "";
+        if (selectedText === formatMessage('Preview Format 1')) {
+            reportName = "cashPayments";
+        } else if (selectedText === formatMessage('Preview Format 2')) {
+            reportName = "cashPaymentformat2";
+        }
+
+        // Ensure a valid report is selected
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
 
         // Open the XtraReport with Voucher No as a parameter
         window.open(
-                `/${tenantName}/VoucherViewer?reportName=cashPaymentformat2&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
+            `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
             '_blank',
             'width=1200,height=800,scrollbars=yes,resizable=yes'
         );
     }
+
 
 
 

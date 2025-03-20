@@ -1233,7 +1233,9 @@
         "Total Receivable": "Total Receivable",
         "Total Received": "Total Received",
         "Total Balance": "Total Balance",
-        "Less 90 to 180":"Less 90 to 180"
+        "Less 90 to 180": "Less 90 to 180",
+        "Preview Format 1": "Preview Format 1",
+        "Preview Format 2":"Preview Format 2"
 
 
     },

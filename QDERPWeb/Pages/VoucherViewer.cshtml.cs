@@ -2,6 +2,7 @@ using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
+using QD.ERP.Web.Areas.Finance.Reports.test;
 
 namespace QD.ERP.Web.Pages
 {
@@ -23,6 +24,9 @@ namespace QD.ERP.Web.Pages
             {
                 case "cashPaymentformat2":
                     Report = new cashPaymentformat2(VoucherNo);  // Pass voucher number
+                    break;
+                case "cashPayments":
+                    Report = new cashPayments(VoucherNo);  // Pass voucher number
                     break;
                 default:
                     return NotFound("Report not found.");

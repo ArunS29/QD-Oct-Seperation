@@ -1,3 +1,4 @@
+using DevExpress.CodeParser.VB;
 using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -5,7 +6,12 @@ using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
+using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Reports;
+using System.Text;
+using System.Xml;
+using System.IO;
+using System.Drawing;
 
 namespace QD.ERP.Web.Pages
 {
@@ -19,6 +25,15 @@ namespace QD.ERP.Web.Pages
         public DateTime FrmDate { get; private set; }
         public DateTime ToDate { get; private set; }
 
+        private readonly DAL.Entities.ERPMasterWtDataContext _eRPMasterWtDataContext;
+
+
+        public Tbl901CompanyDetail ERPCompany_details;
+        public DocumentViewerModel(DAL.Entities.ERPMasterWtDataContext eRPMasterWtDataContext)
+        {
+            _eRPMasterWtDataContext = eRPMasterWtDataContext;
+
+        }
         public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
         {
             if (string.IsNullOrEmpty(reportName))
@@ -27,7 +42,6 @@ namespace QD.ERP.Web.Pages
             }
 
             ReportName = reportName;
-
 
             if (reportName == "StatementOfAccountReport")
             {
@@ -41,11 +55,47 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                var companyName = HttpContext.Session.GetString("CompanyName") ?? "Default Company";
-                var LogoUrl = HttpContext.Session.GetString("LogoUrl") ?? string.Empty;
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                if (ERPCompany_details == null)
+                {
+                    return BadRequest("Company details not found for the given tenant.");
+                }
 
-                Report = new StatementOfAccountReport(AccountId, FrmDate, ToDate, tenantName, companyName, LogoUrl);
+                var companyName = ERPCompany_details.CompanyName;
+                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
+                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;  // Change from string to Image
+
+                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms); // Convert Byte Array to Image
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Error processing company logo: " + ex.Message);
+                    }
+                }
+
+
+
+                // Pass the image object directly to the report
+                Report = new StatementOfAccountReport(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
             }
+
+
+
 
             else if (reportName == "AccountWithNarration")
             {
@@ -59,7 +109,40 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
 
-                Report = new AccountWithNarration(AccountId, FrmDate, ToDate);
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                if (ERPCompany_details == null)
+                {
+                    return BadRequest("Company details not found for the given tenant.");
+                }
+
+                var companyName = ERPCompany_details.CompanyName;
+                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
+                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;  
+
+                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms); 
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new AccountWithNarration(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
             }
             else if (reportName == "AccountStatementFormat2Report")
             {
@@ -449,7 +532,7 @@ namespace QD.ERP.Web.Pages
                     case "XtraReportAgeingreportsummary":
                         Report = new XtraReportAgeingreportsummary();
                         break;
-                    
+
                     default:
                         return NotFound("Report not found.");
                 }
