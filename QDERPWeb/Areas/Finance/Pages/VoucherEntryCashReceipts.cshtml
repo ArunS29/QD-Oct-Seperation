@@ -443,8 +443,8 @@
                             "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
                             );
-                                columns.AddFor(m => m.EntryNarration).Caption("Entry Narration");
-                                columns.AddFor(m => m.SysRemarks).Caption("Remarks");
+                                columns.AddFor(m => m.EntryNarration).Caption("Entry Narration").Width(300);
+                                columns.AddFor(m => m.SysRemarks).Caption("Remarks").Width(300);
                             })
                         .Selection(selection => selection.Mode(SelectionMode.Single))
                         //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
@@ -1101,7 +1101,7 @@
 
                         "AddedOn": new Date(),
 
-                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
+                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value", ""),
 
                         "SysRemarks": sysRemarks2
 
@@ -1151,7 +1151,7 @@
 
                         "AddedOn": new Date(),
 
-                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value"),
+                        "EntryNarration": $("#Narration").dxTextArea("instance").option("value", ""),
 
                         "SysRemarks": sysRemarks2
 
@@ -1464,6 +1464,16 @@
             if (selectedRowData.length > 0) {
                 paymentaccheadId = selectedRowData[0].AccountId;
                 paymentaccheadname = selectedRowData[0].AccountHead;
+                paymentIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
+
+                 if(paymentIsLedgerObselete==true){
+     IsObeselete=true;
+       DevExpress.ui.dialog.alert(
+"Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
+"LEDGER IS OBSELETE(NOT IN USE)"
+);
+
+ }
 
             }
         }
@@ -1492,6 +1502,16 @@
             if (selectedRowData.length > 0) {
                 accheadid = selectedRowData[0].AccountId;
                 accheadname = selectedRowData[0].AccountHead;
+                paymentIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
+
+                 if(paymentIsLedgerObselete==true){
+     IsObeselete=true;
+       DevExpress.ui.dialog.alert(
+"Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
+"LEDGER IS OBSELETE(NOT IN USE)"
+);
+
+ }
 
             } else {
                 DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -1916,46 +1936,51 @@
 
 
     function showLedgerAccountEditPopup() {
-        var dropDownBox = $("#AccountHeadDropDown").dxDropDownBox("instance");
+    var dropDownBox = $("#AccountHeadDropDown").dxDropDownBox("instance"); // Get DropDownBox instance
+    var accheadid = dropDownBox.option("value"); // Get the selected value
 
-        IsEdit = true;
+    IsEdit = true;
 
-        // Initialize variables to avoid reference errors
-        refno = refno || "";
-        accheadar = accheadar || "";
-        accheadname = accheadname || "";
-        accgroup = accgroup || "";
-        accgroupid = accgroupid || "";
+    // Ensure variables are initialized properly
+    refno = refno || "";
+    accheadar = accheadar || "";
+    accheadname = accheadname || "";
+    accgroup = accgroup || "";
+    accgroupid = accgroupid || "";
 
-        // Validate AccountHead selection
-        if (accheadid == null || accheadid == undefined || accheadid=="") { // Checks for both null and undefined
-            DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+    // Validate AccountHead selection
+    if (!accheadid) {
+        DevExpress.ui.notify("Please select an Account Head before editing.", "error", 2000);
+        return;
+    }
+
+    // Construct the URL only if AccountHeadID is valid
+    const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+
+    // Show the popup
+    var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+    popupInstance.show();
+
+    // Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+    popupInstance.option("onShown", function () {
+        var iframe = document.getElementById("ledgerEditAccountFrame");
+
+        if (!iframe) {
+            console.error("Error: ledgerEditAccountFrame not found!");
             return;
         }
 
-        const url = `/pulse/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+        // Clear iframe src to prevent caching issues
+        iframe.src = "";
 
-        // Show the popup
-        var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
-        popupInstance.show();
+        // Set new iframe src
+        iframe.onload = function () {
+            console.log("Iframe loaded successfully.");
+        };
 
-        // Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
-        popupInstance.option("onShown", function () {
-            var iframe = document.getElementById("ledgerEditAccountFrame");
-
-            if (!iframe) {
-                console.error("Error: ledgerEditAccountFrame not found!");
-                return;
-            }
-
-            // Set iframe src when popup is shown
-            iframe.onload = function () {
-                console.log("Iframe loaded successfully.");
-            };
-
-            iframe.src = url;
-        });
-    }
+        iframe.src = url;
+    });
+}
 
 
     function gridData_valueChanged(e) {
@@ -2739,47 +2764,138 @@
                 });
             }
 
-              function onRowUpdating(e) {
-        const updatedData = e.newData;
-        const key = e.key; // Get primary key value if needed
+              function onRowUpdating(e) { 
+    const updatedData = e.newData;
+    const key = e.key; // Get primary key value if needed
 
-        const requestData = {
-            VoucherEntryNo: updatedData.VoucherEntryNo || e.oldData.VoucherEntryNo,
-            DrCr: updatedData.DrCr || e.oldData.DrCr,
-          //  AccountHead: updatedData.AccountHead || e.oldData.AccountHead,
-           AccountHead: updatedData.AccountHead !== undefined 
+    let dataGrid = $("#dataGrid").dxDataGrid("instance");
+    let allData = dataGrid.option("dataSource");
+
+    // Find the row being updated
+    let rowIndex = allData.findIndex(row => row.VoucherEntryNo === key.VoucherEntryNo);
+    let oldRowData = allData[rowIndex];
+
+    if (!oldRowData) return; // Exit if row not found
+
+    let oldAccountHead = oldRowData.AccountHead;
+    let newAccountHead = updatedData.AccountHead !== undefined 
         ? (Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead) 
-        : e.oldData.AccountHead,
-            DrAmount: (updatedData.DrCr === "Dr") 
-        ? (updatedData.DrAmount !== undefined ? updatedData.DrAmount : e.oldData.CrAmount) 
-        : (updatedData.DrAmount !== undefined ? updatedData.DrAmount : e.oldData.DrAmount),
-    CrAmount: (updatedData.DrCr === "Cr") 
-        ? (updatedData.CrAmount !== undefined ? updatedData.CrAmount : e.oldData.DrAmount) 
-        : (updatedData.CrAmount !== undefined ? updatedData.CrAmount : e.oldData.CrAmount),
-            EntryNarration: updatedData.EntryNarration || e.oldData.EntryNarration,
-            SysRemarks: updatedData.SysRemarks || e.oldData.SysRemarks
-        };
+        : oldRowData.AccountHead;
 
-        console.log("Request Payload:", requestData); // Debug the payload
+    let requestData = {
+        VoucherEntryNo: oldRowData.VoucherEntryNo,
+        DrCr: updatedData.DrCr || oldRowData.DrCr,
+        AccountHead: newAccountHead,
+        DrAmount: (updatedData.DrCr === "Dr") 
+            ? (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.CrAmount) 
+            : (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.DrAmount),
+        CrAmount: (updatedData.DrCr === "Cr") 
+            ? (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.DrAmount) 
+            : (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.CrAmount),
+        EntryNarration: updatedData.EntryNarration || oldRowData.EntryNarration,
+        SysRemarks: updatedData.SysRemarks || oldRowData.SysRemarks
+    };
 
+   
 
-        $.ajax({
-            url: "/api/VoucherMaster/UpdateVoucherEntry",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(requestData),
-            success: function(response) {
-                
-                // Fetch the updated data after successful update
-            fetchUpdatedData(requestData.VoucherEntryNo);
-            
-            },
-            error: function(xhr) {
-                DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
-                console.error("Error Response:", xhr.responseText); // Log error response
-            }
+    if (oldRowData.DrCr === "Cr") {
+    debugger;
+    // Find all corresponding "Cr" rows
+    let drRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(oldAccountHead));
+
+    if (drRows.length > 0) {
+        drRows.forEach(drRow => {
+            // Replace "Received by : oldAccountHead" with newAccountHead
+            drRow.SysRemarks = drRow.SysRemarks.replace(oldAccountHead, newAccountHead);
+
+            // Send update to backend for each "Cr" row
+            $.ajax({
+                url: "/api/VoucherMaster/UpdateVoucherEntry",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(drRow),
+                success: function(response) {
+    console.log("Cr row updated successfully");
+
+    // Update allData directly
+    allData.forEach(row => {
+        if (row.VoucherEntryNo === drRow.VoucherEntryNo) {
+            row.SysRemarks = drRow.SysRemarks;
+        }
+    });
+     dataGrid.option("dataSource", allData);
+    // Refresh the specific row instead of reloading the entire data source
+    dataGrid.refresh();
+},
+                error: function(xhr) {
+                    DevExpress.ui.notify("Error updating Cr row", "error", 2000);
+                    console.error("Error Response:", xhr.responseText);
+                }
+            });
         });
     }
+}
+
+
+    
+
+    if (oldRowData.DrCr === "Dr") {
+    debugger;
+    // Find all corresponding "Cr" rows
+    let crRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(`Received by : ${oldAccountHead}`));
+
+    if (crRows.length > 0) {
+        crRows.forEach(crRow => {
+            // Replace "Received by : oldAccountHead" with newAccountHead
+            crRow.SysRemarks = crRow.SysRemarks.replace(`Received by : ${oldAccountHead}`, `Received by : ${newAccountHead}`);
+
+            // Send update to backend for each "Cr" row
+            $.ajax({
+                url: "/api/VoucherMaster/UpdateVoucherEntry",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(crRow),
+                success: function(response) {
+    console.log("Cr row updated successfully");
+
+    // Update allData directly
+    allData.forEach(row => {
+        if (row.VoucherEntryNo === crRow.VoucherEntryNo) {
+            row.SysRemarks = crRow.SysRemarks;
+        }
+    });
+     dataGrid.option("dataSource", allData);
+    // Refresh the specific row instead of reloading the entire data source
+    dataGrid.refresh();
+},
+                error: function(xhr) {
+                    DevExpress.ui.notify("Error updating Cr row", "error", 2000);
+                    console.error("Error Response:", xhr.responseText);
+                }
+            });
+        });
+    }
+}
+
+
+    console.log("Request Payload:", requestData);
+
+    // Update the "Cr" row in backend
+    $.ajax({
+        url: "/api/VoucherMaster/UpdateVoucherEntry",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestData),
+        success: function(response) {
+            fetchUpdatedData(requestData.VoucherEntryNo);
+        },
+        error: function(xhr) {
+            DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
+            console.error("Error Response:", xhr.responseText);
+        }
+    });
+}
+
     // Function to fetch updated data from Qry201VoucherEntryScreenDisplay
 function fetchUpdatedData(voucherEntryNo) {
     $.ajax({
