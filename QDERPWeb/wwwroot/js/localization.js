@@ -1162,7 +1162,7 @@
         "Save & Close": "Save & Close",
         "Employee Salary Payables": "Employee Salary Payables",
         "Cost Allocation for Property": "Cost Allocation for Property",
-        "Expenses / Reimbursement - Allocation for Assets it is a single sentence ": "Expenses / Reimbursement - Allocation for Assets it is a single sentence ",
+        "Expenses / Reimbursement - Allocation for Assets": "Expenses / Reimbursement - Allocation for Assets",
         "Finance Management : Dashboard": "Finance Management : Dashboard",
         "Asset Documents": "Asset Documents",
         "Enter a New Document Add to the Existing List": "Enter a New Document Add to the Existing List",

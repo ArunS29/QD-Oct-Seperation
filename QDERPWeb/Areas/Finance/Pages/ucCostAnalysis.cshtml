@@ -10,26 +10,6 @@
         overflow: auto; /* Add scrollbars if the content overflows */
     }
 
-    .container {
-        border: 2px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        margin: 20px;
-        background-color: #f9f9f9;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        height: auto; /* Ensure the container height adjusts based on content */
-    }
-
-    .horizontal-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr); /* Four equal columns */
-        gap: 10px; /* Spacing between fields */
-        align-items: center; /* Align items properly */
-        width: 100%;
-    }
-
     .dx-field {
         display: flex;
         flex-direction: column;
@@ -48,7 +28,6 @@
 </style>
 
 
-<div class="container">
     <!-- Input Controls --> <div id="UcCostAnalysis" class="card-header no-border-input" style=" color:black; font-weight: bold;">
         
     </div>
@@ -140,6 +119,7 @@
     <div id="pivotGridContainer"></div>
     </br>
     <!-- Grid Footer Partial -->
+<div>
     @await Html.PartialAsync("_GridFooterUCCA")
 </div>
 

@@ -163,16 +163,16 @@
         .sidebar {
             width: 250px;
             background-color: var(--menu-color);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #ddd;
+            /* border-right: 1px solid #ddd; */
             /* padding: 16px; */
             padding-left: 10px;
             padding-right: 10px;
             padding-top: 6.5em;
             transition: width 0.3s ease;
-            height: 105vh;
+            height: 95vh;
         }
 
 
@@ -180,7 +180,9 @@
             .sidebar.hidden {
                 width: 60px; /* Minimized width to show icons only */
                 background-color: var(--menu-color);
-                height: inherit;
+                /* height: inherit; */
+                margin-top:20px;
+                border-right: 1px solid #ddd;
             }
 
 
@@ -582,7 +584,10 @@
         }
 
         .companyName {
-            font-family: 'Poppins';
+            /* font-family: "Playfair Display", serif; */
+            /* font-family: "Lobster", serif; */
+            /* font-family: "Pacifico", serif; */
+            font-family: "Roboto Slab", serif;
             /* font-family: 'book antiqua', sans-serif; */
             /* font-size: 48px; */
             /* font-weight: 700; */
@@ -762,6 +767,10 @@
             background-color: var(--header-color);
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -777,7 +786,7 @@
         </button>
         <div class="frame">
             <div class="image">
-                <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
+                <img src="~/images/Pulse.png" alt="Tenant Logo" />
             </div>
             <div class="companyName">
                  @tenantName 
@@ -1479,7 +1488,7 @@
                             <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
                                 <div class="text">Bills Payable</div>
                             </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/CostAnalysis">
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
                                 <div class="text">Cost Analysis</div>
                             </a>
                             <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
