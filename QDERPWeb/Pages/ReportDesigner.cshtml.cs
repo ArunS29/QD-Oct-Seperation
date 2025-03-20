@@ -34,7 +34,7 @@ namespace QD.ERP.Web.Pages
                 //{ "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to) },
                 { "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to) },
                 { "AccountExportLandscapeReport", (id, from, to) => new AccountExportLandscapeReport(id, from, to) },
-                { "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to) },
+                //{ "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to) },
                 { "AccountOrderbyVchNoWONarrationReport", (id, from, to) => new AccountOrderbyVchNoWONarrationReport(id, from, to) },
                 { "BillsReceivablelandscapeformat", (id, from, to) => new BillsReceivablelandscapeformat(id, from, to) },
                 { "BillsReceivableLedgerBalance", (id, from, to) => new BillsReceivableLedgerBalance(id, from, to) },

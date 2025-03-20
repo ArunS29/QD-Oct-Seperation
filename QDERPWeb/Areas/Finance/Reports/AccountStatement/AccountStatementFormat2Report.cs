@@ -1,47 +1,63 @@
 ﻿using System;
-using System.Collections;
-using System.ComponentModel;
 using System.Drawing;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Reports
 {
-    public partial class AccountStatementFormat2Report : DevExpress.XtraReports.UI.XtraReport
+    public partial class AccountStatementFormat2Report : XtraReport
     {
-        // Declare the query parameters and stored procedure query object
         private QueryParameter queryParameter1;
         private QueryParameter queryParameter2;
         private QueryParameter queryParameter3;
         private StoredProcQuery storedProcQuery1;
 
-        // Constructor with parameters to dynamically pass AccountID, StartDate, EndDate
-        public AccountStatementFormat2Report(string accountId, DateTime frmDate, DateTime toDate)
+        public AccountStatementFormat2Report(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate);
+            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
         }
 
-        // Parameterless constructor for design mode
         public AccountStatementFormat2Report()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue);
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
         }
 
-        // Method to set the parameters dynamically
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate)
+        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
-            // Add report parameters
             AddReportParameter("AccountID", typeof(string), accountId ?? "");
             AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
             AddReportParameter("EndDate", typeof(DateTime), toDate == DateTime.MinValue ? DateTime.Today : toDate);
-
-            // Set parameters for the SQL query
             AddSqlQueryParameters(accountId, frmDate, toDate);
+
+            AddReportParameter("TenantName", typeof(string), tenantName ?? "");
+            AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
+            AddReportParameter("CompanyAddress", typeof(string), company_address ?? "");
+            AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
+            AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
+
+            Console.WriteLine($"Company Logo: {logoImage != null}");
+
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+                tenantLabel.Text = tenantName;
+
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+                companyNameLabel.Text = company_Name;
+
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+                addressLabel.Text = company_address;
+
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+                logoPictureBox.Image = logoImage;
+
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+                companyNameArLabel.Text = Company_Name_Ar;
+
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+                addressArbLabel.Text = company_address_arb;
         }
 
-        // Helper method to add or update report parameters
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
         {
             if (Parameters[paramName] == null)
@@ -51,61 +67,52 @@ namespace QD.ERP.Web.Reports
                     Name = paramName,
                     Type = paramType,
                     Value = paramValue,
-                    Visible = false // Hide parameter panel
+                    Visible = false
                 });
             }
             else
             {
                 Parameters[paramName].Value = paramValue;
-                Parameters[paramName].Visible = false; // Ensure it's hidden
+                Parameters[paramName].Visible = false;
             }
         }
 
-        // Method to dynamically set SQL query parameters
         private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
         {
-            // Initialize the query parameters
-            queryParameter1 = new QueryParameter();
-            queryParameter2 = new QueryParameter();
-            queryParameter3 = new QueryParameter();
-
-            // Set the values for SQL query parameters
-            queryParameter1.Name = "@ParamAccountNo";
-            queryParameter1.Type = typeof(string);
-            queryParameter1.ValueInfo = accountId ?? "L00567"; // Default value for AccountNo
-
-            queryParameter2.Name = "@StartDate";
-            queryParameter2.Type = typeof(DateTime);
-            queryParameter2.ValueInfo = frmDate == DateTime.MinValue ? "2020-01-01" : frmDate.ToString("yyyy-MM-dd");
-
-            queryParameter3.Name = "@EndDate";
-            queryParameter3.Type = typeof(DateTime);
-            queryParameter3.ValueInfo = toDate == DateTime.MinValue ? "2021-12-01" : toDate.ToString("yyyy-MM-dd");
-
-            // Initialize the stored procedure query and set the StoredProcName
-            storedProcQuery1 = new StoredProcQuery
+            queryParameter1 = new QueryParameter
             {
-                Name = "StProAccountLedger", // Stored procedure name
-                StoredProcName = "StProAccountLedger" // Replace with your actual stored procedure name
+                Name = "@ParamAccountNo",
+                Type = typeof(string),
+                ValueInfo = accountId ?? "L00567"
             };
 
-            // Clear existing parameters and add the new ones
+            queryParameter2 = new QueryParameter
+            {
+                Name = "@StartDate",
+                Type = typeof(DateTime),
+                ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd")
+            };
+
+            queryParameter3 = new QueryParameter
+            {
+                Name = "@EndDate",
+                Type = typeof(DateTime),
+                ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd")
+            };
+
+            storedProcQuery1 = new StoredProcQuery
+            {
+                Name = "StProAccountLedger",
+                StoredProcName = "StProAccountLedger"
+            };
+
             storedProcQuery1.Parameters.Clear();
-            storedProcQuery1.Parameters.AddRange(new QueryParameter[] {
-                queryParameter1,
-                queryParameter2,
-                queryParameter3
-            });
+            storedProcQuery1.Parameters.AddRange(new QueryParameter[] { queryParameter1, queryParameter2, queryParameter3 });
 
-            // Re-assign the query to the SQL data source
-            this.sqlDataSource1.Queries.Clear();
-            this.sqlDataSource1.Queries.Add(storedProcQuery1);
-
-            // Set the connection string for the data source
-            this.sqlDataSource1.ConnectionName = "DBConnection"; // Your connection string name
-            this.sqlDataSource1.Name = "sqlDataSource1";
-
-            // Set the result schema (optional)
+            sqlDataSource1.Queries.Clear();
+            sqlDataSource1.Queries.Add(storedProcQuery1);
+            sqlDataSource1.ConnectionName = "DBConnection";
+            sqlDataSource1.Name = "sqlDataSource1";
         }
     }
 }

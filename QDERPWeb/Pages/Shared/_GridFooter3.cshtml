@@ -185,9 +185,9 @@
             items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Icon("textdocument");
             items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").OnClick("showSubmenu1");
             items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete");
-            items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete");
-            items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete");
+           items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").OnClick("ReportsByClient");
+              items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").OnClick("ReportsByClient");
+              items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").OnClick("ReportsByClient");
             items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Icon("event");
             items.Add().Text(new JS("formatMessage('Receivables with unmapped Vouchers')")).Icon("optionsgear");
 
@@ -195,11 +195,14 @@
         .ShowArrowIcon(true)
         .OnItemClick("handleReportsClick") 
         )
+      
 </div>
 </div>
 <script type="text/javascript">
 
-
+      function ReportsByClient() {
+        window.location.href = `/${tenantName}/Finance/ReportsByClients`;
+        }
     // Hide context menu on click outside
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");

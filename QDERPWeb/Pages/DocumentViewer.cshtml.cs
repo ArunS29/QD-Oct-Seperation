@@ -155,8 +155,39 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                if (ERPCompany_details == null)
+                {
+                    return BadRequest("Company details not found for the given tenant.");
+                }
+                var companyName = ERPCompany_details.CompanyName;
+                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
+                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
 
-                Report = new AccountStatementFormat2Report(AccountId, FrmDate, ToDate);
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new AccountStatementFormat2Report(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
             }
             else if (reportName == "AccountExportFromatReport")
             {
