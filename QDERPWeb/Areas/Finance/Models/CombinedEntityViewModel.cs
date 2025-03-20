@@ -1,4 +1,6 @@
-﻿namespace QD.ERP.Web.Areas.Finance.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace QD.ERP.Web.Areas.Finance.Models
 {
     public class CombinedEntityViewModel
     {
@@ -95,6 +97,113 @@
         public string VoucherModifiedBy { get; set; }
         public DateTime? VoucherModifiedOn { get; set; }
 
+    }
+    public class TrialBalanceResult
+    {
+        public string VoucherNo { get; set; }
+        public DateTime? VoucherDate { get; set; }
+        public long? VoucherEntryNo { get; set; }
+        public string AccountHead { get; set; }
+        public string AccountHeadName { get; set; }
+        public string DrCr { get; set; }
+        public decimal? DrAmount { get; set; }
+        public decimal? CrAmount { get; set; }
+        public decimal? VoucherAmountFormatted { get; set; }
+        public string AccountGroup { get; set; }
+        public string MasterGroup { get; set; }
+        public string VoucherType { get; set; }
+        public string Transactions { get; set; }
+        public string MonthYear { get; set; }
+        public int? MonthNumber { get; set; }
+        public string Category { get; set; }
+        public string VoucherRefNo { get; set; }
+        public string VoucherNarration { get; set; }
+        public string EntryNarration { get; set; }
+        public string SysRemarks { get; set; }
+    }
+    public class AssetRegisterViews
+    {
+        public string MasterGroupID { get; set; }
+        public string MasterGroup { get; set; }
+        public string AccountGroup { get; set; }
+        public string AccountID { get; set; }
+        public string AccountHead { get; set; }
+        public string AssetLedgerNo { get; set; }
+        public string AssetDescription { get; set; }
+        public string Specifications { get; set; }
+        public string Brand { get; set; }
+        public string PlateNo { get; set; }
+        public string Model { get; set; }
+        public string Year { get; set; }
+        public byte? Ownership { get; set; }
+        public DateTime? PurchaseDate { get; set; }
+        public byte? PurchasedAs { get; set; }
+        public bool? IsFinanced { get; set; }
+        public short? FinancedFrom { get; set; }
+        public decimal? ValueOfProperty { get; set; }
+        public decimal? InitialDownPayment { get; set; }
+        public decimal? InitialDocCharges { get; set; }
+        public decimal? MonthlyInstallment { get; set; }
+        public byte? NoOfInstallments { get; set; }
+        public DateTime? InstallmentStartDate { get; set; }
+        public DateTime? InstallmentEndDate { get; set; }
+        public decimal? FinalInstallment { get; set; }
+        public string DepreciationMethod { get; set; }
+        public byte? LifeSpanOfProperty { get; set; }
+        public decimal? ScrapValueOfProperty { get; set; }
+        public string AddedBy { get; set; }
+        public DateTime? AddedOn { get; set; }
+        public string ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public bool? IsDiscontinued { get; set; }
+        public DateTime? DiscontinuedOn { get; set; }
+        public string DiscontinuedRemarks { get; set; }
+        public string AssetCategory { get; set; }
+        public string AssetLocation { get; set; }
+        public decimal? ValueAfterScrap { get; set; }
+        public decimal? MonthlyDepreciation { get; set; }
+        public decimal? YearlyDepreciation { get; set; }
+        public int? NoOfMonthsOld { get; set; }
+        public decimal? DepAsOnDate { get; set; }
+        public decimal? CurrentValueOfAsset { get; set; }
+        public decimal? OpeningTotal { get; set; }
+        public decimal? TotalDebit { get; set; }
+        public decimal? TotalCredit { get; set; }
+        public decimal? ClosingBalance { get; set; }
+        [Column("DepreciationPercentage", TypeName = "decimal(6,2)")]
+        public decimal? DepreciationPercentage { get; set; }
+        public decimal? TotalDepreciatedAmount { get; set; }
+        [Column("CalculatedDepreciationAmount", TypeName = "decimal(38,7)")]
+        public decimal? CalculatedDepreciationAmount { get; set; }
+        [Column("FinalDepreciationAmount", TypeName = "decimal(38,7)")]
+        public decimal? FinalDepreciationAmount { get; set; }
+        [Column("AccumulatedDepreciationTotal", TypeName = "decimal(38,7)")]
+        public decimal? AccumulatedDepreciationTotal { get; set; }
+        [Column("BookValue", TypeName = "decimal(38,7)")]
+        public decimal? BookValue { get; set; }
+        public string DepreciationLedgerNo { get; set; }
+        public string AccumDepLedgerNo { get; set; }
+        public string PurchasedFrom { get; set; }
+        public string CurrentCondition { get; set; }
+        public string PurchasedAs2 { get; set; }
+        public string FinancedBy { get; set; }
+        public string CurrentReading { get; set; }
+        public string AssetType { get; set; }
+        public decimal? FMV { get; set; }
+        public decimal? BMV { get; set; }
+        public string PropertyNo { get; set; }
+        public decimal? NetBookValue { get; set; }
+        public string EquipmentSerialNo { get; set; }
+        public string EquipmentLocationDelivered { get; set; }
+        public string EquipmentCurrentStatus { get; set; }
+        public string EquipmentMobilizedTo { get; set; }
+        public string EquipmentClientSite { get; set; }
+        public decimal? EquipmentClientRatePerHour { get; set; }
+        public string EquipmentCertification { get; set; }
+        public string EquipmentPWAS { get; set; }
+        public string EquipmentAttachments { get; set; }
+        public string EquipmentCurrentOperators { get; set; }
+        public string EquipmentCapacity { get; set; }
     }
 }
 

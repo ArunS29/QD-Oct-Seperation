@@ -5,9 +5,13 @@
 }
 
 <h7 id="TrialBalance" class="no-border-input"></h7>
-<div class="container">
-    <!-- Input Controls -->
-    <div class="dx-fieldset horizontal-container">
+
+<div class="container" style="display: flex; flex-direction: column; gap: 20px;">
+
+    <!-- Input Controls in One Line -->
+    <div class="dx-fieldset horizontal-container"
+         style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+
         <!-- SelectBox for Account Group -->
         @(Html.DevExtreme().SelectBox()
             .ID("requestedBy")
@@ -72,115 +76,111 @@
             )
     </div>
 
-    <!-- Pivot Grid Container -->
-    <div id="pivotGridContainer"></div>
+    <!-- Pivot Grid (Will Always Appear Below Filters) -->
+    <div id="pivotGridContainer" style="width: 100%;"></div>
 
-    <!-- Grid Footer Partial -->
-    @await Html.PartialAsync("_GridFooter")
+    @* <!-- Grid Footer Partial -->
+    @await Html.PartialAsync("_GridFooter") *@
 </div>
+
+
 
 <script type="text/javascript">
 $(function () {
+    $("#TrialBalance").dxTextBox({
+        text: formatMessage("Trial Balance"),
+        readOnly: true,
+        onContentReady: function(e) {
+            $(e.element).addClass("dx-textbox-heading");
+        }
+    });
 
-										$("#TrialBalance").dxTextBox({
-													text:formatMessage("Trial Balance"),
-                                                        readOnly: true,
-													onContentReady: function(e) {
-				$(e.element).addClass("dx-textbox-heading");
-		}
+    // Load all records when the page loads (ignore default date selection)
+    loadAllRecords();
+});
 
-                                    });
-									});
-    // Function to handle changes in the Account Group selection
-    function onRequestedByChanged(e) {
-        var selectedValue = e.value; // Get the selected value from the SelectBox
+function loadAllRecords() {
+    console.log("Loading all records (ignoring default dates)...");
 
-        var selectBox = $("#requestedBy").dxSelectBox("instance");
-        var dataSource = selectBox.option("dataSource");
+    $.ajax({
+        url: '/api/TrialBalance/GetTrialBalance',
+        type: 'GET',
+        data: {},  // No filters applied
+        success: function (data) {
+            initializePivotGrid(data);
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching all records: ", error);
+        }
+    });
+}
 
-        if (dataSource && dataSource.store) {
-            var store = dataSource.store;
+// Function to handle Account Group selection
+function onRequestedByChanged(e) {
+    var selectedValue = e.value; 
+    var selectBox = $("#requestedBy").dxSelectBox("instance");
+    var dataSource = selectBox.option("dataSource");
 
-            if (store instanceof DevExpress.data.DataSource) {
-                // Apply a filter to the DataSource store
-                if (selectedValue) {
-                    store.filter(["AccountGroup", "=", selectedValue]);
-                } else {
-                    store.filter(null); // Remove the filter if no value is selected
-                }
+    if (dataSource && dataSource.store) {
+        var store = dataSource.store;
 
-                // Reload the data to reflect the filter change
-                store.load();
-            } else if (Array.isArray(store)) {
-                // Apply filtering manually for array-based store
-                var filteredData = store.filter(item => item.AccountGroup === selectedValue);
-                selectBox.option("dataSource", filteredData);
-            } else {
-                console.error("The store is neither a DevExpress.data.DataSource nor an array:", store);
-            }
+        if (store instanceof DevExpress.data.DataSource) {
+            store.filter(selectedValue ? ["AccountGroup", "=", selectedValue] : null);
+            store.load();
+        } else if (Array.isArray(store)) {
+            selectBox.option("dataSource", selectedValue ? store.filter(item => item.AccountGroup === selectedValue) : store);
         } else {
-            console.error("The dataSource does not have a store or is not structured as expected:", dataSource);
+            console.error("Unexpected data source format:", store);
         }
+    } else {
+        console.error("Invalid data source:", dataSource);
     }
+}
 
-    function ddBtnShowRecords_click(e) {
-        // Get the start and end dates
-        var startDate = $("#frmdateBox").dxDateBox("instance").option("value");
-        var endDate = $("#todateBox").dxDateBox("instance").option("value");
+// Function to filter records based on selected values
+function ddBtnShowRecords_click(e) {
+    var startDate = $("#frmdateBox").dxDateBox("instance").option("value");
+    var endDate = $("#todateBox").dxDateBox("instance").option("value");
+    var getaccountGroup = $("#requestedBy").dxSelectBox("instance").option("value");
+    var accountGroup = getaccountGroup ? getaccountGroup.AccountGroup : null;
 
-        // Get the selected AccountGroup object from the select box
-        var getaccountGroup = $("#requestedBy").dxSelectBox("instance").option("value");
+    console.log("Fetching records with:", { startDate, endDate, accountGroup });
 
-        // Log the AccountGroup value (to help with debugging)
-        console.log("Selected Account Group: ", getaccountGroup);
-
-        // Extract the AccountGroup value (assuming it's an object)
-        var accountGroup = getaccountGroup ? getaccountGroup.AccountGroup : null;
-
-        // If start or end date is not selected, show an alert and return
-        if (!startDate || !endDate) {
-            alert("Please select both start date and end date.");
-            return;
+    $.ajax({
+        url: '/api/TrialBalance/GetTrialBalance',
+        type: 'GET',
+        data: {
+            startDate: startDate ? startDate.toISOString().split('T')[0] : null,
+            endDate: endDate ? endDate.toISOString().split('T')[0] : null,
+            accountGroup: accountGroup
+        },
+        success: function (data) {
+            initializePivotGrid(data);
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching data: ", error);
         }
+    });
+}
 
-        // Format the dates in 'yyyy-MM-dd' format for the backend
-        var formattedStartDate = startDate.toISOString().split('T')[0];
-        var formattedEndDate = endDate.toISOString().split('T')[0];
-
-        // Trigger the AJAX request with the necessary parameters
-        $.ajax({
-            url: '/api/TrialBalance/GetTrialBalance',
-            type: 'GET',
-            data: {
-                startDate: formattedStartDate,
-                endDate: formattedEndDate,
-                accountGroup: accountGroup // Pass accountGroup, which can be null
+// Function to initialize or update the PivotGrid
+function initializePivotGrid(data) {
+    $("#pivotGridContainer").dxPivotGrid({
+        dataSource: {
+            store: {
+                type: "array",
+                data: data
             },
-            success: function (data) {
-                // Initialize or update the PivotGrid with the received data
-                var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
-                    dataSource: {
-                        store: {
-                            type: "array",
-                            data: data
-                        },
-                        fields: [
-
-                            { dataField: "AccountGroup", area: "row", caption: "Master Group" },
-                            { dataField: "AccountHeadName", area: "row", caption: "Ledger Account" },
-                            { dataField: "DrAmount", area: "data", caption: "Debit Amount" },
-                            { dataField: "CrAmount", area: "data", caption: "Credit Amount" },
-                            { dataField: "MonthYear", area: "column", caption: "Month/Year" }
-                        ]
-                    },
-                    height: 500,
-                    showBorders: true
-                }).dxPivotGrid('instance');
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching data: ", error);
-            }
-        });
-    }
-
+            fields: [
+                { dataField: "AccountGroup", area: "row", caption: "Master Group" },
+                { dataField: "AccountHeadName", area: "row", caption: "Ledger Account" },
+                { dataField: "DrAmount", area: "data", caption: "Debit Amount" },
+                { dataField: "CrAmount", area: "data", caption: "Credit Amount" },
+                { dataField: "MonthYear", area: "column", caption: "Month/Year" }
+            ]
+        },
+        height: 500,
+        showBorders: true
+    }).dxPivotGrid('instance');
+}
 </script>

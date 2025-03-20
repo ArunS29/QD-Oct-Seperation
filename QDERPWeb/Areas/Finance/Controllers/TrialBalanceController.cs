@@ -42,11 +42,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     bool? isUseEffectiveDate = false;
-                    var returnValue = new OutputParameter<int>();
-                    ERPMasterWtDataContextProcedures _procedures = new ERPMasterWtDataContextProcedures(dbContext);
 
-                    var result = await _procedures.StProTrialBalanceAsync(startDate, endDate, isUseEffectiveDate, returnValue);
+                    // Execute stored procedure directly using FromSqlRaw
+                    var result = await dbContext.TrialBalanceResults
+                        .FromSqlRaw("EXEC StProTrialBalance @p0, @p1, @p2", startDate, endDate, isUseEffectiveDate)
+                        .ToListAsync();
 
+                    // Apply filtering if necessary
                     if (!string.IsNullOrEmpty(accountGroup))
                     {
                         result = result.Where(x => x.AccountGroup == accountGroup).ToList();
@@ -63,6 +65,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         }
                     }
 
+                    // Transform data for PivotGrid
                     var pivotGridData = result.Select(item => new
                     {
                         item.VoucherNo,
@@ -87,6 +90,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
     }
 }
 

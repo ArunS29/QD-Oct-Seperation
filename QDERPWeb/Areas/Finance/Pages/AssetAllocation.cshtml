@@ -129,4 +129,18 @@
         });
         
     });
+        $(document).ready(function () {
+        console.log("Page loaded. Testing API call...");
+
+        $.ajax({
+            url: "/api/AssetAllocation/GetAssetCostAllocations",
+            method: "GET",
+            success: function (response) {
+                console.log("API Response:", response);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading data:", xhr.responseText);
+            }
+        });
+    });
 </script>

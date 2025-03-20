@@ -23,7 +23,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
-
         [HttpGet]
         public async Task<ActionResult> GetAssetView(DataSourceLoadOptions loadOptions)
         {
@@ -31,55 +30,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var procedures = new ERPMasterWtDataContextProcedures(dbContext);
-                    var ledgerData = await procedures.sp20157AssetRegisterViewAsync();
+                    var ledgerData = dbContext.AssetRegisterViews
+                        .FromSqlRaw("EXEC sp20157AssetRegisterView")
+                        .AsQueryable(); // ✅ Keep it as IQueryable
 
-                    var result = ledgerData.Select(x => new
-                    {
-                        x.AccountGroup,
-                        x.AssetLedgerNo,
-                        x.AccountHead,
-                        x.AssetDescription,
-                        x.Specifications,
-                        x.PropertyNo,
-                        x.DepreciationMethod,
-                        x.ScrapValueOfProperty,
-                        x.LifeSpanOfProperty,
-                        x.DepreciationPercentage,
-                        x.OpeningTotal,
-                        x.TotalDebit,
-                        x.TotalCredit,
-                        x.ClosingBalance,
-                        x.TotalDepreciatedAmount,
-                        x.NetBookValue,
-                        x.AssetCategory,
-                        x.AssetLocation,
-                        x.Brand,
-                        x.PlateNo,
-                        x.Model,
-                        x.Year,
-                        x.AssetType,
-                        x.FMV,
-                        x.BMV,
-                        x.FinancedBy,
-                        x.Ownership,
-                        PurchaseDate = x.PurchaseDate.HasValue ? x.PurchaseDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
-                        x.ValueOfProperty,
-                        x.PurchasedAs,
-                        x.IsFinanced,
-                        x.FinancedFrom,
-                        x.NoOfInstallments,
-                        x.InitialDownPayment,
-                        x.InitialDocCharges,
-                        x.MonthlyInstallment,
-                        x.FinalInstallment,
-                        InstallmentStartDate = x.InstallmentStartDate.HasValue ? x.InstallmentStartDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
-                        InstallmentEndDate = x.InstallmentEndDate.HasValue ? x.InstallmentEndDate.Value.ToString("dd-MMM-yyyy") : string.Empty,
-                        x.PurchasedFrom,
-                        x.CurrentCondition
-                    }).ToList();
-
-                    return Json(await DataSourceLoader.LoadAsync(result.AsQueryable(), loadOptions));
+                    return Json(await DataSourceLoader.LoadAsync(ledgerData, loadOptions)); // ✅ No ToListAsync() here
                 }
                 catch (Exception ex)
                 {
@@ -90,6 +45,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public async Task<ActionResult> GetAssetViewedit(string assetLedgerNo)
