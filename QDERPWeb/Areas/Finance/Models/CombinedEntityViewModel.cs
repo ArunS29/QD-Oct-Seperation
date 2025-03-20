@@ -204,6 +204,37 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string EquipmentAttachments { get; set; }
         public string EquipmentCurrentOperators { get; set; }
         public string EquipmentCapacity { get; set; }
+
+    }
+    public class ExpenseClaimViews
+    {
+        public string ClaimRefNo { get; set; }
+        public DateTime? ClaimDate { get; set; }
+        public string ProjectClaimedFor { get; set; }
+        public string ClaimRemarks { get; set; }
+        public string ClaimCreatedBy { get; set; }
+        public DateTime? ClaimCreatedOn { get; set; }
+        public string ClaimModifiedBy { get; set; }
+        public DateTime? ClaimModifiedOn { get; set; }
+        public bool IsSubmittedToFinance { get; set; }
+        public string SubmittedBy { get; set; }
+        public DateTime? SubmittedOn { get; set; }
+        public bool IsApproved { get; set; }
+        public string ApprovedBy { get; set; }
+        public DateTime? ApprovedOn { get; set; }
+        public decimal? ClaimedAmountTotal { get; set; }
+        public decimal? ApprovedAmountTotal { get; set; }
+        public byte? ClaimerID { get; set; }
+        public string ClaimerName { get; set; }
+        public string PaymentType { get; set; }
+        public string PaymentAccount { get; set; }
+        public string PaidBy { get; set; }
+        public DateTime? PaidOn { get; set; }
+        public string PaymentVoucherNo { get; set; }
+        public bool IsPaid { get; set; }
+        public bool IsVerified { get; set; }
+        public string VerifiedBy { get; set; }
+        public DateTime? VerifiedOn { get; set; }
     }
 }
 

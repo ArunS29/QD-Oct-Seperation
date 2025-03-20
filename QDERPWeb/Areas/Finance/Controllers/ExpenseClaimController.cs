@@ -29,9 +29,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    ERPMasterWtDataContextProcedures procedure = new ERPMasterWtDataContextProcedures(dbContext);
-                    var result = await procedure.sp20105ExpenseClaimViewAsync(ClaimerID, StartDate, EndDate, IfShowAll);
-                    return Json(result);
+                    var result = dbContext.ExpenseClaimViews
+                        .FromSqlRaw("EXEC sp20105ExpenseClaimView @p0, @p1, @p2, @p3",
+                            ClaimerID, StartDate, EndDate, IfShowAll)
+                        .AsQueryable(); // ✅ Returns IQueryable
+
+                    return Json(await result.ToListAsync()); // Convert to list before returning JSON
                 }
                 catch (Exception ex)
                 {
@@ -42,6 +45,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public async Task<ActionResult> GetUser()
