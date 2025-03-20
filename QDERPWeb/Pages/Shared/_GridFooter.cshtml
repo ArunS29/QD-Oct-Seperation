@@ -726,10 +726,10 @@
     // Footer Recipits button event
     function addRecipitsButton_click(e) {
         switch (e.itemData.text) {
-            case 'Add Cash Receipts':
+            case (formatMessage('Add Cash Receipts')):
                 window.open(`/${tenantName}/Finance/VoucherEntryCashReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
-            case 'Add Bank Receipts':
+            case (formatMessage('Add Bank Receipts')):
                 window.open(`/${tenantName}/Finance/VoucherEntryReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 break;
             // You can handle other cases here if needed
@@ -742,7 +742,7 @@
         let selectedText = e.itemData.text;
 
         switch (selectedText) {
-            case 'Ledger to Salary Payable Mapping':
+            case (formatMessage('Ledger to Salary Payable Mapping')):
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                     pageUrl = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
                 } else {
@@ -756,7 +756,7 @@
                 }
                 break;
 
-            case 'Ledger to Receivable/Payable Mapping':
+            case (formatMessage('Ledger to Receivable/Payable Mapping')):
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                     pageUrl = `/${tenantName}/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
                 } else {
@@ -770,7 +770,7 @@
                 }
                 break;
 
-            case 'Bank Reconciliation':
+            case (formatMessage('Bank Reconciliation')):
                 if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                     pageUrl = `/${tenantName}/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
                 } else {
@@ -784,7 +784,7 @@
                 }
                 break;
 
-            case 'Detailed Transaction Report':
+            case (formatMessage('Detailed Transaction Report')):
                 window.open(`/${tenantName}/Finance/TransactionDetails`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                 return;  // No need to set pageUrl for new window
         }
@@ -832,13 +832,13 @@
         let url = "";
         let title = "Receipts";
         switch (e.itemData.text) {
-            case 'Add Cash Receipts':
+            case (formatMessage('Add Cash Receipts')):
                 url = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
-                title = "Add Cash Receipts";
+                title = formatMessage('Add Cash Receipts');
                 break;
-            case 'Add Bank Receipts':
+            case (formatMessage('Add Bank Receipts')):
                 url = `/${tenantName}/Finance/VoucherEntryReceipts`;
-                title = "Add Bank Receipts";
+                title = formatMessage('Add Bank Receipts');
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);
@@ -851,13 +851,13 @@
         let url = "";
         let title = "Payments";
         switch (e.itemData.text) {
-            case 'Add Cash Payment':
+            case (formatMessage('Add Cash Payment')):
                 url = `/${tenantName}/Finance/VoucherCashPayment`;
-                title = "Add Cash Payment";
+                title = formatMessage('Add Cash Payment');
                 break;
-            case 'Add Bank Payment':
+            case (formatMessage('Add Bank Payment')):
                 url = `/${tenantName}/Finance/VoucherBankPayment`;
-                title = "Add Bank Payment";
+                title = formatMessage('Add Bank Payment');
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);
@@ -870,17 +870,17 @@
         let url = "";
         let title = "Vouchers";
         switch (e.itemData.text) {
-            case 'Add Purchase Voucher':
+            case (formatMessage('Add Purchase Voucher')):
                 url = `/${tenantName}/Finance/Purchasevoucher`;
-                title = "Add Purchase Voucher";
+                title = formatMessage('Add Purchase Voucher');
                 break;
-            case 'Add Sales Voucher':
+            case (formatMessage('Add Sales Voucher')):
                 url = `/${tenantName}/Finance/Salesvoucher`;
-                title = "Add Sales Voucher";
+                title = formatMessage('Add Sales Voucher');
                 break;
-            case 'Add Journal Voucher':
+            case (formatMessage('Add Journal Voucher')):
                 url = `/${tenantName}/Finance/Voucherjournal`;
-                title = "Add Journal Voucher";
+                title = formatMessage('Add Journal Voucher');
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);

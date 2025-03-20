@@ -420,7 +420,7 @@
                     return;
                 }
 
-                window.location.href = `/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
+                window.location.href = `/${tenantName}/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
             }
 
 
@@ -433,7 +433,7 @@
                 if (confirm("Are you sure you want to delete this voucher?")) {
 
                     $.ajax({
-                        url: `/AssetView/Delete/${selectedVoucherId}`,
+                        url: `/${tenantName}/AssetView/Delete/${selectedVoucherId}`,
                         type: "POST",
                         success: function (response) {
                             alert("Voucher deleted successfully.");
@@ -480,7 +480,7 @@
             });
         });
         function showDepreciationSchedule() {
-            $("#DepreciationContent").load("/Finance/DepreciationMaster", function () {
+            $("#DepreciationContent").load(`/${tenantName}/Finance/DepreciationMaster   `, function () {
                 $("#DepreciationModal").modal('show');
                 $(".close").on("click", function () {
                     $("#DepreciationModal").modal('hide');
