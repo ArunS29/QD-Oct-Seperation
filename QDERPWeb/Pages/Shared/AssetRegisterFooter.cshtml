@@ -347,11 +347,11 @@
         let url = "";
         let title = "Detailed Transaction Report";
         switch (e.itemData.text) {
-            case 'Detailed Transaction Report':
+            case (formatMessage('Detailed Transaction Report')):
                 url = `/${tenantName}/Finance/TransactionDetails`;
                 title = "Detailed Transaction Report";
                 break;
-            case 'Ledger to Salary Payable Mapping':
+            case (formatMessage('Ledger to Salary Payable Mapping')):
             if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
                 url = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
             } else {
