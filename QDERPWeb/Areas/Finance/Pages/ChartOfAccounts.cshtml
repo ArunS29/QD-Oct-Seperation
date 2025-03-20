@@ -128,7 +128,7 @@
                 columns.AddFor(m => m.IsLedgerObselete).Caption(new JS("formatMessage('Is Ledger Obsolete')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
             .CellTemplate(@<text>
         <div class="dx-icon">
-            <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+            <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
         </div>
     </text>)
         .Visible(true);
@@ -913,20 +913,20 @@
     //         }
     //     }
     // }
-    function onCellPrepared(e) {
+     function onCellPrepared(e) {
         if (e.rowType === "data" && e.column.dataField === "AccountHead") {
             if (!e.data.IsLedgerObselete) {
+                e.cellElement.css({
+                    "background-color": "white",
+                    "color": "green",
+                    "font-weight": "bold"
+                });
+            } else {
                 e.cellElement.css({
                     "background-color": "red",
                     "color": "white",
                     "background-color": "white",
                     "color": "#ef5353",
-                    "font-weight": "bold"
-                });
-            } else {
-                e.cellElement.css({
-                    "background-color": "white",
-                    "color": "green",
                     "font-weight": "bold"
 
                 });
