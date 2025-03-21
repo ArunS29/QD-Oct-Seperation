@@ -99,8 +99,10 @@
 
         .Columns(columns =>
         {
+            columns.AddFor(m => m.ChartOfAccountsOrder).Caption(new JS("formatMessage('Chart Of Accounts Order')")).Alignment(HorizontalAlignment.Center);
             columns.AddFor(m => m.ChartOfAccountsOrder).Caption(new JS("formatMessage('Chart Of Accounts Order')")).Alignment(HorizontalAlignment.Center)
             .GroupIndex(0);
+            columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Master Group')")).Alignment(HorizontalAlignment.Center);
             columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Master Group')")).Alignment(HorizontalAlignment.Center)
             .GroupIndex(1);
             columns.AddFor(m => m.AccountGroupId).Caption(new JS("formatMessage('Account Group Id')")).Alignment(HorizontalAlignment.Left);

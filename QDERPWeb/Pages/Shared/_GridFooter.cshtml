@@ -453,7 +453,7 @@
                 alert('An error occurred while fetching permissions. Please try again.');
             }
         });
-        showColumnChooser();
+       // showColumnChooser();
         console.log('End permission handling');
     });
 
@@ -571,6 +571,7 @@
         }
     });
     function saveLayoutClick(e) {
+        debugger;
         var grid = $("#dataGrid").dxDataGrid("instance");
         var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
@@ -593,6 +594,7 @@
         //DevExpress.ui.notify("Layout", "success", 600);
     }
     function openLayoutClick(e) {
+        debugger;
         // Create an input element dynamically
         const input = document.createElement("input");
         input.type = "file";

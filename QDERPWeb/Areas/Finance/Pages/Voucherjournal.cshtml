@@ -1,4 +1,7 @@
-﻿@page
+﻿
+
+
+@page
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -57,9 +60,9 @@
             </div>
             <div class="form-group">
                 @(Html.DevExtreme().SelectBox()
-                    .Label(new JS("formatMessage('Voucher Type')"))
+                    .Label(new JS("formatMessage('VoucherType')"))
                     .LabelMode(EditorLabelMode.Outside)
-                    .ID("Voucher Type")
+                    .ID("VoucherType")
                     .DataSource(new[] { "Journal" })
                     .Value("Journal")
                     .Disabled(true)
@@ -205,26 +208,47 @@
                     
                     columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')"));
 
-                        columns.AddFor(m => m.AccountHead)
-                        .Caption(new JS("formatMessage('Account Head')"))
-                        .DataType(GridColumnDataType.String)
+            columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')"))
+            .CellTemplate(@<text>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>
+                        <%- data.AccountHead ? data.AccountHead : "No Selection" %>
+                    </span>
+                </div>
+            </text>)
+            .EditCellTemplate(@<text>
 
-                        .Lookup(lookup => lookup
 
-                        .DataSource(ds => ds.WebApi()
+                @(Html.DevExtreme().DropDownBox()
+                .DataSource(d => d.WebApi()
+                .Controller("VoucherMaster")
+                .LoadAction("GetEditAccountHead")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("AccountId")
+                )
 
-                        .Controller("VoucherJournal")
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("accountDropDownBoxEdit")
+                .ShowClearButton(true)
+                .AcceptCustomValue(true)
+                .OpenOnFieldClick(false)
+                .ValueChangeEvent("change")
+                .HoverStateEnabled(true)
+                .Value(new JS("data.AccountHead"))
+                .ValueExpr("AccountId")
+                .DisplayExpr("AccountHead")
+                .OnValueChanged("gridBox_valueChanged")
+                .OnOpened("onOpened")
+                @* .Width(250) *@
+                .TabIndex(1)
+                .DropDownOptions(o => o.Width(500))
+                .OnKeyDown("onKeyDown")
+                .ContentTemplate(new TemplateName("AccountHeadEditDropdownContentTemplate"))
+                )
 
-                        .LoadAction("GetSupplierName")
 
-                        )
-
-                        .ValueExpr("AccountId")
-
-                        .DisplayExpr("AccountHead")
-
-                        );
-                        columns.Add()
+            </text>);
+                columns.Add()
                         .Caption(new JS("formatMessage('Debit')"))
                         .Alignment(HorizontalAlignment.Right)
                         .CalculateCellValue(@"
@@ -445,7 +469,80 @@
             </div>
              </div>
     </div>
+@using (Html.DevExtreme().NamedTemplate("AccountHeadEditDropdownContentTemplate"))
+{
+    @(
+                Html.DevExtreme().DataGrid()
+                .ID("accountDropDownBoxeditGrid")
+                .DataSource(d => d.WebApi()
+                .Controller("VoucherMaster")
+                .LoadAction("GetEditAccountHead")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("AccountHead")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+                .SelectedRowKeys(new JS(@"component.option(""value"")"))
+                .OnSelectionChanged(@<text>
+            function(selectedItems) {
+            var keys = selectedItems.selectedRowKeys;
+            component.option("value", keys);
+            console.log(keys);
+            }
+        </text>)
+
+
+
+         // .HeaderFilter(p => p.Visible(true))
+             .ShowBorders(true)
+             .HoverStateEnabled(true)
+             .Paging(p => p.PageSize(15))
+             .FilterRow(f => f.Visible(true))
+             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+             .Height(345)
+             .Selection(s => s.Mode(SelectionMode.Single))
+             .Columns(columns =>
+             {
+                 columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+                 columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+                 columns.Add().Caption(new JS("formatMessage('AccountHead Arabic')")).DataField("AccountHeadArabic");
+ columns.Add().Caption(new JS("formatMessage('Account Group')")).DataField("AccountGroup");
+             })
+             )
+ }
+
+
             <script>
+                //global variablr for get newVoucherNo
+    var globalVoucherNo = "";
+                $(function () {
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
+    const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+
+    function calculateTotals() {
+        debugger;
+        const data = dataGrid.option("dataSource") || [];
+
+        const totalDebit = data.reduce((sum, row) => sum + (row.DrCr === "Dr" ? row.VoucherAmount || 0 : 0), 0);
+        const totalCredit = data.reduce((sum, row) => sum + (row.DrCr === "Cr" ? row.VoucherAmount || 0 : 0), 0);
+
+        // Update TextBox values dynamically
+        totalDebitTextbox.option("value", totalDebit.toFixed(2));
+        totalCreditTextbox.option("value", totalCredit.toFixed(2));
+    }
+
+    // **Trigger calculateTotals() on row changes**
+    dataGrid.on("contentReady", calculateTotals); // When grid loads
+    dataGrid.on("rowInserted", calculateTotals); // When row is added
+    dataGrid.on("rowUpdated", calculateTotals);  // When row is updated
+    dataGrid.on("rowRemoved", calculateTotals);  // When row is deleted
+});
+//default
+
                 $(function () {
                     $("#JournalVoucherEntry").dxTextBox({
                         text:formatMessage("Journal Voucher Entry"),
@@ -610,86 +707,106 @@
                 //     });
 
                 // });
-                $("#btnSave").on("click", function (e) {
-                    e.preventDefault();
 
-                    var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
-                    var gridData = dataGrid.option("dataSource"); // Get the current data in the DataGrid
 
-                    // Check if gridData is null or empty
-                    if (!gridData || gridData.length === 0) {
-                        DevExpress.ui.notify("There are no line items to save. Please add transaction details.", "error", 2000);
-                        return;
+
+
+    $("#btnSave").on("click", function (e) {
+        e.preventDefault();
+        debugger;
+
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var gridData = dataGrid.option("dataSource");
+
+        if (!gridData || gridData.length === 0) {
+            DevExpress.ui.notify("There are no line items to save. Please add transaction details.", "error", 2000);
+            return;
+        }
+
+        var totalDrAmount = 0;
+        var totalCrAmount = 0;
+
+        gridData.forEach(function (row) {
+            if (row.DrCr === "Dr" && row.VoucherAmount && row.VoucherAmount > 0) {
+                totalDrAmount += row.VoucherAmount;
+            }
+            if (row.DrCr === "Cr" && row.VoucherAmount && row.VoucherAmount > 0) {
+                totalCrAmount += row.VoucherAmount;
+            }
+        });
+
+        if (totalDrAmount !== totalCrAmount) {
+            DevExpress.ui.notify("Voucher Entry is not tallying, please check the Debit / Credit Totals.", "error", 2000);
+            return;
+        }
+
+        var voucherTextBox = $("#VoucherNo").dxTextBox("instance");
+        var existingVoucherNo = voucherTextBox ? voucherTextBox.option("value") : "";
+
+        // **Use globalVoucherNo if it exists**
+        var finalVoucherNo =  globalVoucherNo || "";
+
+        var VM = {
+            VoucherMaster: {
+                VoucherNo: finalVoucherNo, // Pass the latest VoucherNo
+                VoucherDate: $("#VoucherDate").dxDateBox("instance").option("value"),
+                VoucherEffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value"),
+                VoucherNarration: ($("#VoucherNarration").dxTextBox("instance").option("value") || "").trim(),
+                BillRemarks: ($("#Remarks").dxTextBox("instance").option("value") || "").trim(),
+                IsVerified: $("#VerifiedBy").dxCheckBox("instance").option("value"),
+                IsApproved: $("#ApprovedBy").dxCheckBox("instance").option("value"),
+                VoucherVerifiedBy: ($("#VerifiedBytext").dxTextBox("instance").option("value") || "").trim(),
+                VoucherApprovedBy: ($("#ApprovedBytext").dxTextBox("instance").option("value") || "").trim(),
+                VoucherVerifiedOn: ($("#VerifiedOnDate").dxTextBox("instance").option("value") || null),
+                VoucherApprovedOn: ($("#ApprovedOntext").dxTextBox("instance").option("value") || null),
+                VoucherType: ($("#VoucherType").dxSelectBox("instance").option("value") || "").trim(),
+            },
+            VoucherEntries: gridData
+        };
+
+        var button = $("#btnSave").dxButton("instance");
+        var action = finalVoucherNo ? "UpdateVoucher" : "SaveVoucher"; // Determine Save or Update
+
+        $.ajax({
+            type: "POST",
+            url: `/api/VoucherJournal/${action}`,
+            contentType: "application/json",
+            data: JSON.stringify(VM),
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    // Update voucher number if saving a new voucher
+                    if (!finalVoucherNo) {
+                        globalVoucherNo = response.voucherNo;
+                        if (voucherTextBox) {
+                            voucherTextBox.option("value", globalVoucherNo);
+                        }
                     }
 
-                    var totalDrAmount = 0; // Total Debit amount
-                    var totalCrAmount = 0; // Total Credit amount
+                    var successMessage = action === "SaveVoucher"
+                        ? "Voucher saved successfully with matching Debit and Credit amounts."
+                        : "Voucher updated successfully!";
+                    DevExpress.ui.notify(successMessage, "success", 2000);
 
-                    // Sum the total Debit and Credit amounts based on DrCr field
-                    gridData.forEach(function (row) {
-                        if (row.DrCr === "Dr" && row.VoucherAmount && row.VoucherAmount > 0) {
-                            totalDrAmount += row.VoucherAmount;
-                        }
-                        if (row.DrCr === "Cr" && row.VoucherAmount && row.VoucherAmount > 0) {
-                            totalCrAmount += row.VoucherAmount;
-                        }
-                    });
-
-                    // Check if Debit and Credit amounts match
-                    if (totalDrAmount !== totalCrAmount) {
-                        DevExpress.ui.notify("Voucher Entry is not tallying, please check the Debit / Credit Totals.", "error", 2000);
-                        return;
+                    // Change button text to "Update" after saving
+                    if (action === "SaveVoucher") {
+                        button.option("text", "Update");
                     }
+                } else {
+                    DevExpress.ui.notify("Update failed: " + response.message, "error", 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify(
+                    "An error occurred while processing the voucher. Please try again.",
+                    "error",
+                    2000
+                );
+            }
+        });
+    });
+   
 
-                    // Prepare the data object for saving
-                    var VM = {
-                        "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
-                        "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
-                        "VoucherEffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
-                        "VoucherNarration": $("#VoucherNarration").dxTextBox("instance").option("value") || null,
-                        "Remarks": $("#Remarks").dxTextBox("instance").option("value") || null,
-                        "IsVerified": $("#VerifiedBy").dxCheckBox("instance").option("value"),
-                        "IsApproved": $("#ApprovedBy").dxCheckBox("instance").option("value"),
-                        "VoucherVerifiedOn": new Date(),
-                        "VoucherApprovedOn": new Date()
-                    };
-
-                    // Determine if we are saving or updating
-                    var button = $("#btnSave").dxButton("instance");
-                    var action = button.option("text") === "Save" ? "SaveVoucher" : "UpdateVoucher";
-
-                    // Perform AJAX request to save/update
-                    $.ajax({
-                        type: "POST",
-                        url: `/api/VoucherJournal/${action}`,
-                        contentType: "application/json",
-                        data: JSON.stringify(VM),
-                        dataType: "json",
-                        success: function (response) {
-                            if (response.success) {
-                                var successMessage =
-                                    action === "SaveVoucher"
-                                        ? "Voucher saved successfully with matching Debit and Credit amounts."
-                                        : "Voucher updated successfully!";
-                                DevExpress.ui.notify(successMessage, "success", 2000);
-
-                                // Change button label to "Update" after saving
-                                if (action === "SaveVoucher") {
-                                    button.option("text", "Update");
-                                }
-                            } else {
-                                DevExpress.ui.notify("Update failed: " + response.message, "error", 2000);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            DevExpress.ui.notify(
-                                "An error occurred while processing the voucher. Please try again.",
-                                "error",
-                                2000
-                            );
-                        }
-                    });
-                });
 
 
 
@@ -822,11 +939,17 @@
                 function updateTemporaryNo(e) {
                     const voucherNo = e.value;
                     const temporaryNo = $("#TemporaryNo").dxTextBox("instance");
-                    temporaryNo.option("value", voucherNo);
+
+                    if (voucherNo.startsWith("JV-NEW-")) {
+                   temporaryNo.option("value", voucherNo);
+                    }
                 }
+              
+
 
 
                 $(document).ready(function () {
+                    debugger;
                     const urlParams = new URLSearchParams(window.location.search);
                     const argsledno = urlParams.get("argsledno"); // Get the argsledno query parameter
 
@@ -835,8 +958,12 @@
                     if (argsledno) { // If argsledno is present in the URL
                         const voucherNoField = $("#VoucherNo").dxTextBox("instance");
                         voucherNoField.option("value", argsledno);
+
                         updateTemporaryNo({ value: argsledno });
-                    } else { // If no argsledno, generate a new voucher number
+                        voucherNo=argsledno;
+                        fetchVoucherDetails(voucherNo);
+           fetchVoucherEntries(voucherNo);
+                    }  else { // If no argsledno, generate a new voucher number
                         $.ajax({
                             url: '@Url.Action("GetNewVoucherNo", "VoucherJournal")',
                             type: 'GET',
@@ -850,10 +977,179 @@
                             }
                         });
                     }
-                });
+               
+
+        //    function onVoucherNoChanged(e) {
+             
+        //     const voucherNo = e.value;
+        //     if (!voucherNo) return;
+
+        //     const urlParams = new URLSearchParams(window.location.search);
+        //     const argsledno = urlParams.get("argsledno");
 
 
-                $(function () {
+        //     // If the voucher is from the URL, skip validation
+        //     // if (!argsledno || argsledno !== voucherNo) {
+        //     //     validateVoucherNo(voucherNo);
+        //     // }
+
+           
+        // }
+     function fetchVoucherEntries(voucherNo) {
+     $.ajax({
+         type: "GET",
+         url: "/api/VoucherJournal/LoadVoucherEntries",
+         contentType: "application/json",
+         data: { voucherNo: voucherNo },
+         success: function (response) {
+             if (!response || !response.data || response.data.length === 0) {
+                 // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
+                 return;
+             }
+
+             var dataGrid = $("#dataGrid").dxDataGrid("instance");
+             if (dataGrid) {
+                 dataGrid.option("dataSource", response.data);
+             } else {
+                 $("#dataGrid").dxDataGrid({
+                     dataSource: response.data,
+                     keyExpr: "VoucherEntryNo",
+                     repaintChangesOnly: true,
+                     editing: {
+                         mode: "cell",
+                         allowUpdating: true, // Enable editing
+                     },
+                     onRowUpdated: function (e) {
+                         saveUpdatedVoucherEntry(e.data);
+                     },
+                      columns: [
+                                { dataField: "VoucherEntryNo", caption: "Entry No", allowEditing: false },
+                                { dataField: "DrCr", caption: "Dr/Cr", allowEditing: false },
+                                {
+                                    dataField: "AccountHead",
+                                    caption: "Account Head",
+                                    allowEditing: true, // Make this column editable
+                                    lookup: {
+                                        dataSource: new DevExpress.data.CustomStore({
+                                            loadMode: "raw",
+                                            key: "AccountId",
+                                            load: function () {
+                                                return $.getJSON("/api/VoucherMaster/GetEditAccountHead");
+                                            }
+                                        }),
+                                        valueExpr: "AccountId",
+                                        displayExpr: "AccountHead"
+                                    }
+                                },
+                                { dataField: "VoucherAmount", caption: "Debit Amount", dataType: "number", allowEditing: false },
+                                { dataField: "VoucherAmount", caption: "Credit Amount", dataType: "number", allowEditing: false },
+                                { dataField: "EntryNarration", caption: "Narration", allowEditing: false },
+                                { dataField: "SysRemarks", caption: "Remarks", allowEditing: false }
+                            ]
+                 });
+             }
+         },
+         error: function (xhr, status, error) {
+             console.error("Error fetching voucher entries:", error);
+             DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+         }
+     });
+ }
+
+ function onVoucherDateChanged(e) {
+            console.log("Selected Date:", e.value);
+            var voucherDate = $("#VoucherDate").dxDateBox("instance");
+            var effectiveDate = $("#EffectiveDate").dxDateBox("instance");
+
+            voucherDate.option("onValueChanged", function (e) {
+                let voucherDateval = e.value; // Get Date from DevExtreme DateBox
+
+                // Check if voucherDateval is valid
+                if (!voucherDateval) return;
+
+                // Set effectiveDate to the same value as voucherDate
+                effectiveDate.option("value", voucherDateval);
+
+                // Convert to 'yyyy-MM-dd' format
+                let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
+
+                // Define the cutoff date (2021-12-31)
+                let cutoffDate = new Date("2021-12-31");
+
+                // Get the current date to set if the voucher date is blocked
+                let currentdate = new Date();
+                let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+
+                // Check if the formatted voucher date is before the cutoff date
+                if (new Date(formattedDate) < cutoffDate) {
+                    // Show alert for blocked entry
+                    DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+                    // Set both voucherDate and effectiveDate to the current date
+                    voucherDate.option("value", formattedCurrentDate);
+                    effectiveDate.option("value", formattedCurrentDate);
+                }
+            });
+        }
+           function fetchVoucherDetails(voucherNo) {
+
+
+            $.ajax({
+                type: "GET",
+            url: "/api/VoucherJournal/GetVoucherMasterEntries",
+                contentType: "application/json",
+                data: { voucherNo: voucherNo },
+                success: function (response) {
+                if (!response.success) {
+                    // DevExpress.ui.notify(response.message, "error", 2000);
+                    //return;
+                }
+                debugger
+                console.log(response.data[0]);
+
+
+                const data = response.data[0];
+                if (data) {
+
+                    $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
+                    $("#EffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
+                   // $("#BillDate").dxDateBox("instance").option("value", data.BillDate || "");
+                    $("#VoucherNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
+                     $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
+                    $("#VerifiedBy").dxCheckBox("instance").option("value", data.IsVerified || false);
+                    $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
+                    $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || null);
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
+                    $("#VerifiedOnDate").dxTextBox("instance").option("value", data.VoucherVerifiedOn || false);
+                     $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
+                   
+
+
+                    //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
+                    }
+                },
+                error: function () {
+                //  DevExpress.ui.notify("Error fetching voucher details.", "error", 2000);
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+
+          });    
+           
+
+
+
+
+
+ $(function () {
                     const dataGrid = $("#dataGrid").dxDataGrid("instance");
                     const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
                     const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
@@ -872,7 +1168,12 @@
                     dataGrid.on("contentReady", calculateTotals);
                     dataGrid.on("dataSourceChanged", calculateTotals);
                 });
-                function onVerifyButtonClick() {
+
+
+
+
+
+        function onVerifyButtonClick() {
                     const dataGrid = $("#dataGrid").dxDataGrid("instance");
                     const rowCount = dataGrid.getVisibleRows().length;
 
@@ -1264,5 +1565,40 @@
             }
         });
     });
+
+
+
+
+    function gridBox_valueChanged(e) {
+        var $dataGrid = $("#dataGrid");
+
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+        }
+        if (e.value) {
+
+
+            let grid = $("#dataGrid").dxDataGrid("instance");
+            let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+            let rowData = grid.getVisibleRows()[rowIndex].data;
+
+            let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+            let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
+
+            // if (selectedRowData) {
+            //     propertyno = selectedRowData.PropertyNo; // Store the correct ID
+
+            // }
+
+            rowData.AccountHead = e.value; // Update the row data
+            grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
+
+        }
+        // Close the dropdown after selection
+        e.component.option("opened", false);
+
+    }
+
 
             </script>

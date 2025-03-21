@@ -3394,6 +3394,19 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<AssetRegisterViews> AssetRegisterViews { get; set; }
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
+
+    public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+        modelBuilder.Entity<VoucherViewModel>().HasNoKey();// Mark as keyless
+
+        modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
+		modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
+		modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
+		modelBuilder.Entity<AccountMasterAR>().HasNoKey();
+		modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
+
     public virtual DbSet<DashBoardBankAccount> DashBoardBankAccounts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -3403,6 +3416,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterAR>().HasNoKey();
         modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
+
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
 
         modelBuilder.Entity<TrialBalanceResult>().HasNoKey();

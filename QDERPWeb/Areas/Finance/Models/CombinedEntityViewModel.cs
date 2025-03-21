@@ -1,4 +1,7 @@
+
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+
+﻿using QD.ERP.Web.DAL.Entities;
 
 namespace QD.ERP.Web.Areas.Finance.Models
 {
@@ -245,10 +248,18 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string VerifiedBy { get; set; }
         public DateTime? VerifiedOn { get; set; }
     }
+
+
+    public class VoucherViewModel
+    {
+        public Tbl201VoucherMaster VoucherMaster { get; set; }
+        public List<Tbl201VoucherEntry> VoucherEntries { get; set; }
+
     public class DashBoardBankAccount
     {
         public string MasterGroupID { get; set; }
         public DateTime EndDate { get; set; }
+
     }
 
 }

@@ -206,9 +206,15 @@
             items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Icon("textdocument");
             items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").OnClick("showSubmenu1");
             items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Icon("textdocument");
+
            items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").OnClick("ReportsByClient");
               items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").OnClick("ReportsByClient");
               items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").OnClick("ReportsByClient");
+
+                items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").OnClick("ReportsByClient");
+                items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").OnClick("ReportsByClient");
+                items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").OnClick("ReportsByClient");
+
             items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Icon("event");
             items.Add().Text(new JS("formatMessage('Receivables with unmapped Vouchers')")).Icon("optionsgear");
 
@@ -517,6 +523,8 @@
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
+ 
 
     $(function () {
         // Initialize DevExtreme Popup

@@ -203,6 +203,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet("getUserName")]
+        public IActionResult GetUserName()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var userName = HttpContext.Session.GetString("UserName") ?? "Unknown User"; // Get username from session
+
+                    return Ok(new
+                    {
+                        success = true,
+                        UserName = userName
+
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in getUserName: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching user data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
         [HttpGet("getBillingPayments")]
         public async Task<IActionResult> getBillingPayments(DataSourceLoadOptions loadOptions)
@@ -643,6 +670,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         existingAccount.BillingContactPersonTitle = chartAccount.BillingContactPersonTitle;
                         existingAccount.BillingBankAccount = chartAccount.BillingBankAccount;
                         existingAccount.SupplierAddress = chartAccount.SupplierAddress;
+                        existingAccount.RecordModifiedBy = chartAccount.RecordModifiedBy;
+                        existingAccount.RecordModifiedOn = chartAccount.RecordModifiedOn;
+
 
                         dbContext.Tbl201ChartOfAccounts.Update(existingAccount);
                         dbContext.SaveChanges();
@@ -650,6 +680,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     }
                     else
                     {
+                     
                         var newAccount = new Tbl201ChartOfAccount
                         {
                             AccountId = chartAccount.AccountId,
@@ -733,7 +764,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             ClientVendorNo = chartAccount.ClientVendorNo,
                             BillingContactPersonTitle = chartAccount.BillingContactPersonTitle,
                             BillingBankAccount = chartAccount.BillingBankAccount,
-                            SupplierAddress = chartAccount.SupplierAddress
+                            SupplierAddress = chartAccount.SupplierAddress,
+                            RecordCreatedBy = chartAccount.RecordCreatedBy,
+                            RecordCreatedOn = chartAccount.RecordCreatedOn
                         };
 
                         dbContext.Tbl201ChartOfAccounts.Add(newAccount);
@@ -758,11 +791,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+                    var userName = HttpContext.Session.GetString("UserName");
                     if (string.IsNullOrEmpty(accountID))
                     {
                         return BadRequest(new { Message = "AccountID cannot be null or empty." });
                     }
-
+                    
                     var accountDetails = await dbContext.Tbl201ChartOfAccounts
                         .Where(p => p.AccountId == accountID)
                         .Select(i => new
@@ -849,7 +883,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.SupplierOtherIdtype,
                             i.SupplierCountryCode,
                             i.ClientCountryCode,
-
+                            i.RecordCreatedBy,
+                            i.RecordCreatedOn,
+                           i.RecordModifiedBy,
+                            i.RecordModifiedOn
 
 
                         })
@@ -860,7 +897,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         return NotFound(new { Message = "No account details found for the provided AccountID." });
                     }
 
-                    return Json(new { accountDetails });
+                    return Json(new { UserName = userName, accountDetails });
                 }
                 catch (Exception ex)
                 {
