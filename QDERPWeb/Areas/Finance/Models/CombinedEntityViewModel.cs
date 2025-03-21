@@ -255,12 +255,14 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public Tbl201VoucherMaster VoucherMaster { get; set; }
         public List<Tbl201VoucherEntry> VoucherEntries { get; set; }
 
+       
+
+    }
     public class DashBoardBankAccount
     {
         public string MasterGroupID { get; set; }
         public DateTime EndDate { get; set; }
 
     }
-
 }
 
