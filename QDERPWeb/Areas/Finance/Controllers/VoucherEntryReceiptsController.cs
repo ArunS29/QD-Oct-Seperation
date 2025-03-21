@@ -186,6 +186,7 @@ namespace Form.Areas.Finance.Controllers
                 Tbl201VoucherMaster voucherMaster = new();
                 int aEntryAmount = 0;
                 int Amt = 0;
+                var Remarks = "";
                 bool IsMatchingEntry = false;
                 //var matchingEntries;
                 List<VoucherEntryDisplayDTO> matchingEntries = new();
@@ -303,9 +304,11 @@ namespace Form.Areas.Finance.Controllers
                                 {
                                     // Update CrAmount by adding the calculated debit amount
                                     entry.DrAmount = debitamt;
+                                    entry.SysRemarks = Remarks;
 
                                     // Optionally update the existing entry in the database
                                     existingEntry.VoucherAmount = entry.DrAmount;
+                                    existingEntry.SysRemarks = entry.SysRemarks;
                                     _context.Tbl201VoucherEntries.Update(existingEntry);
                                     _context.SaveChanges();
 
@@ -348,9 +351,11 @@ namespace Form.Areas.Finance.Controllers
                                         {
                                             // Update CrAmount by adding the calculated debit amount
                                             entry.DrAmount = Amt;
+                                            entry.SysRemarks = Remarks;
 
                                             // Optionally update the existing entry in the database
                                             existingEntry.VoucherAmount = entry.DrAmount;
+                                            existingEntry.SysRemarks = entry.SysRemarks;
                                             _context.Tbl201VoucherEntries.Update(existingEntry);
                                             _context.SaveChanges();
 
@@ -368,6 +373,14 @@ namespace Form.Areas.Finance.Controllers
 
                         }
                         entry.AccountHead = accountHead;
+                        if (Remarks == "")
+                        {
+                            Remarks = entry.AccountHead;
+                        }
+                        else
+                        {
+                            Remarks = Remarks + "," + entry.AccountHead;
+                        }
                     }
 
                 }

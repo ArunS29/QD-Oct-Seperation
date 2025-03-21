@@ -14,6 +14,14 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string AdditionalFieldFromSecondEntity { get; set; } // Example
         public string SalaryPayableLedgerNo { get; set; }
     }
+    //public partial class qry20103GetBankAccountsResult
+    //{
+    //    public string AccountHead { get; set; }
+    //    public string AccountHeadName { get; set; }
+    //    public string MasterGroupID { get; set; }
+    //    public decimal? Amount { get; set; }
+    //    public string AccountGroup { get; set; }
+    //}
 
     public class VoucherEntryDisplayDTO
     {
@@ -60,7 +68,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime? VoucherEffectiveDate { get; set; }
         public string AccountHeadArabic { get; set; }
         public string ReferenceNote { get; set; }
-     
+
     }
     public class ReportRequest
     {
@@ -98,6 +106,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime? VoucherModifiedOn { get; set; }
 
     }
+
     public class TrialBalanceResult
     {
         public string VoucherNo { get; set; }
@@ -236,5 +245,11 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string VerifiedBy { get; set; }
         public DateTime? VerifiedOn { get; set; }
     }
+    public class DashBoardBankAccount
+    {
+        public string MasterGroupID { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+
 }
 

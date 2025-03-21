@@ -46,6 +46,7 @@ builder.Services.AddDbContext<ERPCommonContext>(options =>
 builder.Services
     .AddRazorPages()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddRazorPages(options =>
 {
@@ -89,7 +90,7 @@ else
 {
     loggerConfiguration.WriteTo.ApplicationInsights(new TelemetryConfiguration
     {
-        InstrumentationKey = builder.Configuration["ApplicationInsights:InstrumentationKey"]
+        ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"]
     }, TelemetryConverter.Traces);
 }
 
@@ -130,6 +131,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandler>();
+
+// Initialize EmailHelper with the correct configuration
+QD.ERP.Web.Areas.Utility.EmailHelper.Initialize(app.Configuration);
 
 #endregion
 

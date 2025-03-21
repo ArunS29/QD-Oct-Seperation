@@ -11,6 +11,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using Azure.Communication.Email;
+using QD.ERP.Web.Areas.Utility;
+using System.Net.Mail;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+
 
 namespace QD.ERP.Web.Areas.Security.Controllers
 {
@@ -55,53 +61,137 @@ namespace QD.ERP.Web.Areas.Security.Controllers
         [HttpPost]
         public IActionResult SignIn([FromBody] SignInRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.TenantName) ||
-                string.IsNullOrWhiteSpace(request.Username) ||
-                string.IsNullOrWhiteSpace(request.Password))
-            {
-                return BadRequest(new { message = "All fields are required.", success = false });
-            }
 
-            if (TryGetTenantAndDbContext(request.TenantName, out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (request.ResetPassword)
             {
-                using (dbContext)
+
+
+                if (TryGetTenantAndDbContext(request.TenantName, out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var user = dbContext.TblUserMasters
-                        .FirstOrDefault(u => u.UserName == request.Username && u.Password == request.Password);
-
-                    if (user == null)
+                    if (!string.IsNullOrEmpty(request.otp))
                     {
-                        return Unauthorized(new { message = "Invalid credentials.", success = false });
-                    }
 
-                    var permissions = dbContext.TblUserAccesses
-                        .Where(p => p.UserId == user.UserId)
-                        .Select(p => new Permission
+
+
+                        var passwordReset = dbContext.Passwordresets
+                            .Where(pr => pr.Username == request.Username && pr.Otp == request.otp && pr.Status == false)
+                            .ToList();
+
+                        if (passwordReset.Any())
                         {
+                            var user = dbContext.TblUserMasters
+                                .FirstOrDefault(u => u.UserName == request.Username);
 
-                            UserId = p.UserId,
-                            ItemForm = p.ItemForm,
-                            ItemName = p.ItemName,
-                            ItemEnabled = p.ItemEnabled,
-                            ItemVisible = p.ItemVisible
-                        }).ToList();
+                            if (user != null)
+                            {
+                                user.Password = request.Password; // Assuming request.NewPassword contains the new password
+                                dbContext.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest(new { message = "Invalid OTP.", success = false });
+                        }
 
-                    var token = GenerateJwtToken(user, request.TenantName);
 
-                    SetHttpOnlyCookie("AuthToken", token, 20);
-                    SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
-
-                    return Ok(new
+                    }
+                    else
                     {
-                        message = "Login successful",
-                        success = true,
-                        token,
-                        permissions
-                    });
-                }
-            }
+                        string emailAddress = request.Username;
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+                        // Check if the email address already exists in the TblUserMasters table
+                        bool emailExists = dbContext.TblUserMasters.Any(user => user.UserName == emailAddress);
+
+                        if (emailExists)
+                        {
+                            // Generate a 6-digit random OTP
+                            var random = new Random();
+                            var otp = random.Next(100000, 999999).ToString(); // Generate a random 6-digit OTP
+
+                            String username = request.Username;
+
+                            var passwordReset = new Passwordreset
+                            {
+                                Username = username, // Bind the userId variable here
+                                Otp = otp,
+                                ExpiryDateTime = DateTime.UtcNow.AddMinutes(15), // Set expiry time as 15 minutes from now
+                                Status = false // Assuming false means not used
+                            };
+
+                            dbContext.Set<Passwordreset>().Add(passwordReset);
+                            dbContext.SaveChanges();
+
+
+                            EmailHelper.SendEmailAsync(emailAddress, "OTP Verification", $"<h1>Your OTP is: {otp}</h1>").Wait();
+
+
+                        }
+                        else
+                        {
+                            return BadRequest(new { message = "Email does not exist.", success = false });
+
+                        }
+                    }
+                }
+
+
+
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(request.TenantName) ||
+                    string.IsNullOrWhiteSpace(request.Username) ||
+                    string.IsNullOrWhiteSpace(request.Password))
+                {
+                    return BadRequest(new { message = "All fields are required.", success = false });
+                }
+
+                if (TryGetTenantAndDbContext(request.TenantName, out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    using (dbContext)
+                    {
+                        var user = dbContext.TblUserMasters
+                            .FirstOrDefault(u => u.UserName == request.Username && u.Password == request.Password);
+
+                        if (user == null)
+                        {
+                            return Unauthorized(new { message = "Invalid credentials.", success = false });
+                        }
+
+                        var permissions = dbContext.TblUserAccesses
+                            .Where(p => p.UserId == user.UserId)
+                            .Select(p => new Permission
+                            {
+
+                                UserId = p.UserId,
+                                ItemForm = p.ItemForm,
+                                ItemName = p.ItemName,
+                                ItemEnabled = p.ItemEnabled,
+                                ItemVisible = p.ItemVisible
+                            }).ToList();
+
+                        var token = GenerateJwtToken(user, request.TenantName);
+
+                        SetHttpOnlyCookie("AuthToken", token, 20);
+                        SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
+
+                        return Ok(new
+                        {
+                            message = "Login successful",
+                            success = true,
+                            token,
+                            permissions
+                        });
+                    }
+                }
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            return Ok(new
+            {
+                message = "Login successful",
+                success = true,
+
+            });
         }
 
 

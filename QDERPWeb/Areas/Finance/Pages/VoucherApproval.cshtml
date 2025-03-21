@@ -15,12 +15,41 @@
         margin: 15px;
     }
 
-
-    #voucherPopup {
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Context Menu Styling */
+    .dx-context-menu {
+        border-radius: 8px !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+        background: #fff !important;
+        padding: 5px;
     }
 
+    /* Menu Item Styling */
+    .dx-menu-item {
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        color: #333 !important;
+        padding: 8px 15px !important;
+        border-radius: 5px !important;
+        transition: background 0.3s ease-in-out;
+    }
+
+        /* Hover Effect */
+        .dx-menu-item:hover {
+            background: #007bff !important;
+            color: white !important;
+        }
+
+        /* Icons */
+        .dx-menu-item .dx-icon {
+            font-size: 18px !important;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+    /* Add smooth animations */
+    .dx-overlay-content {
+        animation: fadeIn 0.2s ease-in-out;
+    }
 
     .voucher-actions {
         list-style-type: none;
@@ -177,21 +206,31 @@
     </text>).Width(50);
 
             columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(80);
-            columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
-            columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Effective On')")).Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy");
-            columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150);
+            columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true);
+            columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Effective On')")).Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true);
+            columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true);
             columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }");
+            .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true);
             columns.Add().DataField("CreditAmount").Caption(new JS("formatMessage('Credit')")).Width(100).Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }");
-            columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120);
-            columns.Add().DataField("VoucherVerifiedBy").Caption(new JS("formatMessage('Verified By')")).Width(120);
-            columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved')")).Width(120);
-            columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher')")).Width(100);
-            columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120);
-            columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120);
-            columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120);
-            columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120);
+            .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true);
+            columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120).Visible(true);
+            columns.Add().DataField("VoucherVerifiedBy").Caption(new JS("formatMessage('Verified By')")).Width(120).Visible(true);
+            columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true);
+            columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher')")).Width(100).Visible(true);
+            columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(true);
+            columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true);
+            columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120).Visible(true);
+            columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(true);
+            // Remaining columns (visible: false)
+            columns.Add().DataField("VoucherRefNo").Visible(false);
+            columns.Add().DataField("VoucherEnteredOn").Visible(false);
+            columns.Add().DataField("VoucherVerifiedOn").Visible(false);
+            columns.Add().DataField("VoucherApprovedOn").Visible(false);
+            columns.Add().DataField("VoucherType").Visible(false);
+            columns.Add().DataField("VoucherModifiedBy").Visible(false);
+            columns.Add().DataField("VoucherModifiedOn").Visible(false);
+            columns.Add().DataField("AuditVerifiedBy").Visible(false);
+            columns.Add().DataField("AuditVerifiedOn").Visible(false);
         })
 
         .Summary(summary =>
@@ -209,7 +248,7 @@
     }");
             });
         })
-
+        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
@@ -229,8 +268,8 @@
         )
 </div>
 
-        
-        <div id="voucherPopup"></div>
+
+<div id="voucherContextMenu"></div>
 
 
 
@@ -387,43 +426,55 @@
                 dataGrid.refresh();
             }
         }
+    $(function () {
+        var selectedVoucherNo = null;
+        var selectedVoucherType = null;
 
-      $(function () {
-        $("#voucherPopup").dxPopup({
-            width: 300,
-            height: 400,
-            showTitle: true,
-            title: formatMessage("Voucher Options"),
-            visible: false,
-            dragEnabled: true,
-            closeOnOutsideClick: true,
-            contentTemplate: function () {
-                return $("<div>").append(
-                    $("<ul>").addClass("voucher-actions").append(
-                        createMenuItem(formatMessage("Edit Voucher"), "edit", editVoucher),
-                        createMenuItem(formatMessage("View Voucher"), "find", viewVoucher),
-                        createMenuItem(formatMessage("Verify Voucher"), "check", verifyVoucher),
-                        createMenuItem(formatMessage("Delete Voucher"), "trash", deleteVoucher),
-                        createMenuItem(formatMessage("Verify All Selected Vouchers"), "selectall", verifyAll),
-                        createMenuItem(formatMessage("Approve All Selected Vouchers"), "todo", approveAll),
-                        createMenuItem(formatMessage("Unlock the Voucher"), "unlock", unlockVoucher)
-                    )
-                );
+        $("#voucherContextMenu").dxContextMenu({
+            dataSource: [
+                { text: formatMessage("Edit Voucher"), icon: "edit", action: editVoucher },
+                { text: formatMessage("View Voucher"), icon: "find", action: viewVoucher },
+                { text: formatMessage("Verify Voucher"), icon: "check", action: verifyVoucher },
+                { text: formatMessage("Delete Voucher"), icon: "trash", action: deleteVoucher },
+                { text: formatMessage("Verify All Selected Vouchers"), icon: "selectall", action: verifyAll },
+                { text: formatMessage("Approve All Selected Vouchers"), icon: "todo", action: approveAll },
+                { text: formatMessage("Unlock the Voucher"), icon: "unlock", action: unlockVoucher }
+            ],
+            target: "#dataGrid",
+            showEvent: "dxcontextmenu",
+            width: 250,
+            onItemClick: function (e) {
+                if (e.itemData.action) {
+                    e.itemData.action();
+                }
             }
         });
 
-        function createMenuItem(text, icon, clickHandler) {
-            return $("<li>")
-                .addClass("menu-item")
-                .append(
-                    $("<i>").addClass("dx-icon dx-icon-" + icon),
-                    $("<span>").text(" " + text)
-                )
-                .on("click", clickHandler);
-        }
+        // Capture row right-click event
+        $(document).on("contextmenu", ".dx-row", function (e) {
+            e.preventDefault();
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
+            let rowIndex = $(this).index();
+            let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
 
-        let selectedVoucherNo = null;
-        let selectedVoucherType = null;
+            if (rowData && rowData.VoucherNo && rowData.VoucherType) {
+                selectedVoucherNo = rowData.VoucherNo;
+                selectedVoucherType = rowData.VoucherType;
+                console.log("Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
+
+                $("#voucherContextMenu").dxContextMenu("instance").show();
+            } else {
+                console.log("Voucher data is missing.");
+            }
+        });
+
+        // Hide context menu when clicking outside
+        document.addEventListener("click", function (event) {
+            const contextMenu = $("#voucherContextMenu").dxContextMenu("instance");
+            if (!$(event.target).closest("#voucherContextMenu, .dx-row").length) {
+                contextMenu.hide();
+            }
+        });
 
         function editVoucher() {
             console.log("Edit Voucher Clicked");
@@ -441,10 +492,8 @@
         function approveAll() { console.log("Approve All Selected Vouchers Clicked"); }
         function unlockVoucher() { console.log("Unlock Voucher Clicked"); }
 
-        // Function to navigate to voucher page
         function navigateToVoucherPage(voucherNo, voucherType) {
             console.log("Original VoucherNo:", voucherNo, "VoucherType:", voucherType);
-
             if (!voucherNo || !voucherType) {
                 alert("Invalid voucher details.");
                 return;
@@ -452,8 +501,6 @@
 
             let formattedVoucher = voucherNo.trim().toUpperCase();
             let formattedVoucherType = voucherType.trim();
-
-            console.log("Formatted VoucherNo:", formattedVoucher, "Formatted VoucherType:", formattedVoucherType);
 
             const voucherRoutes = {
                 "Bank Payment": `/${tenantName}/finance/VoucherBankPayment`,
@@ -475,38 +522,8 @@
                 alert("Unknown voucher type: " + voucherType);
             }
         }
-
-        // Capture row click event to store selected voucher data
-        $(document).on("click", ".dx-row", function () {
-            let dataGrid = $("#dataGrid").dxDataGrid("instance");
-            let rowIndex = $(this).index();
-            let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
-
-            console.log("Row Data:", rowData);
-
-            if (rowData && rowData.VoucherNo && rowData.VoucherType) {
-                selectedVoucherNo = rowData.VoucherNo;
-                selectedVoucherType = rowData.VoucherType;
-                console.log("Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
-            } else {
-                console.log("Voucher data is missing.");
-            }
-
-            $("#voucherPopup").dxPopup("instance").show();
-        });
-
-        $(document).on("change", ".dx-checkbox", function () {
-            if (!$(this).prop("checked")) {
-                $("#voucherPopup").dxPopup("instance").hide();
-            }
-        });
-
-        $(document).on("click", function (e) {
-            if (!$(e.target).closest("#voucherPopup").length && !$(e.target).closest(".dx-row").length) {
-                $("#voucherPopup").dxPopup("instance").hide();
-            }
-        });
     });
+
 
 
 

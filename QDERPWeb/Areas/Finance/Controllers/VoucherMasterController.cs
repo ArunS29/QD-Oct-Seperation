@@ -201,6 +201,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 Tbl201VoucherMaster voucherMaster = new();
                 int aEntryAmount = 0;
                 int Amt = 0;
+                var Remarks = "";
                 bool IsMatchingEntry = false;
                 //var matchingEntries;
                 List<VoucherEntryDisplayDTO> matchingEntries = new();
@@ -303,7 +304,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             // Calculate Debit Amount (DrAmount)
 
                             debitamt = (int)(debitamt + entry.DrAmount);
-
+                            
                             // If Dr/Cr is Credit ("Cr"), perform specific logic
                             if (entry.DrCr == "Cr" && crCount == 1)
                             // if (crCount==1)
@@ -318,9 +319,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 {
                                     // Update CrAmount by adding the calculated debit amount
                                     entry.CrAmount = debitamt;
+                                    entry.SysRemarks = Remarks;
 
                                     // Optionally update the existing entry in the database
                                     existingEntry.VoucherAmount = entry.CrAmount;
+                                    existingEntry.SysRemarks = entry.SysRemarks;
                                     _context.Tbl201VoucherEntries.Update(existingEntry);
                                     _context.SaveChanges();
 
@@ -363,9 +366,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                         {
                                             // Update CrAmount by adding the calculated debit amount
                                             entry.CrAmount = Amt;
-
+                                            entry.SysRemarks = Remarks;
                                             // Optionally update the existing entry in the database
                                             existingEntry.VoucherAmount = entry.CrAmount;
+                                            existingEntry.SysRemarks = entry.SysRemarks;
                                             _context.Tbl201VoucherEntries.Update(existingEntry);
                                             _context.SaveChanges();
 
@@ -383,6 +387,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         }
                         entry.AccountHead = accountHead;
+                        if(Remarks=="")
+                        {
+                            Remarks = entry.AccountHead;
+                        }
+                        else
+                        {
+                            Remarks = Remarks + "," + entry.AccountHead;
+                        }
+                      
                     }
 
                 }
@@ -1726,6 +1739,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existingEntry.DrCr = model.DrCr;
                 existingEntry.AccountHead = accountID; // Assign single account ID
                 existingEntry.EntryNarration = model.EntryNarration;
+                existingEntry.SysRemarks = model.SysRemarks; // Ensure SysRemarks is updated
 
 
 
