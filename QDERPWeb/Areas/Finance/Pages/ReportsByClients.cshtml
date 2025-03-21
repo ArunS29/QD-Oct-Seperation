@@ -33,7 +33,7 @@
     }
 
         .dx-datagrid .dx-row {
-            border-bottom: 1px solid #ccc; /* Border between rows */
+            border-bottom: 1px solid #ccc; 
 
         }
 
@@ -53,7 +53,7 @@
         }
 
         .dx-tabpanel .dx-tab-panel {
-            height: 100%;
+            height: 600px;
             overflow-y: auto; /* Allow vertical scrolling inside tabs */
         }
         
@@ -65,8 +65,9 @@
             }
 
             .card{
-                height:500px;
+                height:600px;
                 background-color:white;
+                width:580px;
             }
 </style>
 
@@ -198,28 +199,29 @@
                 .OnSelectionChanged("dataGridSelectionChanged1") // Handle selection
                 .Paging(p => p.PageSize(15))
                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
-                .Height(345)
+                .Height(400)
                 .Columns(columns =>
                 {
                     // columns.Add().DataField("AccountId").Caption("ID");
                     columns.Add().DataField("AccountHead").Caption("Account Name");
                 })
                 )
-    <div class="toolbar-container">
-        <div id="gridToolbar">
-            @(Html.DevExtreme().Button()
-                .Text("Save as PDF")
-                .Icon("exportpdf")
-                .OnClick("saveGridAsPDF")
-                )
-            @(Html.DevExtreme().Button()
-                .Text("Print")
-                .Icon("print")
-                .OnClick("printGrid")
-                )
-        </div>
-    </div>
+    
 }
+<div class="toolbar-container">
+    <div id="gridToolbar">
+        @(Html.DevExtreme().Button()
+            .Text("Save as PDF")
+            .Icon("exportpdf")
+            .OnClick("saveGridAsPDF")
+            )
+        @(Html.DevExtreme().Button()
+            .Text("Print")
+            .Icon("print")
+            .OnClick("printGrid")
+            )
+    </div>
+</div>
 @using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
 {
 
@@ -243,7 +245,7 @@
                 .OnSelectionChanged("dataGridSelectionChanged2") // Handle selection
                 .Paging(p => p.PageSize(15))
                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
-                .Height(345)
+                .Height(400)
                 .Columns(columns =>
                 {
                     // columns.Add().DataField("AccountId").Caption("ID");
@@ -288,7 +290,7 @@
                     .OnSelectionChanged("dataGridSelectionChanged3") // Handle selection
                     .Paging(p => p.PageSize(15))
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
-                    .Height(345)
+                    .Height(400)
                     .Columns(columns =>
                     {
                         // columns.Add().DataField("AccountId").Caption("ID");
