@@ -154,6 +154,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Number> Numbers { get; set; }
 
+    public virtual DbSet<Passwordreset> Passwordresets { get; set; }
+
     public virtual DbSet<Qry00101invoiceCounterValue> Qry00101invoiceCounterValues { get; set; }
 
     public virtual DbSet<Qry00131eInvSalesChild> Qry00131eInvSalesChildren { get; set; }
@@ -4955,7 +4957,18 @@ public partial class ERPMasterWtDataContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false);
         });
+        modelBuilder.Entity<Passwordreset>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Password__3214EC07F7E10B68");
 
+            entity.ToTable("Passwordreset");
+
+            entity.Property(e => e.ExpiryDateTime).HasColumnType("datetime");
+            entity.Property(e => e.Otp)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("OTP");
+        });
         modelBuilder.Entity<Qry00131eInvSalesChild>(entity =>
         {
             entity
