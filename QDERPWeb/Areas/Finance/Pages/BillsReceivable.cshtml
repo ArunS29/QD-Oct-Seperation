@@ -53,6 +53,9 @@
         .OnClick("function() { switchButtons('btnBillsFullyReceived'); }")
         )
 </div>
+<div id="reportsByClientPopup">
+    <div id="popupContent"></div>
+</div>
 <div id="printSection">
 <div class="dx-field ledgerResult" style="width: 98%; overflow: hidden;">
 
@@ -387,6 +390,8 @@
         // Open the report in a new tab
         window.open(`/${tenantName}/Finance/api/BillsReceivable/GenerateAgeingreportsummaryReport`, '_blank');
     }
+   
+
 
 </script>
 

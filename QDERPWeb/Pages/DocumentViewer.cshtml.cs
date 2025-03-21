@@ -57,20 +57,17 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
 
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+                // **Set default values if company details are not found**
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
-                Image logoImage = null;  // Change from string to Image
+                Image logoImage = null; // Change from string to Image
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
@@ -81,18 +78,19 @@ namespace QD.ERP.Web.Pages
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+                        // Log the error instead of returning a BadRequest (ensures the report still loads)
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
 
-
-
-                // Pass the image object directly to the report
+                // **Pass values to the report even if company details are missing**
                 Report = new StatementOfAccountReport(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr
                 );
             }
+
+        
 
 
 
@@ -112,15 +110,12 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
 
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+                // **Set default values if company details are not found**
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
                 Image logoImage = null;  
@@ -158,14 +153,12 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                // **Set default values if company details are not found**
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
                 Image logoImage = null;

@@ -42,7 +42,7 @@
 </style>
 <div class="title">
     <div class="header-container">
-        <div id="Expenses/Reimbursement-AllocationforAssets" class="no-border-input"></div>
+        <div id="ExpensesReimbursementAllocationforAssets" class="no-border-title"></div>
     </div>
 </div>
 <div class="content-container-top p-3">
@@ -120,9 +120,10 @@
 </div>
 <script>
     $(function () {
-        $("Expenses/Reimbursement-AllocationforAssets").dxTextBox({
-            text: formatMessage("Expenses / Reimbursement - Allocation for Assets"),
+        $("#ExpensesReimbursementAllocationforAssets").dxTextBox({
+            text: formatMessage("Expenses Reimbursement Allocation for Assets"),
             readOnly: true,
+            width:"600",
             onContentReady: function(e) {
 						$(e.element).addClass("dx-textbox-heading");
 				}
