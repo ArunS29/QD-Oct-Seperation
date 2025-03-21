@@ -70,4 +70,5 @@ public partial class Tbl201VoucherMaster
     public string ReferenceNote { get; set; }
 
     public string RentalPayslipNo { get; set; }
+  //  public object VoucherEntries { get; internal set; }
 }

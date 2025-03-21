@@ -147,20 +147,16 @@ namespace QDWEB.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
-
         [HttpPost]
-        public async Task<ActionResult> SaveVoucher([FromBody] Tbl201VoucherEntry VM)
+        public async Task<ActionResult> SaveVoucher([FromBody] VoucherViewModel VM)
         {
-            if (VM == null)
+            if (VM == null || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
             try
             {
-                // Log received data for debugging
-                Console.WriteLine($"Received Data: {Newtonsoft.Json.JsonConvert.SerializeObject(VM)}");
-
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     string currentDate = DateTime.Now.ToString("dd");
@@ -173,36 +169,53 @@ namespace QDWEB.Areas.Finance.Controllers
                         .FirstOrDefaultAsync();
 
                     int nextSequence = 1;
-
                     if (lastVoucher != null)
                     {
-                        string lastNumberPart = lastVoucher.VoucherNo.Substring(9); // Extract last number (001)
+                        string lastNumberPart = lastVoucher.VoucherNo.Substring(9);
                         if (int.TryParse(lastNumberPart, out int lastNumber))
                         {
                             nextSequence = lastNumber + 1;
                         }
                     }
 
-                    // Assign unique formatted Voucher No
                     string newVoucherNo = $"JV-{currentDate}-{currentMonth}-{nextSequence:D3}";
 
-                    // Ensure the voucher number is unique
                     while (await _context.Tbl201VoucherEntries.AnyAsync(v => v.VoucherNo == newVoucherNo))
                     {
                         nextSequence++;
                         newVoucherNo = $"JV-{currentDate}-{currentMonth}-{nextSequence:D3}";
                     }
 
-                    VM.VoucherNo = newVoucherNo;
+                    // Assign `VoucherNo` to all entries
+                    foreach (var entry in VM.VoucherEntries)
+                    {
+                        entry.VoucherNo = newVoucherNo;
+                        entry.VoucherEntryNo = 0;
+                    }
 
-                    // Log generated voucher number
-                    Console.WriteLine($"Generated Voucher No: {VM.VoucherNo}");
+                    // **Save to VoucherMaster Table**
+                    var voucherMaster = new Tbl201VoucherMaster
+                    {
+                        VoucherNo = newVoucherNo,  // Assign new Voucher Number 
+                        VoucherDate = VM.VoucherMaster.VoucherDate,
+                        VoucherEffectiveDate = VM.VoucherMaster.VoucherEffectiveDate,
+                        VoucherNarration = VM.VoucherMaster.VoucherNarration,
+                        BillRemarks = VM.VoucherMaster.BillRemarks,
+                        VoucherType = VM.VoucherMaster.VoucherType,
+                        IsVerified = VM.VoucherMaster.IsVerified,
+                        IsApproved = VM.VoucherMaster.IsApproved,
+                        VoucherVerifiedBy = VM.VoucherMaster.VoucherVerifiedBy,
+                        VoucherApprovedBy = VM.VoucherMaster.VoucherApprovedBy,
+                        VoucherVerifiedOn = DateTime.Now,
+                        VoucherApprovedOn = DateTime.Now
+                    };
 
-                    _context.Tbl201VoucherEntries.Add(VM);
+                    _context.Tbl201VoucherMasters.Add(voucherMaster);
+                    await _context.Tbl201VoucherEntries.AddRangeAsync(VM.VoucherEntries);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    return Ok(new { success = true, message = "Voucher saved successfully!", voucherNo = VM.VoucherNo });
+                    return Ok(new { success = true, message = "Voucher saved successfully!", voucherNo = newVoucherNo });
                 }
             }
             catch (Exception ex)
@@ -215,8 +228,135 @@ namespace QDWEB.Areas.Finance.Controllers
 
 
 
+        [HttpPost]
+        public async Task<ActionResult> UpdateVoucher([FromBody] VoucherViewModel VM)
+        {
+            if (VM == null || string.IsNullOrEmpty(VM.VoucherMaster.VoucherNo) || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
+            {
+                return BadRequest(new { success = false, message = "Invalid data received or missing voucher number." });
+            }
+
+            try
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    var voucherMaster = await _context.Tbl201VoucherMasters
+                        .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherMaster.VoucherNo);
+
+                    if (voucherMaster == null)
+                    {
+                        return NotFound(new { success = false, message = "Voucher not found." });
+                    }
+
+                    // **Update Master Record**
+                    voucherMaster.VoucherDate = VM.VoucherMaster.VoucherDate;
+                    voucherMaster.VoucherEffectiveDate = VM.VoucherMaster.VoucherEffectiveDate;
+                    voucherMaster.VoucherNarration = VM.VoucherMaster.VoucherNarration;
+                    voucherMaster.BillRemarks = VM.VoucherMaster.BillRemarks;
+
+                    // **Delete old entries first**
+                    var existingEntries = _context.Tbl201VoucherEntries
+                        .Where(e => e.VoucherNo == VM.VoucherMaster.VoucherNo);
+                    _context.Tbl201VoucherEntries.RemoveRange(existingEntries);
+                    await _context.SaveChangesAsync(); // Ensure old records are removed first
 
 
+                    var newEntries = VM.VoucherEntries.Select(entry => new Tbl201VoucherEntry
+                    {
+                        VoucherNo = VM.VoucherMaster.VoucherNo,
+                        // DO NOT SET VoucherEntryNo, it will be auto-generated
+                        AccountHead = entry.AccountHead,
+                        DrCr = entry.DrCr,
+                        VoucherAmount = entry.VoucherAmount,
+                        EntryNarration = entry.EntryNarration
+                    }).ToList();
+
+                    await _context.Tbl201VoucherEntries.AddRangeAsync(newEntries);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return Ok(new { success = true, message = "Voucher updated successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> LoadVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(voucherNo))
+                {
+                    return BadRequest(new { success = false, message = "Invalid Voucher Number." });
+                }
+
+                var qryListOfAccountlists = _context.Tbl201VoucherEntries
+                    .Where(p => p.VoucherNo == voucherNo)
+                    .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
+                    .Select(i => new
+                    {
+                        i.VoucherNo,
+                        i.VoucherEntryNo,
+                        i.DrCr,
+                        i.VoucherAmount,
+                        i.EntryNarration,
+                        i.AccountHead,
+                        i.SysRemarks
+                    })
+                    .ToList();
+
+                // Fetch AccountHead names for mapping
+                var accountIds = qryListOfAccountlists.Select(i => i.AccountHead).Distinct().ToList();
+                var accountHeadMap = _context.Qry201ListOfAccounts
+                    .Where(a => accountIds.Contains(a.AccountId))
+                    .ToDictionary(a => a.AccountId, a => a.AccountHead);
+
+                // Map AccountId to AccountHead
+                var resultList = qryListOfAccountlists.Select(i => new VoucherEntryDisplayDTO
+                {
+                    VoucherNo = i.VoucherNo,
+                    VoucherEntryNo = i.VoucherEntryNo,
+                    DrCr = i.DrCr,
+                    DrAmount = i.VoucherAmount,
+                    CrAmount = i.VoucherAmount,
+                    EntryNarration = i.EntryNarration,
+                    AccountHead = accountHeadMap.ContainsKey(i.AccountHead) ? accountHeadMap[i.AccountHead] : i.AccountHead,
+                    SysRemarks = i.SysRemarks
+                }).ToList();
+
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetVoucherMasterEntries(DataSourceLoadOptions loadOptions, string voucherNo)
+        {
+            var qryListOfAccountlists = _context.Tbl201VoucherMasters.Where(p => p.VoucherNo == voucherNo).Select(i => new
+            {
+                i.VoucherNo,
+
+                i.VoucherDate,
+                i.VoucherEffectiveDate,
+                i.VoucherNarration,
+                i.BillRemarks,
+                i.VoucherType,
+                i.IsVerified,
+                i.IsApproved,
+                i.VoucherVerifiedBy,
+                i.VoucherApprovedBy,
+                i.VoucherVerifiedOn,
+                i.VoucherApprovedOn
+            });
+
+            return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+        }
 
     }
 }

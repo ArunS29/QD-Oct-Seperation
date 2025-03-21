@@ -215,7 +215,6 @@
             .Icon("print")
             .Text(new JS("formatMessage('Print')"))
             .Width(40)
-            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
 
@@ -254,7 +253,7 @@
 
             )
 
-    </div>                           
+    </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -345,38 +344,62 @@
             reader.readAsText(file);
         }
     });
-    function saveLayoutClick() {
+    function saveLayoutClick(e) {
+        debugger;
         var grid = $("#dataGrid").dxDataGrid("instance");
-        var layout = grid.option("columns"); // Get current column configuration
-
-        if (!layout) {
-            DevExpress.ui.notify("No layout to save!", "error", 2000);
-            return;
-        }
-
+        var layout = grid.state();
         const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-
+        //console.log(layoutJson);
         // Create a Blob from the JSON string
         const blob = new Blob([layoutJson], { type: "application/json" });
+        // Create a URL for the Blob
         const url = URL.createObjectURL(blob);
-
-        // Create a download link
+        // Create a link element
         const a = document.createElement("a");
         a.href = url;
-        a.download = "grid-layout.json";
+        a.download = "grid-layout.json"; // Set the file name for download
+        // Append the link to the body (needed for Firefox)
         document.body.appendChild(a);
+        // Programmatically click the link to trigger the download
         a.click();
+        // Clean up by removing the link and revoking the Object URL
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-
-        DevExpress.ui.notify("Layout saved successfully!", "success", 2000);
+        //DevExpress.ui.notify("Layout", "success", 600);
     }
-
     function openLayoutClick(e) {
-        $("#loadLayoutInput").click();
+        debugger;
+        // Create an input element dynamically
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "application/json";
+
+        // When a file is selected
+        input.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const layout = JSON.parse(e.target.result);
+                    const grid = $("#dataGrid").dxDataGrid("instance");
+                    grid.state(layout);
+                    //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                } catch (error) {
+                    DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                }
+            };
+
+            reader.readAsText(file);
+        });
+
+        // Trigger the file input click event
+        input.click();
     }
 
     function loadGridState() {
+        debugger;
         var form = $('#formId').val();
         // Call the API to get the grid state
         $.ajax({

@@ -2049,17 +2049,43 @@
         </div>
 
         <!-- Card 5: CreatedOn Details -->
-        <div class="content-container" style="width: 100%; max-width: 1200px;">
-            <div class="dx-fieldset horizontal-container">
-                <div class="form-group-row1"
-                     style="display: flex; gap: 20px; align-items: center; justify-content: space-evenly; width: 100%;">
-                    <div><strong>Created By:</strong> </div>
-                    <div><strong>Created On:</strong> </div>
-                    <div><strong>Modified By:</strong></div>
-                    <div><strong>Modified On:</strong> </div>
+      <div class="content-container" style="width: 100%; max-width: 1200px;">
+    <div class="dx-fieldset horizontal-container">
+        <div class="form-group-row1"
+             style="display: flex; gap: 20px; align-items: center; justify-content: space-evenly; width: 100%;">
+             
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <strong>Created By:</strong>
+                <div class="col-md-4"> 
+                    @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(false)
                 </div>
             </div>
+
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <strong>Created On:</strong>
+                <div class="col-md-4">
+                    @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(false)
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <strong>Modified By:</strong>
+                <div class="col-md-4">
+                    @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(false)
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <strong>Modified On:</strong>
+                <div class="col-md-3">
+                    @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(false)
+                </div>
+            </div>
+
         </div>
+    </div>
+</div>
+
         <div style="width: 500px;" class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().Button()
                 .ID("btnSave")
@@ -3050,6 +3076,8 @@ function syncSupVATNumbers(e) {
     //Tab events
     let acgid, accgrp = "", accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = "";
     let getidfromCOA;//IsChart=false;
+    let getUN=null;
+    let userNames=null;
     $(document).ready(function () {
         var urlParams = new URLSearchParams(window.location.search);
         var accountGroupId = urlParams.get('AccountGroupId');
@@ -3075,8 +3103,25 @@ function syncSupVATNumbers(e) {
         // alert(IsCharOfAccounts);
         // Check if IsCharOfAccounts is 'true' (string comparison)
         // alert("AccountHeadId: " + accountheadid);
-
-
+         $.ajax({
+             url: "/api/AccountLedgerMaster/getUserName",
+            type: 'GET',//
+            dataType: 'json',  // Expecting JSON response
+            success: function (response) {
+                  getUN=response.UserName;
+                //   $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+                  console.log("userN:",getUN);
+            }
+         });
+         // Format date function
+        function formatDate(date) {
+            if (date) {
+                const dateObj = new Date(date);
+                return dateObj.toISOString().slice(0, 19).replace("T", " "); // Adjust format as needed
+            }
+            return '';
+        }
+        
 
         // If AccountGroupId exists, set it in the DropDownBox and make it readonly
 
@@ -3110,13 +3155,25 @@ function syncSupVATNumbers(e) {
         if (txtAccountHeadAr) txtAccountHeadAr.option("value", accheadar);
   
         $.ajax({
-
-            url: `/api/AccountLedgerMaster/GetAccountDetails?accountID=${encodeURIComponent(accountheadid)}`,
+             url: `/api/AccountLedgerMaster/GetAccountDetails?accountID=${encodeURIComponent(accountheadid)}`,
             type: 'GET',
             dataType: 'json',  // Expecting JSON response
             success: function (response) {
+           []
+             var ModifiedBy = $('#ModifiedBy').dxTextBox("instance");
+                    if (ModifiedBy) {
+                        ModifiedBy.option("value", response.UserName);
 
+                    }
+                    console.log("hi",ModifiedBy)
+                     var ModifiedOn = $('#ModifiedOn').dxTextBox("instance");
+                    if (ModifiedOn) {
+                        ModifiedOn.option("value", formatDate(new Date()));
 
+                    }
+      
+
+               console.log("userName:",userName);
                 if (response && response.accountDetails && response.accountDetails.length > 0) {
                     // Extract the first item from the accountDetails array
                     var account = response.accountDetails[0];
@@ -3587,14 +3644,19 @@ function syncSupVATNumbers(e) {
 
                     }
 
+                    var CreatedBy = $('#CreatedBy').dxTextBox("instance");
+                   if (CreatedBy) {
+                        CreatedBy.option("value", account.RecordCreatedBy);
+
+                    }
+                    var CreatedOn = $("#CreatedOn").dxTextBox("instance");
+
+                    if (CreatedOn && account.RecordCreatedOn) {
+                        var formattedDate = formatDate(new Date(account.RecordCreatedOn));
+                        CreatedOn.option("value", formattedDate);
+                    }
 
 
-
-                    //    var txtBillingVATRegNo = $('#txtBillingVATRegNo').dxTextArea("instance");
-                    // if (txtBillingVATRegNo) {
-                    //     txtBillingVATRegNo.option("value", account.VatregistrationNo);
-
-                    // }
 
 
 
@@ -4715,7 +4777,7 @@ function syncSupVATNumbers(e) {
         window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
     }
      function onPostButtonClick(e) {
-     debugger;
+    
      var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
 
      // Format the AccountId with the desired prefix
@@ -4857,6 +4919,27 @@ function syncSupVATNumbers(e) {
         //   var obAddressar = $('#txtObsSupAddressAr').dxTextBox('option', 'value');
 
         var obVATNo = $('#txtObsSupRegNo').dxNumberBox('option', 'value');
+
+      
+
+        
+         $("#CreatedBy").dxTextBox("instance").option("value",getUN);
+         const CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
+ //console.log("userN1:",getUN);
+       //console.log("userN2:",CreatedBy);
+
+            var CreatedOns = $("#CreatedOn").dxTextBox("instance").option("value");
+            if (!CreatedOn || !Date.parse(CreatedOn)) {
+                CreatedOn = new Date().toISOString();
+            }
+
+// $("#ModifiedBy").dxTextBox("instance").option("value",userNames);
+//  console.log("userN3:",userNames);
+   const ModifiedBy = $("#ModifiedBy").dxTextBox("instance").option("value");
+    console.log("userN4:",ModifiedBy);
+       const ModifiedOn = new Date().toISOString(); // Current date in ISO format
+
+
         //var obVATNoAr = $('#txtObsSupRegNoAr').dxNumberBox('option', 'value');
 
         // if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
@@ -4967,7 +5050,11 @@ function syncSupVATNumbers(e) {
                 BillingContactPersonTitle: bBillingTitle,
                 BillingBankAccount: bBillingPayment,
                 SupplierAddress: obAddress,
-                SupplierVATNo:String(obVATNo)
+                SupplierVATNo:String(obVATNo),
+                RecordCreatedBy:CreatedBy,
+                RecordCreatedOn:CreatedOn,
+                RecordModifiedBy: ModifiedBy,
+               RecordModifiedOn:ModifiedOn
             };
 
             console.log(data);
@@ -5066,7 +5153,7 @@ function syncSupVATNumbers(e) {
         const englishText = textBox1Instance.option("value");
 
         // Validate input
-
+       
         if (!englishText || englishText.trim() === "") {
 
             alert("Please enter text to translate.");
