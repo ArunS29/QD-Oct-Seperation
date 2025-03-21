@@ -3053,7 +3053,6 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<Tbl40143EquipmentDailyTslogTemporary> Tbl40143EquipmentDailyTslogTemporaries { get; set; }
 
     public virtual DbSet<Tbl40144EqpDailyCollectionMaster> Tbl40144EqpDailyCollectionMasters { get; set; }
-
     public virtual DbSet<Tbl40145EqpSalesOrderPodetail> Tbl40145EqpSalesOrderPodetails { get; set; }
 
     public virtual DbSet<Tbl401999propertyRegionUpdate> Tbl401999propertyRegionUpdates { get; set; }
@@ -3387,23 +3386,28 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<XxxUploadingPurchaseInvoiceSubLedger> XxxUploadingPurchaseInvoiceSubLedgers { get; set; }
 
     public virtual DbSet<XxxuploadingSalesInvoiceSubLedger> XxxuploadingSalesInvoiceSubLedgers { get; set; }
-	public virtual DbSet<VoucherResult> VoucherResults { get; set; }
+    public virtual DbSet<VoucherResult> VoucherResults { get; set; }
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
     public virtual DbSet<TrialBalanceResult> TrialBalanceResults { get; set; }
     public virtual DbSet<AssetRegisterViews> AssetRegisterViews { get; set; }
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
+    public virtual DbSet<DashBoardBankAccount> DashBoardBankAccounts { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
-		modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
-		modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
-		modelBuilder.Entity<AccountMasterAR>().HasNoKey();
-		modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
+    {
+        modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
+        modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
+        modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
+        modelBuilder.Entity<AccountMasterAR>().HasNoKey();
+        modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
+
         modelBuilder.Entity<TrialBalanceResult>().HasNoKey();
         modelBuilder.Entity<AssetRegisterViews>().HasNoKey();
         modelBuilder.Entity<ExpenseClaimViews>().HasNoKey();
+        modelBuilder.Entity<DashBoardBankAccount>().HasNoKey();// Mark as keyless
+
         modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
         {
             entity

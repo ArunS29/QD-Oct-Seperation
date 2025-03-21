@@ -1,126 +1,289 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.IndexModel
+@using Newtonsoft.Json
 @{
-    ViewData["Title"] = "Finance Dashboard";
+    ViewData["Title"] = "Outstanding Details";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+<h2>Outstanding Details</h2>
 
-        .dashboard-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
+<!-- DevExtreme Scripts & Styles -->
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.light.css">
+<script src="https://cdn3.devexpress.com/jslib/latest/js/dx.all.js"></script>
 
-        .cards-container {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            width: 200px;
-            padding: 20px;
-            border-radius: 8px;
-            background: #f8f9fa;
-            text-align: center;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .charts-container {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-        }
-
-        canvas {
-            width: 400px;
-            height: 300px;
-            max-width: 400px;
-            max-height: 400px;
-        }
-
-        .mainContainer {
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="dashboard-container">
-        <!-- Cards -->
-        <div class="cards-container">
-            <div class="card">
-                <h3>Cash Balances</h3>
-                <h2>$23.12M</h2>
-            </div>
-            <div class="card">
-                <h3>Client Outstanding</h3>
-                <h2>$27.64M</h2>
-            </div>
-            <div class="card">
-                <h3>Supplier Outstanding</h3>
-                <h2>$6.85M</h2>
-            </div>
+<!-- Total Outstanding Cards -->
+<div class="dx-card-container">
+    <!-- Total Client Outstanding Card -->
+    <div class="dx-card">
+        <div class="dx-card-header">
+            <h3>Total Client Outstanding</h3>
         </div>
-
-        <!-- Charts -->
-        <div class="charts-container">
-            <!-- Pie Chart -->
-            <div>
-                <h3>Client vs Supplier Outstanding</h3>
-                <canvas id="pieChart"></canvas>
-            </div>
-
-            <!-- Bar Chart -->
-            <div>
-                <h3>Cash & Bank Balances</h3>
-                <canvas id="barChart"></canvas>
-            </div>
+        <div class="dx-card-content">
+            <div id="totalClientOutstandingValue" class="total-value"></div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Pie Chart
-            var pieCtx = document.getElementById("pieChart").getContext("2d");
-            new Chart(pieCtx, {
-                type: "pie",
-                data: {
-                    labels: ["Client Outstanding", "Supplier Outstanding"],
-                    datasets: [{
-                        data: [27640000, 6850000],
-                        backgroundColor: ["#007bff", "#dc3545"],
-                    }]
-                }
-            });
+    <!-- Total Bills Outstanding Card -->
+    <div class="dx-card">
+        <div class="dx-card-header">
+            <h3>Total Supplier Outstanding</h3>
+        </div>
+        <div class="dx-card-content">
+            <div id="totalBillsOutstandingValue" class="total-value"></div>
+        </div>
+    </div>
+</div>
 
-            // Bar Chart
-            var barCtx = document.getElementById("barChart").getContext("2d");
-            new Chart(barCtx, {
-                type: "bar",
-                data: {
-                    labels: ["Bank A", "Bank B", "Bank C"],
-                    datasets: [{
-                        label: "Balance ($M)",
-                        data: [50, 30, 20],
-                        backgroundColor: ["#28a745", "#17a2b8", "#ffc107"],
-                    }]
+<!-- Grid Container -->
+<div class="grid-container">
+    <!-- Client Outstanding Section -->
+    <div class="grid-section">
+        <h3>Client Outstanding</h3>
+        <div id="clientOutstandingGrid"></div>
+    </div>
+
+    <!-- Bills Payable Outstanding Section -->
+    <div class="grid-section">
+        <h3>Supplier Outstanding</h3>
+        <div id="billsPayableGrid"></div>
+    </div>
+</div>
+<div class="grid-section">
+    <h3>Bank Account Details</h3>
+    <div id="bankAccountGrid"></div>
+</div>
+<!-- Charts Row Container -->
+<div class="chart-row">
+    <!-- Client Outstanding Aging Chart -->
+    <div class="chart-container">
+        <h3>Client Outstanding Aging Chart</h3>
+        <div id="clientOutstandingChart"></div>
+    </div>
+
+    <!-- Supplier Outstanding Aging Chart -->
+    <div class="chart-container">
+        <h3>Supplier Outstanding Aging Chart</h3>
+        <div id="billsOutstandingChart"></div>
+    </div>
+</div>
+
+<script>
+            $(document).ready(function () {
+        $.ajax({
+            url: "/api/Dashboard/GetClientOutstandingAgingForChart",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    $("#clientOutstandingChart").dxChart({
+                        dataSource: response.agingData,
+                        series: [{
+                            argumentField: "OverDueGroup",
+                            valueField: "Balance",
+                            name: "Balance Amount",
+                            type: "bar",
+                            color: "#007acc"
+                        }],
+                        argumentAxis: {
+                            label: { rotationAngle: -45 },
+                            title: "Overdue Groups"
+                        },
+                        valueAxis: {
+                            title: "Balance Amount",
+                            label: { format: { type: "fixedPoint", precision: 2 } }
+                        },
+                        legend: { visible: true },
+                        tooltip: {
+                            enabled: true,
+                            format: { type: "fixedPoint", precision: 2 }
+                        }
+                    });
+                } else {
+                    console.error("Error loading data: ", response.message);
                 }
-            });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data: ", error);
+            }
         });
-    </script>
+    });
 
-</body>
-</html>
+
+    $(function () {
+        // Handle click on "Total Client Outstanding" card
+        $("#totalClientOutstandingCard").click(function () {
+            $(".dx-card-container, .grid-container, .chart-container").hide(); // Hide other sections
+            $("#clientOutstandingSection").show(); // Show Client Outstanding
+        });
+
+        // Back button functionality
+        $("#backToDashboard").click(function () {
+            $("#clientOutstandingSection").hide(); // Hide Client Outstanding
+            $(".dx-card-container, .grid-container, .chart-container").show(); // Show main dashboard
+        });
+    });
+    $(function () {
+        // Fetch Total Client Outstanding
+        $.getJSON("/api/Dashboard/GetTotalClientOutstanding", function (response) {
+            if (response.success) {
+                $("#totalClientOutstandingValue").text(response.totalOutstanding.toLocaleString('en-US'));
+            } else {
+                alert("Error loading total client outstanding data.");
+            }
+        });
+
+        // Fetch Total Bills Outstanding
+        $.getJSON("/api/Dashboard/GetTotalBillsOutstanding", function (response) {
+            if (response.success) {
+                $("#totalBillsOutstandingValue").text(response.totalBillsOutstanding.toLocaleString('en-US'));
+            } else {
+                alert("Error loading total bills outstanding data.");
+            }
+        });
+
+        // Client Outstanding DataGrid
+        $("#clientOutstandingGrid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AccountHeadNo",
+                loadUrl: "/api/Dashboard/GetClientOutstanding"
+            }),
+            remoteOperations: true,
+            columns: [
+                { dataField: "AccountHeadNo", caption: "Account No", width: 100 },
+                { dataField: "AccountHead", caption: "Account Head", width: 200 },
+                {
+                    dataField: "Balance",
+                    caption: "Balance Amount",
+                    format: { type: "fixedPoint", precision: 2 }
+                },
+                { dataField: "AccountGroupId", caption: "Group ID", width: 100 },
+                { dataField: "OverdueDays", caption: "Overdue Days", width: 120 }
+            ],
+            columnAutoWidth: true,
+            showBorders: true,
+            paging: { pageSize: 10 },
+            pager: { showPageSizeSelector: true, allowedPageSizes: [10, 20, 50], showInfo: true },
+            searchPanel: { visible: true },
+            filterRow: { visible: true },
+            export: { enabled: true, fileName: "ClientOutstanding" }
+        });
+        // Bills Payable Outstanding DataGrid
+        $("#billsPayableGrid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AccountHeadNo",
+                loadUrl: "/api/Dashboard/GetBillsPayableOutstanding"
+            }),
+            remoteOperations: true,
+            columns: [
+                { dataField: "AccountHeadNo", caption: "Account No", width: 100 },
+                { dataField: "AccountHead", caption: "Account Head", width: 200 },
+                {
+                    dataField: "Balance",
+                    caption: "Balance Amount",
+                    format: { type: "fixedPoint", precision: 2 }
+                },
+                { dataField: "OverdueDays", caption: "Overdue Days", width: 120 }
+            ],
+            columnAutoWidth: true,
+            showBorders: true,
+            paging: { pageSize: 10 },
+            pager: { showPageSizeSelector: true, allowedPageSizes: [10, 20, 50], showInfo: true },
+            searchPanel: { visible: true },
+            filterRow: { visible: true },
+            export: { enabled: true, fileName: "BillsPayableOutstanding" }
+        });
+
+        // Bills Outstanding Aging Chart
+        $("#billsOutstandingChart").dxChart({
+            dataSource: DevExpress.data.AspNet.createStore({
+                loadUrl: "/api/Dashboard/GetBillsOutstandingAgingForChart"
+            }),
+            series: [{
+                argumentField: "OverDueGroup",
+                valueField: "Balance",
+                name: "Balance Amount",
+                type: "bar",
+                color: "#007acc"
+            }],
+            argumentAxis: {
+                label: {
+                    rotationAngle: -45
+                },
+                title: "Overdue Groups"
+            },
+            valueAxis: {
+                title: "Balance Amount",
+                label: {
+                    format: { type: "fixedPoint", precision: 2 }
+                }
+            },
+            legend: {
+                visible: true
+            },
+            tooltip: {
+                enabled: true,
+                format: { type: "fixedPoint", precision: 2 }
+            }
+        });
+    });
+</script>
+
+<style>
+    .dx-card-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .dx-card {
+        display: inline-block;
+        padding: 20px;
+        background: #f5f5f5;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .dx-card-header {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .dx-card-content .total-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #007acc;
+    }
+
+    .grid-container {
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .grid-section {
+        width: 48%;
+    }
+
+    .chart-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .chart-container {
+        width: 48%;
+        text-align: center;
+    }
+
+    #clientOutstandingChart,
+    #billsOutstandingChart {
+        width: 100%;
+        height: 400px;
+        margin: 0 auto;
+    }
+    
+</style>
