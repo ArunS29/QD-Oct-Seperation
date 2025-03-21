@@ -1,4 +1,8 @@
-﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿@{
+    var hideDropdowns = ViewData["HideDropdowns"] as bool? ?? false;
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -278,84 +282,87 @@
             .OnClick("showColumnChooser")
             )
     </div>
+    @if (!hideDropdowns)
+    {
+        <div class="btn-container">
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ddButtonReceipts")
+                .Icon("tags")
+                .Width(50)
+                .Text(new JS("formatMessage('Add Receipt')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Add Cash Receipts')")).Icon("money");
+                    items.Add().Text(new JS("formatMessage('Add Bank Receipts')")).Icon("product");
+                })
+                .OnItemClick("addRecipitsButton_click")
+                .ShowArrowIcon(false)
+                )
+        </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonReceipts")
-            .Icon("tags")
-            .Width(50)
-            .Text(new JS("formatMessage('Add Receipt')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add Cash Receipts')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('Add Bank Receipts')")).Icon("product");
-            })
-            .OnItemClick("addRecipitsButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
+        <div class="btn-container">
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ddButtonPayment")
+                .Icon("money")
+                .Width(50)
+                .Text(new JS("formatMessage('Add Payment')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Add Cash Payment')")).Icon("money");
+                    items.Add().Text(new JS("formatMessage('Add Bank Payment')")).Icon("product");
+                })
+                .OnItemClick("addPaymentButton_click")
+                .ShowArrowIcon(false)
+                )
+        </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonPayment")
-            .Icon("money")
-            .Width(50)
-            .Text(new JS("formatMessage('Add Payment')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add Cash Payment')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('Add Bank Payment')")).Icon("product");
-            })
-            .OnItemClick("addPaymentButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
+        <div class="btn-container">
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ddOtherVouchers")
+                .Icon("card")
+                .Width(50)
+                .Text(new JS("formatMessage('Other Vouchers')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Add Purchase Voucher')")).Icon("add");
+                    items.Add().Text(new JS("formatMessage('Add Sales Voucher')")).Icon("add");
+                    items.Add().Text(new JS("formatMessage('Add Journal Voucher')")).Icon("add");
+                })
+                .OnItemClick("otherVoucherButton_click")
+                .ShowArrowIcon(false)
+                )
+        </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddOtherVouchers")
-            .Icon("card")
-            .Width(50)
-            .Text(new JS("formatMessage('Other Vouchers')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add Purchase Voucher')")).Icon("add");
-                items.Add().Text(new JS("formatMessage('Add Sales Voucher')")).Icon("add");
-                items.Add().Text(new JS("formatMessage('Add Journal Voucher')")).Icon("add");
-            })
-            .OnItemClick("otherVoucherButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddReports")
-            .Icon("doc")
-            .Width(50)
-            .Text(new JS("formatMessage('Report')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Account Statements')")).Icon("file").OnClick("showSubmenu4");
-                items.Add().Text(new JS("formatMessage('Receivable Statements')")).Icon("file").OnClick("showSubmenu5");
-                items.Add().Text(new JS("formatMessage('Payable Statements')")).Icon("file").OnClick("showSubmenu6");
-                items.Add().Text(new JS("formatMessage('Cost Reports')")).Icon("file").OnClick("showSubmenu7");
-                items.Add().Text(new JS("formatMessage('Bank Reconciliation')")).Icon("product");
-                items.Add().Text(new JS("formatMessage('Ledger to Receivable/Payable Mapping')")).Icon("product");
-                items.Add().Text(new JS("formatMessage('Ledger to Salary Payable Mapping')")).Icon("product");
-            })
-            .OnItemClick("addReportsButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
+        <div class="btn-container">
+            @(Html.DevExtreme().DropDownButton()
+                .ID("ddReports")
+                .Icon("doc")
+                .Width(50)
+                .Text(new JS("formatMessage('Report')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Account Statements')")).Icon("file").OnClick("showSubmenu4");
+                    items.Add().Text(new JS("formatMessage('Receivable Statements')")).Icon("file").OnClick("showSubmenu5");
+                    items.Add().Text(new JS("formatMessage('Payable Statements')")).Icon("file").OnClick("showSubmenu6");
+                    items.Add().Text(new JS("formatMessage('Cost Reports')")).Icon("file").OnClick("showSubmenu7");
+                    items.Add().Text(new JS("formatMessage('Bank Reconciliation')")).Icon("product");
+                    items.Add().Text(new JS("formatMessage('Ledger to Receivable/Payable Mapping')")).Icon("product");
+                    items.Add().Text(new JS("formatMessage('Ledger to Salary Payable Mapping')")).Icon("product");
+                })
+                .OnItemClick("addReportsButton_click")
+                .ShowArrowIcon(false)
+                )
+        </div>
+    }
+    
     <!-- Modal Structure -->
     <div id="customModal" class="modal">
         <div class="modal-content">

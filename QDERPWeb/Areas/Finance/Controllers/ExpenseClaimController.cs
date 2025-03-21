@@ -29,12 +29,45 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var result = dbContext.ExpenseClaimViews
+                    var rawResult = await dbContext.ExpenseClaimViews
                         .FromSqlRaw("EXEC sp20105ExpenseClaimView @p0, @p1, @p2, @p3",
                             ClaimerID, StartDate, EndDate, IfShowAll)
-                        .AsQueryable(); // ✅ Returns IQueryable
+                        .ToListAsync(); // Fetch data first before LINQ joins
 
-                    return Json(await result.ToListAsync()); // Convert to list before returning JSON
+                    // Perform LINQ joins in-memory
+                    var result = rawResult.AsEnumerable().Select(claim => new sp20105ExpenseClaimViewResult
+                    {
+                        ClaimerID = claim.ClaimerID,
+                        ClaimRefNo = claim.ClaimRefNo,
+                        PaymentVoucherNo = claim.PaymentVoucherNo,
+                        ApprovedBy = claim.ApprovedBy,
+                        ApprovedOn = claim.ApprovedOn,
+                        ClaimCreatedBy = claim.ClaimCreatedBy,
+                        ClaimCreatedOn = claim.ClaimCreatedOn,
+                        ClaimerName = claim.ClaimerName,
+                        ClaimModifiedBy = claim.ClaimModifiedBy,
+                        ClaimModifiedOn = claim.ClaimModifiedOn,
+                        ClaimRemarks = claim.ClaimRemarks,
+                        PaidBy = claim.PaidBy,
+                        PaidOn = claim.PaidOn,
+                        PaymentAccount = claim.PaymentAccount,
+                        PaymentType = claim.PaymentType,
+                        ProjectClaimedFor = dbContext.Tbl201CostAllocationUnits
+                            .FirstOrDefault(a => a.CostAllocationUnitId == claim.ProjectClaimedFor)?.CostAllocationUnit,// Lookup CostAllocationUnit
+                        SubmittedBy = claim.SubmittedBy,
+                        SubmittedOn = claim.SubmittedOn,
+                        VerifiedBy = claim.VerifiedBy,
+                        VerifiedOn = claim.VerifiedOn,
+                        ClaimDate = claim.ClaimDate,
+                        ClaimedAmountTotal = claim.ClaimedAmountTotal,
+                        ApprovedAmountTotal = claim.ApprovedAmountTotal,
+                        IsSubmittedToFinance = claim.IsSubmittedToFinance,
+                        IsVerified = claim.IsVerified,
+                        IsApproved = claim.IsApproved,
+                        IsPaid = claim.IsPaid
+                    });
+
+                    return Json(result); // No need for ToListAsync() as it's already in-memory
                 }
                 catch (Exception ex)
                 {
@@ -45,6 +78,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         [HttpGet]

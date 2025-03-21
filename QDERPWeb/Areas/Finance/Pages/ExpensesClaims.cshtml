@@ -3,9 +3,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 
-    /* .dx-datagrid .dx-row { */
-    /*     border-bottom: 1px solid #ccc; /* Border between rows */ */
-    /* } */
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+     }
+
+
 
     /* .content-container { */
     /*     background-color: #c0dceb; */
@@ -15,7 +17,7 @@
 
     /* .horizontal-container { */
     /*     display: flex; */
-    /*     gap: 10px; /* Adds spacing between buttons */ */
+    /*     gap: 10px; /* Adds spacing between buttons */ 
     /*     justify-content: start; /* Aligns buttons to the left */ */
     /*     align-items: center; /* Vertically centers the buttons */ */
     /*     margin: 15px; */
@@ -76,8 +78,9 @@
     </div>
 </div>
 <div>
-    @await Html.PartialAsync("_GridFooter")
+    @await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdowns", true } })
 </div>
+
 <div class="content-container-top">
     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
@@ -216,9 +219,41 @@
                 .Type(Format.ShortDate)    // Custom type format
                 .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
                     columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(true);
-                    columns.AddFor(m => m.ClaimedAmountTotal).Caption(new JS("formatMessage('Claimed Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
-                    columns.AddFor(m => m.ApprovedAmountTotal).Caption(new JS("formatMessage('Approved Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
-                    columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Is Submitted To Finance')")).Alignment(HorizontalAlignment.Center)
+                    columns.AddFor(m => m.ClaimedAmountTotal)
+                .Caption(new JS("formatMessage('Claimed Amount')"))
+                .Alignment(HorizontalAlignment.Center)
+                .Format(format => format
+                .Type(Format.FixedPoint)
+                .Precision(2)) // Ensure .00 format
+                .CellTemplate(@<text>
+            <div style="color: red; font-weight: bold;">
+                <% if (data.ClaimedAmountTotal !== null && data.ClaimedAmountTotal !== undefined) { %>
+                <%= data.ClaimedAmountTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                <% } else { %>
+                0.00
+                <% } %>
+            </div>
+        </text>)
+                .Visible(true);
+
+                    columns.AddFor(m => m.ApprovedAmountTotal)
+                .Caption(new JS("formatMessage('Approved Amount')"))
+                .Alignment(HorizontalAlignment.Center)
+                .Format(format => format
+                .Type(Format.FixedPoint)
+                .Precision(2)) // Ensure .00 format
+                .CellTemplate(@<text>
+            <div style="color: green; font-weight: bold;">
+                <% if (data.ApprovedAmountTotal !== null && data.ApprovedAmountTotal !== undefined) { %>
+                <%= data.ApprovedAmountTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                <% } else { %>
+                0.00
+                <% } %>
+            </div>
+        </text>)
+                .Visible(true);
+
+                    columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Submitted')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -232,13 +267,13 @@
                 <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>).Visible(true);
-                    columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center)
+                    columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Approved')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>).Visible(true);
-                    columns.AddFor(m => m.IsPaid).Caption(new JS("formatMessage('Is Paid')")).Alignment(HorizontalAlignment.Center)
+                    columns.AddFor(m => m.IsPaid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
