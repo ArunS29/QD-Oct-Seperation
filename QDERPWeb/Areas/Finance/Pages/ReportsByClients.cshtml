@@ -10,7 +10,27 @@
 
 
 <style>
+    .container {
+        display: none !important;
+        background-color:transparent;
+    }
 
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
 
         .dx-datagrid .dx-row {
             border-bottom: 1px solid #ccc; /* Border between rows */
@@ -44,12 +64,9 @@
                 color: white !important; 
             }
 
-    
-
-      
-      
             .card{
                 height:500px;
+                background-color:white;
             }
 </style>
 
@@ -160,20 +177,7 @@
 
 @using (Html.DevExtreme().NamedTemplate("GetAccountHeadContentTemplate"))
 {
-    <div class="toolbar-container">
-        <div id="gridToolbar">
-            @(Html.DevExtreme().Button()
-                .Text("Save as PDF")
-                .Icon("exportpdf")
-                .OnClick("saveGridAsPDF")
-                )
-            @(Html.DevExtreme().Button()
-                .Text("Print")
-                .Icon("print")
-               .OnClick("printGrid")
-                )
-        </div>
-    </div>
+
     @(Html.DevExtreme().DataGrid()
                 .ID("GetAccountHead-datagrid")
                 .DataSource(d => d.WebApi()
@@ -201,19 +205,24 @@
                     columns.Add().DataField("AccountHead").Caption("Account Name");
                 })
                 )
-}
-@using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
-{
     <div class="toolbar-container">
         <div id="gridToolbar">
-
+            @(Html.DevExtreme().Button()
+                .Text("Save as PDF")
+                .Icon("exportpdf")
+                .OnClick("saveGridAsPDF")
+                )
             @(Html.DevExtreme().Button()
                 .Text("Print")
                 .Icon("print")
-               .OnClick("printGrid1")
+                .OnClick("printGrid")
                 )
         </div>
     </div>
+}
+@using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
+{
+
     @(Html.DevExtreme().DataGrid()
                 .ID("GetSalesPerson-datagrid")
                 .DataSource(d => d.WebApi()
@@ -241,19 +250,24 @@
                     columns.Add().DataField("SalesPersonName").Caption("SalesPerson Name");
                 })
                 )
-}
-@using (Html.DevExtreme().NamedTemplate("GetCompanyBranchContentTemplate"))
-{
     <div class="toolbar-container">
         <div id="gridToolbar">
-
+            @(Html.DevExtreme().Button()
+                .Text("Save as PDF")
+                .Icon("exportpdf")
+                .OnClick("saveGridAsPDF")
+                )
             @(Html.DevExtreme().Button()
                 .Text("Print")
                 .Icon("print")
-               .OnClick("printGrid2")
+                .OnClick("printGrid1")
                 )
         </div>
     </div>
+}
+@using (Html.DevExtreme().NamedTemplate("GetCompanyBranchContentTemplate"))
+{
+
     @(Html.DevExtreme().DataGrid()
                         .ID("GetCompanyBranch-datagrid")
                     .DataSource(d => d.WebApi()
@@ -281,6 +295,20 @@
                         columns.Add().DataField("BranchName").Caption("Branch Name");
                     })
                     )
+    <div class="toolbar-container">
+        <div id="gridToolbar">
+            @(Html.DevExtreme().Button()
+                .Text("Save as PDF")
+                .Icon("exportpdf")
+                .OnClick("saveGridAsPDF")
+                )
+            @(Html.DevExtreme().Button()
+                .Text("Print")
+                .Icon("print")
+                .OnClick("printGrid2")
+                )
+        </div>
+    </div>
 }
 
 

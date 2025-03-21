@@ -30,11 +30,11 @@ namespace QD.ERP.Web.Pages
         private static readonly Dictionary<string, Func<string, DateTime, DateTime, XtraReport>> parameterizedReports =
             new()
             {
-                //{ "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to) },
-                //{ "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to) },
+                { "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to,"","","",null,"","") },
+                { "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to, "", "", "", null, "", "") },
                 { "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to) },
                 { "AccountExportLandscapeReport", (id, from, to) => new AccountExportLandscapeReport(id, from, to) },
-                //{ "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to) },
+                { "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to, "", "", "", null, "", "") },
                 { "AccountOrderbyVchNoWONarrationReport", (id, from, to) => new AccountOrderbyVchNoWONarrationReport(id, from, to) },
                 { "BillsReceivablelandscapeformat", (id, from, to) => new BillsReceivablelandscapeformat(id, from, to) },
                 { "BillsReceivableLedgerBalance", (id, from, to) => new BillsReceivableLedgerBalance(id, from, to) },

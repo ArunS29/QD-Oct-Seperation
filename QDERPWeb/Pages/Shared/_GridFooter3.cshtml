@@ -1,5 +1,21 @@
 ﻿
 <style type="text/css">
+    #reportsByClientPopup .dx-overlay-content {
+        max-width: 90vw !important; /* Adjust width */
+        max-height: 85vh !important; /* Adjust height */
+    }
+
+    /* Style for inner iframe */
+    #popupIframe {
+        border-radius: 8px;
+        padding: 10px;
+        overflow: auto;
+    }
+
+    /* Hide outer scrollbar */
+    body {
+        overflow: hidden;
+    }
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
@@ -197,12 +213,13 @@
         )
       
 </div>
+   
 </div>
 <script type="text/javascript">
 
-      function ReportsByClient() {
-        window.location.href = `/${tenantName}/Finance/ReportsByClients`;
-        }
+
+
+
     // Hide context menu on click outside
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");
@@ -460,19 +477,23 @@
     });
     //Refresh button function
     function refreshPage() {
-        location.reload();  // This reloads the current page
+        location.reload(); 
     }
     function ReportsByClient() {
-        window.location.href = `/${tenantName}/Finance/ReportsByClients`;
-    }
+        alert("hi")
+        let url = `/${tenantName}/Finance/ReportsByClients`; 
 
+        
+        $("#popupIframe").attr("src", url);
+
+        // Open the popup
+        let popup = $("#reportsByClientPopup").dxPopup("instance");
+        popup.show();
+    }
         const reportMappings = {
         "Receivables Reports": "XtraRecivableReport",
         "Receivables Reports with Effective Date": "ReceivableReport(EffectiveDate)",
         "Receivables Summary Reports": "ReceivablesSummaryReport",
-        "Receivables By Client": "ReceivablesByClientReport",
-        "Receivables By Sales Person": "ReceivablesBySalesPersonReport",
-        "Receivables By Branch/Division": "ReceivablesByBranchDivisionReport",
         "Invoice Collection Report": "InvoiceCollectionReport",
         "Receivables with Unmapped Vouchers": "ReceivablesUnmappedVouchersReport"
     };
@@ -492,5 +513,23 @@
         }
     }
 
-
+    $(function () {
+        // Initialize DevExtreme Popup
+        $("#reportsByClientPopup").dxPopup({
+            width: 800,
+            height: 600,
+            title: "Reports by Clients",
+            visible: false,
+            showCloseButton: true,
+            closeOnOutsideClick: true,
+            contentTemplate: function () {
+                return $("<iframe>", {
+                    id: "popupIframe",
+                    width: "100%",
+                    height: "100%",
+                    frameborder: 0
+                });
+            }
+        });
+    });
 </script>
