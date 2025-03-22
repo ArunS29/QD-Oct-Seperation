@@ -90,7 +90,7 @@ else
 {
     loggerConfiguration.WriteTo.ApplicationInsights(new TelemetryConfiguration
     {
-        ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"]
+        InstrumentationKey = builder.Configuration["ApplicationInsights:InstrumentationKey"]
     }, TelemetryConverter.Traces);
 }
 

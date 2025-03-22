@@ -793,7 +793,7 @@
             // 
             // GroupHeader2
             // 
-            this.GroupHeader2.HeightF = 47.44446F;
+            this.GroupHeader2.HeightF = 20.4167F;
             this.GroupHeader2.Level = 1;
             this.GroupHeader2.Name = "GroupHeader2";
             // 
