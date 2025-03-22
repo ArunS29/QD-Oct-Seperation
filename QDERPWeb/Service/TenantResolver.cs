@@ -23,7 +23,7 @@ namespace QD.ERP.Web.Service
             // Extract tenant name from route (e.g., /tenantA/... -> tenantName = "tenantA")
             var tenantName = context.Items["TenantName"]?.ToString();
 
-            if (string.IsNullOrEmpty(tenantName))
+     if (string.IsNullOrEmpty(tenantName))
             {
                 return Task.FromResult<TenantContext<Tenant>>(null);
             }
