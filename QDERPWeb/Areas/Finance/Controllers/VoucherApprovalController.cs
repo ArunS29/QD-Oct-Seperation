@@ -7,7 +7,6 @@ using QD.ERP.Web.Service;
 namespace QDWEB.Areas.Finance.Controllers
 {
     [Route("api/[controller]/[action]")]
-    [ApiController]
     public class VoucherApprovalController : Controller
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
@@ -118,5 +117,79 @@ namespace QDWEB.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public IActionResult CheckVoucherVerification(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var voucher = dbContext.Tbl201VoucherMasters
+                    .Where(v => v.VoucherNo == voucherNo)
+                    .Select(v => new { isVerified = v.IsVerified.HasValue && v.IsVerified.Value })
+                    .FirstOrDefault();
+
+                if (voucher != null)
+                {
+                    return Json(new { isVerified = voucher.isVerified });
+                }
+                return Json(new { error = "Voucher not found." });
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public IActionResult VerifyVoucher(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var voucher = dbContext.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+                if (voucher == null)
+                {
+                    return Json(new { success = false, message = "Voucher not found." });
+                }
+
+                if (voucher.IsVerified.HasValue && voucher.IsVerified.Value)
+                {
+                    return Json(new { success = false, message = "Voucher is already verified." });
+                }
+
+                voucher.VoucherVerifiedBy = "LogOnUser"; // Replace with actual logged-in user
+                voucher.VoucherVerifiedOn = DateTime.Now;
+                voucher.IsVerified = true;
+
+                dbContext.SaveChanges();
+
+                return Json(new { success = true, message = "Voucher has been verified." });
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public IActionResult VerifyMultipleVouchers([FromBody] List<string> voucherNos)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var vouchers = dbContext.Tbl201VoucherMasters
+                    .Where(v => voucherNos.Contains(v.VoucherNo) && (!v.IsVerified.HasValue || !v.IsVerified.Value))
+                    .ToList();
+
+                if (vouchers.Count == 0)
+                {
+                    return Json(new { success = false, message = "No unverified vouchers found." });
+                }
+
+                foreach (var voucher in vouchers)
+                {
+                    voucher.VoucherVerifiedBy = "LogOnUser"; // Replace with actual logged-in user
+                    voucher.VoucherVerifiedOn = DateTime.Now;
+                    voucher.IsVerified = true;
+                }
+
+                dbContext.SaveChanges();
+
+                return Json(new { success = true, message = "Vouchers have been verified." });
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
     }
 }

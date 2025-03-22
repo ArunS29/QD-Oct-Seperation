@@ -203,13 +203,7 @@
             .LoadAction("GetVoucherApproval"))
             .Columns(columns =>
             {
-                columns.Add().DataField("select").Caption(new JS("formatMessage('Select')"))
-            .CellTemplate(@<text>
-        <input type="checkbox" class="dx-checkbox" />
-    </text>).Width(50)
-        .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Select</div>
-    </text>);
+                
 
                 columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(80)
             .HeaderCellTemplate(@<text>
@@ -263,8 +257,9 @@
                 columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120)
             .DataType(GridColumnDataType.Boolean)
             .CellTemplate(@<text>
-        <input type="checkbox" class="dx-checkbox" onclick="updateApprovalStatus(this, 'IsApproved', data)"
-               data-bind="checked: data.IsApproved" />
+        @(Html.DevExtreme().CheckBox()
+        .Value(new JS("data.IsApproved"))
+        .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsApproved', data); }"))
     </text>)
         .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Approved</div>
@@ -273,18 +268,21 @@
                 columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120)
             .DataType(GridColumnDataType.Boolean)
             .CellTemplate(@<text>
-        <input type="checkbox" class="dx-checkbox" onclick="updateApprovalStatus(this, 'IsVerified', data)"
-               data-bind="checked: data.IsVerified" />
+        @(Html.DevExtreme().CheckBox()
+        .Value(new JS("data.IsVerified"))
+        .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsVerified', data); }"))
     </text>)
         .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Verified</div>
     </text>);
 
+
                 columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120)
             .DataType(GridColumnDataType.Boolean)
             .CellTemplate(@<text>
-        <input type="checkbox" class="dx-checkbox" onclick="updateApprovalStatus(this, 'IsAuditVerified', data)"
-               data-bind="checked: data.IsAuditVerified" />
+        @(Html.DevExtreme().CheckBox()
+        .Value(new JS("data.IsAuditVerified"))
+        .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsAuditVerified', data); }"))
     </text>)
         .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Audit</div>
@@ -315,6 +313,7 @@
         .Width("100%")
         .Paging(paging => paging.Enabled(false))
         .Scrolling(scrolling => scrolling.Mode(GridScrollingMode.Virtual))
+        .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
         .FilterRow(filterRow => filterRow.Visible(false))
         .Grouping(grouping => grouping.AutoExpandAll(true))
         .GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -553,7 +552,47 @@
         }
 
         function viewVoucher() { console.log("View Voucher Clicked"); }
-        function verifyVoucher() { console.log("Verify Voucher Clicked"); }
+      function verifyVoucher() {
+        if (!selectedVoucherNo) {
+            alert("No voucher selected.");
+            return;
+        }
+        debugger
+        $.ajax({
+            url: '/api/VoucherApproval/CheckVoucherVerification', // Replace with your actual controller
+            type: 'GET',
+            data: { voucherNo: selectedVoucherNo },
+            success: function (response) {
+                if (response.isVerified) {
+                    alert("Voucher is already verified.");
+                } else {
+                    updateVoucherVerification(selectedVoucherNo);
+                }
+            },
+            error: function () {
+                alert("Error checking voucher verification.");
+            }
+        });
+    }
+        function updateVoucherVerification(voucherNo) {
+            debugger
+        $.ajax({
+            url: '/api/VoucherApproval/VerifyVoucher', // Replace with your actual controller
+            type: 'POST',
+            data: { voucherNo: voucherNo },
+            success: function (response) {
+                if (response.success) {
+                    alert("Voucher has been verified.");
+                    $("#dataGrid").dxDataGrid("instance").refresh(); // Refresh grid after update
+                } else {
+                    alert("Error verifying voucher.");
+                }
+            },
+            error: function () {
+                alert("Error verifying voucher.");
+            }
+        });
+    }
         function deleteVoucher() { console.log("Delete Voucher Clicked"); }
         function verifyAll() { console.log("Verify All Selected Vouchers Clicked"); }
         function approveAll() { console.log("Approve All Selected Vouchers Clicked"); }
