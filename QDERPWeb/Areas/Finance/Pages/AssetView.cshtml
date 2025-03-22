@@ -468,16 +468,17 @@
                 }
             });
         });
-        function showDepreciationSchedule() {
+            function showDepreciationSchedule() {
             $("#DepreciationContent").load(`/${tenantName}/Finance/DepreciationMaster   `, function () {
-                $("#DepreciationModal").modal('show');
-                $(".close").on("click", function () {
-                    $("#DepreciationModal").modal('hide');
-                });
-
-
+            $("#DepreciationModal").modal('show');
+                $(".modal-backdrop").remove();
+            $(".close").on("click", function () {
+                $("#DepreciationModal").modal('hide');
             });
-        }
+
+
+        });
+    }
 
     </script>
 
