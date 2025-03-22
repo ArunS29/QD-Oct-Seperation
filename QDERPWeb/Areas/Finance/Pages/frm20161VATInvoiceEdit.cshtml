@@ -169,7 +169,7 @@
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         background: #fff;
     }
-    .limited-footer .btn-container:not(:has(#btnSave,#btnSaveAndClose,#btnPreview1,#btnPrint1,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach)) {
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
     display: none !important;
 }
 
@@ -186,84 +186,23 @@
     <div class="content-container-top">
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().Tabs()
-                .Items(items =>
-                {
-                    items.Add().Icon("optionsgear").Text(new JS("formatMessage('Invoice Details')"));
-                    items.Add().Icon("accountbox").Text(new JS("formatMessage('Other Details')"));
-                    items.Add().Icon("description").Text(new JS("formatMessage('Documents')"));
-                    items.Add().Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')"));
-                    items.Add().Icon("group").Text(new JS("formatMessage('Branch/Division Details')"));
-                    items.Add().Icon("attach").Text(new JS("formatMessage('Signatories')"));
-                })
-                .SelectedIndex(0)
-                .OnSelectionChanged("onTabSelectionChanged")
-                )
+                        .Items(items =>
+                        {
+                            items.Add().Icon("optionsgear").Text(new JS("formatMessage('Invoice Details')"));
+                            items.Add().Icon("accountbox").Text(new JS("formatMessage('Other Details')"));
+                            items.Add().Icon("description").Text(new JS("formatMessage('Documents')"));
+                            items.Add().Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')"));
+                            items.Add().Icon("group").Text(new JS("formatMessage('Branch/Division Details')"));
+                            items.Add().Icon("attach").Text(new JS("formatMessage('Signatories')"));
+                        })
+                        .SelectedIndex(0)
+                        .OnSelectionChanged("onTabSelectionChanged")
+                        )
         </div>
 
         <!-- Tab Content -->
         <div class="dx-fieldset">
-           @*  <div id="tab-content-1" class="tab-content">
-                 <!-- First Card -->
-                <div class="card">
-                    <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-                        <tr>
-                            <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo"))</td>
-                            <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-                            <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Issued Date & Time')")).ID("InvoiceIssuedDateTime").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-                            <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Type')")).ID("VATInvoiceType")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')")).ID("PaymentMeans")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans")))
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Sub Type')")).ID("VATInvoiceSubType")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getInvoiceSubTypes").LoadMode(DataSourceLoadMode.Raw).Key("SubType")))
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Invoice Transactions Code')")).ID("InvoiceTransactionsCode")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getTransactionCodes").LoadMode(DataSourceLoadMode.Raw).Key("TransactionCode")))
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                  <!-- Second Card -->
-                <div class="card">
-                    <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-                        <tr>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')")).ID("ClientCode")
-                                    .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientCodes").LoadMode(DataSourceLoadMode.Raw).Key("ClientCode")))
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')")).ID("ClientName")
-                                    .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientNames").LoadMode(DataSourceLoadMode.Raw).Key("ClientName")))
-                            </td>
-                            <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo"))</td>
-                            <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo"))</td>
-                        </tr>
-                        <tr>
-                            <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic"))</td>
-                            <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType"))</td>
-                            <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID"))</td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Address Details')")).ID("ClientAddressDetails")
-                                    .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientAddresses").LoadMode(DataSourceLoadMode.Raw).Key("AddressID")))
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue"))</td>
-                            <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID"))</td>
-                        </tr>
-                    </table>
-                </div>
-            </div> *@
+          
 
             <div id="tab-content-1" class="tab-content">
     <div class="card-container">
@@ -271,31 +210,115 @@
         <div class="card">
             <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
                 <tr>
-                    <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo"))</td>
+                    <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true))</td>
                     <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
                 </tr>
                 <tr>
-                    <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Issued Date & Time')")).ID("InvoiceIssuedDateTime").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+                    <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Issued Date & Time')")).ID("InvoiceIssuedDateTime").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true))</td>
                     <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
                 </tr>
                 <tr>
                     <td>
-                                    @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Type')")).ID("VATInvoiceType")
-                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                    @(Html.DevExtreme().DropDownBox()
+    .Label(new JS("formatMessage('VAT Invoice Type')"))
+    .ID("VATInvoiceType")
+    .DataSource(d => d.WebApi()
+        .Controller("AccountLedgerMaster")
+        .LoadAction("getVATInvoiceTypes")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("InvoiceType"))
+            .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+     .Value("Tax Invoice") // Ensure this matches an actual key value
+    .ValueExpr("InvoiceType") // Ensure the value is mapped correctly
+    .DisplayExpr("InvoiceType") // Set display value if needed
+    .Disabled(true)
+)
+
                     </td>
                     <td>
-                                    @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')")).ID("PaymentMeans")
-                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans")))
+
+                                   @*  @(Html.DevExtreme().DropDownBox()
+                    .Label(new JS("formatMessage('Payment Means')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("VATModule")
+                    .LoadAction("GetPaymentMeans")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("PaymentMeansTypeCode")
+                    )
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("ddpaymentmeans")
+
+                    .ShowClearButton(true)
+                    .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .Value("Payment to bank account")
+                    .ValueExpr("PaymentMeansTypeCode")
+                    .DisplayExpr("PaymentMeansType")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .Width(720)
+                    .TabIndex(1)
+                    .DropDownOptions(o => o
+                    .Width(1000)
+                    )
+                    .OnKeyDown("onKeyDown")
+                    //.OnValueChanged("dropDownBoxValueChanged")
+                    .ContentTemplate(new TemplateName("PaymentmeansContentTemplate"))
+                    ) *@
+                              @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')"))
+                                            .DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeansTypeCode"))
+                                                .ID("ddpaymentmeans")
+              .ShowClearButton(true)
+         .AcceptCustomValue(true)
+         .OpenOnFieldClick(false)
+         .ValueChangeEvent("input")
+         .HoverStateEnabled(true)
+          .Value("Payment to bank account")
+         .ValueExpr("PaymentMeansTypeCode")
+         .DisplayExpr("PaymentMeansType")
+           @*  .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened") *@
+     .Width("100%")
+     .TabIndex(1)
+     .DropDownOptions(o => o
+     //.Width("100%") // Set the desired width for the dropdown content*@
+         .Width(1000)
+     )
+      .OnKeyDown("onKeyDown")
+         .ContentTemplate(new TemplateName("PaymentmeansContentTemplate"))
+                                            )
+
+                                   
                     </td>
                 </tr>
                 <tr>
                     <td>
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Sub Type')")).ID("VATInvoiceSubType")
-                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getInvoiceSubTypes").LoadMode(DataSourceLoadMode.Raw).Key("SubType")))
+                                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getInvoiceSubTypes").LoadMode(DataSourceLoadMode.Raw).Key("SubType"))
+                                                                 .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+     .Value("Tax Invoice") // Ensure this matches an actual key value
+    .ValueExpr("InvoiceType") // Ensure the value is mapped correctly
+    .DisplayExpr("InvoiceType") // Set display value if needed
+    .Disabled(true))
                     </td>
                     <td>
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Invoice Transactions Code')")).ID("InvoiceTransactionsCode")
-                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getTransactionCodes").LoadMode(DataSourceLoadMode.Raw).Key("TransactionCode")))
+                                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getTransactionCodes").LoadMode(DataSourceLoadMode.Raw).Key("TransactionCode")).AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+     .Value(0100000) // Ensure this matches an actual key value
+    .ValueExpr("InvoiceType") // Ensure the value is mapped correctly
+    .DisplayExpr("InvoiceType") // Set display value if needed
+    .Disabled(true))
                     </td>
                 </tr>
             </table>
@@ -307,11 +330,47 @@
                 <tr>
                     <td>
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')")).ID("ClientCode")
-                                            .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientCodes").LoadMode(DataSourceLoadMode.Raw).Key("ClientCode")))
+                                                            .DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+                                                                 .LabelMode(EditorLabelMode.Outside)
+                                                                 .ID("ddclientcode")
+                                            .ShowClearButton(true)
+                                            .AcceptCustomValue(true)
+                                                .OpenOnFieldClick(false)
+                                                .ValueChangeEvent("input")
+                                                .HoverStateEnabled(true)
+                                                 
+                                             .ValueExpr("AccountHead")
+                                             .DisplayExpr("AccountId")
+
+                                            .Width("100%")
+                                            .TabIndex(4)
+                                            .DropDownOptions(o => o
+                                           // .Width("100%") // Set the desired width for the dropdown content*@
+                                               .Width(1000)
+                                            )
+                                           .ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
                     </td>
                     <td>
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')")).ID("ClientName")
-                                            .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientNames").LoadMode(DataSourceLoadMode.Raw).Key("ClientName")))
+                                                        .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientNames").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
+                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                   .ID("ddclientname")
+          .ShowClearButton(true)
+         .AcceptCustomValue(true)
+         .OpenOnFieldClick(false)
+         .ValueChangeEvent("input")
+         .HoverStateEnabled(true)
+          .Value(null)
+         .ValueExpr("AccountId")
+         .DisplayExpr("AccountHead")
+     .Width("100%")
+     .TabIndex(1)
+     .DropDownOptions(o => o
+     //.Width("100%") // Set the desired width for the dropdown content*@
+         .Width(1000)
+     )
+      .OnKeyDown("onKeyDown")
+         .ContentTemplate(new TemplateName("ClientNameContentTemplate")))
                     </td>
                 </tr>
                 <tr>
@@ -325,7 +384,7 @@
                     <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID"))</td>
                     <td>
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Address Details')")).ID("ClientAddressDetails")
-                                            .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientAddresses").LoadMode(DataSourceLoadMode.Raw).Key("AddressID")))
+                                                    .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientAddresses").LoadMode(DataSourceLoadMode.Raw).Key("AddressID")))
                     </td>
                 </tr>
                 <tr>
@@ -345,17 +404,17 @@
                             <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
                             <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
                             <td>                            <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+                                @(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
 
                         </tr>
                         <tr>
                             <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Revenue Account')")).ID("RevenueAccount")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                             </td>
                             <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Cost Center Account')")).ID("CostCenterAccount")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans")))
+                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans")))
                             </td>
 
                         </tr>
@@ -367,33 +426,33 @@
                         <tr>
                             <td>
                                 @(
-                                    Html.DevExtreme().TextArea()
-                                    .Label(new JS("formatMessage('Invoice Notes')"))
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .ID("txtInvoiceNotes")
-                                    .Value("")
-                                    .Height(40)
-                                    .Width(720)
-                                    .Placeholder(new JS("formatMessage('Enter your comments here...')"))
-                                    .MaxLength(111500)
+                                            Html.DevExtreme().TextArea()
+                                            .Label(new JS("formatMessage('Invoice Notes')"))
+                                            .LabelMode(EditorLabelMode.Outside)
+                                            .ID("txtInvoiceNotes")
+                                            .Value("")
+                                            .Height(40)
+                                            .Width(720)
+                                            .Placeholder(new JS("formatMessage('Enter your comments here...')"))
+                                            .MaxLength(111500)
 
-                                    )
+                                            )
 
                             </td>
 
                             <td>
                                 @(
-                                    Html.DevExtreme().TextArea()
-                                    .Label(new JS("formatMessage('Notes in Arabic')"))
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .ID("txtNotesinArabic")
-                                    .Value("")
-                                    .Height(40)
-                                    .Width(720)
-                                    .Placeholder(new JS("formatMessage('Enter your comments here...')"))
-                                    .MaxLength(111500)
+                                            Html.DevExtreme().TextArea()
+                                            .Label(new JS("formatMessage('Notes in Arabic')"))
+                                            .LabelMode(EditorLabelMode.Outside)
+                                            .ID("txtNotesinArabic")
+                                            .Value("")
+                                            .Height(40)
+                                            .Width(720)
+                                            .Placeholder(new JS("formatMessage('Enter your comments here...')"))
+                                            .MaxLength(111500)
 
-                                    )
+                                            )
 
                             </td>
 
@@ -407,11 +466,11 @@
             <div id="tab-content-3" class="tab-content">
                 <div class="card">
                     <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-                        <h2>Purchase Order Details</h2>
+                        <h5>Purchase Order Details</h5>
                         <tr>
                             <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Sales Order No')")).ID("OurSalesOrderNo")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                             </td>
                             <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
                             <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client PO No')")).ID("ClientPONo"))</td>
@@ -425,7 +484,7 @@
                 <div class="card">
                     <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
                         <tr>
-                            <h2>Contract / Project References</h2>
+                            <h5>Contract / Project References</h5>
                             <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef"))</td>
                             <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference"))</td>
                             <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("PaymentTerms"))</td>
@@ -436,7 +495,7 @@
                 <div class="card">
                     <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
                         <tr>
-                            <h2>Quotation / Delivery Details</h2>
+                            <h5>Quotation / Delivery Details</h5>
                             <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo"))</td>
                             <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Delivery Date')")).ID("DeliveryDate"))</td>
                             <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client GRN Reference')")).ID("ClientGRNReference"))</td>
@@ -450,36 +509,36 @@
                 <div class="card">
                     <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
                         <tr>
-                            <h2>Foregin Currency Billing:</h2>
+                            <h5>Foregin Currency Billing:</h5>
                              <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Invoice Currency')")).ID("InvoiceCurrency")
-                                        .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                                .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                             </td>
                                <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Tax Currency')")).ID("TaxCurrency")
-                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                             </td>
                             <td>
                                 @(
-                                                    Html.DevExtreme().NumberBox()
-                                                    .Label(new JS("formatMessage('Currency Exchange Rate')"))
-                                                    .LabelMode(EditorLabelMode.Outside)
-                                                    .ID("txtCurrencyExchangeRate")
-                                                    .Value(null)
-                                                    .Width(180)// HTML attribute to allow decimal input
-                                                    )
+                                                            Html.DevExtreme().NumberBox()
+                                                            .Label(new JS("formatMessage('Currency Exchange Rate')"))
+                                                            .LabelMode(EditorLabelMode.Outside)
+                                                            .ID("txtCurrencyExchangeRate")
+                                                            .Value(null)
+                                                            .Width(180)// HTML attribute to allow decimal input
+                                                            )
 
                             </td>
-                           
+
                         </tr>
-                       
+
                     </table>
                 </div>
 
                 <div class="card">
                     <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
                        <tr>
-                         <h2>Deductions:Advance / Retention</h2>
+                         <h5>Deductions:Advance / Retention</h5>
 
                              <td>@(Html.DevExtreme().TextBox().ID("LessAdvance").Value("Less: Advance"))</td>
                               <td>  @(
@@ -494,29 +553,29 @@
                                       <td>
                                                                <span class="input-group-prepend" style="margin-right: 10px;">
                                     @(
-                                            Html.DevExtreme().Button()
-                                            .ID("convertToArabic1")
-                                            .Height(35)
-                                            .Icon("fas fa-language") // Ensure Font Awesome class is correct
-                                            .ElementAttr(new { @class = "input-button" })
-                                            ///.OnClick("function() { convertToArabic(); }")
-                                            )
+                                                    Html.DevExtreme().Button()
+                                                    .ID("convertToArabic1")
+                                                    .Height(35)
+                                                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                                                    .ElementAttr(new { @class = "input-button" })
+                                                    ///.OnClick("function() { convertToArabic(); }")
+                                                    )
                     </span>
                     </td>
                     <td>
                                 @(
-                                        Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .ID("AccountGroup1")
-                                        .Value(null)
-                                        .Width(250)
-                                        .RtlEnabled(true)
-                                        )
+                                                Html.DevExtreme().TextBox()
+                                                .Label(new JS("formatMessage('')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .ID("AccountGroup1")
+                                                .Value(null)
+                                                .Width(250)
+                                                .RtlEnabled(true)
+                                                )
 
                              </td>
 
-                     
+
                         </tr>
 
                          <tr>
@@ -534,25 +593,25 @@
                                       <td>
                                                                <span class="input-group-prepend" style="margin-right: 10px;">
                                     @(
-                                                Html.DevExtreme().Button()
-                                                .ID("convertToArabic2")
-                                                .Height(35)
-                                                .Icon("fas fa-language") // Ensure Font Awesome class is correct
-                                                .ElementAttr(new { @class = "input-button" })
-                                                ///.OnClick("function() { convertToArabic(); }")
-                                                )
+                                                        Html.DevExtreme().Button()
+                                                        .ID("convertToArabic2")
+                                                        .Height(35)
+                                                        .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                                                        .ElementAttr(new { @class = "input-button" })
+                                                        ///.OnClick("function() { convertToArabic(); }")
+                                                        )
                     </span>
                     </td>
                     <td>
                                 @(
-                                            Html.DevExtreme().TextBox()
-                                            .Label(new JS("formatMessage('')"))
-                                            .LabelMode(EditorLabelMode.Outside)
-                                            .ID("AccountGroup2")
-                                            .Value(null)
-                                            .Width(250)
-                                            .RtlEnabled(true)
-                                            )
+                                                    Html.DevExtreme().TextBox()
+                                                    .Label(new JS("formatMessage('')"))
+                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .ID("AccountGroup2")
+                                                    .Value(null)
+                                                    .Width(250)
+                                                    .RtlEnabled(true)
+                                                    )
 
                              </td>
                         </tr>
@@ -572,74 +631,74 @@
                                       <td>
                                                                <span class="input-group-prepend" style="margin-right: 10px;">
                                     @(
-                                                    Html.DevExtreme().Button()
-                                                    .ID("convertToArabic3")
-                                                    .Height(35)
-                                                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
-                                                    .ElementAttr(new { @class = "input-button" })
-                                                    ///.OnClick("function() { convertToArabic(); }")
-                                                    )
+                                                            Html.DevExtreme().Button()
+                                                            .ID("convertToArabic3")
+                                                            .Height(35)
+                                                            .Icon("fas fa-language") // Ensure Font Awesome class is correct
+                                                            .ElementAttr(new { @class = "input-button" })
+                                                            ///.OnClick("function() { convertToArabic(); }")
+                                                            )
                     </span>
                     </td>
                     <td>
                                 @(
-                                                Html.DevExtreme().TextBox()
-                                                .Label(new JS("formatMessage('')"))
-                                                .LabelMode(EditorLabelMode.Outside)
-                                                .ID("AccountGroup3")
-                                                .Value(null)
-                                                .Width(250)
-                                                .RtlEnabled(true)
-                                                )
+                                                        Html.DevExtreme().TextBox()
+                                                        .Label(new JS("formatMessage('')"))
+                                                        .LabelMode(EditorLabelMode.Outside)
+                                                        .ID("AccountGroup3")
+                                                        .Value(null)
+                                                        .Width(250)
+                                                        .RtlEnabled(true)
+                                                        )
 
                              </td>
-                             
+
                         </tr>
                         <tr>
                              <td>
 
                                 @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-                                               .ID("VerifiedBy")
-                                               .Value(null) // Default value
+                                                       .ID("VerifiedBy")
+                                                       .Value(null) // Default value
 
-                                               )
+                                                       )
                                 @(Html.DevExtreme().TextBox()
-                                            .Label(new JS("formatMessage('Verified By')"))
-                                            .LabelMode(EditorLabelMode.Outside)
-                                            .ID("VerifiedBytext")
-                                            .Value(null) // Default value
+                                                    .Label(new JS("formatMessage('Verified By')"))
+                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .ID("VerifiedBytext")
+                                                    .Value(null) // Default value
+                                                          .Disabled(true)
+                                                    )
+
+                                @(Html.DevExtreme().TextBox()
+                                                .Label(new JS("formatMessage('Verified On')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .ID("VerifiedOnDate")
+                                                .Value(null) // Default value
                                                   .Disabled(true)
-                                            )
-
-                                @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Verified On')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .ID("VerifiedOnDate")
-                                        .Value(null) // Default value
-                                          .Disabled(true)
-                                        )
+                                                )
 
                                         </td>
                                         <td>
 
                                 @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                                     .ID("ApprovedBy")
-                                     .Value(null) // Default value
-                                     )
+                                             .ID("ApprovedBy")
+                                             .Value(null) // Default value
+                                             )
                                 @(Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Approved By')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .ID("ApprovedBytext")
-                                        .Value(null) // Default value
-                                             .Disabled(true)
-                                        )
+                                                .Label(new JS("formatMessage('Approved By')"))
+                                                .LabelMode(EditorLabelMode.Outside)
+                                                .ID("ApprovedBytext")
+                                                .Value(null) // Default value
+                                                     .Disabled(true)
+                                                )
                                 @(Html.DevExtreme().TextBox()
-                                  .Label(new JS("formatMessage('Approved On')"))
-                                  .LabelMode(EditorLabelMode.Outside)
-                                  .ID("ApprovedOntext")
-                                  .Value(null) // Default value
-                                       .Disabled(true)
-                                  )
+                                          .Label(new JS("formatMessage('Approved On')"))
+                                          .LabelMode(EditorLabelMode.Outside)
+                                          .ID("ApprovedOntext")
+                                          .Value(null) // Default value
+                                               .Disabled(true)
+                                          )
                              </td>
                              </tr>
                     </table>
@@ -652,29 +711,29 @@
                         <tr>
                              <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Division')")).ID("Division")
-                                        .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                                .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                              </td>
                                <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Sales Person/Co-ordinator')")).ID("RevenueAccount")
-                                                .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                                        .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                              </td>
-                       
+
                              <td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Submitted On')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
                             <td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
-                                     .ID("SubmittedBy")
-                                     .Value(null) // Default value
-                                     )
+                                             .ID("SubmittedBy")
+                                             .Value(null) // Default value
+                                             )
                                 @(Html.DevExtreme().TextBox()
-                                          .Label(new JS("formatMessage('Invoice Submitted By')"))
-                                          .LabelMode(EditorLabelMode.Outside)
-                                              .ID("SubmittedBytext")
-                                          .Value(null) // Default value
-                                       .Disabled(true)
-                                          )
+                                                  .Label(new JS("formatMessage('Invoice Submitted By')"))
+                                                  .LabelMode(EditorLabelMode.Outside)
+                                                      .ID("SubmittedBytext")
+                                                  .Value(null) // Default value
+                                               .Disabled(true)
+                                                  )
                                      </td>
 
                         </tr>
-                      
+
                     </table>
                 </div>
 
@@ -695,7 +754,7 @@
                            <tr>
                             <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType1")
-                                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                             </td>
                           <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID')")).ID("OtherID1"))</td>
                             <td>
@@ -703,7 +762,7 @@
                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                             </td>
                         </tr>
-                         
+
                     </table>
                 </div>
             </div>
@@ -711,27 +770,27 @@
             <div id="tab-content-6" class="tab-content">
                 <div class="card">
                     <table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-                       
+
                         <tr>
                             <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Prepared By')")).ID("PreparedBy")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
                             </td>
                             <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Checked By')")).ID("CheckedBy")
-                                    .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans")))
+                                            .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans")))
                             </td>
                               <td>
                                 @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Approved By')")).ID("ApprovedBy1")
-                                        .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans")))
+                                                .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans")))
                             </td>
 
                         </tr>
                         <tr>
                             <td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Arabic Numbers in Invoice')"))
-                                         .ID("ArabicNumInvoice")
-                                         .Value(null) // Default value
-                                         )</td>
+                                                 .ID("ArabicNumInvoice")
+                                                 .Value(null) // Default value
+                                                 )</td>
                                            <td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY-MM-DD)with Time')"))
                                          .ID("UseDateFormatWithTime")
                                          .Value(null) // Default value
@@ -744,9 +803,9 @@
 
                          <tr>
                             <td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Company Seal')"))
-                                                 .ID("CompanySeal")
-                                             .Value(null) // Default value
-                                             )</td>
+                                                         .ID("CompanySeal")
+                                                     .Value(null) // Default value
+                                                     )</td>
                                            <td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY - MM - DD)')"))
                                          .ID("UseDateFormat1")
                                          .Value(null) // Default value
@@ -758,20 +817,20 @@
                         </tr>
                           <tr>
                             <td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Signature')"))
-                                                     .ID("ShowSignature1")
-                                                 .Value(null) // Default value
-                                                 )</td>
+                                                             .ID("ShowSignature1")
+                                                         .Value(null) // Default value
+                                                         )</td>
                                            <td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY - MM - DD)')"))
                                          .ID("UseDateFormat2")
                                          .Value(null) // Default value
                                          )</td>
-                                         
+
                         </tr>
                            <tr>
                             <td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Invoice in Letter Head')"))
-                                                         .ID("PrintInvoiceinLetterHead")
-                                                     .Value(null) // Default value
-                                                     )</td>
+                                                                 .ID("PrintInvoiceinLetterHead")
+                                                             .Value(null) // Default value
+                                                             )</td>
                         </tr>
 
                     </table>
@@ -779,34 +838,34 @@
             </div>
         </div>
 
-      
+
 
         <div class="dx-field ledgerResult">
 
             @(
-                    Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-                    .ID("dataGrid")
-                    .RemoteOperations(false)
-                    .Columns(columns =>
-                    {
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption(new JS("formatMessage('Voucher Entry No')"))
-                    .Visible(false);
+                            Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+                            .ID("dataGrid")
+                            .RemoteOperations(false)
+                            .Columns(columns =>
+                            {
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption(new JS("formatMessage('Voucher Entry No')"))
+                            .Visible(false);
 
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption(new JS("formatMessage('Item Code')"))
-                    .Visible(true);
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption(new JS("formatMessage('Item Code')"))
+                            .Visible(true);
 
 
-                        columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Description')"))
-                    .CellTemplate(@<text>
+                                columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Description')"))
+                            .CellTemplate(@<text>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
                         <%- data.AccountHead ? data.AccountHead : "No Selection" %>
                     </span>
                 </div>
             </text>)
-                .EditCellTemplate(@<text>
+                        .EditCellTemplate(@<text>
 
 
                 @(Html.DevExtreme().DropDownBox()
@@ -839,79 +898,79 @@
 
             </text>);
 
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption(new JS("formatMessage('...')"))
-                    .Visible(true);
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption(new JS("formatMessage('...')"))
+                            .Visible(true);
 
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption(new JS("formatMessage('Qty')"))
-                    .Visible(true);
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption(new JS("formatMessage('Qty')"))
+                            .Visible(true);
 
-                        columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Right).CustomizeText(
-                    "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+                                columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Right).CustomizeText(
+                            "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-                    ).AllowEditing(false);
-
-
-                        columns.AddFor(m => m.CrAmount)
-                    .Caption(new JS("formatMessage('Total Before Discount')"))
-                    .AllowEditing(false)
-                    .Alignment(HorizontalAlignment.Right)
-
-                @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
-                .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                            ).AllowEditing(false);
 
 
-                        columns.AddFor(m => m.EntryNarration)
-                    .Caption(new JS("formatMessage('Discount')"))
-                    .AllowEditing(true);// Allow editing for this column ;
+                                columns.AddFor(m => m.CrAmount)
+                            .Caption(new JS("formatMessage('Total Before Discount')"))
+                            .AllowEditing(false)
+                            .Alignment(HorizontalAlignment.Right)
 
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption("...")
-                    .Visible(true);
-
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption(new JS("formatMessage('Amount')"))
-                    .Visible(true);
-
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption(new JS("formatMessage('VAT%')"))
-                    .Visible(true);
-
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption(new JS("formatMessage('Excemption Code')"))
-                    .Visible(true);
-
-                        columns.AddFor(m => m.VoucherEntryNo)
-                    .Caption(new JS("formatMessage('VAT')"))
-                    .Visible(true);
-
-                        columns.AddFor(m => m.SysRemarks)
-                    .Caption(new JS("formatMessage('Total')"))
-                    .AllowEditing(false)
-                    ;
+                        @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
+                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 
+                                columns.AddFor(m => m.EntryNarration)
+                            .Caption(new JS("formatMessage('Discount')"))
+                            .AllowEditing(true);// Allow editing for this column ;
 
-                    })
-                .Selection(selection => selection.Mode(SelectionMode.Single))
-                .AllowColumnReordering(true) // Enable column reordering
-                .AllowColumnResizing(true)   // Enable column resizing
-                .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                //.HeaderFilter(filter => filter.Visible(true))
-                .Height(250)
-                .ColumnAutoWidth(true)
-                .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-                .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-                .ShowBorders(true)
-                .Width("100%")
-                .Editing(editing => editing
-                .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
-                .AllowUpdating(true)   // Enable editing of existing rows
-                .AllowDeleting(true)   // Enable deleting rows
-                .UseIcons(true) // Enables icons for editing buttons
-                )
-                @* .OnEditorPreparing("onEditorPreparing")
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption("...")
+                            .Visible(true);
+
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption(new JS("formatMessage('Amount')"))
+                            .Visible(true);
+
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption(new JS("formatMessage('VAT%')"))
+                            .Visible(true);
+
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption(new JS("formatMessage('Excemption Code')"))
+                            .Visible(true);
+
+                                columns.AddFor(m => m.VoucherEntryNo)
+                            .Caption(new JS("formatMessage('VAT')"))
+                            .Visible(true);
+
+                                columns.AddFor(m => m.SysRemarks)
+                            .Caption(new JS("formatMessage('Total')"))
+                            .AllowEditing(false)
+                            ;
+
+
+
+                            })
+                        .Selection(selection => selection.Mode(SelectionMode.Single))
+                        .AllowColumnReordering(true) // Enable column reordering
+                        .AllowColumnResizing(true)   // Enable column resizing
+                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                                                                      //.HeaderFilter(filter => filter.Visible(true))
+                        .Height(250)
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                        .ShowBorders(true)
+                        .Width("100%")
+                        .Editing(editing => editing
+                        .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
+                        .AllowUpdating(true)   // Enable editing of existing rows
+                        .AllowDeleting(true)   // Enable deleting rows
+                        .UseIcons(true) // Enables icons for editing buttons
+                        )
+                        @* .OnEditorPreparing("onEditorPreparing")
                     .OnRowUpdating("onRowUpdating")
                     .OnRowRemoving("onRowRemoving") // Ensure correct capitalization
                     .OnRowPrepared(@"
@@ -921,7 +980,7 @@
             }
             }
             ") *@
-                @* .Summary(summary =>
+                        @* .Summary(summary =>
 
                     {
 
@@ -940,7 +999,7 @@
                         });
 
                     }) *@
-                )
+                        )
 
         </div>
 <div class="Head">
@@ -948,6 +1007,118 @@
                 @await Html.PartialAsync("VATModuleFooter")
 </div>
 </div>
+        @using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+                    .ID("paymentmeans-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("VATModule")
+                        .LoadAction("GetPaymentMeans")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("PaymentMeansTypeCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .ShowColumnHeaders(false)
+                 
+                    .SearchPanel(sp => sp.HighlightSearchText(false))
+                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                        .OnSelectionChanged("PaymentMeansdataGridSelectionChanged")
+                        .OnInitialized("CommondataGridInitialized")
+                    .HeaderFilter(p => p.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    @*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
+                       .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(200)
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                            // columns.Add().DataField("OpeningBalanceDrCr");
+                            columns.Add().DataField("PaymentMeansTypeCode").Caption(new JS("formatMessage('PaymentMeans Type Code')"));
+                            columns.Add().DataField("PaymentMeansType").Caption(new JS("formatMessage('PaymentMeans Type')"));
+                      
+
+
+                    })
+                    )
+        }
+
+        @using (Html.DevExtreme().NamedTemplate("ClientCodeContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+                        .ID("clientcode-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("VATModule")
+                                .LoadAction("GetClientCode")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("AccountHead")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .ShowColumnHeaders(false)
+                        .FilterRow(f => f.Visible(false))
+                        .SearchPanel(sp => sp.HighlightSearchText(false))
+                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                            .OnSelectionChanged("ClientCodedataGridSelectionChanged")
+                                .OnInitialized("ClientCodedataGridInitialized")
+                        .HeaderFilter(p => p.Visible(false))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                          
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(200)
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                                // columns.Add().DataField("OpeningBalanceDrCr");
+                                columns.Add().DataField("AccountId").Caption("Account Head");
+                                columns.Add().DataField("AccountHead").Caption("Client Name");
+                                columns.Add().DataField("VatregistrationNo").Caption("Client VAT No");
+                                columns.Add().DataField("ReferenceNo").Caption("ReferenceNo");
+                                columns.Add().DataField("IsLedgerObselete").Caption("IsLedgerObselete");
+
+
+                        })
+                        )
+        }
+        @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+                            .ID("clientname-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("VATModule")
+                                    .LoadAction("GetClientCode")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("AccountHead")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .ShowColumnHeaders(false)
+                            .FilterRow(f => f.Visible(false))
+                            .SearchPanel(sp => sp.HighlightSearchText(false))
+                            .Selection(sl => sl.Mode(SelectionMode.Single))
+                                    .OnSelectionChanged("ClientNamedataGridSelectionChanged")
+                                    .OnInitialized("ClientCodedataGridInitialized")
+                            .HeaderFilter(p => p.Visible(false))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(200)
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("AccountHead").Caption("Client Name");
+
+                            })
+                            )
+        }
+        
     </div>
 
 </div>
@@ -959,9 +1130,9 @@
 
     $(document).ready(function () {
 
-    $(".limited-footer .btn-container").each(function () {
+    $(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-        if (!$(this).find("#btnSave,#btnSaveAndClose,#btnPreview1,#btnPrint1,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach").length) {
+        if (!$(this).find("#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
 
             $(this).remove();
 
@@ -970,6 +1141,94 @@
     });
 
 });
+  function PaymentMeansdataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddpaymentmeans").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey); 
+                ddbInstance.close();
+        }
+    }
+
+      function ClientCodedataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+             ddbInstance.close();
+        }
+         var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
+                    // Get ReferenceNo from selected row
+                    if (selectedRowData.length > 0) {
+                       let accheadid = selectedRowData[0].AccountId;
+                      let  accheadname = selectedRowData[0].AccountHead;
+                          ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
+                          $("#GroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].ClientGroupVatnumber)
+                          $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].ClientVendorNo)
+                          $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
+                          $("#OtherIDType").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherIdtype)
+
+                          
+                        // refno=selectedRowData[0].ReferenceNo;
+                        // accIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
+
+                    } else {
+                        DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+                        return;
+                    }
+    }
+
+
+function CommondataGridInitialized(e) {
+        dataGrid1 = e.component;
+    }
+
+    function ClientCodedataGridInitialized(e) {
+        dataGrid1 = e.component;
+    }
+     function dropDownBoxOnInput(e) {
+                const ddbInstance = e.component;
+                if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+                const text = ddbInstance.option("text");
+                if (dataGrid) {
+                    dataGrid.option("searchPanel.text", text);
+                }
+            }
+
+      
+             function onKeyDown(e) {
+                const ddbInstance = e.component;
+                if (e.event.keyCode !== 40) return;
+                if (!ddbInstance.option("opened")) {
+                    ddbInstance.open();
+                } else {
+                    let focusedIndex = dataGrid.option("focusedRowIndex");
+                    let visibleRows = dataGrid.getVisibleRows().length - 1;
+                    if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+                    dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+                }
+            }
+
+               function onOpened(e) {
+                setTimeout(() => {
+                    e.component.focus();
+                });
+            }
+
+                  function ClientNamedataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddclientname").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+             ddbInstance.close();
+        }
+   }
+
 
         function syncVATNumbers(e) {
         // Set the value of txtBillingVATRegNo to the value of txtClientVATNo
@@ -2520,13 +2779,7 @@
             }
         }
 
-        function dataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlAccountGroup").dxDropDownBox("instance");
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
+       
         function dataGridSelectionChanged(e) {
             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
             const ddbInstance = $("#ddlAccountGroup").dxDropDownBox("instance");
@@ -2583,456 +2836,11 @@
 
         }
 
-        function dataGridInitialized(e) {
-            dataGrid = e.component;
-        }
 
-        // Credit Debit Opening Balance Dropdown Events
-        let dataGrid1;
 
-        function DrCrValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid1.clearSelection();
-                return;
-            }
-        }
 
-        function DrCrOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
 
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid1) {
-                dataGrid1.option("searchPanel.text", text);
-            }
-        }
 
-
-
-
-        function ddlbranchOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid2) {
-                dataGrid2.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlbranchonOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-
-        function ddlbranchonKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid2.option("focusedRowIndex");
-                let visibleRows = dataGrid2.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid2.focus(dataGrid2.getRowElement(focusedIndex));
-            }
-        }
-
-        function branchdataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlbranch").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
-
-        function branchdataGridInitialized(e) {
-            dataGrid2 = e.component;
-        }
-
-        // Sub Group Dropdown Events
-        let dataGrid3;
-
-        function ddlsubGroupValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid3.clearSelection();
-                return;
-            }
-        }
-
-        function ddlsubGroupOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid3) {
-                dataGrid3.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlsubGrouponOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-
-        function ddlsubGrouponKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid3.option("focusedRowIndex");
-                let visibleRows = dataGrid3.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid3.focus(dataGrid3.getRowElement(focusedIndex));
-            }
-        }
-
-        function subgroupdataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlSubgroup").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
-
-        function subgroupdataGridInitialized(e) {
-            dataGrid3 = e.component;
-        }
-
-
-        // Sales Person List Dropdown Events
-        let dataGrid4;
-
-        function ddlSalesValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid4.clearSelection();
-                return;
-            }
-        }
-
-        function ddlSalesOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid4) {
-                dataGrid4.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlSalesonOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-
-        function ddlSalesonKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid4.option("focusedRowIndex");
-                let visibleRows = dataGrid4.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid4.focus(dataGrid4.getRowElement(focusedIndex));
-            }
-        }
-
-        function salesdataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlSales").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
-
-        function salesdataGridInitialized(e) {
-            dataGrid4 = e.component;
-        }
-
-        // Other Type List Dropdown Events
-        let dataGrid5;
-        let dataGrid55;
-
-        function ddlOtherTypeValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid5.clearSelection();
-                return;
-            }
-        }
-         function ddlSupOtherTypeValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid55.clearSelection();
-                return;
-            }
-        }
-
-        function ddlOtherTypeOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid5) {
-                dataGrid5.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlOtherTypeonOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-        function ddlSupOtherTypeOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid55) {
-                dataGrid55.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlSupOtherTypeonOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-
-        function ddlOtherTypeonKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid5.option("focusedRowIndex");
-                let visibleRows = dataGrid5.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid5.focus(dataGrid5.getRowElement(focusedIndex));
-            }
-        }
-        function ddlSupOtherTypeonKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid55.option("focusedRowIndex");
-                let visibleRows = dataGrid55.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid55.focus(dataGrid55.getRowElement(focusedIndex));
-            }
-        }
-
-        function othertypedataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlOtherType").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
-
-        function othertypedataGridInitialized(e) {
-            dataGrid5 = e.component;
-        }
-        function SupothertypedataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlSupOtherType").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
-
-        function SupothertypedataGridInitialized(e) {
-            dataGrid55 = e.component;
-        }
-
-        // Billing Payment Dropdown Events
-        let dataGrid6;
-        let dataGrid66;
-         let dataGrid666;
-        function ddlBillingPaymentValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid6.clearSelection();
-                return;
-            }
-        }
-
-        function ddlBillingPaymentOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid6) {
-                dataGrid6.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlBillingPaymentonOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-
-        function ddlBillingPaymentponKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid6.option("focusedRowIndex");
-                let visibleRows = dataGrid6.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid6.focus(dataGrid6.getRowElement(focusedIndex));
-            }
-        }
-
-        function billingdataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlBillingPayment").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
-
-        function billingdataGridInitialized(e) {
-            dataGrid6 = e.component;
-        }
-        function ddlBillingPaymentValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid6.clearSelection();
-                return;
-            }
-        }
-
-
-        function ddlCountryCodeValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid66.clearSelection();
-                return;
-            }
-        }
-
-        function ddlCountryCodeOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid66) {
-                dataGrid66.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlCountryCodeonOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-
-        function ddlCountryCodeonKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid66.option("focusedRowIndex");
-                let visibleRows = dataGrid66.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid66.focus(dataGrid66.getRowElement(focusedIndex));
-            }
-        }
-
-        function CountryCodedataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlCountryCode").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
-
-        function CountryCodedataGridInitialized(e) {
-            dataGrid66 = e.component;
-        }
-
-
-        //
-
-        function ddlSupCountryCodeValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid666.clearSelection();
-                return;
-            }
-        }
-
-        function ddlSupCountryCodeOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid666) {
-                dataGrid666.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlSupCountryCodeonOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-
-        function ddlSupCountryCodeonKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid666.option("focusedRowIndex");
-                let visibleRows = dataGrid666.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid666.focus(dataGrid666.getRowElement(focusedIndex));
-            }
-        }
-
-        function SupCountryCodedataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlSupCountryCode").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-            }
-        }
-
-        function SupCountryCodedataGridInitialized(e) {
-            dataGrid666 = e.component;
-        }
 
 
 </script>
@@ -3343,949 +3151,6 @@
                            DevExpress.ui.notify("Please Fill All the Required Fields", "error", 3000);
                        }
        }
-
-
-
-       //english text convert to arabic
-
-       async function translateToArabic(text) {
-
-           try {
-
-
-               const response = await fetch(
-
-                   `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
-
-               );
-
-               const data = await response.json();
-               console.log(data);
-               return data.responseData.translatedText;
-
-           } catch (error) {
-
-               console.error("Translation failed:", error);
-
-               return "Translation Error";
-
-           }
-
-       }
-
-       async function convertToArabic() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtAccountHead").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtAccountHeadAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-
-       async function convertAccountNameToArabic() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtBankAccountName").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtBankAccountNameAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function convertBankNameToArabic() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtBankName").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtBankNameAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function convertBankBranchToArabic() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtBankBranch").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtBankBranchAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onDistrictArClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtDistrict").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtDistrictAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onClientAdditionalAddressArClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtClientAdditionalAddress").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtClientAdditionalAddressAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onClientAddressArClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtClientAddress").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtClientAddressAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onClientBillingArClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtClientBilling").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtClientBillingAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onClientCityArClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtClientCity").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtClientCityAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onClientProvinceStateArClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtState").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtStateAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onObsSupRegNoArabicClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtObsSupRegNo").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtObsSupRegNoAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onArabObsSupAddressClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtObsSupAddress").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtObsSupAddressAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-
-       async function onBillingAddressArabicButtonClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtBillingAddress").dxTextArea("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtBillingAddressAr").dxTextArea("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-
-       async function onClientBillingNameArabicButtonClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtClientBillingName").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtClientBillingNameAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-       ////
-
-       async function onSupplierNameArabicClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtSupBilling").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtSupBillingAr").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-
-       async function onSupAddressClick() {
-
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtSupAddress").dxTextBox("instance");
-
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtSupAddressAr1").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       async function onSupAddressAdditionalClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtSupAdditionalAddress").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtSupAdditionalAddressAr1").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-
-       async function onSupCityClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtSupCity").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtSupCityAr1").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-
-       async function onSupStateClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtSupState").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtSupStateAr1").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-
-       async function onSupDistrictClick() {
-
-           // Get the TextBox1 (input) instance
-
-           const textBox1Instance = $("#txtSupDistrict").dxTextBox("instance");
-
-           // Get the TextBox2 (output) instance
-
-           const textBox2Instance = $("#txtSupDistrictAr1").dxTextBox("instance");
-
-           // Ensure both instances are initialized
-
-           if (!textBox1Instance || !textBox2Instance) {
-
-               console.error("TextBox instances are not properly initialized.");
-
-               return;
-
-           }
-
-
-           // Get the value from TextBox1
-
-           const englishText = textBox1Instance.option("value");
-
-           // Validate input
-
-           if (!englishText || englishText.trim() === "") {
-
-               alert("Please enter text to translate.");
-
-               return;
-
-           }
-
-           // Perform translation
-
-           const arabicTranslation = await translateToArabic(englishText);
-
-           // Update TextBox2 with the Arabic translation
-
-           textBox2Instance.option("value", arabicTranslation);
-
-       }
-
-       // alert("two");
-       // alert(getidfromCOA);
-       //Get datas and Bind from ChartOfAccounts
 
 
 
