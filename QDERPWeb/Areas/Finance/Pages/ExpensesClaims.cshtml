@@ -182,7 +182,14 @@
                 .Columns(columns =>
                 {
                     columns.AddFor(m => m.ClaimerID).Caption(new JS("formatMessage('Claimer ID')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.ClaimRefNo).Caption(new JS("formatMessage('Claim Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                columns.AddFor(m => m.ClaimRefNo).Caption(new JS("formatMessage('Claim Ref No')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+            <div>
+                <a href="javascript:void(0);" style="color: #007bff; font-weight: bold;"
+                   onclick="">
+                    <%- data.ClaimRefNo %>
+                </a>
+            </div>
+        </text>).Visible(true);
                     columns.AddFor(m => m.PaymentVoucherNo).Caption(new JS("formatMessage('Payment Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Format(format => format
@@ -205,7 +212,43 @@
                     columns.AddFor(m => m.PaymentAccount).Caption(new JS("formatMessage('Payment Account')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.PaymentType).Caption(new JS("formatMessage('Payment Type')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.PaymentVoucherNo).Caption(new JS("formatMessage('Payment Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                    columns.AddFor(m => m.ProjectClaimedFor).Caption(new JS("formatMessage('Project Claimed For')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.ProjectClaimedFor).Caption(new JS("formatMessage('Project Claimed For')")).Alignment(HorizontalAlignment.Center)// Normal Grid Mode
+                .CellTemplate(@<text>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="account-head-span">
+                    <%- data.ProjectClaimedFor %>
+                </span>
+               
+            </div>
+        </text>)
+            // Edit Mode
+            .EditCellTemplate(@<text>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                @(Html.DevExtreme().DropDownBox()
+                .DataSource(d => d.WebApi().Controller("CostAllocation")
+                .LoadAction("GetCostAllocationUnits")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CostAllocationUnitId"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("Costgriddropdown_{rowIndex}")
+                .ShowClearButton(false)
+                .AcceptCustomValue(true)
+                .OpenOnFieldClick(false)
+                .HoverStateEnabled(true)
+                .OnValueChanged("gridBox_valueChanged")
+                .ValueExpr("CostAllocationUnitId")
+                .DisplayExpr("CostAllocationUnit")
+                .Placeholder("Select Cost Allocation")
+                .Width(350)
+                .DropDownOptions(o => o.Width(800))
+                .Value(new JS("data.ProjectClaimedFor"))
+                .ContentTemplate(new TemplateName("JournalcostAllocationDropdownContentTemplate"))
+                )
+
+               
+            </div>
+
+        </text>).Visible(true);
                     columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
@@ -217,8 +260,23 @@
                     columns.AddFor(m => m.ClaimDate)
                 .Caption(new JS("formatMessage('Claim Date')")).Alignment(HorizontalAlignment.Center).Format(format => format
                 .Type(Format.ShortDate)    // Custom type format
-                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
-                    columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true).AllowEditing(true)
+                // Normal Grid Mode
+                .CellTemplate(@<text>
+            <span>
+                <%- data.ClaimDate ? DevExpress.localization.formatDate(new Date(data.ClaimDate), "dd-MMM-yyyy") : DevExpress.localization.formatDate(new Date(), "dd-MMM-yyyy") %>
+            </span>
+        </text>)
+            // Edit Mode
+            .EditCellTemplate(@<text>
+            @(Html.DevExtreme().DateBox()
+            .Type(DateBoxType.Date)
+            .Value(new JS("data.ClaimDate ? new Date(data.ClaimDate) : new Date()")) // Default to today
+            .OnValueChanged("setEffectiveDate") // Pass full data object
+            .DisplayFormat("dd-MMM-yyyy")
+            )
+        </text>); 
+                    columns.AddFor(m => m.ClaimRemarks).Caption(new JS("formatMessage('Claim Remarks')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
                     columns.AddFor(m => m.ClaimedAmountTotal)
                 .Caption(new JS("formatMessage('Claimed Amount')"))
                 .Alignment(HorizontalAlignment.Center)
@@ -258,7 +316,7 @@
             <div class="dx-icon">
                 <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>).Visible(true);
+        </text>).Visible(true).AllowEditing(false);
                     columns.AddFor(m => m.IsVerified).Alignment(HorizontalAlignment.Center)
                 .Caption(new JS("formatMessage('Verified')"))
                 .Alignment(HorizontalAlignment.Center)
@@ -266,19 +324,19 @@
             <div class="dx-icon">
                 <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>).Visible(true);
+        </text>).Visible(true).AllowEditing(false);
                     columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Approved')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>).Visible(true);
+        </text>).Visible(true).AllowEditing(false);
                     columns.AddFor(m => m.IsPaid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
-        </text>).Visible(true);
+        </text>).Visible(true).AllowEditing(false);
 
                 })
             .Height(440)
@@ -295,7 +353,9 @@
         .UseIcons(true))        // Enable edit icons (like pencil) *@
             //.Paging(paging => paging.Enabled(false))
             .ShowBorders(true)
+            .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
             .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+            .OnEditorPreparing("onEditorPreparing")
             .Summary(s => s
             .TotalItems(totalItems =>
             {
@@ -316,7 +376,49 @@
             }))
             )
     </div>
-    
+    @using (Html.DevExtreme().NamedTemplate("JournalcostAllocationDropdownContentTemplate"))
+    {
+        @(
+            Html.DevExtreme().DataGrid()
+            .ID("costAllocationDropdownGrid")
+            .DataSource(d => d.WebApi()
+            .Controller("CostAllocation")
+            .LoadAction("GetCostAllocationUnits")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CostAllocationUnit")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .SearchPanel(sp => sp.HighlightSearchText(true))
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+            .SelectedRowKeys(new JS(@"component.option(""value"")"))
+            .OnSelectionChanged(@<text>
+        function(selectedItems) {
+        var keys = selectedItems.selectedRowKeys;
+        component.option("value", keys);
+        console.log(keys);
+        }
+    </text>)
+
+
+                .HeaderFilter(p => p.Visible(true))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .Columns(columns =>
+                {
+                    
+                    columns.Add().Caption("Cost Allocated Projects/Jobs").DataField("CostAllocationUnit");
+                    
+                
+                })
+            )
+    }
 </div>
 
 <script type="text/javascript">
@@ -529,5 +631,110 @@
         });
     }
     // Function to format date in required format
+    function setEffectiveDate(e) {
+        var $dataGrid = $("#dataGrid");
+
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+        }
+        if (e.value) {
+            debugger;
+            let grid = $("#dataGrid").dxDataGrid("instance");
+            let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+            let rowData = grid.getVisibleRows()[rowIndex].data;
+
+
+
+
+            rowData.ClaimDate = e.value; // Update the row data
+            grid.cellValue(rowIndex, "ClaimDate", e.value); // Ensure it reflects in the grid
+
+        }
+    }
+
+    function gridBox_valueChanged(e) {
+        var $dataGrid = $("#dataGrid");
+
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+        }
+        if (e.value) {
+            let grid = $("#dataGrid").dxDataGrid("instance");
+            let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+            let rowData = grid.getVisibleRows()[rowIndex].data;
+
+            let costAllocationDropdownGrid = $("#costAllocationDropdownGrid").dxDataGrid("instance");
+            let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
+
+            if (selectedRowData) {
+                selectedCostAllocationUnitID = selectedRowData.CostAllocationUnitId; // Store the correct ID
+
+            }
+
+            rowData.ProjectClaimedFor = e.value; // Update the row data
+            grid.cellValue(rowIndex, "ProjectClaimedFor", e.value); // Ensure it reflects in the grid
+
+        }
+
+
+
+        // Close the dropdown after selection
+        e.component.option("opened", false);
+    }
+
+    function onEditorPreparing(e) {
+        if (e.dataField === 'ClaimRemarks') {
+            if (isUpdatingCell) {
+                return; // Prevent recursive triggering
+            }
+
+            e.cancel = true; // Prevent the default editor behavior
+
+            const dataGridInstance = e.component; // Get the DataGrid instance
+            const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
+            const fieldName = e.dataField; // Dynamic field name (EntryNarration or SysRemarks)
+            const initialValue = e.row.data[fieldName] || ""; // Get the current value of the cell
+
+            // Show Swal modal
+            Swal.fire({
+                title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
+                html: `
+                <textarea id="swal-field-editor"
+                                          style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+                                          placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
+                            `,
+                showCancelButton: true,
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                focusConfirm: false,
+                didOpen: () => {
+                    // Focus the textarea and move the cursor to the end
+                    const textarea = document.getElementById('swal-field-editor');
+                    textarea.focus();
+                    textarea.setSelectionRange(initialValue.length, initialValue.length);
+                },
+                preConfirm: () => {
+                    const newValue = document.getElementById('swal-field-editor').value.trim();
+                    return newValue; // Return the new value from the modal
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const newValue = result.value;
+
+                    if (newValue !== initialValue) {
+                        isUpdatingCell = true; // Set the flag before updating the cell
+                        dataGridInstance.cellValue(rowIndex, fieldName, newValue); // Update the specific cell dynamically
+                        dataGridInstance.saveEditData(); // Save the edit data
+                        dataGridInstance.refresh(); // Refresh the grid to reflect changes
+                        isUpdatingCell = false; // Reset the flag after updating
+                    }
+                } else if (result.isDismissed) {
+                    console.log('Edit cancelled');
+                }
+            });
+        }
+    }
 
 </script>
