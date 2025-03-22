@@ -311,7 +311,7 @@
         </text>)
                 .Visible(true);
 
-                    columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Submitted')")).Alignment(HorizontalAlignment.Center)
+                columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Is Submitted To Finance')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
