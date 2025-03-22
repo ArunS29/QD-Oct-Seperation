@@ -5,7 +5,9 @@
         border-bottom: 1px solid #ccc;
     }
 
-
+    .selected-row {
+        background-color: #d1e7dd !important; /* Light green background */
+    }
 
     .horizontal-container {
         display: flex;
@@ -35,7 +37,7 @@
 
         /* Hover Effect */
         .dx-menu-item:hover {
-            background: #007bff !important;
+          /*   background: #007bff !important; */
             color: white !important;
         }
 
@@ -199,39 +201,102 @@
         .DataSource(ds => ds.Mvc()
         .Controller("VoucherApproval")
         .LoadAction("GetVoucherApproval"))
-        .Columns(columns =>
-        {
-            columns.Add().DataField("select").Caption(new JS("formatMessage('Select')")).CellTemplate(@<text>
+            .Columns(columns =>
+            {
+                columns.Add().DataField("select").Caption(new JS("formatMessage('Select')"))
+            .CellTemplate(@<text>
         <input type="checkbox" class="dx-checkbox" />
-    </text>).Width(50);
+    </text>).Width(50)
+        .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Select</div>
+    </text>);
 
-            columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(80);
-            columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true);
-            columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Effective On')")).Width(100).DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true);
-            columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true);
-            columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true);
-            columns.Add().DataField("CreditAmount").Caption(new JS("formatMessage('Credit')")).Width(100).Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true);
-            columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120).Visible(true);
-            columns.Add().DataField("VoucherVerifiedBy").Caption(new JS("formatMessage('Verified By')")).Width(120).Visible(true);
-            columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true);
-            columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher')")).Width(100).Visible(true);
-            columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(true);
-            columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true);
-            columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120).Visible(true);
-            columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(true);
-            // Remaining columns (visible: false)
-            columns.Add().DataField("VoucherRefNo").Visible(false);
-            columns.Add().DataField("VoucherEnteredOn").Visible(false);
-            columns.Add().DataField("VoucherVerifiedOn").Visible(false);
-            columns.Add().DataField("VoucherApprovedOn").Visible(false);
-            columns.Add().DataField("VoucherType").Visible(false);
-            columns.Add().DataField("VoucherModifiedBy").Visible(false);
-            columns.Add().DataField("VoucherModifiedOn").Visible(false);
-            columns.Add().DataField("AuditVerifiedBy").Visible(false);
-            columns.Add().DataField("AuditVerifiedOn").Visible(false);
-        })
+                columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(80)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Voucher No</div>
+    </text>);
+
+                columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(100)
+            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Voucher Date</div>
+    </text>);
+
+                columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Effective On')")).Width(100)
+            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Effective On</div>
+    </text>);
+
+                columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Voucher Narration</div>
+    </text>);
+
+                columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Debit</div>
+    </text>);
+
+                columns.Add().DataField("CreditAmount").Caption(new JS("formatMessage('Credit')")).Width(100).Alignment(HorizontalAlignment.Right)
+            .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Credit</div>
+    </text>);
+
+                columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Entered By</div>
+    </text>);
+
+                columns.Add().DataField("VoucherVerifiedBy").Caption(new JS("formatMessage('Verified By')")).Width(120).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Verified By</div>
+    </text>);
+
+                columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Approved</div>
+    </text>);
+
+                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher')")).Width(100).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Voucher</div>
+    </text>);
+
+                columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Audit</div>
+    </text>);
+
+                columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Approved</div>
+    </text>);
+
+                columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Verified</div>
+    </text>);
+
+                columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">Audit</div>
+    </text>);
+
+                // Remaining hidden columns
+                columns.Add().DataField("VoucherRefNo").Visible(false);
+                columns.Add().DataField("VoucherEnteredOn").Visible(false);
+                columns.Add().DataField("VoucherVerifiedOn").Visible(false);
+                columns.Add().DataField("VoucherApprovedOn").Visible(false);
+                columns.Add().DataField("VoucherType").Visible(false);
+                columns.Add().DataField("VoucherModifiedBy").Visible(false);
+                columns.Add().DataField("VoucherModifiedOn").Visible(false);
+                columns.Add().DataField("AuditVerifiedBy").Visible(false);
+                columns.Add().DataField("AuditVerifiedOn").Visible(false);
+            })
+
 
         .Summary(summary =>
         {
@@ -265,6 +330,7 @@
         .FilterRow(filterRow => filterRow.Visible(false))
         .Grouping(grouping => grouping.AutoExpandAll(true))
         .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .OnRowPrepared("onRowPrepared")
         )
 </div>
 
@@ -523,7 +589,20 @@
             }
         }
     });
+       function toggleRowSelection(checkbox) {
+        var $row = $(checkbox).closest(".dx-row");
+        if (checkbox.checked) {
+            $row.addClass("selected-row");
+        } else {
+            $row.removeClass("selected-row");
+        }
+    }
 
+    function onRowPrepared(e) {
+        if (e.rowType === "data" && e.isSelected) {
+            $(e.rowElement).addClass("selected-row");
+        }
+    }
 
 
 
