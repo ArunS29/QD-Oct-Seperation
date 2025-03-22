@@ -844,7 +844,7 @@
 
             @(
                             Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-                            .ID("dataGrid")
+                                   .ID("B2BdataGrid")
                             .RemoteOperations(false)
                             .Columns(columns =>
                             {
@@ -852,12 +852,12 @@
                             .Caption(new JS("formatMessage('Voucher Entry No')"))
                             .Visible(false);
 
-                                columns.AddFor(m => m.VoucherEntryNo)
-                            .Caption(new JS("formatMessage('Item Code')"))
-                            .Visible(true);
+                             columns.Add().DataField("SNo").Caption("#").Width(200).Visible(true);
 
+                             columns.Add().DataField("ItemCode").Caption(new JS("formatMessage('Item Code')")).Width(200).Visible(true);
 
-                                columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Description')"))
+  
+                             columns.Add().DataField("Description").Caption(new JS("formatMessage('Description')"))
                             .CellTemplate(@<text>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
@@ -898,57 +898,19 @@
 
             </text>);
 
-                                columns.AddFor(m => m.VoucherEntryNo)
-                            .Caption(new JS("formatMessage('...')"))
-                            .Visible(true);
+                              columns.Add().DataField("DescriptionDetails").Caption("...").Width(200).Visible(true);
 
-                                columns.AddFor(m => m.VoucherEntryNo)
-                            .Caption(new JS("formatMessage('Qty')"))
-                            .Visible(true);
+                              columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).Width(200).Visible(true);
+                              columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Width(200).Visible(true);
+                              columns.Add().DataField("TotalBeforeDiscount").Caption(new JS("formatMessage('Total Before Discount')")).Width(200).Visible(true);
+                              columns.Add().DataField("Discount").Caption(new JS("formatMessage('Discount')")).Width(200).Visible(true);
 
-                                columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Right).CustomizeText(
-                            "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
-
-                            ).AllowEditing(false);
-
-
-                                columns.AddFor(m => m.CrAmount)
-                            .Caption(new JS("formatMessage('Total Before Discount')"))
-                            .AllowEditing(false)
-                            .Alignment(HorizontalAlignment.Right)
-
-                        @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
-                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-
-                                columns.AddFor(m => m.EntryNarration)
-                            .Caption(new JS("formatMessage('Discount')"))
-                            .AllowEditing(true);// Allow editing for this column ;
-
-                                columns.AddFor(m => m.VoucherEntryNo)
-                            .Caption("...")
-                            .Visible(true);
-
-                                columns.AddFor(m => m.VoucherEntryNo)
-                            .Caption(new JS("formatMessage('Amount')"))
-                            .Visible(true);
-
-                                columns.AddFor(m => m.VoucherEntryNo)
-                            .Caption(new JS("formatMessage('VAT%')"))
-                            .Visible(true);
-
-                                columns.AddFor(m => m.VoucherEntryNo)
-                            .Caption(new JS("formatMessage('Excemption Code')"))
-                            .Visible(true);
-
-                                columns.AddFor(m => m.VoucherEntryNo)
-                            .Caption(new JS("formatMessage('VAT')"))
-                            .Visible(true);
-
-                                columns.AddFor(m => m.SysRemarks)
-                            .Caption(new JS("formatMessage('Total')"))
-                            .AllowEditing(false)
-                            ;
+                                       //columns.Add().DataField("DiscountDetails").Caption("...").Width(200).Visible(true);
+                                       columns.Add().DataField("Amount").Caption(new JS("formatMessage('Amount')")).Width(200).Visible(true);
+                                       columns.Add().DataField("VAT%").Caption(new JS("formatMessage('VAT%')")).Width(200).Visible(true);
+                                       columns.Add().DataField("ExcemptionCode").Caption(new JS("formatMessage('Excemption Code')")).Width(200).Visible(true);
+                                       columns.Add().DataField("VAT").Caption(new JS("formatMessage('VAT')")).Width(200).Visible(true);
+                                       columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Width(200).Visible(true);
 
 
 
@@ -1128,6 +1090,8 @@
 
 <script>
 
+      
+
     $(document).ready(function () {
 
     $(".limited-footer .btn-containerIvoiceEdit").each(function () {
@@ -1136,7 +1100,7 @@
 
             $(this).remove();
 
-        }
+        }   
 
     });
 
