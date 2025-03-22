@@ -109,7 +109,7 @@
 				<div class="form-group">
 					<div class="">
 						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Received Date')"))
+													.Text(new JS("formatMessage('Submitted Date')"))
 													.ID("UseSubmittedDate")
 													.OnValueChanged("updateDueDate")
 													)
@@ -1731,38 +1731,40 @@
 		}).dxPopup("instance").show();
 	}
 
-
-	   function showLedgerAccountPopup() {
+	function showLedgerAccountPopup() {
 		var popup = $("#ledgerAccountPopup").dxPopup("instance");
 		popup.show();
 
-		// Correct URL to your LedgerAccount view
+		// Set correct URL for LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 	}
 
-	   function showLedgerAccountHeadEditPopup() {
-		var dropDownBox = $("#AccountHeadDropDown").dxDropDownBox("instance");
-
-		IsEdit = true;
-
-		// Initialize variables to avoid reference errors
-		refno = refno || "";
-		accheadar = accheadar || "";
-		accheadname = accheadname || "";
-		accgroup = accgroup || "";
-		accgroupid = accgroupid || "";
-
-		// Validate AccountHead selection
-		if (accheadid == null || accheadid == undefined || accheadid=="") { // Checks for both null and undefined
-			DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+	function showLedgerAccountHeadEditPopup() {
+		var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
+		var accheadid = dropDownBox ? dropDownBox.option("value") : null; // Get the selected value
+			IsEdit = true;
+		if (!accheadid) { // Validate AccountHead selection
+			DevExpress.ui.notify("Please select an AccountHead to edit.", "error", 2000);
 			return;
 		}
+
+
+
+		// Initialize variables safely
+		var refno = typeof refno !== "undefined" ? refno : "";
+		var accheadar = typeof accheadar !== "undefined" ? accheadar : "";
+		var accheadname = typeof accheadname !== "undefined" ? accheadname : "";
+		var accgroup = typeof accgroup !== "undefined" ? accgroup : "";
+		var accgroupid = typeof accgroupid !== "undefined" ? accgroupid : "";
 
 		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
 
 		// Show the popup
 		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 		popupInstance.show();
+
+		// Remove any previously set onShown event to avoid duplicates
+		popupInstance.option("onShown", null);
 
 		// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
 		popupInstance.option("onShown", function () {
@@ -1773,7 +1775,6 @@
 				return;
 			}
 
-			// Set iframe src when popup is shown
 			iframe.onload = function () {
 				console.log("Iframe loaded successfully.");
 			};
@@ -1783,13 +1784,58 @@
 	}
 
 
-	  function showLedgerAccountEditPopup() {
 
-		var dropDownBox = $("#SupplierNameDropDown").dxDropDownBox("instance");
+	//   function showLedgerAccountEditPopup() {
+
+	// 	var dropDownBox = $("#SupplierNameDropDown").dxDropDownBox("instance");
+
+	// 	IsEdit = true;
+
+	// 	// Initialize variables to avoid reference errors
+	// 	suprefno = suprefno || "";
+	// 	supaccheadar = supaccheadar || "";
+	// 	suppliername = suppliername || "";
+	// 	supaccgroup = supaccgroup || "";
+	// 	supaccgroupid = supaccgroupid || "";
+
+	// 	// Validate AccountHead selection
+	// 	if (supplierId == null || supplierId == undefined || supplierId=="") { // Checks for both null and undefined
+	// 		DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+	// 		return;
+	// 	}
+
+	// 	const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
+
+	// 	// Show the popup
+	// 	var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+	// 	popupInstance.show();
+
+	// 	// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+	// 	popupInstance.option("onShown", function () {
+	// 		var iframe = document.getElementById("ledgerEditAccountFrame");
+
+	// 		if (!iframe) {
+	// 			console.error("Error: ledgerEditAccountFrame not found!");
+	// 			return;
+	// 		}
+
+	// 		// Set iframe src when popup is shown
+	// 		iframe.onload = function () {
+	// 			console.log("Iframe loaded successfully.");
+	// 		};
+
+	// 		iframe.src = url;
+	// 	});
+	// }
+
+
+	function showLedgerAccountEditPopup() {
+		var dropDownBox = $("#ClientNameDropDown").dxDropDownBox("instance"); // Get DropDownBox instance
+		var supplierId = dropDownBox.option("value"); // Get the selected value
 
 		IsEdit = true;
 
-		// Initialize variables to avoid reference errors
+		// Ensure variables are initialized properly
 		suprefno = suprefno || "";
 		supaccheadar = supaccheadar || "";
 		suppliername = suppliername || "";
@@ -1797,11 +1843,12 @@
 		supaccgroupid = supaccgroupid || "";
 
 		// Validate AccountHead selection
-		if (supplierId == null || supplierId == undefined || supplierId=="") { // Checks for both null and undefined
-			DevExpress.ui.notify("Please select the AccountHead to edit.", "error", 2000);
+		if (!supplierId) {
+			DevExpress.ui.notify("Please select an Account Head before editing.", "error", 2000);
 			return;
 		}
 
+		// Construct the URL only if AccountHeadID is valid
 		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
 
 		// Show the popup
@@ -1817,7 +1864,10 @@
 				return;
 			}
 
-			// Set iframe src when popup is shown
+			// Clear iframe src to prevent caching issues
+			iframe.src = "";
+
+			// Set new iframe src
 			iframe.onload = function () {
 				console.log("Iframe loaded successfully.");
 			};
@@ -1825,6 +1875,7 @@
 			iframe.src = url;
 		});
 	}
+
 	function onSupplierNameChanged(e) {
 		var accountId = e.value; // Get selected AccountId
 		if (!accountId) {

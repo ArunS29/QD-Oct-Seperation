@@ -195,21 +195,15 @@
 
 <div class="dx-field ledgerResult">
     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20136VoucherMasterList>()
-        .ID("dataGrid")
-        .KeyExpr("VoucherNo")
-        .RemoteOperations(false)
-        .DataSource(ds => ds.Mvc()
-        .Controller("VoucherApproval")
-        .LoadAction("GetVoucherApproval"))
+            .ID("dataGrid")
+            .KeyExpr("VoucherNo")
+            .RemoteOperations(false)
+            .DataSource(ds => ds.Mvc()
+            .Controller("VoucherApproval")
+            .LoadAction("GetVoucherApproval"))
             .Columns(columns =>
             {
-                columns.Add().DataField("select").Caption(new JS("formatMessage('Select')"))
-            .CellTemplate(@<text>
-        <input type="checkbox" class="dx-checkbox" />
-    </text>).Width(50)
-        .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Select</div>
-    </text>);
+                
 
                 columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(80)
             .HeaderCellTemplate(@<text>
@@ -220,12 +214,6 @@
             .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true)
             .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Voucher Date</div>
-    </text>);
-
-                columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Effective On')")).Width(100)
-            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Effective On</div>
     </text>);
 
                 columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true)
@@ -260,44 +248,47 @@
         <div style="white-space: normal; text-align: center;">Approved</div>
     </text>);
 
-                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher')")).Width(100).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Voucher</div>
-    </text>);
-
                 columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(true)
             .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Audit</div>
     </text>);
 
-                columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
+                // Checkbox Columns for Approved, Verified, and Audit
+                columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120)
+            .DataType(GridColumnDataType.Boolean)
+            .CellTemplate(@<text>
+        @(Html.DevExtreme().CheckBox()
+        .Value(new JS("data.IsApproved"))
+        .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsApproved', data); }"))
+    </text>)
+        .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Approved</div>
     </text>);
 
-                columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
+                columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120)
+            .DataType(GridColumnDataType.Boolean)
+            .CellTemplate(@<text>
+        @(Html.DevExtreme().CheckBox()
+        .Value(new JS("data.IsVerified"))
+        .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsVerified', data); }"))
+    </text>)
+        .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Verified</div>
     </text>);
 
-                columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
+
+                columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120)
+            .DataType(GridColumnDataType.Boolean)
+            .CellTemplate(@<text>
+        @(Html.DevExtreme().CheckBox()
+        .Value(new JS("data.IsAuditVerified"))
+        .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsAuditVerified', data); }"))
+    </text>)
+        .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Audit</div>
     </text>);
 
-                // Remaining hidden columns
-                columns.Add().DataField("VoucherRefNo").Visible(false);
-                columns.Add().DataField("VoucherEnteredOn").Visible(false);
-                columns.Add().DataField("VoucherVerifiedOn").Visible(false);
-                columns.Add().DataField("VoucherApprovedOn").Visible(false);
-                columns.Add().DataField("VoucherType").Visible(false);
-                columns.Add().DataField("VoucherModifiedBy").Visible(false);
-                columns.Add().DataField("VoucherModifiedOn").Visible(false);
-                columns.Add().DataField("AuditVerifiedBy").Visible(false);
-                columns.Add().DataField("AuditVerifiedOn").Visible(false);
             })
-
-
         .Summary(summary =>
         {
             summary.TotalItems(items =>
@@ -320,13 +311,9 @@
         .HeaderFilter(filter => filter.Visible(true))
         .Height(300)
         .Width("100%")
-
-        // Remove Paging
         .Paging(paging => paging.Enabled(false))
-
-        // Enable Virtual Scrolling
         .Scrolling(scrolling => scrolling.Mode(GridScrollingMode.Virtual))
-
+        .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
         .FilterRow(filterRow => filterRow.Visible(false))
         .Grouping(grouping => grouping.AutoExpandAll(true))
         .GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -335,11 +322,24 @@
 </div>
 
 
+
 <div id="voucherContextMenu"></div>
 
 
 
     <script>
+
+            function updateApprovalStatus(element, field, rowData) {
+        let grid = $("#dataGrid").dxDataGrid("instance");
+        let newValue = element.checked;
+
+        // Update the row data
+        let updatedRow = Object.assign({}, rowData, { [field]: newValue });
+
+        // Apply the change to the data source
+        grid.cellValue(rowData.rowIndex, field, newValue);
+        grid.saveEditData();  // Ensure data is saved
+    }
     //     $(function () {
     //     $("#QuickDiceERPSolutionsAssetsRegister").dxTextBox({
     //         text: formatMessage("Quick Dice ERP Solutions Assets Register"),
@@ -552,7 +552,47 @@
         }
 
         function viewVoucher() { console.log("View Voucher Clicked"); }
-        function verifyVoucher() { console.log("Verify Voucher Clicked"); }
+      function verifyVoucher() {
+        if (!selectedVoucherNo) {
+            alert("No voucher selected.");
+            return;
+        }
+        debugger
+        $.ajax({
+            url: '/api/VoucherApproval/CheckVoucherVerification', // Replace with your actual controller
+            type: 'GET',
+            data: { voucherNo: selectedVoucherNo },
+            success: function (response) {
+                if (response.isVerified) {
+                    alert("Voucher is already verified.");
+                } else {
+                    updateVoucherVerification(selectedVoucherNo);
+                }
+            },
+            error: function () {
+                alert("Error checking voucher verification.");
+            }
+        });
+    }
+        function updateVoucherVerification(voucherNo) {
+            debugger
+        $.ajax({
+            url: '/api/VoucherApproval/VerifyVoucher', // Replace with your actual controller
+            type: 'POST',
+            data: { voucherNo: voucherNo },
+            success: function (response) {
+                if (response.success) {
+                    alert("Voucher has been verified.");
+                    $("#dataGrid").dxDataGrid("instance").refresh(); // Refresh grid after update
+                } else {
+                    alert("Error verifying voucher.");
+                }
+            },
+            error: function () {
+                alert("Error verifying voucher.");
+            }
+        });
+    }
         function deleteVoucher() { console.log("Delete Voucher Clicked"); }
         function verifyAll() { console.log("Verify All Selected Vouchers Clicked"); }
         function approveAll() { console.log("Approve All Selected Vouchers Clicked"); }
