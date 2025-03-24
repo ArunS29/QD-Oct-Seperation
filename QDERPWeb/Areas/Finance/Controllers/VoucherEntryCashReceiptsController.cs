@@ -28,14 +28,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 i.AccountId,
                 i.AccountHead,
                 i.AccountHeadArabic,
-                i.IsLedgerObselete
+                i.IsLedgerObselete,
             });
 
             return Json(await DataSourceLoader.LoadAsync(tbl20101salespersonmasters, loadOptions));
         }
 
 
+        public async Task<IActionResult> GetDefaultReceivingAccount()
+        {
+            var defaultAccount = await _context.Tbl201ChartOfAccounts
+                .Where(a => a.IsDefaultForCash == true && a.AccountGroupId == "A012")
+                .OrderByDescending(a => a.RecordModifiedOn) // Get the latest default account
+                .Select(a => new { a.AccountId, a.AccountHead })
+                .FirstOrDefaultAsync();
 
+            return Json(defaultAccount);
+        }
 
 
         [HttpGet]
@@ -569,6 +578,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         {
                             entry.DrAmount = 0;
                             entry.CrAmount = 0;
+                            entry.SysRemarks = "";
                         }
 
                         //entry.SysRemarks = PaymentAccoutHeadName;

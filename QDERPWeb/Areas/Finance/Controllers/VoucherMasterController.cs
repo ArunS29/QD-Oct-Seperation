@@ -1267,6 +1267,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         {
                             entry.DrAmount = 0;
                             entry.CrAmount = 0;
+                            entry.SysRemarks = "";
                         }
 
                         //entry.SysRemarks = PaymentAccoutHeadName;
@@ -1619,6 +1620,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         {
                             entry.DrAmount = 0;
                             entry.CrAmount = 0;
+                            entry.SysRemarks = "";
                         }
 
                         //entry.SysRemarks = PaymentAccoutHeadName;

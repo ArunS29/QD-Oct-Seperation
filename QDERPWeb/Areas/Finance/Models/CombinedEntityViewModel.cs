@@ -37,6 +37,8 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string SysRemarks { get; set; }
         public long VoucherEntryNo { get; set; }
         public decimal? VoucherAmountFormatted { get; set; }
+
+        public decimal? VoucherAmount { get; set; }
     }
     public class AccountLedger
     {

@@ -284,6 +284,57 @@ namespace QDWEB.Areas.Finance.Controllers
             }
         }
 
+        //[HttpGet]
+        //public async Task<ActionResult> LoadVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(voucherNo))
+        //        {
+        //            return BadRequest(new { success = false, message = "Invalid Voucher Number." });
+        //        }
+
+        //        var qryListOfAccountlists = _context.Tbl201VoucherEntries
+        //            .Where(p => p.VoucherNo == voucherNo)
+        //            .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
+        //            .Select(i => new
+        //            {
+        //                i.VoucherNo,
+        //                i.VoucherEntryNo,
+        //                i.DrCr,
+        //                i.VoucherAmount,
+        //                i.EntryNarration,
+        //                i.AccountHead,
+        //                i.SysRemarks
+        //            })
+        //            .ToList();
+
+        //        // Fetch AccountHead names for mapping
+        //        var accountIds = qryListOfAccountlists.Select(i => i.AccountHead).Distinct().ToList();
+        //        var accountHeadMap = _context.Qry201ListOfAccounts
+        //            .Where(a => accountIds.Contains(a.AccountId))
+        //            .ToDictionary(a => a.AccountId, a => a.AccountHead);
+
+        //        // Map AccountId to AccountHead
+        //        var resultList = qryListOfAccountlists.Select(i => new VoucherEntryDisplayDTO
+        //        {
+        //            VoucherNo = i.VoucherNo,
+        //            VoucherEntryNo = i.VoucherEntryNo,
+        //            DrCr = i.DrCr,
+        //            DrAmount = i.VoucherAmount,
+        //            CrAmount = i.VoucherAmount,
+        //            EntryNarration = i.EntryNarration,
+        //            AccountHead = accountHeadMap.ContainsKey(i.AccountHead) ? accountHeadMap[i.AccountHead] : i.AccountHead,
+        //            SysRemarks = i.SysRemarks
+        //        }).ToList();
+
+        //        return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+        //}
         [HttpGet]
         public async Task<ActionResult> LoadVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
         {
@@ -295,46 +346,40 @@ namespace QDWEB.Areas.Finance.Controllers
                 }
 
                 var qryListOfAccountlists = _context.Tbl201VoucherEntries
-                    .Where(p => p.VoucherNo == voucherNo)
-                    .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
-                    .Select(i => new
-                    {
-                        i.VoucherNo,
-                        i.VoucherEntryNo,
-                        i.DrCr,
-                        i.VoucherAmount,
-                        i.EntryNarration,
-                        i.AccountHead,
-                        i.SysRemarks
-                    })
-                    .ToList();
+              .Where(p => p.VoucherNo == voucherNo)
+              .OrderBy(i => i.DrCr == "Dr" ? 0 : 1) // Ensures "Dr" entries come first
+              .Select(i => new VoucherEntryDisplayDTO
+              {
+                  VoucherNo = i.VoucherNo,
+                  VoucherEntryNo = i.VoucherEntryNo,
+                  DrCr = i.DrCr,
+                  VoucherAmount = i.VoucherAmount, // No need for special handling for "Cr"
+                  EntryNarration = i.EntryNarration,
+                  AccountHead = i.AccountHead,
+                  SysRemarks = i.SysRemarks
+              })
+              .ToList(); // Execute the query
 
-                // Fetch AccountHead names for mapping
-                var accountIds = qryListOfAccountlists.Select(i => i.AccountHead).Distinct().ToList();
-                var accountHeadMap = _context.Qry201ListOfAccounts
-                    .Where(a => accountIds.Contains(a.AccountId))
-                    .ToDictionary(a => a.AccountId, a => a.AccountHead);
-
-                // Map AccountId to AccountHead
-                var resultList = qryListOfAccountlists.Select(i => new VoucherEntryDisplayDTO
+                foreach (var entry in qryListOfAccountlists)
                 {
-                    VoucherNo = i.VoucherNo,
-                    VoucherEntryNo = i.VoucherEntryNo,
-                    DrCr = i.DrCr,
-                    DrAmount = i.VoucherAmount,
-                    CrAmount = i.VoucherAmount,
-                    EntryNarration = i.EntryNarration,
-                    AccountHead = accountHeadMap.ContainsKey(i.AccountHead) ? accountHeadMap[i.AccountHead] : i.AccountHead,
-                    SysRemarks = i.SysRemarks
-                }).ToList();
+                    string accountHead = _context.Qry201ListOfAccounts
+                                                 .Where(a => a.AccountId == entry.AccountHead)
+                                                 .Select(a => a.AccountHead)
+                                                 .FirstOrDefault();
+                    entry.AccountHead = accountHead;
 
-                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+                }
+
+                
+
+                return Json(DataSourceLoader.Load(qryListOfAccountlists.AsQueryable(), loadOptions));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
+
         [HttpGet]
         public async Task<ActionResult> GetVoucherMasterEntries(DataSourceLoadOptions loadOptions, string voucherNo)
         {
@@ -357,6 +402,67 @@ namespace QDWEB.Areas.Finance.Controllers
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
+
+
+
+
+        [HttpPost]
+       
+        public IActionResult DeleteAllVoucherEntry(string VoucherNo, string TemporaryNo)
+        {
+            if (string.IsNullOrEmpty(VoucherNo) || string.IsNullOrEmpty(TemporaryNo))
+            {
+                return BadRequest("Invalid parameters. Both VoucherNo and TemporaryNo are required.");
+            }
+
+            try
+            {
+                using (var transaction = _context.Database.BeginTransaction()) // Start transaction
+                {
+                    // 1. Delete from tbl201VoucherEntryTemp where VoucherNo = TemporaryNo
+                    var tempEntries = _context.Tbl201VoucherEntryTemps
+                                                .Where(e => e.VoucherNo == TemporaryNo)
+                                                .ToList();
+                    if (tempEntries.Any())
+                    {
+                        _context.Tbl201VoucherEntryTemps.RemoveRange(tempEntries);
+                        _context.SaveChanges();
+                    }
+
+                    // 2. Delete from tbl201VoucherEntry where VoucherNo = VoucherNo
+                    var entryRecords = _context.Tbl201VoucherEntries
+                                                 .Where(e => e.VoucherNo == VoucherNo)
+                                                 .ToList();
+                    if (entryRecords.Any())
+                    {
+                        _context.Tbl201VoucherEntries.RemoveRange(entryRecords);
+                        _context.SaveChanges();
+                    }
+
+                    // 3. Delete from tbl201VoucherMaster where VoucherNo = VoucherNo
+                    var masterEntries = _context.Tbl201VoucherMasters
+                                                  .Where(m => m.VoucherNo == VoucherNo)
+                                                  .ToList();
+                    if (masterEntries.Any())
+                    {
+                        _context.Tbl201VoucherMasters.RemoveRange(masterEntries);
+                        _context.SaveChanges();
+                    }
+
+                    transaction.Commit(); // Commit only if all deletions succeed
+
+                    // Fetch updated data after deletion
+                    var updatedData = _context.Tbl201VoucherMasters.ToList();
+
+                    return Ok(new { data = updatedData, message = "Voucher deleted successfully" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error deleting voucher: {ex.Message}");
+            }
+        }
+
 
     }
 }
