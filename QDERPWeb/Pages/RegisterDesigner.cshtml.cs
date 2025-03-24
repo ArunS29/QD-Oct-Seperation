@@ -24,12 +24,12 @@ namespace QD.ERP.Web.Pages
         private static readonly Dictionary<string, Func<string, DateTime, DateTime, XtraReport>> parameterizedReports =
             new()
             {
-                { "PreviewRegister", (voucherType, from, to) => new PreviewRegister(voucherType, from, to) },
-                { "OrderByVchNoRegister", (voucherType, from, to) => new OrderByVchNoRegister(voucherType, from, to) },
-                 { "OrderbyVchNoWIthVchNarration", (voucherType, from, to) => new OrderbyVchNoWIthVchNarration(voucherType, from, to) },
-                  { "Register4line", (voucherType, from, to) => new Register4line(voucherType, from, to) },
-                   { "RegisterLineEntryNarration", (voucherType, from, to) => new RegisterLineEntryNarration(voucherType, from, to) },
-                    { "RegisterWithVchNarration", (voucherType, from, to) => new RegisterWithVchNarration(voucherType, from, to) }
+                { "PreviewRegister", (voucherType, from, to) => new PreviewRegister(voucherType, from, to,"","","",null,"","") },
+                { "OrderByVchNoRegister", (voucherType, from, to) => new OrderByVchNoRegister(voucherType, from, to, "", "", "", null, "", "") },
+                 { "OrderbyVchNoWIthVchNarration", (voucherType, from, to) => new OrderbyVchNoWIthVchNarration(voucherType, from, to, "", "", "", null, "", "") },
+                  { "Register4line", (voucherType, from, to) => new Register4line(voucherType, from, to, "", "", "", null, "", "") },
+                   { "RegisterLineEntryNarration", (voucherType, from, to) => new RegisterLineEntryNarration(voucherType, from, to, "", "", "", null, "", "") },
+                    { "RegisterWithVchNarration", (voucherType, from, to) => new RegisterWithVchNarration(voucherType, from, to, "", "", "", null, "", "") }
             };
 
         private static readonly Dictionary<string, Func<XtraReport>> simpleReports = new()

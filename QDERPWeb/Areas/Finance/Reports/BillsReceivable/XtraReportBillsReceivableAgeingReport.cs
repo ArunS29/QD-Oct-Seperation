@@ -1,25 +1,22 @@
 ﻿using DevExpress.XtraReports.UI;
-using Microsoft.Identity.Client;
 using System;
-using System.Collections;
-using System.ComponentModel;
 using System.Drawing;
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
     public partial class XtraReportBillsReceivableAgeingReport : DevExpress.XtraReports.UI.XtraReport
     {
-        public XtraReportBillsReceivableAgeingReport(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        public XtraReportBillsReceivableAgeingReport(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(tenantName,company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
         }
         public XtraReportBillsReceivableAgeingReport()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+            SetReportParameters("", "","", null, "", "");
         }
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             // Helper method to add or update a parameter
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -41,13 +38,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 }
             }
 
-            // Add or update parameters
-            AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
-            AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
-            AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
-
-            // New parameters for Tenant and Company Info
+            // Add or update company details parameters
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
+
             AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
@@ -56,41 +49,31 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             // Debug: Ensure logo URL is captured
             Console.WriteLine($"Company Logo: {logoImage != null}");
 
-
-            // Bind TenantName and CompanyName to labels (update with actual control names)
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+            // Bind Company details to labels (update with actual control names)
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
             {
                 tenantLabel.Text = tenantName;
             }
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+            if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
             {
                 companyNameLabel.Text = company_Name;
             }
-
             if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
             {
                 addressLabel.Text = company_address;
             }
-
             if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
             {
                 logoPictureBox.Image = logoImage;
             }
-
             if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
             {
                 companyNameArLabel.Text = Company_Name_Ar;
             }
-
             if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
             {
                 addressArbLabel.Text = company_address_arb;
             }
-
-
-
         }
-
-
     }
 }
