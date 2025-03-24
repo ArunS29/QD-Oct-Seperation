@@ -1008,6 +1008,7 @@
         "Edit Salary Payable": "Edit Salary Payable",
         "Edit Employee Allocation": "Edit Employee Allocation",
         "Edit Property Allocation": "Edit Property Allocation",
+/*        "Edit Employee Allocation": "Edit Employee Allocation",*/
         "Delete Line Entry": "Delete Line Entry",
         "Delete All Line Entries": "Delete All Line Entries",
         "Ledger Account should be entered": "Ledger Account should be entered",
