@@ -1075,10 +1075,8 @@ namespace QD.ERP.Web.Pages
 
            
 
-<<<<<<< Updated upstream
-        
-=======
-            else if (reportName == "AgeingReport")
+
+            else if (reportName == "AgeingToday")
             {
                 if (accountId == null || frmDate == null || toDate == null)
                 {
@@ -1122,7 +1120,7 @@ namespace QD.ERP.Web.Pages
 
 
                 // Pass the image object directly to the report
-                Report = new AgeingReport(
+                Report = new AgeingToday(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr
                 );
@@ -1189,9 +1187,9 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                AccountId = accountId;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
+                //AccountId = accountId;
+                //FrmDate = frmDate.Value;
+                //ToDate = toDate.Value;
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
@@ -1226,10 +1224,10 @@ namespace QD.ERP.Web.Pages
 
 
                 // Pass the image object directly to the report
-                Report = new ReceivableReport_EffectiveDate_(
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+             //   Report = new ReceivableReport_EffectiveDate_(
+             //tenantName, companyName, companyAddress, logoImage,
+             //       companyNameAr, companyAddressAr
+             //   );
 
 
             }
@@ -1277,10 +1275,10 @@ namespace QD.ERP.Web.Pages
 
 
                 // Pass the image object directly to the report
-                Report = new XtraRecivableReport(
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                //Report = new XtraRecivableReport(
+                //    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                //    companyNameAr, companyAddressAr
+                //);
 
 
             }
@@ -1340,9 +1338,9 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("Missing required parameters for BillsReceivableAll.");
                 }
 
-                AccountId = accountId;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
+                //AccountId = accountId;
+                //FrmDate = frmDate.Value;
+                //ToDate = toDate.Value;
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
@@ -1375,14 +1373,14 @@ namespace QD.ERP.Web.Pages
                 }
 
                 // Pass the image object directly to the report
-                Report = new XtraReportBillsReceivableAgeingReport(
+                //Report = new XtraReportBillsReceivableAgeingReport(
 
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                //    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                //    companyNameAr, companyAddressAr
+                //);
             }
 
->>>>>>> Stashed changes
+
 
 
 
