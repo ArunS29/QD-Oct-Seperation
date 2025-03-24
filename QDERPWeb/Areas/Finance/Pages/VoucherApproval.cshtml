@@ -252,7 +252,10 @@
             .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Audit</div>
     </text>);
-
+                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('VoucherType')")).Width(120).Visible(true)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">VoucherType</div>
+    </text>);
                 // Checkbox Columns for Approved, Verified, and Audit
                 columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120)
             .DataType(GridColumnDataType.Boolean)
@@ -617,7 +620,7 @@
                 "Bank Receipts": `/${tenantName}/finance/VoucherEntryReceipts`,
                 "Cash Receipts": `/${tenantName}/finance/VoucherEntryCashReceipts`,
                 "Sales": `/${tenantName}/finance/SalesVoucher`,
-                "Purchases": `/${tenantName}/finance/PurchaseVoucher`,
+                "purchases": `/${tenantName}/finance/PurchaseVoucher`,
                 "Journal": `/${tenantName}/finance/VoucherJournal`
             };
 
