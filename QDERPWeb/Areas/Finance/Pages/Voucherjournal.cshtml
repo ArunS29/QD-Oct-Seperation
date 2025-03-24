@@ -298,30 +298,19 @@
 
                     )
                     .OnEditorPreparing("onEditorPreparing")
+        .Summary(summary =>
+        {
+            summary.TotalItems(totalItems =>
+            {
 
-                    )
-            <div id="footerTotals" style="display: flex;color: black; padding: 5px 10px; font-size: 14px;">
-                <div style="flex: 5;">&nbsp;</div>
+                totalItems.Add().Column("Debit").SummaryType(SummaryType.Sum)
+            .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-                <div style="flex: 1; text-align: center;">
-                @(Html.DevExtreme().TextBox()
-                    .ID("totalDebitTextbox")
-                    .Value("0.00")
-                    .ReadOnly(true)
-                    .Width("100%")
+                totalItems.Add().Column("Credit").SummaryType(SummaryType.Sum)
+            .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+            });
+        })
                     )
-                </div>
-
-                <div style="flex: 1; text-align: center;">
-                @(Html.DevExtreme().TextBox()
-                    .ID("totalCreditTextbox")
-                    .Value("0.00")
-                    .ReadOnly(true)
-                    .Width("100%")
-                    )
-                </div>
-                <div style="flex: 4;">&nbsp;</div>
-            </div>
 
            
     <div class="displayFlex">

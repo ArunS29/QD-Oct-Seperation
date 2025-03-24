@@ -487,46 +487,21 @@
 		) *@
 						.OnEditorPreparing("onEditorPreparing")
 						//.OnRowRemoving("onRowRemoving")
+						  .Summary(summary =>
+  {
+      summary.TotalItems(totalItems =>
+      {
 
+          totalItems.Add().Column("Debit").SummaryType(SummaryType.Sum)
+      .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+          totalItems.Add().Column("Credit").SummaryType(SummaryType.Sum)
+      .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+      });
+  })
 						)
 	</div>
 
-	<div id="footerTotals" style="display: flex; justify-content: space-between; color: white; padding:10px; font-size: 14px; max-width:1245px;position:relative;">
-		<div style="flex: 2;">&nbsp;</div>
-		<div style="flex: 2;">&nbsp;</div>
-		<div style="flex: none; text-align: right;">
-			@(Html.DevExtreme().TextBox()
-
-									.ID("totalDebitTextbox")
-
-									.Value("0.00")
-
-									.ReadOnly(true)
-
-									.Width("60%")
-									.RtlEnabled(true)
-
-									)
-		</div>
-
-		<!-- TextBox for Credit -->
-		<div style="flex: none; text-align: right;">
-
-			@(Html.DevExtreme().TextBox()
-
-									.ID("totalCreditTextbox")
-
-									.Value("0.00")
-
-									.ReadOnly(true)
-
-									.Width("60%")
-									.RtlEnabled(true)
-									)
-		</div>
-
-		<div style="flex: 2;">&nbsp;</div> <!-- Aligns with Entry Narration and Remarks columns -->
-	</div>
 
 	<!-- Context Menu for Actions -->
 	<ul id="contextMenu" class="context-menu" style="display: none;">

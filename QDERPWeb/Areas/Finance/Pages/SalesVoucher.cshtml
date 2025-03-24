@@ -79,19 +79,20 @@
 												)
 				</div>
 			</div>
-			<div class="col-md-3">
-				<div class="form-group">
-					@(Html.DevExtreme().DateBox()
-												.Label(new JS("formatMessage('Invoice Date')"))
-												.ID("VoucherDate")
-												.InputAttr("aria-label", "Date")
-												.LabelMode(EditorLabelMode.Outside)
-												.Type(DateBoxType.Date)
-												.DisplayFormat("dd-MMM-yyyy")
-												.Value(DateTime.Now)
-												)
-				</div>
-			</div>
+		<div class="col-md-3">
+    <div class="form-group">
+        @(Html.DevExtreme().DateBox()
+            .Label(new JS("formatMessage('Invoice Date')"))
+            .ID("VoucherDate")
+            .InputAttr("aria-label", "Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .Type(DateBoxType.Date)
+            .DisplayFormat("dd-MMM-yyyy")
+            .Value(DateTime.Now)
+        )
+    </div>
+</div>
+
 			<div class="col-md-3">
 				<div class="form-group">
 					@(Html.DevExtreme().DateBox()
@@ -461,35 +462,23 @@
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
 						.ShowBorders(true)
 						.Width("100%")
+				.Summary(summary =>
+				{
+					summary.TotalItems(totalItems =>
+					{
+
+						totalItems.Add().Column("Debit").SummaryType(SummaryType.Sum)
+					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+						totalItems.Add().Column("Credit").SummaryType(SummaryType.Sum)
+					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+					});
+				})
 						)
 		</div>
 
 
 
-
-		<div id="footerTotals" style="display: flex; justify-content: space-between; color: white; padding:10px; font-size: 14px; max-width:1245px;position:relative;">
-			<div style="flex: 2;">&nbsp;</div>
-			<div style="flex: 1;">&nbsp;</div>
-			<div style="flex: none; text-align: right;">
-				@(Html.DevExtreme().TextBox()
-								.ID("totalDebitTextbox")
-								.Value("0.00")
-								.ReadOnly(true)
-								.Width("60%")
-								.InputAttr(new { style = "text-align: right;" })
-								)
-			</div>
-			<div style="flex: none; text-align: right;">
-				@(Html.DevExtreme().TextBox()
-								.ID("totalCreditTextbox")
-								.Value("0.00")
-								.ReadOnly(true)
-								.Width("60%")
-								.InputAttr(new { style = "text-align: right;" })
-								)
-			</div>
-			<div style="flex: 2;">&nbsp;</div>
-		</div>
 
 		<!-- Context Menu for Actions -->
 		<ul id="contextMenu" class="context-menu" style="display: none;">
@@ -1887,6 +1876,50 @@
 			}
 		});
 	}
+	$(document).ready(function () {
+		let voucherDateBox = $("#VoucherDate").dxDateBox("instance");
+
+		if (!voucherDateBox) {
+			console.error("Error: #VoucherDate element not found or dxDateBox not initialized.");
+			return;
+		}
+
+		console.log("dxDateBox Initialized Successfully:", voucherDateBox);
+
+		$("#VoucherDate").dxDateBox({
+			onValueChanged: onVoucherDateChange // Bind function
+		});
+	});
+
+	async function onVoucherDateChange(e) {
+		console.log("onVoucherDateChange triggered", e);
+
+		if (!e || !e.value) {
+			console.warn("Invalid date value", e);
+			return;
+		}
+
+		let selectedDate = e.value;
+		console.log("Selected Date:", selectedDate);
+
+		try {
+			let response = await $.ajax({
+				url: "/api/SalesVoucher/CheckVoucherDateLocking?voucherDate=" + selectedDate.toISOString(),
+				type: "GET",
+			});
+
+			console.log("API Response:", response);
+
+			if (!response.success) {
+				DevExpress.ui.notify(response.message, "error", 3000);
+				$("#VoucherDate").dxDateBox("instance").option("value", new Date()); // Reset to today
+			}
+		} catch (error) {
+			console.error("AJAX Error:", error);
+			DevExpress.ui.notify("Error checking date. Please try again.", "error", 3000);
+		}
+	}
+
 
 	</script>
 
