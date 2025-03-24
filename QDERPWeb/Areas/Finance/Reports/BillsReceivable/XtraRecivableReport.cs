@@ -1,30 +1,33 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Linq;
 using DevExpress.XtraReports.UI;
+using DevExpress.XtraReports.Parameters;
+using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
-    public partial class XtraRecivableReport : DevExpress.XtraReports.UI.XtraReport
+    public partial class XtraRecivableReport : XtraReport
     {
-        public XtraRecivableReport(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        public XtraRecivableReport(object[] selectedValues, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
         {
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(selectedValues, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
         }
 
         public XtraRecivableReport()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+            SetReportParameters(null, "", "", "", null, "", "");
         }
 
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(object[] selectedValues, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
         {
-            // Helper method to add or update a parameter
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
                 if (Parameters[name] == null)
                 {
-                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+                    Parameters.Add(new Parameter()
                     {
                         Name = name,
                         Type = type,
@@ -39,54 +42,135 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 }
             }
 
-            // Add or update parameters
-            AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
-            AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
-            AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
+            // Adding report parameters
+            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string));
+            AddOrUpdateParameter("SelectedValues", selectedValues ?? new object[0], typeof(object[]));
 
-            // New parameters for Tenant and Company Info
-            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
+            Console.WriteLine($"Company Logo Set: {(logoImage != null ? "Yes" : "No")}");
 
-            // Debug: Ensure logo URL is captured
-            Console.WriteLine($"Company Logo: {logoImage != null}");
+            // Binding parameter values to report controls
+            SetLabelText("xrLabelTenantName", tenantName);
+            SetLabelText("xrLabelCompanyName", companyName);
+            SetLabelText("xrLabelCompanyAddress", companyAddress);
+            SetLabelText("xrLabelCompanyNameAr", companyNameAr);
+            SetLabelText("xrLabelCompanyAddressArb", companyAddressArb);
 
-
-            // Bind TenantName and CompanyName to labels (update with actual control names)
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-            {
-                tenantLabel.Text = tenantName;
-            }
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
-            {
-                companyNameLabel.Text = company_Name;
-            }
-
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-            {
-                addressLabel.Text = company_address;
-            }
-
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
             {
                 logoPictureBox.Image = logoImage;
+                logoPictureBox.Visible = logoImage != null;
             }
 
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+            // Apply SQL Query with Selected Values
+            LoadReportData(selectedValues);
+        }
+
+        private void SetLabelText(string controlName, string text)
+        {
+            if (FindControl(controlName, true) is XRLabel label)
+                label.Text = text ?? "";
+        }
+
+        private void LoadReportData(object[] selectedValues)
+        {
+            if (selectedValues == null || selectedValues.Length == 0)
             {
-                companyNameArLabel.Text = Company_Name_Ar;
+                Console.WriteLine("No selection provided. Loading full report.");
+                return;
             }
 
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+            // Debugging: Print selected values
+            Console.WriteLine("Selected Values: " + string.Join(", ", selectedValues));
+
+            // Ensure first value is valid
+            string firstValue = selectedValues.First()?.ToString();
+            if (string.IsNullOrWhiteSpace(firstValue))
             {
-                addressArbLabel.Text = company_address_arb;
+                Console.WriteLine("Invalid first value. Report data not loaded.");
+                return;
             }
 
+            // Ensure SQL-safe formatting
+            string selectedFilter = string.Join(",", selectedValues.Select(val => $"'{val.ToString().Replace("'", "''")}'"));
+
+            CustomSqlQuery selectQuery = new CustomSqlQuery();
+
+            // Determine the appropriate SQL query based on firstValue
+            if (firstValue.StartsWith("L"))  // AccountHeadNo
+            {
+                selectQuery.Name = "qry201SubLedgerReceivablesMaster";
+                selectQuery.Sql = $"SELECT * FROM qry201SubLedgerReceivablesMaster WHERE AccountHeadNo IN ({FormatSelectedFilter(selectedValues)})";
+            }
+            else if (IsSalesPersonCode(firstValue)) // SalesPersonCode (Numeric range)
+            {
+                selectQuery.Name = "qry201SubLedgerReceivablesMaster";
+                selectQuery.Sql = $"SELECT * FROM qry201SubLedgerReceivablesMaster WHERE SalesPersonCode IN ({selectedFilter})";
+            }
+            else if (IsBranchCode(firstValue)) // BranchCode (Numeric range)
+            {
+                selectQuery.Name = "qry201SubLedgerReceivablesMaster";
+                selectQuery.Sql = $"SELECT * FROM qry201SubLedgerReceivablesMaster WHERE BranchCode IN ({selectedFilter})";
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection type. No report generated.");
+                return;
+            }
+
+            Console.WriteLine($"Generated SQL Query: {selectQuery.Sql}");
+
+            try
+            {
+                // Ensure sqlDataSource1 is not null
+                if (this.sqlDataSource1 == null)
+                {
+                    this.sqlDataSource1 = new SqlDataSource();
+                }
+
+                this.sqlDataSource1.Queries.Clear();
+                this.sqlDataSource1.Queries.Add(selectQuery);
+                this.sqlDataSource1.RebuildResultSchema();
+                this.sqlDataSource1.Fill();
+
+                // Bind to Report
+                this.DataSource = sqlDataSource1;
+                this.DataMember = selectQuery.Name;
+
+                Console.WriteLine("Report Data Loaded Successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error Loading Report Data: {ex.Message}");
+            }
+        }
+
+        // Function to properly format the filter for SQL (avoiding SQL injection)
+        private string FormatSelectedFilter(object[] filters)
+        {
+            return string.Join(",", filters.Select(x => $"'{x.ToString().Trim().Replace("'", "''")}'"));
+        }
+
+        // Function to determine if the value is a SalesPersonCode
+        private bool IsSalesPersonCode(string value)
+        {
+            return int.TryParse(value, out int num) && (num >= 100 && num <= 999); // Assuming SalesPersonCode falls in this range
+        }
+
+        // Function to determine if the value is a BranchCode
+        private bool IsBranchCode(string value)
+        {
+            return int.TryParse(value, out int num) && (num >= 1 && num <= 99); // Assuming BranchCode falls in this range
+        }
 
 
+        protected override void OnDataSourceDemanded(EventArgs e)
+        {
+            base.OnDataSourceDemanded(e);
+            Console.WriteLine("Report DataSource Demanded.");
         }
     }
 }

@@ -5,17 +5,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports
 {
     public partial class ReceivableReport_EffectiveDate_ : DevExpress.XtraReports.UI.XtraReport
     {
-        public ReceivableReport_EffectiveDate_(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        public ReceivableReport_EffectiveDate_(string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
         }
         public ReceivableReport_EffectiveDate_()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+            SetReportParameters("", "", null, "", "");
         }
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             // Helper method to add or update a parameter
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -38,27 +38,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             }
 
             // Add or update parameters
-            AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
-            AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
-            AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
-
-            // New parameters for Tenant and Company Info
-            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
 
-            // Debug: Ensure logo URL is captured
-            Console.WriteLine($"Company Logo: {logoImage != null}");
-
-
-            // Bind TenantName and CompanyName to labels (update with actual control names)
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-            {
-                tenantLabel.Text = tenantName;
-            }
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+            // Bind Company details to labels
+            if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
             {
                 companyNameLabel.Text = company_Name;
             }
@@ -82,9 +68,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             {
                 addressArbLabel.Text = company_address_arb;
             }
-
-
-
         }
     }
 }
