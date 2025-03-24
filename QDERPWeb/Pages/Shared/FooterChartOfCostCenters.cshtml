@@ -298,16 +298,23 @@
         const closeBtn = modal.querySelector(".close");
         closeBtn.onclick = () => {
             modal.style.display = "none";
-            refreshChartOfCostCenters();
+            refreshDataGrid();
         };
 
         window.onclick = (event) => {
             if (event.target === modal) {
                 modal.style.display = "none";
-                refreshChartOfCostCenters();
+                refreshDataGrid();
             }
         };
     }
+
+    function refreshDataGrid() {
+       // alert("ji");
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        dataGrid.refresh(); // Refresh the DataGrid
+    }
+
     function refreshChartOfCostCenters() {
         console.log("test");
     }

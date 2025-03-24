@@ -248,6 +248,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        
+         [HttpGet]
+        public IActionResult GetUserName()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var userName = HttpContext.Session.GetString("UserName") ?? "Unknown User"; // Get username from session
+
+                    return Ok(new
+                    {
+                        success = true,
+                        UserName = userName
+
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in getUserName: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching user data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
 
