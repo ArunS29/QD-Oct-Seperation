@@ -300,6 +300,7 @@
                     .OnEditorPreparing("onEditorPreparing")
 
                     )
+                    </div>
             <div id="footerTotals" style="display: flex;color: black; padding: 5px 10px; font-size: 14px;">
                 <div style="flex: 5;">&nbsp;</div>
 
@@ -467,8 +468,8 @@
 
 
             </div>
-             </div>
-    </div>
+      
+  
 @using (Html.DevExtreme().NamedTemplate("AccountHeadEditDropdownContentTemplate"))
 {
     @(
@@ -952,7 +953,12 @@
                     debugger;
                     const urlParams = new URLSearchParams(window.location.search);
                     const argsledno = urlParams.get("argsledno"); // Get the argsledno query parameter
-
+                    if (argsledno) {
+                        // Change the Save button to Update
+                        // $("#btnSave").text("Update");
+                        var button = $("#btnSave").dxButton("instance");
+                        button.option("text", "Update");
+                    }
                     console.log("Formatted Voucher in ready block:", argsledno); // Debugging log
 
                     if (argsledno) { // If argsledno is present in the URL
@@ -995,40 +1001,41 @@
 
            
         // }
-     function fetchVoucherEntries(voucherNo) {
-     $.ajax({
-         type: "GET",
-         url: "/api/VoucherJournal/LoadVoucherEntries",
-         contentType: "application/json",
-         data: { voucherNo: voucherNo },
-         success: function (response) {
-             if (!response || !response.data || response.data.length === 0) {
-                 // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
-                 return;
-             }
 
-             var dataGrid = $("#dataGrid").dxDataGrid("instance");
-             if (dataGrid) {
-                 dataGrid.option("dataSource", response.data);
-             } else {
-                 $("#dataGrid").dxDataGrid({
-                     dataSource: response.data,
-                     keyExpr: "VoucherEntryNo",
-                     repaintChangesOnly: true,
-                     editing: {
-                         mode: "cell",
-                         allowUpdating: true, // Enable editing
-                     },
-                     onRowUpdated: function (e) {
-                         saveUpdatedVoucherEntry(e.data);
-                     },
-                      columns: [
+        function fetchVoucherEntries(voucherNo) {
+            $.ajax({
+                type: "GET",
+                url: "/api/VoucherJournal/LoadVoucherEntries",
+                contentType: "application/json",
+                data: { voucherNo: voucherNo },
+                success: function (response) {
+                    if (!response || !response.data || response.data.length === 0) {
+                        DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
+                        return;
+                    }
+
+                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                    if (dataGrid) {
+                        dataGrid.option("dataSource", response.data);
+                    } else {
+                        $("#dataGrid").dxDataGrid({
+                            dataSource: response.data,
+                            keyExpr: "VoucherEntryNo",
+                            repaintChangesOnly: true,
+                            editing: {
+                                mode: "cell",
+                                allowUpdating: true
+                            },
+                            onRowUpdated: function (e) {
+                                saveUpdatedVoucherEntry(e.data);
+                            },
+                            columns: [
                                 { dataField: "VoucherEntryNo", caption: "Entry No", allowEditing: false },
                                 { dataField: "DrCr", caption: "Dr/Cr", allowEditing: false },
                                 {
                                     dataField: "AccountHead",
                                     caption: "Account Head",
-                                    allowEditing: true, // Make this column editable
+                                    allowEditing: true,
                                     lookup: {
                                         dataSource: new DevExpress.data.CustomStore({
                                             loadMode: "raw",
@@ -1041,20 +1048,125 @@
                                         displayExpr: "AccountHead"
                                     }
                                 },
-                                { dataField: "VoucherAmount", caption: "Debit Amount", dataType: "number", allowEditing: false },
-                                { dataField: "VoucherAmount", caption: "Credit Amount", dataType: "number", allowEditing: false },
+                                {
+                                    caption: "Debit",
+                                    dataField: "DrAmount",
+                                    dataType: "number",
+                                    allowEditing: false,
+                                    customizeText: function (e) {
+                                        return e.value !== null && e.value !== undefined
+                                            ? Number(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                                            : "0.00";
+                                    }
+                                },
+                                {
+                                    caption: "Credit",
+                                    dataField: "CrAmount",
+                                    dataType: "number",
+                                    allowEditing: false,
+                                    customizeText: function (e) {
+                                        return e.value !== null && e.value !== undefined
+                                            ? Number(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                                            : "0.00";
+                                    }
+                                },
+
                                 { dataField: "EntryNarration", caption: "Narration", allowEditing: false },
                                 { dataField: "SysRemarks", caption: "Remarks", allowEditing: false }
                             ]
-                 });
-             }
-         },
-         error: function (xhr, status, error) {
-             console.error("Error fetching voucher entries:", error);
-             DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
-         }
-     });
- }
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching voucher entries:", error);
+                    DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+                }
+            });
+        }
+
+
+ //     function fetchVoucherEntries(voucherNo) {
+ //     $.ajax({
+ //         type: "GET",
+ //         url: "/api/VoucherJournal/LoadVoucherEntries",
+ //         contentType: "application/json",
+ //         data: { voucherNo: voucherNo },
+ //         success: function (response) {
+ //             if (!response || !response.data || response.data.length === 0) {
+ //                 // DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
+ //                 return;
+ //             }
+
+ //             var dataGrid = $("#dataGrid").dxDataGrid("instance");
+ //             if (dataGrid) {
+ //                 dataGrid.option("dataSource", response.data);
+ //             } else {
+ //                 $("#dataGrid").dxDataGrid({
+ //                     dataSource: response.data,
+ //                     keyExpr: "VoucherEntryNo",
+ //                     repaintChangesOnly: true,
+ //                     editing: {
+ //                         mode: "cell",
+ //                         allowUpdating: true, // Enable editing
+ //                     },
+ //                     onRowUpdated: function (e) {
+ //                         saveUpdatedVoucherEntry(e.data);
+ //                     },
+ //                      columns: [
+ //                                { dataField: "VoucherEntryNo", caption: "Entry No", allowEditing: false },
+ //                                { dataField: "DrCr", caption: "Dr/Cr", allowEditing: false },
+ //                                {
+ //                                    dataField: "AccountHead",
+ //                                    caption: "Account Head",
+ //                                    allowEditing: true, // Make this column editable
+ //                                    lookup: {
+ //                                        dataSource: new DevExpress.data.CustomStore({
+ //                                            loadMode: "raw",
+ //                                            key: "AccountId",
+ //                                            load: function () {
+ //                                                return $.getJSON("/api/VoucherMaster/GetEditAccountHead");
+ //                                            }
+ //                                        }),
+ //                                        valueExpr: "AccountId",
+ //                                        displayExpr: "AccountHead"
+ //                                    }
+ //                                },
+ //                             //   { dataField: "VoucherAmount", caption: "Debit", dataType: "number", allowEditing: false },
+ //                              //  { dataField: "VoucherAmount", caption: "Credit", dataType: "number", allowEditing: false },
+ //                                {
+ //                                    caption: "Debit",
+ //                                    dataType: "number",
+ //                                    allowEditing: false,
+ //                                    calculateCellValue: function (response.data) {
+ //                                        return response.data.DrCr === "Dr" ? response.data.VoucherAmount : 0;
+ //                                    },
+ //                                    customizeText: function (e) {
+ //                                        return Number(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+ //                                    }
+ //                                },
+ //                                {
+ //                                    caption: "Credit",
+ //                                    dataType: "number",
+ //                                    allowEditing: false,
+ //                                    calculateCellValue: function (response.data) {
+ //                                        return response.data.DrCr === "Cr" ? response.data.VoucherAmount : 0;
+ //                                    },
+ //                                    customizeText: function (e) {
+ //                                        return Number(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+ //                                    }
+ //                                },
+ //                                { dataField: "EntryNarration", caption: "Narration", allowEditing: false },
+ //                                { dataField: "SysRemarks", caption: "Remarks", allowEditing: false }
+ //                            ]
+ //                 });
+ //             }
+ //         },
+ //         error: function (xhr, status, error) {
+ //             console.error("Error fetching voucher entries:", error);
+ //             DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
+ //         }
+ //     });
+ // }
 
  function onVoucherDateChanged(e) {
             console.log("Selected Date:", e.value);
@@ -1150,6 +1262,7 @@
 
 
  $(function () {
+     //alert("total");
                     const dataGrid = $("#dataGrid").dxDataGrid("instance");
                     const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
                     const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
@@ -1173,67 +1286,67 @@
 
 
 
-        function onVerifyButtonClick() {
-                    const dataGrid = $("#dataGrid").dxDataGrid("instance");
-                    const rowCount = dataGrid.getVisibleRows().length;
+        // function onVerifyButtonClick() {
+        //             const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        //             const rowCount = dataGrid.getVisibleRows().length;
 
-                    // Check if dataGrid exists and contains rows
-                    if (rowCount == 0) {
-                        Swal.fire({
-                            title: "Voucher is not Verified",
-                            text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: "Yes",
-                            cancelButtonText: "No"
-                        })
-                    } else {
-                        proceedWithVerification(); // If data exists, proceed with verification
-                    }
-                }
+        //             // Check if dataGrid exists and contains rows
+        //             if (rowCount == 0) {
+        //                 Swal.fire({
+        //                     title: "Voucher is not Verified",
+        //                     text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+        //                     icon: "warning",
+        //                     showCancelButton: true,
+        //                     confirmButtonText: "Yes",
+        //                     cancelButtonText: "No"
+        //                 })
+        //             } else {
+        //                 proceedWithVerification(); // If data exists, proceed with verification
+        //             }
+        //         }
 
-                function proceedWithVerification() {
-                    // Set VerifiedBy checkbox to true
-                    $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-                    const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+        //         function proceedWithVerification() {
+        //             // Set VerifiedBy checkbox to true
+        //             $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+        //             const vno = $("#VoucherNo").dxTextBox("instance").option("value");
 
-                    // Prepare data for verification
-                    const currentDate = new Date();
-                    const formattedDate = currentDate.toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric"
-                    }).replace(/ /g, '-');
+        //             // Prepare data for verification
+        //             const currentDate = new Date();
+        //             const formattedDate = currentDate.toLocaleDateString("en-GB", {
+        //                 day: "2-digit",
+        //                 month: "short",
+        //                 year: "numeric"
+        //             }).replace(/ /g, '-');
 
-                    const data = {
-                        voucherNo: vno,
-                        verifiedBy: "Admin",
-                        verifiedOn: new Date().toISOString()
-                    };
+        //             const data = {
+        //                 voucherNo: vno,
+        //                 verifiedBy: "Admin",
+        //                 verifiedOn: new Date().toISOString()
+        //             };
 
-                    $.ajax({
-                        data: JSON.stringify(data),
-                        success: function (response) {
-                            Swal.fire({
-                                title: "Success!",
-                                text: `Voucher has been Verified.`,
-                                icon: "success",
-                                confirmButtonText: "OK"
-                            }).then(() => {
-                                $("#VerifiedBytext").dxTextBox("instance").option("value", "Admin");
-                                $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
-                            });
-                        },
-                        error: function () {
-                            Swal.fire({
-                                title: "Error",
-                                text: "Please save the transactions after proceeding!!",
-                                icon: "error",
-                                confirmButtonText: "OK"
-                            });
-                        }
-                    });
-                }
+        //             $.ajax({
+        //                 data: JSON.stringify(data),
+        //                 success: function (response) {
+        //                     Swal.fire({
+        //                         title: "Success!",
+        //                         text: `Voucher has been Verified.`,
+        //                         icon: "success",
+        //                         confirmButtonText: "OK"
+        //                     }).then(() => {
+        //                         $("#VerifiedBytext").dxTextBox("instance").option("value", "Admin");
+        //                         $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
+        //                     });
+        //                 },
+        //                 error: function () {
+        //                     Swal.fire({
+        //                         title: "Error",
+        //                         text: "Please save the transactions after proceeding!!",
+        //                         icon: "error",
+        //                         confirmButtonText: "OK"
+        //                     });
+        //                 }
+        //             });
+        //         }
 
 
                 function disableEditing() {
@@ -1402,58 +1515,58 @@
         window.location.href = `/${tenantName}/Finance/LedgerDocuments?VoucherNo=${encodeURIComponent(aVoucherNo)}`;
     }
 
-    function onApproveButtonClick() {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const rowCount = dataGrid.getVisibleRows().length;
+    // function onApproveButtonClick() {
+    //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    //     const rowCount = dataGrid.getVisibleRows().length;
 
-        if (rowCount == 0) {
-            Swal.fire({
-                title: "Voucher is not Approved",
-                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            })
-        } else {
-            proceedWithApproval();
-        }
-    }
+    //     if (rowCount == 0) {
+    //         Swal.fire({
+    //             title: "Voucher is not Approved",
+    //             text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+    //             icon: "warning",
+    //             showCancelButton: true,
+    //             confirmButtonText: "Yes",
+    //             cancelButtonText: "No"
+    //         })
+    //     } else {
+    //         proceedWithApproval();
+    //     }
+    // }
 
-    function proceedWithApproval() {
-        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+    // function proceedWithApproval() {
+    //     $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+    //     var vno = $("#VoucherNo").dxTextBox("instance").option("value");
 
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
+    //     const currentDate = new Date();
+    //     const formattedDate = currentDate.toLocaleDateString("en-GB", {
+    //         day: "2-digit",
+    //         month: "short",
+    //         year: "numeric"
+    //     }).replace(/ /g, '-');
 
-        $.ajax({
-            success: function () {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Voucher has been Approved.",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    disableEditing();
-                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-                });
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Error",
-                    text: "Please save the transactions after proceeding!",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        });
-    }
+    //     $.ajax({
+    //         success: function () {
+    //             Swal.fire({
+    //                 title: "Success!",
+    //                 text: "Voucher has been Approved.",
+    //                 icon: "success",
+    //                 confirmButtonText: "OK"
+    //             }).then(() => {
+    //                 disableEditing();
+    //                 $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+    //                 $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+    //             });
+    //         },
+    //         error: function () {
+    //             Swal.fire({
+    //                 title: "Error",
+    //                 text: "Please save the transactions after proceeding!",
+    //                 icon: "error",
+    //                 confirmButtonText: "OK"
+    //             });
+    //         }
+    //     });
+    // }
     function openAttachmentOptions() {
         // Show an options dialog using SweetAlert for Single/Multiple selection
         Swal.fire({
@@ -1515,27 +1628,55 @@
         }
     }
 
-    function onDeleteButtonClick() {
-        // const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        // const rowCount = dataGrid.getVisibleRows().length;
+    function confirmToDeleteAllVoucher(onConfirm) {
         DevExpress.ui.dialog.confirm(
-            "You are about to delete the Voucher from the database,Click yes if you would like to continue.",
+            "You are about to delete the Voucher Entries from the database. You cannot revert the changes. Are you sure you want to delete?",
             "Delete Confirmation"
         ).done(function (dialogResult) {
             if (dialogResult) {
-                if (typeof onConfirm === "function") {
-                    onConfirm(); // Ensure onConfirm is defined before calling
-                }
-                DevExpress.ui.dialog.alert(
-                    "Voucher has been successfully removed from the database.",
-                    "Data Deleted Successfully"
-                ).done(function () {
-                    // window.location.href = `/Home/Dashboard`; // Uncomment if redirecting
-
-                });
+                onConfirm(); // Proceed only if the user clicks "Yes"
             }
         });
     }
+
+    function onDeleteButtonClick() {
+        debugger;
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.dialog.alert("No records available to delete. Please enter some transactions.", "Data Not Found");
+        } else {
+            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            var temporaryNo = $("#TemporaryNo").dxTextBox("instance").option("value");
+
+            confirmToDeleteAllVoucher(function () {
+                $.ajax({
+                    url: `/api/VoucherJournal/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&TemporaryNo=${encodeURIComponent(temporaryNo)}`,
+                    type: "POST",
+                    success: function (response) {
+                        if (response.data) {
+                            $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+                            DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.", "Data Deleted Successfully")
+                                .done(function () {
+                                    history.back(); // Execute only when "OK" is clicked
+                                });
+                        } else {
+                            DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+                    }
+                });
+            });
+        }
+    }
+
+
+
+
+
 
     function showLedgerAccountPopup() {
         var popup = $("#ledgerAccountPopup").dxPopup("instance");
