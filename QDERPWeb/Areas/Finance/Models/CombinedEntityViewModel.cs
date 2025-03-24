@@ -264,5 +264,12 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime EndDate { get; set; }
 
     }
+    // DTO for API request
+    public class VoucherUpdateRequest
+    {
+        public List<string> VoucherNos { get; set; }
+        public string ActionType { get; set; } // "verify", "approve", "unlock"
+        public string LogOnUser { get; set; } // Populated with logged-in user
+    }
 }
 
