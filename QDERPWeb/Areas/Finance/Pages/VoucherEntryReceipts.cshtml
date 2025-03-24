@@ -1684,9 +1684,12 @@
                     dataType: "json",
                     success: function (response) {
                         if (response.success) {
-                            //  DevExpress.ui.notify("Data saved successfully!", "success", 2000);
-                           // window.location.reload();
-                           history.back();
+                        DevExpress.ui.dialog.alert(
+                            "Receipt Voucher Details Updated Sucessfully.",
+                            "Data Saved Successfully"
+                        ).done(function () {
+                            history.back(); // Go back to the previous page
+                        });
 
                         } else {
                             alert("Update failed: " + response.message);
@@ -2652,10 +2655,25 @@
                         $("#Remarks").dxTextBox("instance").option("value", data.BillRemarks || "");
                                $("#VerifiedBy").dxCheckBox("instance").option("value", data.IsVerified || false);
                             $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || "");
-                    $("#VerifiedOnDate").dxTextBox("instance").option("value", data.VoucherVerifiedOn || "");
+                    var verifiedDate = data.VoucherVerifiedOn ? new Date(data.VoucherVerifiedOn) : null;
+                    var formattedDate = verifiedDate
+                        ? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                        : "";
+
+                    $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
                     $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
                      $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
-                      $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
+                    var approvedDate = data.VoucherApprovedOn ? new Date(data.VoucherApprovedOn) : null;
+                    var formattedApprovedDate = approvedDate
+                        ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                        : "";
+
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
+
+                    // Check if both VerifiedOnDate and ApprovedOntext have values
+                    if (formattedDate && formattedApprovedDate) {
+                        disableEditing();
+                    }
 
                         //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
