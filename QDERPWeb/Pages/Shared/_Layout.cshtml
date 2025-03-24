@@ -133,6 +133,9 @@
             background-color: var(--header-color) !important;
         }
 
+        #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+            background-color: var(--header-color);
+        }
 
         .dx-datagrid-header-panel {
             background-color: var(--header-color) !important;
@@ -2013,7 +2016,7 @@
                 document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "#FAF0E6");
                 document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#D6EAF8");
                 document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#F8FBFF");
-                document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color")|| "AED6F1");
+                document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color")|| "#AED6F1");
 
             };
         window.onscroll = function() {
