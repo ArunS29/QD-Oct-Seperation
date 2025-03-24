@@ -196,7 +196,10 @@
         margin-top: 1em;
         width:100%;
     }
-
+    .checkbox-label {
+        font-size: 16px; /* Adjust text size */
+        white-space: nowrap; /* Prevents text wrapping */
+    }
 </style>
 
 
@@ -437,71 +440,52 @@
     </div>
 
     <!-- Card 4: Arabic Section -->
-    <div class="card">
+    <div class="card" style="direction: rtl; padding: 20px;">
         <div class="dx-fieldset vertical-container">
-            <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-                <div class="form-group">
-                </div>
-                <div class="form-group">
-                    <div class="col-md-12" style="text-align: right;">
-                        <div style="display: flex; align-items: center; justify-content: flex-start;">
-                            @(Html.DevExtreme().CheckBox()
-                                .Text(new JS("formatMessage('Choose if this group is part of sales')"))
-                                .ID("ChooseifthisgrouptobeunderSales1")
-                                .Value(true)
 
-                                )
-                        </div>
-                    </div>
+            <div class="row mb-3">
+                <div class="col-md-12 d-flex align-items-center gap-2">
+                    @(Html.DevExtreme().CheckBox()
+                                .Text(new JS("formatMessage('Choose if this group is part of sales')"))
+                        .ID("ChooseifthisgrouptobeunderSales1")
+                        .Value(true)
+                        )
                 </div>
             </div>
-            <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-                <div class="form-group">
-                </div>
-                <div class="form-group">
-                    <div class="col-md-12" style="text-align: right;">
-                        <div style="display: flex; align-items: center; justify-content: flex-start;">
-                            @(Html.DevExtreme().CheckBox()
+
+            <div class="row mb-3">
+                <div class="col-md-12 d-flex align-items-center gap-2">
+                    @(Html.DevExtreme().CheckBox()
                                 .Text(new JS("formatMessage('Choose if this group is under salary advance')"))
-                                .ID("ChooseifthisgrouptobeunderPurchases1")
-                                .Value(true)
-                                )
-                        </div>
-                    </div>
+                        .ID("ChooseifthisgrouptobeunderPurchases1")
+                        .Value(true)
+                        )
                 </div>
             </div>
-            <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-                <div class="form-group">
-                </div>
-                <div class="form-group">
-                    <div class="col-md-13" style="text-align: right;">
-                        <div style="display: flex; align-items: center; justify-content: flex-start;">
-                            @(Html.DevExtreme().CheckBox()
-                                .Text(new JS("formatMessage('Choose if this group is under salary salary')"))
-                                .ID("ChooseifthisgrouptobeunderSalaryPayable1")
-                                .Value(true)
-                                )
-                        </div>
-                    </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12 d-flex align-items-center gap-2">
+                    @(Html.DevExtreme().CheckBox()
+                        .Text(new JS("formatMessage('Choose if this group is under salary salary')"))
+                        .ID("ChooseifthisgrouptobeunderSalaryPayable1")
+                        .Value(true)
+                        )
                 </div>
             </div>
-            <div class="form-group-row" style="display: flex; justify-content: space-between; align-items: center; direction: rtl;">
-                <div class="form-group">
-                </div>
-                <div class="form-group">
-                    <div class="col-md-12" style="text-align: right;">
-                        <div style="display: flex; align-items: center; justify-content: flex-start;">
-                            @(Html.DevExtreme().CheckBox()
-                                .Text(new JS("formatMessage('Choose if this group is under the bank reconciliation item')"))
-                                .ID("ChooseifthisgroupwanttobeReconcilied1")
-                                .Value(true)
-                                )
+
+            <div class="row mb-3">
+                <div class="col-md-12 d-flex align-items-center gap-2">
+                    @(Html.DevExtreme().CheckBox()
+                        .Text(new JS("formatMessage('Choose if this group is under the bank reconciliation item')"))
+                        .ID("ChooseifthisgroupwanttobeReconcilied1")
+                        .Value(true)
+                        )
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Card 5: CreatedOn Details -->
     <div class="content-container" style="width: 190%; max-width: 1500px;">
