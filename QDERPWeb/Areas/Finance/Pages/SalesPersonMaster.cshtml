@@ -79,7 +79,7 @@
     </div>
 </div>
 <div class="content-container-top">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="form-group">
             @(
                 Html.DevExtreme().TextBox()
@@ -95,8 +95,10 @@
                 )
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="form-group">
+    <div class="col-md-12">
+    <div class="form-group" style="display:flex;">
+            <div class="col-md-6" style="padding: 0px 10px 0px 0px;">
+
             @(
                 Html.DevExtreme().DropDownBox()
                 .Label(new JS("formatMessage('User Code')"))
@@ -128,6 +130,24 @@
                 .ContentTemplate(new TemplateName("ClientNameContentTemplate"))
                 )
         </div>
+         <div class="col-md-6" style="padding: 0px 0px 0px 10px;">
+        @(
+            Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Email Address')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("txtEmailAddress")
+            .OnChange("validateEmail")
+            .Value(null)
+            .ValidationRules(rules =>
+            {
+                rules.AddRequired()
+                .Message(new JS("formatMessage('Email Address Cannot be Empty')"));
+            })
+            )
+        </div>
+        </div>
+        </div>
+    <div class="col-md-4">
 
         @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
         {
@@ -167,24 +187,7 @@
 </div>
 
 <div class="row g-6">
-    <div class="col-md-4">
-        <div class="form-group">
-            @(
-                Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Email Address')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("txtEmailAddress")
-                .OnChange("validateEmail")
-                .Value(null)
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message(new JS("formatMessage('Email Address Cannot be Empty')"));
-                })
-                )
-        </div>
-    </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="form-group">
             @(
                 Html.DevExtreme().TextBox()
@@ -198,7 +201,7 @@
         </div>
     </div>
     <!-- Add SalesPerson Code input field -->
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="form-group">
             @(
                 Html.DevExtreme().TextBox()

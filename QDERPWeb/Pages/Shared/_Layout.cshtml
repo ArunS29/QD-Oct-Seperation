@@ -2008,14 +2008,14 @@
                     }
                 }
 
-                window.onload = function() {
-                    document.documentElement.style.setProperty("--header-color", localStorage.getItem("--header-color") || "#ffffff");
-                    document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "#ffffff");
-                    document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#2c3e50");
-                    document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#ecf0f1");
-                    document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color")|| "transparent");
+               window.onload = function() {
+                document.documentElement.style.setProperty("--header-color", localStorage.getItem("--header-color") || "#F0F8FF");
+                document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "#FAF0E6");
+                document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#D6EAF8");
+                document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#F8FBFF");
+                document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color")|| "AED6F1");
 
-                };
+            };
         window.onscroll = function() {
             let button = document.getElementById("goToTopBtn");
             if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {

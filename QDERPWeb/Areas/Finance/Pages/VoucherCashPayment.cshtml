@@ -791,8 +791,8 @@
 
                                             )
                                         @(Html.DevExtreme().TextBox()
-                                            .Label(new JS("formatMessage('Verified By')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            @* .Label(new JS("formatMessage('Verified By')")) *@
+                                            @* .LabelMode(EditorLabelMode.Outside) *@
                                             .ID("VerifiedBytext")
                                             .Value(null) // Default value
                                             .Disabled(true)
@@ -813,8 +813,8 @@
                                             .Value(null) // Default value
                                             )
                                         @(Html.DevExtreme().TextBox()
-                                            .Label(new JS("formatMessage('Approved By')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            @* .Label(new JS("formatMessage('Approved By')")) *@
+                                            @* .LabelMode(EditorLabelMode.Outside) *@
                                             .ID("ApprovedBytext")
                                             .Value(null) // Default value
                                             .Disabled(true)
