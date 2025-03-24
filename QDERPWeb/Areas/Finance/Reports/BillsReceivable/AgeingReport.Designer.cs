@@ -159,7 +159,7 @@
             this.xrLabel55,
             this.xrPictureBox1,
             this.xrRichText2});
-            this.TopMargin.HeightF = 118.5417F;
+            this.TopMargin.HeightF = 134.375F;
             this.TopMargin.Name = "TopMargin";
             // 
             // xrLabel56
@@ -167,9 +167,9 @@
             this.xrLabel56.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel56.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddress]")});
-            this.xrLabel56.LocationFloat = new DevExpress.Utils.PointFloat(10.00025F, 53.43062F);
+            this.xrLabel56.LocationFloat = new DevExpress.Utils.PointFloat(10.00026F, 53.43062F);
             this.xrLabel56.Name = "xrLabel56";
-            this.xrLabel56.SizeF = new System.Drawing.SizeF(1308F, 25.83332F);
+            this.xrLabel56.SizeF = new System.Drawing.SizeF(1060.231F, 25.83332F);
             this.xrLabel56.StylePriority.UseBorders = false;
             this.xrLabel56.StylePriority.UseTextAlignment = false;
             this.xrLabel56.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
@@ -181,9 +181,9 @@
             this.xrLabel55.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
             this.xrLabel55.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
-            this.xrLabel55.LocationFloat = new DevExpress.Utils.PointFloat(9.999993F, 32.43057F);
+            this.xrLabel55.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 32.43058F);
             this.xrLabel55.Name = "xrLabel55";
-            this.xrLabel55.SizeF = new System.Drawing.SizeF(1308.001F, 21.00004F);
+            this.xrLabel55.SizeF = new System.Drawing.SizeF(1060.231F, 21.00004F);
             this.xrLabel55.StylePriority.UseBorders = false;
             this.xrLabel55.StylePriority.UseFont = false;
             this.xrLabel55.StylePriority.UseTextAlignment = false;
@@ -193,7 +193,7 @@
             // xrPictureBox1
             // 
             this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
-            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(10.00025F, 10F);
+            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 32.43058F);
             this.xrPictureBox1.Name = "xrPictureBox1";
             this.xrPictureBox1.SizeF = new System.Drawing.SizeF(198.5417F, 99.99999F);
             this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
@@ -201,10 +201,10 @@
             // 
             // xrRichText2
             // 
-            this.xrRichText2.LocationFloat = new DevExpress.Utils.PointFloat(265.9138F, 79.26394F);
+            this.xrRichText2.LocationFloat = new DevExpress.Utils.PointFloat(152.6842F, 79.26394F);
             this.xrRichText2.Name = "xrRichText2";
             this.xrRichText2.SerializableRtfString = resources.GetString("xrRichText2.SerializableRtfString");
-            this.xrRichText2.SizeF = new System.Drawing.SizeF(869.1758F, 38.81943F);
+            this.xrRichText2.SizeF = new System.Drawing.SizeF(917.5466F, 38.81944F);
             // 
             // BottomMargin
             // 
@@ -1526,7 +1526,7 @@
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(24F, 58F, 118.5417F, 104.3557F);
+            this.Margins = new DevExpress.Drawing.DXMargins(24F, 58F, 134.375F, 104.3557F);
             this.PageHeight = 850;
             this.PageWidth = 1400;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Legal;

@@ -36,7 +36,7 @@ namespace QD.ERP.Web.Pages
             new()
             {
                 { "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to,"","","",null,"","") },
-                { "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to, "", "", "", null, "", "") },
+                //{ "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to) },
                   { "AccountDetails", (id, from, to) => new AccountDetails(id, from, to) },
                 {"AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to) },
                 { "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to) },
@@ -58,11 +58,28 @@ namespace QD.ERP.Web.Pages
                 {"payableRetention",(id,from,to )=>new payableRetention(id, from, to,"","","",null,"","") },
                 {"Balance",(id,from,to )=>new Balance(id, from, to,"","","",null,"","")   },
                 {"BillsPayablePaid",(id,from,to )=>new BillsPayablePaid(id, from, to,"","","",null,"","")   },
-                
+                { "AgeingReport", (id, from, to) => new AgeingReport(id, from, to,"","","",null,"","") },
+                 { "BIllsPayable", (id, from, to) => new BIllsPayable(id, from, to,"","","",null,"","") },
+                  { "ReceivableReport_EffectiveDate_", (id, from, to) => new ReceivableReport_EffectiveDate_(id, from, to,"","","",null,"","") },
+                { "XtraRecivableReport", (id, from, to) => new XtraRecivableReport(id, from, to,"","","",null,"","") },
+                           //{ "XtraReportAgeingreportsummary", (id, from, to) => new XtraReportAgeingreportsummary(id, from, to,"","","",null,"","") },
+
+                     { "XtraReportBillsReceivableAgeingReport", (id, from, to) => new XtraReportBillsReceivableAgeingReport(id, from, to,"","","",null,"","") },
 
 
 
             };
+
+                     
+
+
+            
+                
+                
+               
+
+
+
 
         private static readonly Dictionary<string, Func<XtraReport>> simpleReports = new()
         {

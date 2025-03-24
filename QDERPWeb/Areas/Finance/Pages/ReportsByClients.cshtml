@@ -356,25 +356,22 @@
 
 
     function saveGridAsPDF() {
-        let selectedParams = "";
-
-        if (selectedValues.length > 0) {
-            selectedParams = selectedValues.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
-        } else if (selectedValues1.length > 0) {
-            selectedParams = selectedValues1.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
-        } else if (selectedValues2.length > 0) {
-            selectedParams = selectedValues2.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
-        } else {
+        if (selectedValues.length === 0) {
             alert("Please select at least one record.");
             return;
         }
 
         const reportName = "XtraRecivableReport";
+
+        
+        const selectedParams = selectedValues.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
+
+            
         const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&${selectedParams}`;
 
+        
         window.open(reportUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
-
     function printGrid() {
         if (selectedValues.length === 0) {
             alert("Please select at least one record to print.");
@@ -397,50 +394,50 @@
             })
             .catch(error => console.error("Error:", error));
     }
-    // function printGrid1() {
-    //     if (selectedValues1.length === 0) {
-    //         alert("Please select at least one record to print.");
-    //         return;
-    //     }
-    //     fetch("/api/ReportsByClients/GenerateReportSalesPerson", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify(selectedValues1) 
-    //     })
-    //         .then(response => {
-    //             if (response.redirected) {
-    //                 window.location.href = response.url; 
-    //             } else {
-    //                 return response.text();
-    //             }
-    //         })
-    //         .then(data => {
-    //             if (data) console.error("Error:", data);
-    //         })
-    //         .catch(error => console.error("Error:", error));
-    // }
-    // function printGrid2() {
-    //     if (selectedValues2.length === 0) {
-    //         alert("Please select at least one record to print.");
-    //         return;
-    //     }
-    //     fetch("/api/ReportsByClients/GenerateReportBranch", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify(selectedValues2)  
-    //     })
-    //         .then(response => {
-    //             if (response.redirected) {
-    //                 window.location.href = response.url; 
-    //             } else {
-    //                 return response.text();
-    //             }
-    //         })
-    //         .then(data => {
-    //             if (data) console.error("Error:", data);
-    //         })
-    //         .catch(error => console.error("Error:", error));
-    // }
+    function printGrid1() {
+        if (selectedValues1.length === 0) {
+            alert("Please select at least one record to print.");
+            return;
+        }
+        fetch("/api/ReportsByClients/GenerateReportSalesPerson", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedValues1) 
+        })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; 
+                } else {
+                    return response.text();
+                }
+            })
+            .then(data => {
+                if (data) console.error("Error:", data);
+            })
+            .catch(error => console.error("Error:", error));
+    }
+    function printGrid2() {
+        if (selectedValues2.length === 0) {
+            alert("Please select at least one record to print.");
+            return;
+        }
+        fetch("/api/ReportsByClients/GenerateReportBranch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedValues2)  
+        })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; 
+                } else {
+                    return response.text();
+                }
+            })
+            .then(data => {
+                if (data) console.error("Error:", data);
+            })
+            .catch(error => console.error("Error:", error));
+    }
 
 
 
