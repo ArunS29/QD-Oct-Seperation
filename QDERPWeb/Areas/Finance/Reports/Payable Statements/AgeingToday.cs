@@ -19,7 +19,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
         {
             InitializeComponent();
 
-           
+
             SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
         }
 
@@ -90,7 +90,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             {
                 addressArbLabel.Text = company_address_arb;
             }
-
 
 
         }

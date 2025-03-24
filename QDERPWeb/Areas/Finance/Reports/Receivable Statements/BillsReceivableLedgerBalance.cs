@@ -92,7 +92,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
                 addressArbLabel.Text = company_address_arb;
             }
 
-
+            AddSqlQueryParameters(accountId, frmDate, toDate);
 
         }
 

@@ -1,4 +1,6 @@
-﻿namespace QD.ERP.Web.Areas.Finance.Reports
+﻿using System.ComponentModel;
+
+namespace QD.ERP.Web.Areas.Finance.Reports
 {
     partial class BillsReceivableAgeingToday
     {
@@ -112,6 +114,7 @@
             this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
+            this.xrPictureBox1 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel41 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel40 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel22 = new DevExpress.XtraReports.UI.XRLabel();
@@ -175,7 +178,6 @@
             this.xrLabel6 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrPictureBox1 = new DevExpress.XtraReports.UI.XRPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -195,7 +197,6 @@
             this.pageInfo2});
             this.BottomMargin.HeightF = 61.06403F;
             this.BottomMargin.Name = "BottomMargin";
-            this.BottomMargin.BeforePrint += new DevExpress.XtraReports.UI.BeforePrintEventHandler(this.BottomMargin_BeforePrint);
             // 
             // xrLabel21
             // 
@@ -232,7 +233,7 @@
             // 
             // pageInfo1
             // 
-            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(1227.219F, 11.30193F);
+            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(1210.219F, 14.30168F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
             this.pageInfo1.SizeF = new System.Drawing.SizeF(114.7814F, 12.86487F);
@@ -266,6 +267,15 @@
             this.xrLabel40,
             this.xrLabel22});
             this.ReportHeader.Name = "ReportHeader";
+            // 
+            // xrPictureBox1
+            // 
+            this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
+            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(50F, 0F);
+            this.xrPictureBox1.Name = "xrPictureBox1";
+            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(176.6667F, 100F);
+            this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
+            this.xrPictureBox1.StylePriority.UseBorderColor = false;
             // 
             // xrLabel41
             // 
@@ -1436,15 +1446,6 @@
             this.xrLabel1.StylePriority.UseBackColor = false;
             this.xrLabel1.StylePriority.UseBorders = false;
             // 
-            // xrPictureBox1
-            // 
-            this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
-            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(50F, 0F);
-            this.xrPictureBox1.Name = "xrPictureBox1";
-            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(176.6667F, 100F);
-            this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
-            this.xrPictureBox1.StylePriority.UseBorderColor = false;
-            // 
             // BillsReceivableAgeingToday
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -1460,7 +1461,7 @@
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(0F, 0F, 0.4684702F, 61.06403F);
+            this.Margins = new DevExpress.Drawing.DXMargins(17F, 24F, 0.4684702F, 61.06403F);
             this.PageHeight = 900;
             this.PageWidth = 1367;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;
@@ -1476,6 +1477,8 @@
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
 
         }
+
+     
 
         #endregion
 

@@ -105,7 +105,7 @@ namespace QD.ERP.Web.Reports
                 addressArbLabel.Text = company_address_arb;
             }
 
-
+            AddSqlQueryParameters(accountId, frmDate, toDate);
 
         }
 

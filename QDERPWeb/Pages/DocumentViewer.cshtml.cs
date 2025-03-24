@@ -338,7 +338,7 @@ namespace QD.ERP.Web.Pages
                         return BadRequest("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsReceivablelandscapeformat(
+                Report = new BillsReceivableAll(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr
                 );
@@ -408,28 +408,32 @@ namespace QD.ERP.Web.Pages
                 var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
-                Image logoImage = null;
+                Image logoImage = null; // Change from string to Image
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
                         using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
                         {
-                            logoImage = Image.FromStream(ms);
+                            logoImage = Image.FromStream(ms); // Convert Byte Array to Image
                         }
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+                        // Log the error instead of returning a BadRequest (ensures the report still loads)
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
+
+                // **Pass values to the report even if company details are missing**
                 Report = new BillsReceivableAgeingToday(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr
                 );
 
             }
+
 
             else if (reportName == "BillsReceivableRentation")
             {
@@ -564,6 +568,54 @@ namespace QD.ERP.Web.Pages
 
 
             }
+            else if (reportName == "Report4")
+            {
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for BillsReceivableAll.");
+                }
+
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+                // **Set default values if company details are not found**
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new Report4(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
+
+
+            }
+
+
+
+
             else if (reportName == "rpt201BillsPayable")
 
             {
@@ -748,7 +800,6 @@ namespace QD.ERP.Web.Pages
                 }
 
 
-
                 // Pass the image object directly to the report
                 Report = new StatementOfAccountReport(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
@@ -808,7 +859,6 @@ namespace QD.ERP.Web.Pages
                         return BadRequest("Error processing company logo: " + ex.Message);
                     }
                 }
-
 
 
                 // Pass the image object directly to the report
@@ -1023,7 +1073,116 @@ namespace QD.ERP.Web.Pages
                 );
             }
 
-            else if (reportName == "Report4")
+           
+
+<<<<<<< Updated upstream
+        
+=======
+            else if (reportName == "AgeingReport")
+            {
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AgeingReport.");
+                }
+
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                if (ERPCompany_details == null)
+                {
+                    return BadRequest("Company details not found for the given tenant.");
+                }
+
+                var companyName = ERPCompany_details.CompanyName;
+                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
+                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;  // Change from string to Image
+
+                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms); // Convert Byte Array to Image
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Error processing company logo: " + ex.Message);
+                    }
+                }
+
+
+
+                // Pass the image object directly to the report
+                Report = new AgeingReport(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
+
+
+            }
+
+            else if (reportName == "BIllsPayable")
+            {
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for BillsPayableAll.");
+                }
+
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                if (ERPCompany_details == null)
+                {
+                    return BadRequest("Company details not found for the given tenant.");
+                }
+
+                var companyName = ERPCompany_details.CompanyName;
+                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
+                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;  // Change from string to Image
+
+                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms); // Convert Byte Array to Image
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Error processing company logo: " + ex.Message);
+                    }
+                }
+
+
+
+                // Pass the image object directly to the report
+                Report = new BIllsPayable(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
+
+
+            }
+
+            else if (reportName == " ReceivableReport_EffectiveDate_")
             {
                 if (accountId == null || frmDate == null || toDate == null)
                 {
@@ -1067,15 +1226,163 @@ namespace QD.ERP.Web.Pages
 
 
                 // Pass the image object directly to the report
-                Report = new Report4(
+                Report = new ReceivableReport_EffectiveDate_(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr
                 );
 
 
             }
+            else if (reportName == " XtraRecivableReport")
+            {
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for BillsReceivableAll.");
+                }
 
-        
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                if (ERPCompany_details == null)
+                {
+                    return BadRequest("Company details not found for the given tenant.");
+                }
+
+                var companyName = ERPCompany_details.CompanyName;
+                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
+                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;  // Change from string to Image
+
+                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms); // Convert Byte Array to Image
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Error processing company logo: " + ex.Message);
+                    }
+                }
+
+
+
+                // Pass the image object directly to the report
+                Report = new XtraRecivableReport(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
+
+
+            }
+            //else if (reportName == "XtraReportAgeingreportsummary")
+            //{
+            //    if (accountId == null || frmDate == null || toDate == null)
+            //    {
+            //        return BadRequest("Missing required parameters for BillsReceivableAll.");
+            //    }
+
+            //    AccountId = accountId;
+            //    FrmDate = frmDate.Value;
+            //    ToDate = toDate.Value;
+            //    var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            //    ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+            //        .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+            //    if (ERPCompany_details == null)
+            //    {
+            //        return BadRequest("Company details not found for the given tenant.");
+            //    }
+
+            //    var companyName = ERPCompany_details.CompanyName;
+            //    var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
+            //    var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
+            //    var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+            //    string logoBase64 = string.Empty;
+            //    Image logoImage = null;  // Change from string to Image
+
+            //    if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+            //    {
+            //        try
+            //        {
+            //            using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+            //            {
+            //                logoImage = Image.FromStream(ms); // Convert Byte Array to Image
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            return BadRequest("Error processing company logo: " + ex.Message);
+            //        }
+            //    }
+
+            //    // Pass the image object directly to the report
+            //    Report = new XtraReportAgeingreportsummary(
+            
+            //        AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+            //        companyNameAr, companyAddressAr
+            //    );
+            //}
+
+            else if (reportName == "XtraReportBillsReceivableAgeingReport")
+            {
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for BillsReceivableAll.");
+                }
+
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                if (ERPCompany_details == null)
+                {
+                    return BadRequest("Company details not found for the given tenant.");
+                }
+
+                var companyName = ERPCompany_details.CompanyName;
+                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
+                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;  // Change from string to Image
+
+                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms); // Convert Byte Array to Image
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Error processing company logo: " + ex.Message);
+                    }
+                }
+
+                // Pass the image object directly to the report
+                Report = new XtraReportBillsReceivableAgeingReport(
+
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
+            }
+
+>>>>>>> Stashed changes
 
 
 
