@@ -290,7 +290,7 @@
                 items.Add().Text(new JS("formatMessage('All Vouchers')")).OnClick("onVoucherSelection");
                 items.Add().Text(new JS("formatMessage('Payments')")).OnClick("onVoucherSelection");
                 items.Add().Text(new JS("formatMessage('Receipts')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('ClientReceivables')")).OnClick("onVoucherSelection");
+                items.Add().Text(new JS("formatMessage('Client Receivables')")).OnClick("onVoucherSelection");
                 items.Add().Text(new JS("formatMessage('Supplier Payables')")).OnClick("onVoucherSelection");
                 items.Add().Text(new JS("formatMessage('Other Vouchers')")).OnClick("onVoucherSelection");
             })
@@ -740,38 +740,39 @@
                 reader.readAsText(file);
             }
         });
-         function onVoucherSelection(e) {
+    function onVoucherSelection(e) {
         var selectedText = e.itemData.text;
-
-        console.log("Selected Option:", selectedText);
+        var voucherType = [];
 
         switch (selectedText) {
-            case formatMessage("AllVouchers"):
-                showVoucherList("all");
+            case formatMessage("All Vouchers"):
+                voucherType = ["all"]; // Show all vouchers
                 break;
             case formatMessage("Payments"):
-                showVoucherList("payments");
+                voucherType = ["Bank Payment", "Cash Payment"];
                 break;
             case formatMessage("Receipts"):
-                showVoucherList("receipts");
+                voucherType = ["Bank Receipts", "Cash Receipts"];
                 break;
-            case formatMessage("ClientReceivables"):
-                showVoucherList("clientReceivables");
+            case formatMessage("Client Receivables"):
+                voucherType = ["Sales"];
                 break;
-            case formatMessage("SupplierPayables"):
-                showVoucherList("supplierPayables");
+            case formatMessage("Supplier Payables"):
+                voucherType = ["Purchases"];
                 break;
-            case formatMessage("OtherVouchers"):
-                showVoucherList("otherVouchers");
+            case formatMessage("Other Vouchers"):
+                voucherType = ["Journal"];
                 break;
         }
+
+        // Reload DataGrid with the selected Voucher Types
+        $("#dataGrid").dxDataGrid("instance").option("dataSource", {
+            load: function () {
+                return $.getJSON('/api/VoucherApproval/GetVoucherApproval', { voucherTypes: voucherType.join(",") });
+            }
+        });
     }
 
-    function showVoucherList(type) {
-        console.log("Fetching vouchers for:", type);
-        // Implement logic to show popup or fetch vouchers
-        $("#voucherPopup").dxPopup("instance").show();
-    }
 
 
 

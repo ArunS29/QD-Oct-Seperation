@@ -18,15 +18,24 @@ namespace QDWEB.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
-
         [HttpGet]
-        public IActionResult GetVoucherApproval()
+        public IActionResult GetVoucherApproval(string voucherTypes)
         {
+            
+            
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var data = dbContext.Qry20136VoucherMasterLists.Select(v => new
+                    var query = dbContext.Qry20136VoucherMasterLists.AsQueryable();
+
+                    if (!string.IsNullOrEmpty(voucherTypes) && voucherTypes != "all")
+                    {
+                        var typesList = voucherTypes.Split(',').ToList();
+                        query = query.Where(v => typesList.Contains(v.VoucherType));
+                    }
+
+                    var data = query.Select(v => new
                     {
                         v.VoucherNo,
                         VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
@@ -41,16 +50,8 @@ namespace QDWEB.Areas.Finance.Controllers
                         v.VoucherApprovedBy,
                         v.VoucherApprovedOn,
                         v.VoucherType,
-                        VoucherEffectiveDate = v.VoucherEffectiveDate.HasValue
-                            ? v.VoucherEffectiveDate.Value.ToString("dd-MMM-yyyy")
-                            : string.Empty,
-                        v.VoucherModifiedBy,
-                        v.VoucherModifiedOn,
                         v.DebitAmount,
-                        v.CreditAmount,
-                        v.AuditVerifiedBy,
-                        v.AuditVerifiedOn,
-                        v.IsAuditVerified
+                        v.CreditAmount
                     }).ToList();
 
                     return Json(data);
@@ -64,6 +65,7 @@ namespace QDWEB.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public IActionResult GetVoucherApprovals(DateTime? startDate, DateTime? endDate)

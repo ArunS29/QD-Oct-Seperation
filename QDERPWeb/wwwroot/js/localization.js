@@ -1,5 +1,8 @@
 ﻿var dictionary = {
     "en": {
+        "All Vouchers": "All Vouchers",
+        "Supplier Payables": "Supplier Payables",
+        "Client Receivables": "Client Receivables",
         "Edit Bill Receivable":"Edit Bill Receivable",
         "Supplier Other ID: *": "Supplier Other ID: *",
         "Other ID Type: *": "Other ID Type: *",
