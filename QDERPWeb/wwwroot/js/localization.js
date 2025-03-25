@@ -2607,42 +2607,42 @@
 DevExpress.localization.loadMessages(dictionary);
 var formatMessage = DevExpress.localization.formatMessage;
 
-//var locales = [
-//    { name: "English", value: "en", flag: "https://flagcdn.com/w40/us.png" },
-//    { name: "العربية", value: "ar", flag: "https://flagcdn.com/w40/ae.png" }
-//];
+var locales = [
+    { name: "English", value: "en", flag: "https://flagcdn.com/w40/us.png" },
+    { name: "العربية", value: "ar", flag: "https://flagcdn.com/w40/ae.png" }
+];
 
 
-function fetchLocales() {
-    fetch('/api/language')
-        .then(response => response.json())
-        .then(data => {
-            var locales = data.map(function (locale) {
-                return {
-                    name: locale.name,
-                    value: locale.value,
-                    flag: locale.flag
-                };
-            });
-            // Assuming you need to update the dictionary or some other part of your localization setup
-            updateLocalization(locales);
-        })
-        .catch(error => {
-            console.error('Error fetching locales:', error);
-        });
-}
-function updateLocalization(locales) {
-    // Example: Update the dictionary with new locales
-    locales.forEach(locale => {
-        if (!dictionary[locale.value]) {
-            dictionary[locale.value] = {};
-        }
-        // Add or update translations for the locale
-        // This is just an example, adjust as needed
-        dictionary[locale.value]["Example Key"] = "Example Translation";
-    });
-    console.log('Localization updated:', dictionary);
-}
+//function fetchLocales() {
+//    fetch('/api/language')
+//        .then(response => response.json())
+//        .then(data => {
+//            var locales = data.map(function (locale) {
+//                return {
+//                    name: locale.name,
+//                    value: locale.value,
+//                    flag: locale.flag
+//                };
+//            });
+//            // Assuming you need to update the dictionary or some other part of your localization setup
+//            updateLocalization(locales);
+//        })
+//        .catch(error => {
+//            console.error('Error fetching locales:', error);
+//        });
+//}
+//function updateLocalization(locales) {
+//    // Example: Update the dictionary with new locales
+//    locales.forEach(locale => {
+//        if (!dictionary[locale.value]) {
+//            dictionary[locale.value] = {};
+//        }
+//        // Add or update translations for the locale
+//        // This is just an example, adjust as needed
+//        dictionary[locale.value]["Example Key"] = "Example Translation";
+//    });
+//    console.log('Localization updated:', dictionary);
+//}
 
 
 // Get the saved locale or default to English
@@ -2651,10 +2651,14 @@ DevExpress.localization.locale(locale);
 
 // Function to change the language
 function changeLocale(dropdown) {
+    
     var selectedLocale = dropdown.value;
+    alert(selectedLocale);
     setLocale(selectedLocale);
     document.location.reload(); // Reload page to apply changes
     updateFlagIcon(selectedLocale);
+    
+    
 }
 
 // Function to get saved locale

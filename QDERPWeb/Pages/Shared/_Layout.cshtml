@@ -819,13 +819,16 @@
             </div>
             <div>
                 @(Html.DevExtreme().SelectBox()
-                    .ID("LanguageSelectBox")
+                    .ID("languageSelectBox")
+                    .InputAttr("id", "selectInput")
                     .DataSource(Languages)
                     .DisplayExpr("Name") // Assuming 'Name' is the property to display
+                    .Width("8em")
+                    .Value(new JS("locale"))
+                    .OnValueChanged("changeLocale")
                     .ValueExpr("Id") // Assuming 'Id' is the property to use as the value
                     .Label("Language")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Value(Languages.FirstOrDefault()?.Id) // Use 'Id' as the value
                     .OnValueChanged("changeLocale")
                     )
 
