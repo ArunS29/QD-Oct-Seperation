@@ -820,19 +820,16 @@
             <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("languageSelectBox")
-                    .InputAttr("id", "selectInput")
-                    .DataSource(Languages)
-                    .DisplayExpr("Name") // Assuming 'Name' is the property to display
+                    .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
+                    .DisplayExpr("name")
+                    .ValueExpr("value")
                     .Width("8em")
                     .Value(new JS("locale"))
                     .OnValueChanged("changeLocale")
-                    .ValueExpr("Id") // Assuming 'Id' is the property to use as the value
                     .Label("Language")
                     .LabelMode(EditorLabelMode.Outside)
-                    .OnValueChanged("changeLocale")
                     )
-
-            </div> 
+            </div>
             @* <button id="themeToggle">Toggle Dark Mode</button> *@
             <button id="fullscreenToggle">
                 <i class="fas fa-expand" id="fullscreenIcon"></i>
