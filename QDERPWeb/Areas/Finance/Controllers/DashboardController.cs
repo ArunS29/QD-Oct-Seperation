@@ -27,6 +27,29 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetCashBalance()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var cashBalance = await dbContext.Qry201MainVoucherEntriesWithMasters
+                        .Select(v => v.CrAmount - v.DrAmount)
+                        .SumAsync();
+
+                    return Ok(new { success = true, cashBalance });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetCashBalance: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetTotalClientOutstanding()
@@ -49,81 +72,27 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+
+
+
         [HttpGet]
-        public async Task<IActionResult> GetBankAccounts(DataSourceLoadOptions loadOptions, string masterGroupID, DateTime? endDate)
+        public async Task<IActionResult> GetBankAccounts(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    // Ensure parameters are not null
-                    if (string.IsNullOrEmpty(masterGroupID) || endDate == null)
-                    {
-                        return BadRequest(new { message = "Invalid parameters.", success = false });
-                    }
-
-                    var masterGroupParam = new Microsoft.Data.SqlClient.SqlParameter("@p0", masterGroupID ?? (object)DBNull.Value);
-                    var endDateParam = new Microsoft.Data.SqlClient.SqlParameter("@p1", System.Data.SqlDbType.DateTime2)
-                    {
-                        Value = endDate ?? (object)DBNull.Value
-                    };
-
-                    var allLedgerData = dbContext.Qry201MainVoucherEntriesWithMasters;
                     var data = dbContext.Qry201MainVoucherEntriesWithMasters
-                   .Select(v => new
-                   {
-                       v.VoucherNo,
-                       v.VoucherDate,
-                       v.VoucherRefNo,
-                       v.VoucherNarration,
-                       v.VoucherEnteredBy,
-                       v.VoucherEnteredOn,
-                       v.VoucherVerifiedBy,
-                       v.VoucherVerifiedOn,
-                       v.VoucherApprovedBy,
-                       v.VoucherApprovedOn,
-                       v.VoucherEntryNo,
-                       v.AccountHead,
-                       v.AccountHeadName,
-                       v.DrCr,
-                       v.DrAmount,
-                       v.CrAmount,
-                       v.VoucherAmountFormatted,
-                       v.EntryNarration,
-                       v.AccountGroup,
-                       v.MasterGroup,
-                       v.IsApproved,
-                       v.VoucherType,
-                       v.SysRemarks,
-                       v.IsCalculateOpeningBalance,
-                       v.BankClearedOn,
-                       v.AccountGroupId,
-                       v.MasterGroupId,
-                       v.IsProfitLossAccount,
-                       v.IsBalanceSheetAccount,
-                       v.MasterOrderNo,
-                       v.MasterGroupCategory,
-                       v.VoucherEffectiveDate,
-                       v.BillNo,
-                       v.BillDate,
-                       v.BillPaidTo,
-                       v.BillRemarks,
-                       v.VoucherModifiedBy,
-                       v.VoucherModifiedOn,
-                       v.AccountHeadArabic,
-                       v.AccountGroupAr,
-                       v.MasterGroupAr,
-                       v.VoucherTypeAr,
-                       v.ChartOfAccountsOrder,
-                       v.AccountGroupOrderNo,
-                       v.MasterGroupCategoryAr,
-                       v.IsAccumulatedDepAcc,
-                       v.AccountSubGroup,
-                       v.SubGroupName,
-                       v.SubGroupNameAr,
-                       v.MainGroup,
-                       v.ReferenceNote
-                   });
+                        .Select(v => new sp20103GetBankAccountsResult
+                        {
+                            AccountHead = v.AccountHead,
+                            AccountHeadName = v.AccountHeadName,
+                            MasterGroupID = v.MasterGroupId,
+                            Amount = v.CrAmount - v.DrAmount,
+                            AccountGroup = v.AccountGroup
+                        });
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
                 }
@@ -135,6 +104,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetTotalBillsOutstanding()
@@ -171,8 +141,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         {
                             b.AccountHeadNo,
                             b.AccountHead,
-                            b.Balance,
-                            b.OverdueDays
+                            b.Balance
+                            
                         });
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
@@ -252,79 +222,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetVoucherEntries(DataSourceLoadOptions loadOptions)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var data = dbContext.Qry201MainVoucherEntriesWithMasters
-                        .Select(v => new
-                        {
-                            v.VoucherNo,
-                            v.VoucherDate,
-                            v.VoucherRefNo,
-                            v.VoucherNarration,
-                            v.VoucherEnteredBy,
-                            v.VoucherEnteredOn,
-                            v.VoucherVerifiedBy,
-                            v.VoucherVerifiedOn,
-                            v.VoucherApprovedBy,
-                            v.VoucherApprovedOn,
-                            v.VoucherEntryNo,
-                            v.AccountHead,
-                            v.AccountHeadName,
-                            v.DrCr,
-                            v.DrAmount,
-                            v.CrAmount,
-                            v.VoucherAmountFormatted,
-                            v.EntryNarration,
-                            v.AccountGroup,
-                            v.MasterGroup,
-                            v.IsApproved,
-                            v.VoucherType,
-                            v.SysRemarks,
-                            v.IsCalculateOpeningBalance,
-                            v.BankClearedOn,
-                            v.AccountGroupId,
-                            v.MasterGroupId,
-                            v.IsProfitLossAccount,
-                            v.IsBalanceSheetAccount,
-                            v.MasterOrderNo,
-                            v.MasterGroupCategory,
-                            v.VoucherEffectiveDate,
-                            v.BillNo,
-                            v.BillDate,
-                            v.BillPaidTo,
-                            v.BillRemarks,
-                            v.VoucherModifiedBy,
-                            v.VoucherModifiedOn,
-                            v.AccountHeadArabic,
-                            v.AccountGroupAr,
-                            v.MasterGroupAr,
-                            v.VoucherTypeAr,
-                            v.ChartOfAccountsOrder,
-                            v.AccountGroupOrderNo,
-                            v.MasterGroupCategoryAr,
-                            v.IsAccumulatedDepAcc,
-                            v.AccountSubGroup,
-                            v.SubGroupName,
-                            v.SubGroupNameAr,
-                            v.MainGroup,
-                            v.ReferenceNote
-                        });
-
-                    return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in GetVoucherEntries: {ex.Message}");
-                    return StatusCode(500, "Internal server error");
-                }
-            }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
+       
 
 
         [HttpGet]

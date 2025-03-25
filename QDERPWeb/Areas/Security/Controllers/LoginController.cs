@@ -74,7 +74,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
 
                         var passwordReset = dbContext.Passwordresets
-                            .Where(pr => pr.Username == request.Username && pr.Otp == request.otp && pr.Status == false)
+                            .Where(pr => pr.Username == request.Username && pr.Otp == request.otp && pr.Status == true)
                             .ToList();
 
                         if (passwordReset.Any())
@@ -84,7 +84,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
                             if (user != null)
                             {
-                                user.Password = request.Password; // Assuming request.NewPassword contains the new password
+                                user.Password = request.Password;
                                 dbContext.SaveChanges();
                             }
                         }
@@ -114,12 +114,28 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                             {
                                 Username = username, // Bind the userId variable here
                                 Otp = otp,
-                                ExpiryDateTime = DateTime.UtcNow.AddMinutes(15), // Set expiry time as 15 minutes from now
-                                Status = false // Assuming false means not used
+                                ExpiryDateTime = DateTime.UtcNow.AddMinutes(5), // Set expiry time as 10 minutes from now
+                                Status = true // Assuming true means not used
                             };
 
                             dbContext.Set<Passwordreset>().Add(passwordReset);
                             dbContext.SaveChanges();
+
+                            // Start a background task to update the status after 10 minutes
+                            Task.Run(async () =>
+                            {
+                                await Task.Delay(TimeSpan.FromMinutes(5));
+                                using (var scope = _dbContextFactory.CreateDbContext(tenant.ConnectionString))
+                                {
+                                    var resetEntry = scope.Passwordresets.FirstOrDefault(pr => pr.Username == username && pr.Otp == otp);
+                                    if (resetEntry != null)
+                                    {
+                                        resetEntry.Status = false;
+                                        scope.SaveChanges();
+                                    }
+                                }
+                            });
+
 
 
                             EmailHelper.SendEmailAsync(emailAddress, "OTP Verification", $"<h1>Your OTP is: {otp}</h1>").Wait();
