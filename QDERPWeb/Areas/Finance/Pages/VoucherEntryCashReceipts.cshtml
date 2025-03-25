@@ -200,7 +200,7 @@
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("change") // Detects changes in the dropdown
                         .HoverStateEnabled(true)
-                        .Value("Petty Cash - Shabbir")
+                        
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
                         .OnValueChanged("onReceivingAccountChange") // Call the change handler
@@ -810,7 +810,9 @@
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(345)
                         .Selection(s => s.Mode(SelectionMode.Single))
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .SelectedRowKeys(new JS("getSelectedRowKeys()"))
+
+
                         .Columns(columns =>
                         {
                             columns.Add().DataField("AccountId");
@@ -1029,12 +1031,13 @@
 
         var voucherAmtValidation = voucherAmtValidator.validate();
 
-        if (!paymentaccheadname) {
-
-            paymentaccheadname = "Petty Cash - Shabbir";
-
-            paymentaccheadId = "L00811";
-
+        // Ensure paymentaccheadname and paymentaccheadId are assigned before use
+        if (!paymentaccheadname || !paymentaccheadId) {
+            DevExpress.ui.dialog.alert(
+                "Default Receiving Account not set. Please refresh the page or check the setup.",
+                "Error"
+            );
+            return;
         }
 
         var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
@@ -1830,16 +1833,29 @@
                 console.error("Error refreshing data source for AccountHead:", error);
             });
     }
-    // $(document).ready(function () {
-    //     $.get("/api/VoucherEntryCashReceipts/GetDefaultReceivingAccount", function (data) {
-    //         if (data) {
-    //             var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
-    //             dropDown.option("value", data.AccountHead);
-    //             var dataGrid = $("#suppliername-datagrid").dxDataGrid("instance");
-    //             dataGrid.selectRows([data.AccountId], true); // Select row in DataGrid
-    //         }
-    //     });
-    // });
+    $(document).ready(function () {
+        $.get("/api/VoucherEntryCashReceipts/GetDefaultReceivingAccount", function (data) {
+            if (data && data.AccountId) {
+                paymentaccheadname = data.AccountHead;
+                paymentaccheadId = data.AccountId;
+                var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
+
+                // Set the dropdown value
+                dropDown.option("value", data.AccountId);
+
+                // Get the DataGrid instance inside the dropdown
+                var dataGrid = $("#suppliername-datagrid").dxDataGrid("instance");
+                if (dataGrid) {
+                    dataGrid.option("selectedRowKeys", [data.AccountId]);
+                }
+            }
+        });
+    });
+    function getSelectedRowKeys() {
+        var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
+        return dropDown.option("value") ? [dropDown.option("value")] : [];
+    }
+
     // function onRowRemoving(e) {
     //     var rowData = e.data; // Get the row data being removed
     //     var voucherEntryNo = rowData.VoucherEntryNo; // Retrieve the unique identifier for the row

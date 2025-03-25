@@ -1084,6 +1084,7 @@
         "Duplicate Branch": "Duplicate Branch",
         "This branch already exists!": "This branch already exists!",
         "Branch Added": "Branch Added",
+        "Submitted":"Submitted",
         "Clear Errors": "Clear Errors",
         "Cannot continue saving with errors, please clear the errors and continue.": "Cannot continue saving with errors, please clear the errors and continue.",
         "Toggle Filter": "Toggle Filter",
@@ -1329,6 +1330,7 @@
 
     },
     "ar": {
+        "Submitted":"مُقدَّم",
         "Bills Payable": "الفواتير المستحقة الدفع",
         "Receivables with unmapped Vouchers": "مستحقات مع قسائم غير مخصصة",
         "Receivables Reports with Effective Date": "تقارير المستحقات مع تاريخ السريان",

@@ -148,7 +148,7 @@
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
-                        .Value("Riyadh Bank")
+                        
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
                         .OnInput("dropDownBoxOnInput")
@@ -874,7 +874,7 @@
                         .Height(345)
 
                         .Selection(s => s.Mode(SelectionMode.Single))
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .SelectedRowKeys(new JS("getSelectedRowKeys()"))
 
                         .Columns(columns =>
                         {
@@ -1527,10 +1527,14 @@
             var accountHeadValidation = accountHeadValidator.validate();
             var voucherAmtValidation = voucherAmtValidator.validate();
 
-            if (!paymentaccheadname) {
-                paymentaccheadname = "Riyadh Bank";
-                paymentaccheadId = "L00505";
-            }
+        // Ensure paymentaccheadname and paymentaccheadId are assigned before use
+        if (!paymentaccheadname || !paymentaccheadId) {
+            DevExpress.ui.dialog.alert(
+                "Default Receiving Account not set. Please refresh the page or check the setup.",
+                "Error"
+            );
+            return;
+        }
             var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
             var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
             griddatacount = rowCount;
@@ -3870,5 +3874,27 @@ function onAccountHeadRowPrepared(e) {
         e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color
     }
 }
+    $(document).ready(function () {
+        $.get("/api/VoucherMaster/GetDefaultPaymentAccount", function (data) {
+            if (data && data.AccountId) {
+                paymentaccheadname = data.AccountHead;
+                paymentaccheadId = data.AccountId;
+                var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
+
+                // Set the dropdown value
+                dropDown.option("value", data.AccountId);
+
+                // Get the DataGrid instance inside the dropdown
+                var dataGrid = $("#accountpaymentamount-datagrid").dxDataGrid("instance");
+                if (dataGrid) {
+                    dataGrid.option("selectedRowKeys", [data.AccountId]);
+                }
+            }
+        });
+    });
+    function getSelectedRowKeys() {
+        var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
+        return dropDown.option("value") ? [dropDown.option("value")] : [];
+    }
 
 </script>

@@ -1826,7 +1826,27 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        public async Task<IActionResult> GetDefaultReceivingAccount()
+        {
+            var defaultAccount = await _context.Tbl201ChartOfAccounts
+                .Where(a => a.IsDefaultForCash == true && a.AccountGroupId == "A012")
+                .OrderByDescending(a => a.RecordModifiedOn) // Get the latest default account
+                .Select(a => new { a.AccountId, a.AccountHead })
+                .FirstOrDefaultAsync();
 
+            return Json(defaultAccount);
+        }
+
+        public async Task<IActionResult> GetDefaultPaymentAccount()
+        {
+            var defaultAccount = await _context.Tbl201ChartOfAccounts
+                .Where(a => a.IsDefaultForCash == true && a.AccountGroupId == "A013")
+                .OrderByDescending(a => a.RecordModifiedOn) // Get the latest default account
+                .Select(a => new { a.AccountId, a.AccountHead })
+                .FirstOrDefaultAsync();
+
+            return Json(defaultAccount);
+        }
     }
 
 }
