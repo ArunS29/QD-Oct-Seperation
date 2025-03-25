@@ -93,7 +93,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 addressArbLabel.Text = company_address_arb;
             }
 
-
+            // Set up SQL query
+            AddSqlQueryParameters(accountId, frmDate, toDate);
 
         }
 

@@ -37,6 +37,8 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string SysRemarks { get; set; }
         public long VoucherEntryNo { get; set; }
         public decimal? VoucherAmountFormatted { get; set; }
+
+        public decimal? VoucherAmount { get; set; }
     }
     public class AccountLedger
     {
@@ -263,6 +265,13 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string MasterGroupID { get; set; }
         public DateTime EndDate { get; set; }
 
+    }
+    // DTO for API request
+    public class VoucherUpdateRequest
+    {
+        public List<string> VoucherNos { get; set; }
+        public string ActionType { get; set; } // "verify", "approve", "unlock"
+        public string LogOnUser { get; set; } // Populated with logged-in user
     }
 }
 

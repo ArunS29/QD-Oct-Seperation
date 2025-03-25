@@ -3400,6 +3400,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<VoucherViewModel>().HasNoKey();
         modelBuilder.UseCollation("SQL_Latin1_General_CP1_CI_AS");
         modelBuilder.Entity<VoucherResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless

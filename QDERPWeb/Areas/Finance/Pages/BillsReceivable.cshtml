@@ -7,7 +7,9 @@
 
 <style type="text/css">
 
-
+    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+        background-color: var(--header-color);
+    }
 </style>
 
 <div class="container-fluid"></div>
@@ -38,272 +40,274 @@
                     )
             </div>
 
+            <div>
+                @(Html.DevExtreme().Button()
+                    .ID("btnBillsFullyReceived")
+                    .Text(new JS("formatMessage('Show Bills Receivable(Including fully Received)')"))
+                    .Height(30)
+                    .Width(750)
+                    .Icon("checklist")
+                    .Visible(false)//Initially hidden
+                    .OnClick("function() { switchButtons('btnBillsFullyReceived'); }")
+                    )
+            </div>
            
         </div>
     </div>
-</div>
-<div>
-    @(Html.DevExtreme().Button()
-        .ID("btnBillsFullyReceived")
-        .Text(new JS("formatMessage('Show Bills Receivable(Including fully Received)')"))
-        .Height(30)
-        .Width(750)
-        .Icon("checklist")
-        .Visible(false)//Initially hidden
-        .OnClick("function() { switchButtons('btnBillsFullyReceived'); }")
-        )
 </div>
 <div id="reportsByClientPopup">
     <div id="popupContent"></div>
 </div>
 <div id="printSection">
 <div class="dx-field ledgerResult" style="width: 98%; overflow: hidden;">
+        @(Html.DevExtreme().DataGrid<Qry20105BillsReceivableAgeingView>()
+                .ID("dataGrid")
+                .DataSource(ds => ds.Mvc()
+                .Controller("BillsReceivable") // Specify the controller name
+                .LoadAction("Get")) // Specify the action that returns data
+                .RemoteOperations(false) // Enable remote data operations
+                .Columns(columns =>
+                {
+                    // Grid Band: Bills Receivable
+                    columns.Add().Caption(new JS("formatMessage('Bills Receivable')")).Columns(band =>
+                {
+                    band.AddFor(m => m.AccountHead)
+                .Caption(new JS("formatMessage('Ledger Account')"))
+                .Alignment(HorizontalAlignment.Left)
+                .Width(200); // Fixed width, change to auto for dynamic sizing
 
-    @(Html.DevExtreme().DataGrid<Qry20105BillsReceivableAgeingView>()
+                    // Account Head column
+                    band.AddFor(m => m.AccountHead)
+                .Caption(new JS("formatMessage('Ledger Account')"))
+                .Alignment(HorizontalAlignment.Left)
+                .Width(200) // Fixed width, change to auto for dynamic sizing
+                .GroupIndex(0); // Group by this column
 
-            .ID("dataGrid")
+                    band.AddFor(m => m.ReferenceNo)
+                .Caption(new JS("formatMessage('Reference No')"))
+                .CellTemplate(@<text>
+            <a href="/<%- tenantName %>/Finance/SalesVoucher?argsledno=<%- data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
+                <%- data.ReferenceNo %>
+            </a>
+        </text>)
+            .Width(150); // Fixed width, change to auto for dynamic sizing
 
-            .DataSource(ds => ds.Mvc()
+                    // Voucher Reference No column
+                    band.AddFor(m => m.VoucherRefNo)
+            .Caption(new JS("formatMessage('Voucher Ref No')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Width(150); // Fixed width, change to auto for dynamic sizing
 
-            .Controller("BillsReceivable") // Specify the controller name
+                    band.AddFor(m => m.VoucherDate)
+            .Caption(new JS("formatMessage('Voucher Date')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Format(format => format
+            .Type(Format.ShortDate)
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
+            .Width(140); // Fixed width, change to auto for dynamic sizing
 
-            .LoadAction("Get")) // Specify the action that returns data
+                    // Invoice Due Date column
+                    band.AddFor(m => m.InvoiceDueDate)
+            .Caption(new JS("formatMessage('Invoice Due Date')"))
+            .Alignment(HorizontalAlignment.Center)
+            .Format(format => format
+            .Type(Format.ShortDate)
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
+            .Width(140); // Fixed width, change to auto for dynamic sizing
+                });
 
-            .RemoteOperations(false) // Enable remote data operations
-
-
-            .Columns(columns =>
+                    // Grid Band: Amount
+                    columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(band =>
             {
-                // Grid Band: Bills Receivable
-                columns.Add().Caption(new JS("formatMessage('Bills Receivable')")).Columns(band =>
+                // Receivable Amount column
+                    band.AddFor(m => m.ReceivableAmount)
+                .Caption(new JS("formatMessage('Invoice Amount')"))
+                .Alignment(HorizontalAlignment.Right)
+                .CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Ensure positive values
+        return positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ")
+                .Width(140); // Fixed width, change to auto for dynamic sizing
+
+                // Paid Amount column
+                    band.AddFor(m => m.Received)
+                .Caption(new JS("formatMessage('Received')"))
+                .Alignment(HorizontalAlignment.Right)
+                .CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Convert to positive
+        let formattedValue = positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
+        }
+        ")
+                .Width(140); // Fixed width, change to auto for dynamic sizing
+
+                // Balance Amount column
+                    band.AddFor(m => m.Balance)
+                .Caption(new JS("formatMessage('Balance')"))
+                .Alignment(HorizontalAlignment.Right)
+                .CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Ensure positive values
+        return positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ")
+                .Width(140); // Fixed width, change to auto for dynamic sizing
+
+                    band.AddFor(m => m.OverdueDays)
+                .Alignment(HorizontalAlignment.Center)
+                .Caption(new JS("formatMessage('Over due Days')"))
+                .Alignment(HorizontalAlignment.Center)
+                .Width(100); // Fixed width, change to auto for dynamic sizing
+                });
+                })
+            .Paging(p => p.PageSize(10))
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .ColumnFixing(fixing => fixing.Enabled(true))
+            .HeaderFilter(filter => filter.Visible(true))
+            .Height(660)
+            .ColumnAutoWidth(true) // Auto resize columns based on content
+            .WordWrapEnabled(true)
+            .FilterRow(filterRow => filterRow.Visible(false))
+            .Grouping(grouping => grouping.AutoExpandAll(true))
+            .GroupPanel(groupPanel => groupPanel.Visible(false))
+            .ShowBorders(true)
+            .Width("100%")
+            .Summary(summary =>
             {
-                band.AddFor(m => m.AccountHead)
-            .Caption(new JS("formatMessage('Ledger Account')"))
-            .Alignment(HorizontalAlignment.Left)
-            .Width(200);
-                // Account Head column
-                band.AddFor(m => m.AccountHead)
-            .Caption(new JS("formatMessage('Ledger Account')"))
-            .Alignment(HorizontalAlignment.Left)
-            .Width(200)
-            .GroupIndex(0); // Group by this column
+                // Group-level summaries (for each group footer)
+                summary.GroupItems(items =>
+                {
+                    items.Add().Column("VoucherRefNo")
+                .SummaryType(SummaryType.Count)
+                .ShowInGroupFooter(true)
+                .DisplayFormat("No of Invoices: {0}");
 
-                band.AddFor(m => m.ReferenceNo)
-            .Caption(new JS("formatMessage('Reference No')"))
-            .CellTemplate(@<text>
-        <a href="/<%- tenantName %>/Finance/SalesVoucher?argsledno=<%- data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
-            <%- data.ReferenceNo %>
-        </a>
-    </text>)
-        .Width(150);
+                    items.Add().Column("ReceivableAmount")
+                .SummaryType(SummaryType.Sum)
+                .ShowInGroupFooter(true)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        return e.value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
 
-                // Voucher Reference No column
-                band.AddFor(m => m.VoucherRefNo)
-    .Caption(new JS("formatMessage('Voucher Ref No')"))
-    .Alignment(HorizontalAlignment.Center)
-    .Width(150);
+                    items.Add().Column("Received")
+                .SummaryType(SummaryType.Sum)
+                .ShowInGroupFooter(true)
+                .CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Convert to positive
+        let formattedValue = positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
+        }
+        ");
 
-                band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Width(140).Format(format => format
-    .Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                // Invoice Due Date column
-                band.AddFor(m => m.InvoiceDueDate)
-    .Caption(new JS("formatMessage('Invoice Due Date')"))
-    .Alignment(HorizontalAlignment.Center)
-    .Format(format => format
-    .Type(Format.ShortDate)
-    .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
-    .Width(140);
-            });
+                    items.Add().Column("Balance")
+                .SummaryType(SummaryType.Sum)
+                .ShowInGroupFooter(true)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        return e.value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+                });
 
-                // Grid Band: Amount
-                columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(band =>
-    {
-        // Receivable Amount column
-                band.AddFor(m => m.ReceivableAmount)
-            .Caption(new JS("formatMessage('Invoice Amount')"))
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    let positiveValue = Math.abs(e.value); // Ensure positive values
-    return positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }")
-            .Width(140);
+                // Total summary (for grid-wide totals)
+                summary.TotalItems(items =>
+                {
+                    items.Add().Column("VoucherRefNo")
+                .SummaryType(SummaryType.Count)
+                .DisplayFormat("No of Invoices: {0}");
 
-        // Paid Amount column
-                band.AddFor(m => m.Received)
-            .Caption(new JS("formatMessage('Received')"))
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    let positiveValue = Math.abs(e.value); // Convert to positive
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')'; // Add parentheses around the value
-    }
-    ")
-            .Width(140);
+                    items.Add().Column("ReceivableAmount")
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        return e.value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
 
-        // Balance Amount column
-                band.AddFor(m => m.Balance)
-            .Caption(new JS("formatMessage('Balance')"))
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    let positiveValue = Math.abs(e.value); // Ensure positive values
-    return positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }")
-            .Width(140);
-                band.AddFor(m => m.OverdueDays).Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width(100);
-            });
+                    items.Add().Column("Received")
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        let positiveValue = Math.abs(e.value); // Convert to positive
+        let formattedValue = positiveValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        return '(' + formattedValue + ')'; // Add parentheses around the value
+        }
+        ");
+
+                    items.Add().Column("Balance")
+                .SummaryType(SummaryType.Sum)
+                .CustomizeText(@"
+        function(e) {
+        if(e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null values
+        }
+        return e.value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+                });
             })
+            .OnInitialized("dataGridInitialized")
+            .OnContextMenuPreparing("onContextMenuPreparing")
+            )
 
-
-        .Paging(p => p.PageSize(10))
-        .AllowColumnReordering(true)
-        .AllowColumnResizing(true)
-        .ColumnFixing(fixing => fixing.Enabled(true))
-        .HeaderFilter(filter => filter.Visible(true))
-        .Height(660)
-        .ColumnAutoWidth(true)
-        .WordWrapEnabled(false)
-        .FilterRow(filterRow => filterRow.Visible(false))
-        .Grouping(grouping => grouping.AutoExpandAll(true))
-        .GroupPanel(groupPanel => groupPanel.Visible(false))
-        .ShowBorders(true)
-        .Width("100%")
-        .Summary(summary =>
-        {
-            // Group-level summaries (for each group footer)
-            summary.GroupItems(items =>
-            {
-                items.Add().Column("VoucherRefNo")
-            .SummaryType(SummaryType.Count)
-            .ShowInGroupFooter(true)
-            .DisplayFormat("No of Invoices: {0}");
-
-                items.Add().Column("ReceivableAmount")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if(e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    return e.value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }
-    ");
-
-                items.Add().Column("Received")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    let positiveValue = Math.abs(e.value); // Convert to positive
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')'; // Add parentheses around the value
-    }
-    ");
-
-
-                items.Add().Column("Balance")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if(e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    return e.value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }
-    ");
-            });
-
-            // Total summary (for grid-wide totals)
-            summary.TotalItems(items =>
-            {
-                items.Add().Column("VoucherRefNo")
-            .SummaryType(SummaryType.Count)
-            .DisplayFormat("No of Invoices: {0}");
-
-                items.Add().Column("ReceivableAmount")
-            .SummaryType(SummaryType.Sum)
-            .CustomizeText(@"
-    function(e) {
-    if(e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    return e.value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }
-    ");
-                items.Add().Column("Received")
-            .SummaryType(SummaryType.Sum)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    let positiveValue = Math.abs(e.value); // Convert to positive
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')'; // Add parentheses around the value
-    }
-    ");
-
-                items.Add().Column("Balance")
-            .SummaryType(SummaryType.Sum)
-            .CustomizeText(@"
-    function(e) {
-    if(e.value === null || e.value === undefined) {
-    return ''; // Return empty string for null values
-    }
-    return e.value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }
-    ");
-
-            });
-        })
-
-        // Store the DataGrid instance
-        .OnInitialized("dataGridInitialized")
-        .OnContextMenuPreparing("onContextMenuPreparing") // Bind the context menu event
-        )
 </div>
 </div>
 

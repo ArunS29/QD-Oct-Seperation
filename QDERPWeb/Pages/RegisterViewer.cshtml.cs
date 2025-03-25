@@ -1,27 +1,39 @@
 using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
 using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
-using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
-using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
-using QD.ERP.Web.Reports;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Models.DAL;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 
 namespace QD.ERP.Web.Pages
 {
     public class RegisterViewerModel : PageModel
     {
+        private readonly DAL.Entities.ERPMasterWtDataContext _eRPMasterWtDataContext;
+
+
+        public Tbl901CompanyDetail ERPCompany_details;
+        public RegisterViewerModel(DAL.Entities.ERPMasterWtDataContext eRPMasterWtDataContext)
+        {
+            _eRPMasterWtDataContext = eRPMasterWtDataContext;
+
+        }
+
         public XtraReport Report { get; private set; }
-
         public string ReportName { get; private set; }
-
         public string VoucherType { get; private set; }
         public DateTime FrmDate { get; private set; }
         public DateTime ToDate { get; private set; }
+        public List<string> SelectedValues { get; private set; } = new List<string>();
 
-        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate)
+        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string[] selectedValues)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -30,135 +42,103 @@ namespace QD.ERP.Web.Pages
 
             ReportName = reportName;
 
+            // **Fetch Tenant & Company Details**
+            var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            var ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
-            if (reportName == "PreviewRegister")
+            // **Set default values if company details are not found**
+            var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+            var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+            var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+            var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+            Image logoImage = null;
+            if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
             {
-                if (string.IsNullOrEmpty(voucherType) || frmDate == null || toDate == null)
+                try
                 {
-                    return BadRequest("Missing required parameters for PreviewRegister.");
+                    using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                    {
+                        logoImage = Image.FromStream(ms);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error processing company logo: " + ex.Message);
+                }
+            }
 
+            // **CASE 1: Reports using voucherType, frmDate, and toDate**
+            if (!string.IsNullOrEmpty(voucherType) && frmDate.HasValue && toDate.HasValue)
+            {
                 VoucherType = voucherType;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
-                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                var companyName = HttpContext.Session.GetString("CompanyName") ?? "Default Company";
-                var LogoUrl = HttpContext.Session.GetString("LogoUrl") ?? string.Empty;
-
-                Report = new PreviewRegister(voucherType, FrmDate, ToDate);
-            }
-            else if (reportName == "OrderByVchNoRegister")
-            {
-                if (string.IsNullOrEmpty(voucherType) || frmDate == null || toDate == null)
-                {
-                    return BadRequest("Missing required parameters for OrderByVchNoRegister.");
-                }
-
-                VoucherType = voucherType;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
-
-                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                var companyName = HttpContext.Session.GetString("CompanyName") ?? "Default Company";
-                var LogoUrl = HttpContext.Session.GetString("LogoUrl") ?? string.Empty;
-
-                Report = new OrderByVchNoRegister(voucherType, FrmDate, ToDate);
-            }
-            else if (reportName == "OrderbyVchNoWIthVchNarration")
-            {
-                if (string.IsNullOrEmpty(voucherType) || frmDate == null || toDate == null)
-                {
-                    return BadRequest("Missing required parameters for OrderbyVchNoWIthVchNarration.");
-                }
-
-                VoucherType = voucherType;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
-
-                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                var companyName = HttpContext.Session.GetString("CompanyName") ?? "Default Company";
-                var LogoUrl = HttpContext.Session.GetString("LogoUrl") ?? string.Empty;
-
-                Report = new OrderbyVchNoWIthVchNarration(voucherType, FrmDate, ToDate);
-            }
-            else if (reportName == "Register4line")
-            {
-                if (string.IsNullOrEmpty(voucherType) || frmDate == null || toDate == null)
-                {
-                    return BadRequest("Missing required parameters for Register4line.");
-                }
-
-                VoucherType = voucherType;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
-
-                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                var companyName = HttpContext.Session.GetString("CompanyName") ?? "Default Company";
-                var LogoUrl = HttpContext.Session.GetString("LogoUrl") ?? string.Empty;
-
-                Report = new Register4line(voucherType, FrmDate, ToDate);
-            }
-            else if (reportName == "RegisterLineEntryNarration")
-            {
-                if (string.IsNullOrEmpty(voucherType) || frmDate == null || toDate == null)
-                {
-                    return BadRequest("Missing required parameters for RegisterLineEntryNarration.");
-                }
-
-                VoucherType = voucherType;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
-
-                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                var companyName = HttpContext.Session.GetString("CompanyName") ?? "Default Company";
-                var LogoUrl = HttpContext.Session.GetString("LogoUrl") ?? string.Empty;
-
-                Report = new RegisterLineEntryNarration(voucherType, FrmDate, ToDate);
-            }
-            else if (reportName == "RegisterWithVchNarration")
-            {
-                if (string.IsNullOrEmpty(voucherType) || frmDate == null || toDate == null)
-                {
-                    return BadRequest("Missing required parameters for RegisterWithVchNarration.");
-                }
-
-                VoucherType = voucherType;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
-
-                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                var companyName = HttpContext.Session.GetString("CompanyName") ?? "Default Company";
-                var LogoUrl = HttpContext.Session.GetString("LogoUrl") ?? string.Empty;
-
-                Report = new RegisterWithVchNarration(voucherType, FrmDate, ToDate);
-            }
-            else
-            {
                 switch (reportName)
                 {
-                    case "ReceivableReport(EffectiveDate)":
-                        Report = new ReceivableReport_EffectiveDate_();
+                    case "PreviewRegister":
+                        Report = new PreviewRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
-                    case "XtraRecivableReport":
-                        Report = new XtraRecivableReport();
+                    case "OrderByVchNoRegister":
+                        Report = new OrderByVchNoRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
-                    case "XtraReportAgeingreportsummary":
-                        Report = new XtraReportAgeingreportsummary();
+                    case "OrderbyVchNoWIthVchNarration":
+                        Report = new OrderbyVchNoWIthVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
-                    case "XtraReportBillsReceivableAgeingReport":
-                        Report = new XtraReportBillsReceivableAgeingReport();
+                    case "Register4line":
+                        Report = new Register4line(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
-                    case "BIllsPayable":
-                        Report = new BIllsPayable();
+                    case "RegisterLineEntryNarration":
+                        Report = new RegisterLineEntryNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
-                    case "AgeingReport":
-                        Report = new AgeingReport();
+                    case "RegisterWithVchNarration":
+                        Report = new RegisterWithVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
                     default:
                         return NotFound("Report not found.");
                 }
             }
+            // **CASE 2: Reports using selectedValues**
+            else if (selectedValues != null && selectedValues.Length > 0)
+            {
+                SelectedValues = selectedValues.ToList();
+
+                switch (reportName)
+                {
+                    case "XtraRecivableReport":
+                        Report = new XtraRecivableReport(SelectedValues.ToArray(), tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        break;
+
+                    case "XtraReportAgeingreportsummary":
+                        Report = new XtraReportAgeingreportsummary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        break;
+                    case "XtraReportBillsReceivableAgeingReport":
+                        Report = new XtraReportBillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        break;
+                    //case "BIllsPayable":
+                    //    Report = new BIllsPayable(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                    //    break;
+                    case "AgeingReport":
+                        Report = new AgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        break;
+                    default:
+                        return NotFound("Report not found.");
+                }
+
+                // **Pass SelectedValues to the Report**
+                if (Report != null && SelectedValues.Count > 0)
+                {
+                    Report.Parameters["SelectedValues"].Value = string.Join(",", SelectedValues);
+                    Report.Parameters["SelectedValues"].Visible = false;
+                }
+            }
+            else
+            {
+                return BadRequest("Missing required parameters.");
+            }
+
             return Page();
         }
     }

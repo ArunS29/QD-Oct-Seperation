@@ -90,6 +90,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             {
                 addressArbLabel.Text = company_address_arb;
             }
+            AddSqlQueryParameters(accountId, frmDate, toDate);
 
         }
 

@@ -667,6 +667,19 @@
     }
 
     $(document).ready(function () {
+        let getUN = null;
+        //Get Session Username using api
+        $.ajax({
+            url: "/api/CostCenterMaster/GetUserName",
+            type: 'GET',//
+            dataType: 'json',  // Expecting JSON response
+            success: function (response) {
+                getUN = response.UserName;
+                //   $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+                console.log("userN:", getUN);
+            }
+        });
+
         const urlParams = new URLSearchParams(window.location.search);
         const costAllocationUnitId = urlParams.get('CostAllocationUnitId');
 
@@ -675,9 +688,10 @@
             // $("#btnSave").text("Update");
             var button = $("#btnSave").dxButton("instance");
             button.option("text", "Update");
-
+            debugger;
             // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
             $.ajax({
+                
                 url: `/api/ChartOfCostCenters/GetCostCenterById?id=${costAllocationUnitId}`,
                 type: "GET",
                 success: function (response) {
@@ -698,7 +712,12 @@
                         // Dates
                         $("#CreatedBy").dxTextBox("instance").option("value", response.data.CreatedBy);
                         $("#CreatedOn").dxTextBox("instance").option("value", formatDate(response.data.CreatedOn));
-                        $("#ModifiedBy").dxTextBox("instance").option("value", response.data.ModifiedBy);
+                       // $("#ModifiedBy").dxTextBox("instance").option("value", response.data.ModifiedBy);
+                        var ModifiedBy = $('#ModifiedBy').dxTextBox("instance");
+                        if (ModifiedBy) {
+                            ModifiedBy.option("value", getUN);
+
+                        }
                         $("#ModifiedOn").dxTextBox("instance").option("value", formatDate(new Date()));
                     } else {
                         //   alert(response.message);
@@ -767,11 +786,15 @@
             const branchCode = $("#GetBranchCodeDropDown").dxDropDownBox("instance").option("value");
             const isDisabled = $("#Discontinued").dxCheckBox("instance").option("value");
 
+            // $("#CreatedBy").dxTextBox("instance").option("value", response.data.CreatedBy);
+            // alert("response.data.CreatedBy");
+            // $("#CreatedOn").dxTextBox("instance").option("value", formatDate(response.data.CreatedOn));
 
 
             // CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
             // let CreatedOn = $("#CreatedOn").dxTextBox("instance").option("value"); // Get CreatedOn value
             const ModifiedBy = $("#ModifiedBy").dxTextBox("instance").option("value");
+            console.log("getuu:", getUN);
             const ModifiedOn = new Date().toISOString(); // Current date in ISO format
 
             // Ensure CreatedOn is a valid date or null
@@ -804,9 +827,8 @@
                 success: function (response) {
                     if (response.success) {
                         DevExpress.ui.notify(response.message, "success", 3000);
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 3000);
+                        $('#modalIframe').modal('hide');
+                        // $('#masterModal').modal('hide');
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }
@@ -851,8 +873,10 @@
             const projectMasterCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
             const branchCode = $("#GetBranchCodeDropDown").dxDropDownBox("instance").option("value");
             const isDisabled = $("#Discontinued").dxCheckBox("instance").option("value");
-            const CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
 
+            $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+            const CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
+            console.log("savegetUN:", CreatedBy);
             let CreatedOn = $("#CreatedOn").dxTextBox("instance").option("value");
             if (!CreatedOn || !Date.parse(CreatedOn)) {
                 CreatedOn = new Date().toISOString();
@@ -885,7 +909,14 @@
                         success: function (response) {
                             if (response.success) {
                                 DevExpress.ui.notify(response.message, "success", 3000);
-                                setTimeout(() => window.location.reload(), 3000);
+                                // Refresh parent DataGrid (ensure the correct selector is used)
+                                if (window.parent && window.parent.$("#dataGrid").length) {
+                                    let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                                    if (dataGrid) {
+                                        dataGrid.refresh();
+                                    }
+                                }
+                                setTimeout(() => window.location.reload(), 2000);
                             } else {
                                 DevExpress.ui.notify(response.message, "error", 3000);
                             }
@@ -915,8 +946,9 @@
     });
 
     function navigateToHome() {
-
-        window.parent.document.getElementById("masterModal").style.display = "none";
+     
+        
+       window.parent.document.getElementById("masterModal").style.display = "none";
         
     }
 

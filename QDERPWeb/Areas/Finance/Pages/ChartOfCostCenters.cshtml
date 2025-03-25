@@ -260,16 +260,22 @@
         const closeBtn = modal.querySelector(".close");
         closeBtn.onclick = () => {
             modal.style.display = "none";
-            refreshChartOfCostCenters();
+            refreshDataGrid(); // Refresh the DataGrid when closing
         };
 
         window.onclick = (event) => {
             if (event.target === modal) {
                 modal.style.display = "none";
-                refreshChartOfCostCenters();
+              refreshDataGrid(); // Refresh when clicking outside
             }
         };
     }
+    // Function to refresh the DataGrid
+function refreshDataGrid() {
+    alert("ji");
+     var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            dataGrid.refresh(); // Refresh the DataGrid
+}
     function refreshChartOfCostCenters() {
         // const accountledgerselectbox = $("#ddlAccountGroup").dxSelectBox("instance"); Ensure ID matches Razor
 

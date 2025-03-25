@@ -387,7 +387,7 @@
                             .ID("btnAddNew")
                                 .Text(new JS("formatMessage('Add New Item')"))
                             .Icon("plus")
-                            // .OnClick("function() { openPrint(); }")
+                                 .OnClick("addNewRow") // Attach function
                             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                             )
                         </div>
@@ -490,6 +490,106 @@
                 var url = `/${tenantName}/Finance/VATInvoiceWithDetails`;
             window.location.href = url; // Navigate to the page
         }
+
+      var dataGridInstance;
+    var rowData = []; // Store the grid data
+
+    $(function () {
+        dataGridInstance = $("#B2BdataGrid").dxDataGrid({
+            dataSource: rowData,
+            keyExpr: "SNo",
+            columns: [
+                { 
+                    dataField: "SNo", 
+                    caption: "#", 
+                    width: 100, 
+                    allowEditing: false // Prevent manual editing
+                },
+                { 
+                    dataField: "ItemCode", 
+                    caption: "Item Code", 
+                    width: 200 
+                },
+                { 
+                    dataField: "Description", 
+                    caption: "Description", 
+                    width: 250,
+                    editCellTemplate: function(cellElement, cellInfo) {
+                        $("<div>").appendTo(cellElement).dxDropDownBox({
+                            dataSource: getDropdownData(), // Fetch dropdown data
+                            valueExpr: "id",
+                            displayExpr: "name",
+                            value: cellInfo.value,
+                            onValueChanged: function(e) {
+                                cellInfo.setValue(e.value);
+                            },
+                            contentTemplate: function(e) {
+                                return $("<div>").dxList({
+                                    dataSource: getDropdownData(),
+                                    selectionMode: "single",
+                                    onItemClick: function(args) {
+                                        e.component.option("value", args.itemData.id);
+                                        cellInfo.setValue(args.itemData.name);
+                                        e.component.close();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                },
+                   { dataField: "DescriptionDetails", caption: "...", width: 150 },
+                   { dataField: "Qty", caption: "Qty", width: 150 },
+                   { dataField: "UnitPrice", caption: "Unit Price", width: 150 },
+                   { dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
+                   { dataField: "Discount", caption: "Discount", width: 150 },
+                   { dataField: "DiscountDetails", caption: "...", width: 150 },  
+                   { dataField: "Amount", caption: "Amount", width: 150 },  
+                   { dataField: "VAT%", caption: "VAT%", width: 150 },  
+                   { dataField: "Total", caption: "Total", width: 150 }
+            ],
+            editing: {
+                mode: "cell",
+                allowUpdating: true,
+                allowAdding: false, // We'll add manually
+                allowDeleting: true
+            },
+            onInitNewRow: function(e) {
+                e.data.SNo = rowData.length + 1; // Auto-generate SNo
+            },
+            columnAutoWidth: true,
+            showBorders: true,
+        }).dxDataGrid("instance");
+    });
+
+    function addNewRow() {
+        var newRow = {
+            SNo: rowData.length + 1, // Auto-generate SNo
+            ItemCode: "",
+            Description: "",
+            DescriptionDetails:"",
+            Qty: 1,
+            UnitPrice: 0.00,
+            TotalBeforeDiscount:0.00,
+            Discount:"",
+            DiscountDetails:"",
+            Amount:0.00,
+            ExcemptionCode:"",
+            VAT:"",
+            Total: 0.00
+        };
+
+        rowData.push(newRow);
+        dataGridInstance.option("dataSource", rowData);
+        dataGridInstance.refresh();
+    }
+
+    function getDropdownData() {
+        return [
+            { id: 1, name: "Item A" },
+            { id: 2, name: "Item B" },
+            { id: 3, name: "Item C" }
+        ];
+    }
 
     $(document).ready(function () {
         console.log('Start permission handling');

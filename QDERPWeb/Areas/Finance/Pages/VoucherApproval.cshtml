@@ -252,7 +252,10 @@
             .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Audit</div>
     </text>);
-
+                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('VoucherType')")).Width(120).Visible(false)
+            .HeaderCellTemplate(@<text>
+        <div style="white-space: normal; text-align: center;">VoucherType</div>
+    </text>);
                 // Checkbox Columns for Approved, Verified, and Audit
                 columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120)
             .DataType(GridColumnDataType.Boolean)
@@ -287,6 +290,44 @@
         .HeaderCellTemplate(@<text>
         <div style="white-space: normal; text-align: center;">Audit</div>
     </text>);
+                columns.Add().DataField("VoucherRefNo").Caption("Voucher Ref No").Width(120)
+            .Visible(false)
+            .HeaderCellTemplate(@<text><div style="text-align: center;">Voucher Ref No</div></text>);
+
+                columns.Add().DataField("VoucherEnteredOn").Caption("Entered On").Width(120)
+            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .Visible(false)
+            .HeaderCellTemplate(@<text><div style="text-align: center;">Entered On</div></text>);
+
+                columns.Add().DataField("VoucherVerifiedOn").Caption("Verified On").Width(120)
+            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .Visible(false)
+            .HeaderCellTemplate(@<text><div style="text-align: center;">Verified On</div></text>);
+
+                columns.Add().DataField("VoucherApprovedOn").Caption("Approved On").Width(120)
+            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .Visible(false)
+            .HeaderCellTemplate(@<text><div style="text-align: center;">Approved On</div></text>);
+
+                columns.Add().DataField("VoucherEffectiveDate").Caption("Effective Date").Width(120)
+            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .Visible(false)
+            .HeaderCellTemplate(@<text><div style="text-align: center;">Effective Date</div></text>);
+
+                columns.Add().DataField("VoucherModifiedBy").Caption("Modified By").Width(120)
+            .Visible(false)
+            .HeaderCellTemplate(@<text><div style="text-align: center;">Modified By</div></text>);
+
+                columns.Add().DataField("VoucherModifiedOn").Caption("Modified On").Width(120)
+            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .Visible(false)
+            .HeaderCellTemplate(@<text><div style="text-align: center;">Modified On</div></text>);
+
+                columns.Add().DataField("AuditVerifiedOn").Caption("Audit Verified On").Width(120)
+            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .Visible(false)
+            .HeaderCellTemplate(@<text><div style="text-align: center;">Audit Verified On</div></text>);
+
 
             })
         .Summary(summary =>
@@ -309,7 +350,7 @@
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(true))
-        .Height(300)
+        .Height(600)
         .Width("100%")
         .Paging(paging => paging.Enabled(false))
         .Scrolling(scrolling => scrolling.Mode(GridScrollingMode.Virtual))
@@ -493,18 +534,28 @@
             }
         }
     $(function () {
-        var selectedVoucherNo = null;
-        var selectedVoucherType = null;
+        var selectedVoucherNos = [];
+        var selectedVoucherTypes = [];
+
+        $("#dataGrid").dxDataGrid({
+            selection: {
+                mode: "multiple",
+                showCheckBoxesMode: "always"
+            },
+            onSelectionChanged: function (e) {
+                selectedVoucherNos = e.selectedRowsData.map(row => row.VoucherNo);
+                selectedVoucherTypes = e.selectedRowsData.map(row => row.VoucherType);
+                console.log("Selected Vouchers:", selectedVoucherNos);
+            }
+        });
 
         $("#voucherContextMenu").dxContextMenu({
             dataSource: [
-                { text: formatMessage("Edit Voucher"), icon: "edit", action: editVoucher },
-                { text: formatMessage("View Voucher"), icon: "find", action: viewVoucher },
-                { text: formatMessage("Verify Voucher"), icon: "check", action: verifyVoucher },
-                { text: formatMessage("Delete Voucher"), icon: "trash", action: deleteVoucher },
-                { text: formatMessage("Verify All Selected Vouchers"), icon: "selectall", action: verifyAll },
-                { text: formatMessage("Approve All Selected Vouchers"), icon: "todo", action: approveAll },
-                { text: formatMessage("Unlock the Voucher"), icon: "unlock", action: unlockVoucher }
+                { text: "Edit Voucher", icon: "edit", action: editVoucher },
+                { text: "View Voucher", icon: "find", action: viewVoucher },
+                { text: "Verify Vouchers", icon: "check", action: verifyVouchers },
+                { text: "Approve Vouchers", icon: "todo", action: approveVouchers },
+                { text: "Unlock Vouchers", icon: "unlock", action: unlockVouchers }
             ],
             target: "#dataGrid",
             showEvent: "dxcontextmenu",
@@ -516,21 +567,11 @@
             }
         });
 
-        // Capture row right-click event
+        // Show context menu only if rows are selected
         $(document).on("contextmenu", ".dx-row", function (e) {
             e.preventDefault();
-            let dataGrid = $("#dataGrid").dxDataGrid("instance");
-            let rowIndex = $(this).index();
-            let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
-
-            if (rowData && rowData.VoucherNo && rowData.VoucherType) {
-                selectedVoucherNo = rowData.VoucherNo;
-                selectedVoucherType = rowData.VoucherType;
-                console.log("Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
-
+            if (selectedVoucherNos.length > 0) {
                 $("#voucherContextMenu").dxContextMenu("instance").show();
-            } else {
-                console.log("Voucher data is missing.");
             }
         });
 
@@ -543,63 +584,66 @@
         });
 
         function editVoucher() {
-            console.log("Edit Voucher Clicked");
-            if (selectedVoucherNo && selectedVoucherType) {
-                navigateToVoucherPage(selectedVoucherNo, selectedVoucherType);
-            } else {
-                alert("No voucher selected.");
+            if (selectedVoucherNos.length !== 1) {
+                alert("Please select exactly one voucher to edit.");
+                return;
             }
+            navigateToVoucherPage(selectedVoucherNos[0], selectedVoucherTypes[0]);
         }
 
-        function viewVoucher() { console.log("View Voucher Clicked"); }
-      function verifyVoucher() {
-        if (!selectedVoucherNo) {
-            alert("No voucher selected.");
-            return;
+        function viewVoucher() {
+            console.log("View Voucher Clicked");
         }
-        debugger
-        $.ajax({
-            url: '/api/VoucherApproval/CheckVoucherVerification', // Replace with your actual controller
-            type: 'GET',
-            data: { voucherNo: selectedVoucherNo },
-            success: function (response) {
-                if (response.isVerified) {
-                    alert("Voucher is already verified.");
-                } else {
-                    updateVoucherVerification(selectedVoucherNo);
-                }
-            },
-            error: function () {
-                alert("Error checking voucher verification.");
+
+        function verifyVouchers() {
+            if (selectedVoucherNos.length === 0) {
+                alert("No voucher selected.");
+                return;
             }
-        });
-    }
-        function updateVoucherVerification(voucherNo) {
-            debugger
-        $.ajax({
-            url: '/api/VoucherApproval/VerifyVoucher', // Replace with your actual controller
-            type: 'POST',
-            data: { voucherNo: voucherNo },
-            success: function (response) {
-                if (response.success) {
-                    alert("Voucher has been verified.");
-                    $("#dataGrid").dxDataGrid("instance").refresh(); // Refresh grid after update
-                } else {
-                    alert("Error verifying voucher.");
-                }
-            },
-            error: function () {
-                alert("Error verifying voucher.");
+            updateVoucherStatus(selectedVoucherNos, "verify");
+        }
+
+        function approveVouchers() {
+            if (selectedVoucherNos.length === 0) {
+                alert("No voucher selected.");
+                return;
             }
-        });
-    }
-        function deleteVoucher() { console.log("Delete Voucher Clicked"); }
-        function verifyAll() { console.log("Verify All Selected Vouchers Clicked"); }
-        function approveAll() { console.log("Approve All Selected Vouchers Clicked"); }
-        function unlockVoucher() { console.log("Unlock Voucher Clicked"); }
+            updateVoucherStatus(selectedVoucherNos, "approve");
+        }
+
+        function unlockVouchers() {
+            if (selectedVoucherNos.length === 0) {
+                alert("No voucher selected.");
+                return;
+            }
+            updateVoucherStatus(selectedVoucherNos, "unlock");
+        }
+
+        function updateVoucherStatus(voucherNos, actionType) {
+            $.ajax({
+                url: '/api/VoucherApproval/UpdateVoucherStatus',
+                type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    VoucherNos: voucherNos,
+                    ActionType: actionType,
+                    LogOnUser: "Saju Joy" // Replace with actual logged-in user
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        $("#dataGrid").dxDataGrid("instance").refresh();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("Error updating voucher status.");
+                }
+            });
+        }
 
         function navigateToVoucherPage(voucherNo, voucherType) {
-            console.log("Original VoucherNo:", voucherNo, "VoucherType:", voucherType);
             if (!voucherNo || !voucherType) {
                 alert("Invalid voucher details.");
                 return;
@@ -614,8 +658,8 @@
                 "Bank Receipts": `/${tenantName}/finance/VoucherEntryReceipts`,
                 "Cash Receipts": `/${tenantName}/finance/VoucherEntryCashReceipts`,
                 "Sales": `/${tenantName}/finance/SalesVoucher`,
-                "Purchases": `/${tenantName}/finance/PurchaseVoucher`,
-                "Journal": `/${tenantName}/finance/Voucherjournal`
+                "purchases": `/${tenantName}/finance/PurchaseVoucher`,
+                "Journal": `/${tenantName}/finance/VoucherJournal`
             };
 
             let baseUrl = voucherRoutes[formattedVoucherType];
@@ -629,14 +673,16 @@
             }
         }
     });
-       function toggleRowSelection(checkbox) {
-        var $row = $(checkbox).closest(".dx-row");
-        if (checkbox.checked) {
-            $row.addClass("selected-row");
-        } else {
-            $row.removeClass("selected-row");
-        }
-    }
+
+
+    //    function toggleRowSelection(checkbox) {
+    //     var $row = $(checkbox).closest(".dx-row");
+    //     if (checkbox.checked) {
+    //         $row.addClass("selected-row");
+    //     } else {
+    //         $row.removeClass("selected-row");
+    //     }
+    // }
 
     function onRowPrepared(e) {
         if (e.rowType === "data" && e.isSelected) {

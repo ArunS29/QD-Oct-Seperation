@@ -19,10 +19,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
         {
             InitializeComponent();
             SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
-
-
-
         }
+
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             // Helper method to add or update a parameter
@@ -57,65 +55,33 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
 
-            // Debug: Ensure logo URL is captured
-            Console.WriteLine($"Company Logo: {logoImage != null}");
+            // Debug: Ensure logo presence
+            Console.WriteLine($"Company Logo Assigned: {logoImage != null}");
 
-
-            // Bind TenantName and CompanyName to labels (update with actual control names)
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+            // Bind controls dynamically if they exist
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
             {
                 tenantLabel.Text = tenantName;
             }
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
             {
                 companyNameLabel.Text = company_Name;
             }
-
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyAddressLabel)
             {
-                addressLabel.Text = company_address;
+                companyAddressLabel.Text = company_address;
             }
-
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-            {
-                logoPictureBox.Image = logoImage;
-            }
-
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
             {
                 companyNameArLabel.Text = Company_Name_Ar;
             }
-
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel companyAddressArbLabel)
             {
-                addressArbLabel.Text = company_address_arb;
+                companyAddressArbLabel.Text = company_address_arb;
             }
-
-
-
-        }
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate)
-        {
-            // Create and set report parameters
-            AddReportParameter("AccountID", typeof(string), accountId);
-            AddReportParameter("StartDate", typeof(DateTime), frmDate);
-            AddReportParameter("EndDate", typeof(DateTime), toDate);
-        }
-
-        private void AddReportParameter(string paramName, Type paramType, object paramValue)
-        {
-            if (Parameters[paramName] == null)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
             {
-                Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
-                {
-                    Name = paramName,
-                    Type = paramType,
-                    Value = paramValue
-                });
-            }
-            else
-            {
-                Parameters[paramName].Value = paramValue;
+                logoPictureBox.Image = logoImage;
             }
         }
     }

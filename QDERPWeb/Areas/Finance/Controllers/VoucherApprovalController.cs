@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 
@@ -17,15 +18,24 @@ namespace QDWEB.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
-
         [HttpGet]
-        public IActionResult GetVoucherApproval()
+        public IActionResult GetVoucherApproval(string voucherTypes)
         {
+            
+            
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var data = dbContext.Qry20136VoucherMasterLists.Select(v => new
+                    var query = dbContext.Qry20136VoucherMasterLists.AsQueryable();
+
+                    if (!string.IsNullOrEmpty(voucherTypes) && voucherTypes != "all")
+                    {
+                        var typesList = voucherTypes.Split(',').ToList();
+                        query = query.Where(v => typesList.Contains(v.VoucherType));
+                    }
+
+                    var data = query.Select(v => new
                     {
                         v.VoucherNo,
                         VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
@@ -40,16 +50,8 @@ namespace QDWEB.Areas.Finance.Controllers
                         v.VoucherApprovedBy,
                         v.VoucherApprovedOn,
                         v.VoucherType,
-                        VoucherEffectiveDate = v.VoucherEffectiveDate.HasValue
-                            ? v.VoucherEffectiveDate.Value.ToString("dd-MMM-yyyy")
-                            : string.Empty,
-                        v.VoucherModifiedBy,
-                        v.VoucherModifiedOn,
                         v.DebitAmount,
-                        v.CreditAmount,
-                        v.AuditVerifiedBy,
-                        v.AuditVerifiedOn,
-                        v.IsAuditVerified
+                        v.CreditAmount
                     }).ToList();
 
                     return Json(data);
@@ -63,6 +65,7 @@ namespace QDWEB.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public IActionResult GetVoucherApprovals(DateTime? startDate, DateTime? endDate)
@@ -118,77 +121,75 @@ namespace QDWEB.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        [HttpGet]
-        public IActionResult CheckVoucherVerification(string voucherNo)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var voucher = dbContext.Tbl201VoucherMasters
-                    .Where(v => v.VoucherNo == voucherNo)
-                    .Select(v => new { isVerified = v.IsVerified.HasValue && v.IsVerified.Value })
-                    .FirstOrDefault();
-
-                if (voucher != null)
-                {
-                    return Json(new { isVerified = voucher.isVerified });
-                }
-                return Json(new { error = "Voucher not found." });
-            }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
         [HttpPost]
-        public IActionResult VerifyVoucher(string voucherNo)
+        public IActionResult UpdateVoucherStatus([FromBody] VoucherUpdateRequest request)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var voucher = dbContext.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
-                if (voucher == null)
-                {
-                    return Json(new { success = false, message = "Voucher not found." });
-                }
-
-                if (voucher.IsVerified.HasValue && voucher.IsVerified.Value)
-                {
-                    return Json(new { success = false, message = "Voucher is already verified." });
-                }
-
-                voucher.VoucherVerifiedBy = "LogOnUser"; // Replace with actual logged-in user
-                voucher.VoucherVerifiedOn = DateTime.Now;
-                voucher.IsVerified = true;
-
-                dbContext.SaveChanges();
-
-                return Json(new { success = true, message = "Voucher has been verified." });
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-        [HttpPost]
-        public IActionResult VerifyMultipleVouchers([FromBody] List<string> voucherNos)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+
+            var vouchers = dbContext.Tbl201VoucherMasters
+                .Where(v => request.VoucherNos.Contains(v.VoucherNo))
+                .ToList();
+
+            if (!vouchers.Any())
             {
-                var vouchers = dbContext.Tbl201VoucherMasters
-                    .Where(v => voucherNos.Contains(v.VoucherNo) && (!v.IsVerified.HasValue || !v.IsVerified.Value))
-                    .ToList();
-
-                if (vouchers.Count == 0)
-                {
-                    return Json(new { success = false, message = "No unverified vouchers found." });
-                }
-
-                foreach (var voucher in vouchers)
-                {
-                    voucher.VoucherVerifiedBy = "LogOnUser"; // Replace with actual logged-in user
-                    voucher.VoucherVerifiedOn = DateTime.Now;
-                    voucher.IsVerified = true;
-                }
-
-                dbContext.SaveChanges();
-
-                return Json(new { success = true, message = "Vouchers have been verified." });
+                return Json(new { success = false, message = "No valid vouchers found." });
             }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            foreach (var voucher in vouchers)
+            {
+                switch (request.ActionType.ToLower())
+                {
+                    case "verify":
+                        if (!voucher.IsVerified.GetValueOrDefault(false))
+                        {
+                            voucher.VoucherVerifiedBy = request.LogOnUser;
+                            voucher.VoucherVerifiedOn = DateTime.Now;
+                            voucher.IsVerified = true;
+                        }
+                        break;
+
+                    case "approve":
+                        if (!voucher.IsApproved.GetValueOrDefault(false))
+                        {
+                            voucher.VoucherApprovedBy = request.LogOnUser;
+                            voucher.VoucherApprovedOn = DateTime.Now;
+                            voucher.IsApproved = true;
+                        }
+                        break;
+
+                    case "unlock":
+                        if (voucher.IsApproved.GetValueOrDefault(false))
+                        {
+                            voucher.VoucherApprovedBy = null;
+                            voucher.VoucherApprovedOn = null;
+                            voucher.IsApproved = false;
+                        }
+                        break;
+
+                    default:
+                        return Json(new { success = false, message = "Invalid action type." });
+                }
+            }
+
+            dbContext.SaveChanges();
+
+            string message = request.ActionType switch
+            {
+                "verify" => "Vouchers have been verified.",
+                "approve" => "Vouchers have been approved.",
+                "unlock" => "Vouchers have been unlocked.",
+                _ => "Operation completed."
+            };
+
+            return Json(new { success = true, message = message });
         }
+
+
+
+
 
 
     }

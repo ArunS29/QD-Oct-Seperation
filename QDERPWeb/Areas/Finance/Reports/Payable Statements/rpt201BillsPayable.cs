@@ -95,6 +95,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             }
 
 
+            // Set up SQL query
+            AddSqlQueryParameters(accountId, frmDate, toDate);
 
         }
 

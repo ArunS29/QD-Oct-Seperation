@@ -87,34 +87,33 @@
 				</div>
 			</div>
 			<div class="col-md-3">
-    <div class="form-group">
-        @(Html.DevExtreme().DateBox()
-            .Label(new JS("formatMessage('Voucher Date')"))
-            .ID("VoucherDate")
-            .InputAttr("aria-label", "Date")
-            .LabelMode(EditorLabelMode.Outside)
-            .Type(DateBoxType.Date)
-            .DisplayFormat("dd-MMM-yyyy")
-            .Value(DateTime.Now)
-            .OnValueChanged("onVoucherDateChange") // Attach event here
-        )
-    </div>
-</div>
+				<div class="form-group">
+					 @(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Voucher Date')"))
+                    .ID("PurchaseVoucherDate")
+                    .InputAttr("aria-label", "Date")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("dd-MMM-yyyy")
+                    .Value(DateTime.Now)
+                    .OnValueChanged("onpurchaseVoucherDateChanged") // JS function name
 
-<div class="col-md-3">
-    <div class="form-group">
-        @(Html.DevExtreme().DateBox()
-            .Label(new JS("formatMessage('Effective Date')"))
-            .ID("VoucherEffectiveDate")
-            .InputAttr("aria-label", "Date")
-            .LabelMode(EditorLabelMode.Outside)
-            .Type(DateBoxType.Date)
-            .DisplayFormat("dd-MMM-yyyy")
-            .Value(DateTime.Now)
-        )
-    </div>
-</div>
-
+                    )
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="form-group">
+					@(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Effective Date')"))
+                    .ID("purchaseVoucherEffectiveDate")
+                    .InputAttr("aria-label", "Date")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("dd-MMM-yyyy")
+                    .Value(DateTime.Now)
+                    )
+				</div>
+			</div>
 			<div class="col-md-3">
 				<div class="form-group">
 					<div class="">
@@ -488,46 +487,21 @@
 		) *@
 						.OnEditorPreparing("onEditorPreparing")
 						//.OnRowRemoving("onRowRemoving")
+						  .Summary(summary =>
+  {
+      summary.TotalItems(totalItems =>
+      {
 
+          totalItems.Add().Column("Debit").SummaryType(SummaryType.Sum)
+      .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+          totalItems.Add().Column("Credit").SummaryType(SummaryType.Sum)
+      .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+      });
+  })
 						)
 	</div>
 
-	<div id="footerTotals" style="display: flex; justify-content: space-between; color: white; padding:10px; font-size: 14px; max-width:1245px;position:relative;">
-		<div style="flex: 2;">&nbsp;</div>
-		<div style="flex: 2;">&nbsp;</div>
-		<div style="flex: none; text-align: right;">
-			@(Html.DevExtreme().TextBox()
-
-									.ID("totalDebitTextbox")
-
-									.Value("0.00")
-
-									.ReadOnly(true)
-
-									.Width("60%")
-									.RtlEnabled(true)
-
-									)
-		</div>
-
-		<!-- TextBox for Credit -->
-		<div style="flex: none; text-align: right;">
-
-			@(Html.DevExtreme().TextBox()
-
-									.ID("totalCreditTextbox")
-
-									.Value("0.00")
-
-									.ReadOnly(true)
-
-									.Width("60%")
-									.RtlEnabled(true)
-									)
-		</div>
-
-		<div style="flex: 2;">&nbsp;</div> <!-- Aligns with Entry Narration and Remarks columns -->
-	</div>
 
 	<!-- Context Menu for Actions -->
 	<ul id="contextMenu" class="context-menu" style="display: none;">
@@ -800,6 +774,20 @@ $(function () {
 
 								});
 								});
+									$(function () {
+											$("#EditEmployeeAllocation").dxTextBox({
+													text:formatMessage("Edit Employee Allocation"),
+												readOnly: true
+
+								});
+								});
+									$(function () {
+											$("#EditBillsPayable").dxTextBox({
+													text:formatMessage("Edit Bills Payable"),
+												readOnly: true
+
+								});
+								});
 	$(function () {
 											$("#DeleteLineEntry").dxTextBox({
 														text:formatMessage("Delete Line Entry"),
@@ -869,53 +857,42 @@ $(function () {
 		document.head.appendChild(style);
 	}
 	let suppliername, griddatacount;
-	// function onDateChange(e) {
-	// 	const voucherDate = new Date($("#VoucherDate").dxDateBox("instance").option("value"));
-	// 	const dueDate = new Date($("#InvoiceDueDate").dxDateBox("instance").option("value"));
-	// 	const useSubmittedDate = $("#UseSubmittedDate").dxCheckBox("instance").option("value");
-	// 	const receivedDate = new Date($("#InvoiceSubmittedDate").dxDateBox("instance").option("value"));
+	function onpurchaseVoucherDateChanged(e) {
+            console.log("Selected Date:", e.value);
+			debugger
+            var voucherDate = $("#PurchaseVoucherDate").dxDateBox("instance");
+            var effectiveDate = $("#purchaseVoucherEffectiveDate").dxDateBox("instance");
+   
+            voucherDate.option("onValueChanged", function (e) {
+                let voucherDateval = e.value; // Get Date from DevExtreme DateBox
 
-	// 	let isValid = true;
-	// 	let message = "";
+                // Check if voucherDateval is valid
+                if (!voucherDateval) return;
 
-	// 	// Validation logic
-	// 	if (dueDate < voucherDate) {
-	// 		isValid = false;
-	// 		message = "Due Date cannot be earlier than Voucher Date.";
-	// 		$("#InvoiceDueDate").dxDateBox("instance").option("value", voucherDate);
-	// 	} else if (useSubmittedDate && dueDate < receivedDate) {
-	// 		isValid = false;
-	// 		message = "Due Date cannot be earlier than Received Date.";
-	// 		$("#InvoiceDueDate").dxDateBox("instance").option("value", receivedDate);
-	// 	}
+                // Set effectiveDate to the same value as voucherDate
+                effectiveDate.option("value", voucherDateval);
 
-	// 	if (!isValid) {
-	// 		DevExpress.ui.notify(message, "error", 3000);
-	// 		return;
-	// 	}
+                // Convert to 'yyyy-MM-dd' format
+                let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
 
-	// 	// Calculate the difference in days
-	// 	const diffTime = Math.abs(dueDate - voucherDate);
-	// 	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                // Define the cutoff date (2021-12-31)
+                let cutoffDate = new Date("2021-12-31");
 
-	// 	// Set the difference in the No. Of Days field
-	// 	$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", diffDays);
-	// }
-	// // Checkbox change handler
-	// $("#UseSubmittedDate").dxCheckBox({
-	// 	onValueChanged: function (e) {
-	// 		const useSubmittedDate = e.value;
-	// 		if (useSubmittedDate) {
-	// 			// Ensure Received Date has a valid value
-	// 			const receivedDate = new Date($("#InvoiceSubmittedDate").dxDateBox("instance").option("value"));
-	// 			if (!receivedDate || isNaN(receivedDate)) {
-	// 				$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", new Date());
-	// 			}
-	// 		}
-	// 		onDateChange(); // Revalidate after toggling checkbox
-	// 		calculateDueDate();
-	// 	}
-	// });
+                // Get the current date to set if the voucher date is blocked
+                let currentdate = new Date();
+                let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+
+                // Check if the formatted voucher date is before the cutoff date
+                if (new Date(formattedDate) < cutoffDate) {
+                    // Show alert for blocked entry
+                    DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+                    // Set both voucherDate and effectiveDate to the current date
+                    voucherDate.option("value", formattedCurrentDate);
+                    effectiveDate.option("value", formattedCurrentDate);
+                }
+            });
+        }
 	function updateDueDate() {
 		// Get checkbox value and "No of Days"
 		const useSubmittedDate = $("#UseSubmittedDate").dxCheckBox("instance").option("value");
@@ -924,7 +901,7 @@ $(function () {
 		// Determine the base date (Submitted Date or Voucher Date)
 		const baseDate = useSubmittedDate
 			? $("#InvoiceSubmittedDate").dxDateBox("instance").option("value")
-			: $("#VoucherDate").dxDateBox("instance").option("value");
+			: $("#PurchaseVoucherDate").dxDateBox("instance").option("value");
 
 		// Validate the base date
 		if (!baseDate) {
@@ -942,7 +919,7 @@ $(function () {
 
 	function onDateChange() {
 		// Get Voucher Date and Due Date
-		const voucherDate = new Date($("#VoucherDate").dxDateBox("instance").option("value"));
+		const voucherDate = new Date($("#PurchaseVoucherDate").dxDateBox("instance").option("value"));
 		const dueDate = new Date($("#InvoiceDueDate").dxDateBox("instance").option("value"));
 
 		// Validate that Due Date is not earlier than Voucher Date
@@ -964,9 +941,9 @@ $(function () {
 			onValueChanged: updateDueDate, // Recalculate Due Date on change
 		});
 
-		$("#VoucherDate").dxDateBox({
-			onValueChanged: updateDueDate, // Recalculate Due Date on change
-		});
+		// $("#PurchaseVoucherDate").dxDateBox({
+		// 	onValueChanged: updateDueDate, // Recalculate Due Date on change
+		// });
 
 		$("#InvoiceNoOfDays").dxNumberBox({
 			onValueChanged: function () {
@@ -975,7 +952,7 @@ $(function () {
 
 				const baseDate = useSubmittedDate
 					? $("#InvoiceSubmittedDate").dxDateBox("instance").option("value")
-					: $("#VoucherDate").dxDateBox("instance").option("value");
+					: $("#PurchaseVoucherDate").dxDateBox("instance").option("value");
 
 				if (baseDate) {
 					const calculatedDate = new Date(baseDate);
@@ -1095,8 +1072,8 @@ $(function () {
 				if (response.data.length > 0) {
 					// Populate fields with voucher details
 					const data = response.data[0];
-					$("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate || null);
-					$("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate || null);
+					$("#PurchaseVoucherDate").dxDateBox("instance").option("value", data.VoucherDate || null);
+					$("#purchaseVoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate || null);
 					$("#InvoiceSubmittedDate").dxDateBox("instance").option("value", data.InvoiceSubmittedDate || null);
 					$("#InvoiceDueDate").dxDateBox("instance").option("value", data.InvoiceDueDate || null);
 					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", data.InvoiceNoOfDays || null);
@@ -1446,8 +1423,8 @@ $(function () {
 
 			var VM = {
 				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
-				"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
-				"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
+				"VoucherDate": $("#PurchaseVoucherDate").dxDateBox("instance").option("value"),
+				"VoucherEffectiveDate": $("#purchaseVoucherEffectiveDate").dxDateBox("instance").option("value"),
 				"InvoiceSubmittedDate": $("#InvoiceSubmittedDate").dxDateBox("instance").option("value"),
 				"InvoiceDueDate": $("#InvoiceDueDate").dxDateBox("instance").option("value"),
 				"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),
@@ -1511,8 +1488,8 @@ $(function () {
 
 			var VM = {
 				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
-				"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
-				"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
+				"VoucherDate": $("#PurchaseVoucherDate").dxDateBox("instance").option("value"),
+				"VoucherEffectiveDate": $("#purchaseVoucherEffectiveDate").dxDateBox("instance").option("value"),
 				"InvoiceSubmittedDate": $("#InvoiceSubmittedDate").dxDateBox("instance").option("value"),
 				"InvoiceDueDate": $("#InvoiceDueDate").dxDateBox("instance").option("value"),
 				"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),

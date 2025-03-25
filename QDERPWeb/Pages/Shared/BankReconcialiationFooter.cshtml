@@ -222,6 +222,7 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("arrowleft") // Correct icon for back navigation
         .Width(220)
+        .OnClick("goBack") // Attach JavaScript function
     )
     </div>
 </div>
@@ -372,7 +373,9 @@
 
         grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
     }
-
+     function goBack() {
+        window.history.back(); // Go to the previous page
+    }
     // Footer Recipits button event
     function addRecipitsButton_click(e) {
         DevExpress.ui.notify(e.itemData, "success", 600);

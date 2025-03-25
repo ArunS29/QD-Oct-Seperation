@@ -39,11 +39,11 @@
 
     .dx-multiview-wrapper {
         flex-grow: 1;
-        overflow: auto; /* Enable scrolling if content overflows */
+        overflow: auto; 
     }
 
     .dx-tabpanel {
-        height: 500px !important; /* Set fixed height */
+        height: 500px !important; 
         display: flex;
         flex-direction: column;
     }
@@ -54,11 +54,10 @@
 
         .dx-tabpanel .dx-tab-panel {
             height: 600px;
-            overflow-y: auto; /* Allow vertical scrolling inside tabs */
+            overflow-y: auto; 
         }
         
 
-            /* Optional: Adjust the selected tab styling */
             .dx-tabpanel .dx-tab.dx-selection {
               background-color: lightblue; 
                 color: white !important; 
@@ -72,12 +71,12 @@
 </style>
 
 <div class="card">
-    @*  <div class="content-container-top">  *@
+   
     <div class="card-header" style="background-color: #c0dceb; color: black; font-weight: bold;">
         Bills Receivable Reports
     </div>
 
-    <!-- Tab Menu -->
+   
     @(
         Html.DevExtreme().TabPanel()
         .ID("AssetTabs")
@@ -101,8 +100,8 @@
             .LabelMode(EditorLabelMode.Outside)
             .ShowClearButton(true)
             .AcceptCustomValue(true)
-            .OpenOnFieldClick(true) // Allow opening on click
-            .ValueExpr("AccountId") // Ensure correct mapping
+            .OpenOnFieldClick(true) 
+            .ValueExpr("AccountId") 
             .DisplayExpr("AccountHead")
             .ContentTemplate(new TemplateName("GetAccountHeadContentTemplate"))
             .OnValueChanged("onDropDownValueChanged")
@@ -130,8 +129,8 @@
             .LabelMode(EditorLabelMode.Outside)
             .ShowClearButton(true)
             .AcceptCustomValue(true)
-            .OpenOnFieldClick(true) // Allow opening on click
-            .ValueExpr("SalesPersonCode") // Ensure correct mapping
+            .OpenOnFieldClick(true) 
+            .ValueExpr("SalesPersonCode") 
             .DisplayExpr("SalesPersonName")
             .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
             )
@@ -157,8 +156,8 @@
             .LabelMode(EditorLabelMode.Outside)
             .ShowClearButton(true)
             .AcceptCustomValue(true)
-            .OpenOnFieldClick(true) // Allow opening on click
-            .ValueExpr("BranchCode") // Ensure correct mapping
+            .OpenOnFieldClick(true) 
+            .ValueExpr("BranchCode") 
             .DisplayExpr("BranchName")
             .ContentTemplate(new TemplateName("GetCompanyBranchContentTemplate"))
             )
@@ -172,9 +171,7 @@
         })
         )
 </div>
-    @*  <div class="card-footer">
-    @await Html.PartialAsync("_ReportFooter") <!-- Existing Footer -->
-    </div> *@
+
 
 @using (Html.DevExtreme().NamedTemplate("GetAccountHeadContentTemplate"))
 {
@@ -189,20 +186,19 @@
                 )
                 .ShowBorders(true)
                 .SearchPanel(sp => sp
-                .Visible(true)  // Enables search bar
+                .Visible(true)  
                 .HighlightSearchText(true)
                 )
                 .Selection(sl => sl
-                .Mode(SelectionMode.Multiple)  // Allows multiple selection
-                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) // Always show checkboxes
+                .Mode(SelectionMode.Multiple)  
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) 
                 )
-                .OnSelectionChanged("dataGridSelectionChanged1") // Handle selection
+                .OnSelectionChanged("dataGridSelectionChanged1")    
                 .Paging(p => p.PageSize(15))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) 
                 .Height(400)
                 .Columns(columns =>
                 {
-                    // columns.Add().DataField("AccountId").Caption("ID");
                     columns.Add().DataField("AccountHead").Caption("Account Name");
                 })
                 )
@@ -235,37 +231,23 @@
                 )
                 .ShowBorders(true)
                 .SearchPanel(sp => sp
-                .Visible(true)  // Enables search bar
+                .Visible(true)  
                 .HighlightSearchText(true)
                 )
                 .Selection(sl => sl
-                .Mode(SelectionMode.Multiple)  // Allows multiple selection
-                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) // Always show checkboxes
+                .Mode(SelectionMode.Multiple)  
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) 
                 )
-                .OnSelectionChanged("dataGridSelectionChanged2") // Handle selection
+                .OnSelectionChanged("dataGridSelectionChanged2") 
                 .Paging(p => p.PageSize(15))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                 .Height(400)
                 .Columns(columns =>
                 {
-                    // columns.Add().DataField("AccountId").Caption("ID");
                     columns.Add().DataField("SalesPersonName").Caption("SalesPerson Name");
                 })
                 )
-    <div class="toolbar-container">
-        <div id="gridToolbar">
-            @(Html.DevExtreme().Button()
-                .Text("Save as PDF")
-                .Icon("exportpdf")
-                .OnClick("saveGridAsPDF")
-                )
-            @(Html.DevExtreme().Button()
-                .Text("Print")
-                .Icon("print")
-                .OnClick("printGrid1")
-                )
-        </div>
-    </div>
+
 }
 @using (Html.DevExtreme().NamedTemplate("GetCompanyBranchContentTemplate"))
 {
@@ -280,43 +262,25 @@
                     )
                     .ShowBorders(true)
                     .SearchPanel(sp => sp
-                    .Visible(true)  // Enables search bar
+                    .Visible(true)  
                     .HighlightSearchText(true)
                     )
                     .Selection(sl => sl
-                    .Mode(SelectionMode.Multiple)  // Allows multiple selection
-                    .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) // Always show checkboxes
+                    .Mode(SelectionMode.Multiple)  
+                    .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) 
                     )
-                    .OnSelectionChanged("dataGridSelectionChanged3") // Handle selection
+                    .OnSelectionChanged("dataGridSelectionChanged3") 
                     .Paging(p => p.PageSize(15))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) 
                     .Height(400)
                     .Columns(columns =>
                     {
-                        // columns.Add().DataField("AccountId").Caption("ID");
                         columns.Add().DataField("BranchName").Caption("Branch Name");
                     })
                     )
-    <div class="toolbar-container">
-        <div id="gridToolbar">
-            @(Html.DevExtreme().Button()
-                .Text("Save as PDF")
-                .Icon("exportpdf")
-                .OnClick("saveGridAsPDF")
-                )
-            @(Html.DevExtreme().Button()
-                .Text("Print")
-                .Icon("print")
-                .OnClick("printGrid2")
-                )
-        </div>
-    </div>
+
 }
 
-
-
-
-@* </div> *@
 
 <script>
 
@@ -340,30 +304,27 @@
     }
 
 
-    let selectedValues = []; // Array to store selected values
+    let selectedValues = []; 
     function dataGridSelectionChanged1(e) {
-        selectedKeys = e.selectedRowKeys; // Get all selected values
+        selectedKeys = e.selectedRowKeys; 
         console.log("Selected Values:", selectedValues);
        const ddbInstance = $("#GetAccountHeadDropDown").dxDropDownBox("instance");
 
-       ddbInstance.option("value", selectedKeys); // Assign array of selected values
+       ddbInstance.option("value", selectedKeys); 
     }
-    // Update DropDownBox value when selection changes
     function onDropDownValueChanged(e) {
-        selectedValues = e.value || []; // Store selected values in the array
+        selectedValues = e.value || []; 
     }
     function dataGridInitialized1(e) {
         dataGrid = e.component;
     }
 
 
-    let selectedValues1 = []; // Store selected values
+    let selectedValues1 = []; 
 
     function dataGridSelectionChanged2(e) {
-        selectedValues1 = e.selectedRowKeys; // Update array with selected keys
+        selectedValues1 = e.selectedRowKeys; 
         console.log("Selected Values1:", selectedValues1);
-
-        // Ensure DropDownBox updates correctly
         const ddbInstance = $("#GetSalesPersonDropDown").dxDropDownBox("instance");
         if (ddbInstance) {
             ddbInstance.option("value", selectedValues1);
@@ -371,20 +332,18 @@
     }
 
       function onDropDownValueChanged1(e) {
-        selectedValues1 = e.value || []; // Store selected values in the array
+        selectedValues1 = e.value || []; 
     }
 
 
     function dataGridInitialized2(e) {
         dataGrid = e.component;
     }
-    let selectedValues2 = []; // Store selected Branch values
+    let selectedValues2 = []; 
 
     function dataGridSelectionChanged3(e) {
-        selectedValues2 = e.selectedRowKeys; // Update array with selected keys
+        selectedValues2 = e.selectedRowKeys; 
         console.log("Selected Branch Records:", selectedValues2);
-
-        // Ensure DropDownBox updates correctly
         const ddbInstance = $("#GetCompanyBranchDropDown").dxDropDownBox("instance");
         if (ddbInstance) {
             ddbInstance.option("value", selectedValues2);
@@ -394,53 +353,41 @@
     function dataGridInitialized3(e) {
         dataGrid = e.component;
     }
-    
 
-    async function saveGridAsPDF() {
-        const dataGrid = $("#GetAccountHead-datagrid").dxDataGrid("instance");
 
-        // Load jsPDF from the global `window.jspdf`
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+    function saveGridAsPDF() {
+        let selectedParams = "";
 
-        // Get selected rows
-        const selectedRows = dataGrid.getSelectedRowsData();
-        console.log("Selected Row:", selectedRows);
-
-        if (selectedRows.length > 0) {
-            DevExpress.pdfExporter.exportDataGrid({
-                component: dataGrid,
-                jsPDFDocument: doc,
-                autoTableOptions: {
-
-                    headStyles: { fontStyle: 'bold' }, // Bold headers
-                    bodyStyles: { fontStyle: 'normal' },
-                },
-                selectedRowsOnly: true // Ensure only selected rows are exported
-            }).then(() => {
-                doc.save("SelectedGridData.pdf");
-            });
+        if (selectedValues.length > 0) {
+            selectedParams = selectedValues.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
+        } else if (selectedValues1.length > 0) {
+            selectedParams = selectedValues1.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
+        } else if (selectedValues2.length > 0) {
+            selectedParams = selectedValues2.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
         } else {
-            alert("Please select rows to export.");
+            alert("Please select at least one record.");
+            return;
         }
+
+        const reportName = "XtraRecivableReport";
+        const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&${selectedParams}`;
+
+        window.open(reportUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
 
-    // Print Grid with Selected Records
     function printGrid() {
         if (selectedValues.length === 0) {
             alert("Please select at least one record to print.");
             return;
         }
-        debugger;
-        // Send selected values using POST request
-        fetch("/api/ReportsByClients/GenerateReportAccountHead", {
+            fetch("/api/ReportsByClients/GenerateReportAccountHead", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedValues)  // Send array as JSON
+            body: JSON.stringify(selectedValues)  
         })
             .then(response => {
                 if (response.redirected) {
-                    window.location.href = response.url; // Redirect to report page
+                    window.location.href = response.url; 
                 } else {
                     return response.text();
                 }
@@ -450,61 +397,50 @@
             })
             .catch(error => console.error("Error:", error));
     }
-
-
-
-    // Print Grid with Selected Records
-    function printGrid1() {
-        if (selectedValues1.length === 0) {
-            alert("Please select at least one record to print.");
-            return;
-        }
-
-        // Send selected values using POST request
-        fetch("/api/ReportsByClients/GenerateReportSalesPerson", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedValues1)  // Send array as JSON
-        })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; // Redirect to report page
-                } else {
-                    return response.text();
-                }
-            })
-            .then(data => {
-                if (data) console.error("Error:", data);
-            })
-            .catch(error => console.error("Error:", error));
-    }
-
-
-    // Print Grid with Selected Records
-    function printGrid2() {
-        if (selectedValues2.length === 0) {
-            alert("Please select at least one record to print.");
-            return;
-        }
-
-        // Send selected values using POST request
-        fetch("/api/ReportsByClients/GenerateReportBranch", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedValues2)  // Send array as JSON
-        })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; // Redirect to report page
-                } else {
-                    return response.text();
-                }
-            })
-            .then(data => {
-                if (data) console.error("Error:", data);
-            })
-            .catch(error => console.error("Error:", error));
-    }
+    // function printGrid1() {
+    //     if (selectedValues1.length === 0) {
+    //         alert("Please select at least one record to print.");
+    //         return;
+    //     }
+    //     fetch("/api/ReportsByClients/GenerateReportSalesPerson", {
+    //         method: "POST",
+    //         headers: { "Content-Type": "application/json" },
+    //         body: JSON.stringify(selectedValues1) 
+    //     })
+    //         .then(response => {
+    //             if (response.redirected) {
+    //                 window.location.href = response.url; 
+    //             } else {
+    //                 return response.text();
+    //             }
+    //         })
+    //         .then(data => {
+    //             if (data) console.error("Error:", data);
+    //         })
+    //         .catch(error => console.error("Error:", error));
+    // }
+    // function printGrid2() {
+    //     if (selectedValues2.length === 0) {
+    //         alert("Please select at least one record to print.");
+    //         return;
+    //     }
+    //     fetch("/api/ReportsByClients/GenerateReportBranch", {
+    //         method: "POST",
+    //         headers: { "Content-Type": "application/json" },
+    //         body: JSON.stringify(selectedValues2)  
+    //     })
+    //         .then(response => {
+    //             if (response.redirected) {
+    //                 window.location.href = response.url; 
+    //             } else {
+    //                 return response.text();
+    //             }
+    //         })
+    //         .then(data => {
+    //             if (data) console.error("Error:", data);
+    //         })
+    //         .catch(error => console.error("Error:", error));
+    // }
 
 
 

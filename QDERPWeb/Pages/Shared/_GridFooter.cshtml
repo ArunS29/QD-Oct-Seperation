@@ -345,7 +345,7 @@
                 .Width(50)
                 .Text(new JS("formatMessage('Report')"))
                 .ElementAttr(new { style = "display: none;" })
-                .DropDownOptions(options => options.Width(230))
+                .DropDownOptions(options => options.Width(320))
                 .Items(items =>
                 {
                     items.Add().Text(new JS("formatMessage('Account Statements')")).Icon("file").OnClick("showSubmenu4");
@@ -988,11 +988,11 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth - 5;
+        var leftPos = offset.left - submenuWidth +610;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
-            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+            leftPos = offset.left + $target.outerWidth() + 5;
         }
 
         // Position submenu
@@ -1026,7 +1026,7 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth - 5;
+        var leftPos = offset.left - submenuWidth + 610;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
@@ -1064,7 +1064,7 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth - 5;
+        var leftPos = offset.left - submenuWidth + 610;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
@@ -1102,7 +1102,7 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth - 5;
+        var leftPos = offset.left - submenuWidth + 610;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {

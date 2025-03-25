@@ -79,19 +79,20 @@
 												)
 				</div>
 			</div>
-			<div class="col-md-3">
-				<div class="form-group">
-					@(Html.DevExtreme().DateBox()
-												.Label(new JS("formatMessage('Invoice Date')"))
-												.ID("VoucherDate")
-												.InputAttr("aria-label", "Date")
-												.LabelMode(EditorLabelMode.Outside)
-												.Type(DateBoxType.Date)
-												.DisplayFormat("dd-MMM-yyyy")
-												.Value(DateTime.Now)
-												)
-				</div>
-			</div>
+		<div class="col-md-3">
+    <div class="form-group">
+        @(Html.DevExtreme().DateBox()
+            .Label(new JS("formatMessage('Invoice Date')"))
+            .ID("VoucherDate")
+            .InputAttr("aria-label", "Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .Type(DateBoxType.Date)
+            .DisplayFormat("dd-MMM-yyyy")
+            .Value(DateTime.Now)
+        )
+    </div>
+</div>
+
 			<div class="col-md-3">
 				<div class="form-group">
 					@(Html.DevExtreme().DateBox()
@@ -461,35 +462,23 @@
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
 						.ShowBorders(true)
 						.Width("100%")
+				.Summary(summary =>
+				{
+					summary.TotalItems(totalItems =>
+					{
+
+						totalItems.Add().Column("Debit").SummaryType(SummaryType.Sum)
+					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+						totalItems.Add().Column("Credit").SummaryType(SummaryType.Sum)
+					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+					});
+				})
 						)
 		</div>
 
 
 
-
-		<div id="footerTotals" style="display: flex; justify-content: space-between; color: white; padding:10px; font-size: 14px; max-width:1245px;position:relative;">
-			<div style="flex: 2;">&nbsp;</div>
-			<div style="flex: 1;">&nbsp;</div>
-			<div style="flex: none; text-align: right;">
-				@(Html.DevExtreme().TextBox()
-								.ID("totalDebitTextbox")
-								.Value("0.00")
-								.ReadOnly(true)
-								.Width("60%")
-								.InputAttr(new { style = "text-align: right;" })
-								)
-			</div>
-			<div style="flex: none; text-align: right;">
-				@(Html.DevExtreme().TextBox()
-								.ID("totalCreditTextbox")
-								.Value("0.00")
-								.ReadOnly(true)
-								.Width("60%")
-								.InputAttr(new { style = "text-align: right;" })
-								)
-			</div>
-			<div style="flex: 2;">&nbsp;</div>
-		</div>
 
 		<!-- Context Menu for Actions -->
 		<ul id="contextMenu" class="context-menu" style="display: none;">
@@ -1052,119 +1041,105 @@
 
 
 
+	async function addVoucherEntry() {
+		var accountHead = $("#ddAccountHead").dxDropDownBox("instance");
+		var ClientName = $("#ClientNameDropDown").dxDropDownBox("instance");
+		var txtVoucherAmt = $("#txtVoucherAmount").dxNumberBox("instance");
+		var voucherNo = $("#VoucherNo").dxTextBox("instance");
+		var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+		var ClientNameValidator = $("#ClientNameDropDown").dxValidator("instance");
+		var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
 
-
-		function addVoucherEntry() {
-			var accountHead = $("#ddAccountHead").dxDropDownBox("instance");
-			var ClientName = $("#ClientNameDropDown").dxDropDownBox("instance");
-			var txtVoucherAmt = $("#txtVoucherAmount").dxNumberBox("instance");
-			var voucherNo = $("#VoucherNo").dxTextBox("instance");
-			var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
-			var ClientNameValidator = $("#ClientNameDropDown").dxValidator("instance");
-			var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
-
-			// Manually validate if the fields are not empty
-			var isValid = true;
-
-			if (!voucherNo.option("value")) {
-				alert("Please enter Sales No.");
-				isValid = false;
-			}
-
-			if (!ClientName.option("value")) {
-				alert("Please select Client Name.");
-				isValid = false;
-			}
-
-			if (!accountHead.option("value")) {
-				alert("Please select Account Head.");
-				isValid = false;
-			}
-
-			if (!txtVoucherAmt.option("value") || txtVoucherAmt.option("value") <= 0) {
-				alert("Please enter a valid Amount.");
-				isValid = false;
-			}
-
-			if (isValid) {
-				var paymentaccheadname = accountHead.option("text"); // Assuming this gets the display text
-				var accheadname = ClientName.option("text"); // Assuming this gets the display text
-
-				var sysRemarks1 = accheadname ? `Invoiced To : ${accheadname}` : "";
-				var sysRemarks2 = paymentaccheadname || "";
-
-				var VE1 = {
-					"VoucherNo": voucherNo.option("value"),
-					"AccountHead": accountHead.option("value"),
-					"VoucherAmount": txtVoucherAmt.option("value"),
-					"DrCr": $("#sbDrCr").dxSelectBox("instance").option("value"),
-					"AddedBy": "102",
-					"AddedOn": new Date(),
-					"EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
-					"SysRemarks": sysRemarks1
-				};
-
-				var VE2 = {
-					"VoucherNo": voucherNo.option("value"),
-					"AccountHead": ClientName.option("value"),
-					"VoucherAmount": txtVoucherAmt.option("value"),
-					"DrCr": ($("#sbDrCr").dxSelectBox("instance").option("value") === "Cr" ? "Dr" : "Cr"),
-					"AddedBy": "102",
-					"AddedOn": new Date(),
-					"EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
-					"SysRemarks": sysRemarks2
-				};
-
-				// Send the first entry
-				$.ajax({
-					type: "POST",
-					url: "/api/SalesVoucher/AddVoucherEntry",
-					contentType: "application/json",
-					data: JSON.stringify(VE1),
-					dataType: "json",
-					success: function (response) {
-						$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-
-						// Clear AccountHead and VoucherAmount after successful response
-						accountHead.option("value", null); // Clear AccountHead
-						txtVoucherAmt.option("value", null); // Clear VoucherAmount
-
-						// Reset validation states
-						accountHeadValidator.reset();
-						voucherAmtValidator.reset();
-
-							var button = $("#btnSave").dxButton("instance");
-							button.option("text", "Update");
-					},
-					error: function (xhr, status, error) {
-						///alert("Error occurred while updating data: " + error);
-					}
-				});
-
-				// Send the second entry
-				$.ajax({
-					type: "POST",
-					url: "/api/SalesVoucher/AddVoucherEntry",
-					contentType: "application/json",
-					data: JSON.stringify(VE2),
-					dataType: "json",
-					success: function (response) {
-						$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-
-						// Clear AccountHead and VoucherAmount again
-						accountHead.option("value", null); // Clear AccountHead
-						txtVoucherAmt.option("value", null); // Clear VoucherAmount
-
-						// Reset validation states
-						accountHeadValidator.reset();
-						voucherAmtValidator.reset();
-					},
-					error: function (xhr, status, error) {
-						//alert("Error occurred while updating data: " + error);
-					}
-				});
-			}
+		// Manually validate if the fields are not empty
+		if (!voucherNo.option("value")) {
+			alert("Please enter Sales No.");
+			return;
 		}
+		if (!ClientName.option("value")) {
+			alert("Please select Client Name.");
+			return;
+		}
+		if (!accountHead.option("value")) {
+			alert("Please select Account Head.");
+			return;
+		}
+		if (!txtVoucherAmt.option("value") || txtVoucherAmt.option("value") <= 0) {
+			alert("Please enter a valid Amount.");
+			return;
+		}
+
+		var paymentaccheadname = accountHead.option("text"); // Display text
+		var accheadname = ClientName.option("text"); // Display text
+
+		var sysRemarks1 = accheadname ? `Invoiced To : ${accheadname}` : "";
+		var sysRemarks2 = paymentaccheadname || "";
+
+		var VE1 = {
+			"VoucherNo": voucherNo.option("value"),
+			"AccountHead": accountHead.option("value"),
+			"VoucherAmount": txtVoucherAmt.option("value"),
+			"DrCr": $("#sbDrCr").dxSelectBox("instance").option("value"),
+			"AddedBy": "102",
+			"AddedOn": new Date(),
+			"EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
+			"SysRemarks": sysRemarks1
+		};
+
+		var VE2 = {
+			"VoucherNo": voucherNo.option("value"),
+			"AccountHead": ClientName.option("value"),
+			"VoucherAmount": txtVoucherAmt.option("value"),
+			"DrCr": ($("#sbDrCr").dxSelectBox("instance").option("value") === "Cr" ? "Dr" : "Cr"),
+			"AddedBy": "102",
+			"AddedOn": new Date(),
+			"EntryNarration": $("#txtEntryNarration").dxTextArea("instance").option("value"),
+			"SysRemarks": sysRemarks2
+		};
+
+		try {
+			// Send first entry and wait for response before sending second
+			let response1 = await $.ajax({
+				type: "POST",
+				url: "/api/SalesVoucher/AddVoucherEntry",
+				contentType: "application/json",
+				data: JSON.stringify(VE1),
+				dataType: "json"
+			});
+
+			console.log("First entry added:", response1);
+			$("#dataGrid").dxDataGrid("instance").option("dataSource", response1.data);
+
+			// Wait a bit before sending second request to avoid UI race conditions
+			await new Promise(resolve => setTimeout(resolve, 200));
+
+			// Send second entry
+			let response2 = await $.ajax({
+				type: "POST",
+				url: "/api/SalesVoucher/AddVoucherEntry",
+				contentType: "application/json",
+				data: JSON.stringify(VE2),
+				dataType: "json"
+			});
+
+			console.log("Second entry added:", response2);
+			$("#dataGrid").dxDataGrid("instance").option("dataSource", response2.data);
+
+			// Clear input fields after both requests complete
+			accountHead.option("value", null);
+			txtVoucherAmt.option("value", null);
+			accountHeadValidator.reset();
+			voucherAmtValidator.reset();
+
+			// Change button text
+			var button = $("#btnSave").dxButton("instance");
+			button.option("text", "Update");
+
+		} catch (error) {
+			console.error("Error saving voucher entry:", error);
+			alert("An error occurred while saving. Please try again.");
+		}
+	}
+
 
 
 		function saveCostAllocation() {
@@ -1901,6 +1876,50 @@
 			}
 		});
 	}
+	$(document).ready(function () {
+		let voucherDateBox = $("#VoucherDate").dxDateBox("instance");
+
+		if (!voucherDateBox) {
+			console.error("Error: #VoucherDate element not found or dxDateBox not initialized.");
+			return;
+		}
+
+		console.log("dxDateBox Initialized Successfully:", voucherDateBox);
+
+		$("#VoucherDate").dxDateBox({
+			onValueChanged: onVoucherDateChange // Bind function
+		});
+	});
+
+	async function onVoucherDateChange(e) {
+		console.log("onVoucherDateChange triggered", e);
+
+		if (!e || !e.value) {
+			console.warn("Invalid date value", e);
+			return;
+		}
+
+		let selectedDate = e.value;
+		console.log("Selected Date:", selectedDate);
+
+		try {
+			let response = await $.ajax({
+				url: "/api/SalesVoucher/CheckVoucherDateLocking?voucherDate=" + selectedDate.toISOString(),
+				type: "GET",
+			});
+
+			console.log("API Response:", response);
+
+			if (!response.success) {
+				DevExpress.ui.notify(response.message, "error", 3000);
+				$("#VoucherDate").dxDateBox("instance").option("value", new Date()); // Reset to today
+			}
+		} catch (error) {
+			console.error("AJAX Error:", error);
+			DevExpress.ui.notify("Error checking date. Please try again.", "error", 3000);
+		}
+	}
+
 
 	</script>
 

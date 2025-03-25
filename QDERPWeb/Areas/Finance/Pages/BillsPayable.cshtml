@@ -88,7 +88,7 @@
     </div>
 <div class="card-footer background" style="display: flex;justify-content: space-between;">
     @await Html.PartialAsync("_GridFooter2")
-    <div class="form-group col-md-6" style="padding-top: 10px; padding-bottom: 10px; text-align: right;">
+    <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;">
         <div>
             @(Html.DevExtreme().Button()
                 .ID("btnBillsWithBalance")
@@ -99,284 +99,211 @@
                 .OnClick("function() { switchButtons('btnBillsWithBalance'); }")
                 )
         </div>
+        <div>
+            @(Html.DevExtreme().Button()
+                .ID("btnBillsFullyPaid")
+                .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
+                .Height(30)
+                .Width(350)
+                .Icon("checklist")
+                .Visible(false)//Initially hidden
+                .OnClick("function() { switchButtons('btnBillsFullyPaid'); }")
+                )
+        </div>
     </div>
 </div>
-<div>
-    @(Html.DevExtreme().Button()
-        .ID("btnBillsFullyPaid")
-        .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
-        .Height(30)
-        .Width(350)
-        .Icon("checklist")
-        .Visible(false)//Initially hidden
-        .OnClick("function() { switchButtons('btnBillsFullyPaid'); }")
-        )
-</div>
     <div class="dx-field ledgerResult" style="overflow: hidden; font-family: Inter, Helvetica, Arial, sans-serif">
-
-        @(
-                Html.DevExtreme().DataGrid<Qry201SubLedgerPayablesMaster>()
-
-                .ID("dataGrid")
-
-                .DataSource(ds => ds.Mvc()
-
-                .Controller("BillsPayable") // Specify the controller name
-
-                .LoadAction("Get")) // Specify the action that returns data
-
-
-
-                .RemoteOperations(false) // Enable remote data operations
-
-
-                .Columns(columns =>
-
-                {
-                    // Grid Band: Bills Payable
-                    columns.Add().Caption(new JS("formatMessage('Bills Payable')")).Columns(band =>
-                {
-
-                    band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('AccountHeadNo')")).Alignment(HorizontalAlignment.Center)
-                .Width(120);
-
-                    // Account Head column
-                    band.AddFor(m => m.AccountHead)
-                .Caption(new JS("formatMessage('Ledger Account')"))
-                .Alignment(HorizontalAlignment.Left)
-                .Width(200);
-
-                    // Account Head column
-                    band.AddFor(m => m.AccountHead)
-                .Caption("Ledger Account")
-                .Alignment(HorizontalAlignment.Left)
-                .Width(200)
-                .GroupIndex(0); // Group by this column
-
-
-
-                    band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('ReferenceNo')")).Alignment(HorizontalAlignment.Center)
-                .Width(120).CellTemplate(@<text>
-        <a href="/<%= tenantName %>/Finance/PurchaseVoucher?argsledno=<%= data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
-                    <%= data.ReferenceNo %>
-                </a>
-        </text>);
-
-                    band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('VoucherDate')")).Alignment(HorizontalAlignment.Center)
-            .Width(120).Format(format => format
-            .Type(Format.ShortDate)
-            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-
-
-                    band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('VoucherRefNo')")).Alignment(HorizontalAlignment.Center)
-            .Width(150);
-
-                    band.AddFor(m => m.InvoiceAmountBeforeRetention)
-            .Caption(new JS("formatMessage('Invoice Amount')"))
-            .Alignment(HorizontalAlignment.Right)
-            .Width(140)
-            .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Convert to positive
-        let formattedValue = positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        return '(' + formattedValue + ')'; // Add parentheses around the value
-        }
-        ");
-
-
-
-                    band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right)
-            .Width(140).CustomizeText(@"
-        function(e) {
-        if(e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        return e.value.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        }
-        "); band.AddFor(m => m.Balance)
-            .Caption(new JS("formatMessage('Balance')"))
-            .Alignment(HorizontalAlignment.Right)
-            .Width(140)
-            .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Convert to positive
-        let formattedValue = positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        return '(' + formattedValue + ')'; // Add parentheses around the value
-        }
-        ");
-
-                    band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('InvoiceDueDate')")).Alignment(HorizontalAlignment.Center)
-            .Width(120).Format(format => format
-            .Type(Format.ShortDate)
-            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
-            ;
-                    band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('NoOfDaysCreditPeriod')")).Alignment(HorizontalAlignment.Center)
-            .Width(100);
-                    band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('OverdueDays')")).Alignment(HorizontalAlignment.Center)
-            .Width(100);
-                });
-                })
-
-
-            .Paging(p => p.PageSize(10))
-
-            .AllowColumnReordering(true) // Enable column reordering
-
-            .AllowColumnResizing(true)   // Enable column resizing
-
-            .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-
-            .HeaderFilter(filter => filter.Visible(true))
-
-            .Height(660)
-
-            .ColumnAutoWidth(true)
-            .WordWrapEnabled(false)
-            .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-            .Grouping(grouping => grouping.AutoExpandAll(true))
-            .GroupPanel(groupPanel => groupPanel.Visible(false))
-
-            .ShowBorders(true)
-
-            .Width("100%")
-            .Summary(summary =>
+    @(
+            Html.DevExtreme().DataGrid<Qry201SubLedgerPayablesMaster>()
+            .ID("dataGrid")
+            .DataSource(ds => ds.Mvc()
+            .Controller("BillsPayable")
+            .LoadAction("Get"))
+            .RemoteOperations(false)
+            .Columns(columns =>
             {
-                // Group-level summaries (for each group footer)
-                summary.GroupItems(items =>
-                {
-                    items.Add().Column("VoucherRefNo")
-                .SummaryType(SummaryType.Count)
-                .ShowInGroupFooter(true)
-                .DisplayFormat(new JS("formatMessage('No of Invoices: {0}')"));
-
-
-                    items.Add().Column("InvoiceAmountBeforeRetention")
-                .SummaryType(SummaryType.Sum)
-                .ShowInGroupFooter(true)
-                .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Convert to positive
-        let formattedValue = positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        return '(' + formattedValue + ')'; // Add parentheses around the value
-        }
-        ");
-                    items.Add().Column("Paid")
-                .SummaryType(SummaryType.Sum)
-                .ShowInGroupFooter(true)
-                .CustomizeText(@"
-        function(e) {
-        if(e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        return e.value.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        }
-        ");
-                    items.Add().Column("Balance")
-                .SummaryType(SummaryType.Sum)
-                .ShowInGroupFooter(true)
-                .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Convert to positive
-        let formattedValue = positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        return '(' + formattedValue + ')'; // Add parentheses around the value
-        }
-        ");
-
-
-                });
-
-                // Total summary (for grid-wide totals)
-                summary.TotalItems(items =>
-                {
-                    items.Add().Column("VoucherRefNo")
-                .SummaryType(SummaryType.Count)
-                .DisplayFormat("No of Invoices: {0}");
-
-
-                    items.Add().Column("InvoiceAmountBeforeRetention")
-                .SummaryType(SummaryType.Sum)
-                .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Convert to positive
-        let formattedValue = positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        return '(' + formattedValue + ')'; // Add parentheses around the value
-        }
-        ");
-
-                    items.Add().Column("Paid")
-                .SummaryType(SummaryType.Sum)
-                .CustomizeText(@"
-        function(e) {
-        if(e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        return e.value.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        }
-        ");
-
-                    items.Add().Column("Balance")
-                .SummaryType(SummaryType.Sum)
-                .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Convert to positive
-        let formattedValue = positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        return '(' + formattedValue + ')'; // Add parentheses around the value
-        }
-        ");
-
-                });
+                // Grid Band: Bills Payable
+                columns.Add().Caption(new JS("formatMessage('Bills Payable')")).Columns(band =>
+            {
+                band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('AccountHeadNo')")).Alignment(HorizontalAlignment.Center);
+                band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left);
+                band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('ReferenceNo')")).Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <a href="/<%= tenantName %>/Finance/PurchaseVoucher?argsledno=<%= data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
+            <%= data.ReferenceNo %>
+        </a>
+    </text>);
+                band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('VoucherDate')")).Alignment(HorizontalAlignment.Center)
+    .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+                band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('VoucherRefNo')")).Alignment(HorizontalAlignment.Center);
+                band.AddFor(m => m.InvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Invoice Amount')"))
+    .Alignment(HorizontalAlignment.Right)
+    .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    let positiveValue = Math.abs(e.value);
+    let formattedValue = positiveValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    return '(' + formattedValue + ')';
+    }
+    ");
+                band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right)
+    .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    return e.value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    }
+    ");
+                band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right)
+    .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    let positiveValue = Math.abs(e.value);
+    let formattedValue = positiveValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    return '(' + formattedValue + ')';
+    }
+    ");
+                band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('InvoiceDueDate')")).Alignment(HorizontalAlignment.Center)
+    .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+                band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('NoOfDaysCreditPeriod')")).Alignment(HorizontalAlignment.Center);
+                band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('OverdueDays')")).Alignment(HorizontalAlignment.Center);
+            });
             })
-
-
-            // Store the DataGrid instance
-            .OnInitialized("dataGridInitialized")
-            .OnContextMenuPreparing("onContextMenuPreparing") // Bind the context menu event
-            )
+        .Paging(p => p.PageSize(10))
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(true))
+        .Height(660)
+        .ColumnAutoWidth(true)
+        .WordWrapEnabled(true)
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+        .Width("100%")
+        .Summary(summary =>
+        {
+            summary.GroupItems(items =>
+            {
+                items.Add().Column("VoucherRefNo")
+            .SummaryType(SummaryType.Count)
+            .ShowInGroupFooter(true)
+            .DisplayFormat(new JS("formatMessage('No of Invoices: {0}')"));
+                items.Add().Column("InvoiceAmountBeforeRetention")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    let positiveValue = Math.abs(e.value);
+    let formattedValue = positiveValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    return '(' + formattedValue + ')';
+    }
+    ");
+                items.Add().Column("Paid")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    return e.value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    }
+    ");
+                items.Add().Column("Balance")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    let positiveValue = Math.abs(e.value);
+    let formattedValue = positiveValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    return '(' + formattedValue + ')';
+    }
+    ");
+            });
+            summary.TotalItems(items =>
+            {
+                items.Add().Column("VoucherRefNo")
+            .SummaryType(SummaryType.Count)
+            .DisplayFormat("No of Invoices: {0}");
+                items.Add().Column("InvoiceAmountBeforeRetention")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    let positiveValue = Math.abs(e.value);
+    let formattedValue = positiveValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    return '(' + formattedValue + ')';
+    }
+    ");
+                items.Add().Column("Paid")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    return e.value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    }
+    ");
+                items.Add().Column("Balance")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"
+    function(e) {
+    if (e.value === null || e.value === undefined) {
+    return '';
+    }
+    let positiveValue = Math.abs(e.value);
+    let formattedValue = positiveValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+    return '(' + formattedValue + ')';
+    }
+    ");
+            });
+        })
+        .OnInitialized("dataGridInitialized")
+        .OnContextMenuPreparing("onContextMenuPreparing")
+        )
 
     </div>
 

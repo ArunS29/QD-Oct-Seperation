@@ -107,7 +107,11 @@
                          columns.Add().DataField("VoucherEntryNo").Caption(new JS("formatMessage('Voucher Entry No')")).Visible(false);
                         columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')"));
                         columns.Add().DataField("VoucherRefNo").Caption(new JS("formatMessage('Ref No')"));
-                        columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')"));
+                        //columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')"));
+                    columns.Add().DataField("VoucherDate")
+    .Caption(new JS("formatMessage('Voucher Date')"))
+    .DataType(GridColumnDataType.Date)
+    .CalculateCellValue("formatVoucherDate");
                         columns.Add().DataField("SysRemarks").Caption(new JS("formatMessage('Remarks')"));
                         columns.Add().DataField("DrCr").Caption(new JS("formatMessage('Dr/Cr')")).CellTemplate(@<text>
         <div style="text-align: center; padding: 5px; font-weight: bold;" class="drcr-cell">
@@ -131,8 +135,14 @@
 
                         columns.Add().DataField("BankClearedOn").Caption(new JS("formatMessage('Cleared On')"));
                         columns.Add().DataField("PaymentStatus").Caption(new JS("formatMessage('Status')"));
-                        columns.Add().DataField("DrAmount").Caption(new JS("formatMessage('Receipts')"));
-                        columns.Add().DataField("CrAmount").Caption(new JS("formatMessage('Payments')"));
+                    columns.Add().DataField("DrAmount").Caption(new JS("formatMessage('Receipts')")).CustomizeText(
+                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                );
+                    columns.Add().DataField("CrAmount").Caption(new JS("formatMessage('Payments')")).CustomizeText(
+                "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                );
                     })
                     .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
@@ -208,6 +218,15 @@
 
       
 <script>
+
+
+      function formatVoucherDate(data) {
+        if (!data.VoucherDate) return "";
+        var date = new Date(data.VoucherDate);
+        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+        
+
     $(function () {
 
 										$("#BankReconciliation").dxTextBox({

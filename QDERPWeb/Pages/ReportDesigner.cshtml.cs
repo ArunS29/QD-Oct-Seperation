@@ -28,7 +28,8 @@ namespace QD.ERP.Web.Pages
             "rpt201BillsPayableWithVchNo", "AgeingToday", "EndDate", "Report4",
             "AccountDetails","AccountOrderByVoucherNo","Payablelandscape","payableRetention","Balance",
             "BillsPayablePaid","AgeingReport","BIllsPayable","ReceivableReport_EffectiveDate_","XtraRecivableReport",
-            "XtraReportAgeingreportsummary"," XtraReportBillsReceivableAgeingReport"
+            "XtraReportAgeingreportsummary"," XtraReportBillsReceivableAgeingReport",
+            "rpt201BillsPayble",""
 
         };
 
@@ -36,7 +37,7 @@ namespace QD.ERP.Web.Pages
             new()
             {
                 { "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to,"","","",null,"","") },
-                //{ "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to) },
+                { "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to, "", "", "", null, "", "") },
                   { "AccountDetails", (id, from, to) => new AccountDetails(id, from, to) },
                 {"AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to) },
                 { "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to) },
@@ -50,6 +51,8 @@ namespace QD.ERP.Web.Pages
                 { "BillsReceivableByAccount", (id, from, to) => new BillsReceivableByAccount(id, from, to,"","","",null,"","") },
                 { "BillsReceivableAll", (id, from, to) => new BillsReceivableAll(id, from, to,"","","",null,"","") },
                 { "BillsReceivableFormat", (id, from, to) => new BillsReceivableFormat(id, from, to,"","","",null,"","") },
+                 { "Report4", (id, from, to) => new Report4(id, from, to,"","","",null,"","") },
+
                 { "rpt201BillsPayable", (id, from, to) => new rpt201BillsPayable(id, from, to,"","","",null,"","") },
                 { "rpt201BillsPayableWithVchNo", (id, from, to) => new rpt201BillsPayableWithVchNo(id, from, to,"","","",null,"","") },
                 { "AgeingToday", (id, from, to) => new AgeingToday(id, from, to,"","","",null,"","") },
@@ -58,28 +61,11 @@ namespace QD.ERP.Web.Pages
                 {"payableRetention",(id,from,to )=>new payableRetention(id, from, to,"","","",null,"","") },
                 {"Balance",(id,from,to )=>new Balance(id, from, to,"","","",null,"","")   },
                 {"BillsPayablePaid",(id,from,to )=>new BillsPayablePaid(id, from, to,"","","",null,"","")   },
-                { "AgeingReport", (id, from, to) => new AgeingReport(id, from, to,"","","",null,"","") },
-                 { "BIllsPayable", (id, from, to) => new BIllsPayable(id, from, to,"","","",null,"","") },
-                  { "ReceivableReport_EffectiveDate_", (id, from, to) => new ReceivableReport_EffectiveDate_(id, from, to,"","","",null,"","") },
-                { "XtraRecivableReport", (id, from, to) => new XtraRecivableReport(id, from, to,"","","",null,"","") },
-                           //{ "XtraReportAgeingreportsummary", (id, from, to) => new XtraReportAgeingreportsummary(id, from, to,"","","",null,"","") },
-
-                     { "XtraReportBillsReceivableAgeingReport", (id, from, to) => new XtraReportBillsReceivableAgeingReport(id, from, to,"","","",null,"","") },
+                
 
 
 
             };
-
-                     
-
-
-            
-                
-                
-               
-
-
-
 
         private static readonly Dictionary<string, Func<XtraReport>> simpleReports = new()
         {

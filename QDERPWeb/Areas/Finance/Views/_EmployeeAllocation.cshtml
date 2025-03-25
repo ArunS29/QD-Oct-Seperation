@@ -638,78 +638,78 @@
 
 
 
-		function dataGridSelectionChanged(e) {
+	// 	function dataGridSelectionChanged(e) {
 
-				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-	const ddbInstance = $("#AEgriddropdown").dxDropDownBox("instance");
+	// 			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+	// const ddbInstance = $("#AEgriddropdown").dxDropDownBox("instance");
 
-	if (selectedKey) {
-		ddbInstance.option("value", selectedKey);
-		if (ddbInstance.option("opened")) {
-			ddbInstance.close();
-		}
-		var selectedRowData = $("#AEAllocationDropdownGrid").dxDataGrid("instance").getSelectedRowsData();
-		// Get ReferenceNo from selected row
-		if (selectedRowData.length > 0) {
-			//costallocunitId = selectedRowData[0].CostAllocationUnitId;
-
-
-		}
-			}
-			}
+	// if (selectedKey) {
+	// 	ddbInstance.option("value", selectedKey);
+	// 	if (ddbInstance.option("opened")) {
+	// 		ddbInstance.close();
+	// 	}
+	// 	var selectedRowData = $("#AEAllocationDropdownGrid").dxDataGrid("instance").getSelectedRowsData();
+	// 	// Get ReferenceNo from selected row
+	// 	if (selectedRowData.length > 0) {
+	// 		//costallocunitId = selectedRowData[0].CostAllocationUnitId;
 
 
-		function dataGridAccountHeadSelectionChanged(e) {
-			const selectedKey = e.selectedRowKeys[0];
-			const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
-
-			if (selectedKey) {
-				ddbInstance.option("value", selectedKey);
-				if (ddbInstance.option("opened")) {
-					ddbInstance.close();
-				}
-			}
-
-		}
-		function dataGridInitialized(e) {
-			dataGrid = e.component;
-		}
-		function dataGridAccountHeadInitialized(e) {
-			dataGrid = e.component;
-		}
+	// 	}
+	// 		}
+		// 	}
 
 
-	 function onDropDownBoxValueChanged(e) {
-		const selectedDropDownValue = e.value; // Update the selected value
+		// function dataGridAccountHeadSelectionChanged(e) {
+		// 	const selectedKey = e.selectedRowKeys[0];
+		// 	const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
 
-		// Update the DataGrid selection to match the DropDownBox value
-		const dataGrid = $("#AEAllocationDropdownGrid").dxDataGrid("instance");
-		if (dataGrid) {
-			const items = dataGrid.getDataSource().items();
-			const selectedItem = items.find(item => item.EmployeeName === selectedDropDownValue);
-			if (selectedItem) {
-				selectedCostAllocationUnitID = selectedItem.EmployeeNo; // Store the ID
-				dataGrid.selectRows([selectedCostAllocationUnitID]);
-			} else {
-				selectedCostAllocationUnitID = null; // Clear the ID if no match
-				dataGrid.clearSelection();
-			}
-		}
-	}
-	function onDataGridContentReady(e) {
-		const dataGrid = e.component;
+		// 	if (selectedKey) {
+		// 		ddbInstance.option("value", selectedKey);
+		// 		if (ddbInstance.option("opened")) {
+		// 			ddbInstance.close();
+		// 		}
+		// 	}
 
-		// Ensure the DataGrid selection reflects the DropDownBox value
-		const items = dataGrid.getDataSource().items();
-		const selectedItem = items.find(item => item.CostAllocationUnit === selectedDropDownValue);
-		if (selectedItem) {
-			selectedCostAllocationUnitID = selectedItem.CostAllocationUnitId; // Update the ID
-			dataGrid.selectRows([selectedCostAllocationUnitID]);
-		} else {
-			selectedCostAllocationUnitID = null; // Clear the ID if no match
-			dataGrid.clearSelection();
-		}
-	}
+		// }
+		// function dataGridInitialized(e) {
+		// 	dataGrid = e.component;
+		// }
+		// function dataGridAccountHeadInitialized(e) {
+		// 	dataGrid = e.component;
+		// }
+
+
+	//  function onDropDownBoxValueChanged(e) {
+	// 	const selectedDropDownValue = e.value; // Update the selected value
+
+	// 	// Update the DataGrid selection to match the DropDownBox value
+	// 	const dataGrid = $("#AEAllocationDropdownGrid").dxDataGrid("instance");
+	// 	if (dataGrid) {
+	// 		const items = dataGrid.getDataSource().items();
+	// 		const selectedItem = items.find(item => item.EmployeeName === selectedDropDownValue);
+	// 		if (selectedItem) {
+	// 			selectedCostAllocationUnitID = selectedItem.EmployeeNo; // Store the ID
+	// 			dataGrid.selectRows([selectedCostAllocationUnitID]);
+	// 		} else {
+	// 			selectedCostAllocationUnitID = null; // Clear the ID if no match
+	// 			dataGrid.clearSelection();
+	// 		}
+	// 	}
+	// }
+	// function onDataGridContentReady(e) {
+	// 	const dataGrid = e.component;
+
+	// 	// Ensure the DataGrid selection reflects the DropDownBox value
+	// 	const items = dataGrid.getDataSource().items();
+	// 	const selectedItem = items.find(item => item.CostAllocationUnit === selectedDropDownValue);
+	// 	if (selectedItem) {
+	// 		selectedCostAllocationUnitID = selectedItem.CostAllocationUnitId; // Update the ID
+	// 		dataGrid.selectRows([selectedCostAllocationUnitID]);
+	// 	} else {
+	// 		selectedCostAllocationUnitID = null; // Clear the ID if no match
+	// 		dataGrid.clearSelection();
+	// 	}
+	// }
 
 			  $("#AEbtnSave").on("click", function (e) {
 		e.preventDefault();

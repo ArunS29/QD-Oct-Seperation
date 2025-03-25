@@ -576,7 +576,12 @@
 											columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')"));
 											columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
 											columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
-											columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')"));
+														columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
+									.CellTemplate(@<text>
+	<div class="dx-icon">
+		<%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+	</div>
+</text>);
 										})
 									)
 }
