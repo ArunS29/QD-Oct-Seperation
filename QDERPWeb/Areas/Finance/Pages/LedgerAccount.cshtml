@@ -175,6 +175,7 @@
         margin-top: 1em;
         width:100%;
     }
+
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -3113,26 +3114,13 @@ function syncSupVATNumbers(e) {
                   console.log("userN:",getUN);
             }
          });
-        // var CreatedBys = $('#CreatedBy').dxTextBox("instance");
-        // if (CreatedBy) {
-        //     CreatedBy.option("value", getUN);
-
-        // }
-        // var CreatedOn = $("#CreatedOn").dxTextBox("instance");
-
-        // if (CreatedOn) {
-        //     CreatedOn.option("value", formatDate(new Date()));
-
-        // }
-
-       function formatDate(date) {
-    if (date) {
-        const dateObj = new Date(date);
-        return dateObj.toISOString().split("T")[0]; // Extracts only the YYYY-MM-DD part
-    }
-    return '';
-}
-
+        function formatDate(date) {
+            if (date) {
+                const dateObj = new Date(date);
+                return dateObj.toISOString().split("T")[0]; // Extracts only the YYYY-MM-DD part
+            }
+            return '';
+        }
         
 
         // If AccountGroupId exists, set it in the DropDownBox and make it readonly
@@ -4779,12 +4767,13 @@ function syncSupVATNumbers(e) {
 </script>
 
 <script>
-    function PageClose() {
 
-          window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-       window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
-       window.parent.$("#popupContainer").dxPopup("instance").hide();
-    }
+      function PageClose() {
+
+            window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
+          window.parent.$("#popupContainer").dxPopup("instance").hide();
+         window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
+      }
     function GoToAttachment(){
         window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
     }

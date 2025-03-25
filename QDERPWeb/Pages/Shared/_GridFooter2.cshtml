@@ -168,22 +168,21 @@
         )
     </div>
     <div class="btn-container">
-   @(Html.DevExtreme().DropDownButton()
-        .ID("btntoggleReport")
-        .Text(new JS("formatMessage('Report Receipts')"))
-        .Icon("textdocument")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text(new JS("formatMessage('Bills Payable')")).Icon("search");
-            items.Add().Text(new JS("formatMessage('Payable Summary')")).Icon("search");
-            items.Add().Text(new JS("formatMessage('Report by Supplier')")).Icon("search");
-            items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Icon("smalliconslayout");
-        
-        })
-        .OnItemClick("addRecipitsButton_click")
-        )
-   </div>
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btntoggleReport")
+            .Text(new JS("formatMessage('Report Receipts')"))
+            .Icon("textdocument")
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Bills Payable')")).Icon("search");
+                items.Add().Text(new JS("formatMessage('Payable Summary')")).Icon("search");
+                items.Add().Text(new JS("formatMessage('Report by Supplier')")).Icon("search");
+                items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Icon("smalliconslayout");
+            })
+            .OnItemClick("handleReportClick")
+            )
+    </div>
    @* @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonPayment")
         .Text("Add Payment")
@@ -238,8 +237,7 @@
             var grid = $("#dataGrid").dxDataGrid("instance");
             var layout = grid.state();
             const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-            //console.log(layoutJson);
-            // Create a Blob from the JSON string
+      
             const blob = new Blob([layoutJson], { type: "application/json" });
             // Create a URL for the Blob
             const url = URL.createObjectURL(blob);
@@ -434,11 +432,36 @@
         }
     });
 });
- //Refresh button function
+
         function refreshPage() {
-    location.reload();  // This reloads the current page
+    location.reload();  
     } function ReportsBySupplier() {
         window.location.href = `/${tenantName}/Finance/ReportsBySupplier`;
     }
 
+    const reportMappings = {
+        "Bills Payable": "BIllsPayable",
+        "Payable Summary": "PayableSummary",
+        "Report by Supplier": "ReportBySupplier",
+        "Bills Payable with Unmapped Vouchers": "BillsPayableUnmapped"
+    };
+
+    function handleReportClick(e) {
+        const selectedText = e.itemData.text;
+        const reportName = reportMappings[selectedText];
+
+        if (reportName) {
+            console.log(`Opening report: ${reportName}`);
+
+            // Ensure tenantName is defined before using
+            if (typeof tenantName === "undefined") {
+                console.error("tenantName is not defined.");
+                return;
+            }
+
+            window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } else {
+            console.warn('No report mapping found for:', selectedText);
+        }
+    }
 </script>

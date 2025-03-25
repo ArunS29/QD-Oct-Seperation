@@ -799,14 +799,16 @@ namespace QD.ERP.Web.Pages
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
+
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
                 var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
                 var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
                 string logoBase64 = string.Empty;
                 Image logoImage = null;
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
@@ -817,7 +819,8 @@ namespace QD.ERP.Web.Pages
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
                 Report = new rpt201BillsPayable(
@@ -849,20 +852,17 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
 
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
                 Image logoImage = null;
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
@@ -873,7 +873,8 @@ namespace QD.ERP.Web.Pages
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
 
@@ -910,14 +911,16 @@ namespace QD.ERP.Web.Pages
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
+
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
                 var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
                 var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
                 string logoBase64 = string.Empty;
                 Image logoImage = null;
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
@@ -928,7 +931,8 @@ namespace QD.ERP.Web.Pages
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
                 Report = new rpt201BillsPayableWithVchNo(
@@ -962,31 +966,29 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
 
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
-                Image logoImage = null;  
+                Image logoImage = null;
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
                         using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
                         {
-                            logoImage = Image.FromStream(ms); 
+                            logoImage = Image.FromStream(ms);
                         }
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
 
@@ -1011,31 +1013,29 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
 
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
-                Image logoImage = null;  
+                Image logoImage = null;
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
                         using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
                         {
-                            logoImage = Image.FromStream(ms); 
+                            logoImage = Image.FromStream(ms);
                         }
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
 
@@ -1059,31 +1059,29 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
 
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
-                Image logoImage = null; 
+                Image logoImage = null;
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
                         using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
                         {
-                            logoImage = Image.FromStream(ms); 
+                            logoImage = Image.FromStream(ms);
                         }
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
 
@@ -1107,31 +1105,29 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
 
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
-                Image logoImage = null;  
+                Image logoImage = null;
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
                         using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
                         {
-                            logoImage = Image.FromStream(ms); 
+                            logoImage = Image.FromStream(ms);
                         }
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
                 Report = new Balance(
@@ -1154,37 +1150,35 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-                if (ERPCompany_details == null)
-                {
-                    return BadRequest("Company details not found for the given tenant.");
-                }
 
-                var companyName = ERPCompany_details.CompanyName;
-                var companyAddress = ERPCompany_details.CompanyFullAddress ?? "Default Company";
-                var companyAddressAr = ERPCompany_details.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details.CompanyNameAr ?? string.Empty;
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
                 string logoBase64 = string.Empty;
-                Image logoImage = null;  
+                Image logoImage = null;
 
-                if (ERPCompany_details.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                 {
                     try
                     {
                         using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
                         {
-                            logoImage = Image.FromStream(ms); 
+                            logoImage = Image.FromStream(ms);
                         }
                     }
                     catch (Exception ex)
                     {
-                        return BadRequest("Error processing company logo: " + ex.Message);
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
 
 
 
-                
+
                 Report = new BillsPayablePaid(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr

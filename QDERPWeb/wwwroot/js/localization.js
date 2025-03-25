@@ -8,7 +8,8 @@
         "Other ID Type: *": "Other ID Type: *",
         "Country Code: *": "Country Code: *",
         "Add": "Add",
-        "Created By": "Created By",
+        "InstallmentDetails": "InstallmentDetails",
+       "Created By": "Created By",
         "Modified On": "Modified On",
         "Modified By": "Modified By",
         "Created On": "Created On",
@@ -1084,6 +1085,7 @@
         "Duplicate Branch": "Duplicate Branch",
         "This branch already exists!": "This branch already exists!",
         "Branch Added": "Branch Added",
+        "Submitted":"Submitted",
         "Clear Errors": "Clear Errors",
         "Cannot continue saving with errors, please clear the errors and continue.": "Cannot continue saving with errors, please clear the errors and continue.",
         "Toggle Filter": "Toggle Filter",
@@ -1329,6 +1331,7 @@
 
     },
     "ar": {
+        "Submitted":"مُقدَّم",
         "Bills Payable": "الفواتير المستحقة الدفع",
         "Receivables with unmapped Vouchers": "مستحقات مع قسائم غير مخصصة",
         "Receivables Reports with Effective Date": "تقارير المستحقات مع تاريخ السريان",
@@ -2604,10 +2607,44 @@
 DevExpress.localization.loadMessages(dictionary);
 var formatMessage = DevExpress.localization.formatMessage;
 
-var locales = [
-    { name: "English", value: "en", flag: "https://flagcdn.com/w40/us.png" },
-    { name: "العربية", value: "ar", flag: "https://flagcdn.com/w40/ae.png" }
-];
+//var locales = [
+//    { name: "English", value: "en", flag: "https://flagcdn.com/w40/us.png" },
+//    { name: "العربية", value: "ar", flag: "https://flagcdn.com/w40/ae.png" }
+//];
+
+
+function fetchLocales() {
+    fetch('/api/language')
+        .then(response => response.json())
+        .then(data => {
+            var locales = data.map(function (locale) {
+                return {
+                    name: locale.name,
+                    value: locale.value,
+                    flag: locale.flag
+                };
+            });
+            // Assuming you need to update the dictionary or some other part of your localization setup
+            updateLocalization(locales);
+        })
+        .catch(error => {
+            console.error('Error fetching locales:', error);
+        });
+}
+function updateLocalization(locales) {
+    // Example: Update the dictionary with new locales
+    locales.forEach(locale => {
+        if (!dictionary[locale.value]) {
+            dictionary[locale.value] = {};
+        }
+        // Add or update translations for the locale
+        // This is just an example, adjust as needed
+        dictionary[locale.value]["Example Key"] = "Example Translation";
+    });
+    console.log('Localization updated:', dictionary);
+}
+
+
 // Get the saved locale or default to English
 var locale = getLocale();
 DevExpress.localization.locale(locale);

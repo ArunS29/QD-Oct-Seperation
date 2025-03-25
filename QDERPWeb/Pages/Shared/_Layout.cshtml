@@ -3,6 +3,17 @@
 @using Microsoft.AspNetCore.Http
 @using QD.ERP.Web.DAL.Entities
 @using QD.ERP.Web.Service
+@inject CurrencyService CurrencyService
+
+@{
+    var currencies = CurrencyService.GetCurrencies();
+}
+@inject LanguageService LanguageService
+
+@{
+    var Languages = LanguageService.GetLanguages();
+}
+
 @inject SaasKit.Multitenancy.ITenant<Tenant> Tenant
 
 @{
@@ -797,15 +808,25 @@
             </div> 
             <div>
                 @(Html.DevExtreme().SelectBox()
-                    .ID("languageSelectBox")
-                    .InputAttr("id", "selectInput")
-                    .DataSource(new JS("locales"))
-                    .DisplayExpr("name")
-                    .ValueExpr("value")
-                    .Width("8em")
-                    .Value(new JS("locale"))
+                    .ID("currencySelect")
+                    .DataSource(currencies)
+                    .DisplayExpr("CurrencyName")
+                    .ValueExpr("CurrencyID")
+                    .Label("Currency")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Value(currencies.FirstOrDefault()?.CurrencyID)
+                    )
+            </div>
+            <div>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("LanguageSelectBox")
+                    .DataSource(Languages)
+                    .DisplayExpr("Name") // Assuming 'Name' is the property to display
+                    .ValueExpr("Id") // Assuming 'Id' is the property to use as the value
+                    .Label("Language")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Value(Languages.FirstOrDefault()?.Id) // Use 'Id' as the value
                     .OnValueChanged("changeLocale")
-                    .ItemTemplate(new JS("customItemTemplate"))
                     )
 
             </div> 

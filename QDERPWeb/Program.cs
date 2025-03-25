@@ -64,6 +64,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<DbContextFactory>();
 builder.Services.AddMultitenancy<Tenant, TenantResolver>();
+builder.Services.AddScoped<CurrencyService>();
+builder.Services.AddScoped<LanguageService>();
 builder.Services.AddScoped<TenantDbContextHelper>();
 builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(typeof(Program));

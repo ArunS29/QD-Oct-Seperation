@@ -103,7 +103,7 @@
                     columns.Add().DataField("AccountID").Visible(false);
                     columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
                     {
-                        group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
+                        group.Add().DataField("AccountID").Caption(new JS("formatMessage('AssetLedgerNo')"));
                         group.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountHead')"));
                         group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('AssetDescription')"));
                         group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')"));
@@ -152,18 +152,52 @@
                         group.Add().DataField("PurchasedAs").Caption(new JS("formatMessage('PurchasedAs')"));
                     });
 
-                    columns.Add().Caption(new JS("formatMessage('InstallmentDetails')")).Columns(group =>
-                    {
-                        group.Add().DataField("IsFinanced").Caption(new JS("formatMessage('IsFinanced')"));
-                        group.Add().DataField("FinancedFrom").Caption(new JS("formatMessage('FinancedFrom')"));
-                        group.Add().DataField("NoOfInstallments").Caption(new JS("formatMessage('NoOfInstallments')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InitialDownPayment").Caption(new JS("formatMessage('InitialDownPayment')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InitialDocCharges").Caption(new JS("formatMessage('InitialDocCharges')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("MonthlyInstallment").Caption(new JS("formatMessage('MonthlyInstallment')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("FinalInstallment").Caption(new JS("formatMessage('FinalInstallment')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InstallmentStartDate").Caption(new JS("formatMessage('InstallmentStartDate')")).Format("dd-MMM-yyyy");
-                        group.Add().DataField("InstallmentEndDate").Caption(new JS("formatMessage('InstallmentEndDate')")).Format("dd-MMM-yyyy");
-                    });
+                  
+                columns.Add().Caption(new JS("formatMessage('InstallmentDetails')")).Columns(group =>
+            {
+                group.Add().DataField("IsFinanced")
+            .Caption(new JS("formatMessage('IsFinanced')"))
+            .DataType(GridColumnDataType.Boolean);
+
+                group.Add().DataField("FinancedFrom")
+            .Caption(new JS("formatMessage('FinancedFrom')"));
+
+                group.Add().DataField("NoOfInstallments")
+            .Caption(new JS("formatMessage('NoOfInstallments')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("InitialDownPayment")
+            .Caption(new JS("formatMessage('InitialDownPayment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("InitialDocCharges")
+            .Caption(new JS("formatMessage('InitialDocCharges')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("MonthlyInstallment")
+            .Caption(new JS("formatMessage('MonthlyInstallment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("FinalInstallment")
+            .Caption(new JS("formatMessage('FinalInstallment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("InstallmentStartDate")
+            .Caption(new JS("formatMessage('InstallmentStartDate')"))
+            .DataType(GridColumnDataType.Date)
+            .Format("dd-MMM-yyyy");
+
+                group.Add().DataField("InstallmentEndDate")
+            .Caption(new JS("formatMessage('InstallmentEndDate')"))
+            .DataType(GridColumnDataType.Date)
+            .Format("dd-MMM-yyyy");
+            });
+
                 })
 
 
@@ -312,164 +346,139 @@
         <div>
             @await Html.PartialAsync("GridforAssetView")
         </div>
-        <div id="voucherPopup"></div>
-    <script>
-        $(function () {
+<div id="voucherPopup"></div>
+<script>
+    $(function () {
         $("#AssetView").dxTextBox({
             text: formatMessage("Asset View"),
             readOnly: true,
             onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
-						
-
+                $(e.element).addClass("dx-textbox-heading");
+            }
         });
-        
-    });
-        $(function () {
-            let selectedVoucherId = null;
 
-            $("#voucherPopup").dxPopup({
-                width: 250,
-                height: "auto",
-                maxHeight: 300,
-                visible: false,
-                dragEnabled: true,
-                closeOnOutsideClick: true,
-                showTitle: false,
-                contentTemplate: function () {
-                    return $("<div>")
-                        .css({
-                            overflow: "hidden",
-                            padding: "10px",
-                        })
-                        .append(
-                            $("<ul>")
-                                .addClass("voucher-actions")
-                                .css({
-                                    "list-style": "none",
-                                    margin: "0",
-                                    padding: "0",
-                                })
-                                .append(
-                                    createMenuItem(formatMessage("Edit Asset Details"), "edit", editVoucher, "black"),
-                                    createMenuItem(formatMessage("Delete Asset Details"), "trash", deleteVoucher, "red")
-                                )
-                        );
-                },
-            });
+        let selectedVoucherId = null;
 
-
-            function createMenuItem(text, icon, clickHandler, iconColor) {
-                return $("<li>")
-                    .addClass("menu-item")
+        $("#voucherPopup").dxPopup({
+            width: 250,
+            height: "auto",
+            maxHeight: 300,
+            visible: false,
+            dragEnabled: true,
+            closeOnOutsideClick: true,
+            showTitle: false,
+            contentTemplate: function () {
+                return $("<div>")
+                    .css({ overflow: "hidden", padding: "10px" })
                     .append(
-                        $("<i>")
-                            .addClass("dx-icon dx-icon-" + icon)
-                            .css({
-                                color: iconColor,
-                                "font-size": "18px",
-                                "margin-right": "8px",
-                            }),
-                        $("<span>")
-                            .text(text)
-                            .css({
-                                "font-size": "14px",
-                                "font-weight": "bold",
-                            })
-                    )
-                    .on("click", clickHandler)
-                    .css({
-                        padding: "10px 15px",
-                        cursor: "pointer",
-                        color: "#000",
-                        "background-color": "#fff",
-                        border: "1px solid #ddd",
-                        "border-radius": "4px",
-                        "margin-bottom": "5px",
-                        "font-family": "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-                        display: "flex",
-                        "align-items": "center",
-                        transition: "background-color 0.3s ease",
-                    })
-                    .hover(
-                        function () {
-                            $(this).css("background-color", "#f0f0f0");
-                        },
-                        function () {
-                            $(this).css("background-color", "#fff");
-                        }
+                        $("<ul>")
+                            .addClass("voucher-actions")
+                            .css({ "list-style": "none", margin: "0", padding: "0" })
+                            .append(
+                                createMenuItem(formatMessage("Edit Asset Details"), "edit", editVoucher, "black"),
+                                createMenuItem(formatMessage("Delete Asset Details"), "trash", deleteVoucher, "red")
+                            )
                     );
-            }
-
-
-            function editVoucher() {
-                if (!selectedVoucherId) {
-                    alert("Please select a voucher to edit.");
-                    return;
-                }
-
-                window.location.href = `/${tenantName}/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
-            }
-
-
-            function deleteVoucher() {
-                if (!selectedVoucherId) {
-                    alert("Please select a voucher to delete.");
-                    return;
-                }
-
-                if (confirm("Are you sure you want to delete this voucher?")) {
-
-                    $.ajax({
-                        url: `/${tenantName}/AssetView/Delete/${selectedVoucherId}`,
-                        type: "POST",
-                        success: function (response) {
-                            alert("Voucher deleted successfully.");
-
-                        $("#dataGrid").dxDataGrid("instance").refresh();
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error deleting voucher:", error);
-                            alert("An error occurred while deleting the voucher.");
-                        },
-                    });
-                }
-            }
-
-
-            $("#dataGrid").dxDataGrid({
-                selection: {
-                    mode: "single",
-                    showCheckBoxesMode: "none",
-                },
-                onSelectionChanged: function (e) {
-                    const selectedRows = e.selectedRowsData;
-                    if (selectedRows.length > 0) {
-                        selectedVoucherId = selectedRows[0].AssetLedgerNo;
-                    } else {
-                        selectedVoucherId = null;
-                    }
-                },
-            });
-
-
-            $(document).on("click", ".dx-data-row", function (e) {
-                $("#voucherPopup").dxPopup("instance").show();
-            });
-
-
-            $(document).on("click", function (e) {
-                if (
-                    !$(e.target).closest("#voucherPopup").length &&
-                    !$(e.target).closest(".dx-data-row").length
-                ) {
-                    $("#voucherPopup").dxPopup("instance").hide();
-                }
-            });
+            },
         });
-            function showDepreciationSchedule() {
-            $("#DepreciationContent").load(`/${tenantName}/Finance/DepreciationMaster   `, function () {
+
+        function createMenuItem(text, icon, clickHandler, iconColor) {
+            return $("<li>")
+                .addClass("menu-item")
+                .append(
+                    $("<i>")
+                        .addClass("dx-icon dx-icon-" + icon)
+                        .css({ color: iconColor, "font-size": "18px", "margin-right": "8px" }),
+                    $("<span>")
+                        .text(text)
+                        .css({ "font-size": "14px", "font-weight": "bold" })
+                )
+                .on("click", clickHandler)
+                .css({
+                    padding: "10px 15px",
+                    cursor: "pointer",
+                    color: "#000",
+                    "background-color": "#fff",
+                    border: "1px solid #ddd",
+                    "border-radius": "4px",
+                    "margin-bottom": "5px",
+                    "font-family": "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                    display: "flex",
+                    "align-items": "center",
+                    transition: "background-color 0.3s ease",
+                })
+                .hover(
+                    function () { $(this).css("background-color", "#f0f0f0"); },
+                    function () { $(this).css("background-color", "#fff"); }
+                );
+        }
+
+        function editVoucher() {
+            if (!selectedVoucherId) {
+                alert("Please select a voucher to edit.");
+                return;
+            }
+            window.location.href = `/${tenantName}/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
+        }
+            function deleteVoucher() {
+                debugger;
+        if (!selectedVoucherId) {
+            alert("Please select a voucher to delete.");
+            return;
+        }
+
+        if (confirm("Are you sure you want to delete this voucher?")) {
+            $.ajax({
+                url: `/api/AssetView/Delete?assetLedgerNo=${encodeURIComponent(selectedVoucherId)}`,  // Include tenantName and Finance in URL
+                type: "POST",  // Ensure it matches the API method
+                contentType: "application/json",
+                dataType: "json",  // Ensure JSON response parsing
+                data: JSON.stringify({ assetLedgerNo: selectedVoucherId }),
+                success: function (response) {
+                    alert(response.message || "Voucher deleted successfully.");
+                    $("#dataGrid").dxDataGrid("instance").refresh();
+                },
+                error: function (xhr) {
+                    console.error("Error deleting voucher:", xhr.responseText);
+                    alert(xhr.responseJSON?.message || "An error occurred while deleting the voucher.");
+                },
+            });
+        }
+    }
+
+
+
+        $("#dataGrid").dxDataGrid({
+            selection: {
+                mode: "single",
+                showCheckBoxesMode: "none",
+            },
+            onSelectionChanged: function (e) {
+                const selectedRows = e.selectedRowsData;
+                if (selectedRows.length > 0) {
+                    selectedVoucherId = selectedRows[0].AssetLedgerNo;
+                } else {
+                    selectedVoucherId = null;
+                }
+            },
+        });
+
+        $(document).on("contextmenu", ".dx-data-row", function (e) {
+            e.preventDefault(); // Prevent default right-click behavior
+
+            const popup = $("#voucherPopup").dxPopup("instance");
+            popup.option("position", { my: "left top", at: "left bottom", of: e });
+            popup.show();
+        });
+
+        $(document).on("click", function (e) {
+            if (!$(e.target).closest("#voucherPopup").length && !$(e.target).closest(".dx-data-row").length) {
+                $("#voucherPopup").dxPopup("instance").hide();
+            }
+        });
+    });
+      function showDepreciationSchedule() {
+            $("#DepreciationContent").load(`/${tenantName}/Finance/DepreciationMaster ` , function () {
             $("#DepreciationModal").modal('show');
                 $(".modal-backdrop").remove();
             $(".close").on("click", function () {
@@ -479,8 +488,7 @@
 
         });
     }
-
-    </script>
+</script>
 
 
 

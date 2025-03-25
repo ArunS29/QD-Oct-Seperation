@@ -13,6 +13,9 @@ public partial class ERPMasterWtDataContext : DbContext
         : base(options)
     {
     }
+    public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
+
+    public virtual DbSet<Language> Languages { get; set; }
 
     public virtual DbSet<A01CheckIfAnyCostEntriesOrphan> A01CheckIfAnyCostEntriesOrphans { get; set; }
 
@@ -19234,7 +19237,66 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VerifiedBy).IsUnicode(false);
             entity.Property(e => e.VerifiedOn).HasColumnType("datetime");
         });
+        // Specify the correct table name if it differs from the class name
+        modelBuilder.Entity<Language>(entity =>
+        {
+            entity.ToTable("Language"); // Correct table name
 
+            entity.HasKey(e => e.Id).HasName("PK_Language");
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(e => e.Value)
+                .IsRequired()
+                .HasMaxLength(10);
+            entity.Property(e => e.Flag)
+        .IsRequired()
+        .HasMaxLength(255); // Increase the size if needed to store long URLs
+
+
+        });
+        modelBuilder.Entity<CurrencyMaster>(entity =>
+        {
+            // Define the primary key for CurrencyMaster
+            entity.HasKey(e => e.CurrencyID).HasName("PK_CurrencyMaster");
+
+            // Specify the table name
+            entity.ToTable("CurrencyMaster");
+
+            // Configure properties for each column
+            entity.Property(e => e.CurrencyID)
+                .HasColumnName("CurrencyID")
+                .ValueGeneratedOnAdd();  // Automatic generation for identity column
+
+            entity.Property(e => e.CurrencyName)
+                .IsRequired()  // Ensure the column cannot be null
+                .HasMaxLength(100)  // Define max length for CurrencyName
+                .HasColumnName("CurrencyName");
+
+            entity.Property(e => e.CurrencyLogo)
+                .HasColumnType("varbinary(max)")  // Store the logo as binary data
+                .HasColumnName("CurrencyLogo");
+
+            entity.Property(e => e.CurrencySymbol)
+                .HasMaxLength(20)  // Define max length for CurrencySymbol
+                .HasColumnName("CurrencySymbol");
+
+            entity.Property(e => e.CurrencyUnicode)
+                .HasMaxLength(20)  // Define max length for CurrencyUnicode
+                .HasColumnName("CurrencyUnicode");
+
+            entity.Property(e => e.IsDefault)
+                .IsRequired()  // Make IsDefault non-nullable
+                .HasColumnName("IsDefault")
+                .HasDefaultValue(false);  // Set default value for IsDefault column (0 = No, 1 = Yes)
+
+            // Example of a unique constraint if you decide to enforce uniqueness for CurrencyName
+            entity.HasIndex(e => e.CurrencyName)
+                .IsUnique()
+                .HasDatabaseName("UQ_CurrencyName");  // Optionally name the unique index
+        });
         modelBuilder.Entity<Qry201618vatinvoiceChildTotalForEmployeeCost>(entity =>
         {
             entity
