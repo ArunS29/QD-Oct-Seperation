@@ -103,7 +103,7 @@
                     columns.Add().DataField("AccountID").Visible(false);
                     columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
                     {
-                        group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
+                        group.Add().DataField("AccountID").Caption(new JS("formatMessage('AssetLedgerNo')"));
                         group.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountHead')"));
                         group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('AssetDescription')"));
                         group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')"));
@@ -152,18 +152,52 @@
                         group.Add().DataField("PurchasedAs").Caption(new JS("formatMessage('PurchasedAs')"));
                     });
 
-                    columns.Add().Caption(new JS("formatMessage('InstallmentDetails')")).Columns(group =>
-                    {
-                        group.Add().DataField("IsFinanced").Caption(new JS("formatMessage('IsFinanced')"));
-                        group.Add().DataField("FinancedFrom").Caption(new JS("formatMessage('FinancedFrom')"));
-                        group.Add().DataField("NoOfInstallments").Caption(new JS("formatMessage('NoOfInstallments')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InitialDownPayment").Caption(new JS("formatMessage('InitialDownPayment')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InitialDocCharges").Caption(new JS("formatMessage('InitialDocCharges')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("MonthlyInstallment").Caption(new JS("formatMessage('MonthlyInstallment')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("FinalInstallment").Caption(new JS("formatMessage('FinalInstallment')")).Alignment(HorizontalAlignment.Right);
-                        group.Add().DataField("InstallmentStartDate").Caption(new JS("formatMessage('InstallmentStartDate')")).Format("dd-MMM-yyyy");
-                        group.Add().DataField("InstallmentEndDate").Caption(new JS("formatMessage('InstallmentEndDate')")).Format("dd-MMM-yyyy");
-                    });
+                  
+                columns.Add().Caption(new JS("formatMessage('InstallmentDetails')")).Columns(group =>
+            {
+                group.Add().DataField("IsFinanced")
+            .Caption(new JS("formatMessage('IsFinanced')"))
+            .DataType(GridColumnDataType.Boolean);
+
+                group.Add().DataField("FinancedFrom")
+            .Caption(new JS("formatMessage('FinancedFrom')"));
+
+                group.Add().DataField("NoOfInstallments")
+            .Caption(new JS("formatMessage('NoOfInstallments')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("InitialDownPayment")
+            .Caption(new JS("formatMessage('InitialDownPayment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("InitialDocCharges")
+            .Caption(new JS("formatMessage('InitialDocCharges')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("MonthlyInstallment")
+            .Caption(new JS("formatMessage('MonthlyInstallment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("FinalInstallment")
+            .Caption(new JS("formatMessage('FinalInstallment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right);
+
+                group.Add().DataField("InstallmentStartDate")
+            .Caption(new JS("formatMessage('InstallmentStartDate')"))
+            .DataType(GridColumnDataType.Date)
+            .Format("dd-MMM-yyyy");
+
+                group.Add().DataField("InstallmentEndDate")
+            .Caption(new JS("formatMessage('InstallmentEndDate')"))
+            .DataType(GridColumnDataType.Date)
+            .Format("dd-MMM-yyyy");
+            });
+
                 })
 
 
