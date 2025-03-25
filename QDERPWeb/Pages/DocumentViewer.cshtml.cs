@@ -186,8 +186,37 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+       ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+           .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
-                Report = new AccountExportFromatReport(AccountId, FrmDate, ToDate);
+       var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+       var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+       var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+       var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+       string logoBase64 = string.Empty;
+       Image logoImage = null;
+
+       if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+       {
+           try
+           {
+               using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+               {
+                   logoImage = Image.FromStream(ms);
+               }
+           }
+           catch (Exception ex)
+           {
+               Console.WriteLine("Error processing company logo: " + ex.Message);
+           }
+       }
+       Report = new AccountExportFromatReport(
+           AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+           companyNameAr, companyAddressAr
+       );
+               
             }
             else if (reportName == "AccountOrderbyVchNoWONarrationReport")
             {
@@ -200,8 +229,38 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
-                Report = new AccountOrderbyVchNoWONarrationReport(AccountId, FrmDate, ToDate);
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new AccountOrderbyVchNoWONarrationReport(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
+
+
             }
             else if (reportName == "AccountExportLandscapeReport")
             {
@@ -214,8 +273,38 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
-                Report = new AccountExportLandscapeReport(AccountId, FrmDate, ToDate);
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new AccountExportLandscapeReport(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
+
+
             }
             else if (reportName == "AccountOrderbyVchNoWONarrationReport")
             {
@@ -229,7 +318,7 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
 
-                Report = new AccountOrderbyVchNoWONarrationReport(AccountId, FrmDate, ToDate);
+                //Report = new AccountOrderbyVchNoWONarrationReport(AccountId, FrmDate, ToDate);
             }
 
             else if (reportName == "AccountOrderByVoucherNo")
@@ -243,8 +332,37 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
-                Report = new AccountOrderByVoucherNo(AccountId, FrmDate, ToDate);
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new AccountOrderByVoucherNo(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
+
             }
             else if (reportName == "AccountDetails")
 
@@ -266,8 +384,36 @@ namespace QD.ERP.Web.Pages
 
                 ToDate = toDate.Value;
 
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
-                Report = new AccountDetails(AccountId, FrmDate, ToDate);
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new AccountDetails(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr
+                );
 
             }
 

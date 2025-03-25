@@ -129,6 +129,8 @@
             this.pageInfo1 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
+            this.xrLabel24 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrPictureBox1 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel26 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel25 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel23 = new DevExpress.XtraReports.UI.XRLabel();
@@ -188,8 +190,6 @@
             this.xrLabel3 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrPictureBox1 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrLabel24 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -213,8 +213,8 @@
             // 
             this.xrLabel21.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel21.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel21.ForeColor = System.Drawing.Color.Red;
-            this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(676.7296F, 9.999974F);
+            this.xrLabel21.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(702.7712F, 7.500076F);
             this.xrLabel21.Name = "xrLabel21";
             this.xrLabel21.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
             this.xrLabel21.StylePriority.UseBorderColor = false;
@@ -237,11 +237,13 @@
             // 
             // pageInfo1
             // 
-            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(899.9999F, 10F);
+            this.pageInfo1.ForeColor = System.Drawing.Color.DarkGray;
+            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(889.9999F, 10.83323F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
             this.pageInfo1.SizeF = new System.Drawing.SizeF(130.0001F, 14.66667F);
             this.pageInfo1.StyleName = "PageInfo";
+            this.pageInfo1.StylePriority.UseForeColor = false;
             // 
             // pageInfo2
             // 
@@ -263,6 +265,28 @@
             this.xrLabel23});
             this.ReportHeader.HeightF = 136.6666F;
             this.ReportHeader.Name = "ReportHeader";
+            // 
+            // xrLabel24
+            // 
+            this.xrLabel24.Borders = DevExpress.XtraPrinting.BorderSide.None;
+            this.xrLabel24.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddress]")});
+            this.xrLabel24.LocationFloat = new DevExpress.Utils.PointFloat(3.000005F, 31.00004F);
+            this.xrLabel24.Name = "xrLabel24";
+            this.xrLabel24.SizeF = new System.Drawing.SizeF(1033.305F, 25.83332F);
+            this.xrLabel24.StylePriority.UseBorders = false;
+            this.xrLabel24.StylePriority.UseTextAlignment = false;
+            this.xrLabel24.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
+            this.xrLabel24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            // 
+            // xrPictureBox1
+            // 
+            this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
+            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(71.21185F, 10.00001F);
+            this.xrPictureBox1.Name = "xrPictureBox1";
+            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(108.4549F, 76.45833F);
+            this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
+            this.xrPictureBox1.StylePriority.UseBorderColor = false;
             // 
             // xrLabel26
             // 
@@ -1362,28 +1386,6 @@
             this.xrLabel1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel1.SizeF = new System.Drawing.SizeF(1040F, 38.83333F);
             this.xrLabel1.StylePriority.UseBorders = false;
-            // 
-            // xrPictureBox1
-            // 
-            this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
-            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(3.000005F, 0F);
-            this.xrPictureBox1.Name = "xrPictureBox1";
-            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(176.6667F, 103.5417F);
-            this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
-            this.xrPictureBox1.StylePriority.UseBorderColor = false;
-            // 
-            // xrLabel24
-            // 
-            this.xrLabel24.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrLabel24.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddress]")});
-            this.xrLabel24.LocationFloat = new DevExpress.Utils.PointFloat(3.000005F, 31.00004F);
-            this.xrLabel24.Name = "xrLabel24";
-            this.xrLabel24.SizeF = new System.Drawing.SizeF(1033.305F, 25.83332F);
-            this.xrLabel24.StylePriority.UseBorders = false;
-            this.xrLabel24.StylePriority.UseTextAlignment = false;
-            this.xrLabel24.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
-            this.xrLabel24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // Payablelandscape
             // 

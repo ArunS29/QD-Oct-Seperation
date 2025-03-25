@@ -199,8 +199,8 @@
             // 
             this.xrLabel11.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel11.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel11.ForeColor = System.Drawing.Color.Red;
-            this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(716.2314F, 17.50005F);
+            this.xrLabel11.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(773.523F, 17.50005F);
             this.xrLabel11.Name = "xrLabel11";
             this.xrLabel11.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
             this.xrLabel11.StylePriority.UseBorderColor = false;
@@ -210,22 +210,26 @@
             // 
             // xrLabel8
             // 
+            this.xrLabel8.ForeColor = System.Drawing.Color.DarkGray;
             this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(0F, 10F);
             this.xrLabel8.Multiline = true;
             this.xrLabel8.Name = "xrLabel8";
             this.xrLabel8.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel8.SizeF = new System.Drawing.SizeF(176.0509F, 23F);
+            this.xrLabel8.StylePriority.UseForeColor = false;
             this.xrLabel8.StylePriority.UseTextAlignment = false;
             this.xrLabel8.Text = "QuickDice ERP Solutiion";
             this.xrLabel8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // pageInfo1
             // 
-            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(924.1543F, 10.00001F);
+            this.pageInfo1.ForeColor = System.Drawing.Color.DarkGray;
+            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(924.1543F, 17.50005F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
-            this.pageInfo1.SizeF = new System.Drawing.SizeF(144.8457F, 23F);
+            this.pageInfo1.SizeF = new System.Drawing.SizeF(144.8457F, 15.50001F);
             this.pageInfo1.StyleName = "PageInfo";
+            this.pageInfo1.StylePriority.UseForeColor = false;
             this.pageInfo1.StylePriority.UseTextAlignment = false;
             this.pageInfo1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
@@ -252,9 +256,9 @@
             // xrPictureBox1
             // 
             this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
-            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0.1666031F);
+            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(59.375F, 0.1666387F);
             this.xrPictureBox1.Name = "xrPictureBox1";
-            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(176.6667F, 100F);
+            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(129.7917F, 89.99999F);
             this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
             this.xrPictureBox1.StylePriority.UseBorderColor = false;
             // 

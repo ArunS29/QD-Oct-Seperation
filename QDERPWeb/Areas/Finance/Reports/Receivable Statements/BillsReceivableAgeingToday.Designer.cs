@@ -202,8 +202,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             // 
             this.xrLabel21.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel21.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel21.ForeColor = System.Drawing.Color.Red;
-            this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(995.8016F, 11.66665F);
+            this.xrLabel21.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(1046.843F, 14.30168F);
             this.xrLabel21.Name = "xrLabel21";
             this.xrLabel21.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
             this.xrLabel21.StylePriority.UseBorderColor = false;
@@ -233,19 +233,23 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             // 
             // pageInfo1
             // 
+            this.pageInfo1.ForeColor = System.Drawing.Color.DarkGray;
             this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(1210.219F, 14.30168F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
             this.pageInfo1.SizeF = new System.Drawing.SizeF(114.7814F, 12.86487F);
             this.pageInfo1.StyleName = "PageInfo";
+            this.pageInfo1.StylePriority.UseForeColor = false;
             // 
             // xrLabel14
             // 
-            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(9.999974F, 1.166789F);
+            this.xrLabel14.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(9.99995F, 9.999974F);
             this.xrLabel14.Multiline = true;
             this.xrLabel14.Name = "xrLabel14";
             this.xrLabel14.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel14.SizeF = new System.Drawing.SizeF(166.8919F, 21.69812F);
+            this.xrLabel14.SizeF = new System.Drawing.SizeF(166.8919F, 17.16658F);
+            this.xrLabel14.StylePriority.UseForeColor = false;
             this.xrLabel14.StylePriority.UseTextAlignment = false;
             this.xrLabel14.Text = "QuickDice ERP Solutions";
             this.xrLabel14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
@@ -271,9 +275,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             // xrPictureBox1
             // 
             this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
-            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(50F, 0F);
+            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(74.37861F, 0F);
             this.xrPictureBox1.Name = "xrPictureBox1";
-            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(176.6667F, 100F);
+            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(102.5133F, 69.83334F);
             this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
             this.xrPictureBox1.StylePriority.UseBorderColor = false;
             // 
