@@ -1017,10 +1017,10 @@
                         </tr>
 
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <div id="ClientAddress" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtClientAddress")
                                     .Width("100%")
@@ -1028,10 +1028,10 @@
 
                                     )
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <div id="ClientAddressAr" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td colspan="2">
                                 <div style="display: flex; align-items: center;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientAddressAr")
@@ -1050,20 +1050,20 @@
                         </tr>
 
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <div id="ClientAdditionalAddress" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtClientAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAdditionalAddress")
                                     )
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <div id="ClientAdditionalAddressAr" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td colspan="2">
                                 <div style="display: flex; align-items: center;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientAdditionalAddressAr")
@@ -1113,10 +1113,10 @@
                                     ) *@
                                     )
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <div id="ClientCityAr" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td colspan="2">
                                 <div style="display: flex; align-items: center;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientCityAr")
@@ -1134,7 +1134,7 @@
                         </tr>
 
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <div id="AdditionalNo" class="no-border-input"></div>
                             </td>
                             <td>
@@ -1160,10 +1160,10 @@
                                     .InputAttr("aria-label", "txtClientCity")
                                     )
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <div id="StateAr" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td>
                                 <div style="display: flex; align-items: center;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnStateAr")
@@ -1213,10 +1213,10 @@
                                     ) *@
                                     )
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <div id="DistrictAr" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td>
                                 <div style="display: flex; align-items: center;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnDistrictAr")
@@ -1417,10 +1417,10 @@
 
 
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <div id="SupAddress" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupAddress")
                                     .Width("100%")
@@ -1430,7 +1430,7 @@
                                     )
                                     )
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <div id="SupAddress1" class="no-border-input"></div>
                             </td>
                             <td style="display: flex; align-items: center;gap: 5px;">
@@ -1450,17 +1450,17 @@
                         </tr>
 
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <div id="SupAdditionalAddress" class="no-border-input"></div>
                             </td>
-                            <td colspan="3">
+                            <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAdditionalAddress")
                                     )
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <div id="SupAdditionalAddress1" class="no-border-input"></div>
                             </td>
                             <td style="display: flex; align-items: center;gap: 5px;">
@@ -2058,28 +2058,28 @@
             <div style="display: flex; align-items: center; gap: 5px;">
                 <strong>Created By:</strong>
                 <div class="col-md-4"> 
-                    @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(false)
+                    @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("180%").ReadOnly(false)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
                 <strong>Created On:</strong>
                 <div class="col-md-4">
-                    @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(false)
+                    @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("180%").ReadOnly(false)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
                 <strong>Modified By:</strong>
                 <div class="col-md-4">
-                    @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(false)
+                    @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("180%").ReadOnly(false)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
                 <strong>Modified On:</strong>
                 <div class="col-md-3">
-                    @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(false)
+                    @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("240%").ReadOnly(false)
                 </div>
             </div>
 
@@ -4925,15 +4925,17 @@ function syncSupVATNumbers(e) {
         
          $("#CreatedBy").dxTextBox("instance").option("value",getUN);
          const CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
- //console.log("userN1:",getUN);
-       //console.log("userN2:",CreatedBy);
+ console.log("userN1:",getUN);
+       console.log("userN2:",CreatedBy);
 
             var CreatedOns = $("#CreatedOn").dxTextBox("instance").option("value");
             if (!CreatedOn || !Date.parse(CreatedOn)) {
                 CreatedOn = new Date().toISOString();
             }
 
-// $("#ModifiedBy").dxTextBox("instance").option("value",userNames);
+       
+
+        // $("#ModifiedBy").dxTextBox("instance").option("value",userNames);
 //  console.log("userN3:",userNames);
    const ModifiedBy = $("#ModifiedBy").dxTextBox("instance").option("value");
     console.log("userN4:",ModifiedBy);
@@ -5073,13 +5075,19 @@ function syncSupVATNumbers(e) {
                     if (response.success) {
                         //alert(response.message);
                         DevExpress.ui.notify(response.message, "success", 3000)
-                      setTimeout(function () {
-            window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-            window.parent.$("#popupContainer").dxPopup("instance").hide();
-        }, 2000);
-                         // window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-                         // window.parent.$("#popupContainer").dxPopup("instance").hide();
-                        // window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
+                        // Check if the button text is "Update"
+                        var button = $("#btnSave").dxButton("instance");
+                        var buttonText = button ? button.option("text") : "";
+
+                        console.log("Button Text:", buttonText); // Debugging to check button text
+
+                        // Close popup ONLY IF the button text is NOT "Update"
+                        if (buttonText !== "Update") {
+                            setTimeout(function () {
+                                window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
+                                window.parent.$("#popupContainer").dxPopup("instance").hide();
+                            }, 2000);
+                        }
                             
                     } else {
                         DevExpress.ui.notify("Please Fill All the Required Fields", "error", 3000);
