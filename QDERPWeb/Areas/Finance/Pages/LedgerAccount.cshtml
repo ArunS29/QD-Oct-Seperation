@@ -4767,12 +4767,13 @@ function syncSupVATNumbers(e) {
 </script>
 
 <script>
-    function PageClose() {
 
-          window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-       window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
-       window.parent.$("#popupContainer").dxPopup("instance").hide();
-    }
+      function PageClose() {
+
+            window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
+          window.parent.$("#popupContainer").dxPopup("instance").hide();
+         window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
+      }
     function GoToAttachment(){
         window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
     }
