@@ -111,18 +111,7 @@ namespace QD.ERP.Web.Pages
                         Report = new XtraRecivableReport(SelectedValues.ToArray(), tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
 
-                    case "XtraReportAgeingreportsummary":
-                        Report = new XtraReportAgeingreportsummary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
-                        break;
-                    case "XtraReportBillsReceivableAgeingReport":
-                        Report = new XtraReportBillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
-                        break;
-                    //case "BIllsPayable":
-                    //    Report = new BIllsPayable(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
-                    //    break;
-                    case "AgeingReport":
-                        Report = new AgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
-                        break;
+
                     default:
                         return NotFound("Report not found.");
                 }
@@ -132,6 +121,27 @@ namespace QD.ERP.Web.Pages
                 {
                     Report.Parameters["SelectedValues"].Value = string.Join(",", SelectedValues);
                     Report.Parameters["SelectedValues"].Visible = false;
+                }
+            }
+            // **CASE 3: Reports that require only Tenant & Company details (no parameters)**
+            else if (!string.IsNullOrEmpty(reportName))
+            {
+                switch (reportName)
+                {
+                    case "XtraReportAgeingreportsummary":
+                        Report = new XtraReportAgeingreportsummary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        break;
+                    case "XtraReportBillsReceivableAgeingReport":
+                        Report = new XtraReportBillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        break;
+                    case "BIllsPayable":
+                        Report = new BIllsPayable(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        break;
+                    case "AgeingReport":
+                        Report = new AgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        break;
+                    default:
+                        return NotFound("Report not found.");
                 }
             }
             else
