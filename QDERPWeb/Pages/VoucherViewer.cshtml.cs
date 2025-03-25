@@ -3,11 +3,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
 using QD.ERP.Web.Areas.Finance.Reports.test;
+using QD.ERP.Web.Areas.Finance.Reports;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Models.DAL;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 
 namespace QD.ERP.Web.Pages
 {
     public class VoucherViewerModel : PageModel
     {
+        private readonly DAL.Entities.ERPMasterWtDataContext _eRPMasterWtDataContext;
+
+
+        public Tbl901CompanyDetail ERPCompany_details;
+        public VoucherViewerModel(DAL.Entities.ERPMasterWtDataContext eRPMasterWtDataContext)
+        {
+            _eRPMasterWtDataContext = eRPMasterWtDataContext;
+
+        }
+
         public XtraReport Report { get; private set; }
         public string VoucherNo { get; private set; }
 
@@ -17,16 +35,40 @@ namespace QD.ERP.Web.Pages
             {
                 return BadRequest("Invalid report name or voucher number.");
             }
+            var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            var ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
+            // **Set default values if company details are not found**
+            var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+            var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+            var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+            var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+            Image logoImage = null;
+            if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+            {
+                try
+                {
+                    using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                    {
+                        logoImage = Image.FromStream(ms);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error processing company logo: " + ex.Message);
+                }
+            }
             VoucherNo = voucherNo;
 
             switch (reportName)
             {
                 case "cashPaymentformat2":
-                    Report = new cashPaymentformat2(VoucherNo);  // Pass voucher number
+                    Report = new cashPaymentformat2(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  
                     break;
                 case "cashPayments":
-                    Report = new cashPayments(VoucherNo);  // Pass voucher number
+                    Report = new cashPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
                     break;
                 default:
                     return NotFound("Report not found.");

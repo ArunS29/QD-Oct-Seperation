@@ -158,10 +158,10 @@
             // 
             this.xrLabel6.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel6.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel6.ForeColor = System.Drawing.Color.Red;
-            this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(936.7667F, 9.999974F);
+            this.xrLabel6.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(1023.986F, 7.666906F);
             this.xrLabel6.Name = "xrLabel6";
-            this.xrLabel6.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
+            this.xrLabel6.SizeF = new System.Drawing.SizeF(250.3535F, 17.83301F);
             this.xrLabel6.StylePriority.UseBorderColor = false;
             this.xrLabel6.StylePriority.UseFont = false;
             this.xrLabel6.StylePriority.UseForeColor = false;
@@ -169,11 +169,13 @@
             // 
             // pageInfo1
             // 
+            this.pageInfo1.ForeColor = System.Drawing.Color.DarkGray;
             this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(1170.427F, 7.666842F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
-            this.pageInfo1.SizeF = new System.Drawing.SizeF(159.9382F, 23F);
+            this.pageInfo1.SizeF = new System.Drawing.SizeF(159.9382F, 17.83306F);
             this.pageInfo1.StyleName = "PageInfo";
+            this.pageInfo1.StylePriority.UseForeColor = false;
             // 
             // pageInfo2
             // 
@@ -210,9 +212,9 @@
             // xrPictureBox1
             // 
             this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
-            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(26.01625F, 0F);
+            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(52.05791F, 15.80621F);
             this.xrPictureBox1.Name = "xrPictureBox1";
-            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(176.6667F, 103.5417F);
+            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(137.0834F, 75.58514F);
             this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
             this.xrPictureBox1.StylePriority.UseBorderColor = false;
             // 
