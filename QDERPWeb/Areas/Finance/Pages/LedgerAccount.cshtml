@@ -175,6 +175,7 @@
         margin-top: 1em;
         width:100%;
     }
+
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -3113,11 +3114,10 @@ function syncSupVATNumbers(e) {
                   console.log("userN:",getUN);
             }
          });
-         // Format date function
         function formatDate(date) {
             if (date) {
                 const dateObj = new Date(date);
-                return dateObj.toISOString().slice(0, 19).replace("T", " "); // Adjust format as needed
+                return dateObj.toISOString().split("T")[0]; // Extracts only the YYYY-MM-DD part
             }
             return '';
         }
