@@ -103,7 +103,7 @@
                     columns.Add().DataField("AccountID").Visible(false);
                     columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
                     {
-                        group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
+                        group.Add().DataField("AccountID").Caption(new JS("formatMessage('AssetLedgerNo')"));
                         group.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountHead')"));
                         group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('AssetDescription')"));
                         group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')"));
