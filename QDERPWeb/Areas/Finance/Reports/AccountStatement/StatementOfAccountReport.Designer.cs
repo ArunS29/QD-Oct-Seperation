@@ -750,15 +750,15 @@ namespace QD.ERP.Web.Reports
             // 
             // xrLabel8
             // 
-            this.xrLabel8.BackColor = System.Drawing.Color.DarkGray;
-            this.xrLabel8.BorderColor = System.Drawing.Color.DimGray;
+            this.xrLabel8.BackColor = System.Drawing.Color.Transparent;
+            this.xrLabel8.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel8.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel8.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel8.BorderWidth = 0.5F;
             this.xrLabel8.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([CrAmount])")});
             this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(777.7208F, 9.333353F);
+            this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(777.7208F, 8.333353F);
             this.xrLabel8.Name = "xrLabel8";
             this.xrLabel8.SizeF = new System.Drawing.SizeF(83.69183F, 10.49999F);
             this.xrLabel8.StylePriority.UseBackColor = false;
@@ -775,15 +775,15 @@ namespace QD.ERP.Web.Reports
             // 
             // xrLabel7
             // 
-            this.xrLabel7.BackColor = System.Drawing.Color.DarkGray;
-            this.xrLabel7.BorderColor = System.Drawing.Color.DimGray;
+            this.xrLabel7.BackColor = System.Drawing.Color.Transparent;
+            this.xrLabel7.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel7.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel7.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel7.BorderWidth = 0.5F;
             this.xrLabel7.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([DrAmount])")});
             this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(674.4559F, 9.333353F);
+            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(674.4559F, 7.333353F);
             this.xrLabel7.Name = "xrLabel7";
             this.xrLabel7.SizeF = new System.Drawing.SizeF(73.81451F, 10.50001F);
             this.xrLabel7.StylePriority.UseBackColor = false;
