@@ -1,4 +1,7 @@
-﻿<style type="text/css">
+﻿
+
+
+<style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
@@ -851,9 +854,25 @@
 
 
     function openPrint() {
+        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        var voucherNo = voucherNoBox.option("value");
 
-        window.print();
+        if (!voucherNo) {
+            alert("Voucher No is required.");
+            return;
+        }
+
+        var reportName = "cashPayments"; // Modify as needed
+
+        // **Use the new API URL**
+        var url = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}`;
+
+        // **Trigger file download**
+        window.location.href = url;
     }
+
+
+
 
 
     function handlePreviewClick(e) {

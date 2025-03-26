@@ -1,9 +1,6 @@
 ﻿@page
-
 @using DevExpress.AspNetCore
-
 @using QD.ERP.Web.Areas.Finance.Reports
-
 @using QD.ERP.Web.Reports
 @model QD.ERP.Web.Pages.VoucherViewerModel
 
@@ -11,11 +8,11 @@
 <script src="~/js/reporting.designer.part.bundle.js"></script>
 
 <script>
-
     function onDocumentViewerReady(s, e) {
         s.preview.zoom(1); // 100% zoom
     }
 </script>
+
 @(Html.DevExpress().WebDocumentViewer("documentViewer")
     .Height("100em")
     .Width("110em")
@@ -23,17 +20,44 @@
     .Bind(Model.Report)
 )
 
+<!-- Send Email Button -->
+<button id="sendEmailBtn" class="dx-button dx-button-success">Send Email</button>
+
+<!-- Email Popup -->
+<div id="emailPopup" class="email-popup">
+    <div class="email-popup-header">
+        <span>New Message</span>
+        <button id="closePopup" class="close-btn">✖</button>
+    </div>
+    <div class="email-popup-content">
+        <input type="email" id="emailTo" placeholder="Recipients" required />
+        <input type="text" id="emailSubject" placeholder="Subject" required />
+        <textarea id="emailMessage" placeholder="Write your message..."></textarea>
+
+        <!-- Formatting Toolbar -->
+        <div class="toolbar">
+            <button class="tool-btn bold"><b>B</b></button>
+            <button class="tool-btn italic"><i>I</i></button>
+            <button class="tool-btn underline"><u>U</u></button>
+            <button class="tool-btn list">• List</button>
+            <button class="tool-btn indent">➡ Indent</button>
+            <button class="tool-btn outdent">⬅ Outdent</button>
+            <button class="tool-btn link">🔗</button>
+            <button class="tool-btn emoji">😊</button>
+            <button class="tool-btn attachment">📎</button>
+            <button class="tool-btn lock">🔒</button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="email-actions">
+            <button id="sendEmailNow" class="send-btn">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- CSS -->
 <style>
-
-    .container {
-        display: none !important;
-    }
-
-    .frame {
-        display: none !important;
-    }
-
-    .footerContainer {
+    .container, .frame, .footerContainer {
         display: none !important;
     }
 
@@ -46,4 +70,114 @@
         margin-top: 1em;
     }
 
-    </style >
+
+    .email-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+    }
+
+    .email-popup-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        font-weight: bold;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .email-popup-content {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    input, textarea {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    textarea {
+        height: 150px;
+        resize: none;
+    }
+
+    .toolbar {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    .tool-btn {
+        background: none;
+        border: 1px solid #ccc;
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .email-actions {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .send-btn {
+        background: #1a73e8;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
+
+<!-- JavaScript -->
+<script>
+    document.getElementById("sendEmailBtn").addEventListener("click", function () {
+        document.getElementById("emailPopup").style.display = "block";
+    });
+
+    document.getElementById("closePopup").addEventListener("click", function () {
+        document.getElementById("emailPopup").style.display = "none";
+    });
+
+    document.getElementById("sendEmailNow").addEventListener("click", function () {
+        let emailTo = document.getElementById("emailTo").value;
+        let emailSubject = document.getElementById("emailSubject").value;
+        let emailMessage = document.getElementById("emailMessage").value;
+
+        if (!emailTo || !emailSubject || !emailMessage) {
+            alert("Please fill all fields.");
+            return;
+        }
+
+        fetch("/api/email/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ emailTo, emailSubject, emailMessage })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                document.getElementById("emailPopup").style.display = "none";
+            })
+            .catch(error => alert("Error sending email!"));
+    });
+</script>
