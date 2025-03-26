@@ -1670,6 +1670,8 @@
                     </table>
                 </div>
             </div>
+           @*  this line for select attachment *@
+            <input type="file" id="fileInput" style="display: none;">
 
             <div id="tab-content-6" class="tab-content">
                 <div class="background">
@@ -1687,7 +1689,8 @@
                                 @(Html.DevExtreme().Button()
                                     .Text(new JS("formatMessage('Merger Selected files')"))  // The button's text
                                     .Icon("mergecells")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
-                                    .OnClick("function() { alert('Selected files are merged!'); }")
+                                   // .OnClick("function() { alert('Selected files are merged!'); }")
+                                    .OnClick("onAttachButtonClick")
                                     .Width("100%")
                                     )
                             </td>
@@ -1695,7 +1698,8 @@
                                 @(Html.DevExtreme().Button()
                                     .Text(new JS("formatMessage('Save Separate PDF files')"))  // The button's text
                                     .Icon("pdffile")  // Example of a similar icon (DevExtreme doesn't have a "paperclip" icon)
-                                    .OnClick("function() { alert('PDF files are saved!'); }")
+                                    //.OnClick("function() { alert('PDF files are saved!'); }")
+                                    .OnClick("onAttachButtonClick")
                                     .Width("100%")
                                     )
                             </td>
@@ -4763,10 +4767,76 @@ function syncSupVATNumbers(e) {
         dataGrid666 = e.component;
     }
 
+    //Attachment functionality
+    function onAttachButtonClick() {
+        const dialog = DevExpress.ui.dialog.custom({
+            title: "Attach File",
+            messageHtml: "<p>Click below to attach a file.</p>",
+            buttons: [
+                { text: "Select File", onClick: () => handleFileSelection() }
+            ]
+        });
+
+        let dialogContainer = dialog.show(); // Show the dialog
+
+        setTimeout(() => {
+            // Add a close button to the popup
+            let titleElement = document.querySelector(".dx-dialog .dx-popup-title");
+            if (titleElement) {
+                let closeButton = document.createElement("span");
+                closeButton.innerHTML = "&times;";
+                closeButton.classList.add("dx-dialog-custom-close");
+
+                titleElement.style.position = "relative"; // Ensure positioning works
+                titleElement.appendChild(closeButton);
+
+                // Close the dialog when clicking the close button
+                closeButton.addEventListener("click", () => {
+                    let dialogElement = document.querySelector(".dx-dialog");
+                    if (dialogElement) {
+                        dialogElement.remove(); // Remove the dialog
+                    }
+                });
+            }
+
+            // Disable Dragging
+            let dialogPopup = document.querySelector(".dx-dialog");
+            if (dialogPopup) {
+                dialogPopup.classList.remove("dx-draggable");
+            }
+        }, 0);
+    }
+
+    function handleFileSelection() {
+        const fileInput = document.getElementById("fileInput");
+
+        if (!fileInput) {
+            console.error("Error: fileInput element not found!");
+            return;
+        }
+
+        fileInput.multiple = false; // Force single file selection
+        fileInput.click(); // Open file picker
+    }
+
+    // Handle file selection
+    document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("fileInput");
+
+        if (fileInput) {
+            fileInput.addEventListener("change", function () {
+                const files = this.files;
+                console.log("Selected file:", files[0]); // Log the selected file
+            });
+        } else {
+            console.error("Error: fileInput element not found on page load!");
+        }
+    });
 
 </script>
 
 <script>
+
 
       function PageClose() {
 
@@ -4774,6 +4844,8 @@ function syncSupVATNumbers(e) {
           window.parent.$("#popupContainer").dxPopup("instance").hide();
          window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
       }
+        
+
     function GoToAttachment(){
         window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
     }

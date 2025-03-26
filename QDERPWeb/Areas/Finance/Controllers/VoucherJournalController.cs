@@ -5,6 +5,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 
 using Microsoft.EntityFrameworkCore;
+using SkiaSharp;
 
 
 namespace QDWEB.Areas.Finance.Controllers
@@ -83,7 +84,7 @@ namespace QDWEB.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetSupplierName(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A012" || p.AccountGroupId == "A003").Select(i => new
+            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Select(i => new
             {
                 i.MasterGroupId,
                 i.MasterGroup,
@@ -110,6 +111,7 @@ namespace QDWEB.Areas.Finance.Controllers
                 i.AccountHead,
                 i.SysRemarks,
             });
+
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
         }
