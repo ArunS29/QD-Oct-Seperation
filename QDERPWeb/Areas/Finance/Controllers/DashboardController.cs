@@ -85,16 +85,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var data = dbContext.Qry201MainVoucherEntriesWithMasters
-                        .Select(v => new sp20103GetBankAccountsResult
+                        .GroupBy(v => new { v.AccountHead, v.AccountHeadName, v.MasterGroupId, v.AccountGroup })
+                        .Select(g => new sp20103GetBankAccountsResult
                         {
-                            AccountHead = v.AccountHead,
-                            AccountHeadName = v.AccountHeadName,
-                            MasterGroupID = v.MasterGroupId,
-                            Amount = v.CrAmount - v.DrAmount,
-                            AccountGroup = v.AccountGroup
-                        });
+                            AccountHead = g.Key.AccountHead,
+                            AccountHeadName = g.Key.AccountHeadName,
+                            MasterGroupID = g.Key.MasterGroupId,
+                            Amount = g.Sum(v => v.CrAmount - v.DrAmount),
+                            AccountGroup = g.Key.AccountGroup
+                        })
+                        .OrderByDescending(g => g.Amount) // Order by Amount in descending order
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHeadName))
+                        .ThenBy(g => g.AccountHeadName)
+                        .AsQueryable(); // Convert to IQueryable before passing to DataSourceLoader
 
-                    return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
+                    return Json(await DataSourceLoader.LoadAsync<sp20103GetBankAccountsResult>(data, loadOptions));
                 }
                 catch (Exception ex)
                 {
@@ -137,13 +142,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var data = dbContext.Qry20115BillsPayableOutStandings
                         .Where(b => b.Balance > 0)
-                        .Select(b => new
+                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead })
+                        .Select(g => new
                         {
-                            b.AccountHeadNo,
-                            b.AccountHead,
-                            b.Balance
-                            
-                        });
+                            AccountHeadNo = g.Key.AccountHeadNo,
+                            AccountHead = g.Key.AccountHead,
+                            Balance = g.Sum(b => b.Balance),
+                            OverdueDays = g.Max(b => b.OverdueDays) // Assuming you want the max overdue days for the group
+                        })
+                        .OrderBy(g => g.OverdueDays) // Order by OverdueDays
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead))
+                        .ThenBy(g => g.AccountHead)
+                        .AsQueryable(); // Convert to IQueryable before passing to DataSourceLoader
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
                 }
@@ -234,14 +244,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var data = dbContext.Qry20115BillsOutStandings
                         .Where(b => b.Balance > 0)
-                        .Select(b => new
+                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead, b.AccountGroupId })
+                        .Select(g => new
                         {
-                            b.AccountHeadNo,
-                            b.AccountHead,
-                            b.Balance,
-                            b.AccountGroupId,
-                            b.OverdueDays
-                        });
+                            AccountHeadNo = g.Key.AccountHeadNo,
+                            AccountHead = g.Key.AccountHead,
+                            AccountGroupId = g.Key.AccountGroupId,
+                            Balance = g.Sum(b => b.Balance),
+                            OverdueDays = g.Max(b => b.OverdueDays) // Assuming you want the max overdue days for the group
+                        })
+                        .OrderBy(g => g.OverdueDays) // Order by OverdueDays
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead))
+                        .ThenBy(g => g.AccountHead)
+                        .AsQueryable(); // Convert to IQueryable before passing to DataSourceLoader
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
                 }

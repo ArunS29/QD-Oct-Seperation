@@ -183,18 +183,18 @@
         .OnClick("toggleGroupPanel")
         )
     </div>
-
     <div class="btn-container">
-@*     @(Html.DevExtreme().Button()
-        .ID("btnChooseVoucher")
-        .Text("Choose Voucher")
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("fa fa-clipboard") // You can use FontAwesome icons here too
-        .Width(180)
-        .OnClick("function() { chooseVoucher(); }")
-        ) *@
+        @(Html.DevExtreme().Button()
+            .ID("btnColumnChooser")
+            .Icon("columnchooser")
+            .Width(180)
+            .Text(new JS("formatMessage('Column Chooser')"))
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Type(ButtonType.Normal)
+            .OnClick("showColumnChooser")
+            )
     </div>
+
 
     <div class="btn-container">
     @(Html.DevExtreme().Button()
@@ -266,6 +266,19 @@
         var $submenu = $('#submenuContainer');
         $submenu.hide(); // Hide the submenu popup
     });
+
+       function showColumnChooser() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+        if (isColumnChooserVisible) {
+            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+        } else {
+            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+            dataGrid.showColumnChooser(); // Show the column chooser
+        }
+    }
+
 
     // Handle the file selection
     $("#loadLayoutInput").on("change", function (event) {

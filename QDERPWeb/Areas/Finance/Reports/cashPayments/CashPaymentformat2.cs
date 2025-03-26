@@ -10,7 +10,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
 {
     public partial class cashPaymentformat2 : XtraReport
     {
-        public cashPaymentformat2(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        public cashPaymentformat2(string voucherNo, string tenantName, string company_Name, string company_address,Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);

@@ -310,6 +310,7 @@
                     .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
                     });
                 })
+        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
