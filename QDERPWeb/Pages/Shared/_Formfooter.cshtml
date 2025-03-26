@@ -29,7 +29,7 @@
         display: none;
         position: absolute;
         /* background-color: aliceblue;
-            border: 1px solid aliceblue; */
+                border: 1px solid aliceblue; */
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         z-index: 1000;
     }
@@ -51,8 +51,8 @@
     }
 
     /* #previewModal {
-            border: 1px solid aliceblue;
-        } */
+                border: 1px solid aliceblue;
+            } */
 
     .bold-button .dx-button-text {
         font-weight: bold;
@@ -203,14 +203,17 @@
                         var button = document.getElementById(key);
                         if (button) {
                             // Handle visibility
-                            button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                            button.style.display = controlStates[key].Visible ? "" : "none";
                             // Handle enable/disable state
                             button.disabled = !controlStates[key].Enabled;
+                            // Ensure button text is visible
+                            button.style.color = controlStates[key].Enabled ? "black" : "gray"; // Adjust colors as needed
                             console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
                         } else {
                             console.warn(`Button with ID "${key}" not found in the DOM.`);
                         }
                     });
+
                 } else {
                     console.warn("Failed to fetch permissions or no permissions available.");
                 }
