@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using DevExpress.XtraReports.UI;
+using DevExpress.XtraPrinting;
+using DevExpress.Utils.Svg;
+using DevExpress.XtraPrinting.Drawing;
 
 namespace QD.ERP.Web.Reports
 {
-    public partial class StatementOfAccountReport : DevExpress.XtraReports.UI.XtraReport
+    public partial class StatementOfAccountReport : XtraReport
     {
-        public StatementOfAccountReport(string accountId, DateTime frmDate, DateTime toDate, string tenantName,string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        public StatementOfAccountReport(
+            string accountId, DateTime frmDate, DateTime toDate,
+            string tenantName, string company_Name, string company_address,
+            Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
@@ -17,12 +21,13 @@ namespace QD.ERP.Web.Reports
         public StatementOfAccountReport()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "",null,"","");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
         }
 
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate,
+                                         string tenantName, string company_Name, string company_address,
+                                         Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
-            // Helper method to add or update a parameter
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
                 if (Parameters[name] == null)
@@ -42,54 +47,93 @@ namespace QD.ERP.Web.Reports
                 }
             }
 
-            // Add or update parameters
+            // Adding or updating report parameters
             AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
             AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
             AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
 
-            // New parameters for Tenant and Company Info
-            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
+            // Company & Tenant Information
+            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
 
-            // Debug: Ensure logo URL is captured
-            Console.WriteLine($"Company Logo: {logoImage != null}");
+            Console.WriteLine($"Company Logo: {(logoImage != null ? "Exists" : "Not Provided")}");
 
+            // Assigning text values to labels
+            AssignLabelText("xrLabelTenantName", tenantName);
+            AssignLabelText("xrLabelCompanyAddress", company_address);
+            AssignLabelText("xrLabelCompanyNameAr", Company_Name_Ar);
+            AssignLabelText("xrLabelCompanyAddressArb", company_address_arb);
 
-            // Bind TenantName and CompanyName to labels (update with actual control names)
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-            {
-                tenantLabel.Text = tenantName;
-            }
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
-            {
-                companyNameLabel.Text = company_Name;
-            }
-
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-            {
-                addressLabel.Text = company_address;
-            }
-
+            // Setting company logo
             if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
             {
-                logoPictureBox.Image = logoImage;  
+                logoPictureBox.Image = logoImage;
             }
 
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+            // Apply icon formatting to relevant labels
+            ApplyIconFormatting();
+        }
+
+        private void AssignLabelText(string controlName, string text)
+        {
+            if (this.FindControl(controlName, true) is XRLabel label)
             {
-                companyNameArLabel.Text = Company_Name_Ar;
+                label.Text = text ?? "";
             }
+        }
 
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+        private void ApplyIconFormatting()
+        {
+            // Create a list to store labels with the "ShowIcon" tag
+            List<XRLabel> labelsToModify = new List<XRLabel>();
+
+            // Find all labels that need icons
+            foreach (XRControl control in this.AllControls<XRControl>())
             {
-                addressArbLabel.Text = company_address_arb;
+                if (control is XRLabel label && label.Tag != null && label.Tag.ToString().ToLower() == "showicon")
+                {
+                    labelsToModify.Add(label);
+                }
             }
 
+            // Now add icons safely
+            foreach (var label in labelsToModify)
+            {
+                AddSvgImageNextToLabel(label);
+            }
+        }
 
-     
+
+        private void AddSvgImageNextToLabel(XRLabel label)
+        {
+            // Load the SVG image
+            SvgImage svg = SvgImage.FromFile("sar 1.svg");
+            if (svg == null) return;
+
+            // Define image size
+            float iconWidth = 15;
+            float iconHeight = 15;
+
+            // Position the image next to the label (left side, centered vertically)
+            float posX = label.LocationF.X - iconWidth - 5; // Small gap
+            float posY = label.LocationF.Y + (label.HeightF - iconHeight) / 2;
+
+            // Create an XRPictureBox to hold the SVG image
+            XRPictureBox iconImage = new XRPictureBox
+            {
+                ImageSource = new ImageSource(svg),
+                Sizing = ImageSizeMode.StretchImage,
+                WidthF = iconWidth,
+                HeightF = iconHeight,
+                LocationF = new PointF(posX, posY),
+                Borders = BorderSide.None
+            };
+
+            // Add the image next to the label
+            label.Parent.Controls.Add(iconImage);
         }
     }
 }
