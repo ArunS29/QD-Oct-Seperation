@@ -156,9 +156,9 @@ namespace QD.ERP.Web.Reports
             this.xrLabel9.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([CrAmount])")});
             this.xrLabel9.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel9.LocationFloat = new DevExpress.Utils.PointFloat(761.0542F, 12F);
+            this.xrLabel9.LocationFloat = new DevExpress.Utils.PointFloat(777.7208F, 11.99999F);
             this.xrLabel9.Name = "xrLabel9";
-            this.xrLabel9.SizeF = new System.Drawing.SizeF(96.32416F, 10.50002F);
+            this.xrLabel9.SizeF = new System.Drawing.SizeF(79.65753F, 10.50002F);
             this.xrLabel9.StylePriority.UseBackColor = false;
             this.xrLabel9.StylePriority.UseBorderColor = false;
             this.xrLabel9.StylePriority.UseBorderDashStyle = false;
@@ -168,6 +168,7 @@ namespace QD.ERP.Web.Reports
             this.xrLabel9.StylePriority.UseTextAlignment = false;
             xrSummary1.Running = DevExpress.XtraReports.UI.SummaryRunning.Page;
             this.xrLabel9.Summary = xrSummary1;
+            this.xrLabel9.Tag = "showicon";
             this.xrLabel9.Text = "Cr";
             this.xrLabel9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrLabel9.TextFormatString = "{0:N2}";
@@ -182,9 +183,9 @@ namespace QD.ERP.Web.Reports
             this.xrLabel5.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([DrAmount])")});
             this.xrLabel5.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(648.1682F, 12F);
+            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(674.4559F, 11.99999F);
             this.xrLabel5.Name = "xrLabel5";
-            this.xrLabel5.SizeF = new System.Drawing.SizeF(104.0665F, 10.50001F);
+            this.xrLabel5.SizeF = new System.Drawing.SizeF(77.77887F, 10.50001F);
             this.xrLabel5.StylePriority.UseBackColor = false;
             this.xrLabel5.StylePriority.UseBorderColor = false;
             this.xrLabel5.StylePriority.UseBorderDashStyle = false;
@@ -194,7 +195,8 @@ namespace QD.ERP.Web.Reports
             this.xrLabel5.StylePriority.UseTextAlignment = false;
             xrSummary2.Running = DevExpress.XtraReports.UI.SummaryRunning.Page;
             this.xrLabel5.Summary = xrSummary2;
-            this.xrLabel5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel5.Tag = "showicon";
+            this.xrLabel5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel5.TextFormatString = "{0:N2}";
             // 
             // xrLabel4
@@ -222,7 +224,7 @@ namespace QD.ERP.Web.Reports
             this.pageInfo1.BorderColor = System.Drawing.Color.Transparent;
             this.pageInfo1.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.pageInfo1.ForeColor = System.Drawing.Color.DarkGray;
-            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(649.4566F, 33.66687F);
+            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(674.4559F, 33.16696F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
             this.pageInfo1.SizeF = new System.Drawing.SizeF(193.5436F, 15.00003F);
@@ -239,7 +241,7 @@ namespace QD.ERP.Web.Reports
             this.xrLabel10.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel10.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel10.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel10.LocationFloat = new DevExpress.Utils.PointFloat(558.0037F, 33.16695F);
+            this.xrLabel10.LocationFloat = new DevExpress.Utils.PointFloat(510.7008F, 33.16696F);
             this.xrLabel10.Name = "xrLabel10";
             this.xrLabel10.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
             this.xrLabel10.StylePriority.UseBorderColor = false;
@@ -590,7 +592,7 @@ namespace QD.ERP.Web.Reports
             this.tableCell13.StylePriority.UseFont = false;
             this.tableCell13.StylePriority.UseTextAlignment = false;
             this.tableCell13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.tableCell13.Weight = 0.13005312379954972D;
+            this.tableCell13.Weight = 0.13005319411659075D;
             // 
             // tableCell14
             // 
@@ -603,7 +605,7 @@ namespace QD.ERP.Web.Reports
             this.tableCell14.StylePriority.UseTextAlignment = false;
             this.tableCell14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell14.TextFormatString = "{0:N2}";
-            this.tableCell14.Weight = 0.12320922136936699D;
+            this.tableCell14.Weight = 0.12320915105232597D;
             // 
             // sqlDataSource1
             // 
@@ -742,6 +744,7 @@ namespace QD.ERP.Web.Reports
             this.xrLabel11.StylePriority.UseBorderWidth = false;
             this.xrLabel11.StylePriority.UseFont = false;
             this.xrLabel11.StylePriority.UseTextAlignment = false;
+            this.xrLabel11.Tag = "showicon";
             this.xrLabel11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel11.TextFormatString = "{0:N2} Dr";
             // 
@@ -755,9 +758,9 @@ namespace QD.ERP.Web.Reports
             this.xrLabel8.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([CrAmount])")});
             this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(761.0544F, 9.333344F);
+            this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(777.7208F, 9.333353F);
             this.xrLabel8.Name = "xrLabel8";
-            this.xrLabel8.SizeF = new System.Drawing.SizeF(100.3583F, 10.49999F);
+            this.xrLabel8.SizeF = new System.Drawing.SizeF(83.69183F, 10.49999F);
             this.xrLabel8.StylePriority.UseBackColor = false;
             this.xrLabel8.StylePriority.UseBorderColor = false;
             this.xrLabel8.StylePriority.UseBorderDashStyle = false;
@@ -765,8 +768,9 @@ namespace QD.ERP.Web.Reports
             this.xrLabel8.StylePriority.UseBorderWidth = false;
             this.xrLabel8.StylePriority.UseFont = false;
             this.xrLabel8.StylePriority.UseTextAlignment = false;
+            this.xrLabel8.Tag = "showicon";
             this.xrLabel8.Text = "Cr";
-            this.xrLabel8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel8.TextFormatString = "{0:N2}";
             // 
             // xrLabel7
@@ -779,9 +783,9 @@ namespace QD.ERP.Web.Reports
             this.xrLabel7.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([DrAmount])")});
             this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(648.1682F, 9.333344F);
+            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(674.4559F, 9.333353F);
             this.xrLabel7.Name = "xrLabel7";
-            this.xrLabel7.SizeF = new System.Drawing.SizeF(100.1022F, 10.50001F);
+            this.xrLabel7.SizeF = new System.Drawing.SizeF(73.81451F, 10.50001F);
             this.xrLabel7.StylePriority.UseBackColor = false;
             this.xrLabel7.StylePriority.UseBorderColor = false;
             this.xrLabel7.StylePriority.UseBorderDashStyle = false;
@@ -789,7 +793,8 @@ namespace QD.ERP.Web.Reports
             this.xrLabel7.StylePriority.UseBorderWidth = false;
             this.xrLabel7.StylePriority.UseFont = false;
             this.xrLabel7.StylePriority.UseTextAlignment = false;
-            this.xrLabel7.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel7.Tag = "showicon";
+            this.xrLabel7.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel7.TextFormatString = "{0:N2}";
             // 
             // xrLabel3
@@ -815,7 +820,7 @@ namespace QD.ERP.Web.Reports
             // 
             // xrLabelTotal
             // 
-            this.xrLabelTotal.BackColor = System.Drawing.Color.DarkGray;
+            this.xrLabelTotal.BackColor = System.Drawing.Color.Transparent;
             this.xrLabelTotal.BorderColor = System.Drawing.Color.Black;
             this.xrLabelTotal.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabelTotal.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
