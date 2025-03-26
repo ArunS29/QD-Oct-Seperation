@@ -2607,58 +2607,51 @@
 DevExpress.localization.loadMessages(dictionary);
 var formatMessage = DevExpress.localization.formatMessage;
 
-var locales = [
-    { name: "English", value: "en", flag: "https://flagcdn.com/w40/us.png" },
-    { name: "العربية", value: "ar", flag: "https://flagcdn.com/w40/ae.png" }
-];
+var locales = [];
+var locale = "en"; // Default selected language
 
+function fetchLocales() {
+    return fetch('/api/language/GetLanguages')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Received data:", data);
 
-//function fetchLocales() {
-//    fetch('/api/language')
-//        .then(response => response.json())
-//        .then(data => {
-//            var locales = data.map(function (locale) {
-//                return {
-//                    name: locale.name,
-//                    value: locale.value,
-//                    flag: locale.flag
-//                };
-//            });
-//            // Assuming you need to update the dictionary or some other part of your localization setup
-//            updateLocalization(locales);
-//        })
-//        .catch(error => {
-//            console.error('Error fetching locales:', error);
-//        });
-//}
-//function updateLocalization(locales) {
-//    // Example: Update the dictionary with new locales
-//    locales.forEach(locale => {
-//        if (!dictionary[locale.value]) {
-//            dictionary[locale.value] = {};
-//        }
-//        // Add or update translations for the locale
-//        // This is just an example, adjust as needed
-//        dictionary[locale.value]["Example Key"] = "Example Translation";
-//    });
-//    console.log('Localization updated:', dictionary);
-//}
+            if (!Array.isArray(data)) {
+                throw new Error("Unexpected response format");
+            }
 
+            var newLocales = data.map(locale => ({
+                name: locale.Name,
+                value: locale.Value,
+                flag: locale.Flag
+            }));
 
-// Get the saved locale or default to English
+            locales = [...locales, ...newLocales]; // Append new locales
+            var selectBox = $("#languageSelectBox").dxSelectBox("instance");
+            if (selectBox) {
+                selectBox.option("dataSource", locales);
+            }
+        })
+        .catch(error => console.error("Error fetching locales:", error));
+}
+
+$(document).ready(function () {
+    fetchLocales();
+});
+// Mock function to get the current tenant ID
+function getCurrentTenantId() {
+    return localStorage.getItem("tenantId") || "defaultTenant"; // Modify based on your logic
+}
+
 var locale = getLocale();
 DevExpress.localization.locale(locale);
 
 // Function to change the language
 function changeLocale(dropdown) {
-    
     var selectedLocale = dropdown.value;
-    alert(selectedLocale);
     setLocale(selectedLocale);
     document.location.reload(); // Reload page to apply changes
     updateFlagIcon(selectedLocale);
-    
-    
 }
 
 // Function to get saved locale
