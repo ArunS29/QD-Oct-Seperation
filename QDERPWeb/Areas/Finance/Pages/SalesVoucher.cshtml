@@ -11,6 +11,7 @@
 		border-bottom: 1px solid #ccc;
 	}
 
+
 	.error-message {
 		color: red;
 		font-size: 12px;
@@ -621,7 +622,7 @@
 						)
 						.WordWrapEnabled(true)
 						.ShowBorders(true)
-
+				.OnRowPrepared("changeRowColor")
 						.SearchPanel(sp => sp.HighlightSearchText(true))
 						.Selection(sl => sl.Mode(SelectionMode.Single))
 						.OnSelectionChanged("dataGridSelectionChanged")
@@ -687,6 +688,7 @@
 						.ShowBorders(true)
 						.SearchPanel(sp => sp.HighlightSearchText(true))
 						.Selection(sl => sl.Mode(SelectionMode.Single))
+				.OnRowPrepared("changeRowColor")
 						.OnSelectionChanged("dataGridAccountHeadSelectionChanged")
 						.OnInitialized("dataGridAccountHeadInitialized")
 						.HeaderFilter(p => p.Visible(true))
@@ -1919,7 +1921,11 @@
 			DevExpress.ui.notify("Error checking date. Please try again.", "error", 3000);
 		}
 	}
-
+		function changeRowColor(e) {
+		if (e.rowType === "data" && e.data.IsLedgerObselete === false) {
+			e.rowElement.css("background-color", "#ffcccc"); // Light Red
+		}
+	}
 
 	</script>
 
