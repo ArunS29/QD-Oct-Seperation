@@ -1,0 +1,502 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.ExpensesClaimRequestModel
+@{
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<!-- SweetAlert2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- SweetAlert2 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<style type="text/css">
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Transparent background */
+
+        z-index: 1000;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 80%;
+        background: #909ead00;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    #overlay-frame {
+        width: 100%;
+        height: 100%;
+    }
+
+    .Maincontainer.Maincontainer {
+        background-color: white;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        list-style: none;
+        padding: 8px 0;
+        z-index: 1000;
+    }
+
+        .context-menu li {
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+            .context-menu li:hover {
+                background-color: #f0f0f0;
+            }
+
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="ExpensesClaimRequest" class="no-border-title"></div>
+    </div>
+</div>
+
+
+<div class="content-container-top" style="background-color:#909ead00;">
+
+    <div class="content-container">
+        <div class="dx-fieldset horizontal-container" style="margin-bottom:0px">
+            <div class="form-group">
+                @(
+                    Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Voucher No')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("VoucherNo")
+                    .Value("")
+                    .Disabled(true)
+                    
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message("VoucherNo is required");
+                    })
+                    )
+            </div>
+            <div class="form-group">
+                @(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Voucher Date')"))
+                    .ID("VoucherDate")
+                    .InputAttr("aria-label", "Date")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("dd-MMM-yyyy")
+                    .Value(DateTime.Now)
+                    
+
+                    )
+            </div>
+            <div class="form-group">
+                @(Html.DevExtreme().DateBox()
+                    .Label(new JS("formatMessage('Effective Date')"))
+                    .ID("VoucherEffectiveDate")
+                    .InputAttr("aria-label", "Date")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("dd-MMM-yyyy")
+                    .Value(DateTime.Now)
+                    )
+            </div>
+            <div class="form-group">
+                @(
+                    Html.DevExtreme().TextArea()
+                    .Label(new JS("formatMessage('Narration')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("txtEntryNarration")
+                    .Value("")
+                    .Height(150)
+                    .Width(720)
+                    .Placeholder(new JS("formatMessage('Enter your comments here...')"))
+                    .MaxLength(111500)
+
+                    )
+            </div>
+        </div>
+
+
+        <div class="dx-fieldset horizontal-container " style="margin-bottom:0px;">
+
+            <div class="form-group">
+                <div class="button-alignment-down">
+                </div>
+                @(
+                    Html.DevExtreme().SelectBox()
+                    .Label(new JS("formatMessage('Dr/Cr')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("sbDrCr")
+                    .DataSource(new[] { "Dr", "Cr" })
+                    .Value("Dr")
+                    
+                    .Placeholder("Select Transaction Type")
+                    .Width(440)
+                    )
+            </div>
+            
+           
+
+            <div class="form-group">
+                @(
+                    Html.DevExtreme().NumberBox()
+                    .Label(new JS("formatMessage('Amount')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("txtVoucherAmount")
+                    .Value(null)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                        .Message("Voucher Amount Cannot be Zero Or Negative");
+                        rules.AddRange().Min(0).Message("Voucher Amount Cannot be Zero Or Negative");
+                    })
+                    .Placeholder("0.000")
+                    .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
+                    .InputAttr(new { type = "number", step = "0.01", style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;", maxLength = 16, autocomplete = "off" })
+                    .Width(240)// HTML attribute to allow decimal input
+                    )
+
+            </div>
+
+
+        </div>
+
+        
+
+        <div class="dx-field ledgerResult">
+
+            @(
+                    Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20103ExpenseClaimChild>()
+                    .ID("dataGrid")
+                    .RemoteOperations(false)
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.ExpenseDescription)
+                    .Caption("Expense Description")
+                    .Visible(true);
+
+                        columns.AddFor(m => m.BillRefNo)
+                    .Caption("Bill Ref No")
+                    
+                    ;
+
+                    columns.AddFor(m => m.BillDate)
+                    .Caption("Bill Date")
+                    .AllowEditing(true) // Allow editing for this column
+
+                    ;
+
+                        
+
+                        columns.AddFor(m => m.ClaimedAmount).Caption("Claimed Amount").Alignment(HorizontalAlignment.Right).CustomizeText(
+                    "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                    ).AllowEditing(true);
+
+
+                        columns.AddFor(m => m.ApprovedAmount)
+                    .Caption("Approved Amount")
+                    .AllowEditing(true)
+                    .Alignment(HorizontalAlignment.Right)
+
+                @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
+                .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+
+                        columns.AddFor(m => m.AccountId)
+                    .Caption("Account Ledger")
+                    .AllowEditing(true) // Allow editing for this column
+
+                    ;
+
+
+                        columns.AddFor(m => m.CostCenterCode)
+                    .Caption("Cost Center Code")
+                    .AllowEditing(true)
+                    ;
+
+
+                    })
+                .Selection(selection => selection.Mode(SelectionMode.Single))
+                .AllowColumnReordering(true) // Enable column reordering
+                .AllowColumnResizing(true)   // Enable column resizing
+                .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                                                              //.HeaderFilter(filter => filter.Visible(true))
+                .Height(250)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                .ShowBorders(true)
+                .Width("100%")
+                .Editing(editing => editing
+                .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
+                .AllowUpdating(true)   // Enable editing of existing rows
+                .AllowDeleting(true)   // Enable deleting rows
+                .UseIcons(true) // Enables icons for editing buttons
+                )
+                
+                .Summary(summary =>
+
+                {
+
+                    summary.TotalItems(totalItems =>
+
+                    {
+
+                        totalItems.Add().Column("ClaimedAmount").SummaryType(SummaryType.Sum)
+
+                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                        totalItems.Add().Column("ApprovedAmount").SummaryType(SummaryType.Sum)
+
+                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                    });
+
+                })
+                )
+
+
+        </div>
+
+
+
+        
+
+        <div class="container2">
+            <div class="row g-3" style="height:25em;">
+                <!-- First Row for Cheque No/Reference No and Voucher Narration with Button -->
+                <div class="container-fluid backgroundcolor py-3">
+                    <div class="row align-items-start">
+                        <!-- Cheque No/Reference No with Popup Button -->
+
+                        <div class="col-12 col-md-6 col-lg-5 mb-3">
+                            <div class="form-group" style="display: flex;justify-content: center;align-items: end;gap: 16px;position: relative;z-index: 2;">
+                                @(
+                                    Html.DevExtreme().TextBox()
+                                    .Label(new JS("formatMessage('Cheque No/Reference No')"))
+                                    .ID("ChequeNoReferenceNo")
+                                    .Value(null)
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Width(257)
+                                    )
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnChequePopup")
+                                    .Icon("money")
+                                    .Height(40)
+                                    .Width(60)
+                                   
+                                    )
+                                @(
+                                    Html.DevExtreme().TextBox()
+                                    .Label(new JS("formatMessage('Voucher Narration')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("VoucherNarration")
+                                    .Value(null)
+                                    .Height(50)
+                                    .Width(325)
+                                    )
+                            </div>
+                        </div>
+
+                        <!-- Button to the right -->
+
+                        <div class="d-flex justify-content-end" style="position:relative;top: -54px;right: 100px;z-index:1;">
+                            <div class="form-group">
+                                @(Html.DevExtreme().Button()
+                                    .ID("btnAttachment")
+                                    .Icon("fa fa-paperclip")
+                                    .Height(50)
+                                    .Width(70)
+                                   
+                                    )
+                            </div>
+                            <input type="file" id="fileInput" style="display:none;" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Second Row for Bill No, Bill Date, Bill Paid To, and Remarks -->
+                <div class="col-md-12 backgroundcolor" style="padding-top:0px; padding-bottom:0px; position:relative;bottom:70px;width:100%;">
+                    <div class="row">
+                        <!-- Bill No -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @(
+                                    Html.DevExtreme().TextBox()
+                                    .Label(new JS("formatMessage('Bill No')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("BillNo")
+                                    .Value(null)
+
+                                    )
+                            </div>
+                        </div>
+
+                        <!-- Bill Date -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @(
+                                    Html.DevExtreme().DateBox()
+                                    .Label(new JS("formatMessage('Bill Date')"))
+                                    .ID("BillDate")
+                                    .InputAttr("aria-label", "Date")
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .Type(DateBoxType.Date)
+                                    .DisplayFormat("dd-MMM-yyyy")
+                                    .Value("")
+
+
+                                    )
+                            </div>
+                        </div>
+
+                        <!-- Bill Paid To -->
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @(
+                                    Html.DevExtreme().TextBox()
+                                    .Label(new JS("formatMessage('Bill Paid To')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("BillPaidTo")
+                                    .Value(null)
+
+                                    )
+                            </div>
+                        </div>
+
+                        <!-- Remarks -->
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                @(
+                                    Html.DevExtreme().TextBox()
+                                    .Label(new JS("formatMessage('Remarks')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("Remarks")
+                                    .Value(null)
+
+                                    )
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Third Row for Payment Account, Verified By, Verified On, Approved By, Approved On -->
+                <div class="col-md-12 backgroundcolor" style="padding-top:1px; padding-bottom:1px;position:relative;bottom:50px;">
+                    <div class="row mt-3 align-items-center">
+                        <!-- Payment Account -->
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @(
+                                    Html.DevExtreme().SelectBox()
+                                    .Label(new JS("formatMessage('Cash Payment')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    .ID("VoucherType")
+                                    .DataSource(new[] { "Cash Payment" })
+                                    .Value(new JS("formatMessage('Cash Payment')"))
+                                    .Width(520)
+                                    .Disabled(true)
+
+                                    )
+                            </div>
+                        </div>
+
+                        <!-- Verified By and Approved By Section -->
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div>
+                                        @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
+                                            .ID("VerifiedBy")
+
+
+                                            )
+                                        @(Html.DevExtreme().TextBox()
+                                            @* .Label(new JS("formatMessage('Verified By')")) *@
+                                            @* .LabelMode(EditorLabelMode.Outside) *@
+                                            .ID("VerifiedBytext")
+                                            .Value(null) // Default value
+                                            .Disabled(true)
+                                            )
+                                    </div>
+                                    @(Html.DevExtreme().TextBox()
+                                        .Label(new JS("formatMessage('Verified On')"))
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        .ID("VerifiedOnDate")
+                                        .Value(null) // Default value
+                                        .Disabled(true)
+                                        )
+                                </div>
+                                <div class="col-md-6">
+                                    <div>
+                                        @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
+                                            .ID("ApprovedBy")
+
+                                            )
+                                        @(Html.DevExtreme().TextBox()
+                                            @* .Label(new JS("formatMessage('Approved By')")) *@
+                                            @* .LabelMode(EditorLabelMode.Outside) *@
+                                            .ID("ApprovedBytext")
+                                            .Value(null) // Default value
+                                            .Disabled(true)
+                                            )
+                                    </div>
+                                    @(Html.DevExtreme().TextBox()
+                                        .Label(new JS("formatMessage('Approved On')"))
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        .ID("ApprovedOntext")
+                                        .Value(null) // Default value
+                                        .Disabled(true)
+                                        )
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <div>
+            @await Html.PartialAsync("_Formfooter")
+        </div>
+        
+
+    </div>
+</div>

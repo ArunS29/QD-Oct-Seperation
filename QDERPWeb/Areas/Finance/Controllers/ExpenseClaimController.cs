@@ -88,7 +88,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var users = await dbContext.TblUserMasters.ToListAsync();
+                    var users = await dbContext.TblUserMasters.Select(u => new
+                    {
+                        u.UserId,
+                        u.UserName
+                    })
+                .ToListAsync(); ;
                     return Json(users);
                 }
                 catch (Exception ex)
