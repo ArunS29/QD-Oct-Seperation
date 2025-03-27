@@ -1334,8 +1334,7 @@
         "Profit On Sale": "Profit On Sale",
         "Invoice Cost Posting": "Invoice Cost Posting",
         "Advance / Prepayment Adjustments": "Advance / Prepayment Adjustments",
-        "Ref No": "Ref No"
-
+        "Ref No": "Ref No",
 
         "Paste from Excel": "Paste from Excel",
         "Upload Items": "Upload Items",
