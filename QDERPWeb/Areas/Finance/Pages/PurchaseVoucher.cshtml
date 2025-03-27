@@ -378,27 +378,28 @@
 		</div>
 		<div class="form-group">
 			@(
-									Html.DevExtreme().NumberBox()
-									.Label(new JS("formatMessage('Amount')"))
-									.LabelMode(EditorLabelMode.Outside)
-									.ID("txtVoucherAmount")
-									.Value(null)
-									.ValidationRules(rules =>
-									{
-										rules.AddRequired()
-										.Message(new JS("formatMessage('Voucher Amount is required')"));
-									})
-
-									.Placeholder("0.00")
-									.Format("#,##0.00")
-									.InputAttr(new
-									{
-										style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
-										type = "number",
-										step = "0.01"
-									})
-									)
-
+						Html.DevExtreme().NumberBox()
+						.Label(new JS("formatMessage('Amount')"))
+						.LabelMode(EditorLabelMode.Outside)
+						.ID("txtVoucherAmount")
+						.Value(null)
+						.ValidationRules(rules =>
+						{
+							rules.AddRequired()
+							.Message(new JS("formatMessage('Voucher Amount is required')"));
+							rules.AddCustom()
+							.ValidationCallback("validateAmount")
+							.Message("Negative value is not allowed.");
+						})
+						.Placeholder("0.00")
+						.Format("#,##0.00")
+						.InputAttr(new
+						{
+							style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+							type = "number",
+							step = "0.01"
+						})
+						)
 		</div>
 	</div>
 	<div class="dx-fieldset horizontal-container" style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px">
@@ -581,53 +582,62 @@
 																		)
 
 				</div>
-				<div class="row">
-					<div class="col-md-5">
-						<div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-						@(Html.DevExtreme().CheckBox().ID("VerifiedBy").Text(new JS("formatMessage('Verified By:')")))
+			<div class="row">
+				<div class="col-md-5">
+					<div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
+						@(Html.DevExtreme().CheckBox()
+													.ID("VerifiedBy")
+													.Text(new JS("formatMessage('Verified By:')"))
+													.Disabled(true) 
+													)
 						@(Html.DevExtreme().TextBox()
-																				.ID("VerifiedBytext")
-																				.Value(null)
-																				.Disabled(true)
-																				.Width("200px")
-																				)
-						</div>
-						<!-- Verified On -->
-						<div class="form-group d-flex align-items-center mt-2">
-							<span id="VerifiedOn" class="no-border-input"></span>
-						@(Html.DevExtreme().TextBox()
-																				.ID("VerifiedOnDate")
-																				.Value(null)
-																				.Disabled(true)
-																				.Width("200px")
-																				.ElementAttr(new { style = "margin-left: 10px;" })
-																				)
-						</div>
+													.ID("VerifiedBytext")
+													.Value(null)
+													.Disabled(true)
+													.Width("200px")
+													)
 					</div>
-					<div class="col-md-5">
-						<div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-						@(Html.DevExtreme().CheckBox().ID("ApprovedBy").Text(new JS("formatMessage('Approved By:')")))
-							<span id="ApprovedBy" class="no-border-input" style="margin-left:5px"></span>
+					<!-- Verified On -->
+					<div class="form-group d-flex align-items-center mt-2">
+						<span id="VerifiedOn" class="no-border-input"></span>
 						@(Html.DevExtreme().TextBox()
-																				.ID("ApprovedBytext")
-																				.Value(null)
-																				.Disabled(true)
-																				.Width("200px")
-																				)
-						</div>
-						<!-- Approved On -->
-						<div class="form-group d-flex align-items-center mt-2">
-							<span id="ApprovedOn" class="no-border-input"></span>
-						@(Html.DevExtreme().TextBox()
-																				.ID("ApprovedOntext")
-																				.Value(null)
-																				.Disabled(true)
-																				.Width("200px")
-																				.ElementAttr(new { style = "margin-left: 10px;" })
-																				)
-						</div>
+													.ID("VerifiedOnDate")
+													.Value(null)
+													.Disabled(true)
+													.Width("200px")
+													.ElementAttr(new { style = "margin-left: 10px;" })
+													)
 					</div>
 				</div>
+				<div class="col-md-5">
+					<div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
+						@(Html.DevExtreme().CheckBox()
+													.ID("ApprovedBy")
+													.Text(new JS("formatMessage('Approved By:')"))
+													.Disabled(true) 
+													)
+						<span id="ApprovedBy" class="no-border-input" style="margin-left:5px"></span>
+						@(Html.DevExtreme().TextBox()
+													.ID("ApprovedBytext")
+													.Value(null)
+													.Disabled(true)
+													.Width("200px")
+													)
+					</div>
+					<!-- Approved On -->
+					<div class="form-group d-flex align-items-center mt-2">
+						<span id="ApprovedOn" class="no-border-input"></span>
+						@(Html.DevExtreme().TextBox()
+													.ID("ApprovedOntext")
+													.Value(null)
+													.Disabled(true)
+													.Width("200px")
+													.ElementAttr(new { style = "margin-left: 10px;" })
+													)
+					</div>
+				</div>
+			</div>
+
 			</div>
 			<div class="col-md-1">
 				<div class="form-group " style="padding-top:50px;padding-left:7px;">
@@ -668,6 +678,7 @@
 						.OnInitialized("dataGridInitialized")
 						.HeaderFilter(p => p.Visible(true))
 						.ShowBorders(true)
+				.ColumnChooser(c => c.Enabled(true))
 						.HoverStateEnabled(true)
 						.Paging(p => p.PageSize(15))
 						.FilterRow(f => f.Visible(true))
@@ -710,6 +721,7 @@
 						.HeaderFilter(p => p.Visible(true))
 						.ShowBorders(true)
 						.HoverStateEnabled(true)
+				.ColumnChooser(c => c.Enabled(true))
 						.Paging(p => p.PageSize(15))
 						.FilterRow(f => f.Visible(true))
 						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
@@ -858,41 +870,42 @@ $(function () {
 	}
 	let suppliername, griddatacount;
 	function onpurchaseVoucherDateChanged(e) {
-            console.log("Selected Date:", e.value);
-			debugger
-            var voucherDate = $("#PurchaseVoucherDate").dxDateBox("instance");
-            var effectiveDate = $("#purchaseVoucherEffectiveDate").dxDateBox("instance");
-   
-            voucherDate.option("onValueChanged", function (e) {
-                let voucherDateval = e.value; // Get Date from DevExtreme DateBox
+		console.log("Selected Date:", e.value);
+		debugger;
 
-                // Check if voucherDateval is valid
-                if (!voucherDateval) return;
+		var voucherDate = $("#PurchaseVoucherDate").dxDateBox("instance");
+		var effectiveDate = $("#purchaseVoucherEffectiveDate").dxDateBox("instance");
 
-                // Set effectiveDate to the same value as voucherDate
-                effectiveDate.option("value", voucherDateval);
+		let voucherDateval = e.value; // Get Date from DevExtreme DateBox
 
-                // Convert to 'yyyy-MM-dd' format
-                let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
+		// Check if voucherDateval is valid
+		if (!voucherDateval) return;
 
-                // Define the cutoff date (2021-12-31)
-                let cutoffDate = new Date("2021-12-31");
+		// Convert to 'yyyy-MM-dd' format
+		let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
 
-                // Get the current date to set if the voucher date is blocked
-                let currentdate = new Date();
-                let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+		// Define the cutoff date (2021-12-31)
+		let cutoffDate = new Date("2021-12-31");
 
-                // Check if the formatted voucher date is before the cutoff date
-                if (new Date(formattedDate) < cutoffDate) {
-                    // Show alert for blocked entry
-                    DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+		// Get the current date to set if the voucher date is blocked
+		let currentdate = new Date();
+		let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
 
-                    // Set both voucherDate and effectiveDate to the current date
-                    voucherDate.option("value", formattedCurrentDate);
-                    effectiveDate.option("value", formattedCurrentDate);
-                }
-            });
-        }
+		// Check if the formatted voucher date is before the cutoff date
+		if (new Date(formattedDate) < cutoffDate) {
+			// Show alert for blocked entry
+			DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+			// Set both voucherDate and effectiveDate to the current date
+			voucherDate.option("value", formattedCurrentDate);
+			effectiveDate.option("value", formattedCurrentDate);
+		} else {
+			// Otherwise, just update the effective date
+			effectiveDate.option("value", voucherDateval);
+		}
+	}
+
+
 	function updateDueDate() {
 		// Get checkbox value and "No of Days"
 		const useSubmittedDate = $("#UseSubmittedDate").dxCheckBox("instance").option("value");
@@ -973,36 +986,36 @@ $(function () {
 
 
 
-	$(function () {
+	// $(function () {
 
-		const dataGrid = $("#dataGrid").dxDataGrid("instance");
+	// 	const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-		const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
+	// 	const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
 
-		const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+	// 	const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
 
-		function calculateTotals() {
+	// 	function calculateTotals() {
 
-			const data = dataGrid.getVisibleRows().map(row => row.data);
+	// 		const data = dataGrid.getVisibleRows().map(row => row.data);
 
-			const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
+	// 		const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
 
-			const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
+	// 		const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
 
-			// Update TextBox values dynamically
+	// 		// Update TextBox values dynamically
 
-			totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+	// 		totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
-			totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+	// 		totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
-		}
+	// 	}
 
-		// Recalculate totals on content changes
+	// 	// Recalculate totals on content changes
 
-		dataGrid.on("contentReady", calculateTotals);
+	// 	dataGrid.on("contentReady", calculateTotals);
 
-		dataGrid.on("dataSourceChanged", calculateTotals);
-	});
+	// 	dataGrid.on("dataSourceChanged", calculateTotals);
+	// });
 	$(function () {
 		const urlParams = new URLSearchParams(window.location.search);
 		const voucherNo = urlParams.get("argsledno"); // Get argsledno from URL
@@ -1386,7 +1399,8 @@ $(function () {
 			}
 			
 		} else {
-			DevExpress.ui.notify("Please fill required details!", "error", 2000);
+					DevExpress.ui.dialog.alert(	"Cannot continue saving with errors, please clear the errors and continue.",
+					"Clear Errors");
 		}
 		if (accheadname != null) {
 			if (accheadname.startsWith("Salary Payable")) {
@@ -1507,7 +1521,7 @@ $(function () {
 
 			$.ajax({
 				type: "POST",
-				url: "/api/PurchaseVoucher/UpdateVoucher",
+					url: "/api/VoucherMaster/UpdateVoucher",
 				contentType: "application/json",
 				data: JSON.stringify(VM),
 				dataType: "json",
@@ -1977,5 +1991,7 @@ $(function () {
 			console.error("Effective Date instance NOT found! Check ID selector.");
 		}
 	}
-
+			function validateAmount(params) {
+			return params.value >= 0; // Ensures the amount is not negative
+		}
 </script>

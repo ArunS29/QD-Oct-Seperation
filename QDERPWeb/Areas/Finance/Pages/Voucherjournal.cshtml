@@ -499,11 +499,13 @@
                     columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
     <div class="dx-icon">
-        <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
     </div>
 </text>);
 
                 })
+                    .OnRowPrepared("onRowPrepared")
+                     
             )
 }
 
@@ -726,7 +728,7 @@
 
 
 <script>
-    let argsledno = null;
+    let argsledno = null; let paymentaccheadId; let paymentaccheadname; let paymentIsLedgerObselete;
     //global variablr for get newVoucherNo
     var globalVoucherNo = "";
     $(function () {
@@ -897,7 +899,7 @@
     //         "VoucherVerifiedOn": new Date(),
     //         "VoucherApprovedOn": new Date()
     //     };
-
+  
     //     $.ajax({
     //         type: "POST",
     //         url: "/api/VoucherJournal/SaveVoucher",
@@ -1138,7 +1140,25 @@
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
+            var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
+            // Get ReferenceNo from selected row
+            if (selectedRowData.length > 0) {
+                paymentaccheadId = selectedRowData[0].AccountId;
+                paymentaccheadname = selectedRowData[0].AccountHead;
+                paymentIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
+
+                if (paymentIsLedgerObselete == true) {
+                    IsObeselete = true;
+                    DevExpress.ui.dialog.alert(
+                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
+                        "LEDGER IS OBSELETE(NOT IN USE)"
+                    );
+
+                }
+
+            }
         }
+     
 
     }
     $(function () {
@@ -1669,7 +1689,6 @@
     //             });
     //         }
 
-
     function disableEditing() {
         // Disable all input fields and buttons except for specific ones
         $('input, select, textarea').prop('disabled', true);
@@ -1681,7 +1700,14 @@
             }
         });
     }
-
+    function onRowPrepared(e) {
+        // Check if the rowType is "data" and the rowElement is available
+        if (e.rowType === "data" && e.rowElement && e.data.IsLedgerObselete) {
+            // Set the background color for the row
+            $(e.rowElement).css("background-color", "rgb(255, 192, 192)"); // Light red for disabled rows
+        }
+    }
+   
     function onApproveButtonClick() {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const rowCount = dataGrid.getVisibleRows().length;
@@ -1979,9 +2005,8 @@
             var dataGrid = $dataGrid.dxDataGrid("instance");
             dataGrid.selectRows(e.value, false);
         }
+
         if (e.value) {
-
-
             let grid = $("#dataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;
@@ -1989,19 +2014,19 @@
             let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
             let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
 
-            // if (selectedRowData) {
-            //     propertyno = selectedRowData.PropertyNo; // Store the correct ID
+            if (selectedRowData) {
+                let selectedAccountHeadName = selectedRowData.AccountHead; // Fetch AccountHead name
 
-            // }
-
-            rowData.AccountHead = e.value; // Update the row data
-            grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
-
+                // Update the grid row with selected AccountHead
+                rowData.AccountHead = selectedAccountHeadName;
+                grid.cellValue(rowIndex, "AccountHead", selectedAccountHeadName);
+            }
         }
+
         // Close the dropdown after selection
         e.component.option("opened", false);
-
     }
+
 
     function onAttachButtonClickss() {
         const dialog = DevExpress.ui.dialog.custom({
