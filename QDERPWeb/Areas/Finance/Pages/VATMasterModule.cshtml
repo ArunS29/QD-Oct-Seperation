@@ -1,0 +1,318 @@
+﻿@*
+
+
+
+
+
+
+<div class="form-group">
+    <label for="Amount" class="button-alignment-down">Amount</label>
+
+    @(
+
+        Html.DevExtreme().NumberBox()
+
+        .ID("txtVoucherAmount")
+
+        .Value(null)
+
+        .ValidationRules(rules =>
+
+        {
+
+            rules.AddRequired()
+
+            .Message("Voucher Amount Cannot be Zero Or Negative");
+
+            rules.AddRange().Min(0).Message("Voucher Amount Cannot be Zero Or Negative");
+
+        })
+
+        .Placeholder("0.000")
+
+        .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
+
+        .InputAttr(new { type = "number", step = "0.01", style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;", maxLength = 16, autocomplete = "off" })
+
+        .Width(180)// HTML attribute to allow decimal input
+
+        )
+
+</div>
+<div class="dx-fieldset horizontal-container">
+	@(Html.DevExtreme().DropDownBox()
+		.DataSource(d => d.WebApi()
+		.Controller("AccountLedgerMaster")
+		.LoadAction("getAccountingLedger")
+		.LoadMode(DataSourceLoadMode.Raw)
+		.Key("AccountGroupId") // This is the unique key for the data source
+		)
+		.LabelMode(EditorLabelMode.Outside)
+		.Label(new JS("formatMessage('Stock Group')"))
+		.ID("ddlAccountGroup")
+		.ShowClearButton(true)
+		.AcceptCustomValue(true)
+		.OpenOnFieldClick(false)
+		.ValueChangeEvent("input")
+		.HoverStateEnabled(true)
+		.ValueExpr("AccountGroupId")
+		.DisplayExpr("AccountGroup")
+		//.OnInput("ddlAccountGroupOnInput")
+		//.OnOpened("ddlAccountGrouponOpened")
+		.Width("70%")
+		.TabIndex(4)
+		.ValidationRules(value => value.AddRequired().Message(new JS("formatMessage('Account Group cannot be empty')")))
+		.ValidationMessageMode(ValidationMessageMode.Auto)
+		.DropDownOptions(o => o
+		.Width("100%")
+		)
+		//.OnKeyDown("ddlAccountGrouponKeyDown")
+		//.OnValueChanged("ddlAccountGroupValueChanged")
+		.ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
+		)
+
+	@(Html.DevExtreme().Button()
+		.ID("btnAddAccount")
+		.Icon("plus")
+		.ElementAttr("class", "button-alignment-up button-group")
+		//.OnClick("redirectledgerAccountMaster")
+		)
+</div>
+<div>
+
+	@(Html.DevExtreme().TextBox()
+		.ID("txtVatPurchaseNo")
+		.Label(new JS("formatMessage('Vat Purchase No')"))
+		.InputAttr("aria-label", "Text")
+		.Width("17%")
+		)
+@(Html.DevExtreme().TextBox()
+		.ID("txtVatPurchaseNo")
+		.Label(new JS("formatMessage('Vat Purchase No')"))
+		.InputAttr("aria-label", "Text")
+		.Width("17%")
+		)
+		</div>
+		@(Html.DevExtreme().TextBox()
+		.ID("txtVatPurchaseNo")
+		.Label(new JS("formatMessage('Vat Purchase No')"))
+		.InputAttr("aria-label", "Text")
+		.Width("17%")
+		) *@
+
+	@page
+@* @model YourNamespace.YourPageModel
+@{
+    Layout = null;
+} *@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Goods and Services</title>
+    <style>
+        .dx-fieldset {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            background-color: transparent;
+            width: 200px;
+
+        }
+       
+
+        .dx-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .field-label {
+            font-weight: bold;
+        }
+
+        .aligned-input {
+            width: 100%;
+        }
+
+        .dx-card {
+            padding: 20px;
+            background-color: transparent;
+            width: 100%;
+            margin: auto;
+            border-radius: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dx-textarea {
+            width: 100%;
+            height: 60px;
+        }
+        .dx-card{
+            width : 1460px;
+        }
+         
+        .limited-footer .btn-containerIvoiceEdit:not(:has(#btnSave,#btnBack)) {
+            display: none !important;
+        }
+    </style>
+   
+</head>
+<body>
+    <div class="dx-card">
+        <h3>Database Master Module:Unit of Measure</h3>
+        <!-- Row 1: Type a New UOM & Add to the Existing List: -->
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <table style="width: 1300px;">
+                    <tr>
+                        <td>
+                            <label class="field-label">Type a New UOM & Add to the Existing List:</label>
+                            @(Html.DevExtreme().TextBox().ID("txtGoodsCode7").Width("100%"))
+                        </td>
+                    </tr>
+                </table>
+            </div>
+    
+
+        </div>
+        <!-- Row 2:UoM Description |UoM Description (Arabic) -->
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <table style="width: 1300px;">
+                    <tr>
+                        <td>
+                            <label class="field-label">UoM Description:</label>
+                            @(Html.DevExtreme().TextArea().ID("txtDescription8").Width("100%").Height(60))
+                        </td>
+                        <td>
+                            <label class="field-label">UoM Description (in Arabic):</label>
+                            @(Html.DevExtreme().TextArea().ID("txtDescriptionArabic").Width("100%").Height(60))
+                            <td>
+                                
+                                @(Html.DevExtreme().Button().ID("btnAddGroup3").Icon("plus"))
+                        </td>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+				
+            @* <div class="dx-fieldset">
+                <div class="dx-field">
+                    <table style="width: 1300px;">
+                        <tr>
+                            <td>
+                                <label class="field-label">Unit of Measure:</label>
+                                @(Html.DevExtreme().DropDownBox().ID("ddlUnitMeasure9").Width("100%"))
+                            </td>
+                            <td>
+                                <label class="field-label">Packing Unit:</label>
+                                @(Html.DevExtreme().NumberBox().ID("txtPackingUnit").Value(1).Min(1).Step(1).Width("100%"))
+                            </td>
+                            <td>
+                                <label class="field-label">Selling Rate:</label>
+                                @(Html.DevExtreme().NumberBox()
+                                    .ID("txtSellingRate2")
+                                    .Value(1)
+                                    .Format("#,##0.00")
+                                    .Min(0.01)
+                                    .Width("100%")
+                                    .ValidationRules(rules => rules.AddRange().Min(0.01).Message("Selling Rate must be greater than zero")))
+                            </td>
+                            <td>
+                                <label class="field-label">Cost Price:</label>
+                                @(Html.DevExtreme().NumberBox()
+                                    .ID("txtCostPrice3")
+                                    .Value(1)
+                                    .Format("#,##0.00")
+                                    .Min(0.01)
+                                    .Width("100%")
+                                    .ValidationRules(rules => rules.AddRange().Min(0.01).Message("Cost Price must be greater than zero")))
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div> *@
+
+            <!-- Row 4: Detailed Description | Detailed Description (Arabic) -->
+           @*  <div class="dx-fieldset">
+                <div class="dx-field">
+                    <table style="width: 1300px;">
+                        <tr>
+                            <td>
+                                <label class="field-label">Detailed Description:</label>
+                                @(Html.DevExtreme().TextArea().ID("txtDetailedDescription").Width("100%").Height(80))
+                            </td>
+                            <td>
+                                <label class="field-label">Detailed Description (in Arabic):</label>
+                                @(Html.DevExtreme().TextArea().ID("txtDetailedDescriptionArabic").Width("100%").Height(80))
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div> *@
+
+
+        </div>
+        </div>
+      
+
+                    <div class="dx-field ledgerResult">
+                @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201617vatinvoiceInDetail>()
+                    .ID("dataGrid")
+                    .RemoteOperations(false)
+                    .DataSource(new JS("[]"))
+                    .Columns(columns =>
+                    {
+
+                        columns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                        columns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Unit Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                        columns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                        columns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Description (in Arabic)')")).Alignment(HorizontalAlignment.Center).Visible(true);
+            })
+                    .Editing(editing => editing
+                    .Mode(GridEditMode.Row)
+                    .AllowUpdating(true)
+                    ) 
+
+                    .OnCellClick("function(e) {handleCellClick(e);}")
+                    //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnFixing(fixing => fixing.Enabled(true))
+                    .HeaderFilter(filter => filter.Visible(false))
+                    .Height(300)
+                    .FilterRow(filterRow => filterRow.Visible(false))
+                    .GroupPanel(groupPanel => groupPanel.Visible(false))
+                    .ShowBorders(true)
+                    .ShowRowLines(true)
+                    .Width("100%")
+                    )
+            </div>
+    <div class="Head">
+        <div class="limited-footer">
+            @await Html.PartialAsync("VATModuleFooter")
+        </div>
+    </div>
+</body>
+</html>
+<script>
+        $(document).ready(function () {
+
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+            if (!$(this).find("#btnSave,#btnBack").length) {
+                $(this).remove();
+
+            }
+
+        });
+
+    });
+</script>
