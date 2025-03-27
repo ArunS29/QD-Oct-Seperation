@@ -553,9 +553,12 @@
 			</div>
 			<div class="row">
 				<div class="col-md-6">
-
-					<div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-						@(Html.DevExtreme().CheckBox().ID("VerifiedBy").Text(new JS("formatMessage('Verified By:')")))
+					<div class="form-group d-flex align-items-center" style="padding-top:10px; padding-bottom:10px">
+						@(Html.DevExtreme().CheckBox()
+													.ID("VerifiedBy")
+													.Text(new JS("formatMessage('Verified By:')"))
+													.Disabled(true) // 🔥 Users cannot check/uncheck
+													)
 						@(Html.DevExtreme().TextBox()
 													.ID("VerifiedBytext")
 													.Value(null)
@@ -575,10 +578,14 @@
 													)
 					</div>
 				</div>
-				<div class="col-md-6">
 
-					<div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-						@(Html.DevExtreme().CheckBox().ID("ApprovedBy").Text(new JS("formatMessage('Approved By:')")))
+				<div class="col-md-6">
+					<div class="form-group d-flex align-items-center" style="padding-top:10px; padding-bottom:10px">
+						@(Html.DevExtreme().CheckBox()
+													.ID("ApprovedBy")
+													.Text(new JS("formatMessage('Approved By:')"))
+													.Disabled(true) // 🔥 Users cannot check/uncheck
+													)
 						@(Html.DevExtreme().TextBox()
 													.ID("ApprovedBytext")
 													.Value(null)
@@ -599,6 +606,7 @@
 					</div>
 				</div>
 			</div>
+
 		</div>
 		<div class="col-md-1">
 			<div class="form-group " style="padding-top:50px;padding-left:7px;">
