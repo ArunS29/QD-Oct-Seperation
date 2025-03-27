@@ -465,6 +465,7 @@
 				@* .HeaderFilter(filter => filter.Visible(true)) *@
 				.Height(300)
 				.ColumnAutoWidth(true)
+				.OnEditorPreparing("onEditorPreparing")
 				.FilterRow(filterRow => filterRow.Visible(false))
 				.GroupPanel(groupPanel => groupPanel.Visible(false))
 				.ShowBorders(true)
@@ -1510,49 +1511,46 @@
 		// 		}
 		// 	});
 		// }
-		function onRowRemoving() {
-			var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+	function onRowRemoving() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
 
+		// Get the selected row's data
+		var selectedRows = dataGrid.getSelectedRowsData(); // Array of selected rows
+		var selectedRowData = selectedRows.length > 0 ? selectedRows[0] : null;
 
-			// Get the selected row's data
-			var selectedRows = dataGrid.getSelectedRowsData(); // Array of selected rows
-			var selectedRowData = selectedRows.length > 0 ? selectedRows[0] : null;
-
-			if (!selectedRowData) {
-				DevExpress.ui.notify("No row selected. Please select a row first.", "error", 2000);
-				return;
-			}
-
-
-			// Retrieve the unique identifier for the row
-			var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-			var voucherEntryNo = selectedRowData.VoucherEntryNo;
-
-			// Validate VoucherEntryNo
-			if (!voucherEntryNo) {
-				DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
-				return;
-			}
-
-			// Send an AJAX request to the API to delete the record
-			$.ajax({
-				url: `/api/VoucherMaster/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
-				type: "POST", // HTTP POST request
-				success: function (response) {
-					if (response.data) {
-						// Update the DataGrid's data source with the updated data
-						$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-
-						DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
-					} else {
-						DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
-					}
-				},
-				error: function (xhr, status, error) {
-					DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
-				}
-			});
+		if (!selectedRowData) {
+			DevExpress.ui.notify("No row selected. Please select a row first.", "error", 2000);
+			return;
 		}
+
+
+		// Retrieve the unique identifier for the row
+		var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+		var voucherEntryNo = selectedRowData.VoucherEntryNo;
+		// Validate VoucherEntryNo
+		if (!voucherEntryNo) {
+			DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
+			return;
+		}
+
+		// Send an AJAX request to the API to delete the record
+		$.ajax({
+			url: `/api/PurchaseVoucher/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
+			type: "POST", // HTTP POST request
+			success: function (response) {
+				if (response.data) {
+					// Update the DataGrid's data source with the updated data
+					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+					DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
+				} else {
+					DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+				}
+			},
+			error: function (xhr, status, error) {
+				DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+			}
+		});
+	}
 
 		$("#btnSaveAndClose").on("click", function (e) {
 			e.preventDefault();
@@ -1983,6 +1981,61 @@
 	}
 		function validateAmount(e) {
 		return e.value > 0;
+	}
+
+		function onEditorPreparing(e) {
+
+		if (e.dataField === 'EntryNarration' || e.dataField === 'SysRemarks') {
+			if (isUpdatingCell) {
+				return; // Prevent recursive triggering
+			}
+
+			e.cancel = true; // Prevent the default editor behavior
+
+			const dataGridInstance = e.component; // Get the DataGrid instance
+			const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
+			const fieldName = e.dataField; // Dynamic field name (EntryNarration or SysRemarks)
+			const initialValue = e.row.data[fieldName] || ""; // Get the current value of the cell
+
+			// Show Swal modal
+			Swal.fire({
+				title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
+				html: `
+								<textarea id="swal-field-editor"
+										  style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+										  placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
+							`,
+				showCancelButton: true,
+				confirmButtonText: 'OK',
+				cancelButtonText: 'Cancel',
+				focusConfirm: false,
+				didOpen: () => {
+					// Focus the textarea and move the cursor to the end
+					const textarea = document.getElementById('swal-field-editor');
+					textarea.focus();
+					textarea.setSelectionRange(initialValue.length, initialValue.length);
+				},
+				preConfirm: () => {
+					const newValue = document.getElementById('swal-field-editor').value.trim();
+					return newValue; // Return the new value from the modal
+				}
+			}).then((result) => {
+				if (result.isConfirmed) {
+					const newValue = result.value;
+
+					if (newValue !== initialValue) {
+						isUpdatingCell = true; // Set the flag before updating the cell
+						dataGridInstance.cellValue(rowIndex, fieldName, newValue); // Update the specific cell dynamically
+						dataGridInstance.saveEditData(); // Save the edit data
+						dataGridInstance.refresh(); // Refresh the grid to reflect changes
+						isUpdatingCell = false; // Reset the flag after updating
+					}
+				} else if (result.isDismissed) {
+					console.log('Edit cancelled');
+				}
+			});
+		}
+
 	}
 </script>
 
