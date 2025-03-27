@@ -230,7 +230,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public IActionResult GetGoodsAndServices()
+        public IActionResult GetGoodsAndServiceMaster()
         {
             try
             {
