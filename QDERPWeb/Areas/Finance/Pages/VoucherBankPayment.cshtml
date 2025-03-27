@@ -489,9 +489,7 @@
             <li onclick="editPropertyAllocation()">
                 <i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation" class="no-border-input"></div>
             </li>
-          @*   <li onclick="onRowRemoving()">
-                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteLineEntry" class="no-border-input"></div>
-            </li> *@
+          
             <li onclick="onAllRowRemoving()">
                 <i class="fas fa-trash-alt" style="margin-right: 8px;"></i><div id="DeleteAllLineEntries" class="no-border-input"></div>
             </li>
@@ -786,7 +784,7 @@
                                 <div class="col-md-6">
                                     <div>
                                         @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-                                                .ID("VerifiedBy")
+                                                .ID("VerifiedBy").ReadOnly(true)
                                                 
 
                                                 )
@@ -809,7 +807,7 @@
                                 <div class="col-md-6">
                                     <div>
                                         @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                                                .ID("ApprovedBy")
+                                                .ID("ApprovedBy").ReadOnly(true)
                                                 
                                                 )
                                         @(Html.DevExtreme().TextBox()
