@@ -2599,7 +2599,13 @@
         "Post to Ledgers": "الترحيل إلى الدفاتر",
         "Posting": "الترحيل",
         "Add New Item": "إضافة عنصر جديد",
-        "Ref No":"رقم المرجع"
+        "Ref No": "رقم المرجع",
+        "ddOtherVouchers": "ddOtherVouchers",
+        "Print Cost Differences": "Print Cost Differences",
+        "Cost on BalanceSheet Items": "Cost on BalanceSheet Items",
+        "Clear All wrong Allocation of Cost":"Clear All wrong Allocation of Cost",
+        "Cost Center Summary Reports": "Cost Center Summary Reports",
+        "Cost Center Detailed Reports":"Cost Center Detailed Reports",
     }
 };
 
