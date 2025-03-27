@@ -184,5 +184,38 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult GetGoodsAndServices()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var data = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Select(g => new
+                    {
+                        g.Gscode,
+                        g.Gsdescrpition,
+                        g.GsdescriptionAr,
+                        g.ItemPartNo,
+                        g.CostPrice,
+                        g.GssellingRate,
+                        g.ReorderQty
+                    })
+                    .ToList();
+
+                    return Ok(data);
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+
+
     }
 }

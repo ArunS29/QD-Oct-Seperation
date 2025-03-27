@@ -1180,9 +1180,9 @@
         "Receivables with unmapped Vouchers": "Receivables with unmapped Vouchers",
         "Bills Payable": "Bills Payable",
         "Invoice Details": "Invoice Details",
-        "Add New Standard Tax Invoice(B2B Invoice)": "Add New Standard Tax Invoice(B2B Invoice)",
-        "Add New Simplified Tax Invoice(B2C Invoice)": "Add New Simplified Tax Invoice(B2C Invoice)",
-        "Add New Prepayment Tax Invoice(B2B Invoice) for Advance Payments": "Add New Prepayment Tax Invoice(B2B Invoice) for Advance Payments",
+        "New Standard Tax Invoice(B2B Invoice)": "Add New Standard Tax Invoice(B2B Invoice)",
+        "New Simplified Tax Invoice(B2C Invoice)": "Add New Simplified Tax Invoice(B2C Invoice)",
+        "New Prepayment Tax Invoice(B2B Invoice) for Advance Payments": "Add New Prepayment Tax Invoice(B2B Invoice) for Advance Payments",
         "Other Details": "Other Details",
         "Deductions & Currency Details": "Deduction&Currecy Details",
         "Branch/Division Details": "Branch/Division Details",
@@ -1325,7 +1325,16 @@
         "Post to Ledgers": "Post to Ledgers",
         "Posting": "Posting",
         "Add New Item": "Add New Item",
-        "Ref No":"Ref No"
+        "Ref No": "Ref No",
+        "Print Regular TAX Invoice": "Print Regular TAX Invoice",
+        "Print Simplified TAX Invoice": "Print Simplified TAX Invoice",
+        "Additional Formats": "Additional Formats",
+        "Edit Sales Voucher": "Edit Sales Voucher",
+        "Upload Items from Excel": "Upload Items from Excel",
+        "Profit On Sale": "Profit On Sale",
+        "Invoice Cost Posting": "Invoice Cost Posting",
+        "Advance / Prepayment Adjustments": "Advance / Prepayment Adjustments",
+        "Ref No": "Ref No"
 
 
 
@@ -2467,9 +2476,9 @@
         "Choose if you want this account to link with Employee Database": "اختر ما إذا كنت تريد ربط هذا الحساب بقاعدة بيانات الموظفين",
         "Choose if you want this account to link with Employee's Salary Advance": "اختر ما إذا كنت تريد ربط هذا الحساب بسلفة راتب الموظف",
         "Invoice Details": "تفاصيل الفاتورة",
-        "Add New Standard Tax Invoice(B2B Invoice)": "إضافة فاتورة ضريبية قياسية جديدة (فاتورة B2B)",
-        "Add New Simplified Tax Invoice(B2C Invoice)": "إضافة فاتورة ضريبية مبسطة جديدة (فاتورة B2C)",
-        "Add New Prepayment Tax Invoice(B2B Invoice) for Advance Payments": "أضف فاتورة ضريبة الدفع المسبق الجديدة (فاتورة B2B) للدفعات المقدمة",
+        "New Standard Tax Invoice(B2B Invoice)": "إضافة فاتورة ضريبية قياسية جديدة (فاتورة B2B)",
+        "New Simplified Tax Invoice(B2C Invoice)": "إضافة فاتورة ضريبية مبسطة جديدة (فاتورة B2C)",
+        "New Prepayment Tax Invoice(B2B Invoice) for Advance Payments": "أضف فاتورة ضريبة الدفع المسبق الجديدة (فاتورة B2B) للدفعات المقدمة",
         "Other Details": "تفاصيل أخرى",
         "Deductions & Currency Details": "تفاصيل الخصم والعملة",
         "Branch/Division Details": "تفاصيل الفرع/القسم",
@@ -2599,7 +2608,16 @@
         "Post to Ledgers": "الترحيل إلى الدفاتر",
         "Posting": "الترحيل",
         "Add New Item": "إضافة عنصر جديد",
-        "Ref No":"رقم المرجع"
+        "Ref No": "رقم المرجع",
+        "Print Regular TAX Invoice": "طباعة فاتورة ضريبية عادية",
+        "Print Simplified TAX Invoice": "طباعة فاتورة ضريبية مبسطة",
+        "Additional Formats": "تنسيقات إضافية",
+        "Edit Sales Voucher": "تحرير قسيمة المبيعات",
+        "Upload Items from Excel": "تحميل العناصر من إكسل",
+        "Profit On Sale": "الربح من البيع",
+        "Invoice Cost Posting": "ترحيل تكلفة الفاتورة",
+        "Advance / Prepayment Adjustments": "تعديلات السلفة / الدفعة المقدمة",
+        "Ref No": "رقم المرجع"
     }
 };
 
