@@ -191,7 +191,8 @@
 
 </style>
 
-<div class="dx-fieldset horizontal-container"style="width:1000px;">
+<div class="dx-fieldset horizontal-container"style="width:1000px;background-color:transparent;" >
+
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -300,6 +301,25 @@
             .ShowArrowIcon(false)
             )
     </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btngetcostofgoodssold")
+            .Text(new JS("formatMessage('Get Cost Of Goods Sold')"))
+            .Icon("card")
+            .Width(150)
+            @* .OnClick("navigateToInvoiceEdit") *@
+            )
+
+    </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnpostcogsvoucher")
+            .Text(new JS("formatMessage('Post CoGS Voucher')"))
+            .Icon("card")
+            .Width(150)
+            @* .OnClick("navigateToInvoiceEdit") *@
+            )
+    </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -310,7 +330,26 @@
             .OnClick("navigateToInvoiceEdit")
             )
     </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnPastefromExcel")
+            .Text(new JS("formatMessage('Paste from Excel')"))
+            .Icon("card")
+            .Width(150)
+            @* .OnClick("navigateToInvoiceEdit") *@
+            )
 
+    </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnUpLoadItems")
+            .Text(new JS("formatMessage('Upload Items')"))
+            .Icon("card")
+            .Width(150)
+            @* .OnClick("navigateToInvoiceEdit") *@
+            )
+
+    </div>
 
 
     <div class="btn-container">
@@ -435,8 +474,8 @@
                        // .OnClick("onBackButtonClick")
                         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                         )
-                         </div>
-                         <div class="btn-containerIvoiceEdit">
+         </div>
+         <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
                         .ID("btnVerify")
                         .Text(new JS("formatMessage('Verify')"))
@@ -445,8 +484,8 @@
                         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
                         )
-                        </div>
-                        <div class="btn-containerIvoiceEdit">
+         </div>
+         <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
                         .ID("btnApprove")
                         .Text(new JS("formatMessage('Approve')"))

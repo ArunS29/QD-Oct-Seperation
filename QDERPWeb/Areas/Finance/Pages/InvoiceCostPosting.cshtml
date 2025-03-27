@@ -12,7 +12,7 @@
 		z-index: 1000;
 	}
 
-	.limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btngetcostofgoodssold,#btnpostcogsvoucher)) {
 		display: none !important;
 	}
 
@@ -156,20 +156,17 @@
 	</div>
 </div>
 
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("VATModuleFooter")
-	</div>
-</div>
+
 
 
 
 <div class="dx-fieldset horizontal-container">
-	@(Html.DevExtreme().TextBox()
+	@* @(Html.DevExtreme().TextBox()
 		.ID("txtBankAccountName")
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
-		)
+		) *@
+	@(Html.DevExtreme().TextBox().ID("txtBankAccountName"))
 
 	@(Html.DevExtreme().DateBox()
 		.ID("todateBox")
@@ -343,7 +340,11 @@
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
 </div>
-
+<div class="Head"> 
+	<div class="limited-footer">
+		@await Html.PartialAsync("VATModuleFooter")
+	</div>
+</div>
 
 
 <div id="overlay" class="overlay">
@@ -357,8 +358,8 @@
 <script>
 
 		$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#ddButtonLayout").length) {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btngetcostofgoodssold,#btnpostcogsvoucher").length) {
 				$(this).remove();
 			}
 		});

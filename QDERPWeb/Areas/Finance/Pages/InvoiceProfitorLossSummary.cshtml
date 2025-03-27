@@ -13,7 +13,7 @@
 		z-index: 1000;
 	}
 
-	.limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btngetcostofgoodssold)) {
 		display: none !important;
 	}
 
@@ -157,11 +157,7 @@
 	</div>
 </div>
 
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("VATModuleFooter")
-	</div>
-</div>
+
 
 
 
@@ -331,7 +327,11 @@
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
 </div>
-
+<div class="Head">
+	<div class="limited-footer">
+		@await Html.PartialAsync("VATModuleFooter")
+	</div>
+</div>
 
 
 <div id="overlay" class="overlay">
@@ -345,8 +345,8 @@
 <script>
 
 		$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#ddButtonLayout").length) {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btngetcostofgoodssold").length) {
 				$(this).remove();
 			}
 		});

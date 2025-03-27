@@ -12,7 +12,7 @@
 		z-index: 1000;
 	}
 
-	.limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel)) {
+	.limited-footer .btn-container:not(:has(#btnBack,#btnPastefromExcel,#btnUploadItems)) {
 		display: none !important;
 	}
 
@@ -153,12 +153,6 @@
 <div class="title">
 	<div class="header-container">
 		<div id="VATInvoiceWithDetails" class="no-border-input"></div>
-	</div>
-</div>
-
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("VATModuleFooter")
 	</div>
 </div>
 
@@ -380,7 +374,11 @@
 		)
 </div>
 
-
+<div class="Head">
+	<div class="limited-footer">
+		@await Html.PartialAsync("VATModuleFooter")
+	</div>
+</div>
 
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
@@ -393,8 +391,8 @@
 <script>
 
 		$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#ddButtonLayout").length) {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+			if (!$(this).find("#btnBack,#btnPastefromExcel,#btnUploadItems").length) {
 				$(this).remove();
 			}
 		});

@@ -183,6 +183,51 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetGoodsAndServices()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl20164GoodsAndServicesMasters
+                    .Select(g => new
+                    {
+                        g.Gsdescrpition,
+                        g.GsgroupId
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUnitofMeasure()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl40111PropertyUnitCodes
+                    .Select(g => new
+                    {
+                        g.UnitType,
+                        g.UnitCode
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
 
         [HttpGet]
         public IActionResult GetGoodsAndServices()
