@@ -5,7 +5,8 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 
 using Microsoft.EntityFrameworkCore;
-using SkiaSharp;
+using DevExpress.Emf;
+//using SkiaSharp;
 
 
 namespace QDWEB.Areas.Finance.Controllers
@@ -129,26 +130,33 @@ namespace QDWEB.Areas.Finance.Controllers
                 _context.Tbl201VoucherEntryTemps.Add(VE);
                 await _context.SaveChangesAsync();
 
-                // Retrieve the updated list from tbl201VoucherEntryTemp
-                var qryListOfAccountlists = _context.Tbl201VoucherEntryTemps
-                    .Where(p => p.VoucherNo == VE.VoucherNo)
-                    .Select(i => new
+                // Fetch voucher entries and join with account names
+                var qryListOfAccountlists = await _context.Tbl201VoucherEntryTemps
+                    .Where(p => p.VoucherNo == VE.VoucherNo) // Fix comparison operator
+                    .OrderBy(i => i.DrCr == "Dr" ? 0 : 1) // "Dr" entries first
+                    .Select(i => new VoucherEntryDisplayDTO
                     {
-                        i.VoucherNo,
-                        i.VoucherEntryNo,
-                        i.DrCr,
-                        i.VoucherAmount,  // Replacing DrAmount & CrAmount with VoucherAmount
-                        i.EntryNarration,
-                        i.AccountHead
-                    });
+                        VoucherNo = i.VoucherNo,
+                        VoucherEntryNo = i.VoucherEntryNo,
+                        DrCr = i.DrCr,
+                        VoucherAmount = i.VoucherAmount,
+                        EntryNarration = i.EntryNarration,
+                        AccountHead = _context.Qry201ListOfAccounts
+                                              .Where(a => a.AccountId == i.AccountHead)
+                                              .Select(a => a.AccountHead)
+                                              .FirstOrDefault(), // Get AccountHead from ChartOfAccounts
+                        SysRemarks = i.SysRemarks
+                    })
+                    .ToListAsync(); // Async execution
 
-                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+                return Json(DataSourceLoader.Load(qryListOfAccountlists.AsQueryable(), loadOptions));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
+
         [HttpPost]
         public async Task<ActionResult> SaveVoucher([FromBody] VoucherViewModel VM)
         {
@@ -188,17 +196,23 @@ namespace QDWEB.Areas.Finance.Controllers
                         newVoucherNo = $"JV-{currentDate}-{currentMonth}-{nextSequence:D3}";
                     }
 
-                    // Assign `VoucherNo` to all entries
+                    // Assign `VoucherNo` and fetch `AccountId`
                     foreach (var entry in VM.VoucherEntries)
                     {
                         entry.VoucherNo = newVoucherNo;
                         entry.VoucherEntryNo = 0;
+
+                        // Fetch AccountId based on AccountHead
+                        entry.AccountHead = await _context.Tbl201ChartOfAccounts
+                            .Where(a => a.AccountHead == entry.AccountHead)
+                            .Select(a => a.AccountId)
+                            .FirstOrDefaultAsync();
                     }
 
                     // **Save to VoucherMaster Table**
                     var voucherMaster = new Tbl201VoucherMaster
                     {
-                        VoucherNo = newVoucherNo,  // Assign new Voucher Number 
+                        VoucherNo = newVoucherNo,
                         VoucherDate = VM.VoucherMaster.VoucherDate,
                         VoucherEffectiveDate = VM.VoucherMaster.VoucherEffectiveDate,
                         VoucherNarration = VM.VoucherMaster.VoucherNarration,
@@ -233,7 +247,8 @@ namespace QDWEB.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateVoucher([FromBody] VoucherViewModel VM)
         {
-            if (VM == null || string.IsNullOrEmpty(VM.VoucherMaster.VoucherNo) || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
+            // **Validate Incoming Data**
+            if (VM == null || VM.VoucherMaster == null || string.IsNullOrEmpty(VM.VoucherMaster.VoucherNo) || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
             {
                 return BadRequest(new { success = false, message = "Invalid data received or missing voucher number." });
             }
@@ -242,6 +257,7 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
+                    // **Find Existing Voucher Master**
                     var voucherMaster = await _context.Tbl201VoucherMasters
                         .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherMaster.VoucherNo);
 
@@ -256,23 +272,48 @@ namespace QDWEB.Areas.Finance.Controllers
                     voucherMaster.VoucherNarration = VM.VoucherMaster.VoucherNarration;
                     voucherMaster.BillRemarks = VM.VoucherMaster.BillRemarks;
 
-                    // **Delete old entries first**
-                    var existingEntries = _context.Tbl201VoucherEntries
-                        .Where(e => e.VoucherNo == VM.VoucherMaster.VoucherNo);
+                    // **Delete Old Entries First**
+                    var existingEntries = await _context.Tbl201VoucherEntries
+                        .Where(e => e.VoucherNo == VM.VoucherMaster.VoucherNo)
+                        .ToListAsync();
+
                     _context.Tbl201VoucherEntries.RemoveRange(existingEntries);
                     await _context.SaveChangesAsync(); // Ensure old records are removed first
 
+                    // **Fetch Account IDs and Add New Entries**
+                    var newEntries = new List<Tbl201VoucherEntry>();
 
-                    var newEntries = VM.VoucherEntries.Select(entry => new Tbl201VoucherEntry
+                    foreach (var entry in VM.VoucherEntries)
                     {
-                        VoucherNo = VM.VoucherMaster.VoucherNo,
-                        // DO NOT SET VoucherEntryNo, it will be auto-generated
-                        AccountHead = entry.AccountHead,
-                        DrCr = entry.DrCr,
-                        VoucherAmount = entry.VoucherAmount,
-                        EntryNarration = entry.EntryNarration
-                    }).ToList();
+                        // **Ensure AccountHead is not null**
+                        if (string.IsNullOrEmpty(entry.AccountHead))
+                        {
+                            return BadRequest(new { success = false, message = "AccountHead cannot be null or empty." });
+                        }
 
+                        // **Fetch Account ID from ChartOfAccounts**
+                        var accountID = await _context.Tbl201ChartOfAccounts
+                            .Where(a => a.AccountHead == entry.AccountHead)
+                            .Select(a => a.AccountId) // Convert to nullable int to avoid null exceptions
+                            .FirstOrDefaultAsync();
+
+                        if (accountID == null)
+                        {
+                            return BadRequest(new { success = false, message = $"AccountHead '{entry.AccountHead}' not found in ChartOfAccounts." });
+                        }
+
+                        // **Create New Entry**
+                        newEntries.Add(new Tbl201VoucherEntry
+                        {
+                            VoucherNo = VM.VoucherMaster.VoucherNo,
+                            AccountHead = accountID.ToString(), // Assign AccountID as a string
+                            DrCr = entry.DrCr,
+                            VoucherAmount = entry.VoucherAmount,
+                            EntryNarration = entry.EntryNarration
+                        });
+                    }
+
+                    // **Insert New Entries**
                     await _context.Tbl201VoucherEntries.AddRangeAsync(newEntries);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
@@ -285,6 +326,7 @@ namespace QDWEB.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
+
 
         //[HttpGet]
         //public async Task<ActionResult> LoadVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
