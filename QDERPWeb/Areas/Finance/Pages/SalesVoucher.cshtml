@@ -469,6 +469,7 @@
 				.GroupPanel(groupPanel => groupPanel.Visible(false))
 				.ShowBorders(true)
 				.Width("100%")
+				.ColumnChooser(columnChooser => columnChooser.Enabled(true))
 				.Summary(summary =>
 				{
 					summary.TotalItems(totalItems =>
@@ -1150,7 +1151,7 @@
 
 			console.log("Second entry added:", response2);
 			$("#dataGrid").dxDataGrid("instance").option("dataSource", response2.data);
-
+				voucherNo.option("disabled", true);
 			// Clear fields
 			accountHead.option("value", null);
 			txtVoucherAmt.option("value", null);
