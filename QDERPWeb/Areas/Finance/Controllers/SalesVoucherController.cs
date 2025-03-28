@@ -89,7 +89,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.DrAmount,
                             i.CrAmount,
                             i.EntryNarration,
-                            i.AccountHead,
+                            AccountHead = dbContext.Qry201ListOfAccounts
+                        .Where(a => a.AccountId == i.AccountHead)
+                        .Select(a => a.AccountHead)
+                        .FirstOrDefault() ?? i.AccountHead,
                             i.SysRemarks,
                         });
 
