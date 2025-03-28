@@ -90,7 +90,9 @@
 												.Type(DateBoxType.Date)
 												.DisplayFormat("dd-MMM-yyyy")
 												.Value(DateTime.Now)
-												)
+											    .OnValueChanged("onVoucherDateChange") // JS function name// JS function name
+																										)
+					
 				</div>
 			</div>
 
@@ -104,7 +106,7 @@
 												.Type(DateBoxType.Date)
 												.DisplayFormat("dd-MMM-yyyy")
 												.Value(DateTime.Now)
-												)
+							)
 				</div>
 			</div>
 			<div class="col-md-3">
@@ -2310,7 +2312,8 @@
 			}
 		});
 	}
-	$(document).ready(function () {
+
+		$(document).ready(function () {
 		let voucherDateBox = $("#VoucherDate").dxDateBox("instance");
 
 		if (!voucherDateBox) {
@@ -2325,34 +2328,70 @@
 		});
 	});
 
-	async function onVoucherDateChange(e) {
-		console.log("onVoucherDateChange triggered", e);
+	  async function onVoucherDateChange(e) {
+		console.log("Selected Date:", e.value);
+	
+		var voucherDate = $("#VoucherDate").dxDateBox("instance");
+		var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
-		if (!e || !e.value) {
-			console.warn("Invalid date value", e);
-			return;
-		}
+		let voucherDateval = e.value; // Get Date from DevExtreme DateBox
 
-		let selectedDate = e.value;
-		console.log("Selected Date:", selectedDate);
+		// Check if voucherDateval is valid
+		if (!voucherDateval) return;
 
-		try {
-			let response = await $.ajax({
-				url: "/api/SalesVoucher/CheckVoucherDateLocking?voucherDate=" + selectedDate.toISOString(),
-				type: "GET",
-			});
+		// Set effectiveDate to the same value as voucherDate
+		effectiveDate.option("value", voucherDateval);
 
-			console.log("API Response:", response);
+		// Convert to 'yyyy-MM-dd' format
+		let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
 
-			if (!response.success) {
-				DevExpress.ui.notify(response.message, "error", 3000);
-				$("#VoucherDate").dxDateBox("instance").option("value", new Date()); // Reset to today
-			}
-		} catch (error) {
-			console.error("AJAX Error:", error);
-			DevExpress.ui.notify("Error checking date. Please try again.", "error", 3000);
+		// Define the cutoff date (2021-12-31)
+		let cutoffDate = new Date("2021-12-31");
+
+		// Get the current date to set if the voucher date is blocked
+		let currentdate = new Date();
+		let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+
+		// Check if the formatted voucher date is before the cutoff date
+		if (new Date(formattedDate) < cutoffDate) {
+			// Show alert for blocked entry
+			DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+			// Set both voucherDate and effectiveDate to the current date
+			voucherDate.option("value", formattedCurrentDate);
+			effectiveDate.option("value", formattedCurrentDate);
 		}
 	}
+
+
+	// async function onVoucherDateChange(e) {
+	// 	console.log("onVoucherDateChange triggered", e);
+
+	// 	if (!e || !e.value) {
+	// 		console.warn("Invalid date value", e);
+	// 		return;
+	// 	}
+
+	// 	let selectedDate = e.value;
+	// 	console.log("Selected Date:", selectedDate);
+
+	// 	try {
+	// 		let response = await $.ajax({
+	// 			url: "/api/SalesVoucher/CheckVoucherDateLocking?voucherDate=" + selectedDate.toISOString(),
+	// 			type: "GET",
+	// 		});
+
+	// 		console.log("API Response:", response);
+
+	// 		if (!response.success) {
+	// 			DevExpress.ui.notify(response.message, "error", 3000);
+	// 			$("#VoucherDate").dxDateBox("instance").option("value", new Date()); // Reset to today
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("AJAX Error:", error);
+	// 		DevExpress.ui.notify("Error checking date. Please try again.", "error", 3000);
+	// 	}
+	// }
 		function changeRowColor(e) {
 		if (e.rowType === "data" && e.data.IsLedgerObselete === true) {
 			e.rowElement.css("background-color", "#ffcccc"); // Light Red
@@ -2648,6 +2687,10 @@
 			}
 		});
 	}
+
+	
+	
+	
 </script>
 
 

@@ -1194,116 +1194,587 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
-
         [HttpPost]
-        public async Task<ActionResult> DeleteVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo, string PaymentAccoutHeadName)
+        public async Task<ActionResult> DeleteVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo, string PaymentAccoutHeadName, int Gridcount)
         {
+           
+
             try
             {
-                int debitamt = 0; // Initialize debit amount
-                // Find the record to delete
+                Tbl201VoucherMaster voucherMaster = new();
+                int aEntryAmount = 0;
+                int Amt = 0;
+                var Remarks = "";
+                bool IsMatchingEntry = false;
+                //var matchingEntries;
+                List<VoucherEntryDisplayDTO> matchingEntries = new();
+                //  var voucherNos1 = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+
+
+                // Get the list of updated vouchers
+                var voucherEntries1 = _context.Tbl201VoucherEntries
+                                              .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
+                                              .ToList();
+
+                var voucherNos1 = voucherEntries1.Select(ve => ve.VoucherNo).Distinct();
+
+              
+                var qryListOfAccountlists1 = _context.Qry201VoucherEntryScreenDisplays
+                    .Where(p => voucherNos1.Contains(p.VoucherNo))
+                    .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
+                    .Select(i => new VoucherEntryDisplayDTO
+                    {
+                        VoucherNo = i.VoucherNo,
+                        VoucherEntryNo = i.VoucherEntryNo,
+                        DrCr = i.DrCr,
+                        DrAmount = i.DrAmount,
+                        CrAmount = i.CrAmount,
+                        EntryNarration = i.EntryNarration,
+                        AccountHead = i.AccountHead,
+                        SysRemarks = i.SysRemarks
+                    });
+
+                var resultList1 = await qryListOfAccountlists1.ToListAsync();
+                int crCount1 = resultList1.Count(i => i.DrCr == "Cr");
+                if (crCount1 >= 2)
+                {
+                    matchingEntries = resultList1.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
+                    IsMatchingEntry = true;
+                }
+
+                bool isVoucherExists = _context.Tbl201VoucherMasters
+               .Any(v => v.VoucherNo == voucherEntries1[0].VoucherNo);
                 var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var SubLedgerRecord = await _context.Tbl201SubLedgerMasters.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var PropertyAllocationRecord = await _context.Tbl20122PropertyAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+                var CostAllocationRecord = await _context.Tbl201CostAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+                var SalaryPayableRecord = await _context.Tbl20114SalaryPayableMasters.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var EmpAllocationRecord = await _context.Tbl20104EmployeeAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+
+
+
+                var voucherNo = voucherEntries1[0].VoucherNo;
+                var masterrecord = _context.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+                if (!isVoucherExists)
+                {
+                    voucherMaster.VoucherNo = voucherEntries1[0].VoucherNo;
+                    voucherMaster.VoucherDate = DateTime.Now;
+                   
+                }
+
+                // Add entries to the database
+                //_context.Tbl201VoucherEntries.AddRange(voucherEntries);
+                //await _context.SaveChangesAsync();
+
+             
                 if (record == null)
                 {
                     return NotFound(new { message = "Record not found!" });
                 }
 
-                if (record.DrCr != "Cr")
+                if (record.VoucherAmount!=0)
                 {
-                    // Remove the record
-                    _context.Tbl201VoucherEntries.Remove(record);
+                    if(record!=null)
+                    {
+                        _context.Tbl201VoucherEntries.Remove(record);
+                    }
+                    else if(SubLedgerRecord!=null)
+                    {
+                        _context.Tbl201SubLedgerMasters.Remove(SubLedgerRecord);
+
+                    }
+                    else if (PropertyAllocationRecord != null)
+                    {
+                        _context.Tbl20122PropertyAllocationMasters.Remove(PropertyAllocationRecord);
+                    }
+                    else if (SubLedgerRecord != null)
+                    {
+                        _context.Tbl201CostAllocationMasters.Remove(CostAllocationRecord);
+                    }
+                    else if (SubLedgerRecord != null)
+                    {
+                        _context.Tbl20104EmployeeAllocationMasters.Remove(EmpAllocationRecord);
+                    }
+             
+                    //  _context.Tbl201VoucherMasters.Remove(masterrecord);
                     await _context.SaveChangesAsync();
 
+
                 }
+                
+                
+                //SaveVoucher(voucherEntries);
 
                 // Get the list of updated vouchers
                 var voucherEntries = _context.Tbl201VoucherEntries
                                               .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
                                               .ToList();
 
+
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+                var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+                    .Where(p => voucherNos.Contains(p.VoucherNo))
+                    .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
+                    .Select(i => new VoucherEntryDisplayDTO
+                    {
+                        VoucherNo = i.VoucherNo,
+                        VoucherEntryNo = i.VoucherEntryNo,
+                        DrCr = i.DrCr,
+                        DrAmount = i.DrAmount,
+                        CrAmount = i.CrAmount,
+                        EntryNarration = i.EntryNarration,
+                        AccountHead = i.AccountHead,
+                        SysRemarks = i.SysRemarks
+                    });
 
-                // Query the display list
-                var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
-                                                    .Where(p => voucherNos.Contains(p.VoucherNo))
-                                                    .OrderBy(i => i.DrCr == "Cr")
-                                                    .Select(i => new VoucherEntryDisplayDTO
-                                                    {
-                                                        VoucherNo = i.VoucherNo,
-                                                        VoucherEntryNo = i.VoucherEntryNo,
-                                                        DrCr = i.DrCr,
-                                                        DrAmount = i.DrAmount,
-                                                        CrAmount = i.CrAmount,
-                                                        EntryNarration = i.EntryNarration,
-                                                        AccountHead = i.AccountHead,
-                                                        SysRemarks = i.SysRemarks
-                                                    });
+                var resultList = await qryListOfAccountlists.ToListAsync();
 
-                var resultList = await qryListOfAccountLists.ToListAsync();
+                int debitamt = 0; // Initialize debit amount
 
-                // Update the fields in the result list
+                int crCount = resultList.Count(i => i.DrCr == "Cr");
+
+                //var lastCrEntry = resultList.LastOrDefault(i => i.DrCr == "Cr");
+
+                var newCrEntry = resultList
+    .Where(i => i.DrCr == "Cr")
+    .OrderByDescending(i => i.VoucherEntryNo) // Assuming this is sequential
+    .FirstOrDefault();
+
+
+
+                var newlist = newCrEntry != null ? new List<VoucherEntryDisplayDTO> { newCrEntry } : new List<VoucherEntryDisplayDTO>();
+
+                var pettycashid = "";
+                foreach (var petty in newlist)
+                {
+                    pettycashid = petty.AccountHead;
+                }
+
                 foreach (var entry in resultList)
                 {
-                    debitamt = (int)(debitamt + entry.DrAmount);
 
-                    // If Dr/Cr is Credit ("Cr"), perform specific logic
-                    if (entry.DrCr == "Cr" & PaymentAccoutHeadName == "Petty Cash - Shabbir")
-                    {
-                        // Check if an existing entry matches
-                        var existingEntry = _context.Tbl201VoucherEntries
-                                                    .FirstOrDefault(v => v.AccountHead == entry.AccountHead
-                                                                      && v.DrCr == "Cr"
-                                                                      && v.VoucherNo == entry.VoucherNo);
-
-                        if (existingEntry != null)
-                        {
-                            // Update CrAmount by adding the calculated debit amount
-                            entry.CrAmount = debitamt;
-
-                            // Optionally update the existing entry in the database
-                            existingEntry.VoucherAmount = entry.CrAmount;
-                            _context.Tbl201VoucherEntries.Update(existingEntry);
-                            _context.SaveChanges();
-
-                        }
-                        else
-                        {
-                            // If no existing entry, assign CrAmount as debitamt
-                            entry.CrAmount = debitamt;
-                        }
-                    }
 
                     if (!string.IsNullOrEmpty(entry.AccountHead))
                     {
-                        // Find the account head
+
                         var accountHead = _context.Qry201ListOfAccounts
                                                   .Where(a => a.AccountId == entry.AccountHead)
                                                   .Select(a => a.AccountHead)
                                                   .FirstOrDefault();
 
-                        // Update AccountHead and SysRemarks
-                        entry.AccountHead = accountHead ?? PaymentAccoutHeadName;
-                        if (resultList.Count == 1)
+
+
+                        if (Gridcount != 0)
                         {
-                            entry.DrAmount = 0;
-                            entry.CrAmount = 0;
-                            entry.SysRemarks = "";
+                            // Calculate Debit Amount (DrAmount)
+
+                            debitamt = (int)(debitamt + entry.DrAmount);
+
+                            // If Dr/Cr is Credit ("Cr"), perform specific logic
+                            if (entry.DrCr == "Cr" && crCount == 1)
+                            // if (crCount==1)
+                            {
+                                // Check if an existing entry matches
+                                var existingEntry = _context.Tbl201VoucherEntries
+                                                            .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                                              && v.DrCr == "Cr"
+                                                                              && v.VoucherNo == entry.VoucherNo);
+
+                                decimal? SubAmt = existingEntry.VoucherAmount - debitamt;
+
+                                if (existingEntry != null)
+                                {
+                                    // Update CrAmount by adding the calculated debit amount
+                                    entry.CrAmount = debitamt;
+                                    entry.SysRemarks = Remarks;
+
+                                    // Optionally update the existing entry in the database
+                                    existingEntry.VoucherAmount = entry.CrAmount;
+                                    existingEntry.SysRemarks = entry.SysRemarks;
+                                    _context.Tbl201VoucherEntries.Update(existingEntry);
+                                    _context.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    // If no existing entry, assign CrAmount as debitamt
+                                    entry.CrAmount = debitamt;
+                                }
+                            }
+                            else if (newCrEntry != null && crCount >= 2 && entry.AccountHead == pettycashid)
+                            {
+                                if (entry.DrCr == "Cr")
+                                {
+
+                                    if (IsMatchingEntry == true)
+                                    {
+                                        // Accumulate `aEntryAmount` correctly
+                                        foreach (var mEntry in matchingEntries)
+                                        {
+                                            aEntryAmount += (int)mEntry.CrAmount; // Accumulate CrAmount correctly
+                                           
+                                        }
+
+                                        // Process voucherEntries
+                                        foreach (var mVoucherEntry in voucherEntries)
+                                        {
+                                            int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                            if(aEntryAmount==0)
+                                            {
+                                                Amt = Amt - eAmount;
+                                            }
+                                            else
+                                            {
+                                                Amt = aEntryAmount - eAmount;
+                                            }
+                                        
+                                        }
+
+                                        // Check if an existing entry matches
+                                        var existingEntry = _context.Tbl201VoucherEntries
+                                                                    .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                                                      && v.DrCr == "Cr"
+                                                                                      && v.VoucherNo == entry.VoucherNo);
+
+                                        if (existingEntry != null)
+                                        {
+                                            // Update CrAmount by adding the calculated debit amount
+                                            entry.CrAmount = Amt;
+                                            entry.SysRemarks = Remarks;
+                                            // Optionally update the existing entry in the database
+                                            existingEntry.VoucherAmount = entry.CrAmount;
+                                            existingEntry.SysRemarks = entry.SysRemarks;
+                                            _context.Tbl201VoucherEntries.Update(existingEntry);
+                                            _context.SaveChanges();
+
+                                        }
+                                        else
+                                        {
+                                            // If no existing entry, assign CrAmount as debitamt
+                                            // entry.CrAmount = debitamt;
+                                        }
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                        entry.AccountHead = accountHead;
+                        if (Remarks == "")
+                        {
+                            Remarks = entry.AccountHead;
+                        }
+                        else
+                        {
+                            Remarks = Remarks + "," + entry.AccountHead;
                         }
 
-                        //entry.SysRemarks = PaymentAccoutHeadName;
                     }
+
                 }
 
-                // Return the modified list for DataSourceLoader
                 return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
             }
             catch (Exception ex)
             {
-                // Return a detailed error response
-                return StatusCode(500, new { message = "An error occurred while deleting the record.", error = ex.Message });
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
 
+
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteBPVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo, string PaymentAccoutHeadName, int Gridcount)
+        {
+
+
+            try
+            {
+                Tbl201VoucherMaster voucherMaster = new();
+                int aEntryAmount = 0;
+                int Amt = 0;
+                var Remarks = "";
+                bool IsMatchingEntry = false;
+                //var matchingEntries;
+                List<VoucherEntryDisplayDTO> matchingEntries = new();
+                //  var voucherNos1 = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+
+
+                // Get the list of updated vouchers
+                var voucherEntries1 = _context.Tbl201VoucherEntries
+                                              .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
+                                              .ToList();
+
+                var voucherNos1 = voucherEntries1.Select(ve => ve.VoucherNo).Distinct();
+
+
+                var qryListOfAccountlists1 = _context.Qry201VoucherEntryScreenDisplays
+                    .Where(p => voucherNos1.Contains(p.VoucherNo))
+                    .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
+                    .Select(i => new VoucherEntryDisplayDTO
+                    {
+                        VoucherNo = i.VoucherNo,
+                        VoucherEntryNo = i.VoucherEntryNo,
+                        DrCr = i.DrCr,
+                        DrAmount = i.DrAmount,
+                        CrAmount = i.CrAmount,
+                        EntryNarration = i.EntryNarration,
+                        AccountHead = i.AccountHead,
+                        SysRemarks = i.SysRemarks
+                    });
+
+                var resultList1 = await qryListOfAccountlists1.ToListAsync();
+                int crCount1 = resultList1.Count(i => i.DrCr == "Cr");
+                if (crCount1 >= 2)
+                {
+                    matchingEntries = resultList1.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
+                    IsMatchingEntry = true;
+                }
+
+                bool isVoucherExists = _context.Tbl201VoucherMasters
+               .Any(v => v.VoucherNo == voucherEntries1[0].VoucherNo);
+                var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var voucherNo = voucherEntries1[0].VoucherNo;
+                var masterrecord = _context.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+                var SubLedgerRecord = await _context.Tbl201SubLedgerMasters.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var PropertyAllocationRecord = await _context.Tbl20122PropertyAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+                var CostAllocationRecord = await _context.Tbl201CostAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+                var SalaryPayableRecord = await _context.Tbl20114SalaryPayableMasters.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var EmpAllocationRecord = await _context.Tbl20104EmployeeAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+
+
+
+                if (!isVoucherExists)
+                {
+                    voucherMaster.VoucherNo = voucherEntries1[0].VoucherNo;
+                    voucherMaster.VoucherDate = DateTime.Now;
+                    _context.Tbl201VoucherMasters.Remove(masterrecord);
+
+
+                }
+
+                // Add entries to the database
+                //_context.Tbl201VoucherEntries.AddRange(voucherEntries);
+                //await _context.SaveChangesAsync();
+
+
+                if (record == null)
+                {
+                    return NotFound(new { message = "Record not found!" });
+                }
+
+                if (record.VoucherAmount != 0)
+                {
+                    if (record != null)
+                    {
+                        _context.Tbl201VoucherEntries.Remove(record);
+                    }
+                    else if (SubLedgerRecord != null)
+                    {
+                        _context.Tbl201SubLedgerMasters.Remove(SubLedgerRecord);
+
+                    }
+                    else if (PropertyAllocationRecord != null)
+                    {
+                        _context.Tbl20122PropertyAllocationMasters.Remove(PropertyAllocationRecord);
+                    }
+                    else if (SubLedgerRecord != null)
+                    {
+                        _context.Tbl201CostAllocationMasters.Remove(CostAllocationRecord);
+                    }
+                    else if (SubLedgerRecord != null)
+                    {
+                        _context.Tbl20104EmployeeAllocationMasters.Remove(EmpAllocationRecord);
+                    }
+
+                    //  _context.Tbl201VoucherMasters.Remove(masterrecord);
+                    await _context.SaveChangesAsync();
+
+
+                }
+
+
+                //SaveVoucher(voucherEntries);
+
+                // Get the list of updated vouchers
+                var voucherEntries = _context.Tbl201VoucherEntries
+                                              .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
+                                              .ToList();
+
+
+                var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
+                var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+                    .Where(p => voucherNos.Contains(p.VoucherNo))
+                    .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
+                    .Select(i => new VoucherEntryDisplayDTO
+                    {
+                        VoucherNo = i.VoucherNo,
+                        VoucherEntryNo = i.VoucherEntryNo,
+                        DrCr = i.DrCr,
+                        DrAmount = i.DrAmount,
+                        CrAmount = i.CrAmount,
+                        EntryNarration = i.EntryNarration,
+                        AccountHead = i.AccountHead,
+                        SysRemarks = i.SysRemarks
+                    });
+
+                var resultList = await qryListOfAccountlists.ToListAsync();
+
+                int debitamt = 0; // Initialize debit amount
+
+                int crCount = resultList.Count(i => i.DrCr == "Cr");
+
+                //var lastCrEntry = resultList.LastOrDefault(i => i.DrCr == "Cr");
+
+                var newCrEntry = resultList
+    .Where(i => i.DrCr == "Cr")
+    .OrderByDescending(i => i.VoucherEntryNo) // Assuming this is sequential
+    .FirstOrDefault();
+
+
+
+                var newlist = newCrEntry != null ? new List<VoucherEntryDisplayDTO> { newCrEntry } : new List<VoucherEntryDisplayDTO>();
+
+                var pettycashid = "";
+                foreach (var petty in newlist)
+                {
+                    pettycashid = petty.AccountHead;
+                }
+
+                foreach (var entry in resultList)
+                {
+
+
+                    if (!string.IsNullOrEmpty(entry.AccountHead))
+                    {
+
+                        var accountHead = _context.Qry201ListOfAccounts
+                                                  .Where(a => a.AccountId == entry.AccountHead)
+                                                  .Select(a => a.AccountHead)
+                                                  .FirstOrDefault();
+
+
+
+                        if (Gridcount != 0)
+                        {
+                            // Calculate Debit Amount (DrAmount)
+
+                            debitamt = (int)(debitamt + entry.DrAmount);
+
+                            // If Dr/Cr is Credit ("Cr"), perform specific logic
+                            if (entry.DrCr == "Cr" && crCount == 1)
+                            // if (crCount==1)
+                            {
+                                // Check if an existing entry matches
+                                var existingEntry = _context.Tbl201VoucherEntries
+                                                            .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                                              && v.DrCr == "Cr"
+                                                                              && v.VoucherNo == entry.VoucherNo);
+
+                                decimal? SubAmt = existingEntry.VoucherAmount - debitamt;
+
+                                if (existingEntry != null)
+                                {
+                                    // Update CrAmount by adding the calculated debit amount
+                                    entry.CrAmount = debitamt;
+                                    entry.SysRemarks = Remarks;
+
+                                    // Optionally update the existing entry in the database
+                                    existingEntry.VoucherAmount = entry.CrAmount;
+                                    existingEntry.SysRemarks = entry.SysRemarks;
+                                    _context.Tbl201VoucherEntries.Update(existingEntry);
+                                    _context.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    // If no existing entry, assign CrAmount as debitamt
+                                    entry.CrAmount = debitamt;
+                                }
+                            }
+                            else if (newCrEntry != null && crCount >= 2 && entry.AccountHead == pettycashid)
+                            {
+                                if (entry.DrCr == "Cr")
+                                {
+
+                                    if (IsMatchingEntry == true)
+                                    {
+                                        // Accumulate `aEntryAmount` correctly
+                                        foreach (var mEntry in matchingEntries)
+                                        {
+                                            aEntryAmount += (int)mEntry.CrAmount; // Accumulate CrAmount correctly
+
+                                        }
+
+                                        // Process voucherEntries
+                                        foreach (var mVoucherEntry in voucherEntries)
+                                        {
+                                            int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                            if (aEntryAmount == 0)
+                                            {
+                                                Amt = Amt - eAmount;
+                                            }
+                                            else
+                                            {
+                                                Amt = aEntryAmount - eAmount;
+                                            }
+
+                                        }
+
+                                        // Check if an existing entry matches
+                                        var existingEntry = _context.Tbl201VoucherEntries
+                                                                    .FirstOrDefault(v => v.AccountHead == entry.AccountHead
+                                                                                      && v.DrCr == "Cr"
+                                                                                      && v.VoucherNo == entry.VoucherNo);
+
+                                        if (existingEntry != null)
+                                        {
+                                            // Update CrAmount by adding the calculated debit amount
+                                            entry.CrAmount = Amt;
+                                            entry.SysRemarks = Remarks;
+                                            // Optionally update the existing entry in the database
+                                            existingEntry.VoucherAmount = entry.CrAmount;
+                                            existingEntry.SysRemarks = entry.SysRemarks;
+                                            _context.Tbl201VoucherEntries.Update(existingEntry);
+                                            _context.SaveChanges();
+
+                                        }
+                                        else
+                                        {
+                                            // If no existing entry, assign CrAmount as debitamt
+                                            // entry.CrAmount = debitamt;
+                                        }
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                        entry.AccountHead = accountHead;
+                        if (Remarks == "")
+                        {
+                            Remarks = entry.AccountHead;
+                        }
+                        else
+                        {
+                            Remarks = Remarks + "," + entry.AccountHead;
+                        }
+
+                    }
+
+                }
+
+                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
+      
 
         [HttpPost]
         public async Task<ActionResult> DeleteAllVoucherEntry(DataSourceLoadOptions loadOptions, string VoucherNo)
@@ -1547,115 +2018,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         }
 
-
-        [HttpPost]
-        public async Task<ActionResult> DeleteBPVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo, string PaymentAccoutHeadName)
-        {
-            try
-            {
-                int debitamt = 0; // Initialize debit amount
-                // Find the record to delete
-                var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
-                if (record == null)
-                {
-                    return NotFound(new { message = "Record not found!" });
-                }
-
-                if (record.DrCr != "Cr")
-                {
-                    // Remove the record
-                    _context.Tbl201VoucherEntries.Remove(record);
-                    await _context.SaveChangesAsync();
-
-                }
-
-                // Get the list of updated vouchers
-                var voucherEntries = _context.Tbl201VoucherEntries
-                                              .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
-                                              .ToList();
-
-                var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
-
-                // Query the display list
-                var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
-                                                    .Where(p => voucherNos.Contains(p.VoucherNo))
-                                                    .OrderBy(i => i.DrCr == "Cr")
-                                                    .Select(i => new VoucherEntryDisplayDTO
-                                                    {
-                                                        VoucherNo = i.VoucherNo,
-                                                        VoucherEntryNo = i.VoucherEntryNo,
-                                                        DrCr = i.DrCr,
-                                                        DrAmount = i.DrAmount,
-                                                        CrAmount = i.CrAmount,
-                                                        EntryNarration = i.EntryNarration,
-                                                        AccountHead = i.AccountHead,
-                                                        SysRemarks = i.SysRemarks
-                                                    });
-
-                var resultList = await qryListOfAccountLists.ToListAsync();
-
-                // Update the fields in the result list
-                foreach (var entry in resultList)
-                {
-                    debitamt = (int)(debitamt + entry.DrAmount);
-
-                    // If Dr/Cr is Credit ("Cr"), perform specific logic
-                    if (entry.DrCr == "Cr" & PaymentAccoutHeadName == "Riyadh Bank")
-                    {
-                        // Check if an existing entry matches
-                        var existingEntry = _context.Tbl201VoucherEntries
-                                                    .FirstOrDefault(v => v.AccountHead == entry.AccountHead
-                                                                      && v.DrCr == "Cr"
-                                                                      && v.VoucherNo == entry.VoucherNo);
-
-                        if (existingEntry != null)
-                        {
-                            // Update CrAmount by adding the calculated debit amount
-                            entry.CrAmount = debitamt;
-
-                            // Optionally update the existing entry in the database
-                            existingEntry.VoucherAmount = entry.CrAmount;
-                            _context.Tbl201VoucherEntries.Update(existingEntry);
-                            _context.SaveChanges();
-
-                        }
-                        else
-                        {
-                            // If no existing entry, assign CrAmount as debitamt
-                            entry.CrAmount = debitamt;
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(entry.AccountHead))
-                    {
-                        // Find the account head
-                        var accountHead = _context.Qry201ListOfAccounts
-                                                  .Where(a => a.AccountId == entry.AccountHead)
-                                                  .Select(a => a.AccountHead)
-                                                  .FirstOrDefault();
-
-                        // Update AccountHead and SysRemarks
-                        entry.AccountHead = accountHead ?? PaymentAccoutHeadName;
-                        if (resultList.Count == 1)
-                        {
-                            entry.DrAmount = 0;
-                            entry.CrAmount = 0;
-                            entry.SysRemarks = "";
-                        }
-
-                        //entry.SysRemarks = PaymentAccoutHeadName;
-                    }
-                }
-
-                // Return the modified list for DataSourceLoader
-                return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
-            }
-            catch (Exception ex)
-            {
-                // Return a detailed error response
-                return StatusCode(500, new { message = "An error occurred while deleting the record.", error = ex.Message });
-            }
-        }
 
         [HttpGet]
         public async Task<IActionResult> GetEditAccountHead(DataSourceLoadOptions loadOptions)

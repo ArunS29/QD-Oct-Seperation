@@ -85,7 +85,71 @@
 
 <script type="text/javascript">
 
-  function loadPivotGridData() {
+//   function loadPivotGridData() {
+//     $.ajax({
+//         url: '/api/TransactionDetails/GetVoucherForAudits',
+//         type: 'GET',
+//         success: function (data) {
+//             console.log("API Data: ", data);
+
+//             // Filter out rows with "Opening Balance"
+//             const filteredData = data.filter(item => item.VoucherNo !== "Opening Balance");
+
+//             // Add title above pivot grid
+           
+//             $("#pivotGridContainer").dxPivotGrid({
+//                 dataSource: {
+//                     store: {
+//                         type: "array",
+//                         data: filteredData
+//                     },
+//                     fields: [
+//                         { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 250,  allowSorting: true,
+//                 allowFiltering: true },
+//                         { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250 },
+//                         { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 250 },
+//                         { dataField: "CrAmount", area: "data", caption: "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+//                         { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+//                         { dataField: "VoucherDate", area: "data", caption: "Voucher Date", expanded: false },
+//                         { dataField: "VoucherRefNo", area: "data", caption: "Voucher Ref No", expanded: false },
+//                         { dataField: "VoucherNarration", area: "data", caption: "Voucher Narration", expanded: false },
+//                         { dataField: "VoucherEnteredBy", area: "data", caption: "Voucher Entered By", expanded: false },
+//                         { dataField: "VoucherEnteredOn", area: "data", caption: "Voucher Entered On", expanded: false },
+//                         { dataField: "VoucherVerifiedBy", area: "data", caption: "Voucher Verified By", expanded: false },
+//                         { dataField: "VoucherVerifiedOn", area: "data", caption: "Voucher Verified On", expanded: false },
+//                         { dataField: "VoucherApprovedBy", area: "data", caption: "Voucher Approved By", expanded: false },
+//                         { dataField: "VoucherApprovedOn", area: "data", caption: "Voucher Approved On", expanded: false },
+//                         { dataField: "VoucherEntryNo", area: "data", caption: "Voucher Entry No", expanded: false },
+//                         { dataField: "AccountHead", area: "data", caption: "Account Head", expanded: false },
+//                         { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount Formatted", expanded: false },
+//                         { dataField: "EntryNarration", area: "data", caption: "Entry Narration", expanded: false },
+//                         { dataField: "AccountGroup", area: "data", caption: "Account Group", expanded: false }
+//                     ]
+//                 },
+//                 allowSortingBySummary: true,
+//                 allowSorting: true,
+//                 allowFiltering: true,
+//                 allowExpandAll: true,
+//                 showBorders: true,
+//                 showColumnHeaders: true,
+//                 showColumnTotals: true,
+//                 showRowTotals: false,
+//                 showColumnGrandTotals: true,
+//                 showRowGrandTotals: true,
+//                 wordWrapEnabled: true,
+//                 height: 500,
+//                 fieldChooser: { enabled: true },
+//                 loadPanel: { enabled: true }
+//             }).dxPivotGrid("instance");
+//         },
+//         error: function (xhr, status, error) {
+//             console.error("Error fetching data: ", error);
+//         }
+//     });
+// }
+
+
+function loadPivotGridData() {
     $.ajax({
         url: '/api/TransactionDetails/GetVoucherForAudits',
         type: 'GET',
@@ -95,8 +159,6 @@
             // Filter out rows with "Opening Balance"
             const filteredData = data.filter(item => item.VoucherNo !== "Opening Balance");
 
-            // Add title above pivot grid
-           
             $("#pivotGridContainer").dxPivotGrid({
                 dataSource: {
                     store: {
@@ -104,26 +166,25 @@
                         data: filteredData
                     },
                     fields: [
-                        { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 250,  allowSorting: true,
-                allowFiltering: true },
-                        { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250 },
-                        { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 250 },
+                        { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
+                        { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
+                        { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
                         { dataField: "CrAmount", area: "data", caption: "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
                         { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
-                        { dataField: "VoucherDate", area: "data", caption: "Voucher Date", expanded: false },
-                        { dataField: "VoucherRefNo", area: "data", caption: "Voucher Ref No", expanded: false },
-                        { dataField: "VoucherNarration", area: "data", caption: "Voucher Narration", expanded: false },
-                        { dataField: "VoucherEnteredBy", area: "data", caption: "Voucher Entered By", expanded: false },
-                        { dataField: "VoucherEnteredOn", area: "data", caption: "Voucher Entered On", expanded: false },
-                        { dataField: "VoucherVerifiedBy", area: "data", caption: "Voucher Verified By", expanded: false },
-                        { dataField: "VoucherVerifiedOn", area: "data", caption: "Voucher Verified On", expanded: false },
-                        { dataField: "VoucherApprovedBy", area: "data", caption: "Voucher Approved By", expanded: false },
-                        { dataField: "VoucherApprovedOn", area: "data", caption: "Voucher Approved On", expanded: false },
-                        { dataField: "VoucherEntryNo", area: "data", caption: "Voucher Entry No", expanded: false },
-                        { dataField: "AccountHead", area: "data", caption: "Account Head", expanded: false },
-                        { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount Formatted", expanded: false },
-                        { dataField: "EntryNarration", area: "data", caption: "Entry Narration", expanded: false },
-                        { dataField: "AccountGroup", area: "data", caption: "Account Group", expanded: false }
+                        { dataField: "VoucherDate", area: "column", caption: "Voucher Date", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherNarration", area: "column", caption: "Voucher Narration", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherEnteredBy", area: "column", caption: "Voucher Entered By", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherEnteredOn", area: "column", caption: "Voucher Entered On", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherVerifiedBy", area: "column", caption: "Voucher Verified By", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherVerifiedOn", area: "column", caption: "Voucher Verified On", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherApprovedBy", area: "column", caption: "Voucher Approved By", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherApprovedOn", area: "column", caption: "Voucher Approved On", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No", allowSorting: true, allowFiltering: true },
+                        { dataField: "AccountHead", area: "column", caption: "Account Head", allowSorting: true, allowFiltering: true },
+                        { dataField: "VoucherAmountFormatted", area: "column", caption: "Voucher Amount Formatted", allowSorting: true, allowFiltering: true },
+                        { dataField: "EntryNarration", area: "column", caption: "Entry Narration", allowSorting: true, allowFiltering: true },
+                        { dataField: "AccountGroup", area: "column", caption: "Account Group", allowSorting: true, allowFiltering: true }
                     ]
                 },
                 allowSortingBySummary: true,
@@ -138,7 +199,19 @@
                 showRowGrandTotals: true,
                 wordWrapEnabled: true,
                 height: 500,
-                fieldChooser: { enabled: true },
+                fieldChooser: {
+                    enabled: true,
+                    allowSearch: true, 
+                    layout: 0 // 0 for a tree structure, 1 for a list structure
+                },
+                fieldPanel: {
+                    visible: true, // Allows drag-and-drop functionality
+                    allowFieldDragging: true,
+                    showColumnFields: true,
+                    showDataFields: true,
+                    showFilterFields: true,
+                    showRowFields: true
+                },
                 loadPanel: { enabled: true }
             }).dxPivotGrid("instance");
         },

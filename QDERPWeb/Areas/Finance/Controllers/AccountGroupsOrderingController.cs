@@ -32,17 +32,20 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var qry20164salarypayableledgermaster = dbContext.Qry201207accountGroupOrderings
-                    .Select(i => new
-                    {
-                        i.ChartOfAccountsOrder,
-                        i.MasterGroup,
-                        i.AccountGroupId,
-                        i.AccountGroup,
-                        i.AccountGroupOrderNo
-                    })
-                    .OrderBy(i => i.AccountGroupOrderNo);  // Sorting by AccountGroupOrderNo in ascending order
+    .Select(i => new
+    {
+        i.ChartOfAccountsOrder,
+        i.MasterGroup,
+        i.AccountGroupId,
+        i.AccountGroup,
+        i.AccountGroupOrderNo
+    })
+    .OrderBy(i => i.ChartOfAccountsOrder)   // First order by ChartOfAccountsOrder
+    .ThenBy(i => i.AccountGroupOrderNo);  // Then order by AccountGroupOrderNo
 
-                return Json(await DataSourceLoader.LoadAsync(qry20164salarypayableledgermaster, loadOptions));
+                var resultList1 = await qry20164salarypayableledgermaster.ToListAsync();
+                return Json(DataSourceLoader.Load(resultList1.AsQueryable(), loadOptions));
+                
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
