@@ -166,6 +166,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
+            .OnClick("function() { SavePopCloseVoucherEntry(); }")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
             @(Html.DevExtreme().Button()
@@ -207,14 +208,37 @@
 
     function SavePopVoucherEntry() {
         var chequeNo = $("#ChequeNo").dxTextBox("instance").option("value");
+        var voucherNo = $("#PopVoucherNo").dxTextBox("instance").option("value"); // Get VoucherNo
+
         if (!chequeNo) {
             DevExpress.ui.notify("Cheque No is required", "error", 2000);
             return;
         }
 
+        // Check if Cheque No already exists, excluding the current voucher
+        $.ajax({
+            type: "GET",
+            url: "/api/VoucherMaster/CheckChequeExists",
+            data: { chequeNo: chequeNo, voucherNo: voucherNo },
+            success: function (exists) {
+                if (exists) {
+                    DevExpress.ui.notify("Cheque No already exists", "error", 2000);
+                } else {
+                    // If Cheque No does not exist, proceed with saving
+                    saveChequeDetails(chequeNo, voucherNo);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while checking Cheque No: " + error);
+            }
+        });
+    }
+
+    // Function to save cheque details
+    function saveChequeDetails(chequeNo, voucherNo) {
         var data = {
             "ChequeNo": chequeNo,
-            "VoucherNo": $("#PopVoucherNo").dxTextBox("instance").option("value"),
+            "VoucherNo": voucherNo,
             "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
             "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
         };
@@ -227,8 +251,9 @@
             dataType: "json",
             success: function (response) {
                 if (response.success) {
-                    DevExpress.ui.notify("Data Saved Successfully!", "success", 2000);
-                    closeChequePopup();
+                    DevExpress.ui.notify(response.message, "success", 2000);
+                    var button = $("#PopSave").dxButton("instance");
+                    button.option("text", "Update");
                 } else {
                     alert("Update failed: " + response.message);
                 }
@@ -306,5 +331,64 @@
 
         }
 
+    }
+
+    function SavePopCloseVoucherEntry() {
+        var chequeNo = $("#ChequeNo").dxTextBox("instance").option("value");
+        var voucherNo = $("#PopVoucherNo").dxTextBox("instance").option("value"); // Get VoucherNo
+
+        if (!chequeNo) {
+            DevExpress.ui.notify("Cheque No is required", "error", 2000);
+            return;
+        }
+
+        // Check if Cheque No already exists, excluding the current voucher
+        $.ajax({
+            type: "GET",
+            url: "/api/VoucherMaster/CheckChequeExists",
+            data: { chequeNo: chequeNo, voucherNo: voucherNo },
+            success: function (exists) {
+                if (exists) {
+                    DevExpress.ui.notify("Cheque No already exists", "error", 2000);
+                } else {
+                    // If Cheque No does not exist, proceed with saving
+                    saveCloseChequeDetails(chequeNo, voucherNo);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while checking Cheque No: " + error);
+            }
+        });
+    }
+
+    function saveCloseChequeDetails(chequeNo, voucherNo) {
+        var data = {
+            "ChequeNo": chequeNo,
+            "VoucherNo": voucherNo,
+            "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
+            "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/VoucherMaster/SaveChequeDetails",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify("Cheque Information Updated sucessfully!", "success", 2000);
+                    var button = $("#PopSave").dxButton("instance");
+                    button.option("text", "Update");
+                    closeChequePopup();
+
+                } else {
+                    alert("Update failed: " + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while updating data: " + error);
+            }
+        });
     }
 </script>
