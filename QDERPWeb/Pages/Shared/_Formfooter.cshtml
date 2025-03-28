@@ -617,11 +617,49 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPreview1', 'btnPrint', 'btnAttach'];
+            const allowedButtons = ['btnBack',  'btnPrint', 'btnAttach','btnEditAHead','btnAddAHead'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
         });
+        // Enable the DropDownButton explicitly
+        const previewButton = $("#btnPreview1").dxDropDownButton("instance");
+       
+        if (previewButton) {
+            previewButton.option("disabled", false);
+            previewButton.repaint();  // Force UI refresh
+        } else {
+            console.error("btnPreview1 instance not found");
+        }
+        // Modify context menu items
+    $("#EditCostAllocation").text("View Cost Allocation");
+    $("#EditBillReceivable").text("View Bill Receivable");
+    $("#EditSalaryPayable").text("View Salary Payable");
+    $("#EditEmployeeAllocation").text("View Employee Allocation");
+    $("#EditPropertyAllocation").text("View Property Allocation");
+
+    // Completely disable DeleteAllLineEntries
+    $("#DeleteAllLineEntries").parent().css({
+        "pointer-events": "none",  // Disables interaction
+        "opacity": "0.5",  // Makes it look disabled
+        "cursor": "default"  // Prevents pointer cursor
+    }).attr("aria-disabled", "true");
+
+    // Disable DevExtreme DateBox components
+    $("#VoucherDate").dxDateBox("instance").option("disabled", true);
+    $("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
+    
+
+    // Disable DevExtreme DropDownBox component
+    $("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
+
+    // Disable DataGrid Editing and Deleting
+    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+    if (dataGrid) {
+        dataGrid.option("editing.allowUpdating", false);
+        dataGrid.option("editing.allowDeleting", false);
+    }
+
     }
 
 

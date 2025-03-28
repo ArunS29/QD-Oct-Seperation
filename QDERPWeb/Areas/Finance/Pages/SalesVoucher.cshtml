@@ -436,15 +436,46 @@
 				.Columns(columns =>
 				{
 					columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')"));
-					columns.AddFor(m => m.AccountHead)
-					.Caption(new JS("formatMessage('Account Head')"))
-					.DataType(GridColumnDataType.String)
-					.Lookup(lookup => lookup
-					.DataSource(ds => ds.WebApi()
-					.Controller("SalesVoucher")
-					.LoadAction("GetClientName"))
-					.ValueExpr("AccountId")
-					.DisplayExpr("AccountHead"));
+						columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')"))
+					.CellTemplate(@<text>
+			<div style="display: flex; justify-content: space-between; align-items: center;">
+				<span>
+					<%- data.AccountHead ? data.AccountHead : "No Selection" %>
+				</span>
+			</div>
+		</text>)
+				.EditCellTemplate(@<text>
+
+
+			@(Html.DevExtreme().DropDownBox()
+			.DataSource(d => d.WebApi()
+			.Controller("VoucherMaster")
+			.LoadAction("GetEditAccountHead")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("AccountId")
+			)
+			.LabelMode(EditorLabelMode.Outside)
+			.ID("accountDropDownBoxEdit")
+			.ShowClearButton(true)
+			.AcceptCustomValue(false)
+			.AcceptCustomValue(true)
+			.OpenOnFieldClick(false)
+			.ValueChangeEvent("change")
+			.HoverStateEnabled(true)
+			.Value(new JS("data.AccountHead"))
+			.ValueExpr("AccountId")
+			.DisplayExpr("AccountHead")
+			.OnValueChanged("gridBox_valueChanged")
+			.OnOpened("onOpened")
+                @* .Width(250) *@
+			.TabIndex(1)
+			.DropDownOptions(o => o.Width(500))
+			.OnKeyDown("onKeyDown")
+			.ContentTemplate(new TemplateName("AccountHeadEditDropdownContentTemplate"))
+			)
+
+
+		</text>);
 
 					columns.AddFor(m => m.DrAmount)
 					.Caption(new JS("formatMessage('Debit')"))
@@ -462,13 +493,27 @@
 				.AllowColumnReordering(true)
 				.AllowColumnResizing(true)
 				.ColumnFixing(fixing => fixing.Enabled(true))
-				@* .HeaderFilter(filter => filter.Visible(true)) *@
-				.Height(300)
+				.HeaderFilter(filter => filter.Visible(true))
+				.Height(250)
 				.ColumnAutoWidth(true)
 				.FilterRow(filterRow => filterRow.Visible(false))
 				.GroupPanel(groupPanel => groupPanel.Visible(false))
 				.ShowBorders(true)
 				.Width("100%")
+				.OnEditorPreparing("onEditorPreparing")
+				.OnRowUpdating("onRowUpdating")
+				.OnRowRemoving("onRowRemoving")
+				.OnRowPrepared(@"function(e) {
+		if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
+		$(e.rowElement).css('background-color', 'lightgray');
+		}
+		}")
+				.Editing(editing => editing
+				.Mode(GridEditMode.Cell)
+				.AllowUpdating(true)
+				.AllowDeleting(true)
+				.UseIcons(true)
+				)
 				.Summary(summary =>
 				{
 					summary.TotalItems(totalItems =>
@@ -552,9 +597,12 @@
 			</div>
 			<div class="row">
 				<div class="col-md-6">
-
-					<div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-						@(Html.DevExtreme().CheckBox().ID("VerifiedBy").Text(new JS("formatMessage('Verified By:')")))
+					<div class="form-group d-flex align-items-center" style="padding-top:10px; padding-bottom:10px">
+						@(Html.DevExtreme().CheckBox()
+													.ID("VerifiedBy")
+													.Text(new JS("formatMessage('Verified By:')"))
+													.Disabled(true) // 🔥 Users cannot check/uncheck
+													)
 						@(Html.DevExtreme().TextBox()
 													.ID("VerifiedBytext")
 													.Value(null)
@@ -574,10 +622,14 @@
 													)
 					</div>
 				</div>
-				<div class="col-md-6">
 
-					<div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-						@(Html.DevExtreme().CheckBox().ID("ApprovedBy").Text(new JS("formatMessage('Approved By:')")))
+				<div class="col-md-6">
+					<div class="form-group d-flex align-items-center" style="padding-top:10px; padding-bottom:10px">
+						@(Html.DevExtreme().CheckBox()
+													.ID("ApprovedBy")
+													.Text(new JS("formatMessage('Approved By:')"))
+													.Disabled(true) // 🔥 Users cannot check/uncheck
+													)
 						@(Html.DevExtreme().TextBox()
 													.ID("ApprovedBytext")
 													.Value(null)
@@ -598,6 +650,7 @@
 					</div>
 				</div>
 			</div>
+
 		</div>
 		<div class="col-md-1">
 			<div class="form-group " style="padding-top:50px;padding-left:7px;">
@@ -684,7 +737,7 @@
 				.ID("accounthead-datagrid")
 				.DataSource(d => d.WebApi()
 				.Controller("SalesVoucher")
-				.LoadAction("GetClientName")
+				.LoadAction("GetAccountHead")
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("AccountId")
 				)
@@ -741,6 +794,50 @@
 			.OnRowPrepared("onAccountHeadRowPrepared")
 			)
 	}
+	@using (Html.DevExtreme().NamedTemplate("AccountHeadEditDropdownContentTemplate"))
+	{
+		@(
+			Html.DevExtreme().DataGrid()
+			.ID("accountDropDownBoxeditGrid")
+			.DataSource(d => d.WebApi()
+			.Controller("VoucherMaster")
+			.LoadAction("GetEditAccountHead")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("AccountHead")
+			)
+			.WordWrapEnabled(true)
+			.ShowBorders(true)
+			.SearchPanel(sp => sp.HighlightSearchText(true))
+			.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+			.SelectedRowKeys(new JS(@"component.option(""value"")"))
+			.OnSelectionChanged(@<text>
+		function(selectedItems) {
+		var keys = selectedItems.selectedRowKeys;
+		component.option("value", keys);
+		console.log(keys);
+		}
+	</text>)
+
+
+			// .HeaderFilter(p => p.Visible(true))
+			.ShowBorders(true)
+			.HoverStateEnabled(true)
+			.Paging(p => p.PageSize(15))
+			.FilterRow(f => f.Visible(true))
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Height(345)
+			.Selection(s => s.Mode(SelectionMode.Single))
+			.Columns(columns =>
+			{
+				columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+				columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+				columns.Add().Caption(new JS("formatMessage('AccountHead Arabic')")).DataField("AccountHeadArabic");
+
+			})
+			)
+	}
+
 
 </div>
 <script>
@@ -1150,7 +1247,7 @@
 
 			console.log("Second entry added:", response2);
 			$("#dataGrid").dxDataGrid("instance").option("dataSource", response2.data);
-
+				voucherNo.option("disabled", true);
 			// Clear fields
 			accountHead.option("value", null);
 			txtVoucherAmt.option("value", null);
@@ -1501,49 +1598,46 @@
 		// 		}
 		// 	});
 		// }
-		function onRowRemoving() {
-			var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+	function onRowRemoving() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
 
+		// Get the selected row's data
+		var selectedRows = dataGrid.getSelectedRowsData(); // Array of selected rows
+		var selectedRowData = selectedRows.length > 0 ? selectedRows[0] : null;
 
-			// Get the selected row's data
-			var selectedRows = dataGrid.getSelectedRowsData(); // Array of selected rows
-			var selectedRowData = selectedRows.length > 0 ? selectedRows[0] : null;
-
-			if (!selectedRowData) {
-				DevExpress.ui.notify("No row selected. Please select a row first.", "error", 2000);
-				return;
-			}
-
-
-			// Retrieve the unique identifier for the row
-			var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-			var voucherEntryNo = selectedRowData.VoucherEntryNo;
-
-			// Validate VoucherEntryNo
-			if (!voucherEntryNo) {
-				DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
-				return;
-			}
-
-			// Send an AJAX request to the API to delete the record
-			$.ajax({
-				url: `/api/VoucherMaster/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
-				type: "POST", // HTTP POST request
-				success: function (response) {
-					if (response.data) {
-						// Update the DataGrid's data source with the updated data
-						$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-
-						DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
-					} else {
-						DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
-					}
-				},
-				error: function (xhr, status, error) {
-					DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
-				}
-			});
+		if (!selectedRowData) {
+			DevExpress.ui.notify("No row selected. Please select a row first.", "error", 2000);
+			return;
 		}
+
+
+		// Retrieve the unique identifier for the row
+		var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+		var voucherEntryNo = selectedRowData.VoucherEntryNo;
+		// Validate VoucherEntryNo
+		if (!voucherEntryNo) {
+			DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
+			return;
+		}
+
+		// Send an AJAX request to the API to delete the record
+		$.ajax({
+			url: `/api/PurchaseVoucher/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
+			type: "POST", // HTTP POST request
+			success: function (response) {
+				if (response.data) {
+					// Update the DataGrid's data source with the updated data
+					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+					DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
+				} else {
+					DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+				}
+			},
+			error: function (xhr, status, error) {
+				DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+			}
+		});
+	}
 
 		$("#btnSaveAndClose").on("click", function (e) {
 			e.preventDefault();
@@ -1748,14 +1842,42 @@
 			}
 		}).dxPopup("instance").show();
 	}
-
-	function showLedgerAccountPopup() {
+		function showLedgerAccountPopup() {
 		var popup = $("#ledgerAccountPopup").dxPopup("instance");
 		popup.show();
 
 		// Set correct URL for LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+
+		// Refresh DropDownBox after popup closes, ensuring new entries are loaded
+		popup.option("onHidden", function () {
+			setTimeout(refreshAccountHeadDropDown, 500); // Delay allows backend update before fetching
+		});
 	}
+
+		function refreshAccountHeadDropDown() {
+		var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
+
+		if (dropDownBox) {
+			var previousValue = dropDownBox.option("value"); // Store previously selected value
+
+			dropDownBox.getDataSource().reload().done(function () {
+				var dataSource = dropDownBox.getDataSource();
+				dataSource.load().done(function (data) {
+					if (data.length > 0) {
+						var latestValue = previousValue && data.some(item => item.AccountId === previousValue)
+							? previousValue // Keep previous selection if still available
+							: data[0].AccountId; // Otherwise, select the first available entry dynamically
+
+						dropDownBox.option("value", latestValue); // Set dynamically fetched value
+					}
+				});
+
+				DevExpress.ui.notify("Account Head list updated!", "success", 2000);
+			});
+		}
+	}
+
 
 	function showLedgerAccountHeadEditPopup() {
 		var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
@@ -1975,6 +2097,249 @@
 		function validateAmount(e) {
 		return e.value > 0;
 	}
+				let isUpdatingCell = false;
+				function onEditorPreparing(e) {
+					if (e.dataField === 'EntryNarration' || e.dataField === 'SysRemarks') {
+						if (isUpdatingCell) {
+							return; // Prevent recursive triggering
+						}
+
+						e.cancel = true; // Prevent the default editor behavior
+
+						const dataGridInstance = e.component; // Get the DataGrid instance
+						const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
+						const fieldName = e.dataField; // Dynamic field name (EntryNarration or SysRemarks)
+						const initialValue = e.row.data[fieldName] || ""; // Get the current value of the cell
+
+						// Show Swal modal
+						Swal.fire({
+							title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
+							html: `
+				<textarea id="swal-field-editor"
+										  style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
+										  placeholder="Enter ${fieldName.replace(/([A-Z])/g, ' $1')}...">${initialValue}</textarea>
+							`,
+							showCancelButton: true,
+							confirmButtonText: 'OK',
+							cancelButtonText: 'Cancel',
+							focusConfirm: false,
+							didOpen: () => {
+								// Focus the textarea and move the cursor to the end
+								const textarea = document.getElementById('swal-field-editor');
+								textarea.focus();
+								textarea.setSelectionRange(initialValue.length, initialValue.length);
+							},
+							preConfirm: () => {
+								const newValue = document.getElementById('swal-field-editor').value.trim();
+								return newValue; // Return the new value from the modal
+							}
+						}).then((result) => {
+							if (result.isConfirmed) {
+								const newValue = result.value;
+
+								if (newValue !== initialValue) {
+									isUpdatingCell = true; // Set the flag before updating the cell
+									dataGridInstance.cellValue(rowIndex, fieldName, newValue); // Update the specific cell dynamically
+									dataGridInstance.saveEditData(); // Save the edit data
+									dataGridInstance.refresh(); // Refresh the grid to reflect changes
+									isUpdatingCell = false; // Reset the flag after updating
+								}
+							} else if (result.isDismissed) {
+								console.log('Edit cancelled');
+							}
+						});
+					}
+				}
+											function onRowUpdating(e) {
+		const updatedData = e.newData;
+		const key = e.key; // Get primary key value if needed
+
+		let dataGrid = $("#dataGrid").dxDataGrid("instance");
+		let allData = dataGrid.option("dataSource");
+
+		// Find the row being updated
+		let rowIndex = allData.findIndex(row => row.VoucherEntryNo === key.VoucherEntryNo);
+		let oldRowData = allData[rowIndex];
+
+		if (!oldRowData) return; // Exit if row not found
+
+		let oldAccountHead = oldRowData.AccountHead;
+		let newAccountHead = updatedData.AccountHead !== undefined
+			? (Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead)
+			: oldRowData.AccountHead;
+
+		let requestData = {
+			VoucherEntryNo: oldRowData.VoucherEntryNo,
+			DrCr: updatedData.DrCr || oldRowData.DrCr,
+			AccountHead: newAccountHead,
+			DrAmount: updatedData.DrAmount || e.oldData.DrAmount,
+			CrAmount: updatedData.CrAmount || e.oldData.CrAmount,
+			EntryNarration: updatedData.EntryNarration || oldRowData.EntryNarration,
+			SysRemarks: updatedData.SysRemarks || oldRowData.SysRemarks
+		};
+
+
+
+		if (oldRowData.DrCr === "Dr") {
+		debugger;
+		// Find all corresponding "Cr" rows
+		let drRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(oldAccountHead));
+
+		if (drRows.length > 0) {
+			drRows.forEach(drRow => {
+				// Replace "Received by : oldAccountHead" with newAccountHead
+				drRow.SysRemarks = drRow.SysRemarks.replace(oldAccountHead, newAccountHead);
+
+				// Send update to backend for each "Cr" row
+				$.ajax({
+					url: "/api/VoucherMaster/UpdateVoucherEntry",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(drRow),
+					success: function(response) {
+		console.log("Cr row updated successfully");
+
+		// Update allData directly
+		allData.forEach(row => {
+			if (row.VoucherEntryNo === drRow.VoucherEntryNo) {
+				row.SysRemarks = drRow.SysRemarks;
+			}
+		});
+		 dataGrid.option("dataSource", allData);
+		// Refresh the specific row instead of reloading the entire data source
+		dataGrid.refresh();
+	},
+					error: function(xhr) {
+						DevExpress.ui.notify("Error updating Cr row", "error", 2000);
+						console.error("Error Response:", xhr.responseText);
+					}
+				});
+			});
+		}
+	}
+
+
+
+
+		if (oldRowData.DrCr === "Cr") {
+		debugger;
+		// Find all corresponding "Cr" rows
+		let crRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(`Paid thru: ${oldAccountHead}`));
+
+		if (crRows.length > 0) {
+			crRows.forEach(crRow => {
+				// Replace "Received by : oldAccountHead" with newAccountHead
+				crRow.SysRemarks = crRow.SysRemarks.replace(`Paid thru: ${oldAccountHead}`, `Paid thru: ${newAccountHead}`);
+
+				// Send update to backend for each "Cr" row
+				$.ajax({
+					url: "/api/VoucherMaster/UpdateVoucherEntry",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(crRow),
+					success: function(response) {
+		console.log("Cr row updated successfully");
+
+		// Update allData directly
+		allData.forEach(row => {
+			if (row.VoucherEntryNo === crRow.VoucherEntryNo) {
+				row.SysRemarks = crRow.SysRemarks;
+			}
+		});
+		 dataGrid.option("dataSource", allData);
+		// Refresh the specific row instead of reloading the entire data source
+		dataGrid.refresh();
+	},
+					error: function(xhr) {
+						DevExpress.ui.notify("Error updating Cr row", "error", 2000);
+						console.error("Error Response:", xhr.responseText);
+					}
+				});
+			});
+		}
+	}
+
+
+		console.log("Request Payload:", requestData);
+
+		// Update the "Cr" row in backend
+		$.ajax({
+			url: "/api/VoucherMaster/UpdateVoucherEntry",
+			type: "POST",
+			contentType: "application/json",
+			data: JSON.stringify(requestData),
+			success: function(response) {
+				fetchUpdatedData(requestData.VoucherEntryNo);
+			},
+			error: function(xhr) {
+				DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
+				console.error("Error Response:", xhr.responseText);
+			}
+		});
+	}
+
+	 function onRowRemoving(e) {
+		// Show confirmation dialog before deleting
+		// let isConfirmed = confirm("Are you sure you want to delete this record?");
+
+
+		// if (!isConfirmed) {
+		//     e.cancel = true; // Prevent deletion if user cancels
+		// } else {
+			console.log("Deleting row with data:", e.data);
+
+			var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+			var voucherEntryNo =  e.data.VoucherEntryNo;
+			// Optionally, call API to delete from the backend
+			$.ajax({
+			url: `/api/PurchaseVoucher/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`,
+
+			   // url: "/api/VoucherMaster/DeleteVoucherEntry", // Change to your actual API
+				type: "POST",
+				contentType: "application/json",
+			  //  data: JSON.stringify({ id: e.data.VoucherEntryNo }), // Pass ID for deletion
+				success: function (response) {
+					 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+				   // DevExpress.ui.notify("Record deleted successfully", "success", 2000);
+				},
+				error: function (xhr, status, error) {
+					e.cancel = true; // Stop deletion if API fails
+					console.error("Error deleting record:", error);
+					DevExpress.ui.notify("Failed to delete record", "error", 2000);
+				}
+			});
+	   // }
+	}
+			function gridBox_valueChanged(e) {
+					var $dataGrid = $("#dataGrid");
+
+					if ($dataGrid.length) {
+						var dataGrid = $dataGrid.dxDataGrid("instance");
+						dataGrid.selectRows(e.value, false);
+					}
+					if (e.value) {
+
+
+						let grid = $("#dataGrid").dxDataGrid("instance");
+						let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+						let rowData = grid.getVisibleRows()[rowIndex].data;
+
+						let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+						let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
+
+						// if (selectedRowData) {
+						//     propertyno = selectedRowData.PropertyNo; // Store the correct ID
+
+						// }
+
+						rowData.AccountHead = e.value; // Update the row data
+						grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
+
+					}
+					// Close the dropdown after selection
+					e.component.option("opened", false);
+
+				}
 </script>
 
 

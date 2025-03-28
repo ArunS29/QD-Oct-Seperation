@@ -152,8 +152,8 @@
         top: 40%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 90%;
-        max-width: 1200px;
+        width: 1700px;
+        max-width: 1700px;
         height: 90%;
         max-height: 800px;
         background: white;
@@ -191,7 +191,8 @@
 
 </style>
 
-<div class="dx-fieldset horizontal-container">
+<div class="dx-fieldset horizontal-container"style="width:1000px;background-color:transparent;" >
+
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -292,12 +293,31 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Add New Standard Tax Invoice(B2B Invoice)')")).Icon("money");
-                    items.Add().Text(new JS("formatMessage('Add New Simplified Tax Invoice(B2C Invoice)')")).Icon("product");
-                    items.Add().Text(new JS("formatMessage('Add New Prepayment Tax Invoice(B2B Invoice) for Advance Payments')")).Icon("product");
+                items.Add().Text(new JS("formatMessage('New Standard Tax Invoice(B2B Invoice)')")).Icon("money");
+                    items.Add().Text(new JS("formatMessage('New Simplified Tax Invoice(B2C Invoice)')")).Icon("product");
+                    items.Add().Text(new JS("formatMessage('New Prepayment Tax Invoice(B2B Invoice) for Advance Payments')")).Icon("product");
             })
             .OnItemClick("addPaymentButton_click")
             .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btngetcostofgoodssold")
+            .Text(new JS("formatMessage('Get Cost Of Goods Sold')"))
+            .Icon("card")
+            .Width(150)
+            @* .OnClick("navigateToInvoiceEdit") *@
+            )
+
+    </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnpostcogsvoucher")
+            .Text(new JS("formatMessage('Post CoGS Voucher')"))
+            .Icon("card")
+            .Width(150)
+            @* .OnClick("navigateToInvoiceEdit") *@
             )
     </div>
 
@@ -310,7 +330,26 @@
             .OnClick("navigateToInvoiceEdit")
             )
     </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnPastefromExcel")
+            .Text(new JS("formatMessage('Paste from Excel')"))
+            .Icon("card")
+            .Width(150)
+            @* .OnClick("navigateToInvoiceEdit") *@
+            )
 
+    </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnUpLoadItems")
+            .Text(new JS("formatMessage('Upload Items')"))
+            .Icon("card")
+            .Width(150)
+            @* .OnClick("navigateToInvoiceEdit") *@
+            )
+
+    </div>
 
 
     <div class="btn-container">
@@ -392,14 +431,30 @@
                             )
                         </div>
       
-     <div class="btn-containerIvoiceEdit">
-        @(Html.DevExtreme().Button()
-                        .ID("btnPrint1")
-                        .Text(new JS("formatMessage('Print')"))
-                        .Icon("print")
-                       // .OnClick("function() { openPrint(); }")
-                        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                        )
+   <div class="btn-containerIvoiceEdit">
+    @(Html.DevExtreme().DropDownButton()
+        .ID("btnPrint1")
+        .Text("Print") // Using string directly
+        .Icon("print")
+        .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+        .DropDownOptions(options => options.Width(230))
+        .ShowArrowIcon(false)
+        .Items(items =>
+        {
+            items.Add().Text("Print Regular TAX Invoice").Icon("print");
+            items.Add().Text("Print Simplified TAX Invoice").Icon("file");
+            items.Add().Text("Additional Formats").Icon("folder");
+            items.Add().Text("Edit Sales Voucher").Icon("edit");
+            items.Add().Text("Upload Items from Excel").Icon("upload");
+            items.Add().Text("Profit On Sale").Icon("chart");
+            items.Add().Text("Invoice Cost Posting").Icon("money");
+            items.Add().Text("Advance / Prepayment Adjustments").Icon("wallet");
+        })
+        .OnItemClick("addPrintButton_click")
+    )
+
+
+
                         </div>
         <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
@@ -419,8 +474,8 @@
                        // .OnClick("onBackButtonClick")
                         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                         )
-                         </div>
-                         <div class="btn-containerIvoiceEdit">
+         </div>
+         <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
                         .ID("btnVerify")
                         .Text(new JS("formatMessage('Verify')"))
@@ -429,8 +484,8 @@
                         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
                         )
-                        </div>
-                        <div class="btn-containerIvoiceEdit">
+         </div>
+         <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
                         .ID("btnApprove")
                         .Text(new JS("formatMessage('Approve')"))
@@ -510,33 +565,64 @@
                     caption: "Item Code", 
                     width: 200 
                 },
-                { 
-                    dataField: "Description", 
-                    caption: "Description", 
-                    width: 250,
-                    editCellTemplate: function(cellElement, cellInfo) {
-                        $("<div>").appendTo(cellElement).dxDropDownBox({
-                            dataSource: getDropdownData(), // Fetch dropdown data
-                            valueExpr: "id",
-                            displayExpr: "name",
-                            value: cellInfo.value,
-                            onValueChanged: function(e) {
-                                cellInfo.setValue(e.value);
-                            },
-                            contentTemplate: function(e) {
-                                return $("<div>").dxList({
-                                    dataSource: getDropdownData(),
-                                    selectionMode: "single",
-                                    onItemClick: function(args) {
-                                        e.component.option("value", args.itemData.id);
-                                        cellInfo.setValue(args.itemData.name);
-                                        e.component.close();
-                                    }
-                                });
-                            }
-                        });
+                {
+    dataField: "Description",
+    caption: "Description",
+    width: 250,
+    editCellTemplate: function(cellElement, cellInfo) {
+        getDropdownData().done(function (dropdownData) {
+            $("<div>").appendTo(cellElement).dxDropDownBox({
+                dataSource: dropdownData,
+                valueExpr: "Gscode",  // The value stored in the grid
+                displayExpr: "Gsdescrpition",  // What is displayed in the dropdown
+                value: cellInfo.value,
+                onValueChanged: function(e) {
+                    let selectedItem = dropdownData.find(item => item.GSCode === e.value);
+                    if (selectedItem) {
+                        cellInfo.setValue(selectedItem.GSDescrpition);
+
+                        // Automatically set additional columns based on selection
+                        let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                        let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+                        dataGrid.cellValue(rowIndex, "ItemPartNo", selectedItem.ItemPartNo);
+                        dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice);
+                        dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate);
                     }
                 },
+                contentTemplate: function(e) {
+                    return $("<div>").dxDataGrid({
+                        dataSource: dropdownData,
+                        selection: { mode: "single" },
+                        keyExpr: "GSCode",
+                        columns: [
+                            { dataField: "GSCode", caption: "Code", width: 80 },
+                            { dataField: "GSDescrpition", caption: "Description", width: 200 },
+                            { dataField: "ItemPartNo", caption: "Part No", width: 100 },
+                            { dataField: "CostPrice", caption: "Cost", width: 100 },
+                            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 }
+                        ],
+                        onSelectionChanged: function(selectedItems) {
+                            let selectedItem = selectedItems.selectedRowsData[0];
+                            if (selectedItem) {
+                                e.component.option("value", selectedItem.GSCode);
+                                cellInfo.setValue(selectedItem.GSDescrpition);
+
+                                // Update other grid columns automatically
+                                let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                                let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+                                dataGrid.cellValue(rowIndex, "ItemPartNo", selectedItem.ItemPartNo);
+                                dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice);
+                                dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate);
+                                e.component.close();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    }
+},
+
                    { dataField: "DescriptionDetails", caption: "...", width: 150 },
                    { dataField: "Qty", caption: "Qty", width: 150 },
                    { dataField: "UnitPrice", caption: "Unit Price", width: 150 },
@@ -583,13 +669,55 @@
         dataGridInstance.refresh();
     }
 
-    function getDropdownData() {
-        return [
-            { id: 1, name: "Item A" },
-            { id: 2, name: "Item B" },
-            { id: 3, name: "Item C" }
-        ];
+    // function getDropdownData() {
+    //     return [
+    //         { id: 1, name: "Item A" },
+    //         { id: 2, name: "Item B" },
+    //         { id: 3, name: "Item C" }
+    //     ];
+    // }
+
+    // Fetch dropdown data (same API can be used if needed)
+ function getDropdownData() {
+    return $.ajax({
+        url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
+        method: "GET",
+        dataType: "json"
+    }).then(function(response) {
+        return response.map(item => ({
+            GSCode: item.Gscode,
+            GSDescrpition: item.Gsdescrpition,
+            ItemPartNo: item.ItemPartNo,
+            CostPrice: item.CostPrice,
+            GSSellingRate: item.GssellingRate
+        }));
+    });
+}
+
+ // Handle button clicks
+    function addPrintButton_click(e) {
+        let url = "";
+        let title = "Print1";
+        switch (e.itemData.text) {
+            case (formatMessage('Upload Items from Excel')):
+                url = `/${tenantName}/Finance/InventoryListtoUpload`;
+                title = formatMessage('Upload Items from Excel');
+                break;
+            case (formatMessage('Profit On Sale')):
+                url = `/${tenantName}/Finance/InvoiceProfitorLossSummary`;
+                title = formatMessage('Profit On Sale');
+                break;
+            case (formatMessage('Invoice Cost Posting')):
+                url = `/${tenantName}/Finance/InvoiceCostPosting`;
+                title = formatMessage('Invoice Cost Posting');
+                break;
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+                return;
+        }
+        openModal(url, title);
     }
+
 
     $(document).ready(function () {
         console.log('Start permission handling');
@@ -1065,22 +1193,29 @@
         }
         openModal(url, title);
     }
+
     function addPaymentButton_click(e) {
          let url = "";
          let title = "Payments";
          switch (e.itemData.text) {
-             case formatMessage('Add New Standard Tax Invoice(B2B Invoice)'):
-                 url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-                window.location.href = url; // Navigate
+             case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
+                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+                // window.location.href = url; // Navigate
 
-                 title = formatMessage('Add New Standard Tax Invoice(B2B Invoice)');
+                // window.open(`/${tenantName}/Finance/frm20161VATInvoiceEdit`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                // break;
+
+                 title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
                  break;
                  
-                  case formatMessage('Add New Simplified Tax Invoice(B2C Invoice)'):
+                  case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
                  url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
-                window.location.href = url; // Navigate
+                // window.location.href = url; // Navigate
 
-                 title = formatMessage('Add New Simplified Tax Invoice(B2C Invoice)');
+              //  window.open(`/${tenantName}/Finance/frmVATInvoiceEditB2C`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+               // break;
+
+                 title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
                  break;
              // case 'Add Bank Payment':
              //     url = `/${tenantName}/Finance/VoucherBankPayment`;
@@ -1090,7 +1225,7 @@
                  console.log("Clicked item: ", e.itemData.text);
                  return;
          }
-       //  openModal(url, title);
+        openModal(url, title);
     }
 
 

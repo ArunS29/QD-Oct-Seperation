@@ -84,5 +84,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 logoPictureBox.Image = logoImage;
             }
         }
+
+        private void xrLabel18_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
     }
 }

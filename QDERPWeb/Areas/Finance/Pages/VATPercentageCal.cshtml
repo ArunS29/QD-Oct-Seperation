@@ -1,0 +1,71 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.VATPercentageCalModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAT Calculator</title>
+
+</head>
+<body>
+
+    <div id="vatCalculator" style="width: 300px; margin: 50px auto;">
+        <h3>VAT Calculator</h3>
+
+        <div id="amountBox"></div>
+        <div id="vatBox"></div>
+        <div id="vatAmountBox"></div>
+        <div id="totalAmountBox"></div>
+    </div>
+
+    <script>
+        $(function () {
+            let amount = 0, vatPercent = 5, vatAmount = 0, totalAmount = 0;
+
+            $("#amountBox").dxNumberBox({
+                value: amount,
+                showSpinButtons: true,
+                label: "Amount",
+                onValueChanged: function (e) {
+                    amount = e.value;
+                    calculateVAT();
+                }
+            });
+
+            $("#vatBox").dxNumberBox({
+                value: vatPercent,
+                showSpinButtons: true,
+                label: "VAT %",
+                onValueChanged: function (e) {
+                    vatPercent = e.value;
+                    calculateVAT();
+                }
+            });
+
+            let vatAmountBox = $("#vatAmountBox").dxTextBox({
+                value: vatAmount.toFixed(2),
+                readOnly: true,
+                label: "VAT Amount"
+            }).dxTextBox("instance");
+
+            let totalAmountBox = $("#totalAmountBox").dxTextBox({
+                value: totalAmount.toFixed(2),
+                readOnly: true,
+                label: "Total Amount (Incl. VAT)"
+            }).dxTextBox("instance");
+
+            function calculateVAT() {
+                vatAmount = (amount * vatPercent) / 100;
+                totalAmount = amount + vatAmount;
+
+                vatAmountBox.option("value", vatAmount.toFixed(2));
+                totalAmountBox.option("value", totalAmount.toFixed(2));
+            }
+        });
+    </script>
+
+</body>
+</html>

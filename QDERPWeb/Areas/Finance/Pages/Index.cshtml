@@ -46,7 +46,21 @@
         </div>
     </div>
 </div>
-
+<!-- Pie Chart Containers -->
+<div class="chart-row">
+    <div class="chart-container">
+        <h3>Client Outstanding Distribution</h3>
+        <div id="clientOutstandingPieChart"></div>
+    </div>
+    <div class="chart-container">
+        <h3>Supplier Outstanding Distribution</h3>
+        <div id="billsOutstandingPieChart"></div>
+    </div>
+    <div class="chart-container">
+        <h3>Bank Account Distribution</h3>
+        <div id="bankAccountsPieChart"></div>
+    </div>
+</div>
 <!-- Grid Container -->
 <div class="grid-container">
     <!-- Client Outstanding Section -->
@@ -394,6 +408,99 @@
             }
         });
     });
+    $(document).ready(function () {
+        // Fetch Client Outstanding Aging Data
+        $.ajax({
+            url: "/api/Dashboard/GetClientOutstandingAgingForChart",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    // Client Outstanding Pie Chart
+                    $("#clientOutstandingPieChart").dxPieChart({
+                        dataSource: response.agingData,
+                        series: [{
+                            argumentField: "OverDueGroup",
+                            valueField: "Balance",
+                            label: {
+                                visible: true,
+                                format: "currency"
+                            }
+                        }],
+                        title: "Client Outstanding Distribution"
+                    });
+                }
+            }
+        });
+
+        // Fetch Supplier Outstanding Aging Data
+      $(document).ready(function () {
+        $.ajax({
+            url: "/api/Dashboard/GetBillsOutstandingAgingForChart",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                console.log("API Response:", response);
+
+                if (response.success && Array.isArray(response.agingData) && response.agingData.length > 0) {
+                    // Ensure Balance is a number
+                    response.agingData.forEach(item => {
+                        item.Balance = Number(item.Balance) || 0;
+                    });
+
+                    var pieChartInstance = $("#billsOutstandingPieChart").dxPieChart("instance");
+
+                    if (pieChartInstance) {
+                        // Update the existing chart
+                        pieChartInstance.option("dataSource", response.agingData);
+                    } else {
+                        // Initialize the pie chart
+                        $("#billsOutstandingPieChart").dxPieChart({
+                            dataSource: response.agingData,
+                            series: [{
+                                argumentField: "OverDueGroup",
+                                valueField: "Balance",
+                                label: {
+                                    visible: true,
+                                    format: "currency"
+                                }
+                            }],
+                            title: "Supplier Outstanding Distribution",
+                        });
+                    }
+                } else {
+                    console.error("Invalid or empty data received from API.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+            }
+        });
+    });
+
+        // Fetch Bank Accounts Data
+        $.ajax({
+            url: "/api/Dashboard/GetBankAccounts",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                // Bank Accounts Pie Chart
+                $("#bankAccountsPieChart").dxPieChart({
+                    dataSource: response.data,
+                    series: [{
+                        argumentField: "AccountHeadName",
+                        valueField: "Amount",
+                        label: {
+                            visible: true,
+                            format: "currency"
+                        }
+                    }],
+                    title: "Bank Account Distribution"
+                });
+            }
+        });
+    });
+
 </script>
 
 <style>

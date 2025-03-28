@@ -195,7 +195,7 @@
                 width: 60px; /* Minimized width to show icons only */
                 background-color: var(--menu-color);
                 /* height: inherit; */
-                margin-top:20px;
+                margin-top: 20px;
                 border-right: 1px solid #ddd;
             }
 
@@ -236,11 +236,11 @@
         .menu-item i {
             width: 22.5px;
             height: 18.4px;
-            font-size: 18px; 
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative; 
+            position: relative;
         }
 
         .menu-item {
@@ -256,11 +256,11 @@
             .menu-item i::after {
                 content: attr(data-tooltip);
                 position: absolute;
-                top: 130%; 
+                top: 130%;
                 left: 350%;
                 transform: translateX(-50%);
-                background: rgba(0, 0, 0, 0.6);
-                color: white;
+                background: rgba(0, 0, 0, 0.1);
+                color: black;
                 padding: 6px 10px;
                 border-radius: 5px;
                 font-size: 10px !important;
@@ -401,13 +401,16 @@
                 color: var(--highlight-color);
                 text-decoration: underline;
             }
-        .background{
-            background-color:var(--background-color);
+
+        .background {
+            background-color: var(--background-color);
         }
+
         .bodyContainer {
-               background-color:var(--background-color);
+            background-color: var(--background-color);
         }
-        .card{
+
+        .card {
             background-color: var(--background-color);
         }
 
@@ -504,10 +507,10 @@
             display: none; /* Hidden by default */
         }
 
-        .loader img {
-            width: 500px; /* Adjust size as needed */
-            height: 500px;
-        }
+            .loader img {
+                width: 500px; /* Adjust size as needed */
+                height: 500px;
+            }
 
         .hr i {
             color: #ff5733;
@@ -584,6 +587,7 @@
             font-size: 16px;
             color: #333;
         }
+
         .profile-popup {
             width: 350px;
             top: 15%;
@@ -613,14 +617,14 @@
             background: linear-gradient(45deg, #ffc107, #532f8f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-             font-size: 20px; 
-             font-weight: bold;
+            font-size: 20px;
+            font-weight: bold;
         }
 
             .companyName:hover {
-            transform: scale(1.1);
-            transition: 0.3s ease-in-out;
-        }
+                transform: scale(1.1);
+                transition: 0.3s ease-in-out;
+            }
 
         /* Ensure iframe takes full size */
         #contentIframe {
@@ -748,19 +752,22 @@
             opacity: 0.9;
         }
 
-        .playIcon{
-            position:fixed;
-            left:3.5em;
-            bottom:4em;
-            z-index:100;
+        .playIcon {
+            position: fixed;
+            left: 3.5em;
+            bottom: 4em;
+            z-index: 100;
         }
-        .playIcon i {
-            font-size: 40px;
-            color: var(--hover-bg-color);
-        }
-        .playIcon i:hover {
-            color: var(--header-color);
-        }
+
+            .playIcon i {
+                font-size: 40px;
+                color: var(--hover-bg-color);
+            }
+
+                .playIcon i:hover {
+                    color: var(--header-color);
+                }
+
         #goToTopBtn {
             position: fixed;
             bottom: 20px;
@@ -777,9 +784,9 @@
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
         }
 
-        #goToTopBtn:hover {
-            background-color: var(--header-color);
-        }
+            #goToTopBtn:hover {
+                background-color: var(--header-color);
+            }
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -793,7 +800,7 @@
     <div class="bodyContainer">
         <div class="playIcon">
             <a href="https://help.quickdice.net/?formName=frmDemoForm2" target="_blank" rel="noopener noreferrer">
-            <i class="fa-solid fa-circle-play"></i>
+                <i class="fa-solid fa-circle-play"></i>
             </a>
         </div>
         <button id="goToTopBtn" onclick="scrollToTop()">
@@ -801,18 +808,18 @@
         </button>
         <div class="frame">
             <div class="image">
-                <img src="~/images/Pulse.png" alt="Tenant Logo" />
+                <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
             </div>
             <div class="companyName">
-                 @tenantName 
-            </div> 
+                @tenantName
+            </div>
             <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("currencySelect")
                     .DataSource(currencies)
                     .DisplayExpr("CurrencyName")
                     .ValueExpr("CurrencyID")
-                    .Label("Currency")
+                    .Label(new JS("formatMessage('Currency')"))
                     .LabelMode(EditorLabelMode.Outside)
                     .Value(currencies.FirstOrDefault()?.CurrencyID)
                     )
@@ -826,7 +833,7 @@
                     .Width("8em")
                     .Value(new JS("locale"))
                     .OnValueChanged("changeLocale")
-                    .Label("Language")
+                    .Label(new JS("formatMessage('Language')"))
                     .LabelMode(EditorLabelMode.Outside)
                     )
             </div>
@@ -851,22 +858,22 @@
             <div class="context-menu-item">
                 <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(30)">
                     <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Short</span>
+                        <span id="Short" class="no-border-input" style="color:black"></span>
                     </i>
                 </div>
                 <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(40)">
                     <i style="color:black" class="fa fa-th-list">
-                        <span>Mediam</span>
+                        <span id="Mediam" class="no-border-input" ></span>
                     </i>
                 </div>
                 <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(60)">
                     <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Tall</span>
+                        <span id="Tall" class="no-border-input" style="color:black"></span>
                     </i>
                 </div>
                 <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(70)">
                     <i style="color:black" class="fa fa-th-list">
-                        <span style="color:black">Extra Tall</span>
+                        <span id="ExtraTall" class="no-border-input" style="color:black"></span>
                     </i>
                 </div>
             </div>
@@ -876,154 +883,158 @@
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Report')">
                     <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report</span>
+                    <span id="ReceivablesAgeingReport" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Report (By Sales Person)')">
                     <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report (By Sales Person)</span>
+                    <span id="ReceivablesAgeingReportSalesPerson" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Report (Customizable)')">
                     <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Report (Customizable)</span>
+                    <span id="ReceivablesAgeingReportCustomizable" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Summary')">
                     <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Summary</span>
+                    <span id="ReceivablesAgeingSummary" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClickreport('Receivables Ageing Summary (Customizable)')">
                     <i class="fa fa-th-list"></i>
-                    <span>Receivables Ageing Summary (Customizable)</span>
+                    <span id="ReceivablesAgeingSummaryCustomizable" class="no-border-input"></span>
                 </div>
             </div>
-
-
         </div>
         <div id="submenuContainer2" class="context-menu" style="display:none;">
             <div class="context-menu-item2">
                 <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Summary Report</span>
+                    <span id="SummaryReport" class="no-border-input"></span>
                 </div>
                 <div onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Summary Report(By Date)</span>
+                    <span id="SummaryReportByDate" class="no-border-input"></span>
                 </div>
                 <div onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Cost Center Report</span>
+                    <span id="CostCenterReport" class="no-border-input"></span>
                 </div>
                 <div id="RptCostCenterReport" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Cost Center Report(By Date)</span>
+                    <span id="CostCenterReportByDate" class="no-border-input"></span>
                 </div>
                 <div onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Cost Center Group Report</span>
+                    <span id="CostCenterGroupReport" class="no-border-input"></span>
                 </div>
                 <div id="RptCostCenterGroupReport" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Cost Center Group Report(By Date)</span>
+                    <span id="CostCenterGroupReportByDate" class="no-border-input"></span>
                 </div>
             </div>
         </div>
         <div id="submenuContainer3" class="context-menu" style="display:none;">
             <div class="context-menu-item2">
-                <div id="RptReceivableAgeing" onclick="ChangeRowHeight(70)">
+                <div id="DetailedReport" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Detailed Report</span>
+                    <span id="DetailedReportText" class="no-border-input"></span>
                 </div>
-                <div onclick="ChangeRowHeight(70)">
+                <div id="DetailedReportByDate" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Detailed Report(By Date)</span>
+                    <span id="DetailedReportByDateText" class="no-border-input"></span>
                 </div>
-                <div onclick="ChangeRowHeight(70)">
+                <div id="DetailedGroupReport" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Detailed Group Report</span>
+                    <span id="DetailedGroupReportText" class="no-border-input"></span>
                 </div>
-                <div id="RptCostCenterReport" onclick="ChangeRowHeight(70)">
+                <div id="DetailedGroupReportByDate" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Detailed Group Repor(By Date)</span>
+                    <span id="DetailedGroupReportByDateText" class="no-border-input"></span>
                 </div>
-                <div onclick="ChangeRowHeight(70)">
+                <div id="CostCenterMasterReport" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-th-list"></i>
-                    <span>Cost Center Master Report</span>
+                    <span id="CostCenterMasterReportText" class="no-border-input"></span>
                 </div>
             </div>
         </div>
+
         <div id="submenuContainer4" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts')">
-
-                    <span>Statement of Accounts</span>
+                    <i class="fa fa-th-list"></i>
+                    <span id="StatementOfAccounts" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (With Narration)')">
-
-                    <span>Statement of Accounts (With Narration)</span>
+                    <i class="fa fa-th-list"></i>
+                    <span id="StatementOfAccountsWithNarration" class="no-border-input"></span>
                 </div>
-                
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format)')">
-
-                    <span>Statement of Accounts (Export Format)</span>
+                    <i class="fa fa-th-list"></i>
+                    <span id="StatementOfAccountsExportFormat" class="no-border-input"></span>
                 </div>
-
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format2)')">
-
-                    <span>Statement of Accounts (Export Format2)</span>
+                    <i class="fa fa-th-list"></i>
+                    <span id="StatementOfAccountsExportFormat2" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('AccountDetails')">
-
-                    <span>Statement of Accounts - With Details</span>
+                    <i class="fa fa-th-list"></i>
+                    <span id="StatementOfAccountsWithDetails" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
-
-                    <span>Statement of Account OrderByVocuherNo(Without Narration)</span>
+                    <i class="fa fa-th-list"></i>
+                    <span id="StatementOfAccountOrderByVoucherNoWithoutNarration" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account Export Format(Landscape)')">
-
-                    <span>Statement of Account Export Format(Landscape)</span>
+                    <i class="fa fa-th-list"></i>
+                    <span id="StatementOfAccountExportFormatLandscape" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('AccountOrderByVoucherNo')">
-                    <span>Statement of Account Order By Voucher No</span>
+                    <i class="fa fa-th-list"></i>
+                    <span id="StatementOfAccountOrderByVoucherNo" class="no-border-input"></span>
                 </div>
-
             </div>
         </div>
-   <div id="submenuContainer5" class="context-menu" style="display:none; width: 300px;">
-       <div class="context-menu-item1">
-           <div class="submenu-item" onclick="handleClick('BillsReceivableAll')">
-               <i class="fa fa-file"></i>
-               <span>Bills Receivable (All)</span>
-           </div>
-           <div class="submenu-item" onclick="handleClick('BillsReceivableByAccount')">
-               <i class="fa fa-file"></i>
-               <span>Bills Receivable (By Account)</span>
-           </div>
-           <div class="submenu-item" onclick="handleClick('BillsReceivableAgeingToday')">
-               <i class="fa fa-file"></i>
-               <span>Bills Receivable (Ageing as on Today)</span>
-           </div>
-                <div class="submenu-item" onclick="handleClick('Report4')">
-               <i class="fa fa-file"></i>
-               <span>Bills Receivable (Ageing By End Date)</span>
-           </div>
-           <div class="submenu-item" onclick="handleClick('BillsReceivableRentation')">
-               <i class="fa fa-file"></i>
-               <span>Bills Receivable (With Retention)</span>
-           </div>
-           <div class="submenu-item" onclick="handleClick('BillsReceivablelandscapeformat')">
+
+        <div id="submenuContainer5" class="context-menu" style="display:none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="handleClick('BillsReceivableAll')">
                     <i class="fa fa-file"></i>
-               <span>BillsReceivablelandscapeformat</span>
-           </div>
-           <div class="submenu-item" onclick="handleClick('BillsReceivableLedgerBalance')">
-               <i class="fa fa-file"></i>
-               <span>Bills Receivable (Ageing as per Ledger Balance)</span>
-           </div>
-           <div class="submenu-item" onclick="handleClick('BillsReceivableFormat')">
-               <i class="fa fa-file"></i>
-               <span>Bills Receivable (Format 2)</span>
-           </div>
-       </div>
-   </div>
+                    <span id="BillsReceivableAll" class="no-border-input"></span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('BillsReceivableByAccount')">
+                    <i class="fa fa-file"></i>
+                    <span id="BillsReceivableByAccount" class="no-border-input"></span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('BillsReceivableAgeingToday')">
+                    <i class="fa fa-file"></i>
+                    <span id="BillsReceivableAgeingToday" class="no-border-input"></span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('Report4')">
+                    <i class="fa fa-file"></i>
+                    <span id="Report4" class="no-border-input"></span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('BillsReceivableRentation')">
+                    <i class="fa fa-file"></i>
+                    <span id="BillsReceivableRentation" class="no-border-input"></span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('BillsReceivablelandscapeformat')">
+                    <i class="fa fa-file"></i>
+                    <span id="BillsReceivablelandscapeformat" class="no-border-input"></span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('BillsReceivableLedgerBalance')">
+                    <i class="fa fa-file"></i>
+                    <span id="BillsReceivableLedgerBalance" class="no-border-input"></span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('BillsReceivableFormat')">
+                    <i class="fa fa-file"></i>
+                    <span id="BillsReceivableFormat" class="no-border-input"></span>
+                </div>
+                <div class="submenu-item" onclick="handleClick('AccountOrderByVoucherNo')">
+                    <i class="fa fa-file"></i>
+                    <span id="StatementOfAccountOrderByVoucherNo1" class="no-border-input"></span>
+                </div>
+            </div>
+        </div>
+
+
         <div id="submenuContainer6" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClick('rpt201BillsPayable')">
@@ -1090,16 +1101,16 @@
         </div>
         <div id="submenuContainer8" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" >
+                <div class="submenu-item">
 
                     <span>Tax Summary Report</span>
                 </div>
-                <div class="submenu-item" >
+                <div class="submenu-item">
 
                     <span>Tax Report (Revenue Classified)</span>
                 </div>
 
-                <div class="submenu-item" >
+                <div class="submenu-item">
 
                     <span>Tax Report (Revenue Classified)in arabic </span>
                 </div>
@@ -1116,9 +1127,9 @@
 
                     <span>Cost Posting</span>
                 </div>
-            
 
-               
+
+
 
             </div>
         </div>
@@ -1194,32 +1205,32 @@
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu">
                     <div class="menu-item hr" onclick="navigate('Human Resources')">
-                        <i class="fas fa-users" data-tooltip="Human Resources"></i>
-                        <div class="text">Human Resources</div>
+                        <i class="fas fa-users" id="humanResourcesIcon"></i>
+                        <div id="HumanResources" class="text no-border-input"></div>
                     </div>
                     <div class="menu-item finance" onclick="navigate('Finance')">
-                        <i class="fas fa-dollar-sign" data-tooltip="Finance"></i>
-                        <div class="text">Finance</div>
+                        <i class="fas fa-dollar-sign" id="FinanceIcon"></i>
+                        <div id="Finance" class="text no-border-input"></div>
                     </div>
                     <div class="menu-item vat" onclick="navigate('VAT Modules')">
-                        <i class="fas fa-certificate" data-tooltip="VAT Modules"></i>
-                        <div class="text">VAT Modules</div>
+                        <i class="fas fa-certificate" id="VATModulesIcon"></i>
+                        <div id="VATModules" class="text no-border-input"></div>
                     </div>
                     <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
-                        <i class="fas fa-truck" data-tooltip="Equipment Rentals"></i>
-                        <div class="text">Equipment Rentals</div>
+                        <i class="fas fa-truck" id="EquipmentRentalsIcon"></i>
+                        <div id="EquipmentRentals" class="text no-border-input"></div>
                     </div>
                     <div class="menu-item camp" onclick="navigate('Camp Management')">
-                        <i class="fas fa-campground" data-tooltip="Camp Management"></i>
-                        <div class="text">Camp Management</div>
+                        <i class="fas fa-campground" id="CampManagementIcon"></i>
+                        <div id="CampManagement" class="text no-border-input"></div>
                     </div>
                     <div class="menu-item inventory" onclick="navigate('Inventory Management')">
-                        <i class="fas fa-cogs" data-tooltip="Inventory Management"></i>
-                        <div class="text">Inventory Management</div>
+                        <i class="fas fa-cogs" id="InventoryManagementIcon"></i>
+                        <div id="InventoryManagement" class="text no-border-input"></div>
                     </div>
                     <div class="menu-item projects" onclick="navigate('Projects Control')">
-                        <i class="fas fa-project-diagram" data-tooltip="Projects Control"></i>
-                        <div class="text">Projects Control</div>
+                        <i class="fas fa-project-diagram" id="ProjectsControlIcon"></i>
+                        <div id="ProjectsControl" class="text no-border-input"></div>
                     </div>
                 </div>
             </div>
@@ -1283,6 +1294,303 @@
     </div>
 
     <script>
+                document.addEventListener("DOMContentLoaded", function () {
+            const humanResourcesIcon = document.getElementById("humanResourcesIcon");
+            if (humanResourcesIcon) {
+                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Human Resources"));
+            }
+        });
+         document.addEventListener("DOMContentLoaded", function () {
+            const humanResourcesIcon = document.getElementById("FinanceIcon");
+            if (humanResourcesIcon) {
+                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Finance"));
+            }
+        });
+         document.addEventListener("DOMContentLoaded", function () {
+            const humanResourcesIcon = document.getElementById("VATModulesIcon");
+            if (humanResourcesIcon) {
+                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("VAT Modules"));
+            }
+        });
+         document.addEventListener("DOMContentLoaded", function () {
+            const humanResourcesIcon = document.getElementById("EquipmentRentalsIcon");
+            if (humanResourcesIcon) {
+                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Equipment Rentals"));
+            }
+        });
+         document.addEventListener("DOMContentLoaded", function () {
+            const humanResourcesIcon = document.getElementById("CampManagementIcon");
+            if (humanResourcesIcon) {
+                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Camp Management"));
+            }
+        });
+         document.addEventListener("DOMContentLoaded", function () {
+            const humanResourcesIcon = document.getElementById("InventoryManagementIcon");
+            if (humanResourcesIcon) {
+                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Inventory Management"));
+            }
+        });
+         document.addEventListener("DOMContentLoaded", function () {
+            const humanResourcesIcon = document.getElementById("ProjectsControlIcon");
+            if (humanResourcesIcon) {
+                humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Projects Control"));
+            }
+        });
+                $(function () {
+            $("#BillsReceivableAll").dxTextBox({
+                text: formatMessage("Bills Receivable (All)"),
+                readOnly: true
+            });
+            $("#BillsReceivableByAccount").dxTextBox({
+                text: formatMessage("Bills Receivable (By Account)"),
+                readOnly: true
+            });
+            $("#BillsReceivableAgeingToday").dxTextBox({
+                text: formatMessage("Bills Receivable (Ageing as on Today)"),
+                readOnly: true
+            });
+            $("#Report4").dxTextBox({
+                text: formatMessage("Bills Receivable (Ageing By End Date)"),
+                readOnly: true
+            });
+            $("#BillsReceivableRentation").dxTextBox({
+                text: formatMessage("Bills Receivable (With Retention)"),
+                readOnly: true
+            });
+            $("#BillsReceivablelandscapeformat").dxTextBox({
+                text: formatMessage("BillsReceivablelandscapeformat"),
+                readOnly: true
+            });
+            $("#BillsReceivableLedgerBalance").dxTextBox({
+                text: formatMessage("Bills Receivable (Ageing as per Ledger Balance)"),
+                readOnly: true
+            });
+            $("#BillsReceivableFormat").dxTextBox({
+                text: formatMessage("Bills Receivable (Format 2)"),
+                readOnly: true
+            });
+            $("#StatementOfAccountOrderByVoucherNo1").dxTextBox({
+                text: formatMessage("Statement of Account Order By Voucher No"),
+                readOnly: true
+            });
+        });
+
+                $(function () {
+            $("#StatementOfAccounts").dxTextBox({
+                text: formatMessage("Statement of Accounts"),
+                readOnly: true
+            });
+            $("#StatementOfAccountsWithNarration").dxTextBox({
+                text: formatMessage("Statement of Accounts (With Narration)"),
+                readOnly: true
+            });
+            $("#StatementOfAccountsExportFormat").dxTextBox({
+                text: formatMessage("Statement of Accounts (Export Format)"),
+                readOnly: true
+            });
+            $("#StatementOfAccountsExportFormat2").dxTextBox({
+                text: formatMessage("Statement of Accounts (Export Format2)"),
+                readOnly: true
+            });
+            $("#StatementOfAccountsWithDetails").dxTextBox({
+                text: formatMessage("Statement of Accounts - With Details"),
+                readOnly: true
+            });
+            $("#StatementOfAccountOrderByVoucherNoWithoutNarration").dxTextBox({
+                text: formatMessage("Statement of Account OrderByVocuherNo(Without Narration)"),
+                readOnly: true
+            });
+            $("#StatementOfAccountExportFormatLandscape").dxTextBox({
+                text: formatMessage("Statement of Account Export Format(Landscape)"),
+                readOnly: true
+            });
+            $("#StatementOfAccountOrderByVoucherNo").dxTextBox({
+                text: formatMessage("Statement of Account Order By Voucher No"),
+                readOnly: true
+            });
+        });
+
+                $(function () {
+            $("#DetailedReportText").dxTextBox({
+                text: formatMessage("Detailed Report"),
+                readOnly: true
+            });
+            $("#DetailedReportByDateText").dxTextBox({
+                text: formatMessage("Detailed Report(By Date)"),
+                readOnly: true
+            });
+            $("#DetailedGroupReportText").dxTextBox({
+                text: formatMessage("Detailed Group Report"),
+                readOnly: true
+            });
+            $("#DetailedGroupReportByDateText").dxTextBox({
+                text: formatMessage("Detailed Group Report(By Date)"),
+                readOnly: true
+            });
+            $("#CostCenterMasterReportText").dxTextBox({
+                text: formatMessage("Cost Center Master Report"),
+                readOnly: true
+            });
+        });
+
+         $(function () {
+                    $("#SummaryReport").dxTextBox({
+                        text: formatMessage("Summary Report"),
+                        readOnly: true
+                    });
+                    $("#SummaryReportByDate").dxTextBox({
+                        text: formatMessage("Summary Report(By Date)"),
+                        readOnly: true
+                    });
+                    $("#CostCenterReport").dxTextBox({
+                        text: formatMessage("Cost Center Report"),
+                        readOnly: true
+                    });
+                    $("#CostCenterReportByDate").dxTextBox({
+                        text: formatMessage("Cost Center Report(By Date)"),
+                        readOnly: true
+                    });
+                    $("#CostCenterGroupReport").dxTextBox({
+                        text: formatMessage("Cost Center Group Report"),
+                        readOnly: true
+                    });
+                    $("#CostCenterGroupReportByDate").dxTextBox({
+                        text: formatMessage("Cost Center Group Report(By Date)"),
+                        readOnly: true
+                    });
+                });
+        $(function () {
+                                $("#SummaryReport").dxTextBox({
+                                    text: formatMessage("Summary Report"),
+                                    readOnly: true
+                                });
+                                $("#SummaryReportByDate").dxTextBox({
+                                    text: formatMessage("Summary Report(By Date)"),
+                                    readOnly: true
+                                });
+                                $("#CostCenterReport").dxTextBox({
+                                    text: formatMessage("Cost Center Report"),
+                                    readOnly: true
+                                });
+                                $("#CostCenterReportByDate").dxTextBox({
+                                    text: formatMessage("Cost Center Report(By Date)"),
+                                    readOnly: true
+                                });
+                                $("#CostCenterGroupReport").dxTextBox({
+                                    text: formatMessage("Cost Center Group Report"),
+                                    readOnly: true
+                                });
+                                $("#CostCenterGroupReportByDate").dxTextBox({
+                                    text: formatMessage("Cost Center Group Report(By Date)"),
+                                    readOnly: true
+                                });
+                            });
+        $(function () {
+            $("#ReceivablesAgeingReport").dxTextBox({
+                text: formatMessage("Receivables Ageing Report"),
+                readOnly: true
+
+            });
+            $("#ReceivablesAgeingReportSalesPerson").dxTextBox({
+                text: formatMessage("Receivables Ageing Report (By Sales Person)"),
+                readOnly: true
+
+            });
+            $("#ReceivablesAgeingReportCustomizable").dxTextBox({
+                text: formatMessage("Receivables Ageing Report (Customizable)"),
+                readOnly: true
+
+            });
+            $("#ReceivablesAgeingSummary").dxTextBox({
+                text: formatMessage("Receivables Ageing Summary"),
+                readOnly: true
+
+            });
+            $("#ReceivablesAgeingSummaryCustomizable").dxTextBox({
+                text: formatMessage("Receivables Ageing Summary (Customizable)"),
+                readOnly: true
+
+            });
+            });
+        $(function () {
+            $("#Short").dxTextBox({
+                text: formatMessage("Short"),
+                readOnly: true
+
+            });
+            });
+        $(function () {
+            $("#Tall").dxTextBox({
+                text: formatMessage("Tall"),
+                readOnly: true
+
+            });
+            });
+        $(function () {
+            $("#Mediam").dxTextBox({
+                text: formatMessage("Mediam"),
+                readOnly: true
+
+            });
+            });
+        $(function () {
+            $("#ExtraTall").dxTextBox({
+                text: formatMessage("Extra Tall"),
+                readOnly: true
+
+            });
+            });
+
+
+             $(function () {
+            $("#HumanResources").dxTextBox({
+                text: formatMessage("Human Resources"),
+                readOnly: true
+
+            });
+        });
+         $(function () {
+            $("#Finance").dxTextBox({
+                text: formatMessage("Finance"),
+                readOnly: true
+
+            });
+        });
+        $(function () {
+               $("#VATModules").dxTextBox({
+                   text: formatMessage("VAT Modules"),
+                   readOnly: true
+
+               });
+           });
+         $(function () {
+            $("#EquipmentRentals").dxTextBox({
+                text: formatMessage("Equipment Rentals"),
+                readOnly: true
+
+            });
+        });
+        $(function () {
+               $("#CampManagement").dxTextBox({
+                   text: formatMessage("Camp Management"),
+                   readOnly: true
+
+               });
+           });
+         $(function () {
+            $("#InventoryManagement").dxTextBox({
+                text: formatMessage("Inventory Management"),
+                readOnly: true
+
+            });
+        });
+        $(function () {
+               $("#ProjectsControl").dxTextBox({
+                   text: formatMessage("Projects Control"),
+                   readOnly: true
+
+               });
+           });
 
         var authToken = '@authToken';
         var tenantName = '@tenantName';
@@ -1490,6 +1798,111 @@
                 updateBreadcrumbFromSidebar2('');
                 sidebar2.style.display = 'none';
             }
+                function showFinanceSubmenu() {
+                    const sidebar2 = document.getElementById('sidebar2');
+                    sidebar2.innerHTML = `
+                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                            <i class="fas fa-book-open"></i>
+                           <div class="text">${formatMessage("Finance Dashboard")}</div>
+                        </div>
+                        <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
+                                <div class="text">${formatMessage("My Dashboard")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
+                                <div class="text">${formatMessage("Voucher Verification")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsReceivable">
+                                <div class="text">${formatMessage("Bills Receivable")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
+                                <div class="text">${formatMessage("Bills Payable")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
+                                <div class="text">${formatMessage("Cost Analysis")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
+                                <div class="text">${formatMessage("Salary Payable")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
+                                <div class="text">${formatMessage("Chart Of Accounts")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
+                                <div class="text">${formatMessage("Chart of Cost Centers")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/uc20106TrialBalance">
+                                <div class="text">${formatMessage("Financial Reports")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetView">
+                                <div class="text">${formatMessage("Asset Register")}</div>
+                            </a>
+                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetAllocation">
+                                <div class="text">${formatMessage("Asset Allocation")}</div>
+                            </a>
+                        </div>
+
+                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
+                            <i class="fas fa-book"></i>
+                            <div class="text">${formatMessage("Accounting Ledgers")}</div>
+                        </a>
+                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingRegister">
+                            <i class="fas fa-book"></i>
+                            <div class="text">${formatMessage("Accounting Register")}</div>
+                        </a>
+                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
+                            <i class="fas fa-chart-pie"></i>
+                            <div class="text">${formatMessage("Chart Of Accounts")}</div>
+                        </a>
+                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
+                            <i class="fas fa-chart-pie"></i>
+                            <div class="text">${formatMessage("Chart of Cost Centers")}</div>
+                        </a>
+                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherBankPayment">
+                            <i class="fas fa-university"></i>
+                            <div class="text">${formatMessage("Bank Payment")}</div>
+                        </a>
+                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherCashPayment">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <div class="text">${formatMessage("Cash Payment")}</div>
+                        </a>
+                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryCashReceipts">
+                            <i class="fas fa-dollar-sign"></i>
+                            <div class="text">${formatMessage("Cash Receipt")}</div>
+                        </a>
+                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryReceipts">
+                            <i class="fas fa-receipt"></i>
+                            <div class="text">${formatMessage("Bank Receipt")}</div>
+                        </a>
+                        <a class="submenu-item" href="/${tenantName}/Finance/salesVoucher">
+                            <i class="fas fa-tags"></i>
+                            <div class="text">${formatMessage("Sales Voucher")}</div>
+                        </a>
+                        <a class="submenu-item" href="/${tenantName}/Finance/purchasevoucher">
+                            <i class="fas fa-shopping-cart"></i>
+                            <div class="text">${formatMessage("Purchase Voucher")}</div>
+                        </a>
+                        <a class="submenu-item" href="/${tenantName}/Finance/ExpensesClaims">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <div class="text">${formatMessage("Expense Claim")}</div>
+                        </a>
+                        <a class="submenu-item" href="/${tenantName}/Finance/Voucherjournal">
+                            <i class="fas fa-book-open"></i>
+                            <div class="text">${formatMessage("Journal Voucher")}</div>
+                        </a>
+                        <a class="submenu-item" href="/${tenantName}/Finance/JournalRegister">
+                            <i class="fas fa-newspaper"></i>
+                            <div class="text">${formatMessage("Journal Register")}</div>
+                        </a>`;
+                }
+
+                function showVATModuleSubmenu() {
+                    const sidebar2 = document.getElementById('sidebar2');
+                    sidebar2.innerHTML = `
+                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalesRegisterVAT">
+                            <i class="fas fa-book"></i>
+                            <div class="text">${formatMessage("VAT Sales Invoice Register")}</div>
+                        </a>`;
+                }
         }
 
 
@@ -1498,11 +1911,11 @@
             sidebar2.innerHTML = `
                         <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
                             <i class="fas fa-book-open"></i>
-                            <div class="text">Finance Dashboard</div>
+                            <div class="text">${formatMessage("Finance Dashboard")}</div>
                         </div>
                         <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
                             <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
-                                <div class="text">My Dashboard</div>
+                                <div id="MyDashboard" class="text no-border-input"></div>
                             </a>
                             <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
                                 <div class="text">Voucher Verification</div>

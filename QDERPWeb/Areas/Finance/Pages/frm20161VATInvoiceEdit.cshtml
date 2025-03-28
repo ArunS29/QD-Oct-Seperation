@@ -318,7 +318,7 @@
      .Value(0100000) // Ensure this matches an actual key value
     .ValueExpr("InvoiceType") // Ensure the value is mapped correctly
     .DisplayExpr("InvoiceType") // Set display value if needed
-    .Disabled(true))
+    )
                     </td>
                 </tr>
             </table>
@@ -861,7 +861,7 @@
                             .CellTemplate(@<text>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
-                        <%- data.AccountHead ? data.AccountHead : "No Selection" %>
+                        <%- data.Description ? data.Description : "No Selection" %>
                     </span>
                 </div>
             </text>)
@@ -870,10 +870,10 @@
 
                 @(Html.DevExtreme().DropDownBox()
                 .DataSource(d => d.WebApi()
-                .Controller("VoucherMaster")
-                .LoadAction("GetEditAccountHead")
+                .Controller("VATModule")
+                .LoadAction("GetGoodsAndServices")
                 .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountId")
+                .Key("Gscode")
                 )
 
                 .LabelMode(EditorLabelMode.Outside)
@@ -883,16 +883,16 @@
                 .OpenOnFieldClick(false)
                 .ValueChangeEvent("change")
                 .HoverStateEnabled(true)
-                .Value(new JS("data.AccountHead"))
-                .ValueExpr("AccountId")
-                .DisplayExpr("AccountHead")
+               @*  .Value(new JS("data.AccountHead")) *@
+                .ValueExpr("Gscode")
+                .DisplayExpr("Gsdescrpition")
                 .OnValueChanged("gridBox_valueChanged")
                 .OnOpened("onOpened")
                 .Width(250)
                 .TabIndex(1)
                 .DropDownOptions(o => o.Width(500))
                 .OnKeyDown("onKeyDown")
-                // .ContentTemplate(new TemplateName("AccountHeadEditDropdownContentTemplate"))
+                .ContentTemplate(new TemplateName("DescriptionDropdownContentTemplate"))
                 )
 
 
@@ -1079,6 +1079,54 @@
 
                             })
                             )
+        }
+
+        @using (Html.DevExtreme().NamedTemplate("DescriptionDropdownContentTemplate"))
+        {
+            @(
+                    Html.DevExtreme().DataGrid()
+                    .ID("accountDropDownBoxeditGrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("VATModule")
+                        .LoadAction("GetGoodsAndServices")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("Gscode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+                    .SelectedRowKeys(new JS(@"component.option(""value"")"))
+                    .OnSelectionChanged(@<text>
+            function(selectedItems) {
+            var keys = selectedItems.selectedRowKeys;
+            component.option("value", keys);
+            console.log(keys);
+            }
+        </text>)
+
+
+                    // .HeaderFilter(p => p.Visible(true))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .Columns(columns =>
+                    {
+                            columns.Add().Caption(new JS("formatMessage('Code')")).DataField("Gscode");
+                            columns.Add().Caption(new JS("formatMessage('Description')")).DataField("Gsdescrpition");
+                            columns.Add().Caption(new JS("formatMessage('Description In Arabic')")).DataField("GsdescriptionAr");
+                            columns.Add().Caption(new JS("formatMessage('Item Part No')")).DataField("ItemPartNo");
+                            columns.Add().Caption(new JS("formatMessage('Cost Price')")).DataField("CostPrice");
+                            columns.Add().Caption(new JS("formatMessage('Current Qty')")).DataField("ReorderQty");
+
+
+                    })
+                    )
         }
         
     </div>
@@ -3116,6 +3164,38 @@ function CommondataGridInitialized(e) {
                        }
        }
 
+
+
+         function gridBox_valueChanged(e) {
+                var $dataGrid = $("#dataGrid");
+
+                if ($dataGrid.length) {
+                    var dataGrid = $dataGrid.dxDataGrid("instance");
+                    dataGrid.selectRows(e.value, false);
+                }
+                if (e.value) {
+
+
+                    let grid = $("#dataGrid").dxDataGrid("instance");
+                    let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+                    let rowData = grid.getVisibleRows()[rowIndex].data;
+
+                    let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+                    let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
+
+                    // if (selectedRowData) {
+                    //     propertyno = selectedRowData.PropertyNo; // Store the correct ID
+
+                    // }
+
+                    rowData.AccountHead = e.value; // Update the row data
+                    grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
+
+                }
+                // Close the dropdown after selection
+                e.component.option("opened", false);
+
+            }
 
 
 </script>
