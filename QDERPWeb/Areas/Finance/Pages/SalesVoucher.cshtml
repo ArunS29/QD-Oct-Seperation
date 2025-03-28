@@ -737,7 +737,7 @@
 				.ID("accounthead-datagrid")
 				.DataSource(d => d.WebApi()
 				.Controller("SalesVoucher")
-				.LoadAction("GetClientName")
+				.LoadAction("GetAccountHead")
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("AccountId")
 				)
@@ -1842,14 +1842,42 @@
 			}
 		}).dxPopup("instance").show();
 	}
-
-	function showLedgerAccountPopup() {
+		function showLedgerAccountPopup() {
 		var popup = $("#ledgerAccountPopup").dxPopup("instance");
 		popup.show();
 
 		// Set correct URL for LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+
+		// Refresh DropDownBox after popup closes, ensuring new entries are loaded
+		popup.option("onHidden", function () {
+			setTimeout(refreshAccountHeadDropDown, 500); // Delay allows backend update before fetching
+		});
 	}
+
+		function refreshAccountHeadDropDown() {
+		var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
+
+		if (dropDownBox) {
+			var previousValue = dropDownBox.option("value"); // Store previously selected value
+
+			dropDownBox.getDataSource().reload().done(function () {
+				var dataSource = dropDownBox.getDataSource();
+				dataSource.load().done(function (data) {
+					if (data.length > 0) {
+						var latestValue = previousValue && data.some(item => item.AccountId === previousValue)
+							? previousValue // Keep previous selection if still available
+							: data[0].AccountId; // Otherwise, select the first available entry dynamically
+
+						dropDownBox.option("value", latestValue); // Set dynamically fetched value
+					}
+				});
+
+				DevExpress.ui.notify("Account Head list updated!", "success", 2000);
+			});
+		}
+	}
+
 
 	function showLedgerAccountHeadEditPopup() {
 		var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");

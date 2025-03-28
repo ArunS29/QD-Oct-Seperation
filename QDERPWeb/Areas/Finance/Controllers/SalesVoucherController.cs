@@ -52,6 +52,34 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<ActionResult> GetAccountHead(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
+                    .Select(i => new
+                    {
+                        i.MasterGroupId,
+                        i.MasterGroup,
+                        i.AccountGroup,
+                        i.AccountGroupId,
+                        i.AccountId,
+                        i.AccountHead,
+                        i.AccountHeadArabic,
+                        i.ReferenceNo,
+                        i.IsLedgerObselete,
+                        i.IsUseInSales,
+                        i.IsUsedInPurchase
+                    });
+
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl201VoucherEntry VE)
