@@ -165,7 +165,7 @@
 
             @(Html.DevExtreme().DateBox()
 
-                        .ID("EffectiveDate")
+                        .ID("VoucherEffectiveDate")
 
                         .InputAttr("aria-label", "Date")
 
@@ -414,6 +414,7 @@
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("accountDropDownBoxEdit")
                 .ShowClearButton(true)
+                .AcceptCustomValue(false)
                 .AcceptCustomValue(true)
                 .OpenOnFieldClick(false)
                 .ValueChangeEvent("change")
@@ -671,7 +672,7 @@
                     <div class="col-md-6">
                         <!-- Verified By -->
                         <div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-                            @(Html.DevExtreme().CheckBox().ID("VerifiedBy"))
+                            @(Html.DevExtreme().CheckBox().ID("VerifiedBy").ReadOnly(true))
                             <span style="margin-left:5px">Verified By:</span>
                             @(Html.DevExtreme().TextBox()
                                         .ID("VerifiedBytext")
@@ -695,7 +696,7 @@
                     <div class="col-md-6">
                         <!-- Approved By -->
                         <div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-                            @(Html.DevExtreme().CheckBox().ID("ApprovedBy"))
+                            @(Html.DevExtreme().CheckBox().ID("ApprovedBy").ReadOnly(true))
                             <span style="margin-left:5px">Approved By:</span>
                             @(Html.DevExtreme().TextBox()
                                         .ID("ApprovedBytext")
@@ -1549,7 +1550,7 @@
 
                 "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 
-                "VoucherEffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
+                "VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 
                 // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
 
@@ -1655,7 +1656,7 @@
 
                 "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 
-                "VoucherEffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
+                "VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 
                 // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
 
@@ -1888,7 +1889,7 @@
 
     $(function () {
         var voucherDate = $("#VoucherDate").dxDateBox("instance");
-        var effectiveDate = $("#EffectiveDate").dxDateBox("instance");
+        var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
         voucherDate.option("onValueChanged", function (e) {
             effectiveDate.option("value", e.value);
@@ -1898,7 +1899,7 @@
 
     $(function () {
         var voucherDate = $("#VoucherDate").dxDateBox("instance");
-        var effectiveDate = $("#EffectiveDate").dxDateBox("instance");
+        var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
         voucherDate.option("onValueChanged", function (e) {
             let voucherDateval = e.value; // Get Date from DevExtreme DateBox
@@ -2672,7 +2673,7 @@
                     if (data) {
 
                         $("#VoucherDate").dxDateBox("instance").option("value", data.VoucherDate);
-                        $("#EffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
+                        $("#VoucherEffectiveDate").dxDateBox("instance").option("value", data.VoucherEffectiveDate);
 
                         $("#ChequeNoReferenceNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
                         $("#VoucherNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
@@ -2774,7 +2775,7 @@
              function onVoucherDateChanged(e) {
                 console.log("Selected Date:", e.value);
                 var voucherDate = $("#VoucherDate").dxDateBox("instance");
-                var effectiveDate = $("#EffectiveDate").dxDateBox("instance");
+                var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
                 voucherDate.option("onValueChanged", function (e) {
                     let voucherDateval = e.value; // Get Date from DevExtreme DateBox

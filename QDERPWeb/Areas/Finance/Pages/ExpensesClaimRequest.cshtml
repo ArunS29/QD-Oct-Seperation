@@ -107,7 +107,7 @@
             <div class="form-group">
                 @(Html.DevExtreme().DateBox()
                     .Label(new JS("formatMessage('Voucher Date')"))
-                    .ID("VoucherDate")
+                    .ID("claimerdate")
                     .InputAttr("aria-label", "Date")
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)
@@ -120,7 +120,7 @@
             <div class="form-group">
                 @(Html.DevExtreme().DateBox()
                     .Label(new JS("formatMessage('Effective Date')"))
-                    .ID("VoucherEffectiveDate")
+                    .ID("claimerEffectiveDate")
                     .InputAttr("aria-label", "Date")
                     .LabelMode(EditorLabelMode.Outside)
                     .Type(DateBoxType.Date)

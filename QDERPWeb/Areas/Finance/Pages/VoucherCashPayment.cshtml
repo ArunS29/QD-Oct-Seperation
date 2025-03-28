@@ -786,7 +786,7 @@
                                 <div class="col-md-6">
                                     <div>
                                         @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-                                            .ID("VerifiedBy")
+                                            .ID("VerifiedBy").ReadOnly(true)
                                             
 
                                             )
@@ -809,7 +809,7 @@
                                 <div class="col-md-6">
                                     <div>
                                         @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                                            .ID("ApprovedBy")
+                                            .ID("ApprovedBy").ReadOnly(true)
                                            
                                             )
                                         @(Html.DevExtreme().TextBox()
@@ -3842,17 +3842,26 @@ function fetchUpdatedData(voucherEntryNo) {
         });
     }
 
-    function disableEditing() {
-        // Disable all input fields and buttons except for specific ones
-        $('input, select, textarea').prop('disabled', true);
+    // function disableEditing() {
+    //     // Disable all input fields and buttons except for specific ones
+    //     $('input, select, textarea').prop('disabled', true);
 
-        $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPreview1', 'btnPrint', 'btnAttach'];
-            if (!allowedButtons.includes($(this).attr('id'))) {
-                $(this).dxButton('option', 'disabled', true);
-            }
-        });
-    }
+    //     $('.dx-button').each(function () {
+    //         const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach'];
+    //         if (!allowedButtons.includes($(this).attr('id'))) {
+    //             $(this).dxButton('option', 'disabled', true);
+    //         }
+    //     });
+    //     // Enable the DropDownButton explicitly
+    //     const previewButton = $("#btnPreview1").dxDropDownButton("instance");
+       
+    //     if (previewButton) {
+    //         previewButton.option("disabled", false);
+    //         previewButton.repaint();  // Force UI refresh
+    //     } else {
+    //         console.error("btnPreview1 instance not found");
+    //     }
+    // }
 
 
            function onVoucherDrCrValueChanged(e) {
@@ -3902,5 +3911,6 @@ function onAccountHeadRowPrepared(e) {
         var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
         return dropDown.option("value") ? [dropDown.option("value")] : [];
     }
+    
 
 </script>
