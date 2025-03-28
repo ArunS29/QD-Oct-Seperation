@@ -1123,19 +1123,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                _context.Tbl20113ChequeMasters.Add(CM);
-                await _context.SaveChangesAsync();
-                //return Json(new { VoucherEntryNo = VE.VoucherNo });
-                return Ok(new { success = true, message = "Data inserted successfully!" });
+                var existingVoucher = await _context.Tbl20113ChequeMasters
+                                                    .FirstOrDefaultAsync(v => v.VoucherNo == CM.VoucherNo);
+
+                if (existingVoucher != null)
+                {
+                    // Update existing record
+                    _context.Entry(existingVoucher).CurrentValues.SetValues(CM);
+                    await _context.SaveChangesAsync();
+                    return Ok(new { success = true, message = "Cheque Information Updated sucessfully!" });
+                }
+                else
+                {
+                    // Insert new record
+                    _context.Tbl20113ChequeMasters.Add(CM);
+                    await _context.SaveChangesAsync();
+                    return Ok(new { success = true, message = "Cheque Information Saved sucessfully!" });
+                }
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
-
-
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckChequeExists(string chequeNo, string voucherNo)
+        {
+            bool exists = await _context.Tbl20113ChequeMasters
+                .AnyAsync(c => c.ChequeNo == chequeNo && c.VoucherNo != voucherNo); // Exclude current voucher
+
+            return Json(exists);
+        }
+
 
 
         [HttpGet]
