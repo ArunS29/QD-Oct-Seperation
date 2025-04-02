@@ -52,7 +52,8 @@
 <canvas id="myChart1" style="width:100%;max-width:700px"></canvas>
 </div>
 <div class="chart-row1">
-    <canvas id="clientOutstandingChart1" style="width:100%;max-width:700px"></canvas>
+    <div id="myChart2" style="width: 100%; height: 500px;"></div>
+
 </div>
 <!-- Pie Chart Containers -->
 <div class="chart-row">
@@ -541,8 +542,8 @@
                 if (response.success) {
                     const data = response.data;
 
-                        const clientData = data.filter(item => item.Type === "Client");
-                        const supplierData = data.filter(item => item.Type === "Supplier");
+                    const clientData = data.filter(item => item.Type === "Client");
+                    const supplierData = data.filter(item => item.Type === "Supplier");
 
                     const labels = [...new Set(data.map(item => item.AccountHead))];
 
@@ -555,30 +556,37 @@
                         const item = supplierData.find(d => d.AccountHead === label);
                         return item ? item.Balance : 0;
                     });
-
                     new Chart("outstandingChart", {
-                        type: "line",
+                        type: "bubble",
                         data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Client Outstanding',
-                                backgroundColor: "rgba(0,0,255,0.5)",
-                                borderColor: "rgba(0,0,255,1)",
-                                data: clientBalances,
-                                fill: false
-                            }, {
-                                label: 'Supplier Outstanding',
-                                backgroundColor: "rgba(255,0,0,0.5)",
-                                borderColor: "rgba(255,0,0,1)",
-                                data: supplierBalances,
-                                fill: false
-                            }]
+                            datasets: [
+                                {
+                                    label: "Client Outstanding",
+                                    backgroundColor: "rgba(0, 123, 255, 0.5)",
+                                    borderColor: "rgba(0, 123, 255, 1)",
+                                    data: clientData.map(item => ({
+                                        x: labels.indexOf(item.AccountHead),
+                                        y: item.Balance,
+                                        r: item.Balance / 1000000 // Bubble size based on balance
+                                    }))
+                                },
+                                {
+                                    label: "Supplier Outstanding",
+                                    backgroundColor: "rgba(255, 99, 132, 0.5)",
+                                    borderColor: "rgba(255, 99, 132, 1)",
+                                    data: supplierData.map(item => ({
+                                        x: labels.indexOf(item.AccountHead),
+                                        y: item.Balance,
+                                        r: item.Balance / 1000000
+                                     }))
+                                }
+                            ]
                         },
                         options: {
+                            responsive: true,
                             scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
+                                x: { title: { display: true, text: "Accounts" } },
+                                y: { title: { display: true, text: "Outstanding Amount" } }
                             }
                         }
                     });
@@ -592,34 +600,9 @@
         });
     });
 
-
-    const xValues1 = [100,200,300,400,500,600,700,800,900,1000];
-
-    new Chart("myChart1", {
-      type: "line",
-      data: {
-        labels: xValues1,
-        datasets: [{
-          data: [860,1140,1060,1060,1070,1110,1330,2210,7830,2478],
-          borderColor: "red",
-          fill: false
-        }, {
-          data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
-          borderColor: "green",
-          fill: false
-        }, {
-          data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
-          borderColor: "blue",
-          fill: false
-        }]
-      },
-      options: {
-        legend: {display: false}
-      }
-    });
         google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
-
+     
     function drawChart() {
 
     // Set Data
@@ -637,7 +620,7 @@
       title:'Supplier Outstanding Distribution',
       is3D:true
     };
-
+       
     // Draw
     const chart = new google.visualization.PieChart(document.getElementById('myChart2'));
     chart.draw(data, options);
@@ -689,6 +672,88 @@
 
     // Load default data (Client Outstanding) when the page loads
     document.addEventListener("DOMContentLoaded", loadChartData);
+        $(document).ready(function () {
+            $.ajax({
+                url: "/api/Dashboard/GetOutstandingChartData",
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        const data = response.data;
+
+                        // Separate client and supplier data
+                        const clientData = data.filter(item => item.Type === "Client");
+                        const supplierData = data.filter(item => item.Type === "Supplier");
+
+                        // Aggregate data for ranking
+                        const accountBalances = [...new Set(data.map(item => item.AccountHead))].map(label => {
+                            const clientBalance = clientData.find(d => d.AccountHead === label)?.Balance || 0;
+                            const supplierBalance = supplierData.find(d => d.AccountHead === label)?.Balance || 0;
+                            return {
+                                label: label,
+                                clientBalance: clientBalance,
+                                supplierBalance: supplierBalance,
+                                totalBalance: clientBalance + supplierBalance
+                            };
+                        });
+
+                        // Sort by total balance and take top 20
+                        const topAccounts = accountBalances
+                            .sort((a, b) => b.totalBalance - a.totalBalance) // Descending order
+                            .slice(0, 10); // Top 20
+
+                        // Extract labels and data for the chart
+                        const labels = topAccounts.map(item => item.label);
+                        const clientBalances = topAccounts.map(item => item.clientBalance);
+                        const supplierBalances = topAccounts.map(item => item.supplierBalance);
+
+                        // Example third dataset (optional)
+                        const otherData = labels.map((_, index) => index * 500);
+
+                        // Create the chart
+                        new Chart("myChart1", {
+                            type: "line",
+                            data: {
+                                labels: labels, // Account Names
+                                datasets: [
+                                    {
+                                        label: "Client Outstanding",
+                                        data: clientBalances,
+                                        borderColor: "red",
+                                        fill: false
+                                    },
+                                    {
+                                        label: "Supplier Outstanding",
+                                        data: supplierBalances,
+                                        borderColor: "green",
+                                        fill: false
+                                    },
+                                    {
+                                        label: "Other Data",
+                                        data: otherData,
+                                        borderColor: "blue",
+                                        fill: false
+                                    }
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: { display: true }
+                                },
+                                scales: {
+                                    y: { beginAtZero: true }
+                                }
+                            }
+                        });
+                    } else {
+                        console.error("Error fetching data");
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data: ", error);
+                }
+            });
+        });
 </script>
 
 <style>
