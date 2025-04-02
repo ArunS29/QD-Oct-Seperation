@@ -28,7 +28,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAccountHead(DataSourceLoadOptions loadOptions)
+        public async Task<ActionResult> GetClientName(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -53,11 +53,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
-        public async Task<ActionResult> GetClientName(DataSourceLoadOptions loadOptions)
+        public async Task<ActionResult> GetAccountHead(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
+                    .Where(i => i.IsUseInSales == true || i.IsUseInSales == null) // Applying the filter
                     .Select(i => new
                     {
                         i.MasterGroupId,
