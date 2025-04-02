@@ -2991,34 +2991,35 @@
             const rowElement = e.target.closest(".dx-data-row");
 
             if (rowElement) {
-                let rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
+                    let rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
                 contextMenu.dataset.rowIndex = rowIndex;
 
                 let mouseX = e.clientX;
-                let mouseY = e.clientY;
                 const windowWidth = window.innerWidth;
                 const windowHeight = window.innerHeight;
                 const menuWidth = contextMenu.offsetWidth;
                 const menuHeight = contextMenu.offsetHeight;
 
-                // Prevent overflow
-                if (mouseX + menuWidth > windowWidth) {
-                    mouseX -= menuWidth;
-                }
-                if (mouseY + menuHeight > windowHeight) {
-                    mouseY -= menuHeight;
+
+                    // Always position at the bottom
+                let menuX = mouseX;
+                let menuY = windowHeight - menuHeight - 10; // 10px padding from bottom
+
+                // Prevent overflow on the right
+                if (menuX + menuWidth > windowWidth) {
+                    menuX = windowWidth - menuWidth - 10; // Adjust to fit
                 }
 
                 contextMenu.style.display = "block";
                 contextMenu.style.left = `${mouseX}px`;
-                contextMenu.style.top = `${mouseY}px`;
+                    contextMenu.style.top = "380px";
             }
         });
 
         // Hide context menu when clicking elsewhere
         document.addEventListener("click", function () {
             contextMenu.style.display = "none";
-        });
+        }); 
 
 
 
