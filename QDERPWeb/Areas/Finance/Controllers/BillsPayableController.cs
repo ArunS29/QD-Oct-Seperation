@@ -44,6 +44,48 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         i.InvoiceDueDate,
                         i.NoOfDaysCreditPeriod,
                         i.OverdueDays,
+
+
+
+                
+                        i.PayableAmount,
+                       
+                        i.VoucherNarration,
+                        i.AccountGroup,
+                        
+                        i.VoucherEffectiveDate,
+                        i.InvoiceSubmittedDate,
+                        i.VoucherType,
+                        i.BankAccountNo,
+                        i.BankIban,
+                        i.BankName,
+                        i.BankBranch,
+                        i.LedgerRemarks,
+                        i.AccountHeadArabic,
+                        i.AccountGroupId,
+                        i.AccountBranch,
+                        i.SalesPersonCode,
+                        i.BranchName,
+                        i.CostCenterCode,
+                        i.CostAllocationUnit,
+                        i.CostAllocationGroup,
+                        i.CostAllocationMasterGroup,
+                        i.AccountSubGroup,
+                        i.SubGroupName,
+                        i.BankAccountName,
+                        i.RetentionAmount,
+                      
+                        i.TotalPayableAmount,
+                        i.BalanceDueWithOutRetention,
+                        i.RetentionPayable,
+                        i.BalanceDueWithRetention,
+                        i.ReferenceNote,
+                        i.PurchaseBillNo,
+                        i.PurchaseBillDate,
+                        i.PurchaseOrderNo,
+                        i.MaterialReceiptNo,
+                        i.Expr1,
+
                     });
 
                     if (filterType == "WithBalance")
