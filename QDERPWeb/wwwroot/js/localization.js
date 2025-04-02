@@ -872,6 +872,7 @@
         "Accounting Ledger Groups": "Accounting Ledger Groups",
         "Ledger Sub Group Master": "Ledger Sub Group Master",
         "Account Ledger to Salary Payable Mapping": "Account Ledger to Salary Payable Mapping",
+        "Ledger To SubLedger Mapping":"Ledger To SubLedger Mapping",
         "Enter New Sub Group & Add to the Existing List": "Enter New Sub Group & Add to the Existing List",
         "Sub Group Name (Arabic)": "Sub Group Name (Arabic)",
         "User Code is required": "User Code is required",
