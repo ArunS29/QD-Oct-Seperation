@@ -1,7 +1,14 @@
 ﻿var dictionary = {
     "en": {
+        "AccountBranch": "AccountBranch",
+        "SalesPersonCode": "SalesPersonCode",
+        "CostAllocationMasterGroup":"CostAllocationMasterGroup",
         "Expr1": "Expr1",
         "Is Salary Payable": "Is Salary Payable",
+        "BalanceDueWithRetention": "BalanceDueWithRetention",
+        "RetentionPayable": "RetentionPayable",
+        "BalanceDueWithOutRetention": "BalanceDueWithOutRetention",
+        "TotalPayableAmount": "TotalPayableAmount",
         "Is Use In Reconciliation": "Is Use In Reconciliation",
         "Is Balance Sheet Account": "Is Balance Sheet Account",
         "Is Profit Loss Account": "Is Profit Loss Account",

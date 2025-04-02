@@ -94,6 +94,11 @@
             color: black;
         }
 
+    .custom-checkbox .dx-checkbox-icon {
+        color: #0398fc !important; /* ✅ Sets checkmark color */
+    }
+
+
 </style>
 <input id="formId" value="uc20103ChartOfCostCenters" type="hidden" />
 <div class="title">
@@ -126,10 +131,22 @@
             columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center Unit')")).Alignment(HorizontalAlignment.Left);
             columns.Add().DataField("CostAllocationMasterGroup").Caption(new JS("formatMessage('Cost Center Master')")).Alignment(HorizontalAlignment.Center).GroupIndex(0);
             columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Cost Center Group')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
-            columns.Add().DataField("IsDisabled").Caption(new JS("formatMessage('Is Disabled')")).CellTemplate(@<text>
-        <input type="checkbox" class="dx-checkbox" />
-    </text>
-        );
+            columns.Add()
+            .DataField("IsDisabled")
+            .Caption(new JS("formatMessage('Is Disabled')"))
+            .CellTemplate(new JS(@"
+    function(cellElement, cellInfo) {
+    $('<div>')
+    .addClass('custom-checkbox') // ✅ Apply the CSS class
+    .appendTo(cellElement)
+    .dxCheckBox({
+    value: cellInfo.data.IsDisabled,
+    disabled: true
+    });
+    }
+    "));
+
+
             columns.AddFor(m => m.CreatedBy)
             .Caption(new JS("formatMessage('Created By')"))
             .Alignment(HorizontalAlignment.Left)

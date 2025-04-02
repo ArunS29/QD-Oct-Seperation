@@ -74,7 +74,7 @@
                     band.AddFor(m => m.AccountHead)
                 .Caption(new JS("formatMessage('Ledger Account')"))
                 .Alignment(HorizontalAlignment.Left)
-                .Width(200); // Fixed width, change to auto for dynamic sizing
+                .Width(250); // Fixed width, change to auto for dynamic sizing
 
                     // Account Head column
                     band.AddFor(m => m.AccountHead)
@@ -96,7 +96,7 @@
                     band.AddFor(m => m.VoucherRefNo)
             .Caption(new JS("formatMessage('Voucher Ref No')"))
             .Alignment(HorizontalAlignment.Center)
-            .Width(150); // Fixed width, change to auto for dynamic sizing
+            .Width(160); // Fixed width, change to auto for dynamic sizing
 
                     band.AddFor(m => m.VoucherDate)
             .Caption(new JS("formatMessage('Voucher Date')"))
@@ -104,7 +104,7 @@
             .Format(format => format
             .Type(Format.ShortDate)
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
-            .Width(140); // Fixed width, change to auto for dynamic sizing
+            .Width(160); // Fixed width, change to auto for dynamic sizing
 
                     // Invoice Due Date column
                     band.AddFor(m => m.InvoiceDueDate)
@@ -113,7 +113,7 @@
             .Format(format => format
             .Type(Format.ShortDate)
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
-            .Width(140); // Fixed width, change to auto for dynamic sizing
+            .Width(160); // Fixed width, change to auto for dynamic sizing
                 });
 
                     // Grid Band: Amount
@@ -135,7 +135,7 @@
         });
         }
         ")
-                .Width(140); // Fixed width, change to auto for dynamic sizing
+                .Width(160); // Fixed width, change to auto for dynamic sizing
 
                 // Paid Amount column
                     band.AddFor(m => m.Received)
@@ -172,13 +172,13 @@
         });
         }
         ")
-                .Width(140); // Fixed width, change to auto for dynamic sizing
+                .Width(160); // Fixed width, change to auto for dynamic sizing
 
                     band.AddFor(m => m.OverdueDays)
                 .Alignment(HorizontalAlignment.Center)
                 .Caption(new JS("formatMessage('Over due Days')"))
                 .Alignment(HorizontalAlignment.Center)
-                .Width(100); // Fixed width, change to auto for dynamic sizing
+                .Width(80); // Fixed width, change to auto for dynamic sizing
                 });
                 })
             .Paging(p => p.PageSize(10))
