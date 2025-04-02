@@ -94,7 +94,7 @@
 </style>
 <div class="title">
     <div class="header-container">
-    <div id="AccountLedgertoSalaryPayableMapping" class="no-border-title"></div>
+        <div id="LedgerToSubLedgerMapping" class="no-border-title"></div>
     </div>
 </div>
 <div>
@@ -122,29 +122,17 @@
 
 
 
-            <div style="padding-top:15px">
-                @(Html.DevExtreme().DropDownButton()
-                    .ID("ddBtnShowRecords")
-                    .Text(new JS("formatMessage('Show Records')"))
-                    .Icon("smalliconslayout")
-                    .Width(180)
-                    .TabIndex(4)
-                    .DropDownOptions(options => options.Width(230))
-                    @*  .Items(items =>
-                        {
-                            items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                            items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                            items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                            items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                            items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                            items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                            items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                            items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                            items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                            items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                        }) *@
-                    )
-            </div>
+    <div style="padding-top: 15px">
+        @(Html.DevExtreme().Button()
+            .ID("btnShowRecords")
+            .Text("Show Mapping Details") // Removed JS formatting function
+            .Icon("smalliconslayout")
+            .Width(180)
+            .TabIndex(4)
+         @*    .OnClick("ddBtnShowRecords_click")  *@// Calls the function on click
+            )
+    </div>
+
         </div>
         <div class="dx-field ledgerResult">
             @(
@@ -188,8 +176,8 @@
 
     <script>
         $(function () {
-                $("#AccountLedgertoSalaryPayableMapping").dxTextBox({
-                        text:formatMessage("Account Ledger to Salary Payable Mapping"),
+        $("#LedgerToSubLedgerMapping").dxTextBox({
+            text: formatMessage("Ledger To SubLedger Mapping"),
                         readOnly: true,
 						onContentReady: function(e) {
 						$(e.element).addClass("dx-textbox-heading");

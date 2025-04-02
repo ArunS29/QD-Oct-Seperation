@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
 using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
+using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using System;
@@ -140,6 +141,20 @@ namespace QD.ERP.Web.Pages
                     case "AgeingReport":
                         Report = new AgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
+					case "ReceivableReport(EffectiveDate)":
+						Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+						break;
+                    case "SummaryReport":
+                        Report = new CostCenterSummaryReport();
+                        break;
+                    case "SummaryReportByDate":
+                        Report = new SummaryReport_ByDate_();
+                        break;
+                    case "CostCenterReport":
+                        Report = new CostcenterRepoer();
+                        break;
+              
+
                     default:
                         return NotFound("Report not found.");
                 }

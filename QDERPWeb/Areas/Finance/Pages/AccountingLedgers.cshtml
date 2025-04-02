@@ -566,6 +566,7 @@
 										.FilterRow(f => f.Visible(true))
 										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 									.Height(400)
+							     	.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 										.Selection(s => s.Mode(SelectionMode.Single))
 										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 										.Columns(columns =>
@@ -582,6 +583,15 @@
 		<%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
 	</div>
 </text>);
+									columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).Alignment(HorizontalAlignment.Left).Visible(false);
+									columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')")).Alignment(HorizontalAlignment.Left).Visible(false);
+									columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')")).Alignment(HorizontalAlignment.Left).Visible(false);
+									columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Is Profit Loss Account')")).Alignment(HorizontalAlignment.Left).Visible(false);
+									columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')")).Alignment(HorizontalAlignment.Left).Visible(false);
+									columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')")).Alignment(HorizontalAlignment.Left).Visible(false);
+									columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).Alignment(HorizontalAlignment.Left).Visible(false);
+									columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Is Salary Payable')")).Alignment(HorizontalAlignment.Left).Visible(false);
+									columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
 										})
 									)
 }

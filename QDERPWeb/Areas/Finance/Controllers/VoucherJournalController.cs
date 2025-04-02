@@ -95,7 +95,18 @@ namespace QDWEB.Areas.Finance.Controllers
                 i.AccountHead,
                 i.AccountHeadArabic,
                 i.ReferenceNo,
-                i.IsLedgerObselete
+                i.IsLedgerObselete,
+
+                i.IsRestricted,
+                i.IsUseInSales,
+                i.IsUsedInPurchase,
+                i.IsProfitLossAccount,
+                i.IsBalanceSheetAccount,
+                i.IsMaintainBillByBill,
+                i.IsUseInReconciliation,
+                i.IsSalaryPayable,
+                i.Expr1,
+
             });
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
@@ -111,6 +122,11 @@ namespace QDWEB.Areas.Finance.Controllers
                 i.EntryNarration,
                 i.AccountHead,
                 i.SysRemarks,
+
+
+                i.VoucherEntryNo,
+                i.AddedBy,
+                i.AddedOn
             });
 
 
@@ -145,7 +161,9 @@ namespace QDWEB.Areas.Finance.Controllers
                                               .Where(a => a.AccountId == i.AccountHead)
                                               .Select(a => a.AccountHead)
                                               .FirstOrDefault(), // Get AccountHead from ChartOfAccounts
-                        SysRemarks = i.SysRemarks
+                        SysRemarks = i.SysRemarks,
+                        AddedBy = i.AddedBy,
+                        AddedOn = i.AddedOn,
                     })
                     .ToListAsync(); // Async execution
 
@@ -292,24 +310,28 @@ namespace QDWEB.Areas.Finance.Controllers
                         }
 
                         // **Fetch Account ID from ChartOfAccounts**
-                        var accountID = await _context.Tbl201ChartOfAccounts
-                            .Where(a => a.AccountHead == entry.AccountHead)
-                            .Select(a => a.AccountId) // Convert to nullable int to avoid null exceptions
-                            .FirstOrDefaultAsync();
+                        //var accountID = await _context.Tbl201ChartOfAccounts
+                        //    .Where(a => a.AccountHead == entry.AccountHead)
+                        //    .Select(a => a.AccountId) // Convert to nullable int to avoid null exceptions
+                        //    .FirstOrDefaultAsync();
 
-                        if (accountID == null)
-                        {
-                            return BadRequest(new { success = false, message = $"AccountHead '{entry.AccountHead}' not found in ChartOfAccounts." });
-                        }
+                        //if (accountID == null)
+                        //         {
+                        //        return BadRequest(new { success = false, message = $"AccountHead '{entry.AccountHead}' not found in ChartOfAccounts." });
+                        //        }
 
-                        // **Create New Entry**
+                        // **Create New Entry** add objects to list
                         newEntries.Add(new Tbl201VoucherEntry
                         {
                             VoucherNo = VM.VoucherMaster.VoucherNo,
-                            AccountHead = accountID.ToString(), // Assign AccountID as a string
+                            // Assign AccountID as a string
                             DrCr = entry.DrCr,
                             VoucherAmount = entry.VoucherAmount,
-                            EntryNarration = entry.EntryNarration
+                            EntryNarration = entry.EntryNarration,
+                            AccountHead = await _context.Tbl201ChartOfAccounts
+                                             .Where(a => a.AccountHead == entry.AccountHead)
+                                             .Select(a => a.AccountId) // Convert to nullable int to avoid null exceptions
+                                             .FirstOrDefaultAsync(),
                         });
                     }
 

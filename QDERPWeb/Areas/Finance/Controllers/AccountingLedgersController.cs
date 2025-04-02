@@ -44,8 +44,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.AccountHead,
                             i.AccountHeadArabic,
                             i.ReferenceNo,
-                            i.IsLedgerObselete
-                        });
+                            i.IsLedgerObselete,
+						    i.IsRestricted,
+							i.IsUseInSales,
+							i.IsUsedInPurchase,
+							i.IsProfitLossAccount,
+							i.IsBalanceSheetAccount,
+							i.IsMaintainBillByBill,
+							i.IsUseInReconciliation,
+							i.IsSalaryPayable,
+							i.Expr1,
+
+						});
 
                     return Json(await DataSourceLoader.LoadAsync(ledgerAccounts, loadOptions));
                 }
