@@ -253,6 +253,73 @@
             width: "100%", // Makes it take full available width
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");
+        $(function () {
+
+										$("#AccountLedgertoSalaryPayableMapping").dxTextBox({
+													text:formatMessage("Account Ledger to Salary Payable Mapping"),
+                                                        readOnly: true,
+                                                        width:"510px",
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});
+        function ddBtnShowRecords_click(filterType) {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const today = new Date();
+            let startDate = null, endDate = null;
+
+            switch (filterType) {
+                case 'today':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+                    break;
+
+                case 'yesterday':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 0, 0, 0);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 23, 59, 59, 999);
+                    break;
+
+                case 'week':
+                    const dayOfWeek = today.getDay(); // Sunday = 0, Monday = 1, ...
+                    startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - dayOfWeek, 0, 0, 0);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - dayOfWeek + 6, 23, 59, 59, 999);
+                    break;
+
+                case 'tillmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    endDate = new Date(); // Till now
+                    break;
+
+                case 'fullmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999); // Last day of the month
+                    break;
+
+                case 'tillyear':
+                    startDate = new Date(today.getFullYear(), 0, 1);
+                    endDate = new Date(); // Till now
+                    break;
+
+                case 'fullyear':
+                    startDate = new Date(today.getFullYear(), 0, 1);
+                    endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999); // Last day of the year
+                    break;
+
+                case 'lastmonth':
+                    startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    endDate = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999); // Last day of last month
+                    break;
+
+                case 'lastyear':
+                    startDate = new Date(today.getFullYear() - 1, 0, 1);
+                    endDate = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+                    break;
+
+                default:
+                    dataGrid.clearFilter();
+                    return;
             }
         });
     });

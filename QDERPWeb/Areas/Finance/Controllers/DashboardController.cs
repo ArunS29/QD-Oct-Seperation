@@ -165,6 +165,52 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetOutstandingChartData()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clientData = dbContext.Qry20115BillsOutStandings
+                        .Where(b => b.Balance > 0)
+                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead })
+                        .Select(g => new
+                        {
+                            AccountHead = g.Key.AccountHead,
+                            Balance = g.Sum(b => b.Balance),
+                            OverdueDays = g.Max(b => b.OverdueDays),
+                            Type = "Client"
+                        })
+                        .OrderBy(g => g.OverdueDays);
+
+                    var supplierData = dbContext.Qry20115BillsPayableOutStandings
+                        .Where(b => b.Balance > 0)
+                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead })
+                        .Select(g => new
+                        {
+                            AccountHead = g.Key.AccountHead,
+                            Balance = g.Sum(b => b.Balance),
+                            OverdueDays = g.Max(b => b.OverdueDays),
+                            Type = "Supplier"
+                        })
+                        .OrderBy(g => g.OverdueDays);
+
+                    var combinedData = await clientData.Concat(supplierData).ToListAsync();
+
+                    return Json(new { success = true, data = combinedData });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetOutstandingChartData: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetBillsOutstandingAgingForChart(DataSourceLoadOptions loadOptions)
@@ -173,16 +219,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var data = dbContext.Qry20117BillsOutstandingAgingForCharts
+                    var data = await Task.Run(() => dbContext.Qry20117BillsOutstandingAgingForCharts
                         .Where(b => b.Balance > 0)
                         .Select(b => new
                         {
                             b.OverdueDays,
                             b.Balance,
                             b.OverDueGroup
-                        });
+                        })
+                        .ToList());
 
-                    return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
+                    return Ok(new { success = true, data });
                 }
                 catch (Exception ex)
                 {

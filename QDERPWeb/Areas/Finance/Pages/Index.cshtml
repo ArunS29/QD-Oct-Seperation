@@ -48,12 +48,11 @@
     </div>
 </div>
 <div class="chart-row">
-<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+    <canvas id="outstandingChart" style="width:100%;max-width:700px"></canvas>
 <canvas id="myChart1" style="width:100%;max-width:700px"></canvas>
 </div>
 <div class="chart-row1">
-<div id="myChart2" style="width:100%; max-width:600px; height:500px;">
-</div>
+    <canvas id="clientOutstandingChart1" style="width:100%;max-width:700px"></canvas>
 </div>
 <!-- Pie Chart Containers -->
 <div class="chart-row">
@@ -442,27 +441,28 @@
             }
         });
         $.ajax({
-            url: "/api/Dashboard/GetClientOutstandingAgingForChart",
-            type: "GET",
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
-                    // Client Outstanding Pie Chart
-                    $("#clientOutstandingPieChart1").dxPieChart({
-                        dataSource: response.agingData,
-                        series: [{
-                            argumentField: "OverDueGroup",
-                            valueField: "Balance",
-                            label: {
-                                visible: true,
-                                format: "currency"
-                            }
-                        }],
-                        title: "Supplier Outstanding Distribution"
-                    });
-                }
-            }
-        });
+    url: "/api/Dashboard/GetBillsOutstandingAgingForChart",
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+        if (response.success) {
+            // Client Outstanding Pie Chart
+            $("#clientOutstandingPieChart1").dxPieChart({
+                dataSource: response.data,
+                series: [{
+                    argumentField: "OverdueDays",
+                    valueField: "Balance",
+                    label: {
+                        visible: true,
+                        format: "currency"
+                    }
+                }],
+                title: "Supplier Outstanding Distribution"
+            });
+        }
+    }
+});
+
 
         
 
@@ -532,28 +532,67 @@
             }
         });
     });
-    const xValues = [50,60,70,80,90,100,110,120,130,140,150];
-    const yValues = [7,8,8,9,9,9,10,11,14,14,15];
+        $(document).ready(function () {
+        $.ajax({
+            url: "/api/Dashboard/GetOutstandingChartData",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    const data = response.data;
 
-    new Chart("myChart", {
-      type: "line",
-      data: {
-        labels: xValues,
-        datasets: [{
-          fill: false,
-          lineTension: 0,
-          backgroundColor: "rgba(0,0,255,1.0)",
-          borderColor: "rgba(0,0,255,0.1)",
-          data: yValues
-        }]
-      },
-      options: {
-        legend: {display: false},
-        scales: {
-          yAxes: [{ticks: {min: 6, max:16}}],
-        }
-      }
+                        const clientData = data.filter(item => item.Type === "Client");
+                        const supplierData = data.filter(item => item.Type === "Supplier");
+
+                    const labels = [...new Set(data.map(item => item.AccountHead))];
+
+                    const clientBalances = labels.map(label => {
+                        const item = clientData.find(d => d.AccountHead === label);
+                        return item ? item.Balance : 0;
+                    });
+
+                    const supplierBalances = labels.map(label => {
+                        const item = supplierData.find(d => d.AccountHead === label);
+                        return item ? item.Balance : 0;
+                    });
+
+                    new Chart("outstandingChart", {
+                        type: "line",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Client Outstanding',
+                                backgroundColor: "rgba(0,0,255,0.5)",
+                                borderColor: "rgba(0,0,255,1)",
+                                data: clientBalances,
+                                fill: false
+                            }, {
+                                label: 'Supplier Outstanding',
+                                backgroundColor: "rgba(255,0,0,0.5)",
+                                borderColor: "rgba(255,0,0,1)",
+                                data: supplierBalances,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.error("Error fetching data");
+                }
+            },
+            error: function (error) {
+                console.error("Error fetching data: ", error);
+            }
+        });
     });
+
+
     const xValues1 = [100,200,300,400,500,600,700,800,900,1000];
 
     new Chart("myChart1", {
@@ -604,6 +643,52 @@
     chart.draw(data, options);
 
     }
+     let chartInstance = null;
+
+    async function loadChartData() {
+        const type = document.getElementById("dataType").value;
+        
+        const response = await fetch(`/YourControllerName/GetOutstandingChartData?type=${type}`);
+        const data = await response.json();
+
+        const labels = data.map(item => item.AccountHead);
+        const balances = data.map(item => item.Balance);
+
+        const ctx = document.getElementById("outstandingChart").getContext("2d");
+
+        if (chartInstance) {
+            chartInstance.destroy(); // Destroy existing chart before creating a new one
+        }
+
+        chartInstance = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: `${type.charAt(0).toUpperCase() + type.slice(1)} Outstanding`,
+                    data: balances,
+                    borderColor: "blue",
+                    backgroundColor: "rgba(0, 0, 255, 0.2)",
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Load default data (Client Outstanding) when the page loads
+    document.addEventListener("DOMContentLoaded", loadChartData);
 </script>
 
 <style>
