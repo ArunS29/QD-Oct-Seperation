@@ -2050,42 +2050,42 @@
     }
 
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const grid = document.getElementById("dataGrid");
-        const contextMenu = document.getElementById("contextMenu");
-        const contentContainer = document.getElementById("contentContainer"); // Div to load pages
+        document.addEventListener("DOMContentLoaded", function () {
+            const grid = document.getElementById("dataGrid");
+            const contextMenu = document.getElementById("contextMenu");
+            const contentContainer = document.getElementById("contentContainer"); // Div to load pages
 
-        grid.addEventListener("contextmenu", function (e) {
-            e.preventDefault();
+            grid.addEventListener("contextmenu", function (e) {
+                e.preventDefault();
 
-            // Find the closest row element
-            const rowElement = e.target.closest(".dx-data-row");
+                // Find the closest row element
+                const rowElement = e.target.closest(".dx-data-row");
 
-            if (rowElement) {
-                let rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
-                contextMenu.dataset.rowIndex = rowIndex;
+                if (rowElement) {
+                        let rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
+                    contextMenu.dataset.rowIndex = rowIndex;
 
-                let mouseX = e.clientX;
-                let mouseY = e.clientY;
-                const windowWidth = window.innerWidth;
-                const windowHeight = window.innerHeight;
-                const menuWidth = contextMenu.offsetWidth;
-                const menuHeight = contextMenu.offsetHeight;
+                    let mouseX = e.clientX;
+                    const windowWidth = window.innerWidth;
+                    const windowHeight = window.innerHeight;
+                    const menuWidth = contextMenu.offsetWidth;
+                    const menuHeight = contextMenu.offsetHeight;
 
-                // Prevent overflow
-                if (mouseX + menuWidth > windowWidth) {
-                    mouseX -= menuWidth;
+
+                        // Always position at the bottom
+                    let menuX = mouseX;
+                    let menuY = windowHeight - menuHeight - 10; // 10px padding from bottom
+
+                    // Prevent overflow on the right
+                    if (menuX + menuWidth > windowWidth) {
+                        menuX = windowWidth - menuWidth - 10; // Adjust to fit
+                    }
+
+                    contextMenu.style.display = "block";
+                    contextMenu.style.left = `${mouseX}px`;
+                        contextMenu.style.top = "500px";
                 }
-                if (mouseY + menuHeight > windowHeight) {
-                    mouseY -= menuHeight;
-                }
-
-                contextMenu.style.display = "block";
-                contextMenu.style.left = `${mouseX}px`;
-                contextMenu.style.top = `${mouseY}px`;
-            }
-        });
-
+            });
         // Hide context menu when clicking elsewhere
         document.addEventListener("click", function () {
             contextMenu.style.display = "none";

@@ -58,6 +58,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
+                    .Where(i => i.IsUseInSales == true || i.IsUseInSales == null) // Applying the filter
                     .Select(i => new
                     {
                         i.MasterGroupId,

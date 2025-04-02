@@ -246,11 +246,19 @@
   
 
     <script>
+    $(function () {
+        $("#AccountLedgertoSalaryPayableMapping").dxTextBox({
+            text: "Account Ledger to Salary Payable Mapping",
+            readOnly: true,
+            width: "100%", // Makes it take full available width
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
         $(function () {
 
 										$("#AccountLedgertoSalaryPayableMapping").dxTextBox({
 													text:formatMessage("Account Ledger to Salary Payable Mapping"),
                                                         readOnly: true,
+                                                        width:"510px",
 													onContentReady: function(e) {
 				$(e.element).addClass("dx-textbox-heading");
 		}
@@ -313,31 +321,76 @@
                     dataGrid.clearFilter();
                     return;
             }
+        });
+    });
 
-            dataGrid.option("dataSource", {
-                load: function () {
-                    return $.ajax({
-                        url: "/api/SalaryPayableMapping/GetSalaryMappings",
-                        data: {
-                            startDate: startDate.toISOString(),
-                            endDate: endDate.toISOString()
-                        },
-                        type: "GET"
-                    }).then(function (data) {
-                        // Format dates before returning the data
-                        return data.map(function (item) {
-                            item.dateField = new Date(item.dateField).toLocaleDateString("en-GB", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric"
-                            });
-                            return item;
-                        });
-                    });
-                }
-            });
+    function ddBtnShowRecords_click(filterType) {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const startDateBox = $("#StartDate").dxDateBox("instance");
+        const endDateBox = $("#EndDate").dxDateBox("instance");
+        const today = new Date();
+        let startDate = null, endDate = null;
 
+        switch (filterType) {
+            case 'today':
+                startDate = new Date(today.setHours(0, 0, 0, 0));
+                endDate = new Date(today.setHours(23, 59, 59, 999));
+                break;
+            case 'yesterday':
+                startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+                endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 23, 59, 59, 999);
+                break;
+            case 'week':
+                startDate = new Date(today.setDate(today.getDate() - today.getDay()));
+                endDate = new Date(today.setDate(startDate.getDate() + 6));
+                break;
+            case 'tillmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = new Date();
+                break;
+            case 'fullmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+                break;
+            case 'tillyear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = new Date();
+                break;
+            case 'fullyear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+                break;
+            case 'lastmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                endDate = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999);
+                break;
+            case 'lastyear':
+                startDate = new Date(today.getFullYear() - 1, 0, 1);
+                endDate = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+                break;
+            default:
+                dataGrid.clearFilter();
+                return;
         }
+
+        // ✅ Update the DateBox values
+        startDateBox.option("value", startDate);
+        endDateBox.option("value", endDate);
+
+        // ✅ Apply filter to DataGrid
+        dataGrid.option("dataSource", {
+            store: DevExpress.data.AspNet.createStore({
+                loadUrl: "/api/SalaryPayableMapping/GetSalaryMappings",  // ✅ Match with API method name
+                loadParams: {
+                    startDate: startDate.toISOString(),
+                    endDate: endDate.toISOString()
+                }
+            })
+        });
+
+        dataGrid.refresh();
+    }
+
 
         // $(document).ready(function () {
         //     // Function to get URL parameters
@@ -360,34 +413,39 @@
         //     }
         // });
 
-$(document).ready(function () {
-    function getQueryParam(name) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(name);
-    }
+    $(document).ready(function () {
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
 
-    const acchedid = getQueryParam("acchedid") || "";
-    const accheadname = getQueryParam("accheadname") || "";
+        const acchedid = getQueryParam("acchedid") || "";
+        const accheadname = getQueryParam("accheadname") || "";
+        const startDate = getQueryParam("FromDate");
+        const endDate = getQueryParam("ToDate");
 
-    if (acchedid) {
-        $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);
-    }
-    if (accheadname) {
-        $("#AccountHeadName").dxTextBox("instance").option("value", accheadname);
-    }
+        if (acchedid) {
+            $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);
+        }
+        if (accheadname) {
+            $("#AccountHeadName").dxTextBox("instance").option("value", accheadname);
+        }
 
-    // Ensure the API request is correctly formatted
-    const dataGrid = $("#dataGrid").dxDataGrid("instance");
-    dataGrid.option("dataSource", {
-        store: DevExpress.data.AspNet.createStore({
-            //key: "AccountHeadNo",
-            loadUrl: "/api/SalaryPayableMapping/GetSalaryMapping", // Absolute URL (Fixes the issue)
-            loadParams: { acchedid: acchedid }
-        })
+        // ✅ Ensure Date Parameters Are Passed Correctly
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        dataGrid.option("dataSource", {
+            store: DevExpress.data.AspNet.createStore({
+                loadUrl: "/api/SalaryPayableMapping/GetSalaryMappings",
+                loadParams: {
+                    acchedid: acchedid,
+                    startDate: startDate ? new Date(startDate).toISOString() : null,
+                    endDate: endDate ? new Date(endDate).toISOString() : null
+                }
+            })
+        });
+
+        dataGrid.refresh();
     });
-
-    dataGrid.refresh();
-});
 
 
 
