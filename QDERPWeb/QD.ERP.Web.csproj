@@ -55,6 +55,21 @@
 	  <Compile Update="Areas\Finance\Reports\cashPayments\cashPayments.cs">
 	    <SubType>XtraReport</SubType>
 	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\CostcenterGroupByDate.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\CostCenterGroupReport.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\CostcenterRepoer.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\CostCenterSummaryReport.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\SummaryReport%28ByDate%29 .cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
 	</ItemGroup>
 
 	<ProjectExtensions>
