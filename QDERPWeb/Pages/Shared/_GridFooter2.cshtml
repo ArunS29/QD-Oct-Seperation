@@ -177,7 +177,7 @@
             {
                 items.Add().Text(new JS("formatMessage('Bills Payable')")).Icon("search");
                 items.Add().Text(new JS("formatMessage('Payable Summary')")).Icon("search");
-                items.Add().Text(new JS("formatMessage('Report by Supplier')")).Icon("search");
+                items.Add().Text(new JS("formatMessage('Report by Supplier')")).Icon("search").OnClick("ReportsByClient");
                 items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Icon("smalliconslayout");
             })
             .OnItemClick("handleReportClick")
@@ -439,10 +439,22 @@
         window.location.href = `/${tenantName}/Finance/ReportsBySupplier`;
     }
 
+    function ReportsByClient() {
+        alert("hi")
+        let url = `/${tenantName}/Finance/ReportsByClients`;
+
+
+        $("#popupIframe").attr("src", url);
+
+        // Open the popup
+        let popup = $("#reportsByClientPopup").dxPopup("instance");
+        popup.show();
+    }
+
     const reportMappings = {
         "Bills Payable": "BIllsPayable",
         "Payable Summary": "PayableSummary",
-        "Report by Supplier": "ReportBySupplier",
+        
         "Bills Payable with Unmapped Vouchers": "BillsPayableUnmapped"
     };
 
@@ -464,4 +476,35 @@
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
+
+
+    $(function () {
+        $("#reportsByClientPopup").dxPopup({
+            width: 600,
+            height: 750,
+            title: "Reports by Clients",
+            visible: false,
+            showCloseButton: true,
+            closeOnOutsideClick: true,
+            shading: true, // Ensures a modal effect
+            dragEnabled: false, // Prevent resizing
+            resizeEnabled: false,
+            contentTemplate: function () {
+                return $("<iframe>", {
+                    id: "popupIframe",
+                    width: "600px",
+                    height: "750px",
+                    frameborder: 0,
+
+                }).css({
+                    overflow: "hidden",
+                    border: "none",
+                    display: "block" // Ensures no extra margins
+                });
+            }
+        });
+
+
+    })
 </script>

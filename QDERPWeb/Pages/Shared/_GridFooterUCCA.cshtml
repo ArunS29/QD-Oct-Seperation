@@ -8,7 +8,7 @@
         text-align: center !important;
     }
 
-    .dx-button {
+    .dx-button .menuReports {
         background-color: whitesmoke;
     }
 
@@ -23,7 +23,7 @@
         margin-top: 0px;
     }
 
-    .button-alignment-down {
+    .button-alignment-down .menuReports {
         margin-top: 23px;
     }
 
@@ -115,31 +115,47 @@
         .Width(50)
         //.OnClick("toggleGroupPanel")
         )
-   
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddOtherVouchers")
-        .Icon("optionsgear")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text(new JS("formatMessage('Print Cost Differences')")).Icon("preferences");
-            items.Add().Text(new JS("formatMessage('Cost on BalanceSheet Items')")).Icon("preferences");
-            items.Add().Text(new JS("formatMessage('Clear All wrong Allocation of Cost')")).Icon("preferences");
-        }).OnItemClick("otherVoucherButton_click")
-        )
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddReports")
-        .Icon("doc")
-        .DropDownOptions(options => options.Width(240))
-        .Items(items =>
-        {
-            items.Add().Text(new JS("formatMessage('Cost Center Summary Reports')")).Icon("search").OnClick("showSubmenu2"); ;
-            items.Add().Text(new JS("formatMessage('Cost Center Detailed Reports')")).Icon("search").OnClick("showSubmenu3"); ;
-      
 
-        })
-        .OnItemClick("addReportsButton_click")
+    @(Html.DevExtreme().Menu()
+        .ID("menuReports")
+        .DataSource(new[] {
+    new {
+    text = "Reports",
+    icon = "doc",
+    items = new[] {
+    new {
+    text = "Cost Center Summary Reports",
+    icon = "search",
+    items = new[] {
+    new { text = "Summary Report", icon = "chart-line" },
+    new { text = "Summary Report (By Date)", icon = "chart-line" },
+    new { text = "Cost Center Report", icon = "chart-line" },
+    new { text = "Cost Center Report (By Date)", icon = "chart-line" },
+    new { text = "Cost Center Group Report", icon = "chart-line" },
+    new { text = "Cost Center Group Report (By Date)", icon = "chart-line" }
+    }
+    },
+    new {
+    text = "Cost Center Detailed Reports",
+    icon = "search",
+    items = new[] {
+    new { text = "Summary Report", icon = "chart-line" },
+    new { text = "Summary Report (By Date)", icon = "chart-line" },
+    new { text = "Cost Center Report", icon = "chart-line" },
+    new { text = "Cost Center Report (By Date)", icon = "chart-line" },
+    new { text = "Cost Center Group Report", icon = "chart-line" },
+    new { text = "Cost Center Group Report (By Date)", icon = "chart-line" }
+    }
+    }
+    }
+    }
+    })
+        .DisplayExpr("text")
+        .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
+        .OnItemClick("handleReportsClick") // JavaScript function to handle clicks
         )
+
+
 
 </div>
 
@@ -149,9 +165,9 @@
         var contextMenu = $("#contextMenu");
         contextMenu.hide();
         var $submenu = $('#submenuContainer2');
-        $submenu.hide(); // Hide the submenu popup
+        $submenu.hide(); 
         var $submenu = $('#submenuContainer3');
-        $submenu.hide(); // Hide the submenu popup
+        $submenu.hide(); 
 
     });
 
@@ -509,5 +525,30 @@
             reader.readAsText(file);
         }
     });
+
+
+    const reportMappings = {
+        "Summary Report": "SummaryReport",
+        "Summary Report (By Date)": "SummaryReportByDate",
+        "Cost Center Report": "CostCenterReport",
+        "Cost Center Report (By Date)": "CostCenterReportByDate",
+        "Cost Center Group Report": "CostCenterGroupReport",
+        "Cost Center Group Report (By Date)": "CostCenterGroupReportByDate"
+    };
+
+    function handleReportsClick(e) {
+        const selectedText = e.itemData.text;
+
+        if (reportMappings[selectedText]) {
+            const reportName = reportMappings[selectedText];
+            console.log(`Opening report: ${reportName}`);
+
+            // Open Document Viewer with the selected report
+            window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } else {
+            console.warn('No report mapping found for:', selectedText);
+        }
+    }
+
 </script>
 
