@@ -1,5 +1,16 @@
 ﻿var dictionary = {
     "en": {
+        "Expr1": "Expr1",
+        "Is Salary Payable": "Is Salary Payable",
+        "Is Use In Reconciliation": "Is Use In Reconciliation",
+        "Is Balance Sheet Account": "Is Balance Sheet Account",
+        "Is Profit Loss Account": "Is Profit Loss Account",
+        "Is Restricted": "Is Restricted",
+        "Is Use In Sales": "Is Use In Sales",
+        "Is Used In Purchase": "Is Used In Purchase",
+        "Added By": "Added By",
+        "Added On": "Added On",
+
         "All Vouchers": "All Vouchers",
         "Supplier Payables": "Supplier Payables",
         "Client Receivables": "Client Receivables",

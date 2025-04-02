@@ -300,11 +300,15 @@
                 columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('DeleteLine')")).Visible(false);
 
 
+                columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Alignment(HorizontalAlignment.Left).Visible(false);
 
 
             })
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
+        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(true))
         .Height(250)
@@ -468,47 +472,57 @@
 @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("accounthead-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("VoucherJournal")
-                .LoadAction("GetSupplierName")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountId")
-                )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                .SearchPanel(sp => sp.HighlightSearchText(true))
-                .Selection(sl => sl.Mode(SelectionMode.Single))
-                .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
-                .OnInitialized("dataGridAccountHeadInitialized")
-                .HeaderFilter(p => p.Visible(true))
-                .ShowBorders(true)
-                .HoverStateEnabled(true)
-                .Paging(p => p.PageSize(15))
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(345)
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
-                    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
-                    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
-                    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
-                    columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
-                .CellTemplate(@<text>
+                    .ID("accounthead-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("VoucherJournal")
+                    .LoadAction("GetSupplierName")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("AccountId")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                    .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
+                    .OnInitialized("dataGridAccountHeadInitialized")
+                    .HeaderFilter(p => p.Visible(true))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                        columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
+                        columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
+                    .CellTemplate(@<text>
     <div class="dx-icon">
         <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
     </div>
 </text>);
+                        columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Is Profit Loss Account')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Is Salary Payable')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
 
-                })
-                    .OnRowPrepared("onRowPrepared")
-                     
-            )
+
+                    })
+        .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .OnRowPrepared("onRowPrepared")
+
+                )
 }
-
 @*  </div> *@
 
 
