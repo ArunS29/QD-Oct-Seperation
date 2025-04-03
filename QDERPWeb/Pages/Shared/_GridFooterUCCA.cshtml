@@ -151,6 +151,28 @@
        
         )
 </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnFinancialReports")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("globe")
+            .Text("Financial Reports")
+            .Width(180)
+            )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnFinancialReportsArabic")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("chart")
+            .Text("Financial Reports (Arabic)")
+            .Width(300)
+            )
+    </div>
+
 <div class="btn-container">
     @(Html.DevExtreme().Button()
         .ID("btnShowRowTable")
@@ -216,6 +238,8 @@
 
 
 </div>
+
+
 </div>
 
 <script type="text/javascript">

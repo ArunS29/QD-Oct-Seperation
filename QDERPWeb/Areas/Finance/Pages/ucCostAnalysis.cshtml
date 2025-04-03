@@ -89,7 +89,7 @@
             @(Html.DevExtreme().CheckBox()
                 .ID("useEffectiveDate")
                 .Text("Use Effective Date")
-                .Value(false)
+                .Value(true)
                 )
 
             <!-- Dropdown Button to Show Records -->
@@ -260,9 +260,7 @@
         // Get the selected AccountGroup
         var getaccountGroup = $("#requestedBy").dxSelectBox("instance").option("value");
         var accountGroup = getaccountGroup ? getaccountGroup.CostAllocationUnit : null;
-
-        alert(getaccountGroup)
-
+     
         console.log("Fetching records with:", {
             startDate: startDate ? startDate.toISOString().split('T')[0] : "All Dates",
             endDate: endDate ? endDate.toISOString().split('T')[0] : "All Dates",
@@ -290,31 +288,17 @@
         $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
                 fields: [
-                    { dataField: "BranchName", area: "row", caption: "Branch" },
-                    { dataField: "VoucherTypeAndNo", area: "row", caption: "Voucher" },
-                    { dataField: "AccountHead", area: "row", caption: "Account Head" },
-                    { dataField: "AccountGroup", area: "row", caption: "Account Group" },
-                    { dataField: "MasterGroup", area: "row", caption: "Master Group" },
-                    { dataField: "CostAllocationUnit", area: "row", caption: "Allocation Unit" },
-                    { dataField: "CostAllocationGroup", area: "row", caption: "Allocation Group" },
+                    // Row Fields (Hierarchy: Cost Group → Cost Center)
+                    { dataField: "CostGroup", area: "row", caption: "Cost Group" },
+                    { dataField: "CostCenter", area: "row", caption: "Cost Center" },
 
-                    { dataField: "VoucherDate", area: "column", dataType: "date", groupInterval: "year", caption: "Year" },
-                    { dataField: "VoucherDate", area: "column", dataType: "date", groupInterval: "month", caption: "Month" },
+                    // Column Fields (Display Income, Expenses, Grand Total)
+                    { dataField: "IncomeExpense", area: "column", caption: "Income / Expense" },
 
-                    { dataField: "AmountAllocated", area: "data", summaryType: "sum", caption: "Allocated Amount" },
-                    { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
+                    // Data Fields
                     { dataField: "Income", area: "data", summaryType: "sum", caption: "Income" },
-                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Cost Amount" },
-                    { dataField: "CostAllocationId", area: "data", summaryType: "count", caption: "Cost Allocations" },
-                    { dataField: "VoucherEntryId", area: "data", summaryType: "count", caption: "Voucher Entries" },
-                    { dataField: "EffectiveDate", area: "data", summaryType: "max", caption: "Latest Effective Date" },
-                    { dataField: "IsDisabled", area: "data", summaryType: "count", caption: "Disabled Count" },
-                    { dataField: "Pl", area: "data", caption: "Profit/Loss" },
-                    { dataField: "AccountId", area: "data", summaryType: "count", caption: "Unique Accounts" },
-                    { dataField: "VoucherNo", area: "data", summaryType: "count", caption: "Voucher Count" },
-                    { dataField: "VoucherType", area: "data", summaryType: "count", caption: "Voucher Types" },
-                    { dataField: "CostCenterIncharge", area: "data", summaryType: "count", caption: "Cost Center Count" },
-                    { dataField: "AllocationEffectiveDate", area: "data", summaryType: "max", caption: "Latest Allocation Date" }
+                    { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
+                    { dataField: "GrandTotal", area: "data", summaryType: "sum", caption: "Grand Total" }
                 ],
                 store: data
             },
@@ -329,7 +313,7 @@
             showColumnHeaders: true,
             columnAutoWidth: true, // Dynamically adjust column width
             allowColumnResizing: true, // Allow user to resize columns
-            rowHeaderLayout: "standard", // Prevent excessive row nesting
+            rowHeaderLayout: "tree", // Show hierarchy in tree structure
             wordWrapEnabled: true, // Wrap text to avoid scrolling
 
             fieldChooser: {
@@ -344,11 +328,11 @@
                 showDataFields: true,
                 showFilterFields: true
             },
-            showColumnTotals: true,
-            showColumnGrandTotals: true,
+            showColumnTotals: false, // Hide column totals to match the layout
+            showColumnGrandTotals: false,
             showDataHeaders: true,
-            showRowTotals: true,
-            showRowGrandTotals: true
+            showRowTotals: false, // Hide row totals to match the layout
+            showRowGrandTotals: false
         });
 
         // Adjust grid height on window resize
