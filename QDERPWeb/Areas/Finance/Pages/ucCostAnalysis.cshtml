@@ -28,9 +28,16 @@
 </style>
 
 
-    <!-- Input Controls --> <div class="card-header" style=" color:black; font-weight: bold;">
-        UcCostAnalysis
+<div class="title">
+    <div class="header-container">
+        <div id="costAnalysis" class="no-border-input"></div>
     </div>
+</div>
+<div class="Head">
+    <div class="header-container">
+        <div class="footer">@await Html.PartialAsync("_GridFooterUCCA")</div>
+    </div>
+</div>
     <div class="dx-fieldset horizontal-container">
         <div class="dx-field">
             <!-- SelectBox for Account Group -->
@@ -116,11 +123,18 @@
 
 
 
-    <div id="pivotGridContainer"></div>
-    <!-- Grid Footer Partial -->
-    @await Html.PartialAsync("_GridFooterUCCA")
+<div class="ledgerResult" id="pivotGridContainer"></div>
 
 <script type="text/javascript">
+    $(function () {
+        $("#costAnalysis").dxTextBox({
+            text: formatMessage("Cost Analysis"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
     // Function to handle changes in the Account Group selection
     function onRequestedByChanged(e) {
         var selectedValue = e.value; // Get the selected value from the SelectBox

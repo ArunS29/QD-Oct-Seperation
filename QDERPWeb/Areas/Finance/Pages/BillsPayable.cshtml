@@ -88,13 +88,13 @@
     </div>
 <div class="card-footer background" style="display: flex;justify-content: space-between;">
     @await Html.PartialAsync("_GridFooter2")
-    <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;">
+    <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;padding-right: 30px;">
         <div>
             @(Html.DevExtreme().Button()
                 .ID("btnBillsWithBalance")
                 .Text(new JS("formatMessage('Show All Bills(Only with Balance)')"))
                 .Height(30)
-                .Width(350)
+                .Width(400)
                 .Icon("checklist")
                 .OnClick("function() { switchButtons('btnBillsWithBalance'); }")
                 )
@@ -104,7 +104,7 @@
                 .ID("btnBillsFullyPaid")
                 .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
                 .Height(30)
-                .Width(350)
+                .Width(400)
                 .Icon("checklist")
                 .Visible(false)//Initially hidden
                 .OnClick("function() { switchButtons('btnBillsFullyPaid'); }")
