@@ -801,32 +801,7 @@
         e.component.option("opened", false);
     }
 
-    function onAccountLedgerChanged(e) {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var rowIndex = dataGrid.option("editing.editRowKey");
-        if (rowIndex !== undefined) {
-            dataGrid.cellValue(rowIndex, "AccountId", e.value);
-        }
-    }
-    function accountGridContentTemplate(e) {
-        return $("<div>").dxDataGrid({
-            dataSource: e.component.getDataSource(),
-            columns: [
-                { dataField: "AccountId", caption: "ID", visible: false },
-                { dataField: "AccountHead", caption: "Account Name" },
-                { dataField: "AccountGroup", caption: "Group" },
-                { dataField: "ReferenceNo", caption: "Ref No" }
-            ],
-            selection: { mode: "single" },
-            paging: { pageSize: 10 },
-            onSelectionChanged: function (selected) {
-                if (selected.selectedRowsData.length > 0) {
-                    e.component.option("value", selected.selectedRowsData[0].AccountId);
-                    e.component.close();
-                }
-            }
-        });
-    }
+    
     function onAccountHeadRowPrepared(e) {
         if (e.rowType === "data" && e.data.IsLedgerObselete) {
             e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color

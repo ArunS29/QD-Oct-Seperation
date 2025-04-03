@@ -281,6 +281,25 @@
             .OnClick("showColumnChooser")
             )
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonExpense")
+            .Icon("tags")
+            .Width(50)
+            .Text("Create New")
+            .ElementAttr(new { style = "display: none;" })
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Expense Claim Request").Icon("money");
+                items.Add().Text("Petty Cash Request").Icon("product");
+                items.Add().Text("Supplier Payment Request").Icon("money");
+
+            })
+            .OnItemClick("addExpenseButton_click")
+            .ShowArrowIcon(false)
+            )
+    </div>
     @if (!hideDropdowns)
     {
         <div class="btn-container">
@@ -362,6 +381,7 @@
         </div>
     }
     
+    
     <!-- Modal Structure -->
     <div id="customModal" class="modal">
         <div class="modal-content">
@@ -406,7 +426,8 @@
                         "ddButtonReceipts": { "Visible": false, "Enabled": false },
                         "ddButtonPayment": { "Visible": false, "Enabled": false },
                         "ddOtherVouchers": { "Visible": false, "Enabled": false },
-                        "ddReports": { "Visible": false, "Enabled": false }
+                        "ddReports": { "Visible": false, "Enabled": false },
+                        "ddButtonExpense": { "Visible": false, "Enabled": false }
                     };
 
 
@@ -1138,5 +1159,21 @@
         $('#submenuContainer6').hide();
         $('#submenuContainer7').hide();
     }
-
+    function addExpenseButton_click(e) {
+        switch (e.itemData.text) {
+            
+            case ('Expense Claim Request'):
+                window.location.href = `/${tenantName}/Finance/ExpensesClaimRequest`;
+                break;
+            case ('Petty Cash Request'):
+                window.open(`/${tenantName}/Finance/PettyCashRequest`, 'Window');
+                break;
+            case ('Supplier Payment Request'):
+                window.open(`/${tenantName}/Finance/SupplierPaymentRequest`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                break;
+            // You can handle other cases here if needed
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+        }
+    }
 </script>
