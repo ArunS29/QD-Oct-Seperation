@@ -145,7 +145,7 @@
 </div>
 <div class="Head">
 	<div class="header-container">
-		<div class="footer">@await Html.PartialAsync("_GridFooter")</div>
+		<div class="footer">@await Html.PartialAsync("_GridFooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
 	</div>
 </div>
 @* <div id="errorPopup">

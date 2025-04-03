@@ -1,5 +1,6 @@
 ﻿@{
     var hideDropdowns = ViewData["HideDropdowns"] as bool? ?? false;
+    var hideDropdown = ViewData["HideDropdown"] as bool? ?? false;
 }
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -271,25 +272,29 @@
             .OnClick("showColumnChooser")
             )
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonExpense")
-            .Icon("tags")
-            .Width(50)
-            .Text("Create New")
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Expense Claim Request").Icon("money");
-                items.Add().Text("Petty Cash Request").Icon("product");
-                items.Add().Text("Supplier Payment Request").Icon("money");
+    @if (!hideDropdown)
+    {
+        <div class="btn-container">
+            @(
+                Html.DevExtreme().DropDownButton()
+                                .ID("ddButtonExpense")
+                                .Icon("tags")
+                                .Width(50)
+                                .Text("Create New")
+                                .ElementAttr(new { style = "display: none;" })
+                                .DropDownOptions(options => options.Width(230))
+                                .Items(items =>
+                                {
+                                    items.Add().Text("Expense Claim Request").Icon("money");
+                                    items.Add().Text("Petty Cash Request").Icon("product");
+                                    items.Add().Text("Supplier Payment Request").Icon("money");
 
-            })
-            .OnItemClick("addExpenseButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
+                                })
+                                .OnItemClick("addExpenseButton_click")
+                                .ShowArrowIcon(false)
+                                )
+        </div>
+    }
     @if (!hideDropdowns)
     {
         <div class="btn-container">
