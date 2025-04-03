@@ -947,7 +947,7 @@
                                         .Max(999999999999999) // Max limit of 15 digits
                                         .InputAttr("maxlength", "15") // Set the max length attribute to 15
                                         .Format("###########") // Ensures only integers (up to 15 digits)
-.OnValueChanged("syncVATNumbers")
+                                        .OnValueChanged("syncVATNumbers")
                                        // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                         )
 
@@ -2062,28 +2062,28 @@
             <div style="display: flex; align-items: center; gap: 5px;">
                 <strong>Created By:</strong>
                 <div class="col-md-4"> 
-                    @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("180%").ReadOnly(false)
+                    @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("180%").ReadOnly(true)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
                 <strong>Created On:</strong>
                 <div class="col-md-4">
-                    @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("180%").ReadOnly(false)
+                    @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("180%").ReadOnly(true)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
                 <strong>Modified By:</strong>
                 <div class="col-md-4">
-                    @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("180%").ReadOnly(false)
+                    @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("180%").ReadOnly(true)
                 </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 5px;">
                 <strong>Modified On:</strong>
                 <div class="col-md-3">
-                    @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("240%").ReadOnly(false)
+                    @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("240%").ReadOnly(true)
                 </div>
             </div>
 
@@ -3083,6 +3083,8 @@ function syncSupVATNumbers(e) {
     let getidfromCOA;//IsChart=false;
     let getUN=null;
     let userNames=null;
+    let accgrpId = null;
+    console.log("agid:", accgrpId);
     $(document).ready(function () {
         var urlParams = new URLSearchParams(window.location.search);
         var accountGroupId = urlParams.get('AccountGroupId');
@@ -3932,7 +3934,7 @@ function syncSupVATNumbers(e) {
         const modal = document.getElementById("ledgerAccountMasterModal");
         const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}`;
+        iframe.src = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}&AccountGroupId=${encodeURIComponent(accgrpId)} `;
 
         modal.style.display = "block";
 
@@ -4235,6 +4237,8 @@ function syncSupVATNumbers(e) {
 
                     accgrp = selectedRowData[0].AccountGroup;
                     accgrpunder = selectedRowData[0].AccountGroupUnder;
+                    accgrpId = selectedRowData[0].AccountGroupId;
+                    console.log("aid:", accgrpId);
 
                 } else {
                     DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);

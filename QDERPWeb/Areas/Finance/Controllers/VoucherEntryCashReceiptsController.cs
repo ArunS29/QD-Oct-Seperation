@@ -659,7 +659,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     i.AccountId,
                     i.AccountHead,
-                    i.AccountHeadArabic
+                    i.AccountGroup,
+                    i.AccountHeadArabic,
+                    i.ReferenceNo,
+                    i.IsLedgerObselete
 
                 });
 
