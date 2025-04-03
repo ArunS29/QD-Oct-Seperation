@@ -1,0 +1,226 @@
+﻿
+<!--<style type="text/css">
+    .card {
+        margin: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #F0F8FF;
+        color: black;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 15px;
+        background-color: #ffffff;
+        border-radius: 8px; /* Smoother border */
+        max-height: 200px;
+        overflow-y: auto; /* Ensures vertical scrolling only */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for better visibility */
+    }
+
+    /* Improves responsiveness & consistency */
+    .horizontal-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-start; /* Use 'flex-start' instead of 'start' */
+        align-items: center;
+        margin: 15px;
+    }
+
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px;
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+</style>
+
+
+<div class="dx-field ledgerResult">-->
+    @*    <div class="horizontal-container">
+            @foreach (var btn in new[] {
+                "Voucher Date", "Voucher Ref No", "Voucher Narration", "Voucher Entered By", "Voucher Verified By", "Voucher Verified On", "Voucher Approved By",
+                "Voucher Type", "Sys Remarks", "Bank Cleared On", "Account Group ID", "Master Group ID", "Is Profit Loss Account", "Is Bank Sheet Account",
+                "Master Order No", "Master Group Category", "Voucher Effective Date", "Bill No", "Bill Date", "Bill Paid To",
+                "Bill Remarks", "Voucher Modified By", "Voucher Modified On", "Account Head Arabic", "Account Group Ar", "Master Group Ar",
+                "Voucher Type Ar", "Chart Of Accounts Order", "Bank Transaction", "Bank Dr Transaction", "Bank Cr Transaction", "Master Group", "Account Group"
+            })
+            {
+                    <div class="draggable-btn" data-field="@btn">
+                    @(Html.DevExtreme().Button().Text(btn).StylingMode(ButtonStylingMode.Outlined).Width(150))
+                    </div>
+            }
+        </div>
+ *@
+
+    @*     </div> *@
+    @*     <!-- Single Container for Title, PivotGrid & Footer --> *@
+    @* <div class="finance-container"> *@
+    @*    <div class="pivot-title">Cash Inflow & Outflow</div> *@
+    <!--<div id="pivotGridContainer"></div>
+    <div>
+        @await Html.PartialAsync("TransactionDetailsFooter")
+    </div>-->
+
+
+    <!-- Include DevExtreme Scripts & Styles -->
+    <!--<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2/css/dx.light.css">
+    <script src="https://cdn3.devexpress.com/jslib/22.2/js/dx.all.js"></script>
+
+    <script type="text/javascript">
+
+          function loadPivotGridData() {
+            $.ajax({
+                url: '/api/TransactionDetails/GetVoucherForAudits',
+                type: 'GET',
+                success: function (data) {
+                    console.log("API Data: ", data);
+
+                    // Filter out rows with "Opening Balance"
+                    const filteredData = data.filter(item => item.VoucherNo !== "Opening Balance");
+
+                    // Add title above pivot grid
+
+                    $("#pivotGridContainer").dxPivotGrid({
+                        dataSource: {
+                            store: {
+                                type: "array",
+                                data: filteredData
+                            },
+                            fields: [
+                                { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 250,  allowSorting: true,
+                        allowFiltering: true },
+                                { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250 },
+                                { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 250 },
+                                { dataField: "CrAmount", area: "data", caption: "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+                                { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+                                { dataField: "VoucherDate", area: "data", caption: "Voucher Date", expanded: false },
+                                { dataField: "VoucherRefNo", area: "data", caption: "Voucher Ref No", expanded: false },
+                                { dataField: "VoucherNarration", area: "data", caption: "Voucher Narration", expanded: false },
+                                { dataField: "VoucherEnteredBy", area: "data", caption: "Voucher Entered By", expanded: false },
+                                { dataField: "VoucherEnteredOn", area: "data", caption: "Voucher Entered On", expanded: false },
+                                { dataField: "VoucherVerifiedBy", area: "data", caption: "Voucher Verified By", expanded: false },
+                                { dataField: "VoucherVerifiedOn", area: "data", caption: "Voucher Verified On", expanded: false },
+                                { dataField: "VoucherApprovedBy", area: "data", caption: "Voucher Approved By", expanded: false },
+                                { dataField: "VoucherApprovedOn", area: "data", caption: "Voucher Approved On", expanded: false },
+                                { dataField: "VoucherEntryNo", area: "data", caption: "Voucher Entry No", expanded: false },
+                                { dataField: "AccountHead", area: "data", caption: "Account Head", expanded: false },
+                                { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount Formatted", expanded: false },
+                                { dataField: "EntryNarration", area: "data", caption: "Entry Narration", expanded: false },
+                                { dataField: "AccountGroup", area: "data", caption: "Account Group", expanded: false }
+                            ]
+                        },
+                        allowSortingBySummary: true,
+                        allowSorting: true,
+                        allowFiltering: true,
+                        allowExpandAll: true,
+                        showBorders: true,
+                        showColumnHeaders: true,
+                        showColumnTotals: true,
+                        showRowTotals: false,
+                        showColumnGrandTotals: true,
+                        showRowGrandTotals: true,
+                        wordWrapEnabled: true,
+                        height: 500,
+                        fieldChooser: { enabled: true },
+                        loadPanel: { enabled: true }
+                    }).dxPivotGrid("instance");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data: ", error);
+                }
+            });
+        }
+
+
+
+            $(document).ready(function () {
+                loadPivotGridData();
+            });
+    </script>
+
+    <style>
+        .finance-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .pivot-title {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 12px;
+            color: black;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+            background: #f1f1f1;
+        }
+
+        .dx-pivotgrid-area-data td {
+            text-align: right;
+        }
+
+        /* Hides all buttons, including layout settings */
+        button, .dx-field-chooser-button {
+            display: none !important;
+        }
+    </style>
+</div>
+
+<script>
+    function isModal() {
+           return new URLSearchParams(window.location.search).get("modal") === "true";
+       }
+
+       $(document).ready(function () {
+           const urlParams = new URLSearchParams(window.location.search);
+           const argsledno = urlParams.get("argsledno");
+
+           if (isModal()) {
+               const style = document.createElement("style");
+               style.innerHTML = `
+                         .container { display: none !important; }
+                         .frame { display: none !important; }
+                         .footerContainer { display: none !important; }
+                         .bodyContainer { display: flex; justify-content: center; }
+                         .mainContainer { margin-top: 1em;width:100%; }
+                     `;
+               document.head.appendChild(style);
+           }
+
+           console.log("Formatted Voucher in ready block:", argsledno);
+
+           if (argsledno) {
+               setTimeout(function () {
+                   const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                   if (voucherNoField) {
+                       voucherNoField.option("value", argsledno);
+                   } else {
+                       console.error("VoucherNo TextBox instance not found.");
+                   }
+               }, 500); // Small delay to ensure the textbox is ready
+           }
+       });
+
+
+</script>-->

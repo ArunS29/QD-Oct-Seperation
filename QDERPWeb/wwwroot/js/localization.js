@@ -1431,7 +1431,15 @@
         "Bills Receivable (With Retention)": "Bills Receivable (With Retention)",
         "BillsReceivablelandscapeformat": "BillsReceivablelandscapeformat",
         "Bills Receivable (Ageing as per Ledger Balance)": "Bills Receivable (Ageing as per Ledger Balance)",
-        "Bills Receivable (Format 2)": "Bills Receivable (Format 2)"
+        "Bills Receivable (Format 2)": "Bills Receivable (Format 2)",
+        "Types of Claim:": "Types of Claim:",
+        "Claim Reference No:": "Claim Reference No:",
+        "Claim Date:": "Claim Date:",
+        "Effective Date:": "Effective Date:",
+        "Claim Remarks:": "Claim Remarks:",
+        "Claimed for Project/Jobs:": "Claimed for Project/Jobs:",
+        "Priority:": "Priority:",
+        
     },
     "ar": {
         "Bills Receivable (All)": "الفواتير المستحقة القبض (الكل)",
@@ -2809,7 +2817,14 @@
         "GCC Tax": "ضريبة دول مجلس التعاون الخليجي",
         "Exports Tax": "ضريبة الصادرات",
         "Domestic VAT": "ضريبة القيمة المضافة المحلية",
-        "Imports VAT": "ضريبة القيمة المضافة على الواردات"
+        "Imports VAT": "ضريبة القيمة المضافة على الواردات",
+        "Types of Claim:": "أنواع المطالبات",
+        "Claim Reference No:": "رقم مرجع المطالبة",
+        "Claim Date:": "تاريخ المطالبة",
+        "Effective Date:": "تاريخ السريان",
+        "Claim Remarks:": "ملاحظات المطالبة",
+        "Claimed for Project/Jobs:": "المطالبة للمشروع/الوظائف",
+        "Priority:": "الأولوية"
 
     }
 };
