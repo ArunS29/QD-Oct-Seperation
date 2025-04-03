@@ -126,6 +126,7 @@
         var selectedValue = e.value; // Get the selected value from the SelectBox
 
         var selectBox = $("#requestedBy").dxSelectBox("instance");
+        console.log("value", requestedBy);
         var dataSource = selectBox.option("dataSource");
 
         if (dataSource && dataSource.store) {
@@ -267,60 +268,52 @@
         });
     }
 
-
     function initializePivotGrid(data) {
         $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
-                store: {
-                    type: "array",
-                    data: data
-                },
                 fields: [
-                    { dataField: "CostAllocationMasterGroup", area: "row", caption: "CostAllocationMasterGroup" },
-                    { dataField: "CostAllocationGroup", area: "row", caption: "CostAllocationGroup" },
-                    { dataField: "CostAllocationUnit", area: "row", caption: "CostAllocationUnit" },
-                    { dataField: "Income", area: "row", caption: "Income", expanded: true },
-                    { dataField: "Expenses", area: "row", caption: "Expenses", expanded: true },
-                    { dataField: "VoucherNo", area: "column", caption: "Voucher No", width: 50 },
-                    { dataField: "CostAmount", area: "data", caption: "CostAmount", summaryType: "sum", width: 50 },
-                    { dataField: "CostAllocationID", area: "column", caption: "Cost Allocation ID" },
-                    { dataField: "VoucherEntryID", area: "column", caption: "Voucher Entry ID" },
-                    { dataField: "CostAllocationUnitID", area: "column", caption: "Cost Allocation Unit ID" },
-                    { dataField: "CostAllocDrCr", area: "column", caption: "Cost Alloc Dr/Cr" },
-                    { dataField: "AmountAllocated", area: "column", caption: "Amount Allocated", summaryType: "sum" },
-                    { dataField: "EffectiveDate", area: "column", caption: "Effective Date", dataType: "date" },
-                    { dataField: "CostAllocRemarks", area: "column", caption: "Cost Alloc Remarks" },
-                    { dataField: "AccountHead", area: "column", caption: "Account Head" },
-                    { dataField: "AccountGroup", area: "column", caption: "Account Group" },
-                    { dataField: "MasterGroup", area: "column", caption: "Master Group" },
-                    { dataField: "AccountID", area: "column", caption: "Account ID" },
-                    { dataField: "VoucherType", area: "column", caption: "Voucher Type" },
-                    { dataField: "VoucherTypeAndNo", area: "column", caption: "Voucher Type & No" },
-                    { dataField: "CostCenterIncharge", area: "column", caption: "Cost Center Incharge" },
-                    { dataField: "EntryNarration", area: "column", caption: "Entry Narration" },
-                    { dataField: "SysRemarks", area: "column", caption: "System Remarks" },
-                    { dataField: "VoucherDate", area: "column", caption: "Voucher Date", dataType: "date" },
-                    { dataField: "VoucherMonth", area: "column", caption: "Voucher Month" },
-                    { dataField: "VoucherYear", area: "column", caption: "Voucher Year" },
-                    { dataField: "EffectiveMonth", area: "column", caption: "Effective Month" },
-                    { dataField: "EffectiveYear", area: "column", caption: "Effective Year" },
-                    { dataField: "AllocationEffectiveDate", area: "column", caption: "Allocation Effective Date", dataType: "date" },
-                    { dataField: "AllocationEffectiveMonth", area: "column", caption: "Allocation Effective Month" },
-                    { dataField: "AllocationEffectiveYear", area: "column", caption: "Allocation Effective Year" },
-                    { dataField: "ProjectMasterCode", area: "column", caption: "Project Master Code" },
-                    { dataField: "BranchCode", area: "column", caption: "Branch Code" },
-                    { dataField: "BranchName", area: "column", caption: "Branch Name" },
-                    { dataField: "VoucherNarration", area: "column", caption: "Voucher Narration" },
-                    { dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No" }
-                ]
+                    { dataField: "BranchName", area: "row", caption: "Branch" },
+                    { dataField: "VoucherTypeAndNo", area: "row", caption: "Voucher" },
+                    { dataField: "AccountHead", area: "row", caption: "Account Head" },
+                    { dataField: "AccountGroup", area: "row", caption: "Account Group" },
+                    { dataField: "MasterGroup", area: "row", caption: "Master Group" },
+                    { dataField: "CostAllocationUnit", area: "row", caption: "Allocation Unit" },
+                    { dataField: "CostAllocationGroup", area: "row", caption: "Allocation Group" },
+
+                    { dataField: "VoucherDate", area: "column", dataType: "date", groupInterval: "year", caption: "Year" },
+                    { dataField: "VoucherDate", area: "column", dataType: "date", groupInterval: "month", caption: "Month" },
+
+                    { dataField: "AmountAllocated", area: "data", summaryType: "sum", caption: "Allocated Amount" },
+                    { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
+                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Income" },
+                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Cost Amount" },
+                    { dataField: "CostAllocationId", area: "data", summaryType: "count", caption: "Cost Allocations" },
+                    { dataField: "VoucherEntryId", area: "data", summaryType: "count", caption: "Voucher Entries" },
+                    { dataField: "EffectiveDate", area: "data", summaryType: "max", caption: "Latest Effective Date" },
+                    { dataField: "IsDisabled", area: "data", summaryType: "count", caption: "Disabled Count" },
+                    { dataField: "Pl", area: "data", caption: "Profit/Loss" },
+                    { dataField: "AccountId", area: "data", summaryType: "count", caption: "Unique Accounts" },
+                    { dataField: "VoucherNo", area: "data", summaryType: "count", caption: "Voucher Count" },
+                    { dataField: "VoucherType", area: "data", summaryType: "count", caption: "Voucher Types" },
+                    { dataField: "CostCenterIncharge", area: "data", summaryType: "count", caption: "Cost Center Count" },
+                    { dataField: "AllocationEffectiveDate", area: "data", summaryType: "max", caption: "Latest Allocation Date" }
+                ],
+                store: data
             },
+
+            width: "100%",
+            height: $(window).height() - 50, // Adjust height dynamically
             allowSortingBySummary: true,
             allowSorting: true,
             allowFiltering: true,
-            showBorders: true,
-            height: 500,
             allowExpandAll: true,
+            showBorders: true,
             showColumnHeaders: true,
+            columnAutoWidth: true, // Dynamically adjust column width
+            allowColumnResizing: true, // Allow user to resize columns
+            rowHeaderLayout: "standard", // Prevent excessive row nesting
+            wordWrapEnabled: true, // Wrap text to avoid scrolling
+
             fieldChooser: {
                 enabled: true,
                 allowSearch: true
@@ -338,7 +331,30 @@
             showDataHeaders: true,
             showRowTotals: true,
             showRowGrandTotals: true
-        }).dxPivotGrid('instance');
+        });
+
+        // Adjust grid height on window resize
+        $(window).resize(function () {
+            $("#pivotGridContainer").dxPivotGrid("instance").option("height", $(window).height() - 50);
+        });
+
+        // Custom styles
+        $(".dx-pivotgrid-container").css({
+            "font-size": "14px",
+            "border-radius": "8px"
+        });
+
+        $(".dx-pivotgrid-row, .dx-pivotgrid-column").css({
+            "padding": "10px",
+            "border-bottom": "1px solid #ddd"
+        });
+
+        $(".dx-pivotgrid-cell").hover(function () {
+            $(this).css("background-color", "#f5f5f5");
+        }, function () {
+            $(this).css("background-color", "");
+        });
     }
+
 
 </script>
