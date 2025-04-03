@@ -140,7 +140,9 @@
         var selectedValue = e.value; // Get the selected value from the SelectBox
 
         var selectBox = $("#requestedBy").dxSelectBox("instance");
-        console.log("value", requestedBy);
+        var requestedBy = selectBox.option("value");
+        alert(requestedBy)
+        //console.log("value", requestedBy);
         var dataSource = selectBox.option("dataSource");
 
         if (dataSource && dataSource.store) {
@@ -258,6 +260,8 @@
         // Get the selected AccountGroup
         var getaccountGroup = $("#requestedBy").dxSelectBox("instance").option("value");
         var accountGroup = getaccountGroup ? getaccountGroup.CostAllocationUnit : null;
+
+        alert(getaccountGroup)
 
         console.log("Fetching records with:", {
             startDate: startDate ? startDate.toISOString().split('T')[0] : "All Dates",
