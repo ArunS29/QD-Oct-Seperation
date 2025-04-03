@@ -6,6 +6,7 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Data;
+using QD.ERP.Web.Areas.Finance.Models;
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
 

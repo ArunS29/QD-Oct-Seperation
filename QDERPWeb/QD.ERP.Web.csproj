@@ -6,11 +6,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="Areas\Finance\Pages\VATSalesReporting.cshtml.cs" />
 		<Compile Remove="Controllers\LoginController.cs" />
 		<Compile Remove="Pages\Login.cshtml.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<Content Remove="Areas\Finance\Pages\SalesPersonorProjectList.cshtml" />
+		<Content Remove="Areas\Finance\Pages\VATSalesReporting.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
 	</ItemGroup>
 
@@ -53,6 +56,21 @@
 
 	<ItemGroup>
 	  <Compile Update="Areas\Finance\Reports\cashPayments\cashPayments.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\CostcenterGroupByDate.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\CostCenterGroupReport.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\CostcenterRepoer.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\CostCenterSummaryReport.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
+	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\SummaryReport%28ByDate%29 .cs">
 	    <SubType>XtraReport</SubType>
 	  </Compile>
 	</ItemGroup>

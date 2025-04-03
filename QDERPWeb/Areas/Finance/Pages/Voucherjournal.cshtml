@@ -345,7 +345,7 @@
         })
         )
 </div>
-<div id="footerTotals" style="display: flex;color: black; padding: 5px 10px; font-size: 14px;">
+@* <div id="footerTotals" style="display: flex;color: black; padding: 5px 10px; font-size: 14px;">
     <div style="flex: 5;">&nbsp;</div>
 
     <div style="flex: 1; text-align: center;">
@@ -366,7 +366,7 @@
             )
     </div>
     <div style="flex: 4;">&nbsp;</div>
-</div>
+</div> *@
 
 
 <div class="displayFlex">
@@ -947,7 +947,7 @@
         var button = $("#btnSave").dxButton("instance");
         var finalVoucherNo = globalVoucherNo || argsledno || "";
 
-        alert(argsledno)
+        //alert(argsledno)
 
         // If argsledno is present, force "UpdateVoucher" action, else determine based on finalVoucherNo
         var action = finalVoucherNo ? "UpdateVoucher" : "SaveVoucher";
