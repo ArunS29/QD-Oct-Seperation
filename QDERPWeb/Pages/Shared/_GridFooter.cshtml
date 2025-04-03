@@ -237,17 +237,7 @@
             )
     </div>
 
-    @*  <div class="btn-container">
-    @(Html.DevExtreme().Button()
-    .ID("btntoggleGroupPanel1")
-    .Type(ButtonType.Normal)
-    .StylingMode(ButtonStylingMode.Outlined)
-    .Icon("hierarchy")
-    .Width(50)
-    .Text("Group")
-    .OnClick("AccountGroupsOrdering")
-    )
-    </div> *@
+
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -716,8 +706,8 @@
         if (isColumnChooserVisible) {
             dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
         } else {
-            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
-            dataGrid.showColumnChooser(); // Show the column chooser
+            dataGrid.option("columnChooser.enabled", true); 
+            dataGrid.showColumnChooser(); 
         }
     }
 
@@ -728,7 +718,7 @@
         var grid = $("#dataGrid").dxDataGrid("instance");
         var currentVisibility = grid.option("filterRow.visible");
 
-        grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
+        grid.option("filterRow.visible", !currentVisibility); 
     }
 
     // Footer Recipits button event

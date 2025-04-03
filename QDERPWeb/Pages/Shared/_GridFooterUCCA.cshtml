@@ -526,7 +526,6 @@
         }
     });
 
-
     const reportMappings = {
         "Summary Report": "SummaryReport",
         "Summary Report (By Date)": "SummaryReportByDate",
@@ -539,16 +538,59 @@
     function handleReportsClick(e) {
         const selectedText = e.itemData.text;
 
+        // Get instances of SelectBox and DateBox components
+        var requestedByBox = $("#requestedBy").dxSelectBox("instance");
+        var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+        var toDateBox = $("#todateBox").dxDateBox("instance");
+
+        var requestedBy = requestedByBox.option("value");
+        var frmDate = frmDateBox.option("value");
+        var toDate = toDateBox.option("value");
+
+        // Validate required fields
+        if (!frmDate || !toDate) {
+            alert("Please select both start and end dates.");
+            return;
+        }
+
+        // Function to format date as D-MMM-YYYY
+        function formatDate(date) {
+            let dateObj = new Date(date);
+            let day = dateObj.getDate();
+            let month = dateObj.toLocaleString('en-US', { month: 'short' });
+            let year = dateObj.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        var frmDateStr = formatDate(frmDate);
+        var toDateStr = formatDate(toDate);
+
         if (reportMappings[selectedText]) {
             const reportName = reportMappings[selectedText];
-            console.log(`Opening report: ${reportName}`);
 
-            // Open Document Viewer with the selected report
-            window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            console.log(`Opening report: ${reportName}`);
+            console.log("From Date:", frmDateStr);
+            console.log("To Date:", toDateStr);
+            if (requestedBy) {
+                console.log("Cost Allocation Group:", requestedBy);
+            } else {
+                console.log("Cost Allocation Group: Not provided");
+            }
+
+            // Construct the URL with frmDate and toDate as mandatory, and requestedBy if available
+            let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+
+            if (requestedBy) {
+                url += `&requestedBy=${encodeURIComponent(requestedBy)}`;
+            }
+
+            // Open Document Viewer
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
         } else {
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
 
 </script>
 
