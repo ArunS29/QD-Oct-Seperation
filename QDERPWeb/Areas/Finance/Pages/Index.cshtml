@@ -52,7 +52,7 @@
 <canvas id="myChart1" style="width:100%;max-width:700px"></canvas>
 </div>
 <div class="chart-row1">
-    <div id="myChart2" style="width: 100%; height: 500px;"></div>
+    <div id="myChart2" style="width: 70%; height: 350px;"></div>
 
 </div>
 <!-- Pie Chart Containers -->
@@ -599,80 +599,68 @@
             }
         });
     });
+        google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(loadChartData);
 
-        google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
-     
-    function drawChart() {
+    function loadChartData() {
+        $.ajax({
+            url: "/api/Dashboard/GetOutstandingChartData",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    const data = response.data;
 
-    // Set Data
-    const data = google.visualization.arrayToDataTable([
-      ['Contry', 'Mhl'],
-      ['Italy',54.8],
-      ['France',48.6],
-      ['Spain',44.4],
-      ['USA',23.9],
-      ['Argentina',14.5]
-    ]);
+                    // Aggregate data for ranking
+                    const accountBalances = [...new Set(data.map(item => item.AccountHead))].map(label => {
+                        const totalBalance = data
+                            .filter(item => item.AccountHead === label)
+                            .reduce((sum, item) => sum + item.Balance, 0);
 
-    // Set Options
-    const options = {
-      title:'Supplier Outstanding Distribution',
-      is3D:true
-    };
-       
-    // Draw
-    const chart = new google.visualization.PieChart(document.getElementById('myChart2'));
-    chart.draw(data, options);
+                        return { label: label, balance: totalBalance };
+                    });
 
-    }
-     let chartInstance = null;
+                    // Sort by balance and take top 5
+                    const topAccounts = accountBalances
+                        .sort((a, b) => b.balance - a.balance) // Descending order
+                        .slice(0, 5); // Top 5
 
-    async function loadChartData() {
-        const type = document.getElementById("dataType").value;
-        
-        const response = await fetch(`/YourControllerName/GetOutstandingChartData?type=${type}`);
-        const data = await response.json();
+                    // Prepare data for Google Charts
+                    const chartData = [['Account Head', 'Outstanding Balance']];
+                    topAccounts.forEach(item => {
+                        chartData.push([item.label, item.balance]);
+                    });
 
-        const labels = data.map(item => item.AccountHead);
-        const balances = data.map(item => item.Balance);
-
-        const ctx = document.getElementById("outstandingChart").getContext("2d");
-
-        if (chartInstance) {
-            chartInstance.destroy(); // Destroy existing chart before creating a new one
-        }
-
-        chartInstance = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: `${type.charAt(0).toUpperCase() + type.slice(1)} Outstanding`,
-                    data: balances,
-                    borderColor: "blue",
-                    backgroundColor: "rgba(0, 0, 255, 0.2)",
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: true }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                    drawChart(chartData);
+                } else {
+                    console.error("Error fetching data");
                 }
+            },
+            error: function (error) {
+                console.error("Error fetching data: ", error);
             }
         });
     }
 
-    // Load default data (Client Outstanding) when the page loads
-    document.addEventListener("DOMContentLoaded", loadChartData);
-        $(document).ready(function () {
+    function drawChart(chartData) {
+        // Convert to Google Charts format
+        const data = google.visualization.arrayToDataTable(chartData);
+
+        // Set Options
+        const options = {
+            title: 'Top 5 Outstanding Accounts',
+            is3D: true,
+            pieSliceText: 'value',
+            height: 400
+        };
+
+        // Draw Chart
+        const chart = new google.visualization.PieChart(document.getElementById('myChart2'));
+        chart.draw(data, options);
+    }
+
+
+    $(document).ready(function () {
             $.ajax({
                 url: "/api/Dashboard/GetOutstandingChartData",
                 type: "GET",
@@ -697,10 +685,10 @@
                             };
                         });
 
-                        // Sort by total balance and take top 20
+                        // Sort by total balance and take top 10
                         const topAccounts = accountBalances
                             .sort((a, b) => b.totalBalance - a.totalBalance) // Descending order
-                            .slice(0, 10); // Top 20
+                            .slice(0, 10); // Top 10
 
                         // Extract labels and data for the chart
                         const labels = topAccounts.map(item => item.label);
