@@ -87,7 +87,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 requestedByLabel.Visible = !string.IsNullOrEmpty(requestedBy);
             }
 
-            // Set up SQL query if needed
+            // Set up SQL  if needed
             AddSqlQueryParameters(requestedBy, frmDate, toDate);
         }
 

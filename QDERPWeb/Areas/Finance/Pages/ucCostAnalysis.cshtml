@@ -140,7 +140,9 @@
         var selectedValue = e.value; // Get the selected value from the SelectBox
 
         var selectBox = $("#requestedBy").dxSelectBox("instance");
-        console.log("value", requestedBy);
+        var requestedBy = selectBox.option("value");
+        alert(requestedBy)
+        //console.log("value", requestedBy);
         var dataSource = selectBox.option("dataSource");
 
         if (dataSource && dataSource.store) {

@@ -5,6 +5,7 @@ using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
 using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
+using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using System;
@@ -113,6 +114,40 @@ namespace QD.ERP.Web.Pages
                         string requestedByValue = string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy;
                         Report = new CostCenterSummaryReport(requestedByValue, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
+                    case "SummaryReportByDate":
+                        Report = new SummaryReport_ByDate_(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr
+                        );
+                        break;
+
+                    case "CostCenterReport":
+                        Report = new CostcenterRepoer(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr
+                        );
+                        break;
+
+                    case "CostCenterReportByDate)":
+                        Report = new CostcenterBydate(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr
+                        );
+                        break;
+
+                    case "CostCenterGroupReport":
+                        Report = new CostCenterGroupReport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr
+                        );
+                        break;
+
+                    case "CostCenterGroupReportByDate":
+                        Report = new CostcenterGroupByDate(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr
+                        );
+                        break;
                     default:
                         return NotFound("Cost report not found.");
                 }
@@ -159,12 +194,7 @@ namespace QD.ERP.Web.Pages
                         Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
                   
-                    case "SummaryReportByDate":
-                        Report = new SummaryReport_ByDate_();
-                        break;
-                    case "CostCenterReport":
-                        Report = new CostcenterRepoer();
-                        break;
+          
                     default:
                         return NotFound("Report not found.");
                 }

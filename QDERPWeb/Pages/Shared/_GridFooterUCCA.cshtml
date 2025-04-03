@@ -619,14 +619,16 @@
     };
 
     function handleReportsClick(e) {
+        alert('hi');
         const selectedText = e.itemData.text;
 
         // Get instances of SelectBox and DateBox components
-        var requestedByBox = $("#requestedBy").dxSelectBox("instance");
+        var getaccountGroup = $("#requestedBy").dxSelectBox("instance").option("value");
+        var requestedBy = getaccountGroup ? getaccountGroup.CostAllocationUnit : null;
+
         var frmDateBox = $("#frmdateBox").dxDateBox("instance");
         var toDateBox = $("#todateBox").dxDateBox("instance");
 
-        var requestedBy = requestedByBox.option("value");
         var frmDate = frmDateBox.option("value");
         var toDate = toDateBox.option("value");
 
@@ -654,11 +656,7 @@
             console.log(`Opening report: ${reportName}`);
             console.log("From Date:", frmDateStr);
             console.log("To Date:", toDateStr);
-            if (requestedBy) {
-                console.log("Cost Allocation Group:", requestedBy);
-            } else {
-                console.log("Cost Allocation Group: Not provided");
-            }
+            console.log("Cost Allocation Group:", requestedBy ? requestedBy : "Not provided");
 
             // Construct the URL with frmDate and toDate as mandatory, and requestedBy if available
             let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
@@ -673,6 +671,7 @@
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
 
 
 </script>
