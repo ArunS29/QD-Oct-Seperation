@@ -39,6 +39,11 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal? VoucherAmountFormatted { get; set; }
 
         public decimal? VoucherAmount { get; set; }
+       //VoucherJounal fields
+        public string AddedBy { get; set; }
+
+        public DateTime? AddedOn { get; set; }
+
     }
     public class AccountLedger
     {

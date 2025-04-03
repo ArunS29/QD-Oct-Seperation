@@ -143,8 +143,34 @@
         .OnClick("onAttachButtonClick")
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnColumnChooser")
+            .Icon("columnchooser")
+            .Width(40)
+
+            .Text(new JS("formatMessage('Column Chooser')"))
+            .OnClick("showColumnChooser")
+            )
+    </div>
 </div>
 <script type="text/javascript">
+
+    function showColumnChooser() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+        if (isColumnChooserVisible) {
+            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+        } else {
+            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+            dataGrid.showColumnChooser(); // Show the column chooser
+        }
+    }
+
+
+
+
 
     $(document).ready(function () {
         console.log('Start permission handling');
@@ -162,13 +188,13 @@
                 if (response.success && response.permissions) {
                     // Default visibility and enable status for buttons
                     var controlStates = {
-                        "btnSave": { "Visible": false, "Enabled": false },
+                        "btnSave": { "Visible": true, "Enabled": true },
                         "btnSaveAndClose": { "Visible": false, "Enabled": false },
-                        "btnPreview1": { "Visible": false, "Enabled": false },
-                        "btnPrint": { "Visible": false, "Enabled": false },
+                        "btnPreview1": { "Visible": true, "Enabled": true },
+                        "btnPrint": { "Visible": true, "Enabled": true },
                         "btnDelete": { "Visible": false, "Enabled": false },
                         "btnBack": { "Visible": false, "Enabled": false },
-                        "btnVerify": { "Visible": false, "Enabled": false },
+                        "btnVerify": { "Visible": true, "Enabled": true },
                         "btnApprove": { "Visible": false, "Enabled": false },
                         "btnAttach": { "Visible": false, "Enabled": false }
                     };
@@ -617,7 +643,7 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack',  'btnPrint', 'btnAttach','btnEditAHead','btnAddAHead'];
+            const allowedButtons = ['btnBack',  'btnPrint', 'btnAttach','btnEditAHead','btnAddAHead','btncostBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }

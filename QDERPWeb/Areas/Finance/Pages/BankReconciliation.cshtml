@@ -192,7 +192,7 @@
                 @(Html.DevExtreme().TextBox()
                             .ID("BalanceAsPerOurBooks")
                             .LabelMode(EditorLabelMode.Outside)
-                    .Label(new JS("format('Balance as per our Books:')"))
+                .Label(new JS("formatMessage('Balance as per our Books:')"))
                             .Width(250)
                         )
     </div>
@@ -201,7 +201,7 @@
                 @(Html.DevExtreme().TextBox()
                             .ID("AmountNotReflectedinBank")
                             .LabelMode(EditorLabelMode.Outside)
-                    .Label(new JS("format('Amount not reflected in Bank:')"))
+                .Label(new JS("formatMessage('Amount not reflected in Bank:')"))
                             .Width(250) 
                         )
     </div>
@@ -210,7 +210,7 @@
                 @(Html.DevExtreme().TextBox()
                             .ID("BalanceAsPerBankStatement")
                             .LabelMode(EditorLabelMode.Outside)
-                    .Label(new JS("format('Balance as per Bank Statement:')"))
+                .Label(new JS("formatMessage('Balance as per Bank Statement:')"))
                             .Width(250) 
                         )
     </div>

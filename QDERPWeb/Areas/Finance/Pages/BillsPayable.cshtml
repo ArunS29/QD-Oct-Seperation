@@ -88,13 +88,13 @@
     </div>
 <div class="card-footer background" style="display: flex;justify-content: space-between;">
     @await Html.PartialAsync("_GridFooter2")
-    <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;">
+    <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;padding-right: 30px;">
         <div>
             @(Html.DevExtreme().Button()
                 .ID("btnBillsWithBalance")
                 .Text(new JS("formatMessage('Show All Bills(Only with Balance)')"))
                 .Height(30)
-                .Width(350)
+                .Width(400)
                 .Icon("checklist")
                 .OnClick("function() { switchButtons('btnBillsWithBalance'); }")
                 )
@@ -104,12 +104,16 @@
                 .ID("btnBillsFullyPaid")
                 .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
                 .Height(30)
-                .Width(350)
+                .Width(400)
                 .Icon("checklist")
                 .Visible(false)//Initially hidden
                 .OnClick("function() { switchButtons('btnBillsFullyPaid'); }")
                 )
         </div>
+    </div>
+
+    <div id="reportsByClientPopup">
+        <div id="popupContent"></div>
     </div>
 </div>
     <div class="dx-field ledgerResult" style="overflow: hidden; font-family: Inter, Helvetica, Arial, sans-serif">
@@ -125,8 +129,10 @@
                 // Grid Band: Bills Payable
                 columns.Add().Caption(new JS("formatMessage('Bills Payable')")).Columns(band =>
             {
-                band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('AccountHeadNo')")).Alignment(HorizontalAlignment.Center);
-                band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left);
+                band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('AccountHeadNo')")).Alignment(HorizontalAlignment.Center).Width(150);
+                band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250);
+                band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0); // Group by this column
+
                 band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('ReferenceNo')")).Alignment(HorizontalAlignment.Center)
             .CellTemplate(@<text>
         <a href="/<%= tenantName %>/Finance/PurchaseVoucher?argsledno=<%= data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
@@ -177,15 +183,56 @@
     return '(' + formattedValue + ')';
     }
     ");
-                band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('InvoiceDueDate')")).Alignment(HorizontalAlignment.Center)
+                band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('InvoiceDueDate')")).Alignment(HorizontalAlignment.Center).Width(80)
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('NoOfDaysCreditPeriod')")).Alignment(HorizontalAlignment.Center);
-                band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('OverdueDays')")).Alignment(HorizontalAlignment.Center);
+                band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('NoOfDaysCreditPeriod')")).Alignment(HorizontalAlignment.Center).Width(80);
+                band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('OverdueDays')")).Alignment(HorizontalAlignment.Center).Width(80);
+
+
+                columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Voucher Effective Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("InvoiceSubmittedDate").Caption(new JS("formatMessage('Invoice Submitted Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher Type')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("BankAccountNo").Caption(new JS("formatMessage('Bank Account No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("BankIban").Caption(new JS("formatMessage('Bank IBAN')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("BankName").Caption(new JS("formatMessage('Bank Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("BankBranch").Caption(new JS("formatMessage('Bank Branch')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("LedgerRemarks").Caption(new JS("formatMessage('Ledger Remarks')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group ID')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("AccountBranch").Caption(new JS("formatMessage('Account Branch')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("SalesPersonCode").Caption(new JS("formatMessage('Sales Person Code')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("CostCenterCode").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Cost Allocation Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("CostAllocationMasterGroup").Caption(new JS("formatMessage('Cost Allocation Master Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("AccountSubGroup").Caption(new JS("formatMessage('Account Sub Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("SubGroupName").Caption(new JS("formatMessage('Sub Group Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("BankAccountName").Caption(new JS("formatMessage('Bank Account Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("RetentionAmount").Caption(new JS("formatMessage('Retention Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("TotalPayableAmount").Caption(new JS("formatMessage('Total Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("BalanceDueWithOutRetention").Caption(new JS("formatMessage('Balance Due Without Retention')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("RetentionPayable").Caption(new JS("formatMessage('Retention Payable')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("BalanceDueWithRetention").Caption(new JS("formatMessage('Balance Due With Retention')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("ReferenceNote").Caption(new JS("formatMessage('Reference Note')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("PurchaseBillNo").Caption(new JS("formatMessage('Purchase Bill No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("PurchaseBillDate").Caption(new JS("formatMessage('Purchase Bill Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("PurchaseOrderNo").Caption(new JS("formatMessage('Purchase Order No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("MaterialReceiptNo").Caption(new JS("formatMessage('Material Receipt No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
+
+
+
             });
             })
         .Paging(p => p.PageSize(10))
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
+        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(true))
         .Height(660)
@@ -306,7 +353,6 @@
         )
 
     </div>
-
 
 
     

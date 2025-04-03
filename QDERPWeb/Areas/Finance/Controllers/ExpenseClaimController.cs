@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
@@ -105,6 +107,59 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        //[HttpGet]
+        //public async Task<IActionResult> GetReceivingAccount(DataSourceLoadOptions loadOptions)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+
+        //        try
+        //        {
+        //            var tbl20101salespersonmasters = await dbContext.Tbl20103ExpenseClaimChildren.Select(i => new
+        //            {
+
+        //                i.AccountId,
+        //                i.ClaimChildNo,
+        //                i.ClaimRefNo,
+        //            });
+
+        //            return Json(await DataSourceLoader.LoadAsync(tbl20101salespersonmasters, loadOptions));
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //        }
+        //    }
+        //}
+        [HttpGet]
+        public JsonResult GetExpenseClaims()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var expenseClaims = from claim in dbContext.Tbl20103ExpenseClaimChildren
+                                    join account in dbContext.Tbl201ChartOfAccounts
+                                    on claim.AccountId equals account.AccountId
+                                    select new
+                                    {
+                                        claim.ExpenseDescription,
+                                        claim.BillRefNo,
+                                        claim.BillDate,
+                                        claim.ClaimedAmount,
+                                        claim.ApprovedAmount,
+                                        claim.AccountId,
+                                        AccountHead = account.AccountHead, // Include AccountHead
+                                        claim.CostCenterCode
+
+                                    };
+
+                return Json(expenseClaims.ToList());
+            }
+
+            return Json(new { success = false, message = "Failed to retrieve tenant database context." });
+        }
+
+
+
     }
 }
 

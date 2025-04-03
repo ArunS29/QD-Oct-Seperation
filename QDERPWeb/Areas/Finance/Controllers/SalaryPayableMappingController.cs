@@ -69,34 +69,37 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult GetSalaryMappings(DateTime? startDate, DateTime? endDate)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { message = "Invalid tenant.", success = false });
+
                 var claims = dbContext.Qry20191SalaryPayableMasterMapped02s.AsQueryable();
 
                 if (startDate.HasValue && endDate.HasValue)
-                {
                     claims = claims.Where(c => c.VoucherDate >= startDate && c.VoucherDate <= endDate);
-                }
 
-                var result = claims.Select(e => new
+                return Ok(claims.Select(e => new
                 {
                     e.VoucherNo,
                     VoucherDate = e.VoucherDate.HasValue
-                        ? e.VoucherDate.Value.ToString("dd-MMM-yyyy")
-                        : string.Empty,
+      ? e.VoucherDate.Value.ToString("dd-MMM-yyyy")
+      : string.Empty,
                     e.EmployeeNo,
                     e.EmployeeName,
                     e.NationalId,
                     e.VoucherAmount,
                     e.TotalMappedAmount,
                     e.Mapping
-                }).ToList();
-
-                return Ok(result);
+                }).ToList());
             }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error retrieving salary mappings.", success = false, error = ex.Message });
+            }
         }
+
+
 
         public IActionResult Depreciation()
         {

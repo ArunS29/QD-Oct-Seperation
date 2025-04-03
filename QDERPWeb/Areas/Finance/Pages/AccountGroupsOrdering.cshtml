@@ -93,10 +93,10 @@
         .ID("dataGrid")
         .KeyExpr("AccountGroupId")
         .DataSource(ds => ds.Mvc()
-        .Controller("AccountGroupsOrdering") // Specify the controller name
+            .Controller("AccountGroupsOrdering") // Specify the controller name
         .LoadAction("GetAccountGroupsOrdering") // Specify the action that returns data
         )
-        .RemoteOperations(true) // Enable remote data operations
+        .RemoteOperations(true)// Enable remote data operations
 
         .Columns(columns =>
         {
@@ -109,7 +109,7 @@
             columns.AddFor(m => m.AccountGroupId).Caption(new JS("formatMessage('Account Group Id')")).Alignment(HorizontalAlignment.Left);
             columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Left);
             columns.AddFor(m => m.AccountGroupOrderNo).Caption(new JS("formatMessage('Account Group Order No')")).Alignment(HorizontalAlignment.Left)
-            // .SortOrder(SortOrder.Asc)
+           // .SortOrder(SortOrder.Asc)
             .Alignment(HorizontalAlignment.Center)
             .AllowEditing(true);
 
@@ -123,14 +123,15 @@
         .Paging(p => p.PageSize(10))
         .AllowColumnReordering(true) // Enable column reordering
         .AllowColumnResizing(true)   // Enable column resizing
-        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing
+        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixings
         .HeaderFilter(filter => filter.Visible(true))
         .Height(500)
         .ColumnAutoWidth(true)
         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-        .GroupPanel(groupPanel => groupPanel.Visible(true)) // Hide group panel
+        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Hide group panel
         .Grouping(grouping => grouping.AutoExpandAll(true))
         .ShowBorders(true)
+            .RemoteOperations(true)
         .Width("100%")
 
         )
@@ -154,6 +155,18 @@ $(function () {
     $("#btnSave").click(function () {
         debugger;
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        $.ajax({
+                    type: "POST",
+                    url: `/api/AccountGroupsOrdering/GetAccountGroupsOrdering`,
+                    contentType: "application/json",
+                  //  data: JSON.stringify(VE),
+                    dataType: "json",
+                    success: function (response) {
+                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+
+                    }
+        });
 
         console.log("Save function triggered");
 
@@ -352,6 +365,13 @@ $(function () {
 
         dataGrid1.refresh();
     }
+
+
+    $(function() {
+    let dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    dataGrid.refresh(); // Force refresh to reload correctly ordered data
+});
 
 
     // $(document).ready(function () {

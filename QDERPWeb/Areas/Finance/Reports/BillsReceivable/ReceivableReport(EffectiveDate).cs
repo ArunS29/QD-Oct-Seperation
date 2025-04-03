@@ -3,71 +3,67 @@ using DevExpress.XtraReports.UI;
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
-    public partial class ReceivableReport_EffectiveDate_ : DevExpress.XtraReports.UI.XtraReport
-    {
-        public ReceivableReport_EffectiveDate_(string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
-        {
-            InitializeComponent();
-            SetReportParameters(company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
-        }
-        public ReceivableReport_EffectiveDate_()
-        {
-            InitializeComponent();
-            SetReportParameters("", "", null, "", "");
-        }
-        private void SetReportParameters(string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
-        {
-            // Helper method to add or update a parameter
-            void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
-            {
-                if (Parameters[name] == null)
-                {
-                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
-                    {
-                        Name = name,
-                        Type = type,
-                        Value = value,
-                        Visible = visible
-                    });
-                }
-                else
-                {
-                    Parameters[name].Value = value;
-                    Parameters[name].Visible = visible;
-                }
-            }
+	public partial class ReceivableReport_EffectiveDate_ : DevExpress.XtraReports.UI.XtraReport
+	{
+		public ReceivableReport_EffectiveDate_(string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
+		{
+			InitializeComponent();
+			SetCompanyDetails(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+		}
 
-            // Add or update parameters
-            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
+		public ReceivableReport_EffectiveDate_()
+		{
+			InitializeComponent();
+			SetCompanyDetails("", "", "", null, "", "");
+		}
 
-            // Bind Company details to labels
-            if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
-            {
-                companyNameLabel.Text = company_Name;
-            }
+		private void SetCompanyDetails(string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
+		{
+			// Helper method to add or update a report parameter
+			void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
+			{
+				if (Parameters[name] == null)
+				{
+					Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+					{
+						Name = name,
+						Type = type,
+						Value = value,
+						Visible = visible
+					});
+				}
+				else
+				{
+					Parameters[name].Value = value;
+					Parameters[name].Visible = visible;
+				}
+			}
 
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-            {
-                addressLabel.Text = company_address;
-            }
+			// Add company details parameters
+			AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
+			AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string), false);
+			AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string), false);
+			AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string), false);
+			AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string), false);
 
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-            {
-                logoPictureBox.Image = logoImage;
-            }
+			// Bind company details to report controls
+			if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+				tenantLabel.Text = tenantName;
 
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
-            {
-                companyNameArLabel.Text = Company_Name_Ar;
-            }
+			if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
+				companyNameLabel.Text = companyName;
 
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
-            {
-                addressArbLabel.Text = company_address_arb;
-            }
-        }
-    }
+			if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+				addressLabel.Text = companyAddress;
+
+			if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox && logoImage != null)
+				logoPictureBox.Image = logoImage;
+
+			if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+				companyNameArLabel.Text = companyNameAr;
+
+			if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+				addressArbLabel.Text = companyAddressArb;
+		}
+	}
 }

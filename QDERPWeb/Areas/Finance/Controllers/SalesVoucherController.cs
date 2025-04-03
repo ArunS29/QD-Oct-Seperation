@@ -52,6 +52,35 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<ActionResult> GetAccountHead(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
+                    .Where(i => i.IsUseInSales == true || i.IsUseInSales == null) // Applying the filter
+                    .Select(i => new
+                    {
+                        i.MasterGroupId,
+                        i.MasterGroup,
+                        i.AccountGroup,
+                        i.AccountGroupId,
+                        i.AccountId,
+                        i.AccountHead,
+                        i.AccountHeadArabic,
+                        i.ReferenceNo,
+                        i.IsLedgerObselete,
+                        i.IsUseInSales,
+                        i.IsUsedInPurchase
+                    });
+
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl201VoucherEntry VE)
@@ -340,25 +369,61 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-		[HttpGet]
-		public async Task<IActionResult> CheckVoucherDateLocking(DateTime voucherDate)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				bool isDateBlocked = await dbContext.Tbl90117VoucherDateLockings
-					.AnyAsync(v => v.VoucherTypeCode == "SALES_VOUCHER" && v.VoucherDateLocked >= voucherDate);
+        //[HttpGet]
+        //public async Task<IActionResult> CheckVoucherDateLocking(DateTime voucherDate)
+        //{
+        //	if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //	{
+        //		bool isDateBlocked = await dbContext.Tbl90117VoucherDateLockings
+        //			.AnyAsync(v => v.VoucherTypeCode == "SALES_VOUCHER" && v.VoucherDateLocked >= voucherDate);
 
-				if (isDateBlocked)
-				{
-					return Json(new { success = false, message = "This Voucher Entry date has been blocked. Please review your entry date." });
-				}
+        //		if (isDateBlocked)
+        //		{
+        //			return Json(new { success = false, message = "This Voucher Entry date has been blocked. Please review your entry date." });
+        //		}
 
-				return Json(new { success = true, todayDate = DateTime.Now.ToString("yyyy-MM-dd") });
-			}
+        //		return Json(new { success = true, todayDate = DateTime.Now.ToString("yyyy-MM-dd") });
+        //	}
 
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
+        //	return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //}
 
 
-	}
+        [HttpGet]
+        public async Task<IActionResult> CheckVoucherDateLocking(DateTime? voucherDate)
+        {
+            if (!voucherDate.HasValue)
+            {
+                return BadRequest(new { success = false, message = "Voucher date is required." });
+            }
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                DateTime dateToCheck = voucherDate.Value; // Ensuring it's not null
+
+                var lockedDates = dbContext.Tbl90117VoucherDateLockings
+          .Where(v => v.VoucherTypeCode == "SALES_VOUCHER" && v.VoucherDateLocked <= voucherDate)
+          .Select(v => v.VoucherDateLocked) // Select only the VoucherDateLocked column
+          .ToList();
+
+                // Check in-memory to avoid EF errors
+                bool isLocked = lockedDates.Any(lockedDate => dateToCheck <= lockedDate);
+
+                if (isLocked)
+                {
+                    return Json(new { success = false, message = "This Voucher Entry date has been blocked. Please review your entry date." });
+                }
+
+                return Json(new { success = true, todayDate = DateTime.Now.ToString("yyyy-MM-dd") });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+
+
+
+
+    }
 }

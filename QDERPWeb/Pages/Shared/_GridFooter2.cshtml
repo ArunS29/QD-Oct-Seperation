@@ -172,17 +172,28 @@
             .ID("btntoggleReport")
             .Text(new JS("formatMessage('Report Receipts')"))
             .Icon("textdocument")
-            .DropDownOptions(options => options.Width(230))
+            .DropDownOptions(options => options.Width(320))
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Bills Payable')")).Icon("search");
                 items.Add().Text(new JS("formatMessage('Payable Summary')")).Icon("search");
-                items.Add().Text(new JS("formatMessage('Report by Supplier')")).Icon("search");
+                items.Add().Text(new JS("formatMessage('Report by Supplier')")).Icon("search").OnClick("ReportsByClient");
                 items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Icon("smalliconslayout");
             })
             .OnItemClick("handleReportClick")
             )
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnColumnChooser")
+            .Icon("columnchooser")
+            .Width(40)
+
+            .Text(new JS("formatMessage('Column Chooser')"))
+            .OnClick("showColumnChooser")
+            )
+    </div>
+
    @* @(Html.DevExtreme().DropDownButton()
         .ID("ddButtonPayment")
         .Text("Add Payment")
@@ -198,6 +209,18 @@
 </div>
 <script type="text/javascript">
 
+
+    function showColumnChooser() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+        if (isColumnChooserVisible) {
+            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+        } else {
+            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+            dataGrid.showColumnChooser(); // Show the column chooser
+        }
+    }
    
     // Hide context menu on click outside
     $(document).on("click", function () {
@@ -439,10 +462,22 @@
         window.location.href = `/${tenantName}/Finance/ReportsBySupplier`;
     }
 
+    function ReportsByClient() {
+        alert("hi")
+        let url = `/${tenantName}/Finance/ReportsByClients`;
+
+
+        $("#popupIframe").attr("src", url);
+
+        // Open the popup
+        let popup = $("#reportsByClientPopup").dxPopup("instance");
+        popup.show();
+    }
+
     const reportMappings = {
         "Bills Payable": "BIllsPayable",
         "Payable Summary": "PayableSummary",
-        "Report by Supplier": "ReportBySupplier",
+        
         "Bills Payable with Unmapped Vouchers": "BillsPayableUnmapped"
     };
 
@@ -464,4 +499,35 @@
             console.warn('No report mapping found for:', selectedText);
         }
     }
+
+
+
+    $(function () {
+        $("#reportsByClientPopup").dxPopup({
+            width: 600,
+            height: 750,
+            title: "Reports by Clients",
+            visible: false,
+            showCloseButton: true,
+            closeOnOutsideClick: true,
+            shading: true, // Ensures a modal effect
+            dragEnabled: false, // Prevent resizing
+            resizeEnabled: false,
+            contentTemplate: function () {
+                return $("<iframe>", {
+                    id: "popupIframe",
+                    width: "600px",
+                    height: "750px",
+                    frameborder: 0,
+
+                }).css({
+                    overflow: "hidden",
+                    border: "none",
+                    display: "block" // Ensures no extra margins
+                });
+            }
+        });
+
+
+    })
 </script>
