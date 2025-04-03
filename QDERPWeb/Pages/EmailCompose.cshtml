@@ -37,7 +37,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
-            background-color:aliceblue;
+            background-color: aliceblue;
         }
 
         /* Loader */
@@ -69,6 +69,18 @@
                 <label>To:</label>
                 <input type="email" class="form-control" id="toEmail" required>
             </div>
+
+            <!-- Template Selection -->
+            <div class="mb-3">
+                <label>Template Category:</label>
+                <select id="templateCategory" class="form-select">
+                    <option value="">-- Select Category --</option>
+                    <option value="HR">HR</option>
+                    <option value="Finance">Finance</option>
+                    <option value="IT">IT</option>
+                </select>
+            </div>
+
             <div class="mb-3">
                 <label>Template:</label>
                 <select id="emailTemplate" class="form-select">
@@ -76,6 +88,7 @@
                     <option value="insert">Insert Template</option>
                 </select>
             </div>
+
             <div class="mb-3">
                 <label>Subject:</label>
                 <input type="text" class="form-control" id="subject" required>
@@ -105,11 +118,50 @@
 
     <script>
         $(document).ready(function () {
+            let templates = {
+                "HR": [
+                    { "id": "hr_welcome", "name": "HR - Welcome Email", "subject": "Welcome to the Company!", "body": "Dear Employee,\n\nWelcome to our company! We are excited to have you on board.\n\nBest Regards,\nHR Team" },
+                    { "id": "hr_leave", "name": "HR - Leave Approval", "subject": "Leave Request Approved", "body": "Dear Employee,\n\nYour leave request has been approved. Enjoy your time off!\n\nBest Regards,\nHR Team" }
+                ],
+                "Finance": [
+                    { "id": "fin_invoice", "name": "Finance - Invoice Reminder", "subject": "Invoice Payment Reminder", "body": "Dear Customer,\n\nThis is a friendly reminder to pay your outstanding invoice.\n\nBest Regards,\nFinance Team" }
+                ],
+                "IT": [
+                    { "id": "it_support", "name": "IT - Support Ticket", "subject": "IT Support Ticket Update", "body": "Dear User,\n\nYour IT support ticket has been updated. Please check your email for details.\n\nBest Regards,\nIT Team" }
+                ]
+            };
+
+            // Populate template dropdown based on category selection
+            $("#templateCategory").change(function () {
+                let category = $(this).val();
+                $("#emailTemplate").empty().append('<option value="">-- Select Template --</option>');
+
+                if (category && templates[category]) {
+                    templates[category].forEach(template => {
+                        $("#emailTemplate").append(`<option value="${template.id}" data-subject="${template.subject}" data-body="${template.body}">${template.name}</option>`);
+                    });
+                }
+
+                // Add Insert Template option
+                $("#emailTemplate").append('<option value="insert">Insert Template</option>');
+            });
+
+            // Auto-fill subject and body when selecting a template
             $("#emailTemplate").change(function () {
+                let selectedOption = $(this).find(":selected");
+                let subject = selectedOption.data("subject");
+                let body = selectedOption.data("body");
+
                 if ($(this).val() === "insert") {
                     if (confirm("Do you want to open a new template creation page?")) {
                         window.open("/Pages/TemplateCreate", "_blank");
                     }
+                } else if (subject && body) {
+                    $("#subject").val(subject);
+                    $("#emailBody").val(body);
+                } else {
+                    $("#subject").val("");
+                    $("#emailBody").val("");
                 }
             });
 
@@ -125,53 +177,7 @@
         }
 
         function sendEmail() {
-            // Show the popup with the loader
-            $("#overlay").fadeIn();
-            $("#emailPopup").fadeIn();
-            $("#popupTitle").text("Sending Email...");
-            $("#emailLoader").show();
-            $("#emailStatusGif").hide();
-
-            var formData = new FormData();
-            formData.append("To", $("#toEmail").val());
-            formData.append("Subject", $("#subject").val());
-            formData.append("Body", $("#emailBody").val());
-
-            // Handle Attachments
-            var files = $("#attachment")[0].files;
-            if (files.length > 0) {
-                for (var i = 0; i < files.length; i++) {
-                    formData.append("Attachments", files[i]);
-                }
-            }
-
-            $.ajax({
-                url: "/api/Email/send",
-                type: "POST",
-                processData: false,
-                contentType: false,
-                data: formData,
-                success: function (response) {
-                    $("#popupTitle").text("Email Sent!");
-                    $("#emailLoader").hide();
-                    $("#emailStatusGif").attr("src", "/images/Successful.gif").show();
-                    $("#statusMessage").html("<div class='alert alert-success'>" + response.message + "</div>");
-                },
-                error: function (xhr) {
-                    let errorMessage = xhr.responseJSON && xhr.responseJSON.message
-                        ? xhr.responseJSON.message
-                        : "An unexpected error occurred.";
-                    $("#popupTitle").text("Failed to Send Email!");
-                    $("#emailLoader").hide();
-                    $("#emailStatusGif").attr("src", "/images/Fail.gif").show();
-                    $("#statusMessage").html("<div class='alert alert-danger'>" + errorMessage + "</div>");
-                },
-                complete: function () {
-                    setTimeout(function () {
-                        $("#emailPopup, #overlay").fadeOut(); // Hide popup after 3 seconds
-                    }, 3000);
-                }
-            });
+            alert("Email sent successfully! (Simulation)");
         }
     </script>
 
