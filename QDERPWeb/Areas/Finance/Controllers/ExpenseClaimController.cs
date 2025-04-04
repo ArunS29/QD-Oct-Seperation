@@ -158,8 +158,69 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Json(new { success = false, message = "Failed to retrieve tenant database context." });
         }
 
+        [HttpGet]
+        public IActionResult GetEditCostCenter()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var data = dbContext.Tbl201CostAllocationUnits
+                    .Select(c => new
+                    {
+                        c.CostAllocationUnitId,
+                        c.CostAllocationUnit,
+                        c.CostAllocationGroup,
+                        c.IsDisabled
+                    }).ToList();
 
+                return Ok(data);
+            }
 
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetNewClaimNo()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                string userId = HttpContext.Session.GetString("UserId") ?? "000";
+                string voucherString = "EXP-" + userId + "-";
+                string strNewReceiptNo;
+
+                // SQL query with interpolated string
+                string likePattern = voucherString + "%";
+
+                try
+                {
+                    // Use raw SQL query to fetch the maximum voucher number
+                    var result = await dbContext.VoucherResults
+                        .FromSqlInterpolated($@"
+     SELECT MAX(CAST(RIGHT(ClaimRefNo, 5) AS INT)) AS MaxVoucherNo
+     FROM tbl20103ExpenseClaimChild
+     WHERE ClaimRefNo LIKE {likePattern}")
+                        .ToListAsync();
+
+                    int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
+
+                    int newVoucherNo = maxVoucherNo + 1;
+
+                    // Format the new voucher number with leading zeros
+                    strNewReceiptNo = "00000" + newVoucherNo.ToString();
+                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 5);
+
+                    // Concatenate with the voucher string
+                    strNewReceiptNo = voucherString + strNewReceiptNo;
+                }
+                catch (Exception)
+                {
+                    // Handle cases where there's no existing voucher number
+                    strNewReceiptNo = voucherString + "00001";
+                }
+
+                return Json(strNewReceiptNo);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
 
