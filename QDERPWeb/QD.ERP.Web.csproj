@@ -46,7 +46,6 @@
 
 	<ItemGroup>
 		<Folder Include="Areas\Finance\Data\" />
-		<Folder Include="Areas\Finance\Views\" />
 		<Folder Include="Models\DALCommon\" />
 	</ItemGroup>
 

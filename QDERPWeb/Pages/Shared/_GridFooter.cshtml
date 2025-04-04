@@ -397,6 +397,22 @@
             <iframe id="modalIframe" src="" frameborder="0"></iframe>
         </div>
     </div>
+    <div id="supplierPaymentRequestModal">
+
+        @(Html.DevExtreme().Popup()
+            .ID("SupplierpaymentPopup")
+            .Title("Supplier Payment Request")
+            .Width("90%")
+            .Height(500)
+            .Visible(false)
+            .ShowCloseButton(true)
+            .ResizeEnabled(true)
+            .DragEnabled(true)
+            .ShowTitle(true)
+
+            )
+
+    </div>
 
 </div>
 
@@ -1171,11 +1187,28 @@
                 window.location.href = `/${tenantName}/Finance/ExpensesClaimRequest`;
                 break;
             case ('Petty Cash Request'):
-                window.open(`/${tenantName}/Finance/PettyCashRequest`, 'Window');
+                window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
                 break;
-            case ('Supplier Payment Request'):
-                window.open(`/${tenantName}/Finance/SupplierPaymentRequest`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            case 'Supplier Payment Request':
+                debugger;
+                $.ajax({
+                    
+                    url: `/api/ExpenseClaim/GetSupplierpayment`,
+                    type: 'GET',
+                    dataType: "html",
+                    success: function (data) {
+                        let popupInstance = $("#SupplierpaymentPopup").dxPopup("instance");
+                        popupInstance.option("contentTemplate", function () {
+                            return $("<div>").html(data);
+                        });
+                        popupInstance.show();
+                    },
+                    error: function (xhr) {
+                        alert('Failed to load the Supplier Payment Request view.');
+                    }
+                });
                 break;
+
             // You can handle other cases here if needed
             default:
                 console.log("Clicked item: ", e.itemData.text);
