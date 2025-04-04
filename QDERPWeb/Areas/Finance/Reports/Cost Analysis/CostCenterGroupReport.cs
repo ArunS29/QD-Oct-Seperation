@@ -98,7 +98,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 Name = "qry20151CostAnalysisReport", // Update name
                 Sql = @"SELECT * FROM qry20151CostAnalysisReport
     WHERE 
-    (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostGroupUnit = @RequestedBy) 
+    (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy) 
     AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 

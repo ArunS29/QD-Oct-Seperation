@@ -70,6 +70,22 @@
     </div>
 
     <script>
+        $("#templateCategory").change(function () {
+            let category = $(this).val();
+            $("#emailTemplate").empty().append('<option value="">-- Select Template --</option>');
+
+            if (category) {
+                $.get('/EmailCompose?handler=Templates&category=' + category, function (data) {
+                    data.forEach(function (template) {
+                        $("#emailTemplate").append(`<option value="${template.id}" data-subject="${template.subject}" data-body="${template.body}">${template.templateName}</option>`);
+                    });
+
+                    // Optional: Add option to create a new one
+                    $("#emailTemplate").append('<option value="insert">Insert Template</option>');
+                });
+            }
+        });
+
         document.getElementById("emailBody").addEventListener("input", updatePreview);
         document.getElementById("subject").addEventListener("input", updatePreview);
 
