@@ -18,6 +18,8 @@ public class TemplateCreateModel : PageModel
     [BindProperty]
     public EmailTemplate Template { get; set; } = new EmailTemplate();
 
+    public bool IsSuccess { get; set; } = false; // New property to track success
+
     public void OnGet() { }
 
     public async Task<IActionResult> OnPostAsync()
@@ -29,7 +31,6 @@ public class TemplateCreateModel : PageModel
 
         try
         {
-            // Trim and ensure required fields are properly formatted
             Template.TemplateName = Template.TemplateName?.Trim();
             Template.Subject = Template.Subject?.Trim();
             Template.Body = Template.Body?.Trim();
@@ -38,7 +39,8 @@ public class TemplateCreateModel : PageModel
             _context.EmailTemplates.Add(Template);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/EmailCompose");
+            IsSuccess = true; // Indicate success
+            return Page(); // Stay on the same page to show the popup
         }
         catch (Exception ex)
         {
