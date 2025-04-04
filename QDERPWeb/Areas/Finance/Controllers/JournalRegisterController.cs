@@ -32,7 +32,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     ERPMasterWtDataContextProcedures procedure = new ERPMasterWtDataContextProcedures(dbContext);
-                    var result = await procedure.sp20201JournalRegisterViewAsync(RequesterID, StartDate, EndDate, IfShowAll);
+                    var result = await dbContext.JournalRegisterViews  // Use the correct DbSet
+      .FromSqlRaw("EXEC sp20201JournalRegisterView @p0, @p1, @p2, @p3",
+          RequesterID, StartDate, EndDate, IfShowAll)
+      .ToListAsync();
 
                     if (result != null && result.Any())
                     {
