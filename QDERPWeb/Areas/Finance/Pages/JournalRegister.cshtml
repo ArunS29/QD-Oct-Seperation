@@ -22,7 +22,7 @@
         color: black;
     }
 
-    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #btnLayout)) {
+    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout)) {
         display: none !important;
     }
 </style>
@@ -488,7 +488,7 @@
 
     $(document).ready(function () {
         $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-            if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #btnLayout").length) {
+            if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout").length) {
                 $(this).remove();
             }
         });
