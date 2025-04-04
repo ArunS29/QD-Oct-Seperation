@@ -17,6 +17,7 @@
         "Is Used In Purchase": "Is Used In Purchase",
         "Added By": "Added By",
         "Added On": "Added On",
+        "Create New":"Create New",
         "Trial Balance":"Trial Balance",
         "All Vouchers": "All Vouchers",
         "Supplier Payables": "Supplier Payables",

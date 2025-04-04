@@ -22,9 +22,9 @@
         color: black;
     }
 
-    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #btnLayout)) {
         display: none !important;
-
+    }
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
 <div class="title">
@@ -484,4 +484,15 @@
     }
     // Function to format date in required format
 
+
+
+    $(document).ready(function () {
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+            if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #btnLayout").length) {
+                $(this).remove();
+            }
+        });
+    });
+
 </script>
+

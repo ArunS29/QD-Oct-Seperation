@@ -234,7 +234,7 @@
         .Text(new JS("formatMessage('Create New')"))
         .ElementAttr(new { style = "margin-left: 10px;" }) // optional spacing
         .Width(120)
-     @*    .OnClick("function() { onCreateNewClick(); }") *@ // your JS function
+            .OnClick("function() { onCreateNewClick(); }") // your JS function
         )
     </div>
     <div class="btn-container">
@@ -1181,4 +1181,8 @@
                 console.log("Clicked item: ", e.itemData.text);
         }
     }
+    function onCreateNewClick() {
+        window.location.href = `/${tenantName}/Finance/JournalEntryEdit`;
+    }
+
 </script>
