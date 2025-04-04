@@ -246,16 +246,17 @@
   
 
     <script>
-    $(function () {
-        $("#AccountLedgertoSalaryPayableMapping").dxTextBox({
-            text: "Account Ledger to Salary Payable Mapping",
-            readOnly: true,
-            width: "100%", // Makes it take full available width
-            onContentReady: function (e) {
-                $(e.element).addClass("dx-textbox-heading");
-            }
-        });
-    });
+        $(function () {
+			$("#AccountLedgertoSalaryPayableMapping").dxTextBox({
+	    			text:formatMessage("Account Ledger to Salary Payable Mapping"),
+                    readOnly: true,
+                    width:"510px",
+					onContentReady: function(e) {
+			            $(e.element).addClass("dx-textbox-heading");
+		            }
+                });
+			});
+       
 
     function ddBtnShowRecords_click(filterType) {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");

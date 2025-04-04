@@ -1,33 +1,52 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.DAL.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 public class TemplateCreateModel : PageModel
 {
-    [BindProperty]
-    [Required]
-    public string TemplateName { get; set; }
+    private readonly ERPMasterWtDataContext _context;
+
+    public TemplateCreateModel(ERPMasterWtDataContext context)
+    {
+        _context = context;
+    }
 
     [BindProperty]
-    [Required]
-    public string Subject { get; set; }
+    public EmailTemplate Template { get; set; } = new EmailTemplate();
 
-    [BindProperty]
-    [Required]
-    public string Body { get; set; }
+    public bool IsSuccess { get; set; } = false; // New property to track success
 
-    [BindProperty]
-    public string Status { get; set; } = "Active";
+    public void OnGet() { }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        // Save the template to the database (or any storage)
-        TempData["Success"] = "Template saved successfully!";
-        return RedirectToPage("/Templates/Create");
+        try
+        {
+            Template.TemplateName = Template.TemplateName?.Trim();
+            Template.Subject = Template.Subject?.Trim();
+            Template.Body = Template.Body?.Trim();
+            Template.Status = Template.Status?.Trim() ?? "Active";
+
+            _context.EmailTemplates.Add(Template);
+            await _context.SaveChangesAsync();
+
+            IsSuccess = true; // Indicate success
+            return Page(); // Stay on the same page to show the popup
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, "An error occurred while saving the template. Please try again.");
+            Console.WriteLine($"Error saving template: {ex.Message}");
+            return Page();
+        }
     }
 }

@@ -2,7 +2,46 @@
 @using DevExtreme.AspNet.Mvc
 <style>
 
-   
+    /* CSS */
+    .context-menu {
+        width: 250px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        font-family: Arial, sans-serif;
+    }
+
+    .context-menu-item .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        margin-bottom: 5px;
+    }
+
+        .context-menu-item .menu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .context-menu-item .menu-item:hover {
+            background-color: #d5e3f5;
+        }
+
+    .context-menu-item i {
+        margin-right: 10px;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .spnRightClickGride {
+        color: #333;
+        font-size: 14px;
+    }
+
 
     .spnRightClickGride {
         margin-left: 10px;
@@ -15,13 +54,16 @@
         border: 1px solid #ccc;
         box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         padding: 10px;
-    }
+    } 
 
     #dataGrid .dx-header-row .dx-datagrid-text-content {
         font-weight: bold;
         color: black;
-    } 
+    }
 
+    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout)) {
+        display: none !important;
+    }
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
 <div class="title">
@@ -29,35 +71,37 @@
         <div id="JournalRegister" class="no-border-input"></div>
     </div>
 </div>
-<div>
-    @await Html.PartialAsync("_GridFooter")
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("_GridFooter")
+    </div>
 </div>
+<!-- HTML -->
 <div class="content-container-top">
     <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
         <div class="context-menu-item">
-            <div style="margin-bottom:5px">
-                <i style="color:cornflowerblue" class="fa fa-pencil-square-o">
-                    <span style="color:black" class="spnRightClickGride spneditJournal">Edit Journal Entry Form</span>
-                </i>
+            <div class="menu-item">
+                <i class="fa fa-pencil"></i>
+                <span class="spnRightClickGride spneditJournal">Edit Journal Entry Form</span>
             </div>
-            <div style="margin-bottom:5px">
-                <i style="color:red" class="fa fa-times">
-                    <span class="spnRightClickGride">Delete Journal Entry Form</span>
-                </i>
+            <div class="menu-item">
+                <i class="fa fa-times"></i>
+                <span class="spnRightClickGride">Delete Journal Entry Form</span>
             </div>
-            <div style="margin-bottom:5px">
-                <i style="color:orange" class="fa fa-unlock">
-                    <span style="color:black" class="spnRightClickGride">Unlock Journal Entry Form</span>
-                </i>
+            <div class="menu-item">
+                <i class="fa fa-unlock"></i>
+                <span class="spnRightClickGride">Unlock Journal Entry Form</span>
             </div>
-            <div style="margin-bottom:5px">
-                <i style="color:cornflowerblue" class="fa fa-clone">
-                    <span style="color:black" class="spnRightClickGride">Clone Journal Entry Form</span>
-                </i>
+            <div class="menu-item">
+                <i class="fa fa-clone"></i>
+                <span class="spnRightClickGride">Clone Journal Entry Form</span>
             </div>
         </div>
     </div>
+</div>
+
+
 
     <div class="dx-fieldset horizontal-container ">
 
@@ -193,7 +237,8 @@
                 .Width("102em")
             .Height(440)
             .Paging(p => p.PageSize(10))
-            //.WordWrapEnabled(true)
+        .Selection(selection => selection.Mode(SelectionMode.Single))
+        //.WordWrapEnabled(true)
              .ColumnAutoWidth(true)
             .AllowColumnReordering(true) // Enable column reordering
             .AllowColumnResizing(true)   // Enable column resizing
@@ -253,10 +298,30 @@
         });
 
         $('.spneditJournal').click(function () {
-            var parameter = 'Hello';
-            // Load content from another .cshtml page into a div
-            window.location.href = '@Url.Content("~/${tenantName}/Finance/frm20129JournalEntryEdit")?message=' + encodeURIComponent(parameter);
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
+            let selectedRow = dataGrid.getSelectedRowsData();
+
+            if (selectedRow.length > 0) {
+                let journalRefNo = selectedRow[0].JournalRefNo?.trim();
+                let requesterId = selectedRow[0].RequesterID?.toString().trim();
+
+                if (!journalRefNo) {
+                    alert("Journal Reference Number is missing.");
+                    return;
+                }
+
+                // Construct URL manually (like you're doing with voucher type)
+                // You can set this dynamically too
+                let targetUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(journalRefNo)}&requesterId=${encodeURIComponent(requesterId)}`;
+
+                console.log("Navigating to:", targetUrl);
+                window.location.href = targetUrl;
+            } else {
+                alert("Please select a row to edit.");
+            }
         });
+
+
         // Handle right-click event on the DataGrid rows
         $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
             e.preventDefault(); // Prevent the default context menu
@@ -479,4 +544,15 @@
     }
     // Function to format date in required format
 
+
+
+    $(document).ready(function () {
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+            if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout").length) {
+                $(this).remove();
+            }
+        });
+    });
+
 </script>
+

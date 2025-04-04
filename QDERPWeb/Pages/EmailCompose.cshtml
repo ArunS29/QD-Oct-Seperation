@@ -37,7 +37,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
-            background-color:aliceblue;
+            background-color: aliceblue;
         }
 
         /* Loader */
@@ -70,16 +70,20 @@
                 <input type="email" class="form-control" id="toEmail" required>
             </div>
             <div class="mb-3">
-                <label>Template:</label>
-                <select id="emailTemplate" class="form-select">
-                    <option value="">-- Select Template --</option>
+                <label>Template Category:</label>
+                <select id="templateCategory" class="form-select">
+                    <option value="">-- Select Category --</option>
                     <option value="insert">Insert Template</option>
                 </select>
             </div>
+
+
+
             <div class="mb-3">
                 <label>Subject:</label>
-                <input type="text" class="form-control" id="subject" required>
+                <input type="text" class="form-control" id="Subject" required>
             </div>
+
             <div class="mb-3">
                 <label>Body:</label>
                 <textarea class="form-control" id="emailBody" rows="5" required></textarea>
@@ -105,13 +109,69 @@
 
     <script>
         $(document).ready(function () {
-            $("#emailTemplate").change(function () {
-                if ($(this).val() === "insert") {
+            // Load Categories with Templates
+            $.ajax({
+                url: '/api/EmailTemplate/categories',
+                type: 'GET',
+                success: function (categories) {
+                    let categoryDropdown = $("#templateCategory");
+                    categoryDropdown.empty().append('<option value="">-- Select Category --</option>');
+
+                    $.each(categories, function (index, category) {
+                        categoryDropdown.append(`<option value="${category}">${category}</option>`);
+                    });
+
+                    // Ensure "Insert Template" option is always present
+                    categoryDropdown.append('<option value="insert">Insert Template</option>');
+                },
+                error: function () {
+                    alert("Error loading categories.");
+                }
+            });
+
+            // On Selecting a Category, Load Template Details
+            $("#templateCategory").change(function () {
+                let selectedCategory = $(this).val();
+
+                if (selectedCategory === "insert") {
                     if (confirm("Do you want to open a new template creation page?")) {
                         window.open("/Pages/TemplateCreate", "_blank");
                     }
+                    return;
+                }
+
+                if (selectedCategory) {
+                    debugger;
+                    $.ajax({
+                        url: '/api/EmailTemplate/templateByCategory?category=' + encodeURIComponent(selectedCategory),
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            console.log("API Response:", response); // Debugging
+
+                            if (response) {
+                                console.log("Subject:", response.Subject); // Debugging
+                                console.log("Body:", response.Body); // Debugging
+
+                                $("#Subject").val(response.Subject || "No Subject Available");
+                                $("#emailBody").val(response.Body || "No Content Available");
+                            } else {
+                                $("#subject").val("No Template Found");
+                                $("#emailBody").val("");
+                            }
+                        },
+
+                        error: function (xhr, status, error) {
+                            console.error("Error Fetching Template:", error);
+                            alert("Failed to load template details. See console for details.");
+                        }
+                    });
+                } else {
+                    $("#Subject").val("");
+                    $("#emailBody").val("");
                 }
             });
+
 
             $("#sendButton").click(function () {
                 showConfirmationPopup();
@@ -134,7 +194,7 @@
 
             var formData = new FormData();
             formData.append("To", $("#toEmail").val());
-            formData.append("Subject", $("#subject").val());
+            formData.append("Subject", $("#Subject").val());
             formData.append("Body", $("#emailBody").val());
 
             // Handle Attachments

@@ -1,5 +1,6 @@
 ﻿@{
     var hideDropdowns = ViewData["HideDropdowns"] as bool? ?? false;
+    var hideDropdown = ViewData["HideDropdown"] as bool? ?? false;
 }
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -227,6 +228,16 @@
     </div>
 
     <div class="btn-container">
+    @(Html.DevExtreme().Button()
+        .ID("btnCreateNew")
+        .Icon("add") // DevExtreme built-in 'add' icon (a plus symbol)
+        .Text(new JS("formatMessage('Create New')"))
+        .ElementAttr(new { style = "margin-left: 10px;" }) // optional spacing
+        .Width(120)
+            .OnClick("function() { onCreateNewClick(); }") // your JS function
+        )
+    </div>
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnToggleSearch")
             .Icon("search")
@@ -237,17 +248,7 @@
             )
     </div>
 
-    @*  <div class="btn-container">
-    @(Html.DevExtreme().Button()
-    .ID("btntoggleGroupPanel1")
-    .Type(ButtonType.Normal)
-    .StylingMode(ButtonStylingMode.Outlined)
-    .Icon("hierarchy")
-    .Width(50)
-    .Text("Group")
-    .OnClick("AccountGroupsOrdering")
-    )
-    </div> *@
+
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -281,6 +282,29 @@
             .OnClick("showColumnChooser")
             )
     </div>
+    @if (!hideDropdown)
+    {
+        <div class="btn-container">
+            @(
+                Html.DevExtreme().DropDownButton()
+                                .ID("ddButtonExpense")
+                                .Icon("tags")
+                                .Width(50)
+                                .Text("Create New")
+                                .ElementAttr(new { style = "display: none;" })
+                                .DropDownOptions(options => options.Width(230))
+                                .Items(items =>
+                                {
+                                    items.Add().Text("Expense Claim Request").Icon("money");
+                                    items.Add().Text("Petty Cash Request").Icon("product");
+                                    items.Add().Text("Supplier Payment Request").Icon("money");
+
+                                })
+                                .OnItemClick("addExpenseButton_click")
+                                .ShowArrowIcon(false)
+                                )
+        </div>
+    }
     @if (!hideDropdowns)
     {
         <div class="btn-container">
@@ -362,6 +386,7 @@
         </div>
     }
     
+    
     <!-- Modal Structure -->
     <div id="customModal" class="modal">
         <div class="modal-content">
@@ -371,6 +396,22 @@
             </div>
             <iframe id="modalIframe" src="" frameborder="0"></iframe>
         </div>
+    </div>
+    <div id="supplierPaymentRequestModal">
+
+        @(Html.DevExtreme().Popup()
+            .ID("SupplierpaymentPopup")
+            .Title("Supplier Payment Request")
+            .Width("90%")
+            .Height(500)
+            .Visible(false)
+            .ShowCloseButton(true)
+            .ResizeEnabled(true)
+            .DragEnabled(true)
+            .ShowTitle(true)
+
+            )
+
     </div>
 
 </div>
@@ -406,7 +447,8 @@
                         "ddButtonReceipts": { "Visible": false, "Enabled": false },
                         "ddButtonPayment": { "Visible": false, "Enabled": false },
                         "ddOtherVouchers": { "Visible": false, "Enabled": false },
-                        "ddReports": { "Visible": false, "Enabled": false }
+                        "ddReports": { "Visible": false, "Enabled": false },
+                        "ddButtonExpense": { "Visible": false, "Enabled": false }
                     };
 
 
@@ -716,8 +758,8 @@
         if (isColumnChooserVisible) {
             dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
         } else {
-            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
-            dataGrid.showColumnChooser(); // Show the column chooser
+            dataGrid.option("columnChooser.enabled", true); 
+            dataGrid.showColumnChooser(); 
         }
     }
 
@@ -728,7 +770,7 @@
         var grid = $("#dataGrid").dxDataGrid("instance");
         var currentVisibility = grid.option("filterRow.visible");
 
-        grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
+        grid.option("filterRow.visible", !currentVisibility); 
     }
 
     // Footer Recipits button event
@@ -1137,6 +1179,43 @@
         $('#submenuContainer5').hide();
         $('#submenuContainer6').hide();
         $('#submenuContainer7').hide();
+    }
+    function addExpenseButton_click(e) {
+        switch (e.itemData.text) {
+            
+            case ('Expense Claim Request'):
+                window.location.href = `/${tenantName}/Finance/ExpensesClaimRequest`;
+                break;
+            case ('Petty Cash Request'):
+                window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
+                break;
+            case 'Supplier Payment Request':
+                debugger;
+                $.ajax({
+                    
+                    url: `/api/ExpenseClaim/GetSupplierpayment`,
+                    type: 'GET',
+                    dataType: "html",
+                    success: function (data) {
+                        let popupInstance = $("#SupplierpaymentPopup").dxPopup("instance");
+                        popupInstance.option("contentTemplate", function () {
+                            return $("<div>").html(data);
+                        });
+                        popupInstance.show();
+                    },
+                    error: function (xhr) {
+                        alert('Failed to load the Supplier Payment Request view.');
+                    }
+                });
+                break;
+
+            // You can handle other cases here if needed
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+        }
+    }
+    function onCreateNewClick() {
+        window.location.href = `/${tenantName}/Finance/JournalEntryEdit`;
     }
 
 </script>

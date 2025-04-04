@@ -278,5 +278,34 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string ActionType { get; set; } // "verify", "approve", "unlock"
         public string LogOnUser { get; set; } // Populated with logged-in user
     }
+
+    public class JournalRegisterView
+    {
+        public string JournalRefNo { get; set; }
+        public DateTime? JournalEntryDate { get; set; }
+        public string JournalVoucherNarration { get; set; }
+        public string JournalCreatedBy { get; set; }
+        public DateTime? JournalCreatedOn { get; set; }
+        public string JournalModifiedBy { get; set; }
+        public DateTime? JournalModifiedOn { get; set; }
+        public bool IsSubmittedToFinance { get; set; }
+        public string SubmittedBy { get; set; }
+        public DateTime? SubmittedOn { get; set; }
+        public bool IsVerified { get; set; }
+        public string VerifiedBy { get; set; }
+        public DateTime? VerifiedOn { get; set; }
+        public bool IsApproved { get; set; }
+        public string ApprovedBy { get; set; }
+        public DateTime? ApprovedOn { get; set; }
+        public bool IsPosted { get; set; }
+        public string PostedVoucherNo { get; set; }
+        public string PostedBy { get; set; }
+        public DateTime? PostedOn { get; set; }
+        public DateTime? JournalEffectiveDate { get; set; }
+        public byte? RequesterID { get; set; }
+        public decimal? DrAmountTotal { get; set; }
+        public decimal? CrAmountTotal { get; set; }
+        public decimal? Difference { get; set; }
+    }
 }
 

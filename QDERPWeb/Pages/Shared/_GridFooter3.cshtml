@@ -194,31 +194,31 @@
 
 
 
-    @(Html.DevExtreme().DropDownButton()
-        .ID("btntoggleReport")
-        .Text(new JS("formatMessage('Report')"))
-        .Icon("textdocument")
-        .Width(180)
-        .DropDownOptions(options => options.Width(350))
-        .Items(items =>
-        {
-            items.Add().Text(new JS("formatMessage('Receivables Reports')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").OnClick("showSubmenu1");
-            items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Icon("textdocument");
+        @(
+                Html.DevExtreme().DropDownButton()
+                .ID("btntoggleReport")
+                .Text(new JS("formatMessage('Report')"))
+                .Icon("textdocument")
+                .Width(180)
+                .DropDownOptions(options => options.Width(350))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Receivables Reports')")).Icon("textdocument");
+                    items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Icon("textdocument");
+                    items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").OnClick("showSubmenu1");
+                    items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Icon("textdocument");
 
-           items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").OnClick("ReportsByClient");
-              items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").OnClick("ReportsByClient");
-              items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").OnClick("ReportsByClient");
 
-                items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").OnClick("ReportsByClient");
-                items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").OnClick("ReportsByClient");
-                items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").OnClick("ReportsByClient");
 
-            items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Icon("event");
-            items.Add().Text(new JS("formatMessage('Receivables with unmapped Vouchers')")).Icon("optionsgear");
 
-        })
+                    items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Icon("event");
+                    items.Add().Text(new JS("formatMessage('Receivables with unmapped Vouchers')"))
+                        .Icon("optionsgear")
+                        .OnClick("function() { Mapping('Receivables with unmapped Vouchers'); }");
+                })
         .ShowArrowIcon(true)
         .OnItemClick("handleReportsClick") 
         )
@@ -555,6 +555,13 @@
 
       
     });
-
+    function Mapping(reportKey) {
+        alert('hi');
+        if (reportKey === "Receivables with unmapped Vouchers") {
+            window.location.href = `/${tenantName}/Finance/MappingBillsReceivable`;
+        } else {
+            console.warn('No report mapping found for:', reportKey);
+        }
+    }
 
 </script>

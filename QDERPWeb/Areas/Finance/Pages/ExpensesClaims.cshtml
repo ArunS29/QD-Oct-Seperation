@@ -1,5 +1,9 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
+@{
+    ViewData["ClaimerUserName"] = HttpContext.Session.GetString("UserName");
+
+}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 
@@ -126,7 +130,8 @@
             .HoverStateEnabled(true)
             .ValueExpr("UserId")
             .DisplayExpr("UserName")
-            
+            .Value(ViewData["ClaimerUserName"])
+
             .OnOpened("onOpened")
             .Width(300)
             .TabIndex(1)

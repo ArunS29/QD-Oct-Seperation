@@ -33,7 +33,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
         [HttpGet]
         public async Task<IActionResult> GetTrialBalance(DateTime? startDate, DateTime? endDate, string accountGroup)
         {
@@ -66,13 +65,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.CostAmount,
                         item.Income,
                         item.Expenses,
-                        item.VoucherDate,
+
+                        // ✅ Format Date Fields to "MMM-yyyy"
+                        VoucherDate = item.VoucherDate != null ? item.VoucherDate.Value.ToString("MMM-yyyy") : null,
+                        EffectiveDate = item.EffectiveDate != null ? item.EffectiveDate.Value.ToString("MMM-yyyy") : null,
+                        AllocationEffectiveDate = item.AllocationEffectiveDate != null ? item.AllocationEffectiveDate.Value.ToString("MMM-yyyy") : null,
+
                         item.CostAllocationId,
                         item.VoucherEntryId,
                         item.CostAllocationUnitId,
                         item.CostAllocDrCr,
                         item.AmountAllocated,
-                        item.EffectiveDate,
                         item.CostAllocRemarks,
                         item.IsDisabled,
                         item.AccountHead,
@@ -90,7 +93,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.VoucherYear,
                         item.EffectiveMonth,
                         item.EffectiveYear,
-                        item.AllocationEffectiveDate,
                         item.AllocationEffectiveMonth,
                         item.AllocationEffectiveYear,
                         item.ProjectMasterCode,
@@ -111,6 +113,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
     }
 }
 

@@ -141,6 +141,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<DqryStockMaster> DqryStockMasters { get; set; }
 
+    public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
+
     public virtual DbSet<MasRqryContractedBalanceWithSite> MasRqryContractedBalanceWithSites { get; set; }
 
     public virtual DbSet<MasRqryHiredBalanceSummary> MasRqryHiredBalanceSummaries { get; set; }
@@ -3398,6 +3400,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
 
+    public virtual DbSet<JournalRegisterView> JournalRegisterViews { get; set; }
     public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
     public virtual DbSet<DashBoardBankAccount> DashBoardBankAccounts { get; set; }
 
@@ -3411,7 +3414,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<VoucherViewModel>().HasNoKey();
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
-
+        modelBuilder.Entity<JournalRegisterView>().HasNoKey();
         modelBuilder.Entity<TrialBalanceResult>().HasNoKey();
         modelBuilder.Entity<AssetRegisterViews>().HasNoKey();
         modelBuilder.Entity<ExpenseClaimViews>().HasNoKey();
@@ -4810,6 +4813,16 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.UnitOfIssue)
                 .HasMaxLength(15)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<EmailTemplate>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__EmailTem__3214EC0726539650");
+
+            entity.Property(e => e.Category).HasMaxLength(100);
+            entity.Property(e => e.Status).HasMaxLength(20);
+            entity.Property(e => e.Subject).HasMaxLength(500);
+            entity.Property(e => e.TemplateName).HasMaxLength(200);
         });
 
         modelBuilder.Entity<MasRqryContractedBalanceWithSite>(entity =>

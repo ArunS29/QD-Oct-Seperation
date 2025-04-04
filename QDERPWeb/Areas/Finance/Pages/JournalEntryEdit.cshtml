@@ -120,7 +120,7 @@
         <div class="dx-field ledgerResult">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202101journalRegisterChild>()
                     .ID("dataGrid")
-                    .KeyExpr("VoucherEntryNo")
+                    .KeyExpr("JournalRefNo")
                     .Columns(columns =>
                     {
                         columns.Add().Caption("#").Width(50).Alignment(HorizontalAlignment.Center)
@@ -165,12 +165,21 @@
 
                         columns.Add().DataField("EntryNarration").Caption("Entry Narration").Width(200);
                         columns.Add().DataField("DrCr").Caption("Dr/Cr").Width(80).Alignment(HorizontalAlignment.Center);
-                        columns.Add().DataField("DrAmount").Caption("Dr Amount").Format("currency").Width(120).Alignment(HorizontalAlignment.Right);
-                        columns.Add().DataField("CrAmount").Caption("Cr Amount").Format("currency").Width(120).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right);
                         columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
                         columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150);
                         columns.Add().DataField("EmpAllocated").Caption("Employees Allocation").Width(150);
                         columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150);
+                        // ✅ Additional columns from entity
+                        columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150);
+                        columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200);
+                        columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120);
+                        columns.Add().DataField("AccountId").Caption("Account ID").Width(150);
+                        columns.Add().DataField("EmployeeCostDescription").Caption("Employee Cost Desc").Width(200);
+                        columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200);
+                        columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Format("currency").Width(150).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right);
                     })
                 .DataSource(new List<object>())
                 .AllowColumnReordering(true)
@@ -298,26 +307,42 @@
             dataGrid.option("searchPanel.text", text);
         }
     }
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        let regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        let results = regex.exec(location.search);
+        return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
     $(document).ready(function () {
-        $.ajax({
-            url: '@Url.Action("GetNewVoucherNo", "JournalEntryEdit")',
-            type: 'GET',
-            success: function (data) {
-                const voucherNoField = $("#VoucherNo").dxTextBox("instance");
-                voucherNoField.option("value", data);
-                updateTemporaryNo({ value: data });
-            },
-            error: function () {
-                alert("Error generating voucher number.");
-            }
-        });
+        const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+        const voucherNoFromUrl = getUrlParameter('voucherNo');
+
+        if (voucherNoFromUrl) {
+            // ✅ Bind voucher number from URL
+            voucherNoField.option("value", voucherNoFromUrl);
+        } else {
+            // ❌ If not available, generate new one
+            $.ajax({
+                url: '@Url.Action("GetNewVoucherNo", "JournalEntryEdit")',
+                type: 'GET',
+                success: function (data) {
+                    voucherNoField.option("value", data);
+                },
+                error: function () {
+                    alert("Error generating voucher number.");
+                }
+            });
+        }
     });
+
+
     function saveJournalEntry() {
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
         var voucherDate = $("#VoucherDate").dxDateBox("instance").option("value");
         var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
         var voucherNarration = $("#VoucherNarration").dxTextArea("instance").option("value");
-        var claimName = $("#ClaimNameDropdown").dxDropDownBox("instance").option("value");
+       
 
         var gridInstance = $("#dataGrid").dxDataGrid("instance");
         var gridData = gridInstance.getDataSource().items();
@@ -327,7 +352,7 @@
             VoucherDate: voucherDate,
             EffectiveDate: effectiveDate,
             VoucherNarration: voucherNarration,
-            ClaimName: claimName,
+     
             Entries: gridData
         };
 
@@ -439,6 +464,46 @@
         $("body").append(modalHtml);
         $("#contextModal").modal("show");
     }
+
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        let regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        let results = regex.exec(location.search);
+        return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    $(document).ready(function () {
+        let journalRefNo = getUrlParameter('journalRefNo');
+
+        if (journalRefNo) {
+            $.ajax({
+                url: '/api/JournalRegister/GetJournalChild',
+                type: 'GET',
+                data: { journalRefNo: journalRefNo },
+                success: function (data) {
+                    const entry = data.find(d => d.JournalRefNo === journalRefNo); // optional check
+
+                    if (entry) {
+                        $("#VoucherNo").dxTextBox("instance").option("value", entry.JournalRefNo);
+                        $("#VoucherDate").dxDateBox("instance").option("value", entry.VoucherDate);
+                        $("#EffectiveDate").dxDateBox("instance").option("value", entry.EffectiveDate);
+                        $("#VoucherNarration").dxTextArea("instance").option("value", entry.VoucherNarration);
+                        $("#ClaimNameDropdown").dxDropDownBox("instance").option("value", entry.ClaimName);
+
+                        const gridInstance = $("#dataGrid").dxDataGrid("instance");
+                        gridInstance.option("dataSource", data);
+                    } else {
+                        DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                }
+            });
+        } else {
+            DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+        }
+    });
 
 
 
