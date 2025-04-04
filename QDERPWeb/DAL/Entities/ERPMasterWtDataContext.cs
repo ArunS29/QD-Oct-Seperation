@@ -3398,6 +3398,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
 
+    public virtual DbSet<JournalRegisterView> JournalRegisterViews { get; set; }
     public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
     public virtual DbSet<DashBoardBankAccount> DashBoardBankAccounts { get; set; }
 
@@ -3411,7 +3412,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<VoucherViewModel>().HasNoKey();
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
-
+        modelBuilder.Entity<JournalRegisterView>().HasNoKey();
         modelBuilder.Entity<TrialBalanceResult>().HasNoKey();
         modelBuilder.Entity<AssetRegisterViews>().HasNoKey();
         modelBuilder.Entity<ExpenseClaimViews>().HasNoKey();

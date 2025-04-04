@@ -15,12 +15,15 @@
         border: 1px solid #ccc;
         box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         padding: 10px;
-    }
+    } 
 
     #dataGrid .dx-header-row .dx-datagrid-text-content {
         font-weight: bold;
         color: black;
-    } 
+    }
+
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+        display: none !important;
 
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
@@ -29,8 +32,10 @@
         <div id="JournalRegister" class="no-border-input"></div>
     </div>
 </div>
-<div>
-    @await Html.PartialAsync("_GridFooter")
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("_GridFooter")
+    </div>
 </div>
 <div class="content-container-top">
     <div class="context-menu" id="contextMenu">

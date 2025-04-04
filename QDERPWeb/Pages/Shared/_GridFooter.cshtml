@@ -228,6 +228,16 @@
     </div>
 
     <div class="btn-container">
+    @(Html.DevExtreme().Button()
+        .ID("btnCreateNew")
+        .Icon("add") // DevExtreme built-in 'add' icon (a plus symbol)
+        .Text(new JS("formatMessage('Create New')"))
+        .ElementAttr(new { style = "margin-left: 10px;" }) // optional spacing
+        .Width(120)
+     @*    .OnClick("function() { onCreateNewClick(); }") *@ // your JS function
+        )
+    </div>
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnToggleSearch")
             .Icon("search")
