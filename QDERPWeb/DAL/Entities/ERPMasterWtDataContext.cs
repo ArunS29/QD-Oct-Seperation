@@ -141,6 +141,8 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<DqryStockMaster> DqryStockMasters { get; set; }
 
+    public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
+
     public virtual DbSet<MasRqryContractedBalanceWithSite> MasRqryContractedBalanceWithSites { get; set; }
 
     public virtual DbSet<MasRqryHiredBalanceSummary> MasRqryHiredBalanceSummaries { get; set; }
@@ -4811,6 +4813,16 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.UnitOfIssue)
                 .HasMaxLength(15)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<EmailTemplate>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__EmailTem__3214EC0726539650");
+
+            entity.Property(e => e.Category).HasMaxLength(100);
+            entity.Property(e => e.Status).HasMaxLength(20);
+            entity.Property(e => e.Subject).HasMaxLength(500);
+            entity.Property(e => e.TemplateName).HasMaxLength(200);
         });
 
         modelBuilder.Entity<MasRqryContractedBalanceWithSite>(entity =>
