@@ -19,7 +19,35 @@
     function onDocumentViewerReady(s, e) {
         s.preview.zoom(1); // 100% zoom
     }
+
+    function openEmailPopup() {
+        const popup = document.getElementById("emailPopup");
+        document.getElementById("emailFrame").src = "/Pages/EmailCompose";
+        popup.style.display = "flex";
+        popup.classList.add("fade-in");
+        document.getElementById("emailLoader").style.display = "block";
+        setTimeout(() => {
+            document.getElementById("emailLoader").style.display = "none";
+        }, 1500);
+    }
+
+    function closeEmailPopup() {
+        const popup = document.getElementById("emailPopup");
+        popup.classList.remove("fade-in");
+        popup.classList.add("fade-out");
+        setTimeout(() => {
+            popup.style.display = "none";
+            popup.classList.remove("fade-out");
+            document.getElementById("emailFrame").src = "";
+        }, 500);
+    }
+
+    function refreshEmailPopup() {
+        document.getElementById("emailFrame").src = document.getElementById("emailFrame").src;
+    }
 </script>
+
+<button class="btn btn-primary send-email-btn" onclick="openEmailPopup()">📧 Send Email</button>
 @(Html.DevExpress().WebDocumentViewer("documentViewer")
     .Height("100em")
     .Width("110em")
@@ -34,7 +62,18 @@
     <span class="btn-text">Open Designer</span>
     <i class="fa fa-pencil-alt"></i>
 </a>
-
+<!-- Email Popup -->
+<div id="emailPopup" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h5 class="popup-title">📩 Compose Email</h5>
+            <button class="popup-btn" onclick="refreshEmailPopup()">🔄</button>
+            <button class="popup-close" onclick="closeEmailPopup()">✖</button>
+        </div>
+        <div id="emailLoader" class="loader"></div>
+        <iframe id="emailFrame" src="" width="800px" height="500px" style="border: none;"></iframe>
+    </div>
+</div>
 @* <!-- Floating Close Button -->
 <a href="javascript:void(0);" id="btnClose" class="btn-close-report" data-tooltip="Close">
 <span class="btn-text">Close</span>
@@ -44,7 +83,70 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
 <style>
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
 
+    .popup-content {
+        position: absolute;
+        background: white;
+        width: 50%;
+        max-width: 800px;
+        border-radius: 8px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+
+    .popup-header {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: move;
+    }
+
+    .popup-btn, .popup-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    .loader {
+        display: none;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
     .container {
         display: none !important;
     }
