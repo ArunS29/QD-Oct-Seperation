@@ -1,33 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QD.ERP.Web.DAL.Entities;
 using System.ComponentModel.DataAnnotations;
 
 public class TemplateCreateModel : PageModel
 {
-    [BindProperty]
-    [Required]
-    public string TemplateName { get; set; }
+    private readonly ERPMasterWtDataContext _context;
 
-    [BindProperty]
-    [Required]
-    public string Subject { get; set; }
-
-    [BindProperty]
-    [Required]
-    public string Body { get; set; }
-
-    [BindProperty]
-    public string Status { get; set; } = "Active";
-
-    public IActionResult OnPost()
+    public TemplateCreateModel(ERPMasterWtDataContext context)
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
+        _context = context;
+    }
 
-        // Save the template to the database (or any storage)
-        TempData["Success"] = "Template saved successfully!";
-        return RedirectToPage("/Templates/Create");
+    [BindProperty]
+    public EmailTemplate Template { get; set; }
+
+    public void OnGet() { }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid) return Page();
+
+        Template.Status = Template.Status ?? "Active";
+        _context.EmailTemplates.Add(Template);
+        await _context.SaveChangesAsync();
+        return RedirectToPage("/EmailCompose");
     }
 }
