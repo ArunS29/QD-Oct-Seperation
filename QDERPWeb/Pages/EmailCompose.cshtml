@@ -70,14 +70,10 @@
                 <input type="email" class="form-control" id="toEmail" required>
             </div>
 
-            <!-- Template Selection -->
             <div class="mb-3">
                 <label>Template Category:</label>
                 <select id="templateCategory" class="form-select">
                     <option value="">-- Select Category --</option>
-                    <option value="HR">HR</option>
-                    <option value="Finance">Finance</option>
-                    <option value="IT">IT</option>
                 </select>
             </div>
 
@@ -117,34 +113,54 @@
     </div>
 
     <script>
-        $(document).ready(function () {
-            let templates = {
-                "HR": [
-                    { "id": "hr_welcome", "name": "HR - Welcome Email", "subject": "Welcome to the Company!", "body": "Dear Employee,\n\nWelcome to our company! We are excited to have you on board.\n\nBest Regards,\nHR Team" },
-                    { "id": "hr_leave", "name": "HR - Leave Approval", "subject": "Leave Request Approved", "body": "Dear Employee,\n\nYour leave request has been approved. Enjoy your time off!\n\nBest Regards,\nHR Team" }
-                ],
-                "Finance": [
-                    { "id": "fin_invoice", "name": "Finance - Invoice Reminder", "subject": "Invoice Payment Reminder", "body": "Dear Customer,\n\nThis is a friendly reminder to pay your outstanding invoice.\n\nBest Regards,\nFinance Team" }
-                ],
-                "IT": [
-                    { "id": "it_support", "name": "IT - Support Ticket", "subject": "IT Support Ticket Update", "body": "Dear User,\n\nYour IT support ticket has been updated. Please check your email for details.\n\nBest Regards,\nIT Team" }
-                ]
-            };
+        
+            $(document).ready(function () {
+                // Load categories from the database on page load
+                $.ajax({
+                    url: '/Email/GetCategories', // API Endpoint for fetching categories
+                    type: 'GET',
+                    success: function (categories) {
+                        let categoryDropdown = $("#templateCategory");
+                        categoryDropdown.empty().append('<option value="">-- Select Category --</option>');
 
-            // Populate template dropdown based on category selection
-            $("#templateCategory").change(function () {
-                let category = $(this).val();
-                $("#emailTemplate").empty().append('<option value="">-- Select Template --</option>');
+                        $.each(categories, function (index, category) {
+                            categoryDropdown.append(`<option value="${category.id}">${category.name}</option>`);
+                        });
+                    },
+                    error: function () {
+                        alert("Error loading categories.");
+                    }
+                });
 
-                if (category && templates[category]) {
-                    templates[category].forEach(template => {
-                        $("#emailTemplate").append(`<option value="${template.id}" data-subject="${template.subject}" data-body="${template.body}">${template.name}</option>`);
-                    });
-                }
+                // Fetch templates based on selected category
+                $("#templateCategory").change(function () {
+                    let categoryId = $(this).val();
+                    let templateDropdown = $("#emailTemplate");
 
-                // Add Insert Template option
-                $("#emailTemplate").append('<option value="insert">Insert Template</option>');
-            });
+                    templateDropdown.empty().append('<option value="">-- Select Template --</option>');
+
+                    if (categoryId) {
+                        $.ajax({
+                            url: '/Email/GetTemplates?categoryId=' + categoryId, // API Endpoint for fetching templates
+                            type: 'GET',
+                            success: function (templates) {
+                                $.each(templates, function (index, template) {
+                                    templateDropdown.append(`<option value="${template.id}" data-subject="${template.subject}" data-body="${template.body}">${template.name}</option>`);
+                                });
+
+                                // Ensure "Insert Template" option is always present
+                                templateDropdown.append('<option value="insert">Insert Template</option>');
+                            },
+                            error: function () {
+                                alert("Error loading templates.");
+                            }
+                        });
+                    } else {
+                        // Ensure "Insert Template" option is present even when no category is selected
+                        templateDropdown.append('<option value="insert">Insert Template</option>');
+                    }
+                });
+            
 
             // Auto-fill subject and body when selecting a template
             $("#emailTemplate").change(function () {
