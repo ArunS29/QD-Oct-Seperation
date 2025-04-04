@@ -23,6 +23,12 @@
       "ObjectType": 0
     },
     {
+
+      "Name": "[dbo].[EmailTemplates]",
+      "ObjectType": 0
+    },
+    {
+
       "Name": "[dbo].[Passwordreset]",
       "ObjectType": 0
     },
