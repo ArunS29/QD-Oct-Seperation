@@ -1479,6 +1479,11 @@
         "Claimed for Project/Jobs:": "Claimed for Project/Jobs:",
         "Priority:": "Priority:",
         
+        "Description In Arabic": "Description In Arabic",
+        "Cost Price": "Cost Price",
+        "Current Qty": "Current Qty",
+        "Unit Rate Method":"Unit Rate Method"
+
     },
     "ar": {
         "Show Fields":"إظهار الحقول",
@@ -2879,7 +2884,11 @@
         "Effective Date:": "تاريخ السريان",
         "Claim Remarks:": "ملاحظات المطالبة",
         "Claimed for Project/Jobs:": "المطالبة للمشروع/الوظائف",
-        "Priority:": "الأولوية"
+        "Priority:": "الأولوية",
+        "Description In Arabic": "الوصف باللغة العربية",
+        "Cost Price": "سعر التكلفة",
+        "Current Qty": "الكمية الحالية",
+        "Unit Rate Method": "طريقة معدل الوحدة"
 
     }
 };

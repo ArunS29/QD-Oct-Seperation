@@ -262,8 +262,6 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public Tbl201VoucherMaster VoucherMaster { get; set; }
         public List<Tbl201VoucherEntry> VoucherEntries { get; set; }
 
-       
-
     }
     public class DashBoardBankAccount
     {
@@ -307,5 +305,31 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal? CrAmountTotal { get; set; }
         public decimal? Difference { get; set; }
     }
+    //public class InvoiceUpdateRequest
+    //{
+    //    public List<Tbl20162VatinvoiceChild> InvoiceChildren { get; set; }
+    //    public Tbl20161VatinvoiceMaster InvoiceMaster { get; set; }
+
+    //}
+
+    public class InvoiceItem
+    {
+        public string InvoiceNo { get; set; }
+        public dynamic Amount { get; set; }
+        public dynamic Description { get; set; }
+        public dynamic Discount { get; set; }
+        public dynamic DiscountDetails { get; set; }
+        public dynamic ExemptionCode { get; set; }
+        public dynamic ItemCode { get; set; }
+        public dynamic Qty { get; set; }
+        public dynamic SNo { get; set; }
+        public dynamic Total { get; set; }
+        public dynamic TotalBeforeDiscount { get; set; }
+        public dynamic UnitPrice { get; set; }
+        public dynamic VAT { get; set; }
+        public decimal? TaxAmount { get; set; }
+        // public decimal VAT% { get; set; }
+    }
+
 }
 
