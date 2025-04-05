@@ -51,6 +51,7 @@
 
 	<ItemGroup>
 		<None Include="efpt.config.json.user" />
+		<None Include="wwwroot\images\sar 1.svg" />
 	</ItemGroup>
 
 	<ItemGroup>

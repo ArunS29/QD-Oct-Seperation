@@ -109,8 +109,10 @@ namespace QD.ERP.Web.Reports
 
         private void AddSvgImageNextToLabel(XRLabel label)
         {
-            // Load the SVG image
-            SvgImage svg = SvgImage.FromFile("sar 1.svg");
+            string webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            string filePath = Path.Combine(webRootPath, "images", "sar 1.svg");
+
+            SvgImage svg = SvgImage.FromFile(filePath);
             if (svg == null) return;
 
             // Define image size

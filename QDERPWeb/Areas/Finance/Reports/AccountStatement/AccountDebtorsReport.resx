@@ -117,14 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="xrLabel14.Text" xml:space="preserve">
+    <value>If the above mentioned amount is not in agreement with your records, please furnish us an analysis of your balance together with any other information you may have which will assist the auditors in locating the difference. After signing your reply please email or fax it directly our auditors with a copy to our email/fax.</value>
+  </data>
   <data name="xrLabel7.Text" xml:space="preserve">
     <value>	
-         In connection with the our audit of financial statements in our company we kindly ask you compare the sum of [DrAmount](Dr)  owed by your company to our company as on [frmDate] acccording to your accounting data and to send the balance confirmation signed and stamped to following address of our auditors:
+         In connection with the our audit of financial statements in our company we kindly ask you compare the sum of [VoucherAmountFormatted](Dr)  owed by your company to our company as on [?StartDate!dd-MMM-yyyy]  acccording to your accounting data and to send the balance confirmation signed and stamped to following address of our auditors:
 
 	Auditor 's Name : 
 	
 	Address :
 
 	Email :</value>
+  </data>
+  <data name="sqlDataSource1.ResultSchemaSerializable" xml:space="preserve">
+    <value>PERhdGFTZXQgTmFtZT0ic3FsRGF0YVNvdXJjZTEiPjxWaWV3IE5hbWU9InFyeTIwMV8xMDFNYWluVm91Y2hlckVudHJpZXNGb3JBY2N0QmFsYW5jZSI+PEZpZWxkIE5hbWU9IkFjY291bnRIZWFkIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkFjY291bnRIZWFkTmFtZSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJBY2NvdW50SGVhZEFyYWJpYyIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJWb3VjaGVyQW1vdW50Rm9ybWF0dGVkIiBUeXBlPSJEZWNpbWFsIiAvPjxGaWVsZCBOYW1lPSJBY2NvdW50c0NvbnRhY3ROYW1lIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IkFjY291bnRzQ29udGFjdE1vYmlsZSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJBY2NvdW50c0NvbnRhY3RUaXRsZSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJFbWFpbEFkZHJlc3MiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iQmlsbGluZ05hbWUiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iQmlsbGluZ0FkZHJlc3MiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iQmlsbGluZ05hbWVBciIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJCaWxsaW5nQWRkcmVzc0FyIiBUeXBlPSJTdHJpbmciIC8+PEZpZWxkIE5hbWU9IlN1cHBsaWVyTmFtZSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJTdXBwbGllck5hbWVBciIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJTdXBwbGllckFkZHJlc3MiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iU3VwcGxpZXJBZGRyZXNzQXIiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iVm91Y2hlckRhdGUiIFR5cGU9IkRhdGVUaW1lIiAvPjxGaWVsZCBOYW1lPSJDbGllbnRWZW5kb3JObyIgVHlwZT0iU3RyaW5nIiAvPjwvVmlldz48L0RhdGFTZXQ+</value>
   </data>
 </root>

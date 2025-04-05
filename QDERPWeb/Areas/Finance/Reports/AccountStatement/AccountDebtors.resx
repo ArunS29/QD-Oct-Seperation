@@ -122,7 +122,7 @@
   </data>
   <data name="xrLabel7.Text" xml:space="preserve">
     <value>	
-         In connection with the our audit of financial statements in our company we kindly ask you compare the sum of [VoucherAmountFormatted](Dr)  owed by your company to our company as on [frmDate] acccording to your accounting data and to send the balance confirmation signed and stamped to following address of our auditors:
+         In connection with the our audit of financial statements in our company we kindly ask you compare the sum of [VoucherAmountFormatted](Dr)  owed by your company to our company as on [?StartDate!dd-MMM-yyyy]  acccording to your accounting data and to send the balance confirmation signed and stamped to following address of our auditors:
 
 	Auditor 's Name : 
 	
