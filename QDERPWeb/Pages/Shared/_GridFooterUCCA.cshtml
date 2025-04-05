@@ -175,7 +175,7 @@
 
 <div class="btn-container">
     @(Html.DevExtreme().Button()
-        .ID("btnShowRowTable")
+            .ID("btnShowRowTotals")
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("rowfield")
@@ -184,6 +184,8 @@
         .OnClick("toggleGroupPanel")
         )
 </div>
+
+ 
 <div class="btn-container">
     @(Html.DevExtreme().Button()
         .ID("btnShowAllRecords")
