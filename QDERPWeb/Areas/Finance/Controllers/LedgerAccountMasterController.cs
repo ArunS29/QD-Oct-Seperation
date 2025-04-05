@@ -47,6 +47,47 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         }
+        [HttpPut]
+        public async Task<ActionResult> UpdateLedgerMasterDetails([FromBody] Tbl201AccountGroup AG)
+        {
+            if (AG == null || AG.AccountGroupId == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data received." });
+            }
+
+            try
+            {
+                var existingRecord = await _context.Tbl201AccountGroups.FindAsync(AG.AccountGroupId);
+
+                if (existingRecord == null)
+                {
+                    return NotFound(new { success = false, message = "Account Group not found." });
+                }
+
+                // Update existing fields
+                existingRecord.AccountGroup = AG.AccountGroup;
+              
+       
+                existingRecord.AccountGroupAr = AG.AccountGroupAr;
+
+                existingRecord.AccountGroupUnder = AG.AccountGroupUnder ?? existingRecord.AccountGroupUnder;
+
+                existingRecord.RecordCreatedBy = AG.RecordCreatedBy;
+                existingRecord.RecordCreatedOn = AG.RecordCreatedOn;
+                existingRecord.RecordModifiedBy = AG.RecordModifiedBy;
+                existingRecord.RecordModifiedOn = AG.RecordModifiedOn;
+
+                _context.Tbl201AccountGroups.Update(existingRecord);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Data updated successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
+
 
         [HttpGet]
         public async Task<ActionResult> GetAccountMaster(DataSourceLoadOptions loadOptions)
@@ -55,7 +96,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             var qryListOfAccountlists = _context.Tbl201MasterGroups.Select(i => new
 
             {
-                //i.MasterGroupId,
+                i.MasterGroupId,
                 i.MasterGroup
                 //i.MasterGroupAr,
                 //i.IsCalculateOpeningBalance,
@@ -825,6 +866,65 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult GetAccountGroups()
+        {
+            try
+            {
+                var accountGroups = _context.Tbl201AccountGroups
+                    .Select(a => new
+                    {
+                        a.AccountGroupId,
+                        a.AccountGroup
+                    })
+                    .ToList();
+
+                return Ok(accountGroups);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (Assuming you have logging configured)
+                Console.WriteLine($"Error fetching account groups: {ex.Message}");
+
+                // Return a 500 Internal Server Error response with error details
+                return StatusCode(500, new { message = "An error occurred while retrieving account groups.", error = ex.Message });
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult GetAccountGroupsData(string AccountGroupId)
+        {
+            try
+            {
+                var accountGroup = _context.Tbl201AccountGroups
+                    .Where(a => a.AccountGroupId == AccountGroupId)
+                    .Select(a => new
+                    {
+                        a.AccountGroupId,
+                        a.AccountGroup,
+                        a.AccountGroupAr,
+                        a.RecordCreatedBy,
+                        a.RecordCreatedOn,
+                        a.IsUseInSales,
+                        a.IsUsedInPurchase,
+                        a.IsUseInReconciliation,
+                        a.IsSalaryPayable
+                    })
+                    .FirstOrDefault();
+
+                if (accountGroup == null)
+                {
+                    return NotFound(new { success = false, message = "Account Group not found." });
+                }
+
+                return Ok(accountGroup);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error retrieving data", error = ex.Message });
+            }
+        }
 
     }
 }

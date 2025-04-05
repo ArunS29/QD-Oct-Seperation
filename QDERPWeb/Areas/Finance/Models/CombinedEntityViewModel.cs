@@ -263,6 +263,14 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public List<Tbl201VoucherEntry> VoucherEntries { get; set; }
 
     }
+    public class RegisterVoucherViewModel
+    {
+        public Tbl20126JournalRegisterMaster JournalVoucherMaster { get; set; }
+        public List<Tbl20127JournalRegisterChild> JournalVoucherEntries { get; set; }
+
+
+
+    }
     public class DashBoardBankAccount
     {
         public string MasterGroupID { get; set; }
