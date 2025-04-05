@@ -2376,7 +2376,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
-        }
+        
 
 
         [HttpPost]
@@ -2389,31 +2389,35 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                            var existingInvoice = await _context.Tbl20161VatinvoiceMasters
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
                                                                  .FirstOrDefaultAsync(v => v.InvoiceNo == InvoiceMaster.InvoiceNo);
 
-                            if (existingInvoice != null)
-                            {
-                            // Update existing master record
-                            _context.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
-                            }
-                            else
-                            {
-                                // Insert new invoice master record
-                                await _context.Tbl20161VatinvoiceMasters.AddAsync(InvoiceMaster);
-                            }
+                    if (existingInvoice != null)
+                    {
+                        // Update existing master record
+                        dbContext.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
+                    }
+                    else
+                    {
+                        // Insert new invoice master record
+                        await dbContext.Tbl20161VatinvoiceMasters.AddAsync(InvoiceMaster);
+                    }
 
 
-                            await _context.SaveChangesAsync();
-                           // await transaction.CommitAsync();
+                    await dbContext.SaveChangesAsync();
+                    // await transaction.CommitAsync();
 
-                            return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
-                        }
-                        catch (Exception ex)
-                        {
-                           // await transaction.RollbackAsync();
-                            return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-                        }
+                    return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                // await transaction.RollbackAsync();
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+            
                     
             return BadRequest("Failed to retrieve tenant and database context.");
         }
@@ -2428,22 +2432,24 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                Tbl20162VatinvoiceChild aTbl20162VatinvoiceChild = new Tbl20162VatinvoiceChild();
-
-
-                // Process child records if available
-                foreach (var child in InvoiceChildren)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    if (child == null) continue;  // Skip null child records if any
+                    Tbl20162VatinvoiceChild aTbl20162VatinvoiceChild = new Tbl20162VatinvoiceChild();
 
-                    var existingChild = await _context.Tbl20162VatinvoiceChildren
-                                                       .FirstOrDefaultAsync(c => c.InvoiceNo == child.InvoiceNo
-                                                                            );
+
+                    // Process child records if available
+                    foreach (var child in InvoiceChildren)
+                    {
+                        if (child == null) continue;  // Skip null child records if any
+
+                        var existingChild = await dbContext.Tbl20162VatinvoiceChildren
+                                                           .FirstOrDefaultAsync(c => c.InvoiceNo == child.InvoiceNo
+                                                                                );
                         aTbl20162VatinvoiceChild.InvoiceNo = child.InvoiceNo;
-                        aTbl20162VatinvoiceChild.UnitRate = child.TaxAmount;   
+                        aTbl20162VatinvoiceChild.UnitRate = child.TaxAmount;
                         //child.Amount.GetDecimal();
                         aTbl20162VatinvoiceChild.DetailedDescription = child.Description.GetString();
-                      //  aTbl20162VatinvoiceChild.Discount = child.Discount.GetString();
+                        //  aTbl20162VatinvoiceChild.Discount = child.Discount.GetString();
                         //aTbl20162VatinvoiceChild.TaxExemptionReasonCode = child.ExemptionCode.GetString();
                         //aTbl20162VatinvoiceChild.ItemCode = child.ItemCode.GetString();
                         aTbl20162VatinvoiceChild.QuantityInvoiced = child.Qty.GetDecimal();
@@ -2454,12 +2460,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         if (existingChild != null)
                         {
                             // Update the existing child record
-                            _context.Entry(existingChild).CurrentValues.SetValues(aTbl20162VatinvoiceChild);
+                            dbContext.Entry(existingChild).CurrentValues.SetValues(aTbl20162VatinvoiceChild);
                         }
                         else
                         {
                             // Add a new child record
-                            await _context.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
+                            await dbContext.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
                         }
                     }
                     //aTbl20162VatinvoiceChild.Discount = child.Discount;
@@ -2472,11 +2478,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
-                // Save changes to the database
-                await _context.SaveChangesAsync();
-                // await transaction.CommitAsync();
+                    // Save changes to the database
+                    await dbContext.SaveChangesAsync();
+                    // await transaction.CommitAsync();
 
-                return Ok(new { success = true, message = "Invoice child records updated successfully!" });
+                    return Ok(new { success = true, message = "Invoice child records updated successfully!" });
+                }
             }
 
             catch (Exception ex)
