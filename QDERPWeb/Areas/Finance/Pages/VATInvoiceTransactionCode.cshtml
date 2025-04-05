@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAT Transaction Type</title>
+    @* <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.6/css/dx.light.css">
+    <script src="https://cdn3.devexpress.com/jslib/23.1.6/js/jquery.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.1.6/js/dx.all.js"></script> *@
+    <style>
+        .container {
+            width: 350px;
+            padding: 20px;
+            background-color: #33A0D6;
+            color: white;
+            font-family: Arial, sans-serif;
+            border-radius: 5px;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-decoration: underline;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .dx-switch {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="title">Choose the VAT Transaction Type:</div>
+        <div id="tax-options"></div>
+    </div>
+
+    <script>
+        $(function () {
+            let taxOptions = [
+                "3rd Party Tax Invoice",
+                "Nominal Tax Invoice",
+                "Export Tax Invoice",
+                "Summary Tax Invoice",
+                "Self Billed Tax Invoice"
+            ];
+
+            let items = taxOptions.map(name => ({
+                text: name,
+                switchValue: false
+            }));
+
+            $("#tax-options").dxList({
+                dataSource: items,
+                itemTemplate: function (data) {
+                    let $item = $("<div>").addClass("item");
+                    $("<div>").dxSwitch({
+                        value: data.switchValue,
+                        onValueChanged: function (e) {
+                            data.switchValue = e.value;
+                        }
+                    }).appendTo($item);
+                    $("<span>").text(data.text).appendTo($item);
+                    return $item;
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
