@@ -71,24 +71,19 @@
     <label style="font-size: 14px; font-weight: bold;">Type a New Currency Details & Add to the Existing List:</label>
 
     <div class="dx-field">
-        
-        @(Html.DevExtreme().TextBox()
-            .Label("Currency Name:")
-        .ID("txtCurrencyName").Width(400))
+        <label>Currency Name:</label>
+        @(Html.DevExtreme().TextBox().ID("txtCurrencyName").Width(400))
     </div>
 
     <div class="dx-field">
-        
-        @(Html.DevExtreme().TextBox()
-        .Label("Currency Name (In Arabic):")
-        .ID("txtCurrencyNameAr").Width(400))
+        <label>Currency Name (In Arabic):</label>
+        @(Html.DevExtreme().TextBox().ID("txtCurrencyNameAr").Width(400))
     </div>
 
     <div class="dx-field">
-        
+        <label><b>Currency Exchange Rate:</b></label>
         @(Html.DevExtreme().NumberBox()
             .ID("currencyexchangerate")
-            .Label("Currency Exchange Rate:")
             .Min(1)
             .Step(1)
             .ShowSpinButtons(true)
@@ -96,19 +91,15 @@
             )
     </div>
 
-    <div>
+    <div class="dx-fieldset">
         <div class="dx-field-container">
             <div>
-               
-                @(Html.DevExtreme().TextBox()
-                .Label("Currency Code:")
-                .ID("txtCurrencyCode").Width("100%"))
+                <label>Currency Code:</label>
+                @(Html.DevExtreme().TextBox().ID("txtCurrencyCode").Width(180))
             </div>
             <div>
-               
-                @(Html.DevExtreme().TextBox()
-                .Label("Currency Code (In Arabic):")
-                .ID("txtCurrencyCodeAr").Width("100%"))
+                <label>Currency Code (In Arabic):</label>
+                @(Html.DevExtreme().TextBox().ID("txtCurrencyCodeAr").Width(180))
             </div>
             <div>
                 @(Html.DevExtreme().Button()
@@ -116,7 +107,7 @@
                     .Text("Add")
                     .Icon("plus")
                     .Type(ButtonType.Success)
-                    .Width("50%")
+                    .Width(100)
                     .OnClick("addCurrency")
                     )
             </div>
