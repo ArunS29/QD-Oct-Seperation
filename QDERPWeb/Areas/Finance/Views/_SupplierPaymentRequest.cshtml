@@ -54,9 +54,9 @@
                 background-color: #005f75;
             }
 
-    /* .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint1,#btntoggleGroupPanel)) {
-        display: none !important;
-    } */
+    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnToggleHeaderFilter,#btnColumnChooser, #ddButtonExpense, #ddButtonReceipts,#ddButtonPayment,#ddOtherVouchers,#ddReports)) {
+		display: none !important;
+	}
 </style>
 
 <div>
@@ -91,7 +91,7 @@
 	<div class="dx-field ledgerResult">
         @(
                 Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201SubLedgerPayablesMaster>()
-                            .ID("dataGrid")
+                            .ID("SupplierpaymentdataGrid")
                             .RemoteOperations(false)
                             .Columns(columns =>
                             {
@@ -127,7 +127,12 @@
 						columns.AddFor(m => m.PayableAmount)
 			.Caption("Payable Amount")
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+            .CustomizeText(@"
+        function(e) {
+            var val = Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return e.value < 0 ? '(' + val + ')' : val;
+        }
+    ");
 
 						columns.AddFor(m => m.Paid)
 			.Caption("Paid")
@@ -137,7 +142,12 @@
                             columns.AddFor(m => m.Balance)
 			.Caption("Balance to Pay")
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+            .CustomizeText(@"
+        function(e) {
+            var val = Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return e.value < 0 ? '(' + val + ')' : val;
+        }
+    ");
 
 						columns.AddFor(m => m.OverdueDays).Caption("Overdue Days");
 						
@@ -165,13 +175,23 @@
 					summary.TotalItems(totalItems =>
 					{
 						totalItems.Add().Column("PayableAmount").SummaryType(SummaryType.Sum)
-					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+					.CustomizeText(@"
+        function(e) {
+            var val = Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return e.value < 0 ? '(' + val + ')' : val;
+        }
+    ");
 
 						totalItems.Add().Column("Paid").SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
                     totalItems.Add().Column("Balance").SummaryType(SummaryType.Sum)
-					.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+					.CustomizeText(@"
+        function(e) {
+            var val = Math.abs(e.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return e.value < 0 ? '(' + val + ')' : val;
+        }
+    ");
 					});
 				})
 				)
@@ -217,10 +237,12 @@
             )
     }
    
-</div>
-@* <div>
-    @await Html.PartialAsync("_GridFooter")
+</div> 
+@* <div class="Head">
+<div class="limited-footer">
+		@await Html.PartialAsync("_GridFooter")
 </div> *@
+</div>
 <script>
     function dropDownBoxInput(e) {
         const ddbInstance = e.component;
@@ -261,9 +283,26 @@
             var selectedRowData = $("#supplier-datagrid").dxDataGrid("instance").getSelectedRowsData();
             // Get ReferenceNo from selected row
             if (selectedRowData.length > 0) {
-                supplieraccheadId = selectedRowData[0].CostAllocationUnitId;
-                supplieraccheadname = selectedRowData[0].CostAllocationUnit;
+                debugger;
+                supplieraccheadId = selectedRowData[0].AccountId;
+                supplieraccheadname = selectedRowData[0].AccountHead;
 
+                $.ajax({
+    url: '/api/ExpenseClaim/GetSubLedgerData',
+    type: 'GET',
+    data: {
+        accountId: supplieraccheadId,
+        accountHead: supplieraccheadname
+    },
+    success: function (data) {
+        const targetGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        targetGrid.option("dataSource", data);
+    },
+    error: function (err) {
+        DevExpress.ui.notify("Failed to load data", "error", 2000);
+        console.error(err);
+    }
+});
 
 
 
@@ -274,39 +313,12 @@
         function dataGridsupplierInitialized(e) {
             dataGrid = e.component;
         }
-    function onSupplierChanged(e) {
-        const selectedAccountId = e.value;
+   $(document).ready(function () {
+		$(".limited-footer .btn-container").each(function () {
+			if (!$(this).find("#btnToggleHeaderFilter,#btnColumnChooser, #ddButtonExpense, #ddButtonReceipts,#ddButtonPayment,#ddOtherVouchers,#ddReports").length) {
+				$(this).remove();
+			}
+		});
+	});
 
-        if (!selectedAccountId) {
-            // If cleared or no selection
-            DevExpress.ui.notify("Please select a supplier", "warning", 1500);
-            return;
-        }
-
-        // Optionally, get AccountHead if needed from selection
-        const dataGrid = $("#supplier-datagrid").dxDataGrid("instance");
-        const selectedRowData = dataGrid.getSelectedRowsData()[0];
-
-        if (!selectedRowData) {
-            DevExpress.ui.notify("No supplier data found", "error", 2000);
-            return;
-        }
-
-        const accountId = selectedRowData.AccountId;
-        const accountHead = selectedRowData.AccountHead;
-
-        // Reload the dataGrid below with filter
-        const targetGrid = $("#dataGrid").dxDataGrid("instance");
-        targetGrid.option("remoteOperations", true);
-        targetGrid.option("dataSource", DevExpress.data.AspNet.createStore({
-            key: "ReferenceNo",
-            loadUrl: "/ExpenseClaim/GetSubLedgerData",
-            loadParams: {
-                accountId: accountId,
-                accountHead: accountHead
-            }
-        }));
-
-        targetGrid.refresh();
-    }
 </script>
