@@ -135,15 +135,15 @@
         )
     </div>
     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnPrint")
-        .Text(new JS("formatMessage('Print')"))
-        .Icon("print")
-        .Type(ButtonType.Normal)
-          .StylingMode(ButtonStylingMode.Outlined)
-           .Width(180)
-        //.OnClick("function() { printData(); }")
-        )
+        @(Html.DevExtreme().Button()
+            .ID("btnExportPDF")
+            .Text("Export PDF")
+            .Icon("exportpdf")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Width(180)
+            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+            )
     </div>
     <div class="btn-container">
     @(Html.DevExtreme().Button()
@@ -178,7 +178,7 @@
                 items.Add().Text(new JS("formatMessage('Bills Payable')")).Icon("search");
                 items.Add().Text(new JS("formatMessage('Payable Summary')")).Icon("search");
                 items.Add().Text(new JS("formatMessage('Report by Supplier')")).Icon("search").OnClick("ReportsByClient");
-                items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Icon("smalliconslayout");
+                items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Icon("smalliconslayout").OnClick("function() { Mapping('Bills Payable with Unmapped Vouchers'); }");
             })
             .OnItemClick("handleReportClick")
             )
@@ -530,4 +530,13 @@
 
 
     })
+
+    function Mapping(reportKey) {
+        alert('hi');
+        if (reportKey === "Bills Payable with Unmapped Vouchers") {
+            window.location.href = `/${tenantName}/Finance/PayableReport`;
+        } else {
+            console.warn('No report mapping found for:', reportKey);
+        }
+    }
 </script>
