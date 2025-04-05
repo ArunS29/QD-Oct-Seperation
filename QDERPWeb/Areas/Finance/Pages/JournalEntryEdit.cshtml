@@ -130,6 +130,7 @@
             </text>);
 
 
+
                         columns.Add().DataField("select").Caption("Select").CellTemplate(@<text>
                 <input type="checkbox" class="dx-checkbox" />
             </text>).Width(50).AllowEditing(false);
@@ -452,7 +453,7 @@
 
     $(document).ready(function () {
         const voucherNoField = $("#VoucherNo").dxTextBox("instance");
-        const voucherNoFromUrl = getUrlParameter('voucherNo');
+        const voucherNoFromUrl = getUrlParameter('journalRefNo');
 
         if (voucherNoFromUrl) {
             // ✅ Bind voucher number from URL
@@ -470,60 +471,17 @@
                 }
             });
         }
+
+        // Helper to extract URL parameter
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(window.location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
     });
 
 
-
-    // function saveJournalEntry() {
-    //     var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-    //     var voucherDate = $("#VoucherDate").dxDateBox("instance").option("value");
-    //     var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
-    //     var voucherNarration = $("#VoucherNarration").dxTextArea("instance").option("value");
-
-
-    // function saveJournalEntry() {
-    //     var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-    //     var voucherDate = $("#VoucherDate").dxDateBox("instance").option("value");
-    //     var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
-    //     var voucherNarration = $("#VoucherNarration").dxTextArea("instance").option("value");
-    //     var claimName = $("#ClaimNameDropdown").dxDropDownBox("instance").option("value");
-
-
-    //     var gridInstance = $("#dataGrid").dxDataGrid("instance");
-    //     var gridData = gridInstance.getDataSource().items();
-
-    // var requestData = {
-    //     VoucherNo: voucherNo,
-    //     VoucherDate: voucherDate,
-    //     EffectiveDate: effectiveDate,
-    //     VoucherNarration: voucherNarration,
-
-    //     Entries: gridData
-    // };
-
-    //     var requestData = {
-    //         VoucherNo: voucherNo,
-    //         VoucherDate: voucherDate,
-    //         EffectiveDate: effectiveDate,
-    //         VoucherNarration: voucherNarration,
-    //         ClaimName: claimName,
-    //         Entries: gridData
-    //     };
-
-
-    //     $.ajax({
-    //         url: '@Url//.Action("SaveJournalEntry", "JournalEntryEdit")',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify(requestData),
-    //         success: function (response) {
-    //             DevExpress.ui.notify("Journal Entry saved successfully!", "success", 3000);
-    //         },
-    //         error: function (xhr, status, error) {
-    //             DevExpress.ui.notify("Error saving Journal Entry: " + error, "error", 3000);
-    //         }
-    //     });
-    // }
     $("#btnSave").on("click", function (e) {
         e.preventDefault();
         saveJournalEntry();
@@ -633,6 +591,8 @@
         });
     }
 
+
+
     $(document).ready(function () {
         let dataGrid = $("#dataGrid").dxDataGrid("instance");
 
@@ -733,17 +693,17 @@
         let results = regex.exec(location.search);
         return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-    argsledno
+ 
     $(document).ready(function () {
-        argsledno = getUrlParameter('journalRefNo');
+        let journalRefNo = getUrlParameter('journalRefNo');
 
         if (journalRefNo) {
             $.ajax({
                 url: '/api/JournalRegister/GetJournalChild',
                 type: 'GET',
-                data: { journalRefNo: argsledno },
+                data: { journalRefNo: journalRefNo },
                 success: function (data) {
-                    const entry = data.find(d => d.JournalRefNo === argsledno); // optional check
+                    const entry = data.find(d => d.JournalRefNo === journalRefNo); // optional check
 
                     if (entry) {
                         $("#VoucherNo").dxTextBox("instance").option("value", entry.JournalRefNo);
@@ -763,7 +723,7 @@
                 }
             });
         } else {
-            DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+            // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
         }
     });
 
