@@ -32,26 +32,30 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     ERPMasterWtDataContextProcedures procedure = new ERPMasterWtDataContextProcedures(dbContext);
-                    var result = await dbContext.JournalRegisterViews  // Use the correct DbSet
-      .FromSqlRaw("EXEC sp20201JournalRegisterView @p0, @p1, @p2, @p3",
-          RequesterID, StartDate, EndDate, IfShowAll)
-      .ToListAsync();
+                    var result = await dbContext.JournalRegisterViews
+                        .FromSqlRaw("EXEC sp20201JournalRegisterView @p0, @p1, @p2, @p3",
+                            RequesterID, StartDate, EndDate, IfShowAll)
+                        .ToListAsync();
 
                     if (result != null && result.Any())
                     {
-                        return Json(result);
+                        return Json(result); // 200 OK
                     }
 
-                    return Json(new { success = false, message = "No data found." });
+                    // Return 400 Bad Request if no data found
+                    return BadRequest(new { success = false, message = "No journal entries found for the given filters." });
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetJournalview: {ex.Message}");
-                    return Json(new { success = false, message = "An error occurred while fetching the data." });
+                    _logger.LogError(ex, "Error executing sp20201JournalRegisterView for requester {RequesterID}", RequesterID);
+
+                    // Return 500 Internal Server Error
+                    return StatusCode(500, new { success = false, message = "An unexpected error occurred while loading journal data." });
                 }
             }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            // Return 401 Unauthorized
+            return Unauthorized(new { success = false, message = "Tenant context could not be resolved. Access denied." });
         }
 
         [HttpGet]
