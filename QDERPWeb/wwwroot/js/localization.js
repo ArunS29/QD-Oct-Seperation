@@ -1478,7 +1478,35 @@
         "Claim Remarks:": "Claim Remarks:",
         "Claimed for Project/Jobs:": "Claimed for Project/Jobs:",
         "Priority:": "Priority:",
+        "Outstanding Details": "Outstanding Details",
+        "Total Client Outstanding": "Total Client Outstanding",
+        "Total Cash Balance": "Total Cash Balance",
+        "Total Supplier Outstanding": "Total Supplier Outstanding",
+        "Client Outstanding Distribution": "Client Outstanding Distribution",
+        "Supplier Outstanding Distribution": "Supplier Outstanding Distribution",
+        "Bank Account Distribution": "Bank Account Distribution",
+        "Client Outstanding": "Client Outstanding",
+        "Supplier Outstanding": "Supplier Outstanding",
+        "Bank Account Details": "Bank Account Details",
+        "Client Outstanding Aging Chart": "Client Outstanding Aging Chart",
+        "Supplier Outstanding Aging Chart": "Supplier Outstanding Aging Chart",
+        "Bank Accounts Chart": "Bank Accounts Chart",
+        "Balance Amount": "Balance Amount",
+        "Overdue Groups": "Overdue Groups",
+        "Amount": "Amount",
+        "Account Head Name": "Account Head Name",
+        "Account Head": "Account Head",
+        "Top 5 Outstanding Accounts": "Top 5 Outstanding Accounts",
+        "Other Data": "Other Data"
+
+
         
+        
+        "Description In Arabic": "Description In Arabic",
+        "Cost Price": "Cost Price",
+        "Current Qty": "Current Qty",
+        "Unit Rate Method":"Unit Rate Method"
+
     },
     "ar": {
         "Show Fields":"إظهار الحقول",
@@ -2879,7 +2907,33 @@
         "Effective Date:": "تاريخ السريان",
         "Claim Remarks:": "ملاحظات المطالبة",
         "Claimed for Project/Jobs:": "المطالبة للمشروع/الوظائف",
-        "Priority:": "الأولوية"
+        "Priority:": "الأولوية",
+        "Outstanding Details": "تفاصيل المبالغ المستحقة",
+        "Total Client Outstanding": "إجمالي مستحقات العملاء",
+        "Total Cash Balance": "إجمالي الرصيد النقدي",
+        "Total Supplier Outstanding": "إجمالي مستحقات الموردين",
+        "Client Outstanding Distribution": "توزيع مستحقات العملاء",
+        "Supplier Outstanding Distribution": "توزيع مستحقات الموردين",
+        "Bank Account Distribution": "توزيع الحسابات البنكية",
+        "Client Outstanding": "مستحقات العملاء",
+        "Supplier Outstanding": "مستحقات الموردين",
+        "Bank Account Details": "تفاصيل الحسابات البنكية",
+        "Client Outstanding Aging Chart": "مخطط تقادم مستحقات العملاء",
+        "Supplier Outstanding Aging Chart": "مخطط تقادم مستحقات الموردين",
+        "Bank Accounts Chart": "مخطط الحسابات البنكية",
+        "Balance Amount": "مبلغ الرصيد",
+        "Overdue Groups": "مجموعات الديون المتأخرة",
+        "Amount": "المبلغ",
+        "Account Head Name": "اسم رئيس الحساب",
+        "Account Head": "رئيس الحساب",
+        "Top 5 Outstanding Accounts": "أعلى 5 حسابات مستحقة",
+        "Other Data": "بيانات أخرى"
+
+        "Priority:": "الأولوية",
+        "Description In Arabic": "الوصف باللغة العربية",
+        "Cost Price": "سعر التكلفة",
+        "Current Qty": "الكمية الحالية",
+        "Unit Rate Method": "طريقة معدل الوحدة"
 
     }
 };

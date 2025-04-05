@@ -240,36 +240,6 @@
                     </td>
                     <td>
 
-                                   @*  @(Html.DevExtreme().DropDownBox()
-                    .Label(new JS("formatMessage('Payment Means')"))
-                    .DataSource(d => d.WebApi()
-                    .Controller("VATModule")
-                    .LoadAction("GetPaymentMeans")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("PaymentMeansTypeCode")
-                    )
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ID("ddpaymentmeans")
-
-                    .ShowClearButton(true)
-                    .AcceptCustomValue(true)
-                    .OpenOnFieldClick(false)
-                    .ValueChangeEvent("input")
-                    .HoverStateEnabled(true)
-                    .Value("Payment to bank account")
-                    .ValueExpr("PaymentMeansTypeCode")
-                    .DisplayExpr("PaymentMeansType")
-                    .OnInput("dropDownBoxOnInput")
-                    .OnOpened("onOpened")
-                    .Width(720)
-                    .TabIndex(1)
-                    .DropDownOptions(o => o
-                    .Width(1000)
-                    )
-                    .OnKeyDown("onKeyDown")
-                    //.OnValueChanged("dropDownBoxValueChanged")
-                    .ContentTemplate(new TemplateName("PaymentmeansContentTemplate"))
-                    ) *@
                               @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')"))
                                             .DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeansTypeCode"))
                                                 .ID("ddpaymentmeans")
@@ -332,7 +302,7 @@
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')")).ID("ClientCode")
                                                             .DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
                                                                  .LabelMode(EditorLabelMode.Outside)
-                                                                 .ID("ddclientcode")
+                                                                 //.ID("ddclientcode")
                                             .ShowClearButton(true)
                                             .AcceptCustomValue(true)
                                                 .OpenOnFieldClick(false)
@@ -354,7 +324,7 @@
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')")).ID("ClientName")
                                                         .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientNames").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
                                                         .LabelMode(EditorLabelMode.Outside)
-                                                                   .ID("ddclientname")
+                                                                   //.ID("ddclientname")
           .ShowClearButton(true)
          .AcceptCustomValue(true)
          .OpenOnFieldClick(false)
@@ -856,50 +826,83 @@
 
                              columns.Add().DataField("ItemCode").Caption(new JS("formatMessage('Item Code')")).Width(200).Visible(true);
 
-  
-                             columns.Add().DataField("Description").Caption(new JS("formatMessage('Description')"))
-                            .CellTemplate(@<text>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>
-                        <%- data.Description ? data.Description : "No Selection" %>
-                    </span>
-                </div>
-            </text>)
-                        .EditCellTemplate(@<text>
+                                       columns.Add()
+       .DataField("Description")
+       .Caption("Description")
+       .Width(500)
+       .AllowEditing(true)
+       // Normal Grid Mode
+       .CellTemplate(@<text>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>
+            <%- data.Gsdescrpition ? data.Gsdescrpition : "No Selection" %>
+        </span>
+        <div style="display: flex; gap: 5px;">
+            @(Html.DevExtreme().Button()
+            .ID($"AddDesc_<%- data.Gscode %>") 
+            .Icon("plus")
+            //.OnClick("onAddCost")
+            .Hint("Add Description")
+            .Width(50)
+            )
+            @(Html.DevExtreme().Button()
+            .ID($"EditDesc_<%- data.Gscode %>") 
+            .Icon("edit")
+            //.OnClick("onEditCost")
+            .Hint("Edit Description")
+            .Width(50)
+            )
+        </div>
+    </div>
+</text>)
+    // Edit Mode
+    .EditCellTemplate(@<text>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        @(Html.DevExtreme().DropDownBox()
+        .DataSource(d => d.WebApi().Controller("VATModule")
+        .LoadAction("GetGoodsAndServices")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("Gscode"))
+        .LabelMode(EditorLabelMode.Outside)
+        .ID("accountDropDownBoxEdit")
+        .ShowClearButton(false)
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .HoverStateEnabled(true)
+        //.OnValueChanged("gridBox_valueChanged")
+        .ValueExpr("Gscode")
+        .DisplayExpr("Gsdescrpition")
+        .OnOpened("onOpened")
+        .Width(400)
+        .DropDownOptions(o => o.Width(800))
+        .OnKeyDown("onKeyDown")
+        .ContentTemplate(new TemplateName("DescriptionDropdownContentTemplate"))
+        )
 
+        <div style="display: flex; gap: 5px;">
+            @(Html.DevExtreme().Button()
+            .ID($"AddDesc_Edit_<%- data.Gscode %>")
+            .Icon("plus")
+            //.OnClick("onAddCost")
+            .Hint("Add Description")
+            .Width(50)
+            )
+            @(Html.DevExtreme().Button()
+            .ID($"EditDesc_Edit_<%- data.Gscode %>") 
+            .Icon("edit")
+            //.OnClick("onEditCost")
+            .Hint("Edit Description")
+            .Width(50)
+            )
+        </div>
+    </div>
+</text>);
 
-                @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi()
-                .Controller("VATModule")
-                .LoadAction("GetGoodsAndServices")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("Gscode")
-                )
-
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("accountDropDownBoxEdit")
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("change")
-                .HoverStateEnabled(true)
-               @*  .Value(new JS("data.AccountHead")) *@
-                .ValueExpr("Gscode")
-                .DisplayExpr("Gsdescrpition")
-                .OnValueChanged("gridBox_valueChanged")
-                .OnOpened("onOpened")
-                .Width(250)
-                .TabIndex(1)
-                .DropDownOptions(o => o.Width(500))
-                .OnKeyDown("onKeyDown")
-                .ContentTemplate(new TemplateName("DescriptionDropdownContentTemplate"))
-                )
-
-
-            </text>);
+                         
+        
 
                               columns.Add().DataField("DescriptionDetails").Caption("...").Width(200).Visible(true);
-
+                             columns.Add().DataField("DescriptionDetails").Caption(new JS("formatMessage('Unit Rate Method')")).Width(200).Visible(true);
                               columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).Width(200).Visible(true);
                               columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Width(200).Visible(true);
                               columns.Add().DataField("TotalBeforeDiscount").Caption(new JS("formatMessage('Total Before Discount')")).Width(200).Visible(true);
@@ -932,35 +935,8 @@
                         .AllowDeleting(true)   // Enable deleting rows
                         .UseIcons(true) // Enables icons for editing buttons
                         )
-                        @* .OnEditorPreparing("onEditorPreparing")
-                    .OnRowUpdating("onRowUpdating")
-                    .OnRowRemoving("onRowRemoving") // Ensure correct capitalization
-                    .OnRowPrepared(@"
-            function(e) {
-            if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
-            $(e.rowElement).css('background-color', 'lightgray');
-            }
-            }
-            ") *@
-                        @* .Summary(summary =>
-
-                    {
-
-                        summary.TotalItems(totalItems =>
-
-                        {
-
-                            totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
-
-                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-                            totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
-
-                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-                        });
-
-                    }) *@
+                           .OnEditorPreparing("onEditorPreparing")
+                     
                         )
 
         </div>
@@ -1105,9 +1081,11 @@
             console.log(keys);
             }
         </text>)
+            .OnSelectionChanged("dataGridDescriptionSelectionChanged")
+                        .OnInitialized("dataGridDescriptionInitialized")
+                                
 
-
-                    // .HeaderFilter(p => p.Visible(true))
+                        // .HeaderFilter(p => p.Visible(true))
                     .ShowBorders(true)
                     .HoverStateEnabled(true)
                     .Paging(p => p.PageSize(15))
@@ -1115,17 +1093,7 @@
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                     .Height(345)
                     .Selection(s => s.Mode(SelectionMode.Single))
-                    .Columns(columns =>
-                    {
-                            columns.Add().Caption(new JS("formatMessage('Code')")).DataField("Gscode");
-                            columns.Add().Caption(new JS("formatMessage('Description')")).DataField("Gsdescrpition");
-                            columns.Add().Caption(new JS("formatMessage('Description In Arabic')")).DataField("GsdescriptionAr");
-                            columns.Add().Caption(new JS("formatMessage('Item Part No')")).DataField("ItemPartNo");
-                            columns.Add().Caption(new JS("formatMessage('Cost Price')")).DataField("CostPrice");
-                            columns.Add().Caption(new JS("formatMessage('Current Qty')")).DataField("ReorderQty");
-
-
-                    })
+                 
                     )
         }
         
@@ -1138,7 +1106,7 @@
 
 <script>
 
-      
+      let ItemNo=null, paymentmeanstypecode=null,amt=0;
 
     $(document).ready(function () {
 
@@ -1153,6 +1121,24 @@
     });
 
 });
+
+$(document).ready(function () {
+    $.ajax({
+        url: "/api/VATModule/GetVATInvoiceNo",
+        type: 'GET',
+        success: function (data) {
+            console.log("Success:", data);
+
+           $("#InvoiceNo").dxTextBox("instance").option("value", data);
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading Payment Accounts:", error);
+            DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+        }
+    });
+});
+
+
   function PaymentMeansdataGridSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
         const ddbInstance = $("#ddpaymentmeans").dxDropDownBox("instance");
@@ -1161,6 +1147,15 @@
             ddbInstance.option("value", selectedKey); 
                 ddbInstance.close();
         }
+        var selectedRowData = $("#paymentmeans-datagrid").dxDataGrid("instance").getSelectedRowsData();
+          if (selectedRowData.length > 0) {
+                        paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
+
+                    } else {
+                        DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+                        return;
+                    }
+        
     }
 
       function ClientCodedataGridSelectionChanged(e) {
@@ -1240,6 +1235,34 @@ function CommondataGridInitialized(e) {
              ddbInstance.close();
         }
    }
+
+                 function dataGridDescriptionSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#accountDropDownBoxEdit").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+             ddbInstance.close();
+        }
+
+ var selectedRowData = $("#accountDropDownBoxeditGrid").dxDataGrid("instance").getSelectedRowsData();
+                    // Get ReferenceNo from selected row
+                    if (selectedRowData.length > 0) {
+                        ItemNo = selectedRowData[0].Gscode;
+                      
+
+                        }
+
+                     else {
+                        DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+                        return;
+                    }
+   }
+
+      function dataGridDescriptionInitialized(e) {
+                dataGrid = e.component;
+            }
+   
 
 
         function syncVATNumbers(e) {
@@ -1902,796 +1925,12 @@ function CommondataGridInitialized(e) {
         let acgid, accgrp = "", accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = "";
         let getidfromCOA;//IsChart=false;
         $(document).ready(function () {
-            var urlParams = new URLSearchParams(window.location.search);
-            var accountGroupId = urlParams.get('AccountGroupId');
-            var accountheadid = urlParams.get('AccountHeadID');
-            var refno = urlParams.get('ReferenceNo') || " ";
-            var accheadname = urlParams.get('AccountHeadName') || "";
-            var accgroup = urlParams.get('AccountGroup') || "";
-            accountgroup = accgroup;
-            var isedit = urlParams.get('IsEdit') === "true"; // Explicit comparison to string "true"
-            var accgroupid = urlParams.get('AccountGroupID') || "";
-            acgid = accgroupid;
-
-            var accheadar = urlParams.get('AccountHeadAr') || "";
-
-            const IsCharOfAccounts = urlParams.get('IsCharOfAccounts'); // This will be a string ('true' or 'false')
-
-            if (IsCharOfAccounts === 'true') {
-                // Directly assign AccountId to the already declared accountheadid variable
-                accountheadid = urlParams.get('AccountId');  // Use the already declared accountheadid
-
-            }
-
-            // alert(IsCharOfAccounts);
-            // Check if IsCharOfAccounts is 'true' (string comparison)
-            // alert("AccountHeadId: " + accountheadid);
-
-
-
-            // If AccountGroupId exists, set it in the DropDownBox and make it readonly
-
-            if (accountGroupId) {
-                var ddlAccountGroup = $('#ddlAccountGroup').dxDropDownBox('instance');
-                if (ddlAccountGroup) {
-                    ddlAccountGroup.option('value', accountGroupId);
-                    ddlAccountGroup.option('disabled', true); // Make it readonly
-                }
-            }
-            else if (accountheadid == "undefined" || accheadname == "undefined" || accgroup == "undefined") {
-                accountheadid = "";
-                accheadname = "";
-                accgroup = "";
-
-            }
-
-
-
-            // Set other fields
-            var txtAccountHead = $("#txtAccountHead").dxTextBox("instance");
-            if (txtAccountHead) txtAccountHead.option("value", accheadname);
-
-            var txtReferenceNo = $("#txtReferenceNo").dxTextBox("instance");
-            if (txtReferenceNo) txtReferenceNo.option("value", refno);
-
-            var txtAccountId = $("#txtAccountId").dxTextBox("instance");
-            if (txtAccountId) txtAccountId.option("value", accountheadid);
-
-            var txtAccountHeadAr = $("#txtAccountHeadAr").dxTextBox("instance");
-            if (txtAccountHeadAr) txtAccountHeadAr.option("value", accheadar);
-
-            $.ajax({
-
-                url: `/api/AccountLedgerMaster/GetAccountDetails?accountID=${encodeURIComponent(accountheadid)}`,
-                type: 'GET',
-                dataType: 'json',  // Expecting JSON response
-                success: function (response) {
-
-
-                    if (response && response.accountDetails && response.accountDetails.length > 0) {
-                        // Extract the first item from the accountDetails array
-                        var account = response.accountDetails[0];
-                        console.log("responseData:", account);
-                         var button = $("#btnSave").dxButton("instance");
-                         button.option("text", "Update");
-
-                        var txtAccountId = $('#txtAccountId').dxTextBox("instance");
-                        if (txtAccountId) {
-                            txtAccountId.option("value", account.AccountId);
-
-                        }
-                        var txtReferenceNo = $('#txtReferenceNo').dxTextBox("instance");
-                        if (txtReferenceNo) {
-                            txtReferenceNo.option("value", account.ReferenceNo);
-
-                        }
-
-                        var txtAccountHead = $('#txtAccountHead').dxTextBox("instance");
-                        if (txtAccountHead) {
-                            txtAccountHead.option("value", account.AccountHead);
-
-                        }
-
-                        var txtAccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance");
-                        if (txtAccountHeadAr) {
-                            txtAccountHeadAr.option("value", account.AccountHeadArabic);
-
-                        }
-                        var ddlAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance");
-                        if (ddlAccountGroup) {
-                            ddlAccountGroup.option("value", account.AccountGroupId);
-                            acgid = account.AccountGroupId;
-                        }
-                        var schLedgerActive = $('#schLedgerActive').dxSwitch("instance");
-                        if (schLedgerActive) {
-                            schLedgerActive.option("value", account.IsLedgerObselete);
-
-                        }
-
-
-                        //Settings Tab
-                        var txtOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance");
-                        if (txtOpeningBalance) {
-                            txtOpeningBalance.option("value", account.OpeningBalance);
-
-                        }
-                        DrCrdataGridSelectionChanged({ selectedRowKeys: [account.OpeningBalanceDrCr] });
-                        var chkDefaultEntry = $("#chkDefaultEntry").dxCheckBox("instance");
-                        if (chkDefaultEntry) {
-                            chkDefaultEntry.option("value", account.IsDefaultForCash);
-                        }
-                        var txtVoucherNoAbbr = $('#txtVoucherNoAbbr').dxTextBox("instance");
-                        if (txtVoucherNoAbbr) {
-                            txtVoucherNoAbbr.option("value", account.VoucherAbbr);
-
-                        }
-
-                        var chkMaintainBillEntry = $("#chkMaintainBillEntry").dxCheckBox("instance");
-                        if (chkMaintainBillEntry) {
-                            chkMaintainBillEntry.option("value", account.IsMaintainBillByBill);
-                        }
-                        var txtNoDays = $('#txtNoDays').dxNumberBox("instance");
-                        if (txtNoDays) {
-                            txtNoDays.option("value", account.NoOfDaysCreditPeriod);
-
-                        }
-
-                        var chkEmployeeDBEntry = $("#chkEmployeeDBEntry").dxCheckBox("instance");
-                        if (chkEmployeeDBEntry) {
-                            chkEmployeeDBEntry.option("value", account.IsEmployeeAllocated);
-                        }
-
-                        var chkPropertyDBEntry = $("#chkPropertyDBEntry").dxCheckBox("instance");
-                        if (chkPropertyDBEntry) {
-                            chkPropertyDBEntry.option("value", account.IsPropertyAllocated);
-                        }
-
-                        var chkLoanAccountEntry = $("#chkLoanAccountEntry").dxCheckBox("instance");
-                        if (chkLoanAccountEntry) {
-                            chkLoanAccountEntry.option("value", account.IsEmployeePaymentAc);
-                        }
-
-
-
-                        //ContactDetails tab
-                        branchdataGridSelectionChanged({ selectedRowKeys: [account.AccountBranch] });
-                        subgroupdataGridSelectionChanged({ selectedRowKeys: [account.AccountSubGroup] });
-                        salesdataGridSelectionChanged({ selectedRowKeys: [account.SalesPersonCode] });
-
-                        var txtContactPerson = $('#txtContactPerson').dxTextBox("instance");
-                        if (txtContactPerson) {
-                            txtContactPerson.option("value", account.AccountsContactName);
-
-                        }
-
-                        var txtPersonTitle = $('#txtPersonTitle').dxTextBox("instance");
-                        if (txtPersonTitle) {
-                            txtPersonTitle.option("value", account.AccountsContactTitle);
-
-                        }
-                        var txtPersonTitle = $('#txtPersonTitle').dxTextBox("instance");
-                        if (txtPersonTitle) {
-                            txtPersonTitle.option("value", account.AccountsContactTitle);
-
-                        }
-                        var txtPersonMobile = $('#txtPersonMobile').dxTextBox("instance");
-                        if (txtPersonMobile) {
-                            txtPersonMobile.option("value", account.AccountsContactMobile);
-
-                        }
-                        var txtEmail = $('#txtEmail').dxTextBox("instance");
-                        if (txtEmail) {
-                            txtEmail.option("value", account.EmailAddress);
-
-                        }
-                        var txtRemarks = $('#txtRemarks').dxTextBox("instance");
-                        if (txtRemarks) {
-                            txtRemarks.option("value", account.LedgerRemarks);
-
-                        }
-
-                        //BankDetails tab
-                        var txtBankAccountName = $('#txtBankAccountName').dxTextBox("instance");
-                        if (txtBankAccountName) {
-                            txtBankAccountName.option("value", account.BankAccountName);
-
-                        }
-                        var txtBankAccountNameAr = $('#txtBankAccountNameAr').dxTextBox("instance");
-                        if (txtBankAccountNameAr) {
-                            txtBankAccountNameAr.option("value", account.BankAccountNameAr);
-
-                        }
-                        var txtBankName = $('#txtBankName').dxTextBox("instance");
-                        if (txtBankName) {
-                            txtBankName.option("value", account.BankName);
-
-                        }
-                        var txtBankNameAr = $('#txtBankNameAr').dxTextBox("instance");
-                        if (txtBankNameAr) {
-                            txtBankNameAr.option("value", account.BankNameAr);
-
-                        }
-                        var txtBankNameAr = $('#txtBankNameAr').dxTextBox("instance");
-                        if (txtBankNameAr) {
-                            txtBankNameAr.option("value", account.BankNameAr);
-
-                        }
-                        var txtBankBranch = $('#txtBankBranch').dxTextBox("instance");
-                        if (txtBankBranch) {
-                            txtBankBranch.option("value", account.BankBranch);
-
-                        }
-                        var txtBankBranchAr = $('#txtBankBranchAr').dxTextBox("instance");
-                        if (txtBankBranchAr) {
-                            txtBankBranchAr.option("value", account.BankBranchAr);
-
-                        }
-                        var txtBankAccountNo = $('#txtBankAccountNo').dxTextBox("instance");
-                        if (txtBankAccountNo) {
-                            txtBankAccountNo.option("value", account.BankAccountNo);
-
-                        }
-                        var txtBankAccountNo = $('#txtBankAccountNo').dxTextBox("instance");
-                        if (txtBankAccountNo) {
-                            txtBankAccountNo.option("value", account.BankAccountNo);
-
-                        }
-                        var txtBankIBAN = $('#txtBankIBAN').dxTextBox("instance");
-                        if (txtBankIBAN) {
-                            txtBankIBAN.option("value", account.BankIban);
-
-                        }
-                        var txtSwiftCode = $('#txtSwiftCode').dxTextBox("instance");
-                        if (txtSwiftCode) {
-                            txtSwiftCode.option("value", account.BankSwiftCode);
-
-                        }
-
-                        //ClientDetails Tab
-                        var txtClientBilling = $('#txtClientBilling').dxTextBox("instance");
-                        if (txtClientBilling) {
-                            txtClientBilling.option("value", account.BillingName);
-
-                        }
-                        var txtClientBillingAr = $('#txtClientBillingAr').dxTextBox("instance");
-                        if (txtClientBillingAr) {
-                            txtClientBillingAr.option("value", account.BillingNameAr);
-
-                        }
-
-                        var txtClientVATNo = $('#txtClientVATNo').dxNumberBox("instance");
-                        if (txtClientVATNo) {
-                            txtClientVATNo.option("value", account.VatregistrationNo);
-
-                        }
-                        var txtGrouptVATNo = $('#txtGrouptVATNo').dxNumberBox("instance");
-                        if (txtGrouptVATNo) {
-                            txtGrouptVATNo.option("value", account.ClientGroupVatnumber);
-
-                        }
-                        othertypedataGridSelectionChanged({ selectedRowKeys: [account.ClientOtherIdtype] });
-                        var txtOtherId = $('#txtOtherId').dxTextBox("instance");
-                        if (txtOtherId) {
-                            txtOtherId.option("value", account.ClientOtherId);
-
-                        }
-                        var txtClientAddress = $('#txtClientAddress').dxTextBox("instance");
-                        if (txtClientAddress) {
-                            txtClientAddress.option("value", account.ClientAddressStreet);
-
-                        }
-                        var txtClientAddressAr = $('#txtClientAddressAr').dxTextBox("instance");
-                        if (txtClientAddressAr) {
-                            txtClientAddressAr.option("value", account.ClientAddressStreetAr);
-
-                        }
-                        var txtClientAdditionalAddress = $('#txtClientAdditionalAddress').dxTextBox("instance");
-                        if (txtClientAdditionalAddress) {
-                            txtClientAdditionalAddress.option("value", account.ClientAdditionalStreet);
-
-                        }
-                        var txtClientAdditionalAddressAr = $('#txtClientAdditionalAddressAr').dxTextBox("instance");
-                        if (txtClientAdditionalAddressAr) {
-                            txtClientAdditionalAddressAr.option("value", account.ClientAdditionalStreetAr);
-
-                        }
-                        var txtBuildingNo = $('#txtBuildingNo').dxNumberBox("instance");
-                        if (txtBuildingNo) {
-                            txtBuildingNo.option("value", account.ClientBuildingNumber);
-
-                        }
-                        var txtClientCity = $('#txtClientCity').dxTextBox("instance");
-                        if (txtClientCity) {
-                            txtClientCity.option("value", account.ClientCity);
-
-                        }
-                        var txtClientCityAr = $('#txtClientCityAr').dxTextBox("instance");
-                        if (txtClientCityAr) {
-                            txtClientCityAr.option("value", account.ClientCityAr);
-
-                        }
-                        var txtAdditionalNo = $('#txtAdditionalNo').dxNumberBox("instance");
-                        if (txtAdditionalNo) {
-                            txtAdditionalNo.option("value", account.ClientAdditionalNumber);
-
-                        }
-                        var txtState = $('#txtState').dxTextBox("instance");
-                        if (txtState) {
-                            txtState.option("value", account.ClientProvince);
-
-                        }
-                        var txtStateAr = $('#txtStateAr').dxTextBox("instance");
-                        if (txtStateAr) {
-                            txtStateAr.option("value", account.ClientProvinceAr);
-
-                        }
-                        var txtPostalCode = $('#txtPostalCode').dxNumberBox("instance");
-                        if (txtPostalCode) {
-                            txtPostalCode.option("value", account.ClientPostalCode);
-
-                        }
-                        var txtDistrict = $('#txtDistrict').dxTextBox("instance");
-                        if (txtDistrict) {
-                            txtDistrict.option("value", account.ClientNeighborhood);
-
-                        }
-                        var txtDistrictAr = $('#txtDistrictAr').dxTextBox("instance");
-                        if (txtDistrictAr) {
-                            txtDistrictAr.option("value", account.ClientNeighborhoodAr);
-
-                        }
-                        CountryCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCountryCode] });
-                         SupCountryCodedataGridSelectionChanged({ selectedRowKeys: [account.SupplierCountryCode] });
-
-                        //   CountryCodedataGridSelectionChanged({ selectedRowKeys: [account.SupplierOtherIdtype] });
-                        // var txtSupOtherId = $('#txtSupOtherId').dxTextBox("instance");
-                        // if (txtSupOtherId) {
-                        //     txtSupOtherId.option("value", account.SupplierOtherId);
-
-                        // }
-
-                        //   SupCountryCodedataGridSelectionChanged({ selectedRowKeys: [account.CountryName] });
-                        // var ddlSupCountryCode = $('#ddlSupCountryCode').dxTextBox("instance");
-                        // if (ddlSupCountryCode) {
-                        //     ddlSupCountryCode.option("value", account.SupplierCountryCode);
-
-                        // }
-                        //SupplierDetails Tab
-
-                        var txtSupBilling = $('#txtSupBilling').dxTextBox("instance");
-                        if (txtSupBilling) {
-                            txtSupBilling.option("value", account.SupplierName);
-
-                        }
-                        var txtSupBillingAr = $('#txtSupBillingAr').dxTextBox("instance");
-                        if (txtSupBillingAr) {
-                            txtSupBillingAr.option("value", account.SupplierNameAr);
-
-                        }
-                        var txtSupVATNo = $('#txtSupVATNo').dxNumberBox("instance");
-                        if (txtSupVATNo) {
-                            txtSupVATNo.option("value", account.SupplierVatno);
-
-                        }
-                        var txtSupGroupVATNo = $('#txtSupGroupVATNo').dxNumberBox("instance");
-                        if (txtSupGroupVATNo) {
-                            txtSupGroupVATNo.option("value", account.SupplierGroupVatnumber);
-
-                        }
-                        SupothertypedataGridSelectionChanged({ selectedRowKeys: [account.SupplierOtherIdtype] });
-                        var txtSupOtherId = $('#txtSupOtherId').dxTextBox("instance");
-                        if (txtSupOtherId) {
-                            txtSupOtherId.option("value", account.SupplierOtherId);
-
-                        }
-                        var txtSupAddress = $('#txtSupAddress').dxTextBox("instance");
-                        if (txtSupAddress) {
-                            txtSupAddress.option("value", account.SupplierAddressStreet);
-
-                        }
-                        var txtSupAddressAr1 = $('#txtSupAddressAr1').dxTextBox("instance");
-                        if (txtSupAddressAr1) {
-                            txtSupAddressAr1.option("value", account.SupplierAddressStreetAr);
-
-                        }
-                        var txtSupAdditionalAddress = $('#txtSupAdditionalAddress').dxTextBox("instance");
-                        if (txtSupAdditionalAddress) {
-                            txtSupAdditionalAddress.option("value", account.SupplierAdditionalStreet);
-
-                        }
-                        var txtSupAdditionalAddressAr1 = $('#txtSupAdditionalAddressAr1').dxTextBox("instance");
-                        if (txtSupAdditionalAddressAr1) {
-                            txtSupAdditionalAddressAr1.option("value", account.SupplierAdditionalStreetAr);
-
-                        }
-                        var txtSupBuildingNo = $('#txtSupBuildingNo').dxNumberBox("instance");
-                        if (txtSupBuildingNo) {
-                            txtSupBuildingNo.option("value", account.SupplierBuildingNumber);
-
-                        }
-                        var txtSupCity = $('#txtSupCity').dxTextBox("instance");
-                        if (txtSupCity) {
-                            txtSupCity.option("value", account.SupplierCity);
-
-                        }
-                        var txtSupCityAr1 = $('#txtSupCityAr1').dxTextBox("instance");
-                        if (txtSupCityAr1) {
-                            txtSupCityAr1.option("value", account.SupplierCityAr);
-
-                        }
-                        var txtSupAdditionalNo = $('#txtSupAdditionalNo').dxNumberBox("instance");
-                        if (txtSupAdditionalNo) {
-                            txtSupAdditionalNo.option("value", account.SupplierAdditionalNumber);
-
-                        }
-                        var txtSupState = $('#txtSupState').dxTextBox("instance");
-                        if (txtSupState) {
-                            txtSupState.option("value", account.SupplierProvince);
-
-                        }
-                        var txtSupStateAr1 = $('#txtSupStateAr1').dxTextBox("instance");
-                        if (txtSupStateAr1) {
-                            txtSupStateAr1.option("value", account.SupplierProvinceAr);
-
-                        }
-                        var txtSupPostalCode = $('#txtSupPostalCode').dxNumberBox("instance");
-                        if (txtSupPostalCode) {
-                            txtSupPostalCode.option("value", account.SupplierPostalCode);
-
-                        }
-                        var txtSupDistrict = $('#txtSupDistrict').dxTextBox("instance");
-                        if (txtSupDistrict) {
-                            txtSupDistrict.option("value", account.SupplierNeighborhood);
-
-                        }
-                        var txtSupDistrictAr1 = $('#txtSupDistrictAr1').dxTextBox("instance");
-                        if (txtSupDistrictAr1) {
-                            txtSupDistrictAr1.option("value", account.SupplierNeighborhoodAr);
-
-                        }
-                        //BillingDetails tab
-                        var txtClientBillingName = $('#txtClientBillingName').dxTextBox("instance");
-                        if (txtClientBillingName) {
-                            txtClientBillingName.option("value", account.BillingName);
-
-                        }
-
-                        var txtClientBillingNameAr = $('#txtClientBillingNameAr').dxTextBox("instance");
-                        if (txtClientBillingNameAr) {
-                            txtClientBillingNameAr.option("value", account.BillingNameAr);
-
-                        }
-
-
-
-                        var txtBillingAddress = $('#txtBillingAddress').dxTextArea("instance");
-                        if (txtBillingAddress) {
-                            txtBillingAddress.option("value", account.BillingAddress);
-
-                        }
-                        var txtBillingAddress = $('#txtBillingAddressAr').dxTextArea("instance");
-                        if (txtBillingAddress) {
-                            txtBillingAddress.option("value", account.BillingAddressAr);
-
-                        }
-                        var txtBillingVATRegNo = $('#txtBillingVATRegNo').dxNumberBox("instance");
-                        if (txtBillingVATRegNo) {
-                            txtBillingVATRegNo.option("value", account.VatregistrationNo);
-
-                        }
-                          var txtBillingVATRegNoArabic = $('#txtBillingVATRegNoArabic').dxNumberBox("instance");
-                        if (txtBillingVATRegNoArabic) {
-                            txtBillingVATRegNoArabic.option("value", account.VatregistrationNo);
-
-                        }
-                        var txtBillingTIN = $('#txtBillingTIN').dxNumberBox("instance");
-                        if (txtBillingTIN) {
-                            txtBillingTIN.option("value", account.ClientTin);
-
-                        }
-                        var txtBillingContactPerson = $('#txtBillingContactPerson').dxTextBox("instance");
-                        if (txtBillingContactPerson) {
-                            txtBillingContactPerson.option("value", account.BillingContactPerson);
-
-                        }
-                        billingdataGridSelectionChanged({ selectedRowKeys: [account.BillingContactPersonTitle] });
-
-                        var txtBillingVendorNo = $('#txtBillingVendorNo').dxTextBox("instance");
-                        if (txtBillingVendorNo) {
-                            txtBillingVendorNo.option("value", account.ClientVendorNo);
-
-                        }
-                        var txtBillingFaxNo = $('#txtBillingFaxNo').dxTextBox("instance");
-                        if (txtBillingFaxNo) {
-                            txtBillingFaxNo.option("value", account.BillingFaxNo);
-
-                        }
-                          var txtBillingContactPersonTitle = $('#txtBillingContactPersonTitle').dxTextBox("instance");
-                        if (txtBillingContactPersonTitle) {
-                            txtBillingContactPersonTitle.option("value", account.BillingContactPersonTitle);
-
-                        }
-                        var txtBillingContactNumber = $('#txtBillingContactNumber').dxTextBox("instance");
-                        if (txtBillingContactNumber) {
-                            txtBillingContactNumber.option("value", account.BillingPhoneNo);
-
-                        }
-                        var txtObsSupAddress = $('#txtObsSupAddress').dxTextBox("instance");
-                        if (txtObsSupAddress) {
-                            txtObsSupAddress.option("value", account.SupplierAddressStreet);
-
-                        }
-                           var txtObsSupAddressAr = $('#txtObsSupAddressAr').dxTextBox("instance");
-                        if (txtObsSupAddressAr) {
-                            txtObsSupAddressAr.option("value", account.SupplierAddressStreetAr);
-
-                        }
-
-                        var txtObsSupRegNo = $('#txtObsSupRegNo').dxNumberBox("instance");
-                        if (txtObsSupRegNo) {
-                            txtObsSupRegNo.option("value", account.SupplierVatno);
-
-                        }
-                         var txtObsSupRegNoAr = $('#txtObsSupRegNoAr').dxNumberBox("instance");
-                        if (txtObsSupRegNoAr) {
-                            txtObsSupRegNoAr.option("value", account.SupplierVatno);
-
-                        }
-
-
-
-
-                        //    var txtBillingVATRegNo = $('#txtBillingVATRegNo').dxTextArea("instance");
-                        // if (txtBillingVATRegNo) {
-                        //     txtBillingVATRegNo.option("value", account.VatregistrationNo);
-
-                        // }
-
-
-
-
-                    } else {
-                        console.warn("No account details found in the response.");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching Account ID:", error);
-                }
-            });
-
-
-
-
-            dataGridSelectionChanged({ selectedRowKeys: [accgroup] });
-            // Show the content of the first tab by default
+           
             var selectedTabIndex = 0;
             $("#tab-content-" + (selectedTabIndex + 1)).show();
-
-
-
-            // Check if the parameter IsCharOfAccounts is 'true'
-            if (!isedit && IsCharOfAccounts !== 'true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
-                // Reset validator if it exists
-                var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
-                if (AccountHeadNameValidator) {
-                    AccountHeadNameValidator.reset();
-                }
-                IsAccGrp = true;
-
-                // AJAX call to fetch the next Account ID
-                $.ajax({
-                    url: '/api/AccountLedgerMaster/GetMaxLedgerAccountID',
-                    type: 'GET',
-                    dataType: 'json',  // Expecting JSON response
-                    success: function (response) {
-                        // Check if response has the expected structure
-                        if (response && response.nextAccountId) {
-                            if (txtAccountId) {
-                                txtAccountId.option('value', response.nextAccountId);
-                            }
-                        } else {
-                            console.log("No account ID returned.");
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error fetching Account ID:", error);
-                    }
-                });
-            } else {
-                // If IsCharOfAccounts is 'true', skip the API call
-                console.log("Skipping GetMaxLedgerAccountID API call as IsCharOfAccounts is 'true'.");
-            }
-
-
-
-
-            // if (getidfromCOA) {
-            //     // Change the Save button to Update
-            //     // $("#btnSave").text("Update");
-            //     var button = $("#btnSave").dxButton("instance");
-            //     button.option("text", "Update");
-            //     //IsChart=true;
-
-            //     // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
-            //     $.ajax({
-            //         url: `/api/ChartOfAccounts/GetAccountId?id=${getidfromCOA}`,
-            //         type: "GET",
-            //         success: function (response) {
-            //             if (response.success) {
-
-            //                 console.log(response.data.AccountId);
-            //                 console.log(response.data.AccountHead);
-
-            //                 $('#txtAccountId').dxTextBox("instance").option("value", response.data.AccountId);
-            //                 $('#txtReferenceNo').dxTextBox("instance").option("value", response.data.ReferenceNo);
-            //                 $('#txtAccountHead').dxTextBox("instance").option("value", response.data.AccountHead);
-            //                 $('#txtAccountHeadAr').dxTextBox("instance").option("value", response.data.AccountHeadArabic);
-            //                 $("#ddlAccountGroup").dxDropDownBox("instance").option("value", response.data.AccountGroupId);
-            //                 acgid = response.data.AccountGroupId;
-            //                 $("#schLedgerActive").dxSwitch("instance").option("value", response.data.IsLedgerObselete);
-
-
-
-            //             } else {
-            //                 alert(response.message);
-            //             }
-            //         },
-            //         error: function () {
-            //             alert("An error occurred while fetching the Cost Center data.");
-            //         }
-
-
-            //     });
-
-            // }
-
-
-
-
-
         });
 
-
-
-        async function onDownArrowClick() {
-            // Get the TextBox instances
-            const clientBillingTextBox = $("#txtClientBilling").dxTextBox("instance");
-            const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
-            const clientBillingTextBoxAr = $("#txtClientBillingAr").dxTextBox("instance");
-
-            // Ensure the text box instances are defined
-            if (!clientBillingTextBox || !accountHeadTextBox || !clientBillingTextBoxAr) {
-                alert("One or more TextBox instances could not be initialized.");
-                return;
-            }
-
-            // Get the value from txtAccountHead
-            const accountHeadValue = accountHeadTextBox.option("value");
-
-            // Check if the value is not empty
-            if (accountHeadValue && accountHeadValue.trim() !== "") {
-                try {
-                    // Get Arabic translation
-                    const arabicTranslation = await translateToArabic(accountHeadValue);
-
-                    // Set the value of txtClientBilling and txtClientBillingAr
-                    clientBillingTextBox.option("value", accountHeadValue);
-                    clientBillingTextBoxAr.option("value", arabicTranslation);
-                } catch (error) {
-                    console.error("Error during translation:", error);
-                    alert("Failed to translate Account Head Name to Arabic.");
-                }
-            } else {
-                // If txtAccountHead is empty or null, show an alert
-                alert("Account Head Name cannot be empty.");
-            }
-        }
-        async function onDownArrowSupClick() {
-            try {
-                // Get the TextBox instances
-                const supplierBillingTextBox = $("#txtSupBilling").dxTextBox("instance");
-                const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
-                const supplierBillingTextBoxAr = $("#txtSupBillingAr").dxTextBox("instance");
-
-                // Ensure the text box instances are defined
-                if (!supplierBillingTextBox || !accountHeadTextBox || !supplierBillingTextBoxAr) {
-                    alert("One or more TextBox instances could not be initialized.");
-                    return;
-                }
-
-                // Get the value from txtAccountHead
-                const accountHeadValue = accountHeadTextBox.option("value")?.trim();
-
-                // Check if the value is not empty
-                if (accountHeadValue) {
-                    // Translate the value to Arabic
-                    let arabicTranslation = "";
-                    try {
-                        arabicTranslation = await translateToArabic(accountHeadValue);
-                    } catch (translationError) {
-                        console.error("Error during translation:", translationError);
-                        alert("Failed to translate Account Head Name to Arabic. Please try again.");
-                        return;
-                    }
-
-                    // Set the values in the respective text boxes
-                    supplierBillingTextBox.option("value", accountHeadValue);
-                    supplierBillingTextBoxAr.option("value", arabicTranslation);
-                } else {
-                    // Show an alert if the Account Head Name is empty
-                    alert("Account Head Name cannot be empty.");
-                }
-            } catch (error) {
-                console.error("An unexpected error occurred:", error);
-                alert("An error occurred while processing the request. Please try again.");
-            }
-        }
-
-        async function onDownArrowBillClick() {
-            try {
-                // Get the TextBox instances
-                const clientBillingNameTextBox = $("#txtClientBillingName").dxTextBox("instance");
-                const accountHeadTextBox = $("#txtAccountHead").dxTextBox("instance");
-                const clientBillingNameTextBoxAr = $("#txtClientBillingNameAr").dxTextBox("instance");
-
-                // Ensure the text box instances are defined
-                if (!clientBillingNameTextBox || !accountHeadTextBox || !clientBillingNameTextBoxAr) {
-                    alert("One or more TextBox instances could not be initialized.");
-                    return;
-                }
-
-                // Get the value from txtAccountHead
-                const accountHeadValue = accountHeadTextBox.option("value")?.trim();
-
-                // Check if the value is not empty
-                if (accountHeadValue) {
-                    // Translate the value to Arabic
-                    let arabicTranslation = "";
-                    try {
-                        arabicTranslation = await translateToArabic(accountHeadValue);
-                    } catch (translationError) {
-                        console.error("Error during translation:", translationError);
-                        alert("Failed to translate Account Head Name to Arabic. Please try again.");
-                        return;
-                    }
-
-                    // Set the values in the respective text boxes
-                    clientBillingNameTextBox.option("value", accountHeadValue);
-                    clientBillingNameTextBoxAr.option("value", arabicTranslation);
-                } else {
-                    // Show an alert if the Account Head Name is empty
-                    alert("Account Head Name cannot be empty.");
-                }
-            } catch (error) {
-                console.error("An unexpected error occurred:", error);
-                alert("An error occurred while processing the request. Please try again.");
-            }
-        }
-
-
-
-        function refreshaccountledgerSelectBox() {
-            const accountledgerselectbox = $("#ddlAccountGroup").dxSelectBox("instance"); // Ensure ID matches Razor
-
-            if (assetLocationSelectBox) {
-                const dataSource = accountledgerselectbox.getDataSource();
-
-
-                if (dataSource) {
-                    dataSource.reload()
-                        .then(() => {
-                            console.log("Sales person  SelectBox updated successfully.");
-                        })
-                        .catch(error => {
-                            console.error("Error updatingLedger Sales person SelectBox:", error);
-                        });
-                } else {
-                    console.warn("DataSource is not defined for the Ledger Sales person  SelectBox.");
-                }
-            } else {
-                console.error("Sales person SelectBox instance not found. Ensure the ID matches.");
-            }
-        }
+        
 
         function onTabSelectionChanged(e) {
             // Hide all tab content
@@ -2702,155 +1941,13 @@ function CommondataGridInitialized(e) {
             $("#tab-content-" + (selectedTabIndex + 1)).show();
         }
 
-        // function onPostButtonClick(e) {
-        //     alert("Opening Balance Entry Posted successfully");
-        // }
+  
 
-        function txtAccountHeadFocusOut(e) {
-
-            var sTextVal = $('#txtAccountHead').dxTextBox('option', 'value');
-
-            if (sTextVal) {
-                $.ajax({
-                    url: '/api/AccountLedgerMaster/FindDuplicatesOnAccountHead',
-                    type: 'GET',
-                    dataType: 'json',  // The type of data you're expecting back from the server
-                    data: {
-                        stAccountHeadValue: sTextVal
-                    },
-                    success: function (response) {
-
-                        response.forEach(function (item) {
-                            var AcId = item.MaxAccountId;
-                            var isValid = item.IsValid;
-
-                            if (isValid == true) {
-                                alert("This Account Head Name is already mapped the Account Ledger No : '" + AcId + "'");
-                                $('#txtAccountHead').dxTextBox('option', 'value', '');
-                                return false;
-                            } else {
-                                //console.log("No account ID returned.");
-                            }
-                        });
-
-
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle any error that occurred during the request
-                        console.log("Error: " + error);
-                    }
-                });
-            }
-            else {
-                //  alert("Account Head Cannot be empty");
-                DevExpress.ui.notify("Account Head Cannot be empty", "error", 2000);
-
-            }
-
-
-        }
 
         // Account Ledger Dropdown Events
         let dataGrid;
 
-        function ddlAccountGroupValueChanged(e) {
-            e.component.close();
-            if (!e.value) {
-                dataGrid.clearSelection();
-                return;
-            }
-        }
-
-        function ddlAccountGroupOnInput(e) {
-            const ddbInstance = e.component;
-            if (!ddbInstance.option("opened")) ddbInstance.open();
-
-            // Update the DataGrid search panel text with the DropDownBox text
-            const text = ddbInstance.option("text");
-            if (dataGrid) {
-                dataGrid.option("searchPanel.text", text);
-            }
-        }
-
-        function ddlAccountGrouponOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-        }
-
-        function ddlAccountGrouponKeyDown(e) {
-            const ddbInstance = e.component;
-            if (e.event.keyCode !== 40) return;
-            if (!ddbInstance.option("opened")) {
-                ddbInstance.open();
-            } else {
-                let focusedIndex = dataGrid.option("focusedRowIndex");
-                let visibleRows = dataGrid.getVisibleRows().length - 1;
-                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
-                dataGrid.focus(dataGrid.getRowElement(focusedIndex));
-            }
-        }
-
-       
-        function dataGridSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#ddlAccountGroup").dxDropDownBox("instance");
-
-            if (selectedKey) {
-                if (IsAccGrp == true) {
-
-                    ddbInstance.option("value", selectedKey);
-                    var selectedRowData = $("#ledgeraccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
-
-                    // Get ReferenceNo from selected row
-                    if (selectedRowData.length > 0) {
-
-                        accgrp = selectedRowData[0].AccountGroup;
-                        accgrpunder = selectedRowData[0].AccountGroupUnder;
-
-                    } else {
-                        DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-                        return;
-                    }
-                }
-                else {
-
-                    ddbInstance.option("value", selectedKey);
-                    accgrp = accountgroup;
-
-                    //getAccountingLedger   accunderid
-                    // AJAX call to fetch the next Account ID
-                    $.ajax({
-                        url: `/api/LedgerAccountMaster/GetAccountGroupUnderID?id=${encodeURIComponent(acgid)}`,
-                        type: 'GET',
-                        dataType: 'json',  // Expecting JSON response
-                        success: function (response) {
-                            // Check if response has the expected structure
-                            if (response) {
-                                console.log(response.Result)
-                                accgrpunder = response.Result;
-
-
-                            } else {
-                                console.log("No account ID returned.");
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error fetching Account ID:", error);
-                        }
-                    });
-
-
-
-                }
-
-            }
-
-        }
-
-
-
-
+  
 
 
 
@@ -3131,7 +2228,7 @@ function CommondataGridInitialized(e) {
 
                $.ajax({
                    //url: '/api/ledgeraccount/InsertLedgerAccount',
-                   url: `/api/AccountLedgerMaster/InsertOrUpdate?AccountGroupID=${encodeURIComponent(acgid)}`,
+                   url: `/api/VATModule/UpdateInvoiceDetails?AccountGroupID=${encodeURIComponent(acgid)}`,
                    type: 'POST',
                    contentType: 'application/json',  // Set the content type to JSON
                    data: values,  // Convert the object to JSON
@@ -3196,6 +2293,128 @@ function CommondataGridInitialized(e) {
                 e.component.option("opened", false);
 
             }
+
+        function onEditorPreparing(e) {
+    if (e.parentType === "dataRow" && (e.dataField === "Qty" || e.dataField === "UnitPrice" || e.dataField === "VAT%")) {
+        e.editorOptions.onValueChanged = function (args) {
+            let grid = $("#B2BdataGrid").dxDataGrid("instance");
+            let rowIndex = e.row.rowIndex;
+
+            // Get the updated value from the input field
+            let newValue = args.value;
+            console.log("gridnewvalue",newValue)
+            // Get existing values
+            let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
+            console.log("qty",qty)
+
+             let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
+             console.log("unitPrice",unitPrice)
+            // let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
+            let vatval=grid.cellValue(rowIndex, "VAT%");
+             console.log("VATVal",vatval)
+
+            let vatRateStr = e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+            console.log("vatRateStr",vatRateStr)
+
+            let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
+            console.log("vatRate",vatRate)
+           
+            // Calculate values
+            let amount = qty * unitPrice;
+             console.log("amount",amount)
+
+              // let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+              //   let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+              //   if (rowIndex !== -1) {
+                  
+              //       dataGrid.cellValue(rowIndex, "Unit Price",amount||0);
+                  
+              //   }
+            let vatValue = amount * vatRate;
+            console.log("vatValue",vatValue)
+
+            let totalValue = amount + vatValue;
+            console.log("totalValue",vatValue)
+
+            // Update values in the grid
+            grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+            grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+        };
+    }
+}
+
+
+$("#btnSave").on("click", function (e) {
+    // Create JSON object for master invoice
+    let InVoiceNo=$('#InvoiceNo').dxTextBox("instance").option("value");
+    var InvoiceMaster = {
+        InvoiceNo: $('#InvoiceNo').dxTextBox("instance").option("value"),
+        InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value"),
+        InvoiceEffectiveDate: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value"),
+        //PaymentMeansTypeCode: paymentmeanstypecode,
+       /// InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")
+        // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value"),
+        // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value"),
+        // ClientCode: $("#ClientCode").dxDropDownBox("instance").option("value"),
+         BuyerName: $("#ClientName").dxDropDownBox("instance").option("value"),
+         BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value"),
+        SellerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value"),
+         BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value"),
+         BuyerOtherIdtype: $("#OtherIDType").dxTextBox("instance").option("value"),
+        BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value"),
+       // InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
+        InvoiceUuid: $("#UUID").dxTextBox("instance").option("value")
+    };
+
+    // Create JSON array for child records
+    var InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
+    // Add InvoiceNo to each item
+let updatedDataSource = InvoiceChildren.map(item => ({
+    ...item,
+    InvoiceNo: InVoiceNo,
+    TaxAmount:amt
+}));
+
+    console.log("InvoiceMaster:", InvoiceMaster);
+    console.log("InvoiceChildren:", updatedDataSource);
+
+    // Ensure InvoiceChildren is not empty or undefined
+    if (!InvoiceChildren || InvoiceChildren.length === 0) {
+        console.error("InvoiceChildren is empty or undefined");
+        DevExpress.ui.notify("No child records found.", "error", 3000);
+        return;  // Exit if there are no child records
+    }
+
+    // Send AJAX request to update the invoice master details
+    $.ajax({
+        type: "POST",
+        url: `/api/VoucherMaster/UpdateInvoiceMasterDetails`,
+        contentType: "application/json",
+        data: JSON.stringify(InvoiceMaster),
+        success: function (response) {
+            DevExpress.ui.notify(response.message, "success", 3000);
+
+            // Send AJAX request to update the invoice child details after master is updated
+            $.ajax({
+                type: "POST",
+                url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+                contentType: "application/json",
+                data: JSON.stringify(updatedDataSource),
+                success: function (response) {
+                    DevExpress.ui.notify(response.message, "success", 3000);
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+                }
+            });
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+        }
+    });
+ });
 
 
 </script>

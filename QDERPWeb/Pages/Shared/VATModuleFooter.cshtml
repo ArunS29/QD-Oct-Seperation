@@ -403,7 +403,7 @@
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("save")
                         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
+                       // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
                         )
 
                         </div>
@@ -565,72 +565,89 @@
                     caption: "Item Code", 
                     width: 200 
                 },
-                {
+              {
     dataField: "Description",
     caption: "Description",
-    width: 250,
+    width: 550,
     editCellTemplate: function(cellElement, cellInfo) {
         getDropdownData().done(function (dropdownData) {
             $("<div>").appendTo(cellElement).dxDropDownBox({
                 dataSource: dropdownData,
-                valueExpr: "Gscode",  // The value stored in the grid
-                displayExpr: "Gsdescrpition",  // What is displayed in the dropdown
+                valueExpr: "GSCode",  
+                displayExpr: "GSDescrpition",  
                 value: cellInfo.value,
+                dropDownOptions: { width: 800 },  
                 onValueChanged: function(e) {
                     let selectedItem = dropdownData.find(item => item.GSCode === e.value);
                     if (selectedItem) {
-                        cellInfo.setValue(selectedItem.GSDescrpition);
+                        cellInfo.setValue(selectedItem.GSDescrpition); 
 
-                        // Automatically set additional columns based on selection
+                        // Automatically update other columns
                         let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
                         let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-                        dataGrid.cellValue(rowIndex, "ItemPartNo", selectedItem.ItemPartNo);
-                        dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice);
-                        dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate);
+                        if (rowIndex !== -1) {
+                            dataGrid.cellValue(rowIndex, "Item Code", selectedItem.ItemPartNo || "");
+                            dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                            dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+                        }
+                        let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
+                       
                     }
                 },
-                contentTemplate: function(e) {
-                    return $("<div>").dxDataGrid({
-                        dataSource: dropdownData,
-                        selection: { mode: "single" },
-                        keyExpr: "GSCode",
-                        columns: [
-                            { dataField: "GSCode", caption: "Code", width: 80 },
-                            { dataField: "GSDescrpition", caption: "Description", width: 200 },
-                            { dataField: "ItemPartNo", caption: "Part No", width: 100 },
-                            { dataField: "CostPrice", caption: "Cost", width: 100 },
-                            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 }
-                        ],
-                        onSelectionChanged: function(selectedItems) {
-                            let selectedItem = selectedItems.selectedRowsData[0];
-                            if (selectedItem) {
-                                e.component.option("value", selectedItem.GSCode);
-                                cellInfo.setValue(selectedItem.GSDescrpition);
+              contentTemplate: function(e) {
+    return $("<div>").dxDataGrid({
+        dataSource: dropdownData,
+        selection: { mode: "single" },
+        keyExpr: "GSCode",
+        height: 300, // ✅ Add fixed height to enable scrolling
+        scrolling: { mode: "virtual" }, 
+        columns: [
+            { dataField: "GSCode", caption: "Code", width: 80 },
+            { dataField: "GSDescrpition", caption: "Description", width: 200 },
+            { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+            { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+            { dataField: "CostPrice", caption: "Cost Price", width: 100 },
+            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+            { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+        ],
+        onSelectionChanged: function(selectedItems) {
+            let selectedItem = selectedItems.selectedRowsData[0];
+            if (selectedItem) {
+                e.component.option("value", selectedItem.GSCode);
+                cellInfo.setValue(selectedItem.GSDescrpition);
 
-                                // Update other grid columns automatically
-                                let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-                                let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-                                dataGrid.cellValue(rowIndex, "ItemPartNo", selectedItem.ItemPartNo);
-                                dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice);
-                                dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate);
-                                e.component.close();
-                            }
-                        }
-                    });
+                let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+              
+                if (rowIndex !== -1) {
+                    dataGrid.cellValue(rowIndex, "Item Code", selectedItem.ItemPartNo || "");
+                    dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                    dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+                    dataGrid.cellValue(rowIndex, "Qty",1);
+                    dataGrid.cellValue(rowIndex, "VAT%","15%");
                 }
+                e.component.close();
+            }
+        }
+    });
+}
+
             });
         });
     }
 },
 
-                   { dataField: "DescriptionDetails", caption: "...", width: 150 },
+                   { dataField: "DescriptionDetails", caption: "...", width: 50 },
+                   { dataField: "DescriptionDetails", caption: "Unit Rate Method", width: 150 },
                    { dataField: "Qty", caption: "Qty", width: 150 },
                    { dataField: "UnitPrice", caption: "Unit Price", width: 150 },
                    { dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
                    { dataField: "Discount", caption: "Discount", width: 150 },
-                   { dataField: "DiscountDetails", caption: "...", width: 150 },  
-                   { dataField: "Amount", caption: "Amount", width: 150 },  
+                   { dataField: "DiscountDetails", caption: "...", width: 50 },  
+                   { dataField: "Amount", caption: "Amount", width: 150 }, 
                    { dataField: "VAT%", caption: "VAT%", width: 150 },  
+                   { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
+                   { dataField: "VAT", caption: "VAT", width: 150 },  
                    { dataField: "Total", caption: "Total", width: 150 }
             ],
             editing: {
@@ -650,10 +667,10 @@
     function addNewRow() {
         var newRow = {
             SNo: rowData.length + 1, // Auto-generate SNo
-            ItemCode: "",
+            ItemCode: ItemNo,
             Description: "",
             DescriptionDetails:"",
-            Qty: 1,
+            Qty: 0,
             UnitPrice: 0.00,
             TotalBeforeDiscount:0.00,
             Discount:"",
@@ -663,7 +680,7 @@
             VAT:"",
             Total: 0.00
         };
-
+        
         rowData.push(newRow);
         dataGridInstance.option("dataSource", rowData);
         dataGridInstance.refresh();
@@ -684,12 +701,15 @@
         method: "GET",
         dataType: "json"
     }).then(function(response) {
+        console.log("GsData",response)
         return response.map(item => ({
             GSCode: item.Gscode,
             GSDescrpition: item.Gsdescrpition,
+            GsdescriptionAr:item.GsdescriptionAr,
             ItemPartNo: item.ItemPartNo,
             CostPrice: item.CostPrice,
-            GSSellingRate: item.GssellingRate
+            GSSellingRate: item.GssellingRate,
+            ReorderQty:item.ReorderQty
         }));
     });
 }
@@ -1471,5 +1491,12 @@
         $('#submenuContainer6').hide();
         $('#submenuContainer7').hide();
     }
+
+
+
+   
+
+
+
 
 </script>

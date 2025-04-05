@@ -220,12 +220,12 @@
     text = "Cost Center Detailed Reports",
     icon = "search",
     items = new[] {
-    new { text = "Summary Report", icon = "chart-line" },
-    new { text = "Summary Report (By Date)", icon = "chart-line" },
-    new { text = "Cost Center Report", icon = "chart-line" },
-    new { text = "Cost Center Report (By Date)", icon = "chart-line" },
-    new { text = "Cost Center Group Report", icon = "chart-line" },
-    new { text = "Cost Center Group Report (By Date)", icon = "chart-line" }
+        new { text = "Detailed Report", icon = "chart-line" },
+        new { text = "Detailed Report (By Date)", icon = "chart-line" },
+        new { text = "Detailed Group Report", icon = "chart-line" },
+        new { text = "Detailed Group Report (By Date)", icon = "chart-line" },
+        new { text = "Cost Center Master Report", icon = "chart-line" },
+        new { text = "Cost Center Master Report (By Date)", icon = "chart-line" }
     }
     }
     }
@@ -615,11 +615,18 @@
         "Cost Center Report": "CostCenterReport",
         "Cost Center Report (By Date)": "CostCenterReportByDate",
         "Cost Center Group Report": "CostCenterGroupReport",
-        "Cost Center Group Report (By Date)": "CostCenterGroupReportByDate"
+        "Cost Center Group Report (By Date)": "CostCenterGroupReportByDate",
+        "Detailed Report":"DetailReport",
+         "Detailed Report (By Date)":"DetailedBydate",
+          "Detailed Group Report":"DetailedGroup",
+           "Detailed Group Report (By Date)":"detailGroupBydate",
+           "Cost Center Master Report":"CostCenterMasterGroup",
+           "Cost Center Master Report (By Date)":"detailedMasterByDate"
+
     };
 
     function handleReportsClick(e) {
-        alert('hi');
+        
         const selectedText = e.itemData.text;
 
         // Get instances of SelectBox and DateBox components
