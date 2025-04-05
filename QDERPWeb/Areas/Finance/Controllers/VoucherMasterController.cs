@@ -2446,7 +2446,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                                            .FirstOrDefaultAsync(c => c.InvoiceNo == child.InvoiceNo
                                                                                 );
                         aTbl20162VatinvoiceChild.InvoiceNo = child.InvoiceNo;
-                        aTbl20162VatinvoiceChild.UnitRate = child.TaxAmount;
+                        aTbl20162VatinvoiceChild.UnitRate = child.UnitPrice.GetDecimal();
                         //child.Amount.GetDecimal();
                         aTbl20162VatinvoiceChild.DetailedDescription = child.Description.GetString();
                         //  aTbl20162VatinvoiceChild.Discount = child.Discount.GetString();

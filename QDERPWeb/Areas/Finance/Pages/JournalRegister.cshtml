@@ -296,26 +296,21 @@
         $(document).on("click", function () {
             contextMenu.hide();
         });
-
         $('.spneditJournal').click(function () {
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
             let selectedRow = dataGrid.getSelectedRowsData();
 
             if (selectedRow.length > 0) {
-                let journalRefNo = selectedRow[0].JournalRefNo?.trim();
-                let requesterId = selectedRow[0].RequesterID?.toString().trim();
+                let journalRefNo = selectedRow[0].JournalRefNo;
 
-                if (!journalRefNo) {
+                if (journalRefNo && journalRefNo.toString().trim() !== "") {
+                    // Proceed only with JournalRefNo
+                    let targetUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(journalRefNo)}`;
+                    console.log("Navigating to:", targetUrl);
+                    window.location.href = targetUrl;
+                } else {
                     alert("Journal Reference Number is missing.");
-                    return;
                 }
-
-                // Construct URL manually (like you're doing with voucher type)
-                // You can set this dynamically too
-                let targetUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(journalRefNo)}&requesterId=${encodeURIComponent(requesterId)}`;
-
-                console.log("Navigating to:", targetUrl);
-                window.location.href = targetUrl;
             } else {
                 alert("Please select a row to edit.");
             }

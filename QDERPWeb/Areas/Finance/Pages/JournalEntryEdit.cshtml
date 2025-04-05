@@ -178,8 +178,8 @@
                         columns.Add().DataField("AccountId").Caption("Account ID").Width(150);
                         columns.Add().DataField("EmployeeCostDescription").Caption("Employee Cost Desc").Width(200);
                         columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200);
-                        columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Format("currency").Width(150).Alignment(HorizontalAlignment.Right);
-                        columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Width(150).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Width(180).Alignment(HorizontalAlignment.Right);
                     })
                 .DataSource(new List<object>())
                 .AllowColumnReordering(true)
@@ -307,16 +307,11 @@
             dataGrid.option("searchPanel.text", text);
         }
     }
-    function getUrlParameter(name) {
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        let regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
-        let results = regex.exec(location.search);
-        return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
-    }
+
 
     $(document).ready(function () {
         const voucherNoField = $("#VoucherNo").dxTextBox("instance");
-        const voucherNoFromUrl = getUrlParameter('voucherNo');
+        const voucherNoFromUrl = getUrlParameter('journalRefNo');
 
         if (voucherNoFromUrl) {
             // ✅ Bind voucher number from URL
@@ -333,6 +328,14 @@
                     alert("Error generating voucher number.");
                 }
             });
+        }
+
+        // Helper to extract URL parameter
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(window.location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
     });
 

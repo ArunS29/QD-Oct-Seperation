@@ -2323,14 +2323,6 @@ function CommondataGridInitialized(e) {
             let amount = qty * unitPrice;
              console.log("amount",amount)
 
-              // let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-              //   let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-
-              //   if (rowIndex !== -1) {
-                  
-              //       dataGrid.cellValue(rowIndex, "Unit Price",amount||0);
-                  
-              //   }
             let vatValue = amount * vatRate;
             console.log("vatValue",vatValue)
 
@@ -2340,6 +2332,7 @@ function CommondataGridInitialized(e) {
             // Update values in the grid
             grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
             grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+            grid.cellValue(rowIndex, "Unit Price",amount);
         };
     }
 }

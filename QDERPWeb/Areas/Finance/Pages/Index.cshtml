@@ -6,7 +6,7 @@
 }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
-<h2 id="OutstandingDetails" class="no-border-title"></h2>
+<h2>Outstanding Details</h2>
 
 <!-- DevExtreme Scripts & Styles -->
 <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.light.css">
@@ -21,7 +21,7 @@
     <!-- Total Client Outstanding Card -->
     <div class="dx-card">
         <div class="dx-card-header">
-            <div id="TotalClientOutstanding" class="no-border-input"></div>
+            <h3>Total Client Outstanding</h3>
         </div>
         <div class="dx-card-content">
             <div id="totalClientOutstandingValue" class="total-value"></div>
@@ -30,7 +30,7 @@
     <!-- New Cash Balance Card -->
     <div class="dx-card">
         <div class="dx-card-header">
-            <div id="TotalCashBalance" class="no-border-input"></div>
+            <h3>Total Cash Balance</h3>
         </div>
         <div class="dx-card-content">
             <div id="cashBalanceValue" class="total-value"></div>
@@ -40,7 +40,7 @@
     <!-- Total Bills Outstanding Card -->
     <div class="dx-card">
         <div class="dx-card-header">
-            <div id="TotalSupplierOutstanding" class="no-border-input"></div>
+            <h3>Total Supplier Outstanding</h3>
         </div>
         <div class="dx-card-content">
             <div id="totalBillsOutstandingValue" class="total-value"></div>
@@ -58,15 +58,15 @@
 <!-- Pie Chart Containers -->
 <div class="chart-row">
     <div class="chart-container">
-       
+        <h3>Client Outstanding Distribution</h3>
         <div id="clientOutstandingPieChart"></div>
     </div>
     <div class="chart-container">
-        
+        <h3>Supplier Outstanding Distribution</h3>
         <div id="clientOutstandingPieChart1"></div>
     </div>
     <div class="chart-container">
-        
+        <h3>Bank Account Distribution</h3>
         <div id="bankAccountsPieChart"></div>
     </div>
 </div>
@@ -74,19 +74,19 @@
 <div class="grid-container">
     <!-- Client Outstanding Section -->
     <div class="grid-section">
-        <div id="ClientOutstanding" class="no-border-title"></div>
+        <h3>Client Outstanding</h3>
         <div id="clientOutstandingGrid"></div>
     </div>
 
     <!-- Bills Payable Outstanding Section -->
     <div class="grid-section">
-        <div id="SupplierOutstanding" class="no-border-title"></div>
+        <h3>Supplier Outstanding</h3>
         <div id="billsPayableGrid"></div>
     </div>
 
     <!-- Bank Account Details Section -->
     <div class="grid-section">
-        <div id="BankAccountDetails" class="no-border-title"></div>
+        <h3>Bank Account Details</h3>
         <div id="bankAccountGrid"></div>
     </div>
 </div>
@@ -95,19 +95,19 @@
 <div class="chart-row">
     <!-- Client Outstanding Aging Chart -->
     <div class="chart-container">
-        <div id="ClientOutstandingAgingChart" class="no-border-title"></div>
+        <h3>Client Outstanding Aging Chart</h3>
         <div id="clientOutstandingChart"></div>
     </div>
 
     <!-- Supplier Outstanding Aging Chart -->
     <div class="chart-container">
-        <div id="SupplierOutstandingAgingChart" class="no-border-title"></div>
+        <h3>Supplier Outstanding Aging Chart</h3>
         <div id="billsOutstandingChart"></div>
     </div>
 
     <!-- Bank Accounts Chart -->
     <div class="chart-container">
-        <div id="BankAccountsChart" class="no-border-title"></div>
+        <h3>Bank Accounts Chart</h3>
         <div id="bankAccountsChart"></div>
     </div>
 </div>
@@ -125,16 +125,16 @@
                         series: [{
                             argumentField: "OverDueGroup",
                             valueField: "Balance",
-                            name: formatMessage("Balance Amount"),
+                            name: "Balance Amount",
                             type: "bar",
                             color: "#007acc"
                         }],
                         argumentAxis: {
                             label: { rotationAngle: -45 },
-                                title: formatMessage("Overdue Groups")
+                            title: "Overdue Groups"
                         },
                         valueAxis: {
-                                title: formatMessage("Balance Amount"),
+                            title: "Balance Amount",
                             label: { format: { type: "fixedPoint", precision: 2 } }
                         },
                         legend: { visible: true },
@@ -162,16 +162,16 @@
                     series: [{
                         argumentField: "AccountHeadName",
                         valueField: "Amount",
-                            name: formatMessage("Amount"),
+                        name: "Amount",
                         type: "bar",
                         color: "#007acc"
                     }],
                     argumentAxis: {
                         label: { rotationAngle: -45 },
-                            title: formatMessage("Account Head Name")
+                        title: "Account Head Name"
                     },
                     valueAxis: {
-                            title: formatMessage("Amount"),
+                        title: "Amount",
                         label: { format: { type: "fixedPoint", precision: 2 } }
                     },
                     legend: { visible: true },
@@ -228,10 +228,10 @@
             }),
             remoteOperations: true,
             columns: [
-                    { dataField: "AccountHead", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
+                { dataField: "AccountHead", caption: "Account Head", width: 200, allowReordering: true },
                 {
                     dataField: "Balance",
-                        caption: formatMessage("Balance Amount"),
+                    caption: "Balance Amount",
                     format: { type: "fixedPoint", precision: 2 },
                     allowReordering: true
                 },
@@ -274,7 +274,7 @@
         columns: [
             {
                 dataField: "AccountHead",
-                    caption: formatMessage("Account Head"),
+                caption: "Account Head",
                 width: 200,
                 headerCellTemplate: function (header, info) {
                     $("<div>")
@@ -288,7 +288,7 @@
             },
             {
                 dataField: "Balance",
-                    caption: formatMessage("Balance Amount"),
+                caption: "Balance Amount",
                 format: { type: "fixedPoint", precision: 2 },
                 headerCellTemplate: function (header, info) {
                     $("<div>")
@@ -345,8 +345,8 @@
             }),
             remoteOperations: true,
             columns: [
-                    { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
-                    { dataField: "Amount", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true }
+                { dataField: "AccountHeadName", caption: "Account Head", width: 200, allowReordering: true },
+                { dataField: "Amount", caption: "Balance Amount", format: { type: "fixedPoint", precision: 2 }, allowReordering: true }
             ],
             columnAutoWidth: true,
             showBorders: true,
@@ -384,7 +384,7 @@
             series: [{
                 argumentField: "OverDueGroup",
                 valueField: "Balance",
-                    name: formatMessage("Balance Amount"),
+                name: "Balance Amount",
                 type: "bar",
                 color: "#007acc"
             }],
@@ -392,10 +392,10 @@
                 label: {
                     rotationAngle: -45
                 },
-                    title: formatMessage("Overdue Groups")
+                title: "Overdue Groups"
             },
             valueAxis: {
-                    title: formatMessage("Balance Amount"),
+                title: "Balance Amount",
                 label: {
                     format: { type: "fixedPoint", precision: 2 }
                 }
@@ -436,7 +436,7 @@
                                 format: "currency"
                             }
                         }],
-                            title:formatMessage( "Client Outstanding Distribution")
+                        title: "Client Outstanding Distribution"
                     });
                 }
             }
@@ -458,7 +458,7 @@
                         format: "currency"
                     }
                 }],
-                    title: formatMessage("Supplier Outstanding Distribution")
+                title: "Supplier Outstanding Distribution"
             });
         }
     }
@@ -484,7 +484,7 @@
                             format: "currency"
                         }
                     }],
-                        title: formatMessage("Bank Account Distribution")
+                    title: "Bank Account Distribution"
                 });
             }
         });
@@ -521,7 +521,7 @@
                                     format: "currency"
                                 }
                             }],
-                                title: formatMessage("Supplier Outstanding Distribution"),
+                            title: "Supplier Outstanding Distribution",
                         });
                     }
                 } else {
@@ -561,7 +561,7 @@
                         data: {
                             datasets: [
                                 {
-                                        label: formatMessage("Client Outstanding"),
+                                    label: "Client Outstanding",
                                     backgroundColor: "rgba(0, 123, 255, 0.5)",
                                     borderColor: "rgba(0, 123, 255, 1)",
                                     data: clientData.map(item => ({
@@ -571,7 +571,7 @@
                                     }))
                                 },
                                 {
-                                        label: formatMessage("Supplier Outstanding"),
+                                    label: "Supplier Outstanding",
                                     backgroundColor: "rgba(255, 99, 132, 0.5)",
                                     borderColor: "rgba(255, 99, 132, 1)",
                                     data: supplierData.map(item => ({
@@ -585,8 +585,8 @@
                         options: {
                             responsive: true,
                             scales: {
-                                    x: { title: { display: true, text: formatMessage("Accounts") } },
-                                    y: { title: { display: true, text: formatMessage("Outstanding Amount") } }
+                                x: { title: { display: true, text: "Accounts" } },
+                                y: { title: { display: true, text: "Outstanding Amount" } }
                             }
                         }
                     });
@@ -648,7 +648,7 @@
 
         // Set Options
         const options = {
-                title: formatMessage('Top 5 Outstanding Accounts'),
+            title: 'Top 5 Outstanding Accounts',
             is3D: true,
             pieSliceText: 'value',
             height: 400
@@ -705,19 +705,19 @@
                                 labels: labels, // Account Names
                                 datasets: [
                                     {
-                                            label: formatMessage("Client Outstanding"),
+                                        label: "Client Outstanding",
                                         data: clientBalances,
                                         borderColor: "red",
                                         fill: false
                                     },
                                     {
-                                            label: formatMessage("Supplier Outstanding"),
+                                        label: "Supplier Outstanding",
                                         data: supplierBalances,
                                         borderColor: "green",
                                         fill: false
                                     },
                                     {
-                                            label: formatMessage("Other Data"),
+                                        label: "Other Data",
                                         data: otherData,
                                         borderColor: "blue",
                                         fill: false
@@ -742,104 +742,6 @@
                 }
             });
         });
-             $(function () {
-                                                         $("#OutstandingDetails").dxTextBox({
-                                                                 text:formatMessage("Outstanding Details"),
-                                                             readOnly: true,
-                                                                 onContentReady: function(e) {
-                                $(e.element).addClass("dx-textbox-heading");
-                                    }
-                                                     });
-                                     });
-             $(function () {
-                                                     $("#TotalClientOutstanding").dxTextBox({
-                                                             text:formatMessage("Total Client Outstanding"),
-                                                         readOnly: true,
-                                                             onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                 });
-                                 });
-                                     $(function () {
-                                                         $("#TotalCashBalance").dxTextBox({
-                                                                     text:formatMessage("Total Cash Balance"),
-                                                             readOnly: true,
-                                                                 onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                     });
-                                     });
-                                         $(function () {
-                                                         $("#TotalSupplierOutstanding").dxTextBox({
-                                                                     text:formatMessage("Total Supplier Outstanding"),
-                                                             readOnly: true,
-                                                                 onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                     });
-                                     });
-
-                                         $(function () {
-                                                                 $("#ClientOutstanding").dxTextBox({
-                                                                             text:formatMessage("Client Outstanding"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#SupplierOutstanding").dxTextBox({
-                                                                             text:formatMessage("Supplier Outstanding"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#BankAccountDetails").dxTextBox({
-                                                                             text:formatMessage("Bank Account Details"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#ClientOutstandingAgingChart").dxTextBox({
-                                                                             text:formatMessage("Client Outstanding Aging Chart"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#SupplierOutstandingAgingChart").dxTextBox({
-                                                                             text:formatMessage("Supplier Outstanding Aging Chart"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                         });
-                                         });
-                                             $(function () {
-                                                                 $("#BankAccountsChart").dxTextBox({
-                                                                             text:formatMessage("Bank Accounts Chart"),
-                                                                 readOnly: true,
-                                                                     onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                                }
-                                                         });
-                                         });
-
-
-
-
-
-
-
 </script>
 
 <style>
@@ -868,10 +770,9 @@
     }
 
     .dx-card-header {
-        font-size: 24px;
+        font-size: 18px;
         font-weight: bold;
         margin-bottom: 10px;
-        text-align:center;
     }
 
     .dx-card-content .total-value {
@@ -890,10 +791,6 @@
         width: 32%;
         text-align: center;
     }
-
-        .grid-section div {
-            text-align: center; /* Center the title */
-        }
 
     .chart-row {
         display: flex;
@@ -928,7 +825,7 @@
         border-radius: 10px;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         text-align: center;
-        width: 400px;
+        width: 250px;
     }
 
     .dx-card-header {
