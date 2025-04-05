@@ -745,29 +745,29 @@
     let argsledno = null; let paymentaccheadId; let paymentaccheadname; let paymentIsLedgerObselete;
     //global variablr for get newVoucherNo
     var globalVoucherNo = "";
-    $(function () {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
-        const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+    // $(function () {
+    //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    //     const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
+    //     const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
 
-        function calculateTotals() {
-            debugger;
-            const data = dataGrid.option("dataSource") || [];
+    //     function calculateTotals() {
+    //         debugger;
+    //         const data = dataGrid.option("dataSource") || [];
 
-            const totalDebit = data.reduce((sum, row) => sum + (row.DrCr === "Dr" ? row.VoucherAmount || 0 : 0), 0);
-            const totalCredit = data.reduce((sum, row) => sum + (row.DrCr === "Cr" ? row.VoucherAmount || 0 : 0), 0);
+    //         const totalDebit = data.reduce((sum, row) => sum + (row.DrCr === "Dr" ? row.VoucherAmount || 0 : 0), 0);
+    //         const totalCredit = data.reduce((sum, row) => sum + (row.DrCr === "Cr" ? row.VoucherAmount || 0 : 0), 0);
 
-            // Update TextBox values dynamically
-            totalDebitTextbox.option("value", totalDebit.toFixed(2));
-            totalCreditTextbox.option("value", totalCredit.toFixed(2));
-        }
+    //         // Update TextBox values dynamically
+    //         totalDebitTextbox.option("value", totalDebit.toFixed(2));
+    //         totalCreditTextbox.option("value", totalCredit.toFixed(2));
+    //     }
 
-        // **Trigger calculateTotals() on row changes**
-        dataGrid.on("contentReady", calculateTotals); // When grid loads
-        dataGrid.on("rowInserted", calculateTotals); // When row is added
-        dataGrid.on("rowUpdated", calculateTotals);  // When row is updated
-        dataGrid.on("rowRemoved", calculateTotals);  // When row is deleted
-    });
+    //     // **Trigger calculateTotals() on row changes**
+    //     dataGrid.on("contentReady", calculateTotals); // When grid loads
+    //     dataGrid.on("rowInserted", calculateTotals); // When row is added
+    //     dataGrid.on("rowUpdated", calculateTotals);  // When row is updated
+    //     dataGrid.on("rowRemoved", calculateTotals);  // When row is deleted
+    // });
     //default
 
     $(function () {
@@ -1616,26 +1616,26 @@
 
 
 
-    $(function () {
-        //alert("total");
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
-        const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
+    // $(function () {
+    //     //alert("total");
+    //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    //     const totalDebitTextbox = $("#totalDebitTextbox").dxTextBox("instance");
+    //     const totalCreditTextbox = $("#totalCreditTextbox").dxTextBox("instance");
 
-        function calculateTotals() {
-            const data = dataGrid.getVisibleRows().map(row => row.data);
-            const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
-            const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
+    //     function calculateTotals() {
+    //         const data = dataGrid.getVisibleRows().map(row => row.data);
+    //         const totalDebit = data.reduce((sum, row) => sum + (row.DrAmount || 0), 0);
+    //         const totalCredit = data.reduce((sum, row) => sum + (row.CrAmount || 0), 0);
 
-            // Update TextBox values dynamically
-            totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-            totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-        }
+    //         // Update TextBox values dynamically
+    //         totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    //         totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    //     }
 
-        // Recalculate totals on content changes
-        dataGrid.on("contentReady", calculateTotals);
-        dataGrid.on("dataSourceChanged", calculateTotals);
-    });
+    //     // Recalculate totals on content changes
+    //     dataGrid.on("contentReady", calculateTotals);
+    //     dataGrid.on("dataSourceChanged", calculateTotals);
+    // });
 
 
 
