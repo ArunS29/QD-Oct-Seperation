@@ -527,8 +527,8 @@
         }
 
         // Determine action and voucher number
-        var action = argsledno ? "UpdateVoucher" : "SaveVoucher";
-        var finalVoucherNo = argsledno || $("#VoucherNo").dxTextBox("instance").option("value") || "";
+        var action = journalRefNo ? "UpdateVoucher" : "SaveVoucher";
+        var finalVoucherNo = journalRefNo || $("#VoucherNo").dxTextBox("instance").option("value") || "";
 
         var VM = {
             JournalVoucherMaster: {
@@ -693,9 +693,13 @@
         let results = regex.exec(location.search);
         return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
- 
+    let journalRefNo = null;
     $(document).ready(function () {
-        let journalRefNo = getUrlParameter('journalRefNo');
+         journalRefNo = getUrlParameter('journalRefNo');
+        var button = $("#btnSave").dxButton("instance");
+        if (journalRefNo) {
+            button.option("text", "Update");
+        }
 
         if (journalRefNo) {
             $.ajax({

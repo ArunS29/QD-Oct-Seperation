@@ -227,83 +227,72 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
-      //  [HttpPost]
-        //public async Task<ActionResult> UpdateVoucher([FromBody] RegisterVoucherViewModel VM)
-        //{
-        //    if (VM == null || VM.JournalVoucherMaster == null || string.IsNullOrEmpty(VM.JournalVoucherMaster.JournalRefNo) || VM.JournalVoucherEntries == null || !VM.JournalVoucherEntries.Any())
-        //    {
-        //        return BadRequest(new { success = false, message = "Invalid data received or missing journal reference number." });
-        //    }
+        [HttpPost]
+        public async Task<ActionResult> UpdateVoucher([FromBody] RegisterVoucherViewModel VM)
+        {
+            if (VM == null || VM.JournalVoucherMaster == null || string.IsNullOrEmpty(VM.JournalVoucherMaster.JournalRefNo) || VM.JournalVoucherEntries == null || !VM.JournalVoucherEntries.Any())
+            {
+                return BadRequest(new { success = false, message = "Invalid data received or missing journal reference number." });
+            }
 
-        //    try
-        //    {
-        //        using (var transaction = await _context.Database.BeginTransactionAsync())
-        //        {
-        //            // ✅ Find existing Journal Master
-        //            var journalMaster = await _context.Tbl20126JournalRegisterMasters
-        //                .FirstOrDefaultAsync(j => j.JournalRefNo == VM.JournalVoucherMaster.JournalRefNo);
+            try
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    // ✅ Find existing Journal Master
+                    var journalMaster = await _context.Tbl20126JournalRegisterMasters
+                        .FirstOrDefaultAsync(j => j.JournalRefNo == VM.JournalVoucherMaster.JournalRefNo);
 
-        //            if (journalMaster == null)
-        //            {
-        //                return NotFound(new { success = false, message = "Journal master not found." });
-        //            }
+                    if (journalMaster == null)
+                    {
+                        return NotFound(new { success = false, message = "Journal master not found." });
+                    }
 
-        //            // ✅ Update Master Record
-        //            journalMaster.JournalEntryDate = VM.JournalVoucherMaster.JournalEntryDate;
-        //            journalMaster.JournalEffectiveDate = VM.JournalVoucherMaster.JournalEffectiveDate;
-        //            journalMaster.JournalVoucherNarration = VM.JournalVoucherMaster.JournalVoucherNarration;
-        //            // Update additional fields if needed
+                    // ✅ Update Master Record
+                    journalMaster.JournalEntryDate = VM.JournalVoucherMaster.JournalEntryDate;
+                    journalMaster.JournalEffectiveDate = VM.JournalVoucherMaster.JournalEffectiveDate;
+                    journalMaster.JournalVoucherNarration = VM.JournalVoucherMaster.JournalVoucherNarration;
+                    // Update additional fields if needed
 
-        //            // ✅ Delete Old Entries (children)
-        //            var existingEntries = await _context.Qry202101journalRegisterChildren
-        //                .Where(e => e.JournalRefNo == VM.JournalVoucherMaster.JournalRefNo)
-        //                .ToListAsync();
+                    // ✅ Delete Old Entries (children)
+                    var existingEntries = await _context.Tbl20127JournalRegisterChildren
+                        .Where(e => e.JournalRefNo == VM.JournalVoucherMaster.JournalRefNo)
+                        .ToListAsync();
 
-        //            _context.Qry202101journalRegisterChildren.RemoveRange(existingEntries);
-        //            await _context.SaveChangesAsync();
+                    _context.Tbl20127JournalRegisterChildren.RemoveRange(existingEntries);
+                    await _context.SaveChangesAsync();
 
-        //            // ✅ Add new entries
-        //            var newEntries = new List<Qry202101journalRegisterChild>();
+                    // ✅ Add new entries
+                    var newEntries = new List<Tbl20127JournalRegisterChild>();
 
-        //            foreach (var entry in VM.JournalVoucherEntries)
-        //            {
-        //                if (string.IsNullOrEmpty(entry.AccountHead))
-        //                {
-        //                    return BadRequest(new { success = false, message = "AccountHead is required." });
-        //                }
+                    foreach (var entry in VM.JournalVoucherEntries)
+                    {
+                       
 
-        //                var accountId = await _context.Tbl201ChartOfAccounts
-        //                    .Where(a => a.AccountHead == entry.AccountHead)
-        //                    .Select(a => a.AccountId)
-        //                    .FirstOrDefaultAsync();
 
-        //                //if (accountId == 0)
-        //                //{
-        //                //    return BadRequest(new { success = false, message = $"AccountHead '{entry.AccountHead}' not found." });
-        //                //}
+                        newEntries.Add(new Tbl20127JournalRegisterChild
+                        {
+                            JournalRefNo = VM.JournalVoucherMaster.JournalRefNo,
+                            DrCr = entry.DrCr,
+                            DrAmount=entry.DrAmount,
+                            CrAmount=entry.CrAmount,
+                            EntryNarration = entry.EntryNarration,
+                            AccountId=entry.AccountId
+                        });
+                    }
 
-        //                newEntries.Add(new Qry202101journalRegisterChild
-        //                {
-        //                    JournalRefNo = VM.JournalVoucherMaster.JournalRefNo,
-        //                    DrCr = entry.DrCr,
-        //                   // JournalAmount = entry.JournalAmount,
-        //                    EntryNarration = entry.EntryNarration,
-        //                    AccountHead = accountId
-        //                });
-        //            }
+                    await _context.Tbl20127JournalRegisterChildren.AddRangeAsync(newEntries);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
 
-        //            await _context.Qry202101journalRegisterChildren.AddRangeAsync(newEntries);
-        //            await _context.SaveChangesAsync();
-        //            await transaction.CommitAsync();
-
-        //            return Ok(new { success = true, message = "Journal voucher updated successfully!" });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //    }
-        //}
+                    return Ok(new { success = true, message = "Journal voucher updated successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+        }
 
     }
 }
