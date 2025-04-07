@@ -438,10 +438,12 @@
 
 
 <script>
-	function viewInvoice(tenantName) {
-		let url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-		window.location.href = url; // Navigate to the form
+	// Assuming tenantName is already defined globally
+	function viewInvoice() {
+		const url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+		window.location.href = url;
 	}
+
 
 
 	$(document).ready(function () {
