@@ -59,7 +59,7 @@
 	}
 </style>
 
-<div>
+<div class="container2">
     @(Html.DevExtreme().DropDownBox()
         .DataSource(d => d.WebApi()
         .Controller("ExpenseClaim")
@@ -163,7 +163,7 @@
 				.GroupPanel(groupPanel => groupPanel.Visible(false))
 				.ShowBorders(true)
 				.Width("100%")
-				
+				.Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
 				.Editing(editing => editing
 				.Mode(GridEditMode.Cell)
 				.AllowUpdating(true)
@@ -236,12 +236,62 @@
 
             )
     }
-   
+    
 </div> 
-@* <div class="Head">
-<div class="limited-footer">
-		@await Html.PartialAsync("_GridFooter")
-</div> *@
+<div class="container2">
+    <div class="dx-fieldset horizontal-container mt-2" style="padding:5px;">
+
+        @(Html.DevExtreme().DropDownButton()
+            .ID("supplierButtonLayout")
+            .Icon("smalliconslayout")
+            
+            .Text(new JS("formatMessage('Layout')"))
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties");
+                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save");
+            })
+            .ShowArrowIcon(false)
+            )
+
+        @(Html.DevExtreme().Button()
+            .ID("supplierPrint")
+            .Icon("print")
+            .Text(new JS("formatMessage('Print')"))
+            .ElementAttr(new { @class = "bold-button" })
+            
+            )
+
+        @(Html.DevExtreme().Button()
+            .ID("supplierToggleSearch")
+            .Text(new JS("formatMessage('Search')"))
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("search")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .OnClick("togglesupplierFilterRow")
+            )
+        
+       
+        @(Html.DevExtreme().Button()
+            .ID("suppliertoggleGroupPanel")
+            .Icon("hierarchy")
+            
+            .Text(new JS("formatMessage('Group')"))
+            .ElementAttr(new { @class = "bold-button" })
+            )
+        @(Html.DevExtreme().Button()
+            .ID("btnaddsupplier")
+            .Text("Create Payment Request")
+            .Icon("plus")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
 </div>
 <script>
     function dropDownBoxInput(e) {
@@ -320,5 +370,11 @@
 			}
 		});
 	});
+    // Footer Filter row button click event
+    function togglesupplierFilterRow() {
+        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var currentVisibility = grid.option("filterRow.visible");
 
+        grid.option("filterRow.visible", !currentVisibility);
+    }
 </script>

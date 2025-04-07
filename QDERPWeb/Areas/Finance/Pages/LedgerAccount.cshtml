@@ -2296,7 +2296,8 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BuyerIdtypeName");
+                columns.Add().DataField("BuyerOtherIdtype").Caption("Code");
+                columns.Add().DataField("BuyerIdtypeName").Caption("Buyer ID Type");
             })
             )
     }
@@ -2326,7 +2327,8 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BuyerIdtypeName");
+                columns.Add().DataField("BuyerOtherIdtype").Caption("Code");
+                columns.Add().DataField("BuyerIdtypeName").Caption("Buyer ID Type");
             })
             )
     }

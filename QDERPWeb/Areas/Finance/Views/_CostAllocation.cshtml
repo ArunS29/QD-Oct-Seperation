@@ -136,8 +136,26 @@
                 .ReadOnly(true)
                 .Format("#,##0.00")
                 )
-            @(Html.DevExtreme().CheckBox().ID("ApprovedBy"))
-            <span style="margin-left:5px;">Approved By:</span>
+            <div>
+                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
+                    .ID("Approvedcost").ReadOnly(true)
+
+                    )
+                @(Html.DevExtreme().TextBox()
+                    @* .Label(new JS("formatMessage('Approved By')")) *@
+                    @* .LabelMode(EditorLabelMode.Outside) *@
+                    .ID("ApprovedBycost")
+                    .Value(null) // Default value
+                    .ReadOnly(true)
+                    )
+            </div>
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Approved On')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("ApprovedOncost")
+                .Value(null) // Default value
+                .ReadOnly(true)
+                )
 
         </div>
         <div class="dx-fieldset horizontal-container ">

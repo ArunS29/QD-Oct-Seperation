@@ -311,6 +311,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public IActionResult SupplierPaymentfooter()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext)
+                && tenant != null && dbContext != null)
+            {
+                 // or fetch actual data
+                return PartialView("~/Pages/Shared/SupplierPaymentfooter.cshtml");
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
 

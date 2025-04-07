@@ -944,5 +944,11 @@
         loadUrl: "/api/VoucherMaster/" + loadAction
     }));
 }
+    // Footer Filter row button click event
+    function togglesupplierFilterRow() {
+        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var currentVisibility = grid.option("filterRow.visible");
 
+        grid.option("filterRow.visible", !currentVisibility);
+    }
 </script>

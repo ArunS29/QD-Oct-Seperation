@@ -158,12 +158,43 @@
             .Icon("plus")
             .OnClick("showLedgerAccountPopup")
             )
+        <!-- DevExtreme Popup -->
+        @(Html.DevExtreme().Popup()
+            .ID("ledgerAccountPopup")
+            .Width("93%")
+            .Height("85%")
+            .Title("Add Ledger Account")
+            .ShowTitle(true)
+            .CloseOnOutsideClick(true)
+            .Visible(false)
+            .ResizeEnabled(true)
+            .ContentTemplate(@<text>
+            <div id="popupContent" class="background" style="width:100%; height:100%;">
+                <iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+        </text>)
+            )
     </div>
     <div class="form-group" style="margin-top:25px;">
         @(Html.DevExtreme().Button()
             .ID("btnEditAHead")
             .Icon("edit")
-            .OnClick("showLedgerAccountPopup")
+            .OnClick("showLedgerAccountEditPopup")
+            )
+        @(Html.DevExtreme().Popup()
+            .ID("ledgerEditAccountPopup")
+            .Width("93%")
+            .Height("85%")
+            .Title("Edit Ledger Account")
+            .ShowTitle(true)
+            .CloseOnOutsideClick(true)
+            .Visible(false)  // Hidden by default
+            .ResizeEnabled(true)
+            .ContentTemplate(@<text>
+            <div id="popupContent" style="width:100%; height:100%;">
+                <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+        </text>)
             )
     </div>
     <div class="form-group">
@@ -412,17 +443,16 @@
         <div class="col-md-6">
             <div>
                 @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-                    .ID("VerifiedBy")
-                    .Value(null) // Default value
+                    .ID("VerifiedBy").ReadOnly(true)
+
 
                     )
                 @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Verified By')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    @* .Label(new JS("formatMessage('Verified By')")) *@
+                    @* .LabelMode(EditorLabelMode.Outside) *@
                     .ID("VerifiedBytext")
                     .Value(null) // Default value
                     .Disabled(true)
-                    .Width(250)
                     )
             </div>
             @(Html.DevExtreme().TextBox()
@@ -431,22 +461,20 @@
                 .ID("VerifiedOnDate")
                 .Value(null) // Default value
                 .Disabled(true)
-                .Width(250)
                 )
         </div>
         <div class="col-md-6">
             <div>
                 @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                    .ID("ApprovedBy")
-                    .Value(null) // Default value
+                    .ID("ApprovedBy").ReadOnly(true)
+
                     )
                 @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Approved By')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    @* .Label(new JS("formatMessage('Approved By')")) *@
+                    @* .LabelMode(EditorLabelMode.Outside) *@
                     .ID("ApprovedBytext")
                     .Value(null) // Default value
                     .Disabled(true)
-                    .Width(250)
                     )
             </div>
             @(Html.DevExtreme().TextBox()
@@ -455,7 +483,6 @@
                 .ID("ApprovedOntext")
                 .Value(null) // Default value
                 .Disabled(true)
-                .Width(250)
                 )
         </div>
     </div>
@@ -743,7 +770,7 @@
 
 <script>
     let argsledno = null; let paymentaccheadId; let paymentaccheadname; let paymentIsLedgerObselete;
-    //global variablr for get newVoucherNo
+    let accheadid, accheadname, refno, accgroup, accgroupid, accheadar;
     var globalVoucherNo = "";
     // $(function () {
     //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1157,11 +1184,15 @@
             var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
             // Get ReferenceNo from selected row
             if (selectedRowData.length > 0) {
-                paymentaccheadId = selectedRowData[0].AccountId;
-                paymentaccheadname = selectedRowData[0].AccountHead;
-                paymentIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
+                accheadid = selectedRowData[0].AccountId;
+                accheadname = selectedRowData[0].AccountHead;
+                refno = selectedRowData[0].ReferenceNo;
+                accheadar = selectedRowData[0].AccountHeadArabic;
+                accgroup = selectedRowData[0].AccountGroup;
+                accgroupid = selectedRowData[0].AccountGroupId;
+                accIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
 
-                if (paymentIsLedgerObselete == true) {
+                if (accIsLedgerObselete == true) {
                     IsObeselete = true;
                     DevExpress.ui.dialog.alert(
                         "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
@@ -1708,11 +1739,37 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPreview', 'btnPrint', 'btnAttach'];
+            const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
         });
+        // Enable the DropDownButton explicitly
+        const previewButton = $("#btnPreview1").dxDropDownButton("instance");
+
+        if (previewButton) {
+            previewButton.option("disabled", false);
+            previewButton.repaint();  // Force UI refresh
+        } else {
+            console.error("btnPreview1 instance not found");
+        }
+       
+
+        
+
+        // Disable DevExtreme DateBox components
+        $("#VoucherDate").dxDateBox("instance").option("disabled", true);
+        $("#EffectiveDate").dxDateBox("instance").option("disabled", true);
+
+
+
+        // Disable DataGrid Editing and Deleting
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        if (dataGrid) {
+            dataGrid.option("editing.allowUpdating", false);
+            dataGrid.option("editing.allowDeleting", false);
+        }
+
     }
     function onRowPrepared(e) {
         // Check if the rowType is "data" and the rowElement is available
@@ -1722,58 +1779,58 @@
         }
     }
    
-    function onApproveButtonClick() {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const rowCount = dataGrid.getVisibleRows().length;
+    // function onApproveButtonClick() {
+    //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    //     const rowCount = dataGrid.getVisibleRows().length;
 
-        if (rowCount == 0) {
-            Swal.fire({
-                title: "Voucher is not Approved",
-                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            })
-        } else {
-            proceedWithApproval();
-        }
-    }
+    //     if (rowCount == 0) {
+    //         Swal.fire({
+    //             title: "Voucher is not Approved",
+    //             text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+    //             icon: "warning",
+    //             showCancelButton: true,
+    //             confirmButtonText: "Yes",
+    //             cancelButtonText: "No"
+    //         })
+    //     } else {
+    //         proceedWithApproval();
+    //     }
+    // }
 
-    function proceedWithApproval() {
-        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+    // function proceedWithApproval() {
+    //     $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+    //     var vno = $("#VoucherNo").dxTextBox("instance").option("value");
 
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
+    //     const currentDate = new Date();
+    //     const formattedDate = currentDate.toLocaleDateString("en-GB", {
+    //         day: "2-digit",
+    //         month: "short",
+    //         year: "numeric"
+    //     }).replace(/ /g, '-');
 
-        $.ajax({
-            success: function () {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Voucher has been Approved.",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    disableEditing();
-                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-                });
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Error",
-                    text: "Please save the transactions after proceeding!",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        });
-    }
+    //     $.ajax({
+    //         success: function () {
+    //             Swal.fire({
+    //                 title: "Success!",
+    //                 text: "Voucher has been Approved.",
+    //                 icon: "success",
+    //                 confirmButtonText: "OK"
+    //             }).then(() => {
+    //                 disableEditing();
+    //                 $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+    //                 $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+    //             });
+    //         },
+    //         error: function () {
+    //             Swal.fire({
+    //                 title: "Error",
+    //                 text: "Please save the transactions after proceeding!",
+    //                 icon: "error",
+    //                 confirmButtonText: "OK"
+    //             });
+    //         }
+    //     });
+    // }
 
 
     // You can also add logic here to trigger an alert when the save button is clicked
@@ -1840,13 +1897,13 @@
             });
         }
     }
-    function showLedgerAccountPopup() {
-        var popup = $("#ledgerAccountPopup").dxPopup("instance");
-        popup.show();
+    // function showLedgerAccountPopup() {
+    //     var popup = $("#ledgerAccountPopup").dxPopup("instance");
+    //     popup.show();
 
-        // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
-    }
+    //     // Correct URL to your LedgerAccount view
+    //     $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+    // }
     function isModal() {
         return new URLSearchParams(window.location.search).get("modal") === "true";
     }
@@ -1941,52 +1998,52 @@
         });
     }
 
-    function onDeleteButtonClick() {
-        debugger;
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var rowCount = dataGrid.getVisibleRows().length;
+    // function onDeleteButtonClick() {
+    //     debugger;
+    //     var dataGrid = $("#dataGrid").dxDataGrid("instance");
+    //     var rowCount = dataGrid.getVisibleRows().length;
 
-        if (rowCount === 0 || rowCount === null) {
-            DevExpress.ui.dialog.alert("No records available to delete. Please enter some transactions.", "Data Not Found");
-        } else {
-            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-            var temporaryNo = $("#TemporaryNo").dxTextBox("instance").option("value");
+    //     if (rowCount === 0 || rowCount === null) {
+    //         DevExpress.ui.dialog.alert("No records available to delete. Please enter some transactions.", "Data Not Found");
+    //     } else {
+    //         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+    //         var temporaryNo = $("#TemporaryNo").dxTextBox("instance").option("value");
 
-            confirmToDeleteAllVoucher(function () {
-                $.ajax({
-                    url: `/api/VoucherJournal/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&TemporaryNo=${encodeURIComponent(temporaryNo)}`,
-                    type: "POST",
-                    success: function (response) {
-                        if (response.data) {
-                            $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                            DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.", "Data Deleted Successfully")
-                                .done(function () {
-                                    history.back(); // Execute only when "OK" is clicked
-                                });
-                        } else {
-                            DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
-                    }
-                });
-            });
-        }
-    }
-
-
+    //         confirmToDeleteAllVoucher(function () {
+    //             $.ajax({
+    //                 url: `/api/VoucherJournal/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&TemporaryNo=${encodeURIComponent(temporaryNo)}`,
+    //                 type: "POST",
+    //                 success: function (response) {
+    //                     if (response.data) {
+    //                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+    //                         DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.", "Data Deleted Successfully")
+    //                             .done(function () {
+    //                                 history.back(); // Execute only when "OK" is clicked
+    //                             });
+    //                     } else {
+    //                         DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+    //                     }
+    //                 },
+    //                 error: function (xhr, status, error) {
+    //                     DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+    //                 }
+    //             });
+    //         });
+    //     }
+    // }
 
 
 
 
-    function showLedgerAccountPopup() {
-        var popup = $("#ledgerAccountPopup").dxPopup("instance");
-        popup.show();
 
-        // Correct URL to your LedgerAccount view
-        $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
-    }
+
+    // function showLedgerAccountPopup() {
+    //     var popup = $("#ledgerAccountPopup").dxPopup("instance");
+    //     popup.show();
+
+    //     // Correct URL to your LedgerAccount view
+    //     $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+    // }
     $(document).ready(function () {
         $("#btntoggleGroupPanel").click();
 
@@ -2669,6 +2726,59 @@
             }
         };
     });
+    function showLedgerAccountPopup() {
+        var popup = $("#ledgerAccountPopup").dxPopup("instance");
+        popup.show();
+
+        // Correct URL to your LedgerAccount view
+        $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+    }
+    function showLedgerAccountEditPopup() {
+        var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance"); // Get DropDownBox instance
+        var accheadid = dropDownBox.option("value"); // Get the selected value
+
+        IsEdit = true;
+
+        // Ensure variables are initialized properly
+        refno = refno || "";
+        accheadar = accheadar || "";
+        accheadname = accheadname || "";
+        accgroup = accgroup || "";
+        accgroupid = accgroupid || "";
+
+        // Validate AccountHead selection
+        if (!accheadid) {
+            DevExpress.ui.notify("Please select an Account Head before editing.", "error", 2000);
+            return;
+        }
+
+        // Construct the URL only if AccountHeadID is valid
+        const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+
+        // Show the popup
+        var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+        popupInstance.show();
+
+        // Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+        popupInstance.option("onShown", function () {
+            var iframe = document.getElementById("ledgerEditAccountFrame");
+
+            if (!iframe) {
+                console.error("Error: ledgerEditAccountFrame not found!");
+                return;
+            }
+
+            // Clear iframe src to prevent caching issues
+            iframe.src = "";
+
+            // Set new iframe src
+            iframe.onload = function () {
+                console.log("Iframe loaded successfully.");
+            };
+
+            iframe.src = url;
+        });
+    }
 
 
 </script>
