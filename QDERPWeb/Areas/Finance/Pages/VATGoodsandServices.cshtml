@@ -62,6 +62,10 @@
 </head>
 <body>
     <div class="dx-card">
+
+        <div id="goodsServicesForm">
+            <!-- Your entire form HTML here -->
+     
         <h3>Goods and Services</h3>
         <!-- Row 1: Goods Code | Goods Group | Item Part No -->
         <div class="dx-fieldset">
@@ -74,40 +78,31 @@
                         </td>
                         <td>
                             <label class="field-label">Goods & Services Group:</label>
-                             @(Html.DevExtreme().DropDownBox()
-                   // .Label(new JS("formatMessage('Account Head')"))
-                    .DataSource(d => d.WebApi()
-                    .Controller("VATModule")
-                                .LoadAction("GetGoodsAndServices")
+                            @(Html.DevExtreme().DropDownBox()
+                                .DataSource(d => d.WebApi()
+                                .Controller("VATModule")
+                                .LoadAction("GetGoodsAndServicesGroups") // This returns list of groups
                                 .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("Gsdescrpition")
+                                .Key("GsgroupId") // ✅ Use correct primary key
                                 )
-                    
-                    .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Outside)
                                 .ID("ddlGoodsGroup1")
                                 .ShowClearButton(true)
-                    .AcceptCustomValue(true)
-                    .OpenOnFieldClick(false)
-                    .ValueChangeEvent("input")
-                    .HoverStateEnabled(true)
-                    .ValueExpr("GsgroupId")
-                    .DisplayExpr("Gsdescrpition")
-                    .OnInput("dropDownBoxOnInput")
-                    .OnOpened("onOpened")
-                    //.Width(650)
-                    .TabIndex(1)
-                    .DropDownOptions(o => o
-                    .Width(1000)
-                    )
-                  //  .OnKeyDown("onKeyDown")
-                    //.OnValueChanged("dropDownBoxValueChanged")
-                    .ContentTemplate(new TemplateName("GoodsandServicesContentTemplate"))
-                    .Width("85%")
-                    )
-
-
-                            
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .OnValueChanged("onGoodsGroupChanged")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("GsgroupId") // ✅ Set Value to Group ID
+                                .DisplayExpr("GsgroupName") // ✅ Display actual group name
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .DropDownOptions(o => o.Width(1000))
+                                .ContentTemplate(new TemplateName("GoodsandServicesContentTemplate"))
+                                .Width("85%")
+                                )
                         </td>
+
                         <td style="padding-top:15px;">
                             @(Html.DevExtreme().Button().ID("btnAddGroup3").Icon("plus"))
                             
@@ -152,74 +147,71 @@
                     <tr>
                         <td>
                             <label class="field-label">Unit of Measure:</label>
-                            @(Html.DevExtreme().DropDownBox().ID("ddlUnitMeasure9").Width("100%")
-                            .DataSource(d => d.WebApi()
-                    .Controller("VATModule")
+                            @(Html.DevExtreme().DropDownBox()
+                                .ID("ddlUnitMeasure9")
+                                .Width("100%")
+                                .DataSource(d => d.WebApi()
+                                .Controller("VATModule")
                                 .LoadAction("GetUnitofMeasure")
                                 .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("UnitType")
+                                .Key("UnitCode") // ✅ Set correctly
                                 )
-                    
-                    .LabelMode(EditorLabelMode.Outside)
-                                .ID("ddlGroup1")
+                                .LabelMode(EditorLabelMode.Outside)
                                 .ShowClearButton(true)
-                    .AcceptCustomValue(true)
-                    .OpenOnFieldClick(false)
-                    .ValueChangeEvent("input")
-                    .HoverStateEnabled(true)
-                    .ValueExpr("UnitCode")
-                    .DisplayExpr("UnitType")
-                    .OnInput("dropDownBoxOnInput")
-                    .OnOpened("onOpened")
-                    //.Width(650)
-                    .TabIndex(1)
-                    .DropDownOptions(o => o
-                    .Width(1000)
-                    )
-                  //  .OnKeyDown("onKeyDown")
-                    //.OnValueChanged("dropDownBoxValueChanged")
-                    .ContentTemplate(new TemplateName("UnitofMeasureContentTemplate"))
-                    .Width("85%") )
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("UnitCode")      // ✅ Value bound to UnitCode
+                                .DisplayExpr("UnitType")    // ✅ Display shows UnitType
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .OnValueChanged("onUnitMeasureValueChanged") // Optional for tracking value
+                                .DropDownOptions(o => o.Width(400))
+                                .ContentTemplate(new TemplateName("UnitofMeasureContentTemplate"))
+                                .Width("85%")
+                                )
                         </td>
+
                         <td>
                             <label class="field-label">Packing Unit:</label>
                             @(Html.DevExtreme().NumberBox()
                                 .ID("packingUnit")
-                                .Min(1) 
-                                .Step(1) 
-                                .ShowSpinButtons(true) 
+                                .Value(1) // default
+                                .Min(1)
+                                .Step(1)
+                                .ShowSpinButtons(true)
+                                .Format("#") // no decimals
                                 .Width(100)
                                 )
                         </td>
+
                         <td>
                             <label class="field-label">Selling Rate:</label>
-                           @*  @(Html.DevExtreme().NumberBox()
-                                .ID("txtSellingRate2")
-                                .Value(1)
-                                .Format("#,##0.00")
-                                .Min(0.01)
-                                .Width("100%")
-                                .ValidationRules(rules => rules.AddRange().Min(0.01).Message("Selling Rate must be greater than zero"))) *@
                             @(Html.DevExtreme().NumberBox()
                                 .ID("sellingRate")
-                                .Min(0) 
-                                .Step(0.01) 
+                                .Value(1)
+                                .Min(1)
+                                .Step(1)
                                 .ShowSpinButtons(true)
-                                .Format("#,##0.00") 
+                                .Format("#") // no decimals
                                 .Width(100)
                                 )
                         </td>
+
                         <td>
                             <label class="field-label">Cost Price:</label>
                             @(Html.DevExtreme().NumberBox()
                                 .ID("txtCostPrice3")
                                 .Value(1)
-                                .Format("#,##0.00")
+                                .Min(1)
+                                .Step(1)
                                 .ShowSpinButtons(true)
-                                .Min(0.01)
-                                .Width("100%"))
-@*                                 .ValidationRules(rules => rules.AddRange().Min(0.01).Message("Cost Price must be greater than zero")))
- *@                        </td>
+                                .Format("#") // no decimals
+                                .Width("100%")
+                                )
+                        </td>
+
                     </tr>
                 </table>
             </div>
@@ -256,97 +248,120 @@
         </div>
     </div>
 
-     @using (Html.DevExtreme().NamedTemplate("GoodsandServicesContentTemplate"))
-        {
-            @(Html.DevExtreme().DataGrid()
+    @using (Html.DevExtreme().NamedTemplate("GoodsandServicesContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("accounthead-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetGoodsAndServicesGroups")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("GsgroupId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .SearchPanel(sp => sp.HighlightSearchText(true))
+            .Selection(sl => sl.Mode(SelectionMode.Single))
+            .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
+            .OnInitialized("dataGridAccountHeadInitialized")
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+               
 
-                    .ID("accounthead-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("VATModule")
-                    .LoadAction("GetGoodsAndServices")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    ///   .Key("AccountHead") //salary paid entry
-                    .Key("GsgroupId")
-
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
-                    .OnInitialized("dataGridAccountHeadInitialized")
-                    // .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("Gsdescription").Caption(new JS("formatMessage('Description')"));
-                       
-
-                    })
-                    
+                columns.Add().DataField("GsgroupId")
+                .Caption(new JS("formatMessage('Group')"))
+                .Lookup(lookup => lookup
+                .DataSource(ds => ds.WebApi()
+                .Controller("VATModule")
+                .LoadAction("GetGoodsAndServicesGroups") // You must implement this
+                .Key("GsgroupId")
                 )
-        }
-        @using (Html.DevExtreme().NamedTemplate("GoodsandServicesContentTemplate"))
-        {
-            @(Html.DevExtreme().DataGrid()
+                .ValueExpr("GsgroupId")
+                .DisplayExpr("GsgroupName")
+                );
 
-                    .ID("accounthead-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("VATModule")
-                    .LoadAction("GetGoodsAndServices")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    ///   .Key("AccountHead") //salary paid entry
-                    .Key("GsgroupId")
+               
+            })
+            )
+    }
 
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
-                    .OnInitialized("dataGridAccountHeadInitialized")
-                    // .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("Gsdescription").Caption(new JS("formatMessage('Description')"));
-                       
+    @using (Html.DevExtreme().NamedTemplate("UnitofMeasureContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("unitofmeasure-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetUnitofMeasure")
 
-                    })
-                    
-                )
-        }
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("UnitCode")
+            )
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .HoverStateEnabled(true)
+       
+            .FilterRow(f => f.Visible(false))
+            .Height(345)
+            .Width("100%")
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .OnSelectionChanged("onUnitMeasureSelectionChanged")
+            .Columns(columns =>
+            {
+             
+                columns.Add().DataField("UnitType").Caption("Type");
+             
+            })
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            )
+    }
+
+
+
+    </div>
     
 </body>
 </html>
 <script>
-        $(document).ready(function () {
 
-        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+    function onUnitMeasureSelectionChanged(e) {
+        const selected = e.selectedRowsData[0];
+        if (selected) {
+            const dropDownBox = $("#ddlUnitMeasure9").dxDropDownBox("instance");
+            dropDownBox.option("value", selected.UnitCode); // Bind value
+        }
+    }
+    function onUnitMeasureValueChanged(e) {
+        const value = e.value;
+        const component = e.component;
 
-            if (!$(this).find("#btnSave,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack").length) {
+        // Try to get selectedItem first
+        const selected = component.option("selectedItem");
 
-                $(this).remove();
+        if (selected && selected.UnitName) {
+            $("#txtUnitName").dxTextBox("instance").option("value", selected.UnitName);
+        } else {
+            // If selectedItem is not resolved, manually load the item from the data source
+            const dataSource = component.getDataSource();
+            dataSource.load().done(function (items) {
+                const match = items.find(x => x.UnitCode === value);
+                if (match) {
+                    console.log("Manually matched item:", match);
+                    $("#txtUnitName").dxTextBox("instance").option("value", match.UnitName);
+                } else {
+                    console.warn("Could not find matching item for value:", value);
+                }
+            });
+        }
+    }
 
-            }
-
-        });
-
-    });
+      
 
      function dropDownBoxOnInput(e) {
                 const ddbInstance = e.component;
@@ -429,5 +444,82 @@
             alert("Translation failed. Please try again.");
         }
     }
+    function onGoodsGroupChanged(e) {
+        const selectedValue = e.value; // This is GsgroupId
+        const dropDownBoxInstance = e.component;
+
+        // Access the full data source
+        const dataSource = dropDownBoxInstance.getDataSource();
+
+        dataSource.load().done(function (items) {
+            const selectedItem = items.find(item => item.GsgroupId === selectedValue);
+
+            if (selectedItem && selectedItem.GsgroupCode) {
+                $("#txtGoodsCode7").dxTextBox("instance").option("value", selectedItem.GsgroupCode);
+            } else {
+                $("#txtGoodsCode7").dxTextBox("instance").option("value", "");
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        const $form = $("#goodsServicesForm");
+
+        // Only affect buttons inside this specific form
+        $form.find(".limited-footer .btn-containerIvoiceEdit").each(function () {
+            if (!$(this).find("#btnSave,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack").length) {
+                $(this).remove();
+            }
+        });
+
+        // Save button click - scoped to this form
+        $form.find("#btnSave").on("click", function () {
+            onSaveClicked($form);
+        });
+    });
+    debugger
+    function onSaveClicked($form) {
+        const gsCodeInput = $form.find("#txtGoodsCode7").dxTextBox("instance").option("value");
+        const description = $form.find("#txtDescription8").dxTextArea("instance").option("value");
+
+        if (!description) {
+            DevExpress.ui.notify("Description cannot be empty.", "warning", 2000);
+            return;
+        }
+
+        const formData = {
+            GSCode: gsCodeInput, // only the prefix like "MECH", "TRM", etc.
+            GSGroupID: parseInt($form.find("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")),
+            ItemPartNo: $form.find("#txtItemPartNo4").dxTextBox("instance").option("value"),
+            GSDescrpition: description,
+            GSDescriptionAr: $form.find("#txtDescriptionArabic").dxTextBox("instance").option("value"),
+            GSUoM: parseInt($form.find("#ddlUnitMeasure9").dxDropDownBox("instance").option("value")),
+            GSPackingUnit: parseInt($form.find("#packingUnit").dxNumberBox("instance").option("value")),
+            GSSellingRate: parseFloat($form.find("#sellingRate").dxNumberBox("instance").option("value")),
+            CostPrice: parseFloat($form.find("#txtCostPrice3").dxNumberBox("instance").option("value")),
+            GSDetailedDesc: $form.find("#txtDetailedDescription").dxTextArea("instance").option("value"),
+            GSDetailedDescAr: $form.find("#txtDetailedDescriptionArabic").dxTextBox("instance").option("value")
+        };
+
+        $.ajax({
+            type: "POST",
+            url: `/api/VATModule/SaveGoodsAndServices`,
+            data: JSON.stringify(formData),
+            contentType: "application/json",
+            success: function (response) {
+                DevExpress.ui.notify(response.message, "success", 2000);
+                if (!gsCodeInput && response.gscode) {
+                    $form.find("#txtGoodsCode7").dxTextBox("instance").option("value", response.gscode);
+                }
+            },
+            error: function (xhr) {
+                const errMsg = xhr.responseJSON?.message || "Save failed.";
+                DevExpress.ui.notify(errMsg, "error", 2000);
+            }
+        });
+    }
+
+
+
 
 </script>

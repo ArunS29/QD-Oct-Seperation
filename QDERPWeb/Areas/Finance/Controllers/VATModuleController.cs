@@ -488,6 +488,150 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         //    return BadRequest("Failed to retrieve tenant and database context.");
         //}
+        [HttpGet]
+        public IActionResult GetGoodsAndServicesGroups()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var groups = dbContext.Tbl20165GoodsAndServicesGroups
+                    .Select(g => new
+                    {
+                        g.GsgroupId,
+                        g.GsgroupName,
+                        g.GsgroupCode
+                    })
+                    .ToList();
+
+                return Ok(groups);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public IActionResult GetUnitOfMeasures()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var units = dbContext.Tbl40111PropertyUnitCodes
+                    .Select(u => new
+                    {
+                        u.UnitCode,     // Primary key
+                        u.UnitType,     // Display text
+                        u.UnitDesc  // Optional display or additional info
+                    })
+                    .ToList();
+
+                return Ok(units);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SaveCostAllocation([FromBody] Tbl20164GoodsAndServicesMaster CM)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    dbContext.Tbl20164GoodsAndServicesMasters.Add(CM);
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { success = true, message = "Data inserted successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in SaveCostAllocation: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<ActionResult> SaveGoodsAndServices([FromBody] Tbl20164GoodsAndServicesMaster model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var now = DateTime.Now;
+
+                    var existing = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .FirstOrDefaultAsync(x => x.Gscode == model.Gscode);
+
+                    // Validate duplicates
+                    if (await dbContext.Tbl20164GoodsAndServicesMasters
+                        .AnyAsync(x => x.ItemPartNo == model.ItemPartNo && x.Gscode != model.Gscode))
+                    {
+                        return BadRequest(new { success = false, message = "Stock Item with this Part Number already exists." });
+                    }
+
+                    if (existing != null)
+                    {
+                        // Update
+                        existing.Gsdescrpition = model.Gsdescrpition;
+                        existing.GsdescriptionAr = model.GsdescriptionAr;
+                        existing.GsdetailedDesc = model.GsdetailedDesc;
+                        existing.GsdetailedDescAr = model.GsdetailedDescAr;
+                        existing.GsgroupId = model.GsgroupId;
+                        existing.GsuoM = model.GsuoM;
+                        existing.GspackingUnit = model.GspackingUnit;
+                        existing.GssellingRate = model.GssellingRate;
+                        existing.CostPrice = model.CostPrice;
+                        existing.ItemPartNo = model.ItemPartNo;
+                        existing.ModifiedOn = now;
+                        existing.ModifiedBy = "User"; // Replace with actual user
+                    }
+                    else
+                    {
+                        // New insert
+                        string prefix = "TRM"; // default
+                        if (!string.IsNullOrWhiteSpace(model.Gscode))
+                        {
+                            var parts = model.Gscode.Split('-');
+                            if (parts.Length > 0)
+                                prefix = parts[0].ToUpper();
+                        }
+
+                        var fullPrefix = prefix + "-";
+
+                        var maxCode = await dbContext.Tbl20164GoodsAndServicesMasters
+                            .Where(x => x.Gscode.StartsWith(fullPrefix))
+                            .OrderByDescending(x => x.Gscode)
+                            .Select(x => x.Gscode)
+                            .FirstOrDefaultAsync();
+
+                        int nextNo = 1;
+                        if (!string.IsNullOrEmpty(maxCode))
+                        {
+                            var numberPart = maxCode.Substring(fullPrefix.Length);
+                            if (int.TryParse(numberPart, out int parsedNo))
+                            {
+                                nextNo = parsedNo + 1;
+                            }
+                        }
+
+                        model.Gscode = $"{fullPrefix}{nextNo:D5}";
+                        model.CreatedOn = now;
+                        model.CreatedBy = "User"; // Replace with actual user
+
+                        dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { success = true, message = "Saved successfully!", gscode = model.Gscode });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in SaveGoodsAndServices: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+
 
     }
 }
