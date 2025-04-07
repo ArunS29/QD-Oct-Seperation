@@ -1,4 +1,4 @@
-using DevExpress.CodeParser.VB;
+﻿using DevExpress.CodeParser.VB;
 using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,77 +16,94 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 
 namespace QD.ERP.Web.Pages
 {
-    public class DocumentViewerModel : PageModel
-    {
-        public XtraReport Report { get; private set; }
+	public class DocumentViewerModel : PageModel
+	{
+		public XtraReport Report { get; private set; }
+		public string ReportName { get; private set; }
+		public string AccountId { get; private set; }
+		public DateTime FrmDate { get; private set; }
+		public DateTime ToDate { get; private set; }
 
-        public string ReportName { get; private set; }
-
-        public string AccountId { get; private set; }
-        public DateTime FrmDate { get; private set; }
-        public DateTime ToDate { get; private set; }
-
-        private readonly DAL.Entities.ERPMasterWtDataContext _eRPMasterWtDataContext;
+		private readonly TenantDbContextHelper _tenantDbContextHelper;
+		private ERPMasterWtDataContext _eRPMasterWtDataContext;
+		private Tbl901CompanyDetail ERPCompany_details;
 
 
-        public Tbl901CompanyDetail ERPCompany_details;
-        public DocumentViewerModel(DAL.Entities.ERPMasterWtDataContext eRPMasterWtDataContext)
-        {
-            _eRPMasterWtDataContext = eRPMasterWtDataContext;
 
-        }
-        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
-        {
-            if (string.IsNullOrEmpty(reportName))
-            {
-                return BadRequest("Invalid report name.");
-            }
+		public DocumentViewerModel(TenantDbContextHelper tenantDbContextHelper)
+		{
+			_tenantDbContextHelper = tenantDbContextHelper;
+		}
 
-            ReportName = reportName;
+		public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
+		{
+			if (string.IsNullOrEmpty(reportName))
+			{
+				return BadRequest("Invalid report name.");
+			}
 
-            if (reportName == "StatementOfAccountReport")
-            {
-                if (string.IsNullOrEmpty(accountId) || frmDate == null || toDate == null)
-                {
-                    return BadRequest("Missing required parameters for StatementOfAccountReport.");
-                }
+			// Try to get tenant and DB context once
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+			{
+				return StatusCode(500, "Tenant not found or DbContext could not be created.");
+			}
 
-                AccountId = accountId;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
+			_eRPMasterWtDataContext = dbContext;
+			ReportName = reportName;
 
-                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+			if (reportName == "StatementOfAccountReport")
+			{
+				if (string.IsNullOrEmpty(accountId) || frmDate == null || toDate == null)
+				{
+					return BadRequest("Missing required parameters for StatementOfAccountReport.");
+				}
 
-                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
-                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
-                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+				AccountId = accountId;
+				FrmDate = frmDate.Value;
+				ToDate = toDate.Value;
 
-                string logoBase64 = string.Empty;
-                Image logoImage = null; 
-                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
-                {
-                    try
-                    {
-                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
-                        {
-                            logoImage = Image.FromStream(ms);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                     
-                        Console.WriteLine("Error processing company logo: " + ex.Message);
-                    }
-                }
+				var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
 
-                Report = new StatementOfAccountReport(
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
-            }
+				var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
+					.FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+				string companyName = companyDetails?.CompanyName ?? string.Empty;
+				string companyAddress = companyDetails?.CompanyFullAddress ?? string.Empty;
+				string companyAddressAr = companyDetails?.CompanyFullAddressAr ?? string.Empty;
+				string companyNameAr = companyDetails?.CompanyNameAr ?? string.Empty;
+
+				Image logoImage = null;
+				if (companyDetails?.CompanyLogo is byte[] logoBytes && logoBytes.Length > 0)
+				{
+					try
+					{
+						using (var ms = new MemoryStream(logoBytes))
+						{
+							logoImage = Image.FromStream(ms);
+						}
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine("Error processing company logo: " + ex.Message);
+					}
+				}
+
+				Report = new StatementOfAccountReport(
+					AccountId,
+					FrmDate,
+					ToDate,
+					tenantName,
+					companyName,
+					companyAddress,
+					logoImage,
+					companyNameAr,
+					companyAddressAr,
+					_tenantDbContextHelper
+				);
+			}
+
+		
+
 
             else if (reportName == "AccountWithNarration")
             {
@@ -130,8 +147,8 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountWithNarration(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+				);
             }
             else if (reportName == "AccountStatementFormat2Report")
             {
@@ -172,8 +189,8 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountStatementFormat2Report(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+				);
             }
             else if (reportName == "AccountExportFromatReport")
             {
@@ -214,8 +231,8 @@ namespace QD.ERP.Web.Pages
        }
        Report = new AccountExportFromatReport(
            AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-           companyNameAr, companyAddressAr
-       );
+           companyNameAr, companyAddressAr, _tenantDbContextHelper
+	   );
                
             }
             else if (reportName == "AccountOrderbyVchNoWONarrationReport")
@@ -257,8 +274,8 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountOrderbyVchNoWONarrationReport(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+				);
 
 
             }
@@ -301,8 +318,8 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountExportLandscapeReport(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+				);
 
 
             }
@@ -360,8 +377,8 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountOrderByVoucherNo(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+				);
 
             }
             else if (reportName == "AccountDetails")
@@ -412,8 +429,8 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountDetails(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+				);
 
             }
 
@@ -880,8 +897,8 @@ namespace QD.ERP.Web.Pages
 
                 Report = new StatementOfAccountReport(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
-                );
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+				);
 
 
             }

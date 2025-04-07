@@ -1,141 +1,189 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting;
 using DevExpress.Utils.Svg;
 using DevExpress.XtraPrinting.Drawing;
+using DevExpress.DataAccess.Sql;
+using DevExpress.DataAccess.ConnectionParameters;
+using QD.ERP.Web.Service; // Ensure this is imported for TenantDbContextHelper
 
 namespace QD.ERP.Web.Reports
 {
-    public partial class StatementOfAccountReport : XtraReport
-    {
-        public StatementOfAccountReport(
-            string accountId, DateTime frmDate, DateTime toDate,
-            string tenantName, string company_Name, string company_address,
-            Image logoImage, string Company_Name_Ar, string company_address_arb)
-        {
-            InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
-        }
+	public partial class StatementOfAccountReport : XtraReport
+	{
+		private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public StatementOfAccountReport()
-        {
-            InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
-        }
+		public StatementOfAccountReport(
+			string accountId, DateTime frmDate, DateTime toDate,
+			string tenantName, string company_Name, string company_address,
+			Image logoImage, string Company_Name_Ar, string company_address_arb,
+			TenantDbContextHelper tenantDbContextHelper)
+		{
+			_tenantDbContextHelper = tenantDbContextHelper;
+			InitializeComponent();
+			SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
 
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate,
-                                         string tenantName, string company_Name, string company_address,
-                                         Image logoImage, string Company_Name_Ar, string company_address_arb)
-        {
-            void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
-            {
-                if (Parameters[name] == null)
-                {
-                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
-                    {
-                        Name = name,
-                        Type = type,
-                        Value = value,
-                        Visible = visible
-                    });
-                }
-                else
-                {
-                    Parameters[name].Value = value;
-                    Parameters[name].Visible = visible;
-                }
-            }
+			ConfigureSqlDataSource(accountId, frmDate, toDate);
+		}
 
-            // Adding or updating report parameters
-            AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
-            AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
-            AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
+		public StatementOfAccountReport()
+		{
+			InitializeComponent();
+			SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+		}
 
-            // Company & Tenant Information
-            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
+		private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate,
+										 string tenantName, string company_Name, string company_address,
+										 Image logoImage, string Company_Name_Ar, string company_address_arb)
+		{
+			void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
+			{
+				if (Parameters[name] == null)
+				{
+					Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+					{
+						Name = name,
+						Type = type,
+						Value = value,
+						Visible = visible
+					});
+				}
+				else
+				{
+					Parameters[name].Value = value;
+					Parameters[name].Visible = visible;
+				}
+			}
 
-            Console.WriteLine($"Company Logo: {(logoImage != null ? "Exists" : "Not Provided")}");
+			AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
+			AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
+			AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
 
-            // Assigning text values to labels
-            AssignLabelText("xrLabelTenantName", tenantName);
-            AssignLabelText("xrLabelCompanyAddress", company_address);
-            AssignLabelText("xrLabelCompanyNameAr", Company_Name_Ar);
-            AssignLabelText("xrLabelCompanyAddressArb", company_address_arb);
+			AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
+			AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string));
+			AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string));
+			AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
+			AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
 
-            // Setting company logo
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-            {
-                logoPictureBox.Image = logoImage;
-            }
+			Console.WriteLine($"Company Logo: {(logoImage != null ? "Exists" : "Not Provided")}");
 
-            // Apply icon formatting to relevant labels
-            ApplyIconFormatting();
-        }
+			AssignLabelText("xrLabelTenantName", tenantName);
+			AssignLabelText("xrLabelCompanyAddress", company_address);
+			AssignLabelText("xrLabelCompanyNameAr", Company_Name_Ar);
+			AssignLabelText("xrLabelCompanyAddressArb", company_address_arb);
 
-        private void AssignLabelText(string controlName, string text)
-        {
-            if (this.FindControl(controlName, true) is XRLabel label)
-            {
-                label.Text = text ?? "";
-            }
-        }
+			if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+			{
+				logoPictureBox.Image = logoImage;
+			}
 
-        private void ApplyIconFormatting()
-        {
-            // Create a list to store labels with the "ShowIcon" tag
-            List<XRLabel> labelsToModify = new List<XRLabel>();
+			ApplyIconFormatting();
+		}
 
-            // Find all labels that need icons
-            foreach (XRControl control in this.AllControls<XRControl>())
-            {
-                if (control is XRLabel label && label.Tag != null && label.Tag.ToString().ToLower() == "showicon")
-                {
-                    labelsToModify.Add(label);
-                }
-            }
+		private void ConfigureSqlDataSource(string accountId, DateTime frmDate, DateTime toDate)
+		{
+			sqlDataSource1.Queries.Clear();
 
-            // Now add icons safely
-            foreach (var label in labelsToModify)
-            {
-                AddSvgImageNextToLabel(label);
-            }
-        }
+			var storedProcQuery = new StoredProcQuery
+			{
+				Name = "StProAccountLedger",
+				StoredProcName = "StProAccountLedger"
+			};
 
+			storedProcQuery.Parameters.AddRange(new[]
+			{
+				new QueryParameter("@AccountID", typeof(string), accountId),
+				new QueryParameter("@StartDate", typeof(DateTime), frmDate),
+				new QueryParameter("@EndDate", typeof(DateTime), toDate)
+			});
 
-        private void AddSvgImageNextToLabel(XRLabel label)
-        {
-            string webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            string filePath = Path.Combine(webRootPath, "images", "sar 1.svg");
+			sqlDataSource1.Queries.Add(storedProcQuery);
 
-            SvgImage svg = SvgImage.FromFile(filePath);
-            if (svg == null) return;
+			sqlDataSource1.ConnectionParameters = GetConnectionParameters();
 
-            // Define image size
-            float iconWidth = 15;
-            float iconHeight = 15;
+			try
+			{
+				sqlDataSource1.Fill();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to fill data source: " + ex.Message, ex);
+			}
+		}
 
-            // Position the image next to the label (left side, centered vertically)
-            float posX = label.LocationF.X - iconWidth - 5; // Small gap
-            float posY = label.LocationF.Y + (label.HeightF - iconHeight) / 2;
+		private CustomStringConnectionParameters GetConnectionParameters()
+		{
+			if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+			{
+				if (!string.IsNullOrWhiteSpace(tenant.ConnectionString))
+				{
+					return new CustomStringConnectionParameters(tenant.ConnectionString);
+				}
+				else
+				{
+					throw new Exception("Tenant connection string is empty.");
+				}
+			}
+			else
+			{
+				throw new Exception("Unable to get tenant context. Please check session and cache.");
+			}
+		}
 
-            // Create an XRPictureBox to hold the SVG image
-            XRPictureBox iconImage = new XRPictureBox
-            {
-                ImageSource = new ImageSource(svg),
-                Sizing = ImageSizeMode.StretchImage,
-                WidthF = iconWidth,
-                HeightF = iconHeight,
-                LocationF = new PointF(posX, posY),
-                Borders = BorderSide.None
-            };
+		private void AssignLabelText(string controlName, string text)
+		{
+			if (this.FindControl(controlName, true) is XRLabel label)
+			{
+				label.Text = text ?? "";
+			}
+		}
 
-            // Add the image next to the label
-            label.Parent.Controls.Add(iconImage);
-        }
-    }
+		private void ApplyIconFormatting()
+		{
+			List<XRLabel> labelsToModify = new List<XRLabel>();
+
+			foreach (XRControl control in this.AllControls<XRControl>())
+			{
+				if (control is XRLabel label && label.Tag != null && label.Tag.ToString().ToLower() == "showicon")
+				{
+					labelsToModify.Add(label);
+				}
+			}
+
+			foreach (var label in labelsToModify)
+			{
+				AddSvgImageNextToLabel(label);
+			}
+		}
+
+		private void AddSvgImageNextToLabel(XRLabel label)
+		{
+			string webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+			string filePath = Path.Combine(webRootPath, "images", "sar 1.svg");
+
+			SvgImage svg = SvgImage.FromFile(filePath);
+			if (svg == null) return;
+
+			float iconWidth = 15;
+			float iconHeight = 15;
+			float posX = label.LocationF.X - iconWidth - 5;
+			float posY = label.LocationF.Y + (label.HeightF - iconHeight) / 2;
+
+			XRPictureBox iconImage = new XRPictureBox
+			{
+				ImageSource = new ImageSource(svg),
+				Sizing = ImageSizeMode.StretchImage,
+				WidthF = iconWidth,
+				HeightF = iconHeight,
+				LocationF = new PointF(posX, posY),
+				Borders = BorderSide.None
+			};
+
+			label.Parent.Controls.Add(iconImage);
+		}
+	}
 }
