@@ -37,7 +37,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var cashBalance = await dbContext.Qry201MainVoucherEntriesWithMasters
                         .Select(v => v.CrAmount - v.DrAmount)
                         .SumAsync();
-
+                    cashBalance = (int)cashBalance;
                     return Ok(new { success = true, cashBalance });
                 }
                 catch (Exception ex)
@@ -61,7 +61,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var totalOutstanding = await dbContext.Qry20115BillsOutStandings
                         .Where(b => b.Balance > 0)
                         .SumAsync(b => b.Balance);
-
+                    totalOutstanding = (int)totalOutstanding;
                     return Ok(new { success = true, totalOutstanding });
                 }
                 catch (Exception ex)
@@ -121,7 +121,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var totalBillsOutstanding = await dbContext.Qry20115BillsPayableOutStandings
                         .Where(b => b.Balance > 0)
                         .SumAsync(b => b.Balance);
-
+                    totalBillsOutstanding = (int)totalBillsOutstanding;
                     return Ok(new { success = true, totalBillsOutstanding });
                 }
                 catch (Exception ex)
@@ -314,6 +314,55 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBankAccountsFrequency()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var data = await Task.Run(() => dbContext.Qry201MainVoucherEntriesWithMasters
+                        .GroupBy(v => new { v.AccountHead, v.AccountHeadName, v.MasterGroupId, v.AccountGroup })
+                        .Select(g => new sp20103GetBankAccountsResult
+                        {
+                            AccountHead = g.Key.AccountHead,
+                            AccountHeadName = g.Key.AccountHeadName,
+                            MasterGroupID = g.Key.MasterGroupId,
+                            Amount = g.Sum(v => v.CrAmount - v.DrAmount),
+                            AccountGroup = g.Key.AccountGroup
+                        })
+                        .OrderByDescending(g => g.Amount)
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHeadName))
+                        .ThenBy(g => g.AccountHeadName)
+                        .ToList());
+
+                    // Filter out negative balances
+                    var filteredData = data.Where(item => item.Amount > 0).ToList();
+
+                    // Group data by balance ranges (e.g., 0-1000, 1000-2000, etc.)
+                    var balanceRanges = new[] { 0, 1000, 2000, 3000, 4000, 5000, 10000, 20000, 50000, 100000 };
+                    var frequencyData = balanceRanges.Select((range, index) =>
+                    {
+                        var nextRange = (index + 1 < balanceRanges.Length) ? balanceRanges[index + 1] : int.MaxValue;
+                        return new
+                        {
+                            Range = $"{range}-{nextRange}",
+                            BankBalance = filteredData.Where(item => item.AccountGroup == "Bank" && item.Amount >= range && item.Amount < nextRange).Sum(item => item.Amount),
+                            CashBalance = filteredData.Where(item => item.AccountGroup == "Cash" && item.Amount >= range && item.Amount < nextRange).Sum(item => item.Amount)
+                        };
+                    }).ToList();
+
+                    return Json(frequencyData);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetBankAccountsFrequency: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+            return StatusCode(500, "Internal server error");
         }
     }
 }

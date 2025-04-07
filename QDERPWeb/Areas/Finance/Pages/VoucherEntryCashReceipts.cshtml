@@ -111,6 +111,14 @@
                 background-color: #f0f0f0;
             }
 
+        td {
+            padding: 5px;
+        }
+
+        .custom-popup-button {
+            height: 250px !important;
+            width: 100px !important;
+        }
 </style>
 
 
@@ -620,121 +628,114 @@
         }) *@
             )
     </div>
+    <table style="width: 100%;">
+        <tr>
+            <td style="width:20%;">
+                @(
+                    Html.DevExtreme().TextBox()
+                    .ID("ChequeNoReferenceNo")
+                    .Value(null)
+                    .Label(new JS("formatMessage('Cheque No/Reference No')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    )
+            </td>
 
-    <div class="container1" style="padding:15px">
-        <div class="row g-3">
-            <div class="col-md-3 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
+            <td colspan="2">
+                @(
+                    Html.DevExtreme().TextBox()
+                    .ID("VoucherNarration")
+                    .Label(new JS("formatMessage('Voucher Narration')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Value(null)
 
-                <div class="form-group">
-                    <label for="Cheque No/Reference No">Cheque No/Reference No:</label>
-                    @(
-                                Html.DevExtreme().TextBox()
-                                .ID("ChequeNoReferenceNo")
-                                
-                                .Value(null)
-                                )
-                </div>
-                <div class="form-group mt-3">
-                    <label for="VoucherType">Voucher Type:</label>
-                    @(
-                                Html.DevExtreme().SelectBox()
-                                .ID("VoucherType")
-                                .DataSource(new[] { "Cash Receipts" }) // DataSource
-                                .Value("Cash Receipts") // Default value
-                                .Disabled(true) // Disable the dropdown
-                                )
-                </div>
-            </div>
+                    )
+            </td>
+            <td rowspan="4">
+                @(Html.DevExtreme().Button()
+                    .ID("btnAttachment")
+                    .Icon("attach")
+                    .ElementAttr("class", "custom-popup-button")
+                    .OnClick("onAttachButtonClick")
+                    )
+            </td>
+        </tr>
+        <tr>
+            <td style="width:20%;">
+                @(
+                    Html.DevExtreme().SelectBox()
+                    .ID("VoucherType")
+                    .DataSource(new[] { "Cash Receipts" }) // DataSource
+                    .Value("Cash Receipts") // Default value
+                    .Disabled(true) // Disable the dropdown
+                    )
+            </td>
+            <td colspan="2">
+                @(
+                    Html.DevExtreme().TextBox()
+                    .ID("Remarks")
+                    .Value(null)
+                    .Label(new JS("formatMessage('Remarks')"))
+                    .LabelMode(EditorLabelMode.Outside)
 
-            <div class="col-md-8 backgroundcolor" style="padding-top:10px;padding-bottom:10px">
-                <div class="form-group">
-                    <label for="VoucherNarration">Voucher Narration:</label>
-                    @(
-                                Html.DevExtreme().TextBox()
-                                .ID("VoucherNarration")
-                                 
-                                .Value(null)
+                    )
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                &nbsp;
+            </td>
+            <td>
+                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
+                    .ID("VerifiedBy").ReadOnly(true)
 
-                                )
-                </div>
-                <div class="form-group mt-3">
-                    <label for="Remarks">Remarks:</label>
-                    @(
-                                Html.DevExtreme().TextBox()
-                                .ID("Remarks")
-                                .Value(null)
-                                
 
-                                )
+                    )
+                @(Html.DevExtreme().TextBox()
+                    @* .Label(new JS("formatMessage('Verified By')")) *@
+                    @* .LabelMode(EditorLabelMode.Outside) *@
+                    .ID("VerifiedBytext")
+                    .Value(null) // Default value
+                    .Disabled(true)
+                    )
+            </td>
+            <td>
+                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
+                    .ID("ApprovedBy").ReadOnly(true)
 
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <!-- Verified By -->
-                        <div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-                            @(Html.DevExtreme().CheckBox().ID("VerifiedBy").ReadOnly(true))
-                            <span style="margin-left:5px">Verified By:</span>
-                            @(Html.DevExtreme().TextBox()
-                                        .ID("VerifiedBytext")
-                                        .Value(null)
-                                        .Disabled(true)
-                                        .Width("200px")
-                                        )
-                        </div>
-                        <!-- Verified On -->
-                        <div class="form-group d-flex align-items-center mt-2">
-                            <span>Verified On:</span>
-                            @(Html.DevExtreme().TextBox()
-                                        .ID("VerifiedOnDate")
-                                        .Value(null)
-                                        .Disabled(true)
-                                        .Width("200px")
-                                        .ElementAttr(new { style = "margin-left: 10px;" })
-                                        )
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <!-- Approved By -->
-                        <div class="form-group d-flex align-items-center" style="padding-top:10px;padding-bottom:10px">
-                            @(Html.DevExtreme().CheckBox().ID("ApprovedBy").ReadOnly(true))
-                            <span style="margin-left:5px">Approved By:</span>
-                            @(Html.DevExtreme().TextBox()
-                                        .ID("ApprovedBytext")
-                                        .Value(null)
-                                        .Disabled(true)
-                                        .Width("200px")
-                                        )
-                        </div>
-                        <!-- Approved On -->
-                        <div class="form-group d-flex align-items-center mt-2">
-                            <span>Approved On:</span>
-                            @(Html.DevExtreme().TextBox()
-                                        .ID("ApprovedOntext")
-                                        .Value(null)
-                                        .Disabled(true)
-                                        .Width("200px")
-                                        .ElementAttr(new { style = "margin-left: 10px;" })
-                                        )
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    )
+                @(Html.DevExtreme().TextBox()
+                    @* .Label(new JS("formatMessage('Approved By')")) *@
+                    @* .LabelMode(EditorLabelMode.Outside) *@
+                    .ID("ApprovedBytext")
 
-            <div class="col-md-1 backgroundcolor">
-                <div class="form-group" style="padding-top:50px;padding-left:7px;">
-                    <!-- Attach Button -->
-                    @(Html.DevExtreme().Button()
-                                .ID("btnAttachment")
-                                .Icon("attach")
-                                .Height(150)
-                                .Width(100)
-                                .OnClick("onAttachButtonClick")
-                                )
-                </div>
-                <input type="file" id="fileInput" style="display:none;" />
-            </div>
-        </div>
-    </div>
+                    .Value(null) // Default value
+                    .Disabled(true)
+                    )
+            </td>
+        </tr>
+        <tr>
+
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Verified On')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("VerifiedOnDate")
+                    .Value(null) // Default value
+                    .Disabled(true)
+                    )
+
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Approved On')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("ApprovedOntext")
+                    .Value(null) // Default value
+                    .Disabled(true)
+                    )
+            </td>
+        </tr>
+    </table>
     <div>
         @await Html.PartialAsync("_Formfooter")
     </div>

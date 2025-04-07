@@ -79,6 +79,14 @@
                 background-color: #f0f0f0;
             }
 
+    td {
+        padding: 5px;
+    }
+
+    .custom-popup-button {
+        height: 250px !important;
+        width: 100px !important;
+    }
 </style>
 <div class="title">
     <div class="header-container">
@@ -637,203 +645,150 @@
                     )
         </div>
 
-        <div class="container2">
-            <div class="row g-3" style="height:25em;">
-                <!-- First Row for Cheque No/Reference No and Voucher Narration with Button -->
-                <div class="container-fluid backgroundcolor py-3">
-                    <div class="row align-items-start">
-                        <!-- Cheque No/Reference No with Popup Button -->
-
-                        <div class="col-12 col-md-6 col-lg-5 mb-3">
-                            <div class="form-group" style="display: flex;justify-content: center;align-items: end;gap: 16px;position: relative;z-index: 2;">
-                                @(
-                                        Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Cheque No/Reference No')"))
-                                        .ID("ChequeNoReferenceNo")
-                                        .Value(null)
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .Width(257)
-                                        )
-                                @(Html.DevExtreme().Button()
-                                        .ID("btnChequePopup")
-                                        .Icon("money")
-                                        .Height(40)
-                                        .Width(60)
-                                        .OnClick("showChequePopup")
-                                        )
-                                @(
-                                    Html.DevExtreme().TextBox()
-                                    .Label(new JS("formatMessage('Voucher Narration')"))
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .ID("VoucherNarration")
-                                    .Value(null)
-                                    .Height(50)
-                                    .Width(325)
-                                    )
-                            </div>
-                        </div>
-
-                        <!-- Button to the right -->
-
-                        <div class="d-flex justify-content-end" style="position:relative;top: -54px;right: 100px;z-index:1;">
-                            <div class="form-group">
-                                @(Html.DevExtreme().Button()
-                                        .ID("btnAttachment")
-                                        .Icon("fa fa-paperclip")
-                                        .Height(50)
-                                        .Width(70)
-                                        .OnClick("onAttachButtonClick")
-                                        )
-                            </div>
-                            <input type="file" id="fileInput" style="display:none;" />
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Second Row for Bill No, Bill Date, Bill Paid To, and Remarks -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:0px; padding-bottom:0px; position:relative;bottom:70px;width:100%;">
-                    <div class="row">
-                        <!-- Bill No -->
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                @(
-                                        Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Bill No')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .ID("BillNo")
-                                        .Value(null)
-
-                                        )
-                            </div>
-                        </div>
-
-                        <!-- Bill Date -->
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                @(
-                                        Html.DevExtreme().DateBox()
-                                        .Label(new JS("formatMessage('Bill Date')"))
-                                        .ID("BillDate")
-                                        .InputAttr("aria-label", "Date")
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .Type(DateBoxType.Date)
-                                        .DisplayFormat("dd-MMM-yyyy")
-                                        .Value("")
-
-
-                                        )
-                            </div>
-                        </div>
-
-                        <!-- Bill Paid To -->
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                @(
-                                        Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Bill Paid To')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .ID("BillPaidTo")
-                                        .Value(null)
-
-                                        )
-                            </div>
-                        </div>
-
-                        <!-- Remarks -->
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                @(
-                                        Html.DevExtreme().TextBox()
-                                        .Label(new JS("formatMessage('Remarks')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .ID("Remarks")
-                                        .Value(null)
-
-                                        )
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Third Row for Payment Account, Verified By, Verified On, Approved By, Approved On -->
-                <div class="col-md-12 backgroundcolor" style="padding-top:1px; padding-bottom:1px;position:relative;bottom:50px;">
-                    <div class="row mt-3 align-items-center">
-                        <!-- Payment Account -->
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                @(
-                                        Html.DevExtreme().SelectBox()
-                                        .Label(new JS("formatMessage('Bank Payment')"))
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .ID("VoucherType")
-                                        .DataSource(new[] { "Bank Payment" })
-                                            .Value(new JS("formatMessage('Bank Payment')"))
-                                        .Width(520)
-                                        .Disabled(true)
-
-                                        )
-                            </div>
-                        </div>
-
-                        <!-- Verified By and Approved By Section -->
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div>
-                                        @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-                                                .ID("VerifiedBy").ReadOnly(true)
-                                                
-
-                                                )
-                                        @(Html.DevExtreme().TextBox()
-                                                @* .Label(new JS("formatMessage('Verified By')")) *@
-                                                @* .LabelMode(EditorLabelMode.Outside) *@
-                                                .ID("VerifiedBytext")
-                                                .Value(null) // Default value
-                                                .Disabled(true)
-                                                )
-                                    </div>
-                                    @(Html.DevExtreme().TextBox()
-                                            .Label(new JS("formatMessage('Verified On')"))
-                                            .LabelMode(EditorLabelMode.Outside)
-                                            .ID("VerifiedOnDate")
-                                            .Value(null) // Default value
-                                            .Disabled(true)
-                                            )
-                                </div>
-                                <div class="col-md-6">
-                                    <div>
-                                        @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                                                .ID("ApprovedBy").ReadOnly(true)
-                                                
-                                                )
-                                        @(Html.DevExtreme().TextBox()
-                                                @* .Label(new JS("formatMessage('Approved By')")) *@
-                                                @* .LabelMode(EditorLabelMode.Outside) *@
-                                                .ID("ApprovedBytext")
-                                                .Value(null) // Default value
-                                                .Disabled(true)
-                                                )
-                                    </div>
-                                    @(Html.DevExtreme().TextBox()
-                                            .Label(new JS("formatMessage('Approved On')"))
-                                            .LabelMode(EditorLabelMode.Outside)
-                                            .ID("ApprovedOntext")
-                                            .Value(null) // Default value
-                                            .Disabled(true)
-                                            )
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <table style="width: 100%;">
+            <tr>
+                <td style="display:flex;align-items: end;">
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Cheque No/Reference No')"))
+                        .ID("ChequeNoReferenceNo")
+                        .Value(null)
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        )
+                    @(Html.DevExtreme().Button()
+                        .ID("btnChequePopup")
+                        .Icon("money")
+                        .Height(40)
+                        .Width(60)
+                        .OnClick("showChequePopup")
+                        )
+                </td>
+                <td colspan="3">
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Voucher Narration')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("VoucherNarration")
+                        .Value(null)
+                        .Height(50)
+                        .Width("100%")
+                        )
+                </td>
+                <td rowspan="4">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnAttachment")
+                        .Icon("fa fa-paperclip")
+                        .ElementAttr("class", "custom-popup-button")
+                        .OnClick("onAttachButtonClick")
+                        )
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Bill No')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("BillNo")
+                        .Value(null)
+                        )
+                </td>
+                <td>
+                    @(
+                        Html.DevExtreme().DateBox()
+                        .Label(new JS("formatMessage('Bill Date')"))
+                        .ID("BillDate")
+                        .InputAttr("aria-label", "Date")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Type(DateBoxType.Date)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .Value("")
+                        )
+                </td>
+                <td>
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Bill Paid To')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("BillPaidTo")
+                        .Value(null)
+                        )
+                </td>
+                <td>
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Remarks')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("Remarks")
+                        .Value(null)
+                        )
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="2">
+                    @(
+                        Html.DevExtreme().SelectBox()
+                        .Label(new JS("formatMessage('Bank Payment')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("VoucherType")
+                        .DataSource(new[] { "Bank Payment" })
+                        .Value(new JS("formatMessage('Bank Payment')"))
+                        .Width(520)
+                        .Disabled(true)
+                        )
+                </td>
+                <td>
+                    @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
+                        .ID("VerifiedBy").ReadOnly(true)
 
 
+                        )
+                    @(Html.DevExtreme().TextBox()
+                        @* .Label(new JS("formatMessage('Verified By')")) *@
+                        @* .LabelMode(EditorLabelMode.Outside) *@
+                        .ID("VerifiedBytext")
+                        .Value(null) // Default value
+                        .Disabled(true)
+                        )
+                </td>
+                <td>
+                    @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
+                        .ID("ApprovedBy").ReadOnly(true)
+
+                        )
+                    @(Html.DevExtreme().TextBox()
+                        @* .Label(new JS("formatMessage('Approved By')")) *@
+                        @* .LabelMode(EditorLabelMode.Outside) *@
+                        .ID("ApprovedBytext")
+                        .Value(null) // Default value
+                        .Disabled(true)
+                        )
+                </td>
+            </tr>
+            <tr>
+
+                <td>
+                    @(Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Verified On')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("VerifiedOnDate")
+                        .Value(null) // Default value
+                        .Disabled(true)
+                        )
+
+                </td>
+                <td>
+                    @(Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Approved On')"))
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ID("ApprovedOntext")
+                        .Value(null) // Default value
+                        .Disabled(true)
+                    )
+                </td>
+            </tr>
+        </table>
 
 
 
