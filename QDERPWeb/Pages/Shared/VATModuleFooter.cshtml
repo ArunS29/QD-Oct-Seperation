@@ -586,7 +586,7 @@
                         let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
                         let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
                         if (rowIndex !== -1) {
-                            dataGrid.cellValue(rowIndex, "Item Code", selectedItem.ItemPartNo || "");
+                            dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
                             dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
                             dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
                         }
@@ -620,7 +620,7 @@
                 let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
               
                 if (rowIndex !== -1) {
-                    dataGrid.cellValue(rowIndex, "Item Code", selectedItem.ItemPartNo || "");
+                    dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
                     dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
                     dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
                     dataGrid.cellValue(rowIndex, "Qty",1);

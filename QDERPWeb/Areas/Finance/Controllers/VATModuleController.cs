@@ -325,6 +325,55 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return BadRequest("Failed to retrieve tenant and database context.");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateNewInvoiceCounter()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var maxCounter = await dbContext.Qry00101invoiceCounterValues
+                    .MaxAsync(x => (long?)(x.InvoiceCounterValue)) ;
+
+
+                    var newCounterValue = maxCounter + 1;
+
+                    return Json(newCounterValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return BadRequest("Failed to retrieve tenant and database context.");
+           
+        }
+
+        [HttpPost]
+        public IActionResult GenerateGuid()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    Guid newGuid = Guid.NewGuid();
+                    string registryFormatGuid = newGuid.ToString("D"); // Format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+                   // return Ok(new { guid = registryFormatGuid }); // More conventional for Web APIs
+                    return Json(registryFormatGuid);
+                }
+
+                return BadRequest("Failed to retrieve tenant and database context.");
+            }
+            catch (Exception ex)
+            {
+               
+                return StatusCode(500, "An error occurred while generating GUID.");
+            }
+        }
+
+
+
 
         //[HttpPost]
         //public async Task<ActionResult> UpdateInvoiceMasterDetails(Tbl20161VatinvoiceMaster InvoiceMaster)
