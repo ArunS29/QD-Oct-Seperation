@@ -77,14 +77,14 @@
 
     <div class="content-container-top">
         <div class="container-fluid"></div>
-
-
         <div id="FinanceManagementDashboard" class="card-header no-border-input"></div>
+    </div>
+
+
     <div class="title">
         <div class="header-container">
             <div id="BillsPayable" class="no-border-title"></div>
         </div>
-    </div>
     </div>
 <div class="card-footer background" style="display: flex;justify-content: space-between;">
     @await Html.PartialAsync("_GridFooter2")
@@ -116,7 +116,7 @@
         <div id="popupContent"></div>
     </div>
 </div>
-    <div class="dx-field ledgerResult" style="overflow: hidden; font-family: Inter, Helvetica, Arial, sans-serif">
+    <div class="ledgerResult">
     @(
             Html.DevExtreme().DataGrid<Qry201SubLedgerPayablesMaster>()
             .ID("dataGrid")
@@ -183,10 +183,10 @@
     return '(' + formattedValue + ')';
     }
     ");
-                band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('InvoiceDueDate')")).Alignment(HorizontalAlignment.Center).Width(80)
+                band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('InvoiceDueDate')")).Alignment(HorizontalAlignment.Center).Width("100%")
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('NoOfDaysCreditPeriod')")).Alignment(HorizontalAlignment.Center).Width(80);
-                band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('OverdueDays')")).Alignment(HorizontalAlignment.Center).Width(80);
+                band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('NoOfDaysCreditPeriod')")).Alignment(HorizontalAlignment.Center).Width("100%");
+                band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('OverdueDays')")).Alignment(HorizontalAlignment.Center).Width("100%");
 
 
                 columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -228,7 +228,7 @@
 
             });
             })
-        .Paging(p => p.PageSize(10))
+        .Paging(p => p.Enabled(false))
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
         .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
