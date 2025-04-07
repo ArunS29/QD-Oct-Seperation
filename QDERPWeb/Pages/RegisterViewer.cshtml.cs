@@ -1,6 +1,7 @@
-using DevExpress.XtraReports.UI;
+﻿using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
 using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
@@ -14,22 +15,22 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
 
 namespace QD.ERP.Web.Pages
 {
-    public class RegisterViewerModel : PageModel
-    {
-        private readonly DAL.Entities.ERPMasterWtDataContext _eRPMasterWtDataContext;
+	public class RegisterViewerModel : PageModel
+	{
+		private readonly TenantDbContextHelper _tenantDbContextHelper;
+		private ERPMasterWtDataContext _eRPMasterWtDataContext;
+
+		public RegisterViewerModel(TenantDbContextHelper tenantDbContextHelper)
+		{
+			_tenantDbContextHelper = tenantDbContextHelper;
+		}
 
 
-        public Tbl901CompanyDetail ERPCompany_details;
-        public RegisterViewerModel(DAL.Entities.ERPMasterWtDataContext eRPMasterWtDataContext)
-        {
-            _eRPMasterWtDataContext = eRPMasterWtDataContext;
-
-        }
-
-        public XtraReport Report { get; private set; }
+		public XtraReport Report { get; private set; }
         public string ReportName { get; private set; }
         public string VoucherType { get; private set; }
         public DateTime FrmDate { get; private set; }
@@ -42,11 +43,18 @@ namespace QD.ERP.Web.Pages
             {
                 return BadRequest("Invalid report name.");
             }
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+			{
+				return StatusCode(500, "Tenant not found or DbContext could not be created.");
+			}
 
-            ReportName = reportName;
+			_eRPMasterWtDataContext = dbContext;
 
-            // **Fetch Tenant & Company Details**
-            var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+			ReportName = reportName;
+
+
+			// **Fetch Tenant & Company Details**
+			var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
             var ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -71,7 +79,6 @@ namespace QD.ERP.Web.Pages
                 }
             }
 
-            // **CASE 1: Reports using voucherType, frmDate, and toDate**
             if (!string.IsNullOrEmpty(voucherType) && frmDate.HasValue && toDate.HasValue)
             {
                 VoucherType = voucherType;
@@ -81,7 +88,7 @@ namespace QD.ERP.Web.Pages
                 switch (reportName)
                 {
                     case "PreviewRegister":
-                        Report = new PreviewRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        Report = new PreviewRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "OrderByVchNoRegister":
                         Report = new OrderByVchNoRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);

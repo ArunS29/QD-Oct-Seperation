@@ -52,7 +52,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
                 }
             }
 
-            // Add report parameters
             AddOrUpdateParameter("RequestedBy", string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy, typeof(string), !string.IsNullOrEmpty(requestedBy));
             AddOrUpdateParameter("FrmDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
             AddOrUpdateParameter("ToDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
@@ -62,7 +61,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
 
-            // Bind parameters to UI controls
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -87,7 +85,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
                 requestedByLabel.Visible = !string.IsNullOrEmpty(requestedBy);
             }
 
-            // Set up SQL if needed
             AddSqlQueryParameters(requestedBy, frmDate, toDate);
         }
 
@@ -95,10 +92,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
         {
             CustomSqlQuery selectQuery = new CustomSqlQuery()
             {
-                Name = "qry20151CostAnalysisReport", // Update name
+                Name = "qry20151CostAnalysisReport", 
                 Sql = @"SELECT * FROM qry20151CostAnalysisReport
     WHERE 
-    (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostDateUnit = @RequestedBy) 
+    (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy) 
     AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 

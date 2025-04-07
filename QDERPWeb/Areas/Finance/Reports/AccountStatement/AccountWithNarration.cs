@@ -1,120 +1,154 @@
 ﻿using System;
+using System.Drawing;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
-using System.Drawing;
+using DevExpress.DataAccess.ConnectionParameters;
+using QD.ERP.Web.Service; // Needed for TenantDbContextHelper
 
 namespace QD.ERP.Web.Reports
 {
-    public partial class AccountWithNarration : XtraReport
-    {
-        private QueryParameter queryParameter1;
-        private QueryParameter queryParameter2;
-        private QueryParameter queryParameter3;
-        private StoredProcQuery storedProcQuery1;
+	public partial class AccountWithNarration : XtraReport
+	{
+		private QueryParameter queryParameter1;
+		private QueryParameter queryParameter2;
+		private QueryParameter queryParameter3;
+		private StoredProcQuery storedProcQuery1;
 
-        public AccountWithNarration(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
-        {
-            InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
-        }
+		private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public AccountWithNarration()
-        {
-            InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
-        }
+		public AccountWithNarration(
+			string accountId,
+			DateTime frmDate,
+			DateTime toDate,
+			string tenantName,
+			string company_Name,
+			string company_address,
+			Image logoImage,
+			string Company_Name_Ar,
+			string company_address_arb,
+			TenantDbContextHelper tenantDbContextHelper 
+		)
+		{
+			_tenantDbContextHelper = tenantDbContextHelper;
+			InitializeComponent();
+			SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
 
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
-        {
-            AddReportParameter("AccountID", typeof(string), accountId ?? "");
-            AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
-            AddReportParameter("EndDate", typeof(DateTime), toDate == DateTime.MinValue ? DateTime.Today : toDate);
+			try
+			{
+				this.sqlDataSource1.Fill();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error loading data: " + ex.Message, ex);
+			}
+		}
 
-            AddSqlQueryParameters(accountId, frmDate, toDate);
+		public AccountWithNarration()
+		{
+			InitializeComponent();
+			SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+		}
 
-            // New parameters for Tenant and Company Info
-            AddReportParameter("TenantName", typeof(string), tenantName ?? "");
-            AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
-            AddReportParameter("CompanyAddress", typeof(string), company_address ?? "");
-            AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
-            AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
+		private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+		{
+			AddReportParameter("AccountID", typeof(string), accountId ?? "");
+			AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
+			AddReportParameter("EndDate", typeof(DateTime), toDate == DateTime.MinValue ? DateTime.Today : toDate);
 
-            Console.WriteLine($"Company Logo: {logoImage != null}");
+			AddSqlQueryParameters(accountId, frmDate, toDate);
 
-            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-                tenantLabel.Text = tenantName;
+			// New parameters for Tenant and Company Info
+			AddReportParameter("TenantName", typeof(string), tenantName ?? "");
+			AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
+			AddReportParameter("CompanyAddress", typeof(string), company_address ?? "");
+			AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
+			AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
 
-            if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
-                companyNameLabel.Text = company_Name;
+			if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+				tenantLabel.Text = tenantName;
 
-            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-                addressLabel.Text = company_address;
+			if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+				companyNameLabel.Text = company_Name;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-                logoPictureBox.Image = logoImage;
+			if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+				addressLabel.Text = company_address;
 
-            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
-                companyNameArLabel.Text = Company_Name_Ar;
+			if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+				logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
-                addressArbLabel.Text = company_address_arb;
-        }
+			if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+				companyNameArLabel.Text = Company_Name_Ar;
 
-        private void AddReportParameter(string paramName, Type paramType, object paramValue)
-        {
-            if (Parameters[paramName] == null)
-            {
-                Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
-                {
-                    Name = paramName,
-                    Type = paramType,
-                    Value = paramValue,
-                    Visible = false
-                });
-            }
-            else
-            {
-                Parameters[paramName].Value = paramValue;
-                Parameters[paramName].Visible = false;
-            }
-        }
+			if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+				addressArbLabel.Text = company_address_arb;
+		}
 
-        private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
-        {
-            queryParameter1 = new QueryParameter
-            {
-                Name = "@ParamAccountNo",
-                Type = typeof(string),
-                ValueInfo = accountId ?? "L00567"
-            };
+		private void AddReportParameter(string paramName, Type paramType, object paramValue)
+		{
+			if (Parameters[paramName] == null)
+			{
+				Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+				{
+					Name = paramName,
+					Type = paramType,
+					Value = paramValue,
+					Visible = false
+				});
+			}
+			else
+			{
+				Parameters[paramName].Value = paramValue;
+				Parameters[paramName].Visible = false;
+			}
+		}
 
-            queryParameter2 = new QueryParameter
-            {
-                Name = "@StartDate",
-                Type = typeof(DateTime),
-                ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd")
-            };
+		private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
+		{
+			queryParameter1 = new QueryParameter
+			{
+				Name = "@ParamAccountNo",
+				Type = typeof(string),
+				ValueInfo = accountId ?? "L00567"
+			};
 
-            queryParameter3 = new QueryParameter
-            {
-                Name = "@EndDate",
-                Type = typeof(DateTime),
-                ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd")
-            };
+			queryParameter2 = new QueryParameter
+			{
+				Name = "@StartDate",
+				Type = typeof(DateTime),
+				ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd")
+			};
 
-            storedProcQuery1 = new StoredProcQuery
-            {
-                Name = "StProAccountLedger",
-                StoredProcName = "StProAccountLedger"
-            };
+			queryParameter3 = new QueryParameter
+			{
+				Name = "@EndDate",
+				Type = typeof(DateTime),
+				ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd")
+			};
 
-            storedProcQuery1.Parameters.Clear();
-            storedProcQuery1.Parameters.AddRange(new QueryParameter[] { queryParameter1, queryParameter2, queryParameter3 });
+			storedProcQuery1 = new StoredProcQuery
+			{
+				Name = "StProAccountLedger",
+				StoredProcName = "StProAccountLedger"
+			};
 
-            sqlDataSource1.Queries.Clear();
-            sqlDataSource1.Queries.Add(storedProcQuery1);
-            sqlDataSource1.ConnectionName = "DBConnection";
-            sqlDataSource1.Name = "sqlDataSource1";
-        }
-    }
+			storedProcQuery1.Parameters.Clear();
+			storedProcQuery1.Parameters.AddRange(new QueryParameter[] { queryParameter1, queryParameter2, queryParameter3 });
+
+			sqlDataSource1.Queries.Clear();
+			sqlDataSource1.Queries.Add(storedProcQuery1);
+			sqlDataSource1.Name = "sqlDataSource1";
+
+			// Connection string logic
+			if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+			{
+				var connectionString = tenant.ConnectionString;
+				var connectionParams = new CustomStringConnectionParameters(connectionString);
+				sqlDataSource1.ConnectionParameters = connectionParams;
+			}
+			else
+			{
+				throw new Exception("Unable to get tenant context. Please check session and cache.");
+			}
+		}
+	}
 }

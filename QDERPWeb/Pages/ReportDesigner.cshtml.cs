@@ -5,96 +5,132 @@ using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
+using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Reports;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace QD.ERP.Web.Pages
 {
-    public class ReportDesignerModel : PageModel
-    {
-        public XtraReport Report { get; private set; }
-        public string ReportName { get; private set; }
+	public class ReportDesignerModel : PageModel
+	{
+		private readonly TenantDbContextHelper _tenantDbContextHelper;
+		private ERPMasterWtDataContext _eRPMasterWtDataContext;
+		private Tbl901CompanyDetail ERPCompany_details;
 
-        private static readonly HashSet<string> reportsRequiringParameters = new()
-        {
-            "StatementOfAccountReport", "AccountWithNarration", "AccountExportFromatReport",
-            "AccountExportLandscapeReport", "AccountStatementFormat2Report",
-            "AccountOrderbyVchNoWONarrationReport", "BillsReceivablelandscapeformat",
-            "BillsReceivableLedgerBalance", "BillsReceivableRentation",
-            "BillsReceivableAgeingToday", "BillsReceivableByAccount",
-            "BillsReceivableAll", "BillsReceivableFormat", "rpt201BillsPayable",
-            "rpt201BillsPayableWithVchNo", "AgeingToday", "EndDate", "Report4",
-            "AccountDetails","AccountOrderByVoucherNo","Payablelandscape","payableRetention","Balance",
-            "BillsPayablePaid","AgeingReport","BIllsPayable","ReceivableReport_EffectiveDate_","XtraRecivableReport",
-            "XtraReportAgeingreportsummary"," XtraReportBillsReceivableAgeingReport",
-            "rpt201BillsPayble",""
+		public XtraReport Report { get; private set; }
+		public string ReportName { get; private set; }
 
-        };
+		public ReportDesignerModel(TenantDbContextHelper tenantDbContextHelper)
+		{
+			_tenantDbContextHelper = tenantDbContextHelper;
+		}
 
-        private static readonly Dictionary<string, Func<string, DateTime, DateTime, XtraReport>> parameterizedReports =
-            new()
-            {
-                { "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to,"","","",null,"","") },
-                { "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to, "", "", "", null, "", "") },
-                  { "AccountDetails", (id, from, to) => new AccountDetails(id, from, to,"","","",null,"","") },
-                {"AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to,"", "", "", null, "", "") },
-                { "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to,"", "", "", null, "", "") },
-                { "AccountExportLandscapeReport", (id, from, to) => new AccountExportLandscapeReport(id, from, to,"", "", "", null, "", "") },
-                { "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to, "", "", "", null, "", "") },
-                { "AccountOrderbyVchNoWONarrationReport", (id, from, to) => new AccountOrderbyVchNoWONarrationReport(id, from, to,"", "", "", null, "", "") },
-                { "BillsReceivablelandscapeformat", (id, from, to) => new BillsReceivablelandscapeformat(id, from, to,"","","",null,"","") },
-                { "BillsReceivableLedgerBalance", (id, from, to) => new BillsReceivableLedgerBalance(id, from, to,"","","",null,"","") },
-                { "BillsReceivableRentation", (id, from, to) => new BillsReceivableRentation(id, from, to,"","","",null,"","") },
-                { "BillsReceivableAgeingToday", (id, from, to) => new BillsReceivableAgeingToday(id, from, to,"","","",null,"","") },
-                { "BillsReceivableByAccount", (id, from, to) => new BillsReceivableByAccount(id, from, to,"","","",null,"","") },
-                { "BillsReceivableAll", (id, from, to) => new BillsReceivableAll(id, from, to,"","","",null,"","") },
-                { "BillsReceivableFormat", (id, from, to) => new BillsReceivableFormat(id, from, to,"","","",null,"","") },
-                 { "Report4", (id, from, to) => new Report4(id, from, to,"","","",null,"","") },
+		public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
+		{
+			if (string.IsNullOrEmpty(reportName))
+				return BadRequest("Invalid report name.");
 
-                { "rpt201BillsPayable", (id, from, to) => new rpt201BillsPayable(id, from, to,"","","",null,"","") },
-                { "rpt201BillsPayableWithVchNo", (id, from, to) => new rpt201BillsPayableWithVchNo(id, from, to,"","","",null,"","") },
-                { "AgeingToday", (id, from, to) => new AgeingToday(id, from, to,"","","",null,"","") },
-                { "EndDate", (id, from, to) => new EndDate(id, from, to,"","","",null,"","") },
-                {"Payablelandscape",( id, from, to)=> new Payablelandscape(id, from, to,"","","",null,"","") },
-                {"payableRetention",(id,from,to )=>new payableRetention(id, from, to,"","","",null,"","") },
-                {"Balance",(id,from,to )=>new Balance(id, from, to,"","","",null,"","")   },
-                {"BillsPayablePaid",(id,from,to )=>new BillsPayablePaid(id, from, to,"","","",null,"","")   },
-                
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+			{
+				return StatusCode(500, "Tenant not found or DbContext could not be created.");
+			}
 
+			_eRPMasterWtDataContext = dbContext;
+			ReportName = reportName;
 
+			string tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+			ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+				.FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
-            };
+			string companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+			string companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+			string companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+			string companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
-        private static readonly Dictionary<string, Func<XtraReport>> simpleReports = new()
-        {
-            { "XtraReportBillsReceivableAgeingReport", () => new XtraReportBillsReceivableAgeingReport() },
-            { "XtraReportAgeingreportsummary", () => new XtraReportAgeingreportsummary() }
-        };
+			Image logoImage = null;
+			if (ERPCompany_details?.CompanyLogo is byte[] logoBytes && logoBytes.Length > 0)
+			{
+				try
+				{
+					using var ms = new MemoryStream(logoBytes);
+					logoImage = Image.FromStream(ms);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("Error loading company logo: " + ex.Message);
+				}
+			}
 
-        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
-        {
-            if (string.IsNullOrEmpty(reportName))
-                return BadRequest("Invalid report name.");
+			var parameterizedReports = new Dictionary<string, Func<string, DateTime, DateTime, XtraReport>>()
+			{
+				{ "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
+				{ "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to, "", "", "", null, "", "",_tenantDbContextHelper) },
+				{ "AccountDetails", (id, from, to) => new AccountDetails(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
+				{ "AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to,"", "", "", null, "", "", _tenantDbContextHelper) },
+				{ "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to,"", "", "", null, "", "",_tenantDbContextHelper) },
+				{ "AccountExportLandscapeReport", (id, from, to) => new AccountExportLandscapeReport(id, from, to,"", "", "", null, "", "", _tenantDbContextHelper) },
+				{ "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to, "", "", "", null, "", "",_tenantDbContextHelper) },
+				{ "AccountOrderbyVchNoWONarrationReport", (id, from, to) => new AccountOrderbyVchNoWONarrationReport(id, from, to,"", "", "", null, "", "", _tenantDbContextHelper) },
+				{ "BillsReceivablelandscapeformat", (id, from, to) => new BillsReceivablelandscapeformat(id, from, to,"","","",null,"","") },
+				{ "BillsReceivableLedgerBalance", (id, from, to) => new BillsReceivableLedgerBalance(id, from, to,"","","",null,"","") },
+				{ "BillsReceivableRentation", (id, from, to) => new BillsReceivableRentation(id, from, to,"","","",null,"","") },
+				{ "BillsReceivableAgeingToday", (id, from, to) => new BillsReceivableAgeingToday(id, from, to,"","","",null,"","") },
+				{ "BillsReceivableByAccount", (id, from, to) => new BillsReceivableByAccount(id, from, to,"","","",null,"","") },
+				{ "BillsReceivableAll", (id, from, to) => new BillsReceivableAll(id, from, to,"","","",null,"","") },
+				{ "BillsReceivableFormat", (id, from, to) => new BillsReceivableFormat(id, from, to,"","","",null,"","") },
+				{ "Report4", (id, from, to) => new Report4(id, from, to,"","","",null,"","") },
+				{ "rpt201BillsPayable", (id, from, to) => new rpt201BillsPayable(id, from, to,"","","",null,"","") },
+				{ "rpt201BillsPayableWithVchNo", (id, from, to) => new rpt201BillsPayableWithVchNo(id, from, to,"","","",null,"","") },
+				{ "AgeingToday", (id, from, to) => new AgeingToday(id, from, to,"","","",null,"","") },
+				{ "EndDate", (id, from, to) => new EndDate(id, from, to,"","","",null,"","") },
+				{ "Payablelandscape",( id, from, to)=> new Payablelandscape(id, from, to,"","","",null,"","") },
+				{ "payableRetention",(id,from,to )=>new payableRetention(id, from, to,"","","",null,"","") },
+				{ "Balance",(id,from,to )=>new Balance(id, from, to,"","","",null,"","") },
+				{ "BillsPayablePaid",(id,from,to )=>new BillsPayablePaid(id, from, to,"","","",null,"","") }
+			};
 
-            ReportName = reportName;
+			var simpleReports = new Dictionary<string, Func<XtraReport>>()
+			{
+				{ "XtraReportBillsReceivableAgeingReport", () => new XtraReportBillsReceivableAgeingReport() },
+				{ "XtraReportAgeingreportsummary", () => new XtraReportAgeingreportsummary() }
+			};
 
-            if (reportsRequiringParameters.Contains(reportName))
-            {
-                if (string.IsNullOrEmpty(accountId) || frmDate == null || toDate == null)
-                    return BadRequest($"Missing required parameters for {reportName}.");
+			var reportsRequiringParameters = new HashSet<string>()
+			{
+				"StatementOfAccountReport", "AccountWithNarration", "AccountExportFromatReport",
+				"AccountExportLandscapeReport", "AccountStatementFormat2Report",
+				"AccountOrderbyVchNoWONarrationReport", "BillsReceivablelandscapeformat",
+				"BillsReceivableLedgerBalance", "BillsReceivableRentation",
+				"BillsReceivableAgeingToday", "BillsReceivableByAccount",
+				"BillsReceivableAll", "BillsReceivableFormat", "rpt201BillsPayable",
+				"rpt201BillsPayableWithVchNo", "AgeingToday", "EndDate", "Report4",
+				"AccountDetails","AccountOrderByVoucherNo","Payablelandscape","payableRetention","Balance",
+				"BillsPayablePaid","AgeingReport","BIllsPayable","ReceivableReport_EffectiveDate_","XtraRecivableReport",
+				"XtraReportAgeingreportsummary","XtraReportBillsReceivableAgeingReport"
+			};
 
-                Report = parameterizedReports.ContainsKey(reportName)
-                    ? parameterizedReports[reportName](accountId, frmDate.Value, toDate.Value)
-                    : null;
-            }
-            else
-            {
-                Report = simpleReports.ContainsKey(reportName) ? simpleReports[reportName]() : null;
-            }
+			if (reportsRequiringParameters.Contains(reportName))
+			{
+				if (string.IsNullOrEmpty(accountId) || frmDate == null || toDate == null)
+					return BadRequest($"Missing required parameters for {reportName}.");
 
-            return Report == null ? NotFound("Report not found.") : Page();
-        }
-    }
+				Report = parameterizedReports.ContainsKey(reportName)
+					? parameterizedReports[reportName](accountId, frmDate.Value, toDate.Value)
+					: null;
+			}
+			else
+			{
+				Report = simpleReports.ContainsKey(reportName)
+					? simpleReports[reportName]()
+					: null;
+			}
+
+			return Report == null ? NotFound("Report not found.") : Page();
+		}
+	}
 }
