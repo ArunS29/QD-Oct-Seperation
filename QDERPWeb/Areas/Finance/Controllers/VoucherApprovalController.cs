@@ -68,7 +68,7 @@ namespace QDWEB.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public IActionResult GetVoucherApprovals(DateTime? startDate, DateTime? endDate)
+        public IActionResult GetVoucherApprovals(DateTime? startDate, DateTime? endDate, string voucherTypes)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -76,9 +76,10 @@ namespace QDWEB.Areas.Finance.Controllers
                 {
                     var vouchers = dbContext.Qry20136VoucherMasterLists.AsQueryable();
 
-                    if (startDate.HasValue && endDate.HasValue)
+                    if (!string.IsNullOrEmpty(voucherTypes) && voucherTypes != "all" && startDate.HasValue && endDate.HasValue)
                     {
-                        vouchers = vouchers.Where(v => v.VoucherDate >= startDate && v.VoucherDate <= endDate);
+                        var typesList = voucherTypes.Split(',').ToList();
+                        vouchers = vouchers.Where(v => v.VoucherDate >= startDate && v.VoucherDate <= endDate && typesList.Contains(v.VoucherType));
                     }
 
                     return Ok(vouchers.ToList());

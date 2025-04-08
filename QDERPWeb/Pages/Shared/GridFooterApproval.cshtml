@@ -743,10 +743,30 @@
     function onVoucherSelection(e) {
         var selectedText = e.itemData.text;
         var voucherType = [];
+        startDate = $("#VoucherDate").dxDateBox("instance").option("value");
+        endDate = $("#EffectiveDate").dxDateBox("instance").option("value");
+
+        if (!(startDate instanceof Date)) startDate = new Date(startDate);
+        if (!(endDate instanceof Date)) endDate = new Date(endDate);
+
+        // Format as MM/dd/yyyy (because the backend is allergic to ISO?)
+        startDate = startDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+
+        endDate = endDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
 
         switch (selectedText) {
             case formatMessage("All Vouchers"):
-                voucherType = ["all"]; // Show all vouchers
+                voucherType = ["Bank Payment", "Cash Payment",
+                    "Bank Receipts", "Cash Receipts",
+                    "Sales", "Purchases", "Journal"]; // Show all vouchers
                 break;
             case formatMessage("Payments"):
                 voucherType = ["Bank Payment", "Cash Payment"];
@@ -755,20 +775,33 @@
                 voucherType = ["Bank Receipts", "Cash Receipts"];
                 break;
             case formatMessage("Client Receivables"):
-                voucherType = ["Sales"];
+                voucherType = ["Sales", "Purchases", "Journal"];
                 break;
             case formatMessage("Supplier Payables"):
-                voucherType = ["Purchases"];
+                voucherType = ["Sales", "Purchases", "Journal"];
                 break;
             case formatMessage("Other Vouchers"):
-                voucherType = ["Journal"];
+                voucherType = ["Sales", "Purchases", "Journal"];
                 break;
         }
 
-        // Reload DataGrid with the selected Voucher Types
-        $("#dataGrid").dxDataGrid("instance").option("dataSource", {
-            load: function () {
-                return $.getJSON('/api/VoucherApproval/GetVoucherApproval', { voucherTypes: voucherType.join(",") });
+        // 🚀 Final AJAX call
+        $.ajax({
+            url: '/api/VoucherApproval/GetVoucherApprovals',
+            type: 'GET',
+            data: {
+                startDate: startDate, // already formatted
+                endDate: endDate,     // already formatted
+                voucherTypes: voucherType.join(",")
+            },
+            success: function (data) {
+                const targetGrid = $("#dataGrid").dxDataGrid("instance");
+                targetGrid.option("dataSource", data);
+                targetGrid.refresh();
+            },
+            error: function (err) {
+                DevExpress.ui.notify("Failed to load data", "error", 2000);
+                console.error(err);
             }
         });
     }
