@@ -560,38 +560,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var existing = await dbContext.Tbl20164GoodsAndServicesMasters
                         .FirstOrDefaultAsync(x => x.Gscode == model.Gscode);
 
-                    // === 🔍 Validate duplicate ItemPartNo ===
-                    var duplicatePartNo = await dbContext.Tbl20164GoodsAndServicesMasters
-                        .Where(x => x.ItemPartNo == model.ItemPartNo && x.Gscode != model.Gscode)
-                        .Select(x => x.Gscode)
-                        .FirstOrDefaultAsync();
-
-                    if (!string.IsNullOrEmpty(duplicatePartNo))
+                    // Validate duplicates
+                    if (await dbContext.Tbl20164GoodsAndServicesMasters
+                        .AnyAsync(x => x.ItemPartNo == model.ItemPartNo && x.Gscode != model.Gscode))
                     {
-                        return BadRequest(new
-                        {
-                            success = false,
-                            message = $"Stock Item with this Part Number already exists (GSCode: {duplicatePartNo})."
-                        });
-                    }
-                    // === 🔍 Validate duplicate Gsdescrpition ===
-                    var duplicateDescription = await dbContext.Tbl20164GoodsAndServicesMasters
-                        .Where(x => x.Gsdescrpition == model.Gsdescrpition && x.Gscode != model.Gscode)
-                        .Select(x => x.Gscode)
-                        .FirstOrDefaultAsync();
-
-                    if (!string.IsNullOrEmpty(duplicateDescription))
-                    {
-                        return BadRequest(new
-                        {
-                            success = false,
-                            message = $"Stock Item with this Stock Description has already been added to the database (GSCode: {duplicateDescription})."
-                        });
+                        return BadRequest(new { success = false, message = "Stock Item with this Part Number already exists." });
                     }
 
                     if (existing != null)
                     {
-                        // === ✏️ Update existing record ===
+                        // Update
                         existing.Gsdescrpition = model.Gsdescrpition;
                         existing.GsdescriptionAr = model.GsdescriptionAr;
                         existing.GsdetailedDesc = model.GsdetailedDesc;
@@ -603,11 +581,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         existing.CostPrice = model.CostPrice;
                         existing.ItemPartNo = model.ItemPartNo;
                         existing.ModifiedOn = now;
-                        existing.ModifiedBy = "User"; // TODO: Replace with actual user identity
+                        existing.ModifiedBy = "User"; // Replace with actual user
                     }
                     else
                     {
-                        // === ➕ Insert new record ===
+                        // New insert
                         string prefix = "TRM"; // default
                         if (!string.IsNullOrWhiteSpace(model.Gscode))
                         {
@@ -636,7 +614,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         model.Gscode = $"{fullPrefix}{nextNo:D5}";
                         model.CreatedOn = now;
-                        model.CreatedBy = "User"; // TODO: Replace with actual user identity
+                        model.CreatedBy = "User"; // Replace with actual user
 
                         dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
                     }
@@ -646,7 +624,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in SaveGoodsAndServices: {ex}");
+                    _logger.LogError($"Error in SaveGoodsAndServices: {ex.Message}");
                     return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
                 }
             }
@@ -891,7 +869,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
 
     }

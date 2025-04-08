@@ -2107,179 +2107,187 @@
 		});
 
 	});
+	var dataGridInstance;
+	var rowData = []; // Store the grid data
 
-		 var dataGridInstance;
-		var rowData = []; // Store the grid data
-
-		$(function () {
-			dataGridInstance = $("#B2BdataGrid").dxDataGrid({
-				dataSource: rowData,
-				keyExpr: "SNo",
-				columns: [
-					{
-						dataField: "SNo",
-						caption: "#",
-						width: 100,
-						allowEditing: false // Prevent manual editing
-					},
-					{
-						dataField: "ItemCode",
-						caption: "Item Code",
-						width: 200
-					},
-				  {
-		dataField: "Description",
-		caption: "Description",
-		width: 550,
-		editCellTemplate: function(cellElement, cellInfo) {
-			getDropdownData().done(function (dropdownData) {
-				$("<div>").appendTo(cellElement).dxDropDownBox({
-					dataSource: dropdownData,
-					valueExpr: "GSCode",
-					displayExpr: "GSDescrpition",
-					value: cellInfo.value,
-					dropDownOptions: { width: 800 },
-					onValueChanged: function(e) {
-						let selectedItem = dropdownData.find(item => item.GSCode === e.value);
-						if (selectedItem) {
-							cellInfo.setValue(selectedItem.GSDescrpition);
-
-							// Automatically update other columns
-							let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-							let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-							if (rowIndex !== -1) {
-								dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-								dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-								dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-							}
-							let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
-
-						}
-					},
-				  contentTemplate: function(e) {
-		return $("<div>").dxDataGrid({
-			dataSource: dropdownData,
-			selection: { mode: "single" },
-			keyExpr: "GSCode",
-			height: 300, // ✅ Add fixed height to enable scrolling
-			scrolling: { mode: "virtual" },
+	$(function () {
+		dataGridInstance = $("#B2BdataGrid").dxDataGrid({
+			dataSource: rowData,
+			keyExpr: "SNo",
 			columns: [
-				{ dataField: "GSCode", caption: "Code", width: 80 },
-				{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-				{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
-				{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-				{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-				{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-				{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-			],
-			onSelectionChanged: function(selectedItems) {
-				let selectedItem = selectedItems.selectedRowsData[0];
-				if (selectedItem) {
-					e.component.option("value", selectedItem.GSCode);
-					cellInfo.setValue(selectedItem.GSDescrpition);
+				{
+					dataField: "SNo",
+					caption: "#",
+					width: 100,
+					allowEditing: false // Prevent manual editing
+				},
+				{
+					dataField: "ItemCode",
+					caption: "Item Code",
+					width: 200
+				},
+				{
+					dataField: "Description",
+					caption: "Description",
+					width: 550,
+					editCellTemplate: function (cellElement, cellInfo) {
+						getDropdownData().done(function (dropdownData) {
+							let $container = $("<div>").css({
+								display: "flex",
+								alignItems: "center",
+								gap: "5px",
+								width: "100%"
+							}).appendTo(cellElement);
 
-					let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-					let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+								dataSource: dropdownData,
+								valueExpr: "GSCode",
+								displayExpr: "GSDescrpition",
+								value: cellInfo.value,
+								dropDownOptions: { width: 800 },
+								onValueChanged: function (e) {
+									let selectedItem = dropdownData.find(item => item.GSCode === e.value);
+									if (selectedItem) {
+										cellInfo.setValue(selectedItem.GSDescrpition);
 
-					if (rowIndex !== -1) {
-						dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-						dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-						dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-						dataGrid.cellValue(rowIndex, "Qty",1);
-						dataGrid.cellValue(rowIndex, "VAT%","15%");
-						alert("1")
+										let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+										let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+										if (rowIndex !== -1) {
+											dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+											dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+											dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+										}
+										let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
+									}
+								},
+								contentTemplate: function (e) {
+									return $("<div>").dxDataGrid({
+										dataSource: dropdownData,
+										selection: { mode: "single" },
+										keyExpr: "GSCode",
+										height: 300, // ✅ Add fixed height to enable scrolling
+										scrolling: { mode: "virtual" },
+										columns: [
+											{ dataField: "GSCode", caption: "Code", width: 80 },
+											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+											{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+											{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+											{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+											{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+											{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+										],
+										onSelectionChanged: function (selectedItems) {
+											let selectedItem = selectedItems.selectedRowsData[0];
+											if (selectedItem) {
+												e.component.option("value", selectedItem.GSCode);
+												cellInfo.setValue(selectedItem.GSDescrpition);
+
+												let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+												let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+												if (rowIndex !== -1) {
+													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+													dataGrid.cellValue(rowIndex, "Qty", 1);
+													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+												}
+												e.component.close();
+											}
+										}
+									});
+								}
+							});
+
+							// ✅ Add icon with navigation
+							$("<div>").dxButton({
+								icon: "plus",
+								hint: "Add new item",
+								onClick: function () {
+									// Replace or fetch dynamically
+									let url = `/${tenantName}/Finance/VATGoodsandServices`; // Example add page
+									window.location.href = url;
+								},
+								width: 60,
+								height: 30
+							}).appendTo($container);
+
+							// ✅ Edit icon with navigation
+							$("<div>").dxButton({
+								icon: "edit",
+								hint: "Edit item",
+								onClick: function () {
+									// Replace or fetch dynamically
+									let url = `/${tenantName}/Finance/VATGoodsandServices`; // Example edit page
+									window.location.href = url;
+								},
+								width: 60,
+								height: 30
+							}).appendTo($container);
+						});
 					}
-					e.component.close();
-				}
-			}
-		});
+				},
+
+				{ dataField: "DescriptionDetails", caption: "...", width: 50 },
+				{ dataField: "DescriptionDetails", caption: "Unit Rate Method", width: 150 },
+				{ dataField: "Qty", caption: "Qty", width: 150 },
+				{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
+				{ dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
+				{ dataField: "Discount", caption: "Discount", width: 150 },
+				{ dataField: "DiscountDetails", caption: "...", width: 50 },
+				{ dataField: "Amount", caption: "Amount", width: 150 },
+				{ dataField: "VAT%", caption: "VAT%", width: 150 },
+				{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
+				{ dataField: "VAT", caption: "VAT", width: 150 },
+				{ dataField: "Total", caption: "Total", width: 150 }
+			],
+			editing: {
+				mode: "cell",
+				allowUpdating: true,
+				allowAdding: false, // We'll add manually
+				allowDeleting: true
+			},
+			onInitNewRow: function (e) {
+				e.data.SNo = rowData.length + 1; // Auto-generate SNo
+			},
+			columnAutoWidth: true,
+			showBorders: true,
+		}).dxDataGrid("instance");
+	});
+
+	function addNewRow() {
+		var newRow = {
+			SNo: rowData.length + 1, // Auto-generate SNo
+			ItemCode: ItemNo,
+			Description: "",
+			DescriptionDetails: "",
+			Qty: 0,
+			UnitPrice: 0.00,
+			TotalBeforeDiscount: 0.00,
+			Discount: "",
+			DiscountDetails: "",
+			Amount: 0.00,
+			ExcemptionCode: "",
+			VAT: "",
+			Total: 0.00
+		};
+
+		rowData.push(newRow);
+		dataGridInstance.option("dataSource", rowData);
+		dataGridInstance.refresh();
 	}
 
-				});
-			});
-		}
-	},
 
-					   { dataField: "DescriptionDetails", caption: "...", width: 50 },
-					   { dataField: "DescriptionDetails", caption: "Unit Rate Method", width: 150 },
-					   { dataField: "Qty", caption: "Qty", width: 150 },
-					   { dataField: "UnitPrice", caption: "Unit Price", width: 150 },
-					   { dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
-					   { dataField: "Discount", caption: "Discount", width: 150 },
-					   { dataField: "DiscountDetails", caption: "...", width: 50 },
-					   { dataField: "Amount", caption: "Amount", width: 150 },
-				//	   { dataField: "VATPercentage", caption: "VAT%", width: 150 },
-					  {
-		dataField: "VATPercentage",
-		caption: "VAT%",
-		width: 150,
-		editCellTemplate: function (cellElement, cellInfo) {
-			const $select = $("<select>")
-				.addClass("form-select")
-				.css("width", "100%")
-				.append($("<option>").val("5%").text("5%"))
-				.append($("<option>").val("0%").text("0%"))
-				.append($("<option>").val("15%").text("15%"))
-				.val(cellInfo.value)
-				.on("change", function () {
-					const newValue = $(this).val();
-					cellInfo.setValue(newValue);
+	// function getDropdownData() {
+	//     return [
+	//         { id: 1, name: "Item A" },
+	//         { id: 2, name: "Item B" },
+	//         { id: 3, name: "Item C" }
+	//     ];
+	// }
 
-					let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-					let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-
-					// Update VAT calculations
-					VATPercentage(newValue, rowIndex);
-				});
-
-			$select.appendTo(cellElement);
-		}
-	},
-					   { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
-					   { dataField: "VAT", caption: "VAT", width: 150 },
-					   { dataField: "Total", caption: "Total", width: 150 }
-				],
-				editing: {
-					mode: "cell",
-					allowUpdating: true,
-					allowAdding: false, // We'll add manually
-					allowDeleting: true
-				},
-				onInitNewRow: function(e) {
-					e.data.SNo = rowData.length + 1; // Auto-generate SNo
-				},
-
-				columnAutoWidth: true,
-				showBorders: true,
-
-			})
-			//.on("onEditorPreparing", onEditorPreparing)
-
-			.dxDataGrid("instance");
-		});
-
-	$("#btnAddNew").on("click", function (e) {
-			var newRow = {
-				SNo: rowData.length + 1, // Auto-generate SNo
-				ItemCode: ItemNo,
-				Description: "",
-				DescriptionDetails:"",
-				Qty: 0,
-				UnitPrice: 0.00,
-				TotalBeforeDiscount:0.00,
-				Discount:"",
-				DiscountDetails:"",
-				Amount:0.00,
-				ExcemptionCode:"",
-				VAT:"",
-				Total: 0.00
-			};
-
-			rowData.push(newRow);
-			dataGridInstance.option("dataSource", rowData);
-			dataGridInstance.refresh();
-		});
-
+	// Fetch dropdown data (same API can be used if needed)
+	
 
 		// Fetch dropdown data (same API can be used if needed)
 	 function getDropdownData() {
