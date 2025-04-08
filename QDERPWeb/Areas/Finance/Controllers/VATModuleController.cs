@@ -561,33 +561,42 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         .FirstOrDefaultAsync(x => x.Gscode == model.Gscode);
 
                     // === 🔍 Validate duplicate ItemPartNo ===
-                    var duplicatePartNo = await dbContext.Tbl20164GoodsAndServicesMasters
-                        .Where(x => x.ItemPartNo == model.ItemPartNo && x.Gscode != model.Gscode)
-                        .Select(x => x.Gscode)
-                        .FirstOrDefaultAsync();
-
-                    if (!string.IsNullOrEmpty(duplicatePartNo))
+                    // === 🔍 Validate duplicate ItemPartNo ===
+                    if (!string.IsNullOrWhiteSpace(model.ItemPartNo))
                     {
-                        return BadRequest(new
+                        var duplicatePartNo = await dbContext.Tbl20164GoodsAndServicesMasters
+                            .Where(x => x.ItemPartNo == model.ItemPartNo && x.Gscode != model.Gscode)
+                            .Select(x => x.Gscode)
+                            .FirstOrDefaultAsync();
+
+                        if (!string.IsNullOrEmpty(duplicatePartNo))
                         {
-                            success = false,
-                            message = $"Stock Item with this Part Number already exists (GSCode: {duplicatePartNo})."
-                        });
+                            return BadRequest(new
+                            {
+                                success = false,
+                                message = $"Stock Item with this Part Number already exists (GSCode: {duplicatePartNo})."
+                            });
+                        }
                     }
+
                     // === 🔍 Validate duplicate Gsdescrpition ===
-                    var duplicateDescription = await dbContext.Tbl20164GoodsAndServicesMasters
-                        .Where(x => x.Gsdescrpition == model.Gsdescrpition && x.Gscode != model.Gscode)
-                        .Select(x => x.Gscode)
-                        .FirstOrDefaultAsync();
-
-                    if (!string.IsNullOrEmpty(duplicateDescription))
+                    if (!string.IsNullOrWhiteSpace(model.Gsdescrpition))
                     {
-                        return BadRequest(new
+                        var duplicateDescription = await dbContext.Tbl20164GoodsAndServicesMasters
+                            .Where(x => x.Gsdescrpition == model.Gsdescrpition && x.Gscode != model.Gscode)
+                            .Select(x => x.Gscode)
+                            .FirstOrDefaultAsync();
+
+                        if (!string.IsNullOrEmpty(duplicateDescription))
                         {
-                            success = false,
-                            message = $"Stock Item with this Stock Description has already been added to the database (GSCode: {duplicateDescription})."
-                        });
+                            return BadRequest(new
+                            {
+                                success = false,
+                                message = $"Stock Item with this Stock Description has already been added to the database (GSCode: {duplicateDescription})."
+                            });
+                        }
                     }
+
 
                     if (existing != null)
                     {

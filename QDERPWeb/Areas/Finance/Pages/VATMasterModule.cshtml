@@ -166,7 +166,7 @@
             width : 1460px;
         }
 
-        .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag,#btnColumnChooser)) {
+        .limited-footer .btn-container:not(:has(#btnSave,#btnBack)) {
             display: none !important;
         }
     </style>
@@ -254,9 +254,9 @@
             )
             .OnCellClick("function(e) {handleCellClick(e);}")
             .AllowColumnReordering(true)
-            .ColumnChooser(columnChooser => columnChooser.Enabled(false))
+           @*  .ColumnChooser(columnChooser => columnChooser.Enabled(false)) *@
             .AllowColumnResizing(true)
-            .ColumnFixing(fixing => fixing.Enabled(true))
+         @*    .ColumnFixing(fixing => fixing.Enabled(true)) *@
             .HeaderFilter(filter => filter.Visible(false))
             .Height(300)
             .FilterRow(filterRow => filterRow.Visible(false))
