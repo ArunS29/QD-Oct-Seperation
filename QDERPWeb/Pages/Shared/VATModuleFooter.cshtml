@@ -426,7 +426,7 @@
                             .ID("btnAddNew")
                                 .Text(new JS("formatMessage('Add New Item')"))
                             .Icon("plus")
-                                 .OnClick("addNewRow") // Attach function
+                                // .OnClick("addNewRow") // Attach function
                             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                             )
                         </div>
@@ -546,173 +546,7 @@
             window.location.href = url; // Navigate to the page
         }
 
-      var dataGridInstance;
-    var rowData = []; // Store the grid data
-
-    $(function () {
-        dataGridInstance = $("#B2BdataGrid").dxDataGrid({
-            dataSource: rowData,
-            keyExpr: "SNo",
-            columns: [
-                { 
-                    dataField: "SNo", 
-                    caption: "#", 
-                    width: 100, 
-                    allowEditing: false // Prevent manual editing
-                },
-                { 
-                    dataField: "ItemCode", 
-                    caption: "Item Code", 
-                    width: 200 
-                },
-              {
-    dataField: "Description",
-    caption: "Description",
-    width: 550,
-    editCellTemplate: function(cellElement, cellInfo) {
-        getDropdownData().done(function (dropdownData) {
-            $("<div>").appendTo(cellElement).dxDropDownBox({
-                dataSource: dropdownData,
-                valueExpr: "GSCode",  
-                displayExpr: "GSDescrpition",  
-                value: cellInfo.value,
-                dropDownOptions: { width: 800 },  
-                onValueChanged: function(e) {
-                    let selectedItem = dropdownData.find(item => item.GSCode === e.value);
-                    if (selectedItem) {
-                        cellInfo.setValue(selectedItem.GSDescrpition); 
-
-                        // Automatically update other columns
-                        let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-                        let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-                        if (rowIndex !== -1) {
-                            dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-                            dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-                            dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-                        }
-                        let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
-                       
-                    }
-                },
-              contentTemplate: function(e) {
-    return $("<div>").dxDataGrid({
-        dataSource: dropdownData,
-        selection: { mode: "single" },
-        keyExpr: "GSCode",
-        height: 300, // ✅ Add fixed height to enable scrolling
-        scrolling: { mode: "virtual" }, 
-        columns: [
-            { dataField: "GSCode", caption: "Code", width: 80 },
-            { dataField: "GSDescrpition", caption: "Description", width: 200 },
-            { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
-            { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-            { dataField: "CostPrice", caption: "Cost Price", width: 100 },
-            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-            { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-        ],
-        onSelectionChanged: function(selectedItems) {
-            let selectedItem = selectedItems.selectedRowsData[0];
-            if (selectedItem) {
-                e.component.option("value", selectedItem.GSCode);
-                cellInfo.setValue(selectedItem.GSDescrpition);
-
-                let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-                let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-              
-                if (rowIndex !== -1) {
-                    dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-                    dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-                    dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-                    dataGrid.cellValue(rowIndex, "Qty",1);
-                    dataGrid.cellValue(rowIndex, "VAT%","15%");
-                }
-                e.component.close();
-            }
-        }
-    });
-}
-
-            });
-        });
-    }
-},
-
-                   { dataField: "DescriptionDetails", caption: "...", width: 50 },
-                   { dataField: "DescriptionDetails", caption: "Unit Rate Method", width: 150 },
-                   { dataField: "Qty", caption: "Qty", width: 150 },
-                   { dataField: "UnitPrice", caption: "Unit Price", width: 150 },
-                   { dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
-                   { dataField: "Discount", caption: "Discount", width: 150 },
-                   { dataField: "DiscountDetails", caption: "...", width: 50 },  
-                   { dataField: "Amount", caption: "Amount", width: 150 }, 
-                   { dataField: "VAT%", caption: "VAT%", width: 150 },  
-                   { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
-                   { dataField: "VAT", caption: "VAT", width: 150 },  
-                   { dataField: "Total", caption: "Total", width: 150 }
-            ],
-            editing: {
-                mode: "cell",
-                allowUpdating: true,
-                allowAdding: false, // We'll add manually
-                allowDeleting: true
-            },
-            onInitNewRow: function(e) {
-                e.data.SNo = rowData.length + 1; // Auto-generate SNo
-            },
-            columnAutoWidth: true,
-            showBorders: true,
-        }).dxDataGrid("instance");
-    });
-
-    function addNewRow() {
-        var newRow = {
-            SNo: rowData.length + 1, // Auto-generate SNo
-            ItemCode: ItemNo,
-            Description: "",
-            DescriptionDetails:"",
-            Qty: 0,
-            UnitPrice: 0.00,
-            TotalBeforeDiscount:0.00,
-            Discount:"",
-            DiscountDetails:"",
-            Amount:0.00,
-            ExcemptionCode:"",
-            VAT:"",
-            Total: 0.00
-        };
-        
-        rowData.push(newRow);
-        dataGridInstance.option("dataSource", rowData);
-        dataGridInstance.refresh();
-    }
-
-    // function getDropdownData() {
-    //     return [
-    //         { id: 1, name: "Item A" },
-    //         { id: 2, name: "Item B" },
-    //         { id: 3, name: "Item C" }
-    //     ];
-    // }
-
-    // Fetch dropdown data (same API can be used if needed)
- function getDropdownData() {
-    return $.ajax({
-        url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-        method: "GET",
-        dataType: "json"
-    }).then(function(response) {
-        console.log("GsData",response)
-        return response.map(item => ({
-            GSCode: item.Gscode,
-            GSDescrpition: item.Gsdescrpition,
-            GsdescriptionAr:item.GsdescriptionAr,
-            ItemPartNo: item.ItemPartNo,
-            CostPrice: item.CostPrice,
-            GSSellingRate: item.GssellingRate,
-            ReorderQty:item.ReorderQty
-        }));
-    });
-}
+ 
 
  // Handle button clicks
     function addPrintButton_click(e) {
@@ -1214,39 +1048,77 @@
         openModal(url, title);
     }
 
-    function addPaymentButton_click(e) {
-         let url = "";
-         let title = "Payments";
-         switch (e.itemData.text) {
-             case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
-                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-                // window.location.href = url; // Navigate
+    // function addPaymentButton_click(e) {
+    //      let url = "";
+    //      let title = "Payments";
+    //      switch (e.itemData.text) {
+    //          case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
 
-                // window.open(`/${tenantName}/Finance/frm20161VATInvoiceEdit`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                // break;
-
-                 title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
-                 break;
+    //            DevExpress.ui.dialog.confirm(
+    //             "This option will create a New STANDARD TAX INVOICE (B2B)"
+    //             "After Creating the Invoice, you cannot remove or delete the Invoice".
+    //             "You can cancel only thru CREDIT NOTE."
+    //             "Click Yes if you want to continue.. or Click No to exit this option.",
+    //             "Confirm Creating new STANDARD TAX Invoice?"
+    //         ).done(function (dialogResult) {
+    //             if (dialogResult) {
+    //                 onConfirm(); // Proceed only if the user clicks "Yes"
+    //                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+    //             }
+    //         });
+       
+    //              title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
+    //              break;
                  
-                  case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
-                 url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
-                // window.location.href = url; // Navigate
+    //               case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
+    //              url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
 
-              //  window.open(`/${tenantName}/Finance/frmVATInvoiceEditB2C`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-               // break;
+    //              title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
+    //              break;
+          
+    //          default:
+    //              console.log("Clicked item: ", e.itemData.text);
+    //              return;
+    //      }
+    //     openModal(url, title);
+    // }
 
-                 title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
-                 break;
-             // case 'Add Bank Payment':
-             //     url = `/${tenantName}/Finance/VoucherBankPayment`;
-             //     title = "Add Bank Payment";
-             //     break;
-             default:
-                 console.log("Clicked item: ", e.itemData.text);
-                 return;
-         }
-        openModal(url, title);
+
+    function addPaymentButton_click(e) {
+    let url = "";
+    let title = "Payments";
+
+    switch (e.itemData.text) {
+       case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
+    DevExpress.ui.dialog.confirm(
+        "<div style='white-space: pre-wrap;'>"
+        + "This option will create a New STANDARD TAX INVOICE (B2B).\n"
+        + "After creating the invoice, you cannot remove or delete the invoice.\n"
+        + "You can cancel only through a CREDIT NOTE.\n"
+        + "Click Yes if you want to continue, or click No to exit this option."
+        + "</div>",
+        "Confirm Creating New STANDARD TAX Invoice?"
+    ).done(function (dialogResult) {
+        if (dialogResult) {
+            url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+            title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
+            openModal(url, title);
+        }
+    });
+
+            break;
+
+        case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
+            url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
+            title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
+            openModal(url, title);
+            break;
+
+        default:
+            console.log("Clicked item: ", e.itemData.text);
+            return;
     }
+}
 
 
 
@@ -1491,10 +1363,6 @@
         $('#submenuContainer6').hide();
         $('#submenuContainer7').hide();
     }
-
-
-
-   
 
 
 

@@ -632,6 +632,244 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCostCenterAccount()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl201CostAllocationUnits
+                    .Select(g => new
+                    {
+                        g.CostAllocationUnitId,
+                        g.CostAllocationUnit
+
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetRevenueAccount()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Qry201609vatrevenueLedgers
+                    .Select(g => new
+                    {
+                        g.IncomeLedger,
+                        g.AccountGroup,
+                        g.AccountGroupId,
+                        g.AccountId,
+                        g.AccountGroupUnder,
+                        g.IsLedgerObselete
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceCurrency()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl20169CurrencyExchanges
+                    .Select(g => new
+                    {
+                        g.CurrencyExchangeId,
+                        g.CurrencyName,
+                        g.CurrencyNameAr,
+                        g.ExchangeRate,
+                        g.CurrencyCode,
+                        g.CurrencyCodeAr
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetTaxCurrency()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl20169CurrencyExchanges
+                    .Select(g => new
+                    {
+                        g.CurrencyExchangeId,
+                        g.CurrencyName,
+                        g.CurrencyNameAr,
+                        g.ExchangeRate,
+                        g.CurrencyCode,
+                        g.CurrencyCodeAr
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDivision()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl20115CompanyBranches
+                    .Select(g => new
+                    {
+                        g.BranchName,
+                        g.BranchCode,
+                        g.BranchNameAr
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetSalesPerson()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl20101SalesPersonMasters
+                    .Select(g => new
+                    {
+                        g.SalesPersonCode,
+                        g.SalesPersonName,
+                        g.UserCode,
+                        g.EmailAddress
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetCompanyBranch()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl901CompanyDetails
+                    .Select(g => new
+                    {
+                        g.CompanyId,
+                        g.CompanyName
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetOtherIDType()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl00104SellerIdtypes
+                    .Select(g => new
+                    {
+                        g.SellerOtherIdtype,
+                        g.SellerIdtypeName
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+        [HttpGet]
+        public IActionResult GetAllSignatories()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var dbSignatories = dbContext.Tbl90104DocumentSignatories
+                        .Select(s => new Signatory
+                        {
+                            SignatoryID = s.SignatoryId.ToString(),
+                            SignatoryName = s.SignatoryName
+                        })
+                        .ToList(); // Materialize the query first
+
+                    var combinedSignatories = dbSignatories
+                        .Union(new[]
+                        {
+                    new Signatory
+                    {
+                        SignatoryID = "99",
+                        SignatoryName = "<Not Assigned>"
+                    }
+                        })
+                        .ToList();
+
+                    return Ok(combinedSignatories);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ideally log the exception, don't just throw
+                return StatusCode(500, new { message = ex.Message, success = false });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
     }
 }

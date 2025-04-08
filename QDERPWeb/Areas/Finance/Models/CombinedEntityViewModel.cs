@@ -338,6 +338,13 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal? TaxAmount { get; set; }
         // public decimal VAT% { get; set; }
     }
+    public class Signatory
+    {
+        public string SignatoryID { get; set; }
+        public string SignatoryName { get; set; }
+       
+
+    }
 
 }
 
