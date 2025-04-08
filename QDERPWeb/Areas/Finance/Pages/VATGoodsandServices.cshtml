@@ -68,6 +68,18 @@
         .icon-button {
             border-radius: 50% !important;
         }
+
+
+            .icon-button .dx-button-content {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0;
+            }
+
+        .icon-button {
+            border-radius: 50% !important;
+        }
     </style>
    
 </head>
@@ -197,6 +209,7 @@
                                         .OnOpened("onOpened")
                                         .OnValueChanged("onUnitMeasureValueChanged")
                                         .DropDownOptions(o => o.Width(400))
+                                        .ContentTemplate(new TemplateName("UnitofMeasureContentTemplate"))
                                         .Width("85%") // Keep DropDownBox at 85% width
                                         )
 
@@ -217,7 +230,6 @@
 
                                 </div>
                             </td>
-
 
                         <td>
                             <label class="field-label">Packing Unit:</label>
@@ -375,7 +387,7 @@
 </body>
 </html>
 <script>
-    
+
     function redirectToVATMasterModule() {
         const url = `/${tenantName}/Finance/VATMasterModule`;
         window.location.href = url;
