@@ -220,52 +220,104 @@
             }
         });
 
-        // Client Outstanding DataGrid
-        $("#clientOutstandingGrid").dxDataGrid({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AccountHeadNo",
-                loadUrl: "/api/Dashboard/GetClientOutstanding"
-            }),
-            remoteOperations: true,
-            columns: [
-                { dataField: "AccountHead", caption: "Account Head", width: 200, allowReordering: true },
+            // Client Outstanding DataGrid
+    $("#clientOutstandingGrid").dxDataGrid({
+        dataSource: DevExpress.data.AspNet.createStore({
+            key: "AccountHeadNo",
+            loadUrl: "/api/Dashboard/GetClientOutstanding"
+        }),
+        remoteOperations: true,
+        columns: [
+            {
+                dataField: "AccountHead",
+                caption: "Account Head",
+                width: 200,
+                allowReordering: true,
+                headerCellTemplate: function (header, info) {
+                    $("<div>")
+                        .text(info.column.caption)
+                        .css({
+                            "text-align": "center",
+                            "font-weight": "bold"
+                        })
+                        .appendTo(header);
+                }
+            },
+            {
+                dataField: "Balance",
+                caption: "Balance Amount",
+                format: { type: "fixedPoint", precision: 2 },
+                allowReordering: true,
+                headerCellTemplate: function (header, info) {
+                    $("<div>")
+                        .text(info.column.caption)
+                        .css({
+                            "text-align": "center",
+                            "font-weight": "bold"
+                        })
+                        .appendTo(header);
+                }
+            },
+            {
+                dataField: "OverdueDays",
+                caption: "Overdue Days",
+                visible: false,
+                allowHiding: true
+            },
+            { dataField: "AccountGroupId",caption: "Account Group",visible: false,allowHiding: true },
+            { dataField: "AccountHeadNo",caption: "Account Head No",visible: false, allowHiding: true}
+           ],
+        columnAutoWidth: true,
+        showBorders: true,
+        filterRow: { visible: true },
+        paging: { enabled: false },
+
+        // Enable vertical scrolling
+        height: 400,
+        scrolling: {
+            mode: "virtual"
+        },
+
+        searchPanel: { visible: false },
+
+        allowColumnReordering: true,
+        allowColumnResizing: true,
+
+        columnChooser: {
+            enabled: true,
+                mode: "select"
+        },
+
+        toolbar: {
+            items: [
                 {
-                    dataField: "Balance",
-                    caption: "Balance Amount",
-                    format: { type: "fixedPoint", precision: 2 },
-                    allowReordering: true
-                },
-            ],
-            columnAutoWidth: true,
-            showBorders: true,
-            filterRow: { visible: true },
-            paging: { enabled: false }, // Show all data
+                    location: "after",
+                    widget: "dxButton",
+                    options: {
+                        icon: "columnchooser",
+                        text: "Column Chooser",
+                        onClick: function () {
+                            $("#clientOutstandingGrid").dxDataGrid("instance").showColumnChooser();
+                        }
+                    }
+                }
+            ]
+        },
+        summary: {
+            totalItems: [
+                {
+                    column: "Balance",
+                    summaryType: "sum",
+                    valueFormat: { type: "fixedPoint", precision: 2 },
+                    displayFormat: "Total: {0}"
+                }
+            ]
+        }
+    });
 
-            // Enable vertical scrolling
-            height: 400, // Adjust grid height as needed
-            scrolling: {
-                mode: "virtual" // Enables virtual scrolling for large data
-            },
 
-            searchPanel: { visible: false }, // Hide search panel by default
-
-            // Enable column reordering
-            allowColumnReordering: true,
-            allowColumnResizing: true,
-
-            columnChooser: {
-                enabled: true, // Enable column chooser to select & reorder columns
-                mode: "dragAndDrop"
-            },
-
-            // Removed toolbar (no search & export button)
-            toolbar: {
-                items: []
-            }
-        });
-
-        // Bills Payable Outstanding DataGrid
-           $("#billsPayableGrid").dxDataGrid({
+               // Bills Payable Outstanding DataGrid
+    $("#billsPayableGrid").dxDataGrid({
         dataSource: DevExpress.data.AspNet.createStore({
             key: "AccountHeadNo",
             loadUrl: "/api/Dashboard/GetBillsPayableOutstanding"
@@ -299,42 +351,64 @@
                         })
                         .appendTo(header);
                 }
-            }
+            },
+            {
+                dataField: "OverdueDays",
+                caption: "Overdue Days",
+                visible: false, // hidden by default
+                allowHiding: true // optional, ensures it's available in the chooser
+            },
+            { dataField: "AccountHeadNo",caption: "Account Head No",visible: false, allowHiding: true}
         ],
         columnAutoWidth: true,
         showBorders: true,
         filterRow: { visible: true },
-        paging: { enabled: false }, // Show all data
+        paging: { enabled: false },
 
         // Enable vertical scrolling
-        height: 400, // Adjust grid height as needed
+        height: 400,
         scrolling: {
-            mode: "virtual" // Enables virtual scrolling for large data
+            mode: "virtual"
         },
 
-        // Hide the search panel
         searchPanel: { visible: false },
-        // Enable column reordering
+
         allowColumnReordering: true,
         allowColumnResizing: true,
 
         columnChooser: {
-            enabled: true, // Enable column chooser to select & reorder columns
-            mode: "dragAndDrop"
+            enabled: true,
+                mode: "select"
         },
 
-        // Remove the export button from the toolbar if present
         toolbar: {
             items: [
-                // Add any items you want to keep in the toolbar, but don't include the export button.
+                {
+                    location: "after",
+                    widget: "dxButton",
+                    options: {
+                        icon: "columnchooser",
+                        text: "Column Chooser",
+                        onClick: function () {
+                            $("#billsPayableGrid").dxDataGrid("instance").showColumnChooser();
+                        }
+                    }
+                }
             ]
         },
 
-        // Disable header filters (if any)
-        headerFilter: {
-            visible: false
+        summary: {
+            totalItems: [
+                {
+                    column: "Balance",
+                    summaryType: "sum",
+                    valueFormat: { type: "fixedPoint", precision: 2 },
+                    displayFormat: "Total: {0}"
+                }
+            ]
         }
     });
+
 
 
         // Bank Account Details DataGrid
@@ -346,7 +420,9 @@
             remoteOperations: true,
             columns: [
                 { dataField: "AccountHeadName", caption: "Account Head", width: 200, allowReordering: true },
-                { dataField: "Amount", caption: "Balance Amount", format: { type: "fixedPoint", precision: 2 }, allowReordering: true }
+                { dataField: "Amount", caption: "Balance Amount", format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
+                { dataField: "AccountGroup",caption: "Account Group",visible: false,allowHiding: true },
+                { dataField: "MasterGroupID",caption: "Master Group",visible: false, allowHiding: true}
             ],
             columnAutoWidth: true,
             showBorders: true,
@@ -365,14 +441,37 @@
             allowColumnReordering: true,
             allowColumnResizing: true,
 
+                 // Enable column chooser
             columnChooser: {
-                enabled: true, // Enable column chooser to select & reorder columns
-                mode: "dragAndDrop"
+                enabled: true,
+                    mode: "select"
             },
 
-            // Removed toolbar (no search & export button)
+            // Add Column Chooser button in toolbar
             toolbar: {
-                items: []
+                items: [
+                    {
+                        location: "after",
+                        widget: "dxButton",
+                        options: {
+                            icon: "columnchooser",
+                            text: "Column Chooser",
+                            onClick: function () {
+                                    $("#bankAccountGrid").dxDataGrid("instance").showColumnChooser();
+                            }
+                        }
+                    }
+                ]
+            },
+            summary: {
+                totalItems: [
+                    {
+                        column: "Amount",
+                        summaryType: "sum",
+                        valueFormat: { type: "fixedPoint", precision: 2 },
+                        displayFormat: "Total: {0}"
+                    }
+                ]
             }
         });
 
