@@ -347,11 +347,6 @@ namespace QD.ERP.Web.Areas.Finance.Models
     }
 
 
-    public class Signatory
-    {
-        public string SignatoryID { get; set; } // "verify", "approve", "unlock"
-        public string SignatoryName { get; set; } // Populated with logged-in user
-    }
 
 }
 
