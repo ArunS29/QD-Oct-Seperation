@@ -128,7 +128,11 @@
         font-weight: bold;
         color: black;
     }
-
+    .headerBolder{
+        white-space: normal;
+        text-align: center;
+        font-weight: bold;
+    }
 </style>
 <div class="title">
     <div class="header-container">
@@ -207,54 +211,54 @@
 
                 columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(80)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Voucher No</div>
+        <div class="headerBolder">Voucher No</div>
     </text>);
 
                 columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(100)
             .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Voucher Date</div>
+        <div class="headerBolder">Voucher Date</div>
     </text>);
 
                 columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Voucher Narration</div>
+        <div class="headerBolder">Voucher Narration</div>
     </text>);
 
                 columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Debit</div>
+        <div class="headerBolder">Debit</div>
     </text>);
 
                 columns.Add().DataField("CreditAmount").Caption(new JS("formatMessage('Credit')")).Width(100).Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Credit</div>
+        <div class="headerBolder">Credit</div>
     </text>);
 
                 columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120).Visible(true)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Entered By</div>
+        <div class="headerBolder">Entered By</div>
     </text>);
 
                 columns.Add().DataField("VoucherVerifiedBy").Caption(new JS("formatMessage('Verified By')")).Width(120).Visible(true)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Verified By</div>
+        <div class="headerBolder">Verified By</div>
     </text>);
 
                 columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved')")).Width(120).Visible(true)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Approved</div>
+        <div class="headerBolder">Approved</div>
     </text>);
 
                 columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(false)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Audit</div>
+        <div class="headerBolder">Audit</div>
     </text>);
                 columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('VoucherType')")).Width(120).Visible(true)
             .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">VoucherType</div>
+        <div class="headerBolder">VoucherType</div>
     </text>);
                 // Checkbox Columns for Approved, Verified, and Audit
                 columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120)
@@ -265,7 +269,7 @@
         .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsApproved', data); }"))
     </text>)
         .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Approved</div>
+        <div class="headerBolder">Approved</div>
     </text>);
 
                 columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120)
@@ -276,7 +280,7 @@
         .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsVerified', data); }"))
     </text>)
         .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Verified</div>
+        <div class="headerBolder">Verified</div>
     </text>);
 
 
@@ -288,7 +292,7 @@
         .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsAuditVerified', data); }"))
     </text>)
         .HeaderCellTemplate(@<text>
-        <div style="white-space: normal; text-align: center;">Audit</div>
+        <div class="headerBolder">Audit</div>
     </text>);
                 columns.Add().DataField("VoucherRefNo").Caption("Voucher Ref No").Width(120)
             .Visible(false)

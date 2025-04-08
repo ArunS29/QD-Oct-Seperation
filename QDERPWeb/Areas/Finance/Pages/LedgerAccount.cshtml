@@ -107,7 +107,7 @@
     }
 
     .modal-content {
-        background-color: var(--menu-color);
+        background-color: var(--background-color);
         margin: 5% auto;
         padding: 20px;
         border: 1px solid #888;
@@ -241,7 +241,7 @@
                     )
                 <span class="input-group-prepend" style="margin-top: 22px;">
 
-                    @(
+                    @(  
                         Html.DevExtreme().Button()
                         .ID("convertToArabic1")
                         .Width(75)
@@ -3917,20 +3917,25 @@ function syncSupVATNumbers(e) {
     }
 
     function redirectAccoutledgerMaster() {
+            const modal = document.getElementById("ledgerAccountMasterModal");
+            const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        const masterFormWindow = window.open(
-            `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`,
-            'popupWindow',
-            'width=1400,height=600,scrollbars=yes,resizable=yes'
-        );
+                iframe.src = `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`;
 
+            modal.style.display = "block";
 
-        const interval = setInterval(() => {
-            if (masterFormWindow.closed) {
-                clearInterval(interval);
+            const closeBtn = modal.querySelector(".close");
+            closeBtn.onclick = () => {
+                modal.style.display = "none";
                 refreshaccountledgerSelectBox();
-            }
-        }, 500);
+            };
+
+            window.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                    refreshaccountledgerSelectBox();
+                }
+            };
     }
 
     function redirectledgerAccountMaster() {
