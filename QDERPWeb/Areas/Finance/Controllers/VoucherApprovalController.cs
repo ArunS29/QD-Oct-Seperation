@@ -129,7 +129,7 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
-
+            var UserName = HttpContext.Session.GetString("UserName");
             var vouchers = dbContext.Tbl201VoucherMasters
                 .Where(v => request.VoucherNos.Contains(v.VoucherNo))
                 .ToList();
@@ -146,7 +146,7 @@ namespace QDWEB.Areas.Finance.Controllers
                     case "verify":
                         if (!voucher.IsVerified.GetValueOrDefault(false))
                         {
-                            voucher.VoucherVerifiedBy = request.LogOnUser;
+                            voucher.VoucherVerifiedBy = UserName;
                             voucher.VoucherVerifiedOn = DateTime.Now;
                             voucher.IsVerified = true;
                         }
@@ -155,7 +155,7 @@ namespace QDWEB.Areas.Finance.Controllers
                     case "approve":
                         if (!voucher.IsApproved.GetValueOrDefault(false))
                         {
-                            voucher.VoucherApprovedBy = request.LogOnUser;
+                            voucher.VoucherApprovedBy = UserName;
                             voucher.VoucherApprovedOn = DateTime.Now;
                             voucher.IsApproved = true;
                         }
@@ -189,8 +189,80 @@ namespace QDWEB.Areas.Finance.Controllers
         }
 
 
+        [HttpPost]
+        public IActionResult VerifyVoucher(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
 
+                    if (string.IsNullOrEmpty(voucherNo))
+                        return BadRequest("Invalid VoucherNo");
 
+                    var voucher = dbContext.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+                    if (voucher == null)
+                        return NotFound("Voucher not found");
+
+                    voucher.VoucherVerifiedBy = UserName; // Replace with actual user
+                    voucher.VoucherVerifiedOn = DateTime.Now;
+                    voucher.IsVerified = true;
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Voucher verified successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpPost]
+        public IActionResult DeleteVouchers([FromBody] VoucherUpdateRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (request.VoucherNos == null || !request.VoucherNos.Any())
+            {
+                return Json(new { success = false, message = "No voucher numbers provided." });
+            }
+
+            var voucherNos = request.VoucherNos;
+
+            // Fetch related entries and masters
+            var entries = dbContext.Tbl201VoucherEntries
+                .Where(e => voucherNos.Contains(e.VoucherNo))
+                .ToList();
+
+            var masters = dbContext.Tbl201VoucherMasters
+                .Where(m => voucherNos.Contains(m.VoucherNo))
+                .ToList();
+
+            if (!entries.Any() && !masters.Any())
+            {
+                return Json(new { success = false, message = "No matching vouchers found to delete." });
+            }
+
+            dbContext.Tbl201VoucherEntries.RemoveRange(entries);
+            dbContext.Tbl201VoucherMasters.RemoveRange(masters);
+
+            dbContext.SaveChanges();
+
+            return Json(new { success = true, message = "Selected vouchers have been deleted successfully." });
+        }
 
 
     }

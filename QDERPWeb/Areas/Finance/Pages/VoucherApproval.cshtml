@@ -202,9 +202,7 @@
             .ID("dataGrid")
             .KeyExpr("VoucherNo")
             .RemoteOperations(false)
-            .DataSource(ds => ds.Mvc()
-            .Controller("VoucherApproval")
-            .LoadAction("GetVoucherApprovals"))
+            
             .Columns(columns =>
             {
                 
@@ -282,6 +280,20 @@
         .HeaderCellTemplate(@<text>
         <div class="headerBolder">Verified</div>
     </text>);
+                columns.Add().Caption("Verify").Width(120).CellTemplate(@<text>
+        <div class="text-center">
+            @(Html.DevExtreme().Button()
+            
+            .Type(ButtonType.Default)
+            .Icon("card")
+            .OnClick("function(e) { onVerifyClick(data.VoucherNo); }") // Pass VoucherNo
+            )
+        </div>
+    </text>)
+    .HeaderCellTemplate(@<text>
+        <div class="headerBolder">Verify</div>
+    </text>);
+
 
 
                 columns.Add().DataField("IsAuditVerified").Caption(new JS("formatMessage('Audit')")).Width(120)
@@ -568,6 +580,7 @@
     }
 
     $(function () {
+        loadVoucherApprovals();
         var selectedVoucherNos = [];
         var selectedVoucherTypes = [];
 
@@ -588,7 +601,9 @@
                 { text: "Edit Voucher", icon: "edit", action: editVoucher },
                 { text: "View Voucher", icon: "find", action: viewVoucher },
                 { text: "Verify Vouchers", icon: "check", action: verifyVouchers },
-                { text: "Approve Vouchers", icon: "todo", action: approveVouchers },
+                { text: "Delete Vouchers", icon: "close", action: deleteVouchers },
+                { text: "Verify All Selected Vouchers", icon: "card", action: verifyVouchers },
+                { text: "Approve All Selected Vouchers", icon: "user", action: approveVouchers },
                 { text: "Unlock Vouchers", icon: "unlock", action: unlockVouchers }
             ],
             target: "#dataGrid",
@@ -601,8 +616,8 @@
             }
         });
 
-        // Show context menu only if rows are selected
-        $(document).on("contextmenu", ".dx-row", function (e) {
+        // ✅ Show context menu only when right-clicking on data rows
+        $(document).on("contextmenu", ".dx-data-row", function (e) {
             e.preventDefault();
             if (selectedVoucherNos.length > 0) {
                 $("#voucherContextMenu").dxContextMenu("instance").show();
@@ -633,7 +648,7 @@
 
         function verifyVouchers() {
             if (selectedVoucherNos.length === 0) {
-                alert("No voucher selected.");
+                DevExpress.ui.notify("Please select Vouchers to Verify!", "error", 2000);
                 return;
             }
             updateVoucherStatus(selectedVoucherNos, "verify");
@@ -641,7 +656,7 @@
 
         function approveVouchers() {
             if (selectedVoucherNos.length === 0) {
-                alert("No voucher selected.");
+                DevExpress.ui.notify("Please select Vouchers to Approve!", "error", 2000);
                 return;
             }
             updateVoucherStatus(selectedVoucherNos, "approve");
@@ -649,11 +664,43 @@
 
         function unlockVouchers() {
             if (selectedVoucherNos.length === 0) {
-                alert("No voucher selected.");
+                DevExpress.ui.notify("Please select Vouchers to Unlock!", "error", 2000);
                 return;
             }
             updateVoucherStatus(selectedVoucherNos, "unlock");
         }
+
+        function deleteVouchers() {
+            if (selectedVoucherNos.length === 0) {
+                DevExpress.ui.notify("Please select Vouchers to Delete!", "error", 2000);
+                return;
+            }
+
+            DevExpress.ui.dialog.confirm("Are you sure you want to delete the selected vouchers?", "Confirm Deletion")
+                .done(function (dialogResult) {
+                    if (dialogResult) {
+                        $.ajax({
+                            url: '/api/VoucherApproval/DeleteVouchers',
+                            type: 'POST',
+                            data: JSON.stringify({ voucherNos: selectedVoucherNos }),
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (response) {
+                                if (response.success) {
+                                    DevExpress.ui.notify("Vouchers deleted successfully!", "success", 2000);
+                                    // Call your own custom reload function
+                                    loadVoucherApprovals();
+                                } else {
+                                    DevExpress.ui.notify(response.message || "Failed to delete vouchers!", "error", 2000);
+                                }
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Error occurred while deleting vouchers!", "error", 2000);
+                            }
+                        });
+                    }
+                });
+        }
+
 
         function updateVoucherStatus(voucherNos, actionType) {
             $.ajax({
@@ -663,12 +710,13 @@
                 data: JSON.stringify({
                     VoucherNos: voucherNos,
                     ActionType: actionType,
-                    LogOnUser: "Saju Joy" // Replace with actual logged-in user
+                    
                 }),
                 success: function (response) {
                     if (response.success) {
-                        alert(response.message);
-                        $("#dataGrid").dxDataGrid("instance").refresh();
+                        DevExpress.ui.notify(response.message, "success", 2000);
+                        // Call your own custom reload function
+                        loadVoucherApprovals();
                     } else {
                         alert("Error: " + response.message);
                     }
@@ -734,7 +782,7 @@
     // }
 
     function onRowPrepared(e) {
-        if (e.rowType === "data" && e.data.IsVerified) {
+        if (e.rowType === "data" && e.data.IsApproved) {
             e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color
         }
     }
@@ -755,8 +803,75 @@
         }
     });
 
+    function onVerifyClick(voucherNo) {
+        $.ajax({
+            type: "POST",
+            url: '/api/VoucherApproval/VerifyVoucher', // Update path if inside Area
+            data: { voucherNo: voucherNo },
+            success: function (response) {
+                DevExpress.ui.notify("Voucher verified successfully!", "success", 2000);
+                const targetGrid = $("#dataGrid").dxDataGrid("instance");
+               
+                targetGrid.reload();
+            },
+            error: function (err) {
+                DevExpress.ui.notify("Error verifying voucher", "error", 2000);
+                console.error(err);
+            }
+        });
+    }
 
+    function loadVoucherApprovals() {
+        const startDateComponent = $("#VoucherDate").dxDateBox("instance");
+        const endDateComponent = $("#EffectiveDate").dxDateBox("instance");
 
+        if (!startDateComponent || !endDateComponent) {
+            console.warn("DateBox components not found.");
+            return;
+        }
+
+        const startDate = startDateComponent.option("value");
+        const endDate = endDateComponent.option("value");
+
+        if (!startDate || !endDate) {
+            DevExpress.ui.notify("Please select both start and end dates.", "warning", 2000);
+            return;
+        }
+
+        const voucherType = [
+            "Bank Payment", "Cash Payment",
+            "Bank Receipts", "Cash Receipts",
+            "Sales", "Purchases", "Journal"
+        ];
+
+        const useFormattedDate = true;
+        const formattedStart = useFormattedDate
+            ? startDate.toLocaleDateString('en-CA') // Format: yyyy-mm-dd
+            : startDate.toISOString();
+
+        const formattedEnd = useFormattedDate
+            ? endDate.toLocaleDateString('en-CA')
+            : endDate.toISOString();
+
+        $.ajax({
+            url: '/api/VoucherApproval/GetVoucherApprovals',
+            type: 'GET',
+            data: {
+                startDate: formattedStart,
+                endDate: formattedEnd,
+                voucherTypes: voucherType.join(",")
+            },
+            success: function (data) {
+                const targetGrid = $("#dataGrid").dxDataGrid("instance");
+                targetGrid.option("dataSource", data);
+                targetGrid.refresh();
+            },
+            error: function (err) {
+                DevExpress.ui.notify("Failed to load data", "error", 2000);
+                console.error(err);
+            }
+        });
+    }
 
 
 
