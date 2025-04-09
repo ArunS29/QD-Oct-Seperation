@@ -17,15 +17,7 @@
         padding: 5px;
     }
 
-    .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #f5f5f5;
-        width: 100%;
-        padding: 15px;
-        box-sizing: border-box;
-    }
+    
 
     /* Override Bootstrap padding/margin if necessary */
     .container {
@@ -64,10 +56,14 @@
     }
 
     .mainContainer {
-        margin-top: 1em;
+        margin-top:0em;
         width: 100%;
-        padding: 20px;
     }
+
+    .playIcon {
+        display: none;
+    }
+
 
 </style>
 <div id="LedgerDocuments" class="no-border-title cards-container-title"></div>
@@ -76,7 +72,7 @@
     <div class="row g-3">
         <!-- Card -->
         <div class="col-12">
-            <div class="card p-3 shadow-sm bg-light">
+            <div class=" p-3 ">
 
                 <!-- First Row -->
                 <div id="EnteraNewDocument&AddtotheExistingList" class="no-border-input cards-container-title"></div>
@@ -92,7 +88,7 @@
                             )
                     </div>
                     <div class="col-12 col-md-6">
-                        @(Html.DevExtreme().DropDownBox()
+                        @(Html.DevExtreme().SelectBox()
                             .Label(new JS("formatMessage('Type of the Document Attached')"))
                             .DataSource(d => d.WebApi()
                             .Controller("LedgerAccountMaster")
@@ -102,33 +98,22 @@
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired().Message("Type of the Document Attached is required");
-
                             })
                             .LabelMode(EditorLabelMode.Outside)
-                            .ID("accountMasterDropDownBox")
+                            .ID("accountMasterSelectBox")
                             .ShowClearButton(true)
-                            .AcceptCustomValue(true)
                             .Width("100%")
-                            .AcceptCustomValue(true)
-                            .OpenOnFieldClick(false)
-                            .ValueChangeEvent("input")
-                            .HoverStateEnabled(true)
                             .ValueExpr("DocumentTypeId")
                             .DisplayExpr("DocumentType")
-                            .OnInput("dropDownBoxOnInput")
-                            .OnOpened("onOpened")
-                            .OnKeyDown("onKeyDown")
-                            //.OnValueChanged("dropDownBoxValueChanged")
-                            .ContentTemplate(new TemplateName("DocumentAttachedContentTemplate"))
+                            .HoverStateEnabled(true)
                             )
-
                     </div>
                     <div class="col-6 col-md-1 mt-4">
                         @(Html.DevExtreme().Button()
                             .ID("btnAddAHead")
                             .Icon("plus")
                             .Width("100%")
-                            .OnClick("redirecttoledgersubgroup")
+                      @*       .OnClick("redirecttoledgersubgrou") *@
                             )
                     </div>
                     <div class="col-6 col-md-1 mt-4">
@@ -168,11 +153,11 @@
                             .ID("btnAttachment")
                             .Icon("fa fa-paperclip")
                             .Width("100%")
-                            .OnClick("onAttachClicked"))
+                          @*   .OnClick("onAttachClicked") *@
+                          )
                     </div>
                     <input type="file" id="fileInput" style="display: none;" />
                 </div>
-
                 <!-- Third Row -->
                 <div class="row mb-3">
                     @* <div class="col-12 col-md-4">
@@ -253,7 +238,7 @@
                         .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>);
                             columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
                             columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref No')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
-                            columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formtMessge('Document Remarks')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
+                            columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formatMessage('Document Remarks')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
 
                             columns.AddFor(m => m.DocumentExpDate)
                         .Caption(new JS("formatMessage('Expiry On')"))
@@ -277,7 +262,7 @@
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
                     .Width("100%")
-                    .OnCellClick("onDocumentNoClick") // Add the click event
+         @*            .OnCellClick("onDocumentNoClick") // Add the click event *@
                     )
             </div>
         </div>
