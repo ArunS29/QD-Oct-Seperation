@@ -48,7 +48,7 @@
 
         .dx-textarea {
             width: 100%;
-            height: 60px;
+            height: 1000px;
         }
         .dx-card{
             width : 1460px;
@@ -106,6 +106,18 @@
             display:  none;
 
         }
+
+        .heightTextArea{
+            height:100px !important;
+        }
+
+        .custom-textarea .dx-texteditor-input {
+            overflow-y: auto; /* Enables vertical scrollbar */
+            resize: vertical; /* Allows manual resize (optional) */
+            min-height: 150px;
+            line-height: 1.5;
+        }
+
     </style>
    
 </head>
@@ -125,7 +137,7 @@
                             <label class="field-label">Goods & Services Code:</label>
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtGoodsCode7")
-                                    .Width("100%")
+                                    .Width("80%")
                                     .ValidationRules(rules =>
                                     {
                                         rules.AddRequired().Message("Goods Code is required");
@@ -133,40 +145,59 @@
                                     )
                                 
                         </td>
-                        <td>
-                            <label class="field-label">Goods & Services Group:</label>
-                            @(Html.DevExtreme().DropDownBox()
-                                .DataSource(d => d.WebApi()
-                                .Controller("VATModule")
-                                .LoadAction("GetGoodsAndServicesGroups") 
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("GsgroupId") // ✅ Use correct primary key
-                                )
-                                .LabelMode(EditorLabelMode.Outside)
-                                .ID("ddlGoodsGroup1")
-                                .ShowClearButton(true)
-                                .AcceptCustomValue(true)
-                                .OpenOnFieldClick(false)
-                                .ValueChangeEvent("input")
-                                .OnValueChanged("onGoodsGroupChanged")
-                                .HoverStateEnabled(true)
-                                .ValueExpr("GsgroupId") // ✅ Set Value to Group ID
-                                .DisplayExpr("GsgroupName") // ✅ Display actual group name
-                                .OnInput("dropDownBoxOnInput")
-                                .OnOpened("onOpened")
-                                .DropDownOptions(o => o.Width(1000))
-                                .ContentTemplate(new TemplateName("GoodsandServicesContentTemplate"))
-                                .Width("85%")
-                                )
-                        </td>
+                            <td>
+                                <label class="field-label">Goods & Services Group:</label>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    @(Html.DevExtreme().DropDownBox()
+                                        .DataSource(d => d.WebApi()
+                                        .Controller("VATModule")
+                                        .LoadAction("GetGoodsAndServicesGroups")
+                                        .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("GsgroupId"))
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        .ID("ddlGoodsGroup1")
+                                        .ShowClearButton(true)
+                                        .AcceptCustomValue(true)
+                                        .OpenOnFieldClick(false)
+                                        .ValueChangeEvent("input")
+                                        .OnValueChanged("onGoodsGroupChanged")
+                                        .HoverStateEnabled(true)
+                                        .ValueExpr("GsgroupId")
+                                        .DisplayExpr("GsgroupName")
+                                        .OnInput("dropDownBoxOnInput")
+                                        .OnOpened("onOpened")
+                                        .DropDownOptions(o => o.Width(1000))
+                                        .ContentTemplate(new TemplateName("GoodsandServicesContentTemplate"))
+                                        .Width("70%") // Full width inside the flex container
+                                        )
 
-                        <td style="padding-top:15px;">
-                            @(Html.DevExtreme().Button().ID("btnAddGroup3").Icon("plus"))
+                                   @*  @(Html.DevExtreme().Button()
+                                        .ID("btnAddGroup3")
+                                        .Icon("plus")
+                                        .Width(30) // Optional: fix width
+                                        .Height(30))  *@
+
+                                    @(Html.DevExtreme().Button()
+                                        .ID("btnAddUOM1")
+                                        .Icon("plus")
+                                        .Hint("Add Unit")
+                                        .Width(40)
+                                        .Height(40)
+                                        .StylingMode(ButtonStylingMode.Contained)
+                                        .ElementAttr(new
+                                        {
+                                            @class = "icon-button"
+                                        })
+                                        .OnClick("function() { redirectToVATMasterModule(); }") // ✅ Call separate function
+                                        )
+                                </div>
+                            </td>
+
                             
-                        </td>
+                        
                         <td>
                             <label class="field-label">Item Part No:</label>
-                            @(Html.DevExtreme().TextBox().ID("txtItemPartNo4").Width("100%"))
+                            @(Html.DevExtreme().TextBox().ID("txtItemPartNo4").Width("70%"))
                         </td>
                     </tr>
                 </table>
@@ -177,12 +208,15 @@
             <div class="dx-field">
                 <table style="width: 1300px;">
                     <tr>
-                        <td>
-                            <label class="field-label">Goods & Services Description:</label>
+                        <td >
+
                                 @(Html.DevExtreme().TextArea()
+                                    .Label("Goods & Services Description:")
+                                    .LabelMode(EditorLabelMode.Outside)
                                     .ID("txtDescription8")
                                     .Width("100%")
-                                    .Height(60)
+                                    .Height(150) // Adjust height here for scrollbar to appear
+                                    .ElementAttr(new { @class = "custom-textarea heightTextArea" })
                                     .ValidationRules(rules =>
                                     {
                                         rules.AddRequired().Message("Description is required");
@@ -190,17 +224,21 @@
                                     )
 
                         </td>
-                            <td>
-                                <label class="field-label">Goods & Services Description (in Arabic):</label>
-                                @(Html.DevExtreme().TextBox().ID("txtDescriptionArabic").Width("100%").Height(60))
+                        <td style="width:0%;padding:1em;">
                                 @(Html.DevExtreme().Button()
                                     .ID("convertToArabicDesc")
-                                    .Width(40)
-                                    .Height(40)
                                     .Icon("fas fa-language")
                                     .ElementAttr(new { @class = "input-button" })
                                     .OnClick("function() { convertDescriptionToArabic(); }")
                                     )
+                        </td>
+                            <td>
+                                @(Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('Goods & Services Description (in Arabic):')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .ID("txtDescriptionArabic").Width("100%")
+                                    .ElementAttr(new { @class = "heightTextArea" }))
+                                
                             </td>
                     </tr>
                 </table>
@@ -212,9 +250,10 @@
                 <table style="width: 1300px;">
                     <tr>
                             <td>
-                                <label class="field-label">Unit of Measure:</label>
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     @(Html.DevExtreme().DropDownBox()
+                                        .Label(new JS("formatMessage('Unit of Measure:')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                         .ID("ddlUnitMeasure9")
                                         .Width("100%")
                                         .DataSource(d => d.WebApi()
@@ -236,7 +275,7 @@
                                         .OnValueChanged("onUnitMeasureValueChanged")
                                         .DropDownOptions(o => o.Width(400))
                                         .ContentTemplate(new TemplateName("UnitofMeasureContentTemplate"))
-                                        .Width("85%") // Keep DropDownBox at 85% width
+                                        .Width("100%") // Keep DropDownBox at 85% width
                                         )
 
                                     @(Html.DevExtreme().Button()
@@ -258,34 +297,37 @@
                             </td>
 
                         <td>
-                            <label class="field-label">Packing Unit:</label>
                             @(Html.DevExtreme().NumberBox()
                                 .ID("packingUnit")
+                                .Label(new JS("formatMessage('Packing Unit:')"))
+                                .LabelMode(EditorLabelMode.Outside)
                                 .Value(1) // default
                                 .Min(1)
                                 .Step(1)
                                 .ShowSpinButtons(true)
                                 .Format("#") // no decimals
-                                .Width(100)
+                                .Width("70%")
                                 )
                         </td>
 
                         <td>
-                            <label class="field-label">Selling Rate:</label>
                             @(Html.DevExtreme().NumberBox()
+                                .Label(new JS("formatMessage('Selling Rate:')"))
+                                .LabelMode(EditorLabelMode.Outside)
                                 .ID("sellingRate")
                                 .Value(1)
                                 .Min(1)
                                 .Step(1)
                                 .ShowSpinButtons(true)
                                 .Format("#") // no decimals
-                                .Width(100)
+                                    .Width("100%")
                                 )
                         </td>
 
                         <td>
-                            <label class="field-label">Cost Price:</label>
                             @(Html.DevExtreme().NumberBox()
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Label(new JS("formatMessage('Cost Price:')"))
                                 .ID("txtCostPrice3")
                                 .Value(1)
                                 .Min(1)
@@ -306,20 +348,31 @@
                 <table style="width: 1300px;">
                     <tr>
                         <td>
-                            <label class="field-label">Detailed Description:</label>
-                            @(Html.DevExtreme().TextArea().ID("txtDetailedDescription").Width("100%").Height(80))
+                            @(Html.DevExtreme().TextArea()
+                            .Label(new JS("formatMessage('Detailed Description:')"))
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ID("txtDetailedDescription")
+                            .ElementAttr(new { @class = "heightTextArea" })
+                            .Width("100%").Height(80))
                         </td>
-                            <td>
-                                <label class="field-label">Detailed Description (in Arabic):</label>
-                                @(Html.DevExtreme().TextBox().ID("txtDetailedDescriptionArabic").Width("100%").Height(80))
-                                @(Html.DevExtreme().Button()
-                                    .ID("convertToArabicDetail")
-                                    .Width(40)
-                                    .Height(40)
-                                    .Icon("fas fa-language")
-                                    .ElementAttr(new { @class = "input-button" })
-                                    .OnClick("function() { convertDetailedDescToArabic(); }")
-                                    )
+                        <td>
+                            <td style="width:0%;padding:1em;">
+                                    @(Html.DevExtreme().Button()
+                                        .ID("convertToArabicDesc")
+                                        .Icon("fas fa-language")
+                                        .ElementAttr(new { @class = "input-button" })
+                                        .OnClick("function() { convertDescriptionToArabic(); }")
+                                        )
+                            </td>
+                        
+                            <td style="display:flex;">
+                                @(Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('Detailed Description (in Arabic):')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                .ID("txtDetailedDescriptionArabic")
+                                .ElementAttr(new { @class = "heightTextArea" })
+                                .Width("100%").Height(80))
+                                
                             </td>
                     </tr>
                 </table>
