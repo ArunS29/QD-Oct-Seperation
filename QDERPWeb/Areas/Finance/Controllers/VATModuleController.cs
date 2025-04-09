@@ -900,8 +900,50 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public IActionResult GetAccountGroups()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var groups = dbContext.Tbl40111PropertyUnitCodes
+                    .Select(g => new
+                    {
+                        g.UnitDescAr,   // Primary Key
+                        g.UnitDesc,     // Display text
+                        g.UnitType,  
+                        g.UnitCode // Optional extra info
+                    })
+                    .ToList();
 
+                return Ok(groups);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var newUom = new Tbl40111PropertyUnitCode
+                {
+                    // No need to set UnitCode
+                    UnitType = unitType,
+                    UnitDesc = unitDesc,
+                    UnitDescAr = unitDescAr
+                };
+
+                dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
+                dbContext.SaveChanges();
+
+                return Json(new { success = true, unitCode = newUom.UnitCode }); // Optional: return new ID
+            }
+
+            return Json(new { success = false, message = "Unable to get tenant context" });
+        }
 
 
     }
 }
+
