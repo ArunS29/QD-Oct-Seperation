@@ -1255,7 +1255,7 @@
 				.LoadAction("GetAccountGroups")
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("UnitCode"))
-				.ValueExpr("UnitCode")
+				.ValueExpr("UnitDesc")
 
 				.DisplayExpr("UnitDesc")
 				.Value(new JS("cellInfo.value"))
@@ -2268,31 +2268,33 @@
 								}
 							});
 
-							// ✅ Add icon with navigation
+							// ✅ Add icon with modal navigation
 							$("<div>").dxButton({
 								icon: "plus",
 								hint: "Add new item",
 								onClick: function () {
-								  // Replace or fetch dynamically
-									let url = `/${tenantName}/Finance/VATGoodsandServices`; // Example add page
-									window.location.href = url;
+									let url = `/${tenantName}/Finance/VATGoodsandServices`;
+									let title = 'New VAT Goods and Services';
+									openModal(url, title);
 								},
 								width: 60,
 								height: 30
 							}).appendTo($container);
 
-							// ✅ Edit icon with navigation
+							// ✅ Edit icon with modal navigation
 							$("<div>").dxButton({
 								icon: "edit",
 								hint: "Edit item",
 								onClick: function () {
-								  // Replace or fetch dynamically
-									let url = `/${tenantName}/Finance/VATGoodsandServices`; // Example edit page
-									window.location.href = url;
+									let url = `/${tenantName}/Finance/VATGoodsandServices`;
+									let title = 'Edit VAT Goods and Services';
+									openModal(url, title);
 								},
 								width: 60,
 								height: 30
 							}).appendTo($container);
+
+
 						});
 					}
 				},
@@ -2336,8 +2338,8 @@
 										onSelectionChanged: function (selectedItems) {
 											let selectedItem = selectedItems.selectedRowsData[0];
 											if (selectedItem) {
-												e.component.option("value", selectedItem.UnitCode);
-												cellInfo.setValue(selectedItem.UnitCode);
+												e.component.option("value", selectedItem.UnitDesc);
+												cellInfo.setValue(selectedItem.UnitDesc);
 
 												let grid = $("#B2BdataGrid").dxDataGrid("instance");
 												let rowIndex = grid.getRowIndexByKey(cellInfo.key);

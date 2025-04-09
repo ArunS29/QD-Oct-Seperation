@@ -920,30 +920,40 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+		[HttpPost]
+		public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				// Check if the UnitType or the combination already exists
+				bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
+					u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
+					u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
+					u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
 
-        [HttpPost]
-        public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var newUom = new Tbl40111PropertyUnitCode
-                {
-                    // No need to set UnitCode
-                    UnitType = unitType,
-                    UnitDesc = unitDesc,
-                    UnitDescAr = unitDescAr
-                };
+				if (exists)
+				{
+					return Json(new { success = false, message = "This Unit Rate Method already exists." });
+				}
 
-                dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
-                dbContext.SaveChanges();
+				// Add new entry
+				var newUom = new Tbl40111PropertyUnitCode
+				{
+					UnitType = unitType,
+					UnitDesc = unitDesc,
+					UnitDescAr = unitDescAr
+				};
 
-                return Json(new { success = true, unitCode = newUom.UnitCode }); // Optional: return new ID
-            }
+				dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
+				dbContext.SaveChanges();
 
-            return Json(new { success = false, message = "Unable to get tenant context" });
-        }
+				return Json(new { success = true, unitCode = newUom.UnitCode });
+			}
+
+			return Json(new { success = false, message = "Unable to get tenant context" });
+		}
 
 
-    }
+	}
 }
 

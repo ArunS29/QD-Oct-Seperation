@@ -80,6 +80,32 @@
         .icon-button {
             border-radius: 50% !important;
         }
+
+        .container {
+            display: none !important;
+        }
+
+        .frame {
+            display: none !important;
+        }
+
+        .footerContainer {
+            display: none !important;
+        }
+
+        .bodyContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .mainContainer {
+            margin-top: 1em;
+        }
+
+        .playIcon {
+            display:  none;
+
+        }
     </style>
    
 </head>
@@ -390,8 +416,11 @@
 
     function redirectToVATMasterModule() {
         const url = `/${tenantName}/Finance/VATMasterModule`;
-        window.location.href = url;
+        const title = "VAT Master Module";
+
+        openModal(url, title);
     }
+
 
 
     function onUnitMeasureSelectionChanged(e) {

@@ -61,6 +61,32 @@
         .limited-footer .btn-container:not(:has(#btnSave,#btnBack)) {
             display: none !important;
         }
+
+        .container {
+            display: none !important;
+        }
+
+        .frame {
+            display: none !important;
+        }
+
+        .footerContainer {
+            display: none !important;
+        }
+
+        .bodyContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .mainContainer {
+            margin-top: 1em;
+        }
+
+        .playIcon {
+            display:  none;
+
+        }
     </style>
    
 </head>
@@ -265,7 +291,7 @@
         const unitDescAr = $("#txtDescriptionArabic").dxTextArea("instance").option("value");
 
         if (!unitType || !unitDesc) {
-            DevExpress.ui.notify("Please enter Unit Type and Description", "error", 2000);
+            DevExpress.ui.notify("Please enter both Unit Type and Description.", "error", 2000);
             return;
         }
 
@@ -289,14 +315,16 @@
                     // ✅ Refresh the grid
                     $("#dataGrid").dxDataGrid("instance").refresh();
                 } else {
-                    DevExpress.ui.notify(response.message || "Failed to add UOM", "error", 2000);
+                    // ❌ Notify the user of the exact backend error message
+                    DevExpress.ui.notify(response.message || "This Unit Rate Method already exists.", "error", 3000);
                 }
             },
             error: function () {
-                DevExpress.ui.notify("Failed to add UOM", "error", 2000);
+                DevExpress.ui.notify("An error occurred while adding the UOM.", "error", 3000);
             }
         });
     }
+
 
 
 </script>
