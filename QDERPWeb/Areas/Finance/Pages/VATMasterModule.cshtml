@@ -2,6 +2,7 @@
 @model QD.ERP.Web.Areas.Finance.Pages.DatabaseMasterModuleModel
 @{
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,7 +77,7 @@
                             @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Type a New UOM & Add to the Existing List:')"))
                                 .LabelMode(EditorLabelMode.Outside)
-                            .ID("txtGoodsCode7").Width("75%"))
+                            .ID("txtGoodsCode7").Width("69%"))
                         </td>
                     </tr>
                     <tr>
@@ -124,10 +125,9 @@
            
 
         </div>
-        </div>
 
 
-    <div class="dx-field ledgerResult">
+     
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201617vatinvoiceInDetail>()
             .ID("dataGrid")
             .RemoteOperations(false)
@@ -156,8 +156,9 @@
             .ShowRowLines(true)
             .Width("100%")
             )
-    </div>
+   
 
+        </div>
     <div class="Head">
         <div class="limited-footer">
             @await Html.PartialAsync("VATModuleFooter")
