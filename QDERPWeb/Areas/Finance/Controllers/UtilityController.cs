@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
@@ -73,7 +75,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetCurrencyList(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var currencyList = dbContext.CurrencyMasters.Select(c => new
+                    {
+                        c.CurrencyID,
+                        c.CurrencyName,
+                        c.CurrencySymbol,
+                        c.CurrencyUnicode,
+                        c.IsDefault
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(currencyList, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
+
 }
 
 
