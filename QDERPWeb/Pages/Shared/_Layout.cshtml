@@ -1210,7 +1210,7 @@
 
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu">
-                    @if (userModules.Contains("Human Resources"))
+                    @if (userModules.Contains("HR"))
                     {
                         <div class="menu-item hr" onclick="navigate('Human Resources')">
                             <i class="fas fa-users" id="humanResourcesIcon"></i>
@@ -1245,14 +1245,14 @@
                             <div id="CampManagement" class="text no-border-input"></div>
                         </div>
                     }
-                    @if (userModules.Contains("Inventory Management"))
+                    @if (userModules.Contains("IMS"))
                     {
                         <div class="menu-item inventory" onclick="navigate('Inventory Management')">
                             <i class="fas fa-cogs" id="InventoryManagementIcon"></i>
                             <div id="InventoryManagement" class="text no-border-input"></div>
                         </div>
                     }
-                    @if (userModules.Contains("Projects Control"))
+                    @if (userModules.Contains("Projects"))
                     {
                         <div class="menu-item projects" onclick="navigate('Projects Control')">
                             <i class="fas fa-project-diagram" id="ProjectsControlIcon"></i>
