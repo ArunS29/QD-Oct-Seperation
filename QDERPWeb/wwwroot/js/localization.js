@@ -130,6 +130,7 @@
         "AssetDescription": "Asset Description",
         "Specifications": "Specifications",
         "AccountGroup": "Account Group",
+        "Account Group": "Account Group",
         "PropertyNo": "Property No",
         "AssetDetails": "Asset Details",
         "IsFinanced": "Is Financed",
@@ -1478,6 +1479,8 @@
         "Claim Remarks:": "Claim Remarks:",
         "Claimed for Project/Jobs:": "Claimed for Project/Jobs:",
         "Priority:": "Priority:",
+        "Client Code should be entered":"Client Code should be entered",
+        
         "Outstanding Details": "Outstanding Details",
         "Total Client Outstanding": "Total Client Outstanding",
         "Total Cash Balance": "Total Cash Balance",
@@ -1552,13 +1555,17 @@
         "Description (Arabic)": "Description (Arabic)",
         "Type a New UOM & Add to the Existing List:": "Type a New UOM & Add to the Existing List:",
         "UoM Description:": "UoM Description:",
-        "Add": "Add"
-
-
-
-
+        "Add": "Add",
+        "Balance Amount": "Balance Amount",
+        "Account Head": "Account Head",
+        "Total:": "Total:",
+        "Column Chooser": "Column Chooser",
+        "Overdue Days": "Overdue Days",
+        "Account Head No": "Account Head No"
     },
     "ar": {
+        "Overdue Days": "أيام التأخير",
+        "Account Head No": "رقم الحساب الرئيسي",
         "Show Fields":"إظهار الحقول",
         "Show Row Totals":"إظهار إجماليات الصفوف",
         "Show All Records":"عرض جميع السجلات",
@@ -3033,7 +3040,13 @@
         "Type a New UOM & Add to the Existing List:": "اكتب وحدة قياس جديدة وأضفها إلى القائمة الحالية:",
         "UoM Description:": "وصف وحدة القياس:",
         "Description (Arabic)": "الوصف (بالعربية)",
-        "Add": ":إضافة"
+        "Add": ":إضافة",
+        "Balance Amount": "المبلغ المتبقي",
+        "Account Head": "رئيس الحساب",
+        "Total:": ":الإجمالي",
+        "Column Chooser": "اختيار الأعمدة",
+        "PaymentMeans Type": "نوع وسيلة الدفع",
+        "Client Code should be entered":"يجب إدخال رمز العميل"
 
     }
 };

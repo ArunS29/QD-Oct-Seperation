@@ -900,8 +900,87 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public IActionResult GetAccountGroups()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var groups = dbContext.Tbl40111PropertyUnitCodes
+                    .Select(g => new
+                    {
+                        g.UnitDescAr,   // Primary Key
+                        g.UnitDesc,     // Display text
+                        g.UnitType,  
+                        g.UnitCode // Optional extra info
+                    })
+                    .ToList();
 
+                return Ok(groups);
+            }
 
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+		[HttpPost]
+		public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				// Check if the UnitType or the combination already exists
+				bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
+					u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
+					u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
+					u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
 
-    }
+				if (exists)
+				{
+					return Json(new { success = false, message = "This Unit Rate Method already exists." });
+				}
+
+				// Add new entry
+				var newUom = new Tbl40111PropertyUnitCode
+				{
+					UnitType = unitType,
+					UnitDesc = unitDesc,
+					UnitDescAr = unitDescAr
+				};
+
+				dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
+				dbContext.SaveChanges();
+
+				return Json(new { success = true, unitCode = newUom.UnitCode });
+			}
+
+			return Json(new { success = false, message = "Unable to get tenant context" });
+		}
+
+        [HttpGet]
+        public IActionResult GetVatTaxSlabs()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var vatTaxSlabs = dbContext.Tbl20163VatTaxSlabs
+         .Select(x => new
+         {   x.TaxSlabCode,
+             x.TaxSlab,
+             x.TaxRate,
+             x.TaxCodeToDisplay
+         })
+         .ToList();
+
+                    return Ok(vatTaxSlabs);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ideally log the exception, don't just throw
+                return StatusCode(500, new { message = ex.Message, success = false });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+	}
 }
+

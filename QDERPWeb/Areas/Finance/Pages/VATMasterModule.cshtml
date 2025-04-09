@@ -3,114 +3,6 @@
 @{
 }
 
-@*
-
-
-
-
-
-
-<div class="form-group">
-    <label for="Amount" class="button-alignment-down">Amount</label>
-
-    @(
-
-        Html.DevExtreme().NumberBox()
-
-        .ID("txtVoucherAmount")
-
-        .Value(null)
-
-        .ValidationRules(rules =>
-
-        {
-
-            rules.AddRequired()
-
-            .Message("Voucher Amount Cannot be Zero Or Negative");
-
-            rules.AddRange().Min(0).Message("Voucher Amount Cannot be Zero Or Negative");
-
-        })
-
-        .Placeholder("0.000")
-
-        .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
-
-        .InputAttr(new { type = "number", step = "0.01", style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;", maxLength = 16, autocomplete = "off" })
-
-        .Width(180)// HTML attribute to allow decimal input
-
-        )
-
-</div>
-<div class="dx-fieldset horizontal-container">
-	@(Html.DevExtreme().DropDownBox()
-		.DataSource(d => d.WebApi()
-		.Controller("AccountLedgerMaster")
-		.LoadAction("getAccountingLedger")
-		.LoadMode(DataSourceLoadMode.Raw)
-		.Key("AccountGroupId") // This is the unique key for the data source
-		)
-		.LabelMode(EditorLabelMode.Outside)
-		.Label(new JS("formatMessage('Stock Group')"))
-		.ID("ddlAccountGroup")
-		.ShowClearButton(true)
-		.AcceptCustomValue(true)
-		.OpenOnFieldClick(false)
-		.ValueChangeEvent("input")
-		.HoverStateEnabled(true)
-		.ValueExpr("AccountGroupId")
-		.DisplayExpr("AccountGroup")
-		//.OnInput("ddlAccountGroupOnInput")
-		//.OnOpened("ddlAccountGrouponOpened")
-		.Width("70%")
-		.TabIndex(4)
-		.ValidationRules(value => value.AddRequired().Message(new JS("formatMessage('Account Group cannot be empty')")))
-		.ValidationMessageMode(ValidationMessageMode.Auto)
-		.DropDownOptions(o => o
-		.Width("100%")
-		)
-		//.OnKeyDown("ddlAccountGrouponKeyDown")
-		//.OnValueChanged("ddlAccountGroupValueChanged")
-		.ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
-		)
-
-	@(Html.DevExtreme().Button()
-		.ID("btnAddAccount")
-		.Icon("plus")
-		.ElementAttr("class", "button-alignment-up button-group")
-		//.OnClick("redirectledgerAccountMaster")
-		)
-</div>
-<div>
-
-	@(Html.DevExtreme().TextBox()
-		.ID("txtVatPurchaseNo")
-		.Label(new JS("formatMessage('Vat Purchase No')"))
-		.InputAttr("aria-label", "Text")
-		.Width("17%")
-		)
-@(Html.DevExtreme().TextBox()
-		.ID("txtVatPurchaseNo")
-		.Label(new JS("formatMessage('Vat Purchase No')"))
-		.InputAttr("aria-label", "Text")
-		.Width("17%")
-		)
-		</div>
-		@(Html.DevExtreme().TextBox()
-		.ID("txtVatPurchaseNo")
-		.Label(new JS("formatMessage('Vat Purchase No')"))
-		.InputAttr("aria-label", "Text")
-		.Width("17%")
-		) *@
-
-
-@* @model YourNamespace.YourPageModel
-@{
-    Layout = null;
-} *@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -169,6 +61,32 @@
         .limited-footer .btn-container:not(:has(#btnSave,#btnBack)) {
             display: none !important;
         }
+
+        .container {
+            display: none !important;
+        }
+
+        .frame {
+            display: none !important;
+        }
+
+        .footerContainer {
+            display: none !important;
+        }
+
+        .bodyContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .mainContainer {
+            margin-top: 1em;
+        }
+
+        .playIcon {
+            display:  none;
+
+        }
     </style>
    
 </head>
@@ -185,7 +103,7 @@
                             @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Type a New UOM & Add to the Existing List:')"))
                                 .LabelMode(EditorLabelMode.Outside)
-                            .ID("txtGoodsCode7").Width("75%"))
+                            .ID("txtGoodsCode7").Width("69%"))
                         </td>
                     </tr>
                     <tr>
@@ -215,12 +133,14 @@
                                         .LabelMode(EditorLabelMode.Outside)
                                         .ID("txtDescriptionArabic")
                                         .Width("100%")
+                                        .InputAttr("dir", "rtl")
                                         .Height(45))
                                 </div>
                                 <div style="flex: 1; padding-top:25px;">
                                     @(Html.DevExtreme().Button()
                                         .Text(new JS("formatMessage('Add')"))
-                                        .ID("btnAddGroup3").Icon("plus").Height(60))
+                                        .ID("btnAddGroup3").Icon("plus").Height(60)
+                                        .OnClick("addUomToDatabase"))
                                 </div>
                             </div>
 
@@ -233,30 +153,51 @@
            
 
         </div>
-        </div>
 
+
+     
+    
 
     <div class="dx-field ledgerResult">
-        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201617vatinvoiceInDetail>()
+        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl40111PropertyUnitCode>()
+
             .ID("dataGrid")
             .RemoteOperations(false)
-            .DataSource(new JS("[]"))
-            .Columns(columns =>
-            {
-                columns.Add().DataField("ID").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center);
-                columns.Add().DataField("Unit Type").Caption(new JS("formatMessage('Unit Type')")).Alignment(HorizontalAlignment.Center);
-                columns.Add().DataField("Description").Caption(new JS("formatMessage('Description')")).Alignment(HorizontalAlignment.Center);
-                columns.Add().DataField("Description (Arabic)").Caption(new JS("formatMessage('Description (Arabic)')")).Alignment(HorizontalAlignment.Center);
-            })
-            .Editing(editing => editing
-            .Mode(GridEditMode.Row)
-            .AllowUpdating(true)
+            .DataSource(d => d.WebApi()
+            .Controller("VATModule") 
+            .LoadAction("GetAccountGroups") 
+            .LoadMode(DataSourceLoadMode.Raw)
             )
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("UnitCode")
+                    .Caption(new JS("formatMessage('ID')"))
+                    .Width(134)
+                    .VisibleIndex(0)
+                    .Alignment(HorizontalAlignment.Center);
+
+                    columns.Add().DataField("UnitType")
+                    .Caption(new JS("formatMessage('Unit Type')"))
+                    .Width(378)
+                    .VisibleIndex(1)
+                    .Alignment(HorizontalAlignment.Center);
+
+                    columns.Add().DataField("UnitDesc")
+                    .Caption(new JS("formatMessage('Description')"))
+                    .Width(349)
+                    .VisibleIndex(2)
+                    .Alignment(HorizontalAlignment.Center);
+
+                    columns.Add().DataField("UnitDescAr")
+                    .Caption(new JS("formatMessage('Description (Arabic)')"))
+                    .Width(371)
+                    .VisibleIndex(3)
+                    .Alignment(HorizontalAlignment.Center);
+                })
+           
             .OnCellClick("function(e) {handleCellClick(e);}")
             .AllowColumnReordering(true)
-           @*  .ColumnChooser(columnChooser => columnChooser.Enabled(false)) *@
             .AllowColumnResizing(true)
-         @*    .ColumnFixing(fixing => fixing.Enabled(true)) *@
             .HeaderFilter(filter => filter.Visible(false))
             .Height(300)
             .FilterRow(filterRow => filterRow.Visible(false))
@@ -265,8 +206,14 @@
             .ShowRowLines(true)
             .Width("100%")
             )
+
+   
+
+
     </div>
 
+
+        </div>
     <div class="Head">
         <div class="limited-footer">
             @await Html.PartialAsync("VATModuleFooter")
@@ -275,17 +222,109 @@
 </body>
 </html>
 <script>
-       $(document).ready(function () {
+    $(document).ready(function () {
 
         $(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-            if (!$(this).find("#btnSave,#btnBack").length) {
-
+            if (!$(this).find("#btnSave, #btnBack").length) {
                 $(this).remove();
-
             }
 
         });
 
+        // Handle Back button click
+        $(document).on('click', '#btnBack', function () {
+            window.history.back();
+        });
+
     });
+
+
+        async function convertToArabic() {
+            const englishBox = $("#txtDescription8").dxTextArea("instance");
+            const arabicBox = $("#txtDescriptionArabic").dxTextArea("instance");
+
+            if (!englishBox || !arabicBox) {
+                console.error("TextAreas not initialized.");
+                return;
+            }
+
+            const englishText = englishBox.option("value");
+
+            if (!englishText || englishText.trim() === "") {
+                alert("Please enter the UoM description to translate.");
+                return;
+            }
+
+            try {
+                const translatedText = await translateToArabic(englishText);
+                arabicBox.option("value", translatedText);
+            } catch (error) {
+                console.error("Translation failed", error);
+                alert("Translation failed. Please try again.");
+            }
+        }
+
+    async function translateToArabic(text) {
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+            );
+
+            if (!response.ok) {
+                throw new Error("Translation API request failed.");
+            }
+
+            const data = await response.json();
+            console.log("Translation result:", data);
+
+            return data?.responseData?.translatedText || "Translation not found";
+        } catch (error) {
+            console.error("Translation failed:", error);
+            throw error;
+        }
+    }
+
+    function addUomToDatabase() {
+        const unitType = $("#txtGoodsCode7").dxTextBox("instance").option("value");
+        const unitDesc = $("#txtDescription8").dxTextArea("instance").option("value");
+        const unitDescAr = $("#txtDescriptionArabic").dxTextArea("instance").option("value");
+
+        if (!unitType || !unitDesc) {
+            DevExpress.ui.notify("Please enter both Unit Type and Description.", "error", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: `/api/VATModule/AddUom`,
+            type: 'POST',
+            data: {
+                unitType: unitType,
+                unitDesc: unitDesc,
+                unitDescAr: unitDescAr
+            },
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify("UOM added successfully!", "success", 2000);
+
+                    // Clear inputs
+                    $("#txtGoodsCode7").dxTextBox("instance").option("value", "");
+                    $("#txtDescription8").dxTextArea("instance").option("value", "");
+                    $("#txtDescriptionArabic").dxTextArea("instance").option("value", "");
+
+                    // ✅ Refresh the grid
+                    $("#dataGrid").dxDataGrid("instance").refresh();
+                } else {
+                    // ❌ Notify the user of the exact backend error message
+                    DevExpress.ui.notify(response.message || "This Unit Rate Method already exists.", "error", 3000);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("An error occurred while adding the UOM.", "error", 3000);
+            }
+        });
+    }
+
+
+
 </script>
