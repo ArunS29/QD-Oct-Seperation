@@ -196,16 +196,19 @@
 </body>
 </html>
 <script>
-       $(document).ready(function () {
+    $(document).ready(function () {
 
         $(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-            if (!$(this).find("#btnSave,#btnBack").length) {
-
+            if (!$(this).find("#btnSave, #btnBack").length) {
                 $(this).remove();
-
             }
 
+        });
+
+        // Handle Back button click
+        $(document).on('click', '#btnBack', function () {
+            window.history.back();
         });
 
     });

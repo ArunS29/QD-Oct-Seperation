@@ -1243,10 +1243,34 @@
 					</div>
 				</div>
 			</text>);
+								columns.Add().DataField("DescriptionDetails")
+							.Caption(new JS("formatMessage('Unit Rate Method')"))
+							.Width(200)
+							.AllowEditing(true)
+							.EditCellTemplate(@<text>
+				@(Html.DevExtreme().DropDownBox()
+				.ID("unitRateDropDownBoxEdit")
+				.DataSource(d => d.WebApi()
+				.Controller("VATModule")
+				.LoadAction("GetAccountGroups")
+				.LoadMode(DataSourceLoadMode.Raw)
+				.Key("UnitCode"))
+				.ValueExpr("UnitCode")
 
-											columns.Add().DataField("DescriptionDetails")
-										.Caption(new JS("formatMessage('Unit Rate Method')"))
-										.Width(200);
+				.DisplayExpr("UnitDesc")
+				.Value(new JS("cellInfo.value"))
+				.LabelMode(EditorLabelMode.Outside)
+				.OpenOnFieldClick(true)
+				.ShowClearButton(true)
+				.Width(200)
+				.DropDownOptions(o => o.Width(800))
+				.ContentTemplate(new TemplateName("UnitRateMethodContentTemplate"))
+				)
+			</text>)
+						.CellTemplate(@<text>
+				<%- data.DescriptionDetailsText ? data.DescriptionDetailsText : "No Selection" %>
+			</text>);
+
 
 											columns.Add().DataField("Qty")
 										.Caption(new JS("formatMessage('Qty')"))
@@ -1466,6 +1490,49 @@
 
 								)
 		}
+		@using (Html.DevExtreme().NamedTemplate("UnitRateMethodContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("unitRateDropDownBoxEditGrid")
+					.DataSource(d => d.WebApi()
+					.Controller("VATModule")
+					.LoadAction("GetAccountGroups")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("UnitCode"))
+					.Selection(sl => sl.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS("component.option('value')"))
+					.OnSelectionChanged(@<text>
+			function(e) {
+			var selectedItem = e.selectedRowsData[0];
+			if (selectedItem) {
+			component.option("value", selectedItem.UnitCode);
+
+			let grid = $("#B2BdataGrid").dxDataGrid("instance");
+			let rowIndex = grid.getRowIndexByKey(cellInfo.key);
+			if (rowIndex !== -1) {
+			grid.cellValue(rowIndex, "DescriptionDetails", selectedItem.UnitCode);
+			grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+			}
+
+			component.close();
+			}
+			}
+		</text>)
+					.Columns(columns =>
+					{
+						columns.Add().DataField("UnitCode").Caption("Code").Width(100);
+						columns.Add().DataField("UnitDesc").Caption("Unit Rate Method").Width(300);
+					})
+					.Height(345)
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(10))
+					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+					.FilterRow(f => f.Visible(true))
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					)
+		}
+
 
 	</div>
 
@@ -2230,8 +2297,76 @@
 					}
 				},
 
-				{ dataField: "DescriptionDetails", caption: "...", width: 50 },
-				{ dataField: "DescriptionDetails", caption: "Unit Rate Method", width: 150 },
+				{ dataField: "Descriptions", caption: "...", width: 50 },
+				{
+					dataField: "DescriptionDetails",
+					caption: "Unit Rate Method",
+					width: 200,
+					editCellTemplate: function (cellElement, cellInfo) {
+						getUnitRateMethods().done(function (unitRates) {
+							// Create container for dropdown + button
+							let $container = $("<div>").css({
+								display: "flex",
+								alignItems: "center",
+								gap: "5px",
+								width: "100%"
+							}).appendTo(cellElement);
+
+							// DropDownBox inside container
+							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+								dataSource: unitRates,
+								valueExpr: "UnitCode",
+								displayExpr: "UnitDesc",
+								value: cellInfo.value || null,
+								placeholder: "Select Unit Rate Method",
+								dropDownOptions: { width: 600 },
+								contentTemplate: function (e) {
+									return $("<div>").dxDataGrid({
+										dataSource: unitRates,
+										keyExpr: "UnitCode",
+										selection: { mode: "single" },
+										height: 300,
+										scrolling: { mode: "virtual" },
+										columns: [
+												{ dataField: "UnitCode", caption: "Code", width: 80 },
+											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+										],
+										onSelectionChanged: function (selectedItems) {
+											let selectedItem = selectedItems.selectedRowsData[0];
+											if (selectedItem) {
+												e.component.option("value", selectedItem.UnitCode);
+												cellInfo.setValue(selectedItem.UnitCode);
+
+												let grid = $("#B2BdataGrid").dxDataGrid("instance");
+												let rowIndex = grid.getRowIndexByKey(cellInfo.key);
+												if (rowIndex !== -1) {
+													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+												}
+												e.component.close();
+											}
+										}
+									});
+								}
+							});
+
+							// ✅ Add Button
+							$("<div>").dxButton({
+								icon: "plus",
+								hint: "Add new item",
+								onClick: function () {
+									let url = `/${tenantName}/Finance/VATMasterModule`; // Update this route if needed
+									window.location.href = url;
+								},
+								width: 60,
+								height: 30
+							}).appendTo($container);
+						});
+					}
+				},
+
+
 				{ dataField: "Qty", caption: "Qty", width: 150 },
 				{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
 				{ dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
@@ -2298,6 +2433,23 @@
 			}));
 		});
 	}
+	function getUnitRateMethods() {
+		return $.ajax({
+			url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
+			method: "GET",
+			dataType: "json"
+		}).then(function (response) {
+			console.log("Unit Rate Data", response);
+			return response.map(item => ({
+				UnitCode: item.UnitCode,
+				UnitDesc: item.UnitDesc,
+				UnitType: item.UnitType,
+			
+				UnitDescAr: item.UnitDescAr
+			}));
+		});
+	}
+
 
 	$(document).ready(function () {
 		$.ajax({
