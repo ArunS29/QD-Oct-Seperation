@@ -2453,6 +2453,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         //aTbl20162VatinvoiceChild.TaxExemptionReasonCode = child.ExemptionCode.GetString();
                         //aTbl20162VatinvoiceChild.ItemCode = child.ItemCode.GetString();
                         aTbl20162VatinvoiceChild.QuantityInvoiced = child.Qty.GetDecimal();
+                        aTbl20162VatinvoiceChild.TaxSlabCode = child.TaxSlabCode.GetByte();
+                            //(byte?)Convert.ToByte(child.TaxSlabCode.Value);
                         aTbl20162VatinvoiceChild.UnitsToBill = 1;
                         aTbl20162VatinvoiceChild.UnitRateMethod = 49;
                         aTbl20162VatinvoiceChild.UoM = "Each";
@@ -2468,15 +2470,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             await dbContext.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
                         }
                     }
-                    //aTbl20162VatinvoiceChild.Discount = child.Discount;
-                    //aTbl20162VatinvoiceChild.TaxExemptionReasonCode = child.ExemptionCode;
-                    //aTbl20162VatinvoiceChild.ItemCode = child.ItemCode;
-                    //aTbl20162VatinvoiceChild.QuantityInvoiced = child.Qty;
-                    //aTbl20162VatinvoiceChild.UnitsToBill = 1;
-                    //aTbl20162VatinvoiceChild.UnitRateMethod = 49;
-                    //aTbl20162VatinvoiceChild.UoM = "Each";
-
-
 
                     // Save changes to the database
                     await dbContext.SaveChangesAsync();

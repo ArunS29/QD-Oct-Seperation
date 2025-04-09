@@ -770,7 +770,7 @@
             }
 
                 .playIcon i:hover {
-                    color: var(--header-color);
+                    color: var(--title-background-color);
                 }
 
         #goToTopBtn {
@@ -790,7 +790,7 @@
         }
 
             #goToTopBtn:hover {
-                background-color: var(--header-color);
+                background-color: var(--title-background-color);
             }
     </style>
     @RenderSection("Styles", required: false)
@@ -1182,7 +1182,7 @@
                     <button class="color-btn" style="background: #F0F8FF;" onclick="applyTheme('light-mist')"></button>
                     <button class="color-btn" style="background: #FAF0E6;" onclick="applyTheme('light-pearl')"></button>
                     <button class="color-btn" style="background: #F5FFFA;" onclick="applyTheme('light-mint-cream')"></button>
-                    <button class="color-btn" style="background: #3E3E3E;" onclick="applyTheme('dark-charcoal')"></button>
+                    <button class="color-btn" style="background: #c2bfbf;" onclick="applyTheme('dark-charcoal')"></button>
                 </div>
             </div>
         </div>
@@ -2307,185 +2307,185 @@
                 })
                 .catch(error => console.error("Error:", error));
         }
-        function applyTheme(theme) {
+         function applyTheme(theme) {
             let themes = {
-                "light-orange": {
-                    "--header-color": "#FFDDC1",
-                    "--footer-color": "#FFDDC1",
-                    "--nav-color": "#FFB899",
-                    "--background-color": "#FFF4E1",
-                    "--hover-bg-color": "#FFC49C",
-                    "--title-background-color": "cornflowerblue"
+            "light-orange": {
+                "--header-color": "#FFDDC1",
+                "--footer-color": "#FFDDC1",
+                "--nav-color": "#FFB899",
+                "--background-color": "#FFF4E1",
+                "--hover-bg-color": "#FFC49C",
+                "--title-background-color": "#faa25a"
+            },
+            "light-pink": {
+                "--header-color": "#FFD3E0",
+                "--footer-color": "#FFD3E0",
+                "--nav-color": "#FF9FB9",
+                "--background-color": "#FFECF2",
+                "--hover-bg-color": "#FFB6C9",
+                "--title-background-color": "#fc6f99"
+            },
+            "light-cyan": {
+                "--header-color": "#C3E8F7",
+                "--footer-color": "#C3E8F7",
+                "--nav-color": "#91D6ED",
+                "--background-color": "#E8F8FF",
+                "--hover-bg-color": "#A5DAEE",
+                "--title-background-color": "#4394b4"
+            },
+            "light-rose": {
+                "--header-color": "#D4A5A5",
+                "--footer-color": "#D4A5A5",
+                "--nav-color": "#B97F7F",
+                "--background-color": "#EFD8D8",
+                "--hover-bg-color": "#C78C8C",
+                "--title-background-color": "#8d5353"
+            },
+            "light-gold": {
+                "--header-color": "#FFF7D6",
+                "--footer-color": "#FFF7D6",
+                "--nav-color": "#FFEB99",
+                "--background-color": "#FFFBEA",
+                "--hover-bg-color": "#FFDE88",
+                "--title-background-color": "#caae3b"
+            },
+            "light-mint": {
+                "--header-color": "#E1F7D5",
+                "--footer-color": "#E1F7D5",
+                "--nav-color": "#B3E99F",
+                "--background-color": "#F3FBED",
+                "--hover-bg-color": "#C8F3B8",
+                "--title-background-color": "#97ce7a"
+            },
+            "light-peach": {
+                "--header-color": "#FAE1DD",
+                "--footer-color": "#FAE1DD",
+                "--nav-color": "#F5BFB8",
+                "--background-color": "#FFF2EF",
+                "--hover-bg-color": "#F7C9C2",
+                "--title-background-color": "#af665b"
+            },
+            "light-sky": {
+                "--header-color": "#E6F0FF",
+                "--footer-color": "#E6F0FF",
+                "--nav-color": "#B3D1FF",
+                "--background-color": "#F5FAFF",
+                "--hover-bg-color": "#C3DBFF",
+                "--title-background-color": "#5d82b9"
+            },
+            "light-olive": {
+                "--header-color": "#D9E4DD",
+                "--footer-color": "#D9E4DD",
+                "--nav-color": "#B3C6B9",
+                "--background-color": "#EDF5F0",
+                "--hover-bg-color": "#C3D5C7",
+                "--title-background-color": "#5cb97e"
+            },
+            "light-coral": {
+                "--header-color": "#FDE2E4",
+                "--footer-color": "#FDE2E4",
+                "--nav-color": "#FAB6B8",
+                "--background-color": "#FFF4F5",
+                "--hover-bg-color": "#FBC8CA",
+                "--title-background-color": "#ca6d73"
+            },
+            "light-sand": {
+                "--header-color": "#E3D5CA",
+                "--footer-color": "#E3D5CA",
+                "--nav-color": "#C5A994",
+                "--background-color": "#F7F2ED",
+                "--hover-bg-color": "#D6BFAE",
+                "--title-background-color": "#a77b59"
+            },
+                   "light-lavender": {
+            "--header-color": "#E6E6FA",
+            "--footer-color": "#E6E6FA",
+            "--nav-color": "#D8BFD8",
+            "--background-color": "#F8F8FF",
+            "--hover-bg-color": "#DDA0DD",
+                "--title-background-color": "#6262d6"
+        },
+        "light-seafoam": {
+            "--header-color": "#D1F2EB",
+            "--footer-color": "#D1F2EB",
+            "--nav-color": "#A3E4D7",
+            "--background-color": "#E8F8F5",
+            "--hover-bg-color": "#76D7C4",
+                "--title-background-color": "#5aaa99"
+        },
+        "light-butter": {
+            "--header-color": "#FFF9E6",
+            "--footer-color": "#FFF9E6",
+            "--nav-color": "#FFECB3",
+            "--background-color": "#FFFAF0",
+            "--hover-bg-color": "#FFE082",
+                "--title-background-color": "#ceb45e"
+        },
+        "light-periwinkle": {
+            "--header-color": "#E0E7FF",
+            "--footer-color": "#E0E7FF",
+            "--nav-color": "#C7D2FE",
+            "--background-color": "#F3F4FF",
+            "--hover-bg-color": "#A5B4FC",
+                "--title-background-color": "#526bbd"
+        },
+        "light-mauve": {
+            "--header-color": "#F5E0E6",
+            "--footer-color": "#F5E0E6",
+            "--nav-color": "#ECB3C1",
+            "--background-color": "#FFF0F5",
+            "--hover-bg-color": "#E57399",
+                "--title-background-color": "#c45373"
+        },
+        "light-aqua": {
+            "--header-color": "#E0FFFF",
+            "--footer-color": "#E0FFFF",
+            "--nav-color": "#B2DFDB",
+            "--background-color": "#F0FFFF",
+            "--hover-bg-color": "#80CBC4",
+                "--title-background-color": "#48aaaa"
+        },
+        "light-blush": {
+            "--header-color": "#FFE4E1",
+            "--footer-color": "#FFE4E1",
+            "--nav-color": "#FFCDD2",
+            "--background-color": "#FFF5F5",
+            "--hover-bg-color": "#EF9A9A",
+                "--title-background-color": "#df7367"
+        },
+        "light-mist": {
+            "--header-color": "#F0F8FF",
+            "--footer-color": "#F0F8FF",
+            "--nav-color": "#D6EAF8",
+            "--background-color": "#F8FBFF",
+            "--hover-bg-color": "#AED6F1",
+                "--title-background-color": "#4a7fad"
+        },
+        "light-pearl": {
+            "--header-color": "#FAF0E6",
+            "--footer-color": "#FAF0E6",
+            "--nav-color": "#F5DEB3",
+            "--background-color": "#FFF5EE",
+            "--hover-bg-color": "#EEDFCC",
+                "--title-background-color": "#af7d4b"
+        },
+        "light-mint-cream": {
+            "--header-color": "#F5FFFA",
+            "--footer-color": "#F5FFFA",
+            "--nav-color": "#CCFFCC",
+            "--background-color": "#F0FFF0",
+            "--hover-bg-color": "#99FF99",
+                "--title-background-color": "#54a77d"
                 },
-                "light-pink": {
-                    "--header-color": "#FFD3E0",
-                    "--footer-color": "#FFD3E0",
-                    "--nav-color": "#FF9FB9",
-                    "--background-color": "#FFECF2",
-                    "--hover-bg-color": "#FFB6C9",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-cyan": {
-                    "--header-color": "#C3E8F7",
-                    "--footer-color": "#C3E8F7",
-                    "--nav-color": "#91D6ED",
-                    "--background-color": "#E8F8FF",
-                    "--hover-bg-color": "#A5DAEE",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-rose": {
-                    "--header-color": "#D4A5A5",
-                    "--footer-color": "#D4A5A5",
-                    "--nav-color": "#B97F7F",
-                    "--background-color": "#EFD8D8",
-                    "--hover-bg-color": "#C78C8C",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-gold": {
-                    "--header-color": "#FFF7D6",
-                    "--footer-color": "#FFF7D6",
-                    "--nav-color": "#FFEB99",
-                    "--background-color": "#FFFBEA",
-                    "--hover-bg-color": "#FFDE88",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-mint": {
-                    "--header-color": "#E1F7D5",
-                    "--footer-color": "#E1F7D5",
-                    "--nav-color": "#B3E99F",
-                    "--background-color": "#F3FBED",
-                    "--hover-bg-color": "#C8F3B8",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-peach": {
-                    "--header-color": "#FAE1DD",
-                    "--footer-color": "#FAE1DD",
-                    "--nav-color": "#F5BFB8",
-                    "--background-color": "#FFF2EF",
-                    "--hover-bg-color": "#F7C9C2",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-sky": {
-                    "--header-color": "#E6F0FF",
-                    "--footer-color": "#E6F0FF",
-                    "--nav-color": "#B3D1FF",
-                    "--background-color": "#F5FAFF",
-                    "--hover-bg-color": "#C3DBFF",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-olive": {
-                    "--header-color": "#D9E4DD",
-                    "--footer-color": "#D9E4DD",
-                    "--nav-color": "#B3C6B9",
-                    "--background-color": "#EDF5F0",
-                    "--hover-bg-color": "#C3D5C7",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-coral": {
-                    "--header-color": "#FDE2E4",
-                    "--footer-color": "#FDE2E4",
-                    "--nav-color": "#FAB6B8",
-                    "--background-color": "#FFF4F5",
-                    "--hover-bg-color": "#FBC8CA",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-sand": {
-                    "--header-color": "#E3D5CA",
-                    "--footer-color": "#E3D5CA",
-                    "--nav-color": "#C5A994",
-                    "--background-color": "#F7F2ED",
-                    "--hover-bg-color": "#D6BFAE",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-lavender": {
-                    "--header-color": "#E6E6FA",
-                    "--footer-color": "#E6E6FA",
-                    "--nav-color": "#D8BFD8",
-                    "--background-color": "#F8F8FF",
-                    "--hover-bg-color": "#DDA0DD",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-seafoam": {
-                    "--header-color": "#D1F2EB",
-                    "--footer-color": "#D1F2EB",
-                    "--nav-color": "#A3E4D7",
-                    "--background-color": "#E8F8F5",
-                    "--hover-bg-color": "#76D7C4",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-butter": {
-                    "--header-color": "#FFF9E6",
-                    "--footer-color": "#FFF9E6",
-                    "--nav-color": "#FFECB3",
-                    "--background-color": "#FFFAF0",
-                    "--hover-bg-color": "#FFE082",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-periwinkle": {
-                    "--header-color": "#E0E7FF",
-                    "--footer-color": "#E0E7FF",
-                    "--nav-color": "#C7D2FE",
-                    "--background-color": "#F3F4FF",
-                    "--hover-bg-color": "#A5B4FC",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-mauve": {
-                    "--header-color": "#F5E0E6",
-                    "--footer-color": "#F5E0E6",
-                    "--nav-color": "#ECB3C1",
-                    "--background-color": "#FFF0F5",
-                    "--hover-bg-color": "#E57399",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-aqua": {
-                    "--header-color": "#E0FFFF",
-                    "--footer-color": "#E0FFFF",
-                    "--nav-color": "#B2DFDB",
-                    "--background-color": "#F0FFFF",
-                    "--hover-bg-color": "#80CBC4",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-blush": {
-                    "--header-color": "#FFE4E1",
-                    "--footer-color": "#FFE4E1",
-                    "--nav-color": "#FFCDD2",
-                    "--background-color": "#FFF5F5",
-                    "--hover-bg-color": "#EF9A9A",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-mist": {
-                    "--header-color": "#F0F8FF",
-                    "--footer-color": "#F0F8FF",
-                    "--nav-color": "#D6EAF8",
-                    "--background-color": "#F8FBFF",
-                    "--hover-bg-color": "#AED6F1",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-pearl": {
-                    "--header-color": "#FAF0E6",
-                    "--footer-color": "#FAF0E6",
-                    "--nav-color": "#F5DEB3",
-                    "--background-color": "#FFF5EE",
-                    "--hover-bg-color": "#EEDFCC",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "light-mint-cream": {
-                    "--header-color": "#F5FFFA",
-                    "--footer-color": "#F5FFFA",
-                    "--nav-color": "#CCFFCC",
-                    "--background-color": "#F0FFF0",
-                    "--hover-bg-color": "#99FF99",
-                    "--title-background-color": "cornflowerblue"
-                },
-                "dark-charcoal": {
-                    "--header-color": "#3E3E3E",
-                    "--footer-color": "#3E3E3E",
-                    "--nav-color": "#5C5C5C",
-                    "--background-color": "#2F2F2F",
-                    "--hover-bg-color": "#6E6E6E",
-                    "--title-background-color": "cornflowerblue"
-                }
-            };
+            "dark-charcoal": {
+            "--header-color": "#918f8f",
+            "--footer-color": "#918f8f",
+            "--nav-color": "#c2bfbf",
+            "--background-color": "#c2bfbf",
+            "--hover-bg-color": "#6E6E6E",
+            "--title-background-color": "#050505"
+        }
+        };
 
 
             if (themes[theme]) {

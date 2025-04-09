@@ -632,8 +632,8 @@
         const selectedText = e.itemData.text;
 
         // Get instances of SelectBox and DateBox components
-        var getaccountGroup = $("#requestedBy").dxSelectBox("instance").option("value");
-        var requestedBy = getaccountGroup ? getaccountGroup.CostAllocationUnit : null;
+        var dropDownBox = $("#requestedBy").dxDropDownBox("instance");
+        var requestedBy = dropDownBox.option("value");
 
         var frmDateBox = $("#frmdateBox").dxDateBox("instance");
         var toDateBox = $("#todateBox").dxDateBox("instance");

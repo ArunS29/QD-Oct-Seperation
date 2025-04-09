@@ -1479,6 +1479,8 @@
         "Claim Remarks:": "Claim Remarks:",
         "Claimed for Project/Jobs:": "Claimed for Project/Jobs:",
         "Priority:": "Priority:",
+        "Client Code should be entered":"Client Code should be entered",
+        
         "Outstanding Details": "Outstanding Details",
         "Total Client Outstanding": "Total Client Outstanding",
         "Total Cash Balance": "Total Cash Balance",
@@ -1559,9 +1561,31 @@
         "Total:": "Total:",
         "Column Chooser": "Column Chooser",
         "Overdue Days": "Overdue Days",
-        "Account Head No": "Account Head No"
+        "Account Head No": "Account Head No",
+        "Goods & Services Description:": "Goods & Services Description:",
+        "Goods & Services Description (in Arabic):": "Goods & Services Description (in Arabic):",
+        "Detailed Description:": "Detailed Description:",
+        "Detailed Description (in Arabic):": "Detailed Description (in Arabic):",
+        "Packing Unit:": "Packing Unit:",
+        "Selling Rate:": "Selling Rate:",
+        "Cost Price:": "Cost Price:",
+        "Unit of Measure:": "Unit of Measure:"
+
+
+
+
+
+
     },
     "ar": {
+        "Unit of Measure:": "وحدة القياس:",
+        "Selling Rate:": "سعر البيع:",
+        "Cost Price:": "سعر التكلفة:",
+        "Packing Unit:": "وحدة التعبئة:",
+        "Detailed Description (in Arabic):": "الوصف التفصيلي (بالعربية):",
+        "Detailed Description:": "وصف مفصل:",
+        "Goods & Services Description (in Arabic):": "وصف السلع والخدمات (بالعربية):",
+        "Goods & Services Description:": "وصف السلع والخدمات:",
         "Overdue Days": "أيام التأخير",
         "Account Head No": "رقم الحساب الرئيسي",
         "Show Fields":"إظهار الحقول",
@@ -3042,7 +3066,9 @@
         "Balance Amount": "المبلغ المتبقي",
         "Account Head": "رئيس الحساب",
         "Total:": ":الإجمالي",
-        "Column Chooser": "اختيار الأعمدة"
+        "Column Chooser": "اختيار الأعمدة",
+        "PaymentMeans Type": "نوع وسيلة الدفع",
+        "Client Code should be entered":"يجب إدخال رمز العميل"
 
     }
 };
