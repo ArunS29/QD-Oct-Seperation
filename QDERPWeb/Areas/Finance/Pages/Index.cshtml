@@ -233,7 +233,7 @@
             columns: [
                 {
                     dataField: "AccountHead",
-                    caption: "Account Head",
+                    caption: formatMessage("Account Head"),
                     width: 200,
                     allowReordering: true,
                     headerCellTemplate: function (header, info) {
@@ -263,12 +263,12 @@
                 },
                 {
                     dataField: "OverdueDays",
-                    caption: "Overdue Days",
+                    caption: formatMessage("Overdue Days"),
                     visible: false,
                     allowHiding: true
                 },
-                { dataField: "AccountGroupId",caption: "Account Group",visible: false,allowHiding: true },
-                { dataField: "AccountHeadNo",caption: "Account Head No",visible: false, allowHiding: true}
+                { dataField: "AccountGroupId",caption: formatMessage("Account Group"),visible: false,allowHiding: true },
+                { dataField: "AccountHeadNo",caption: formatMessage("Account Head No"),visible: false, allowHiding: true}
                ],
             columnAutoWidth: true,
             showBorders: true,
@@ -298,7 +298,7 @@
                         widget: "dxButton",
                         options: {
                             icon: "columnchooser",
-                            text: "Column Chooser",
+                            text: formatMessage("Column Chooser"),
                             onClick: function () {
                                 $("#clientOutstandingGrid").dxDataGrid("instance").showColumnChooser();
                             }
@@ -329,7 +329,7 @@
             columns: [
                 {
                     dataField: "AccountHead",
-                    caption: "Account Head",
+                    caption: formatMessage("Account Head"),
                     width: 200,
                     headerCellTemplate: function (header, info) {
                         $("<div>")
@@ -357,11 +357,11 @@
                 },
                 {
                     dataField: "OverdueDays",
-                    caption: "Overdue Days",
+                    caption: formatMessage("Overdue Days"),
                     visible: false, // hidden by default
                     allowHiding: true // optional, ensures it's available in the chooser
                 },
-                { dataField: "AccountHeadNo",caption: "Account Head No",visible: false, allowHiding: true}
+                { dataField: "AccountHeadNo",caption: formatMessage("Account Head No"),visible: false, allowHiding: true}
             ],
             columnAutoWidth: true,
             showBorders: true,
@@ -391,7 +391,7 @@
                         widget: "dxButton",
                         options: {
                             icon: "columnchooser",
-                            text: "Column Chooser",
+                            text: formatMessage("Column Chooser"),
                             onClick: function () {
                                 $("#billsPayableGrid").dxDataGrid("instance").showColumnChooser();
                             }
@@ -424,8 +424,8 @@
                 columns: [
                     { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
                     { dataField: "Amount",caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
-                    { dataField: "AccountGroup",caption: "Account Group",visible: false,allowHiding: true },
-                    { dataField: "MasterGroupID",caption: "Master Group",visible: false, allowHiding: true}
+                    { dataField: "AccountGroup",caption: formatMessage("Account Group"),visible: false,allowHiding: true },
+                    { dataField: "MasterGroupID",caption: formatMessage("Master Group"),visible: false, allowHiding: true}
                 ],
                 columnAutoWidth: true,
                 showBorders: true,
@@ -458,7 +458,7 @@
                             widget: "dxButton",
                             options: {
                                 icon: "columnchooser",
-                                text: "Column Chooser",
+                                text: formatMessage("Column Chooser"),
                                 onClick: function () {
                                         $("#bankAccountGrid").dxDataGrid("instance").showColumnChooser();
                                 }
@@ -486,7 +486,7 @@
                 series: [{
                     argumentField: "OverDueGroup",
                     valueField: "Balance",
-                    name: "Balance Amount",
+                    name: formatMessage("Balance Amount"),
                     type: "bar",
                     color: "#007acc"
                 }],
@@ -497,7 +497,7 @@
                     title: formatMessage("Overdue Groups")
                 },
                 valueAxis: {
-                    title: "Balance Amount",
+                    title: formatMessage("Balance Amount"),
                     label: {
                         format: { type: "fixedPoint", precision: 2 }
                     }
