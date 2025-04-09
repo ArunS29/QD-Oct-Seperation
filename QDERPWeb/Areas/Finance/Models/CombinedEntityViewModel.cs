@@ -336,7 +336,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public dynamic UnitPrice { get; set; }
         public dynamic VAT { get; set; }
         public decimal? TaxAmount { get; set; }
-        // public decimal VAT% { get; set; }
+        public dynamic TaxSlabCode { get; set; }
     }
     public class Signatory
     {

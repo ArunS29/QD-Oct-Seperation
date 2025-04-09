@@ -1479,6 +1479,8 @@
         "Claim Remarks:": "Claim Remarks:",
         "Claimed for Project/Jobs:": "Claimed for Project/Jobs:",
         "Priority:": "Priority:",
+        "Client Code should be entered":"Client Code should be entered",
+        
         "Outstanding Details": "Outstanding Details",
         "Total Client Outstanding": "Total Client Outstanding",
         "Total Cash Balance": "Total Cash Balance",
@@ -3042,7 +3044,9 @@
         "Balance Amount": "المبلغ المتبقي",
         "Account Head": "رئيس الحساب",
         "Total:": ":الإجمالي",
-        "Column Chooser": "اختيار الأعمدة"
+        "Column Chooser": "اختيار الأعمدة",
+        "PaymentMeans Type": "نوع وسيلة الدفع",
+        "Client Code should be entered":"يجب إدخال رمز العميل"
 
     }
 };

@@ -953,6 +953,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			return Json(new { success = false, message = "Unable to get tenant context" });
 		}
 
+        [HttpGet]
+        public IActionResult GetVatTaxSlabs()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var vatTaxSlabs = dbContext.Tbl20163VatTaxSlabs
+         .Select(x => new
+         {   x.TaxSlabCode,
+             x.TaxSlab,
+             x.TaxRate,
+             x.TaxCodeToDisplay
+         })
+         .ToList();
+
+                    return Ok(vatTaxSlabs);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ideally log the exception, don't just throw
+                return StatusCode(500, new { message = ex.Message, success = false });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
 	}
 }
