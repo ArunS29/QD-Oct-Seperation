@@ -4,23 +4,19 @@
 @using QD.ERP.Web.DAL.Entities
 @using QD.ERP.Web.Service
 @inject CurrencyService CurrencyService
+@inject LanguageService LanguageService
+@inject SaasKit.Multitenancy.ITenant<Tenant> Tenant
+@inject UserAccessService UserAccessService
 
 @{
     var currencies = CurrencyService.GetCurrencies();
-}
-@inject LanguageService LanguageService
-
-@{
     var Languages = LanguageService.GetLanguages();
-}
 
-@inject SaasKit.Multitenancy.ITenant<Tenant> Tenant
-
-@{
     string userName = "";
     string userId = "";
     string tenantName = "";
     string companyName = "";
+    List<string> userModules = new List<string>();
 
     var authToken = Context.Request.Cookies["AuthToken"];
     if (!string.IsNullOrEmpty(authToken))
@@ -33,12 +29,16 @@
             userName = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
             userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
             tenantName = jwtToken.Claims.FirstOrDefault(c => c.Type == "TenantName")?.Value;
-            companyName = jwtToken.Claims.FirstOrDefault(c => c.Type == "CompanyName")?.Value; // Extract Company Name
+            companyName = jwtToken.Claims.FirstOrDefault(c => c.Type == "CompanyName")?.Value;
 
             Context.Session.SetString("UserName", userName ?? "");
             Context.Session.SetString("UserId", userId ?? "");
             Context.Session.SetString("TenantName", tenantName ?? "");
-            //Context.Session.SetString("CompanyName", companyName ?? ""); // Store Company Name
+
+            if (int.TryParse(userId, out int parsedUserId))
+            {
+                userModules = UserAccessService.GetUserModules(parsedUserId);
+            }
         }
         catch (Exception ex)
         {
@@ -50,6 +50,7 @@
         userName = "No AuthToken found.";
     }
 }
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -125,6 +126,7 @@
             background-color: var(--title-background-color);
             color: white;
         }
+
         body {
             font-family: Arial, sans-serif;
             background: var(--background-color);
@@ -626,7 +628,7 @@
             /* -webkit-text-fill-color: transparent; */
             font-size: 20px;
             font-weight: bold;
-            padding:1em;
+            padding: 1em;
         }
 
         /* Ensure iframe takes full size */
@@ -812,9 +814,9 @@
         <div class="frame">
             <div class="image">
                 <img src="@Tenant.Value.LogoUrl" alt="Tenant Logo" />
-            <div class="companyName">
-                @tenantName
-            </div>
+                <div class="companyName">
+                    @tenantName
+                </div>
             </div>
             <div>
                 @(Html.DevExtreme().SelectBox()
@@ -866,7 +868,7 @@
                 </div>
                 <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(40)">
                     <i class="fa fa-th-list" style="color: black; display: flex; align-items: center; justify-content: center; padding: 0px 10px;">
-                        <span id="Mediam" class="no-border-input" ></span>
+                        <span id="Mediam" class="no-border-input"></span>
                     </i>
                 </div>
                 <div style="margin-bottom:5px; margin-left:5px" onclick="ChangeRowHeight(60)">
@@ -1205,36 +1207,58 @@
             <!-- Sidebar 1 Section -->
             <!-- Sidebar Header with Logo -->
 
+
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu">
-                    <div class="menu-item hr" onclick="navigate('Human Resources')">
-                        <i class="fas fa-users" id="humanResourcesIcon"></i>
-                        <div id="HumanResources" class="text no-border-input"></div>
-                    </div>
-                    <div class="menu-item finance" onclick="navigate('Finance')">
-                        <i class="fas fa-dollar-sign" id="FinanceIcon"></i>
-                        <div id="Finance" class="text no-border-input"></div>
-                    </div>
-                    <div class="menu-item vat" onclick="navigate('VAT Modules')">
-                        <i class="fas fa-certificate" id="VATModulesIcon"></i>
-                        <div id="VATModules" class="text no-border-input"></div>
-                    </div>
-                    <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
-                        <i class="fas fa-truck" id="EquipmentRentalsIcon"></i>
-                        <div id="EquipmentRentals" class="text no-border-input"></div>
-                    </div>
-                    <div class="menu-item camp" onclick="navigate('Camp Management')">
-                        <i class="fas fa-campground" id="CampManagementIcon"></i>
-                        <div id="CampManagement" class="text no-border-input"></div>
-                    </div>
-                    <div class="menu-item inventory" onclick="navigate('Inventory Management')">
-                        <i class="fas fa-cogs" id="InventoryManagementIcon"></i>
-                        <div id="InventoryManagement" class="text no-border-input"></div>
-                    </div>
-                    <div class="menu-item projects" onclick="navigate('Projects Control')">
-                        <i class="fas fa-project-diagram" id="ProjectsControlIcon"></i>
-                        <div id="ProjectsControl" class="text no-border-input"></div>
-                    </div>
+                    @if (userModules.Contains("Human Resources"))
+                    {
+                        <div class="menu-item hr" onclick="navigate('Human Resources')">
+                            <i class="fas fa-users" id="humanResourcesIcon"></i>
+                            <div id="HumanResources" class="text no-border-input"></div>
+                        </div>
+                    }
+                    @if (userModules.Contains("Finance"))
+                    {
+                        <div class="menu-item finance" onclick="navigate('Finance')">
+                            <i class="fas fa-dollar-sign" id="FinanceIcon"></i>
+                            <div id="Finance" class="text no-border-input"></div>
+                        </div>
+                    }
+                    @if (userModules.Contains("VAT"))
+                    {
+                        <div class="menu-item vat" onclick="navigate('VAT Modules')">
+                            <i class="fas fa-certificate" id="VATModulesIcon"></i>
+                            <div id="VATModules" class="text no-border-input"></div>
+                        </div>
+                    }
+                    @if (userModules.Contains("Equipment Rentals"))
+                    {
+                        <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
+                            <i class="fas fa-truck" id="EquipmentRentalsIcon"></i>
+                            <div id="EquipmentRentals" class="text no-border-input"></div>
+                        </div>
+                    }
+                    @if (userModules.Contains("Camp Management"))
+                    {
+                        <div class="menu-item camp" onclick="navigate('Camp Management')">
+                            <i class="fas fa-campground" id="CampManagementIcon"></i>
+                            <div id="CampManagement" class="text no-border-input"></div>
+                        </div>
+                    }
+                    @if (userModules.Contains("Inventory Management"))
+                    {
+                        <div class="menu-item inventory" onclick="navigate('Inventory Management')">
+                            <i class="fas fa-cogs" id="InventoryManagementIcon"></i>
+                            <div id="InventoryManagement" class="text no-border-input"></div>
+                        </div>
+                    }
+                    @if (userModules.Contains("Projects Control"))
+                    {
+                        <div class="menu-item projects" onclick="navigate('Projects Control')">
+                            <i class="fas fa-project-diagram" id="ProjectsControlIcon"></i>
+                            <div id="ProjectsControl" class="text no-border-input"></div>
+                        </div>
+                    }
                 </div>
             </div>
 
@@ -1297,49 +1321,49 @@
     </div>
 
     <script>
-                document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("humanResourcesIcon");
             if (humanResourcesIcon) {
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Human Resources"));
             }
         });
-         document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("FinanceIcon");
             if (humanResourcesIcon) {
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Finance"));
             }
         });
-         document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("VATModulesIcon");
             if (humanResourcesIcon) {
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("VAT Modules"));
             }
         });
-         document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("EquipmentRentalsIcon");
             if (humanResourcesIcon) {
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Equipment Rentals"));
             }
         });
-         document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("CampManagementIcon");
             if (humanResourcesIcon) {
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Camp Management"));
             }
         });
-         document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("InventoryManagementIcon");
             if (humanResourcesIcon) {
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Inventory Management"));
             }
         });
-         document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const humanResourcesIcon = document.getElementById("ProjectsControlIcon");
             if (humanResourcesIcon) {
                 humanResourcesIcon.setAttribute("data-tooltip", formatMessage("Projects Control"));
             }
         });
-                $(function () {
+        $(function () {
             $("#BillsReceivableAll").dxTextBox({
                 text: formatMessage("Bills Receivable (All)"),
                 readOnly: true
@@ -1378,7 +1402,7 @@
             });
         });
 
-                $(function () {
+        $(function () {
             $("#StatementOfAccounts").dxTextBox({
                 text: formatMessage("Statement of Accounts"),
                 readOnly: true
@@ -1413,7 +1437,7 @@
             });
         });
 
-                $(function () {
+        $(function () {
             $("#DetailedReportText").dxTextBox({
                 text: formatMessage("Detailed Report"),
                 readOnly: true
@@ -1436,58 +1460,58 @@
             });
         });
 
-         $(function () {
-                    $("#SummaryReport").dxTextBox({
-                        text: formatMessage("Summary Report"),
-                        readOnly: true
-                    });
-                    $("#SummaryReportByDate").dxTextBox({
-                        text: formatMessage("Summary Report(By Date)"),
-                        readOnly: true
-                    });
-                    $("#CostCenterReport").dxTextBox({
-                        text: formatMessage("Cost Center Report"),
-                        readOnly: true
-                    });
-                    $("#CostCenterReportByDate").dxTextBox({
-                        text: formatMessage("Cost Center Report(By Date)"),
-                        readOnly: true
-                    });
-                    $("#CostCenterGroupReport").dxTextBox({
-                        text: formatMessage("Cost Center Group Report"),
-                        readOnly: true
-                    });
-                    $("#CostCenterGroupReportByDate").dxTextBox({
-                        text: formatMessage("Cost Center Group Report(By Date)"),
-                        readOnly: true
-                    });
-                });
         $(function () {
-                                $("#SummaryReport").dxTextBox({
-                                    text: formatMessage("Summary Report"),
-                                    readOnly: true
-                                });
-                                $("#SummaryReportByDate").dxTextBox({
-                                    text: formatMessage("Summary Report(By Date)"),
-                                    readOnly: true
-                                });
-                                $("#CostCenterReport").dxTextBox({
-                                    text: formatMessage("Cost Center Report"),
-                                    readOnly: true
-                                });
-                                $("#CostCenterReportByDate").dxTextBox({
-                                    text: formatMessage("Cost Center Report(By Date)"),
-                                    readOnly: true
-                                });
-                                $("#CostCenterGroupReport").dxTextBox({
-                                    text: formatMessage("Cost Center Group Report"),
-                                    readOnly: true
-                                });
-                                $("#CostCenterGroupReportByDate").dxTextBox({
-                                    text: formatMessage("Cost Center Group Report(By Date)"),
-                                    readOnly: true
-                                });
-                            });
+            $("#SummaryReport").dxTextBox({
+                text: formatMessage("Summary Report"),
+                readOnly: true
+            });
+            $("#SummaryReportByDate").dxTextBox({
+                text: formatMessage("Summary Report(By Date)"),
+                readOnly: true
+            });
+            $("#CostCenterReport").dxTextBox({
+                text: formatMessage("Cost Center Report"),
+                readOnly: true
+            });
+            $("#CostCenterReportByDate").dxTextBox({
+                text: formatMessage("Cost Center Report(By Date)"),
+                readOnly: true
+            });
+            $("#CostCenterGroupReport").dxTextBox({
+                text: formatMessage("Cost Center Group Report"),
+                readOnly: true
+            });
+            $("#CostCenterGroupReportByDate").dxTextBox({
+                text: formatMessage("Cost Center Group Report(By Date)"),
+                readOnly: true
+            });
+        });
+        $(function () {
+            $("#SummaryReport").dxTextBox({
+                text: formatMessage("Summary Report"),
+                readOnly: true
+            });
+            $("#SummaryReportByDate").dxTextBox({
+                text: formatMessage("Summary Report(By Date)"),
+                readOnly: true
+            });
+            $("#CostCenterReport").dxTextBox({
+                text: formatMessage("Cost Center Report"),
+                readOnly: true
+            });
+            $("#CostCenterReportByDate").dxTextBox({
+                text: formatMessage("Cost Center Report(By Date)"),
+                readOnly: true
+            });
+            $("#CostCenterGroupReport").dxTextBox({
+                text: formatMessage("Cost Center Group Report"),
+                readOnly: true
+            });
+            $("#CostCenterGroupReportByDate").dxTextBox({
+                text: formatMessage("Cost Center Group Report(By Date)"),
+                readOnly: true
+            });
+        });
         $(function () {
             $("#ReceivablesAgeingReport").dxTextBox({
                 text: formatMessage("Receivables Ageing Report"),
@@ -1514,45 +1538,45 @@
                 readOnly: true
 
             });
-            });
+        });
         $(function () {
             $("#Short").dxTextBox({
                 text: formatMessage("Short"),
                 readOnly: true
 
             });
-            });
+        });
         $(function () {
             $("#Tall").dxTextBox({
                 text: formatMessage("Tall"),
                 readOnly: true
 
             });
-            });
+        });
         $(function () {
             $("#Mediam").dxTextBox({
                 text: formatMessage("Mediam"),
                 readOnly: true
 
             });
-            });
+        });
         $(function () {
             $("#ExtraTall").dxTextBox({
                 text: formatMessage("Extra Tall"),
                 readOnly: true
 
             });
-            });
+        });
 
 
-             $(function () {
+        $(function () {
             $("#HumanResources").dxTextBox({
                 text: formatMessage("Human Resources"),
                 readOnly: true
 
             });
         });
-         $(function () {
+        $(function () {
             $("#Finance").dxTextBox({
                 text: formatMessage("Finance"),
                 readOnly: true
@@ -1560,13 +1584,13 @@
             });
         });
         $(function () {
-               $("#VATModules").dxTextBox({
-                   text: formatMessage("VAT Modules"),
-                   readOnly: true
+            $("#VATModules").dxTextBox({
+                text: formatMessage("VAT Modules"),
+                readOnly: true
 
-               });
-           });
-         $(function () {
+            });
+        });
+        $(function () {
             $("#EquipmentRentals").dxTextBox({
                 text: formatMessage("Equipment Rentals"),
                 readOnly: true
@@ -1574,13 +1598,13 @@
             });
         });
         $(function () {
-               $("#CampManagement").dxTextBox({
-                   text: formatMessage("Camp Management"),
-                   readOnly: true
+            $("#CampManagement").dxTextBox({
+                text: formatMessage("Camp Management"),
+                readOnly: true
 
-               });
-           });
-         $(function () {
+            });
+        });
+        $(function () {
             $("#InventoryManagement").dxTextBox({
                 text: formatMessage("Inventory Management"),
                 readOnly: true
@@ -1588,12 +1612,12 @@
             });
         });
         $(function () {
-               $("#ProjectsControl").dxTextBox({
-                   text: formatMessage("Projects Control"),
-                   readOnly: true
+            $("#ProjectsControl").dxTextBox({
+                text: formatMessage("Projects Control"),
+                readOnly: true
 
-               });
-           });
+            });
+        });
 
         var authToken = '@authToken';
         var tenantName = '@tenantName';
@@ -1801,229 +1825,229 @@
                 updateBreadcrumbFromSidebar2('');
                 sidebar2.style.display = 'none';
             }
-                function showFinanceSubmenu() {
-                    const sidebar2 = document.getElementById('sidebar2');
-                    sidebar2.innerHTML = `
-                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
-                            <i class="fas fa-book-open"></i>
-                           <div class="text">${formatMessage("Finance Dashboard")}</div>
-                        </div>
-                        <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
-                                <div class="text">${formatMessage("My Dashboard")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
-                                <div class="text">${formatMessage("Voucher Verification")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsReceivable">
-                                <div class="text">${formatMessage("Bills Receivable")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
-                                <div class="text">${formatMessage("Bills Payable")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
-                                <div class="text">${formatMessage("Cost Analysis")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
-                                <div class="text">${formatMessage("Salary Payable")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
-                                <div class="text">${formatMessage("Chart Of Accounts")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
-                                <div class="text">${formatMessage("Chart of Cost Centers")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/uc20106TrialBalance">
-                                <div class="text">${formatMessage("Financial Reports")}</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetView">
-                                <div class="text">${formatMessage("Asset Register")}</div>
-                            </a>
+            function showFinanceSubmenu() {
+                const sidebar2 = document.getElementById('sidebar2');
+                sidebar2.innerHTML = `
+                                <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                                    <i class="fas fa-book-open"></i>
+                                   <div class="text">${formatMessage("Finance Dashboard")}</div>
+                                </div>
+                                <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
+                                        <div class="text">${formatMessage("My Dashboard")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
+                                        <div class="text">${formatMessage("Voucher Verification")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsReceivable">
+                                        <div class="text">${formatMessage("Bills Receivable")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
+                                        <div class="text">${formatMessage("Bills Payable")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
+                                        <div class="text">${formatMessage("Cost Analysis")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
+                                        <div class="text">${formatMessage("Salary Payable")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
+                                        <div class="text">${formatMessage("Chart Of Accounts")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
+                                        <div class="text">${formatMessage("Chart of Cost Centers")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/uc20106TrialBalance">
+                                        <div class="text">${formatMessage("Financial Reports")}</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetView">
+                                        <div class="text">${formatMessage("Asset Register")}</div>
+                                    </a>
 
-                        </div>
+                                </div>
 
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
-                            <i class="fas fa-book"></i>
-                            <div class="text">${formatMessage("Accounting Ledgers")}</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingRegister">
-                            <i class="fas fa-book"></i>
-                            <div class="text">${formatMessage("Accounting Register")}</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
-                            <i class="fas fa-chart-pie"></i>
-                            <div class="text">${formatMessage("Chart Of Accounts")}</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
-                            <i class="fas fa-chart-pie"></i>
-                            <div class="text">${formatMessage("Chart of Cost Centers")}</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherBankPayment">
-                            <i class="fas fa-university"></i>
-                            <div class="text">${formatMessage("Bank Payment")}</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherCashPayment">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <div class="text">${formatMessage("Cash Payment")}</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryCashReceipts">
-                            <i class="fas fa-dollar-sign"></i>
-                            <div class="text">${formatMessage("Cash Receipt")}</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryReceipts">
-                            <i class="fas fa-receipt"></i>
-                            <div class="text">${formatMessage("Bank Receipt")}</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/salesVoucher">
-                            <i class="fas fa-tags"></i>
-                            <div class="text">${formatMessage("Sales Voucher")}</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/purchasevoucher">
-                            <i class="fas fa-shopping-cart"></i>
-                            <div class="text">${formatMessage("Purchase Voucher")}</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/ExpensesClaims">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                            <div class="text">${formatMessage("Expense Claim")}</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/Voucherjournal">
-                            <i class="fas fa-book-open"></i>
-                            <div class="text">${formatMessage("Journal Voucher")}</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/JournalRegister">
-                            <i class="fas fa-newspaper"></i>
-                            <div class="text">${formatMessage("Journal Register")}</div>
-                        </a>`;
-                }
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">${formatMessage("Accounting Ledgers")}</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingRegister">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">${formatMessage("Accounting Register")}</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <div class="text">${formatMessage("Chart Of Accounts")}</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <div class="text">${formatMessage("Chart of Cost Centers")}</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherBankPayment">
+                                    <i class="fas fa-university"></i>
+                                    <div class="text">${formatMessage("Bank Payment")}</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherCashPayment">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <div class="text">${formatMessage("Cash Payment")}</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryCashReceipts">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <div class="text">${formatMessage("Cash Receipt")}</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryReceipts">
+                                    <i class="fas fa-receipt"></i>
+                                    <div class="text">${formatMessage("Bank Receipt")}</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/salesVoucher">
+                                    <i class="fas fa-tags"></i>
+                                    <div class="text">${formatMessage("Sales Voucher")}</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/purchasevoucher">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <div class="text">${formatMessage("Purchase Voucher")}</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/ExpensesClaims">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    <div class="text">${formatMessage("Expense Claim")}</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/Voucherjournal">
+                                    <i class="fas fa-book-open"></i>
+                                    <div class="text">${formatMessage("Journal Voucher")}</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/JournalRegister">
+                                    <i class="fas fa-newspaper"></i>
+                                    <div class="text">${formatMessage("Journal Register")}</div>
+                                </a>`;
+            }
 
-                function showVATModuleSubmenu() {
-                    const sidebar2 = document.getElementById('sidebar2');
-                    sidebar2.innerHTML = `
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalesRegisterVAT">
-                            <i class="fas fa-book"></i>
-                            <div class="text">${formatMessage("VAT Sales Invoice Register")}</div>
-                        </a> 
-                        <a class="submenu-item" onclick="hideSidebars()" href="">
-                            <i class="fas fa-book"></i>
-                            <div class="text">${formatMessage("Credit Note Register")}</div>
-                        </a>
-                         <a class="submenu-item" onclick="hideSidebars()" href="">
-                            <i class="fas fa-book"></i>
-                            <div class="text">${formatMessage("VAT Purchase Invoice Register")}</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="">
-                            <i class="fas fa-book"></i>
-                            <div class="text">${formatMessage("Debit Note Register")}</div>
-                        </a>
-                        `;
-                          
-                }
+            function showVATModuleSubmenu() {
+                const sidebar2 = document.getElementById('sidebar2');
+                sidebar2.innerHTML = `
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalesRegisterVAT">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">${formatMessage("VAT Sales Invoice Register")}</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">${formatMessage("Credit Note Register")}</div>
+                                </a>
+                                 <a class="submenu-item" onclick="hideSidebars()" href="">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">${formatMessage("VAT Purchase Invoice Register")}</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">${formatMessage("Debit Note Register")}</div>
+                                </a>
+                                `;
+
+            }
         }
 
 
         function showFinanceSubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
             sidebar2.innerHTML = `
-                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
-                            <i class="fas fa-book-open"></i>
-                            <div class="text">${formatMessage("Finance Dashboard")}</div>
-                        </div>
-                        <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
-                                <div id="MyDashboard" class="text no-border-input"></div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
-                                <div class="text">Voucher Verification</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsReceivable">
-                                <div class="text">Bills Receivable</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
-                                <div class="text">Bills Payable</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
-                                <div class="text">Cost Analysis</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
-                                <div class="text">Salary Payable</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
-                                <div class="text">Chart Of Accounts</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
-                                <div class="text">Chart of Cost Centers</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/uc20106TrialBalance">
-                                <div class="text">Financial Reports</div>
-                            </a>
-                            <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetView">
-                                <div class="text">Asset Register</div>
-                            </a>
-                          
-                        </div>
+                                <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                                    <i class="fas fa-book-open"></i>
+                                    <div class="text">${formatMessage("Finance Dashboard")}</div>
+                                </div>
+                                <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
+                                        <div id="MyDashboard" class="text no-border-input"></div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
+                                        <div class="text">Voucher Verification</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsReceivable">
+                                        <div class="text">Bills Receivable</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
+                                        <div class="text">Bills Payable</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
+                                        <div class="text">Cost Analysis</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
+                                        <div class="text">Salary Payable</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
+                                        <div class="text">Chart Of Accounts</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
+                                        <div class="text">Chart of Cost Centers</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/uc20106TrialBalance">
+                                        <div class="text">Financial Reports</div>
+                                    </a>
+                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetView">
+                                        <div class="text">Asset Register</div>
+                                    </a>
 
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
-                            <i class="fas fa-book"></i>
-                            <div class="text">Accounting Ledgers</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingRegister">
-                            <i class="fas fa-book"></i>
-                            <div class="text">Accounting Register</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
-                            <i class="fas fa-chart-pie"></i>
-                            <div class="text">Chart Of Accounts</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
-                            <i class="fas fa-chart-pie"></i>
-                            <div class="text">Chart of Cost Centers</div>
-                        </a>
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherBankPayment">
-                            <i class="fas fa-university"></i>
-                            <div class="text">Bank Payment</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherCashPayment">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <div class="text">Cash Payment</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryCashReceipts">
-                            <i class="fas fa-dollar-sign"></i>
-                            <div class="text">Cash Receipt</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryReceipts">
-                            <i class="fas fa-receipt"></i>
-                            <div class="text">Bank Receipt</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/salesVoucher">
-                            <i class="fas fa-tags"></i>
-                            <div class="text">Sales Voucher</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/purchasevoucher">
-                            <i class="fas fa-shopping-cart"></i>
-                            <div class="text">Purchase Voucher</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/ExpensesClaims">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                            <div class="text">Expense Claim</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/Voucherjournal">
-                            <i class="fas fa-book-open"></i>
-                            <div class="text">Journal Voucher</div>
-                        </a>
-                        <a class="submenu-item" href="/${tenantName}/Finance/JournalRegister">
-                            <i class="fas fa-newspaper"></i>
-                            <div class="text">Journal Register</div>
-                        </a>`;
+                                </div>
+
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">Accounting Ledgers</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingRegister">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">Accounting Register</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <div class="text">Chart Of Accounts</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <div class="text">Chart of Cost Centers</div>
+                                </a>
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherBankPayment">
+                                    <i class="fas fa-university"></i>
+                                    <div class="text">Bank Payment</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherCashPayment">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <div class="text">Cash Payment</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryCashReceipts">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <div class="text">Cash Receipt</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryReceipts">
+                                    <i class="fas fa-receipt"></i>
+                                    <div class="text">Bank Receipt</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/salesVoucher">
+                                    <i class="fas fa-tags"></i>
+                                    <div class="text">Sales Voucher</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/purchasevoucher">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <div class="text">Purchase Voucher</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/ExpensesClaims">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    <div class="text">Expense Claim</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/Voucherjournal">
+                                    <i class="fas fa-book-open"></i>
+                                    <div class="text">Journal Voucher</div>
+                                </a>
+                                <a class="submenu-item" href="/${tenantName}/Finance/JournalRegister">
+                                    <i class="fas fa-newspaper"></i>
+                                    <div class="text">Journal Register</div>
+                                </a>`;
         }
 
-         function showVATModuleSubmenu() {
+        function showVATModuleSubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
             sidebar2.innerHTML = `
-                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalesRegisterVAT">
-                            <i class="fas fa-book"></i>
-                            <div class="text">VAT Sales Invoice Register</div>
-                        </a>
-                       `;
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalesRegisterVAT">
+                                    <i class="fas fa-book"></i>
+                                    <div class="text">VAT Sales Invoice Register</div>
+                                </a>
+                               `;
         }
 
 
@@ -2212,7 +2236,7 @@
                 "Account Ledger - Statement of Account Export Format(Landscape)": "AccountExportLandscapeReport",
                 "AccountOrderByVoucherNo": "AccountOrderByVoucherNo",
                 "BillsReceivablelandscapeformat": "BillsReceivablelandscapeformat",
-                 "BillsReceivableAll" : "BillsReceivableAll",
+                "BillsReceivableAll": "BillsReceivableAll",
                 "BillsReceivableByAccount": "BillsReceivableByAccount",
                 "BillsReceivableAgeingToday": "BillsReceivableAgeingToday",
                 "Report4": "Report4",
@@ -2221,26 +2245,27 @@
                 "BillsReceivableFormat": "BillsReceivableFormat",
                 "rpt201BillsPayable": "rpt201BillsPayable",
                 "rpt201BillsPayableWithVchNo": "rpt201BillsPayableWithVchNo",
-                "AccountDetails":"AccountDetails",
-                "AgeingToday":"AgeingToday",
-                "EndDate":"EndDate",
-                 "Payablelandscape":"Payablelandscape",
-                 "payableRetention":"payableRetention",
-                 "Balance":"Balance",
-                 "BillsPayablePaid":"BillsPayablePaid",
-                 "XtraReportBillsReceivableAgeingReport":"XtraReportBillsReceivableAgeingReport",
-                 "XtraReportAgeingreportsummary":"XtraReportAgeingreportsummary"
+                "AccountDetails": "AccountDetails",
+                "AgeingToday": "AgeingToday",
+                "EndDate": "EndDate",
+                "Payablelandscape": "Payablelandscape",
+                "payableRetention": "payableRetention",
+                "Balance": "Balance",
+                "BillsPayablePaid": "BillsPayablePaid",
+                "XtraReportBillsReceivableAgeingReport": "XtraReportBillsReceivableAgeingReport",
+                "XtraReportAgeingreportsummary": "XtraReportAgeingreportsummary"
             };
 
             // Check if selectedText matches any report name
             if (reportMappings[selectedText]) {
                 let reportName = reportMappings[selectedText];
                 console.log(`Redirecting to ${reportName}`);
-        window.open(
-          `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
-          '_blank',
-          'width=1200,height=800,scrollbars=yes,resizable=yes'
-        );            } else {
+                window.open(
+                    `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
+                    '_blank',
+                    'width=1200,height=800,scrollbars=yes,resizable=yes'
+                );
+            } else {
                 console.log("No matching report found for selectedText:", selectedText);
             }
 
@@ -2282,205 +2307,205 @@
                 })
                 .catch(error => console.error("Error:", error));
         }
-         function applyTheme(theme) {
-                    let themes = {
-            "light-orange": {
-                "--header-color": "#FFDDC1",
-                "--footer-color": "#FFDDC1",
-                "--nav-color": "#FFB899",
-                "--background-color": "#FFF4E1",
-                "--hover-bg-color": "#FFC49C",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-pink": {
-                "--header-color": "#FFD3E0",
-                "--footer-color": "#FFD3E0",
-                "--nav-color": "#FF9FB9",
-                "--background-color": "#FFECF2",
-                "--hover-bg-color": "#FFB6C9",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-cyan": {
-                "--header-color": "#C3E8F7",
-                "--footer-color": "#C3E8F7",
-                "--nav-color": "#91D6ED",
-                "--background-color": "#E8F8FF",
-                "--hover-bg-color": "#A5DAEE",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-rose": {
-                "--header-color": "#D4A5A5",
-                "--footer-color": "#D4A5A5",
-                "--nav-color": "#B97F7F",
-                "--background-color": "#EFD8D8",
-                "--hover-bg-color": "#C78C8C",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-gold": {
-                "--header-color": "#FFF7D6",
-                "--footer-color": "#FFF7D6",
-                "--nav-color": "#FFEB99",
-                "--background-color": "#FFFBEA",
-                "--hover-bg-color": "#FFDE88",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-mint": {
-                "--header-color": "#E1F7D5",
-                "--footer-color": "#E1F7D5",
-                "--nav-color": "#B3E99F",
-                "--background-color": "#F3FBED",
-                "--hover-bg-color": "#C8F3B8",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-peach": {
-                "--header-color": "#FAE1DD",
-                "--footer-color": "#FAE1DD",
-                "--nav-color": "#F5BFB8",
-                "--background-color": "#FFF2EF",
-                "--hover-bg-color": "#F7C9C2",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-sky": {
-                "--header-color": "#E6F0FF",
-                "--footer-color": "#E6F0FF",
-                "--nav-color": "#B3D1FF",
-                "--background-color": "#F5FAFF",
-                "--hover-bg-color": "#C3DBFF",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-olive": {
-                "--header-color": "#D9E4DD",
-                "--footer-color": "#D9E4DD",
-                "--nav-color": "#B3C6B9",
-                "--background-color": "#EDF5F0",
-                "--hover-bg-color": "#C3D5C7",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-coral": {
-                "--header-color": "#FDE2E4",
-                "--footer-color": "#FDE2E4",
-                "--nav-color": "#FAB6B8",
-                "--background-color": "#FFF4F5",
-                "--hover-bg-color": "#FBC8CA",
-                "--title-background-color": "cornflowerblue"
-            },
-            "light-sand": {
-                "--header-color": "#E3D5CA",
-                "--footer-color": "#E3D5CA",
-                "--nav-color": "#C5A994",
-                "--background-color": "#F7F2ED",
-                "--hover-bg-color": "#D6BFAE",
-                "--title-background-color": "cornflowerblue"
-            },
-                   "light-lavender": {
-            "--header-color": "#E6E6FA",
-            "--footer-color": "#E6E6FA",
-            "--nav-color": "#D8BFD8",
-            "--background-color": "#F8F8FF",
-            "--hover-bg-color": "#DDA0DD",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-seafoam": {
-            "--header-color": "#D1F2EB",
-            "--footer-color": "#D1F2EB",
-            "--nav-color": "#A3E4D7",
-            "--background-color": "#E8F8F5",
-            "--hover-bg-color": "#76D7C4",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-butter": {
-            "--header-color": "#FFF9E6",
-            "--footer-color": "#FFF9E6",
-            "--nav-color": "#FFECB3",
-            "--background-color": "#FFFAF0",
-            "--hover-bg-color": "#FFE082",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-periwinkle": {
-            "--header-color": "#E0E7FF",
-            "--footer-color": "#E0E7FF",
-            "--nav-color": "#C7D2FE",
-            "--background-color": "#F3F4FF",
-            "--hover-bg-color": "#A5B4FC",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-mauve": {
-            "--header-color": "#F5E0E6",
-            "--footer-color": "#F5E0E6",
-            "--nav-color": "#ECB3C1",
-            "--background-color": "#FFF0F5",
-            "--hover-bg-color": "#E57399",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-aqua": {
-            "--header-color": "#E0FFFF",
-            "--footer-color": "#E0FFFF",
-            "--nav-color": "#B2DFDB",
-            "--background-color": "#F0FFFF",
-            "--hover-bg-color": "#80CBC4",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-blush": {
-            "--header-color": "#FFE4E1",
-            "--footer-color": "#FFE4E1",
-            "--nav-color": "#FFCDD2",
-            "--background-color": "#FFF5F5",
-            "--hover-bg-color": "#EF9A9A",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-mist": {
-            "--header-color": "#F0F8FF",
-            "--footer-color": "#F0F8FF",
-            "--nav-color": "#D6EAF8",
-            "--background-color": "#F8FBFF",
-            "--hover-bg-color": "#AED6F1",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-pearl": {
-            "--header-color": "#FAF0E6",
-            "--footer-color": "#FAF0E6",
-            "--nav-color": "#F5DEB3",
-            "--background-color": "#FFF5EE",
-            "--hover-bg-color": "#EEDFCC",
-                "--title-background-color": "cornflowerblue"
-        },
-        "light-mint-cream": {
-            "--header-color": "#F5FFFA",
-            "--footer-color": "#F5FFFA",
-            "--nav-color": "#CCFFCC",
-            "--background-color": "#F0FFF0",
-            "--hover-bg-color": "#99FF99",
-                "--title-background-color": "cornflowerblue"
+        function applyTheme(theme) {
+            let themes = {
+                "light-orange": {
+                    "--header-color": "#FFDDC1",
+                    "--footer-color": "#FFDDC1",
+                    "--nav-color": "#FFB899",
+                    "--background-color": "#FFF4E1",
+                    "--hover-bg-color": "#FFC49C",
+                    "--title-background-color": "cornflowerblue"
                 },
-            "dark-charcoal": {
-            "--header-color": "#3E3E3E",
-            "--footer-color": "#3E3E3E",
-            "--nav-color": "#5C5C5C",
-            "--background-color": "#2F2F2F",
-            "--hover-bg-color": "#6E6E6E",
-            "--title-background-color": "cornflowerblue"
-        }
-        };
-
-
-                    if (themes[theme]) {
-                        for (let property in themes[theme]) {
-                            document.documentElement.style.setProperty(property, themes[theme][property]);
-                            localStorage.setItem(property, themes[theme][property]); // Save the theme in LocalStorage
-                        }
-                    }
+                "light-pink": {
+                    "--header-color": "#FFD3E0",
+                    "--footer-color": "#FFD3E0",
+                    "--nav-color": "#FF9FB9",
+                    "--background-color": "#FFECF2",
+                    "--hover-bg-color": "#FFB6C9",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-cyan": {
+                    "--header-color": "#C3E8F7",
+                    "--footer-color": "#C3E8F7",
+                    "--nav-color": "#91D6ED",
+                    "--background-color": "#E8F8FF",
+                    "--hover-bg-color": "#A5DAEE",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-rose": {
+                    "--header-color": "#D4A5A5",
+                    "--footer-color": "#D4A5A5",
+                    "--nav-color": "#B97F7F",
+                    "--background-color": "#EFD8D8",
+                    "--hover-bg-color": "#C78C8C",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-gold": {
+                    "--header-color": "#FFF7D6",
+                    "--footer-color": "#FFF7D6",
+                    "--nav-color": "#FFEB99",
+                    "--background-color": "#FFFBEA",
+                    "--hover-bg-color": "#FFDE88",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-mint": {
+                    "--header-color": "#E1F7D5",
+                    "--footer-color": "#E1F7D5",
+                    "--nav-color": "#B3E99F",
+                    "--background-color": "#F3FBED",
+                    "--hover-bg-color": "#C8F3B8",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-peach": {
+                    "--header-color": "#FAE1DD",
+                    "--footer-color": "#FAE1DD",
+                    "--nav-color": "#F5BFB8",
+                    "--background-color": "#FFF2EF",
+                    "--hover-bg-color": "#F7C9C2",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-sky": {
+                    "--header-color": "#E6F0FF",
+                    "--footer-color": "#E6F0FF",
+                    "--nav-color": "#B3D1FF",
+                    "--background-color": "#F5FAFF",
+                    "--hover-bg-color": "#C3DBFF",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-olive": {
+                    "--header-color": "#D9E4DD",
+                    "--footer-color": "#D9E4DD",
+                    "--nav-color": "#B3C6B9",
+                    "--background-color": "#EDF5F0",
+                    "--hover-bg-color": "#C3D5C7",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-coral": {
+                    "--header-color": "#FDE2E4",
+                    "--footer-color": "#FDE2E4",
+                    "--nav-color": "#FAB6B8",
+                    "--background-color": "#FFF4F5",
+                    "--hover-bg-color": "#FBC8CA",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-sand": {
+                    "--header-color": "#E3D5CA",
+                    "--footer-color": "#E3D5CA",
+                    "--nav-color": "#C5A994",
+                    "--background-color": "#F7F2ED",
+                    "--hover-bg-color": "#D6BFAE",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-lavender": {
+                    "--header-color": "#E6E6FA",
+                    "--footer-color": "#E6E6FA",
+                    "--nav-color": "#D8BFD8",
+                    "--background-color": "#F8F8FF",
+                    "--hover-bg-color": "#DDA0DD",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-seafoam": {
+                    "--header-color": "#D1F2EB",
+                    "--footer-color": "#D1F2EB",
+                    "--nav-color": "#A3E4D7",
+                    "--background-color": "#E8F8F5",
+                    "--hover-bg-color": "#76D7C4",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-butter": {
+                    "--header-color": "#FFF9E6",
+                    "--footer-color": "#FFF9E6",
+                    "--nav-color": "#FFECB3",
+                    "--background-color": "#FFFAF0",
+                    "--hover-bg-color": "#FFE082",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-periwinkle": {
+                    "--header-color": "#E0E7FF",
+                    "--footer-color": "#E0E7FF",
+                    "--nav-color": "#C7D2FE",
+                    "--background-color": "#F3F4FF",
+                    "--hover-bg-color": "#A5B4FC",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-mauve": {
+                    "--header-color": "#F5E0E6",
+                    "--footer-color": "#F5E0E6",
+                    "--nav-color": "#ECB3C1",
+                    "--background-color": "#FFF0F5",
+                    "--hover-bg-color": "#E57399",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-aqua": {
+                    "--header-color": "#E0FFFF",
+                    "--footer-color": "#E0FFFF",
+                    "--nav-color": "#B2DFDB",
+                    "--background-color": "#F0FFFF",
+                    "--hover-bg-color": "#80CBC4",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-blush": {
+                    "--header-color": "#FFE4E1",
+                    "--footer-color": "#FFE4E1",
+                    "--nav-color": "#FFCDD2",
+                    "--background-color": "#FFF5F5",
+                    "--hover-bg-color": "#EF9A9A",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-mist": {
+                    "--header-color": "#F0F8FF",
+                    "--footer-color": "#F0F8FF",
+                    "--nav-color": "#D6EAF8",
+                    "--background-color": "#F8FBFF",
+                    "--hover-bg-color": "#AED6F1",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-pearl": {
+                    "--header-color": "#FAF0E6",
+                    "--footer-color": "#FAF0E6",
+                    "--nav-color": "#F5DEB3",
+                    "--background-color": "#FFF5EE",
+                    "--hover-bg-color": "#EEDFCC",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "light-mint-cream": {
+                    "--header-color": "#F5FFFA",
+                    "--footer-color": "#F5FFFA",
+                    "--nav-color": "#CCFFCC",
+                    "--background-color": "#F0FFF0",
+                    "--hover-bg-color": "#99FF99",
+                    "--title-background-color": "cornflowerblue"
+                },
+                "dark-charcoal": {
+                    "--header-color": "#3E3E3E",
+                    "--footer-color": "#3E3E3E",
+                    "--nav-color": "#5C5C5C",
+                    "--background-color": "#2F2F2F",
+                    "--hover-bg-color": "#6E6E6E",
+                    "--title-background-color": "cornflowerblue"
                 }
-
-               window.onload = function() {
-                document.documentElement.style.setProperty("--header-color", localStorage.getItem("--header-color") || "#F0F8FF");
-                document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "F0F8FF");
-                document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#D6EAF8");
-                document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#F8FBFF");
-                document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color")|| "#AED6F1");
-                document.documentElement.style.setProperty("--title-background-color", localStorage.getItem("--title-background-color")|| "cornflowerblue");
-
             };
-        window.onscroll = function() {
+
+
+            if (themes[theme]) {
+                for (let property in themes[theme]) {
+                    document.documentElement.style.setProperty(property, themes[theme][property]);
+                    localStorage.setItem(property, themes[theme][property]); // Save the theme in LocalStorage
+                }
+            }
+        }
+
+        window.onload = function () {
+            document.documentElement.style.setProperty("--header-color", localStorage.getItem("--header-color") || "#F0F8FF");
+            document.documentElement.style.setProperty("--footer-color", localStorage.getItem("--footer-color") || "F0F8FF");
+            document.documentElement.style.setProperty("--nav-color", localStorage.getItem("--nav-color") || "#D6EAF8");
+            document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#F8FBFF");
+            document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color") || "#AED6F1");
+            document.documentElement.style.setProperty("--title-background-color", localStorage.getItem("--title-background-color") || "cornflowerblue");
+
+        };
+        window.onscroll = function () {
             let button = document.getElementById("goToTopBtn");
             if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
                 button.style.display = "block";

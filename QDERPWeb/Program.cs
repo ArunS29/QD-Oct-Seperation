@@ -17,6 +17,7 @@ using Serilog.Events;
 using Microsoft.ApplicationInsights.Extensibility;
 using QD.ERP.Web.ReportService;
 using QD.ERP.Web.Middlewares;
+using DevExpress.XtraCharts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<DbContextFactory>();
 builder.Services.AddMultitenancy<Tenant, TenantResolver>();
+builder.Services.AddScoped<UserAccessService>();
 builder.Services.AddScoped<CurrencyService>();
 builder.Services.AddScoped<LanguageService>();
 builder.Services.AddScoped<TenantDbContextHelper>();
