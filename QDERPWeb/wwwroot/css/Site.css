@@ -244,11 +244,12 @@ body {
 .dx-textbox-heading .dx-texteditor-input {
     font-size: 24px !important;
     font-weight: bold;
+    color:white;
 }
 .dx-textbox-heading10 .dx-texteditor-input {
     font-size: 24px !important;
     font-weight: bold;
-    color:white;
+    color:black;
 }
     /* Dark Mode Styles */
     body.dark-mode {
