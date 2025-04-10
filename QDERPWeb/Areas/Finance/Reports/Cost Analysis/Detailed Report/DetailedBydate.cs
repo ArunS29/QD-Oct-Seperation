@@ -101,25 +101,46 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report
     AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 
+            //selectQuery.Parameters.Add(new QueryParameter()
+            //{
+            //    Name = "@RequestedBy",
+            //    Type = typeof(string),
+            //    ValueInfo = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
+            //});
+
+            //selectQuery.Parameters.Add(new QueryParameter()
+            //{
+            //    Name = "@StartDate",
+            //    Type = typeof(DateTime),
+            //    ValueInfo = frmDate.ToString("yyyy-MM-dd")
+            //});
+
+            //selectQuery.Parameters.Add(new QueryParameter()
+            //{
+            //    Name = "@EndDate",
+            //    Type = typeof(DateTime),
+            //    ValueInfo = toDate.ToString("yyyy-MM-dd")
+            //});
+
             selectQuery.Parameters.Add(new QueryParameter()
             {
                 Name = "@RequestedBy",
                 Type = typeof(string),
-                ValueInfo = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
+                Value = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
             });
 
             selectQuery.Parameters.Add(new QueryParameter()
             {
                 Name = "@StartDate",
                 Type = typeof(DateTime),
-                ValueInfo = frmDate.ToString("yyyy-MM-dd")
+                Value = frmDate
             });
 
             selectQuery.Parameters.Add(new QueryParameter()
             {
                 Name = "@EndDate",
                 Type = typeof(DateTime),
-                ValueInfo = toDate.ToString("yyyy-MM-dd")
+                Value = toDate
             });
 
             this.sqlDataSource1.Queries.Clear();

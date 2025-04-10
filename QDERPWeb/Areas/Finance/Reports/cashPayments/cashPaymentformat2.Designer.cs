@@ -143,6 +143,7 @@
             this.xrLabel35 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
+            this.xrPictureBox1 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel32 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel7 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel30 = new DevExpress.XtraReports.UI.XRLabel();
@@ -219,7 +220,6 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.xrPictureBox1 = new DevExpress.XtraReports.UI.XRPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
@@ -245,7 +245,7 @@
             this.xrLabel36.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel36.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel36.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel36.LocationFloat = new DevExpress.Utils.PointFloat(8.742014E-05F, 47.41681F);
+            this.xrLabel36.LocationFloat = new DevExpress.Utils.PointFloat(1.999434F, 0F);
             this.xrLabel36.Name = "xrLabel36";
             this.xrLabel36.SizeF = new System.Drawing.SizeF(270.3535F, 20.66685F);
             this.xrLabel36.StylePriority.UseBorderColor = false;
@@ -258,7 +258,7 @@
             this.pageInfo1.BorderColor = System.Drawing.Color.Transparent;
             this.pageInfo1.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.pageInfo1.ForeColor = System.Drawing.Color.DarkGray;
-            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(591.0004F, 53.08361F);
+            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(602.4564F, 0F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
             this.pageInfo1.SizeF = new System.Drawing.SizeF(193.5436F, 15.00003F);
@@ -275,7 +275,7 @@
             this.xrLabel35.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel35.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel35.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel35.LocationFloat = new DevExpress.Utils.PointFloat(494.1808F, 53.08361F);
+            this.xrLabel35.LocationFloat = new DevExpress.Utils.PointFloat(494.1808F, 0F);
             this.xrLabel35.Name = "xrLabel35";
             this.xrLabel35.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
             this.xrLabel35.StylePriority.UseBorderColor = false;
@@ -285,9 +285,9 @@
             // 
             // pageInfo2
             // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(355.7083F, 45.08368F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(353.625F, 0F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(80.83331F, 23F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(80.83331F, 19.70832F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.pageInfo2.TextFormatString = "Page {0} of {1}";
@@ -312,6 +312,15 @@
             this.ReportHeader.StylePriority.UseBackColor = false;
             this.ReportHeader.StylePriority.UseBorders = false;
             this.ReportHeader.StylePriority.UseBorderWidth = false;
+            // 
+            // xrPictureBox1
+            // 
+            this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
+            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 10.00001F);
+            this.xrPictureBox1.Name = "xrPictureBox1";
+            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(117.2917F, 75.49998F);
+            this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
+            this.xrPictureBox1.StylePriority.UseBorderColor = false;
             // 
             // xrLabel32
             // 
@@ -1017,7 +1026,7 @@
             this.xrLabel5.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel5.BorderWidth = 2F;
-            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(6.357829E-05F, 75.33347F);
+            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(6.357829E-05F, 77.00011F);
             this.xrLabel5.Multiline = true;
             this.xrLabel5.Name = "xrLabel5";
             this.xrLabel5.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -1284,6 +1293,7 @@
             this.xrLabel17.StylePriority.UseBorderWidth = false;
             this.xrLabel17.StylePriority.UseFont = false;
             this.xrLabel17.Text = "Bill No:";
+            this.xrLabel17.TextFormatString = "{0:dd-MMM-yyyy}";
             // 
             // xrLabel18
             // 
@@ -1690,15 +1700,6 @@
             this.PageInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            // 
-            // xrPictureBox1
-            // 
-            this.xrPictureBox1.BorderColor = System.Drawing.Color.Transparent;
-            this.xrPictureBox1.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 10.00001F);
-            this.xrPictureBox1.Name = "xrPictureBox1";
-            this.xrPictureBox1.SizeF = new System.Drawing.SizeF(117.2917F, 75.49998F);
-            this.xrPictureBox1.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
-            this.xrPictureBox1.StylePriority.UseBorderColor = false;
             // 
             // cashPaymentformat2
             // 
