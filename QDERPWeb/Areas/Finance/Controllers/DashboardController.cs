@@ -142,19 +142,20 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var data = dbContext.Qry20115BillsPayableOutStandings
-                        .Where(b => b.Balance > 0)
-                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead })
+                        .Where(b => b.Balance > 0) // Only bills with outstanding balance
+                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Group by Balance, OverdueDays, AccountHeadNo, and AccountHead
                         .Select(g => new
                         {
                             AccountHeadNo = g.Key.AccountHeadNo,
                             AccountHead = g.Key.AccountHead,
-                            Balance = g.Sum(b => b.Balance),
-                            OverdueDays = g.Max(b => b.OverdueDays)
+                            Balance = g.Key.Balance,         // Use the grouped Balance
+                            OverdueDays = g.Key.OverdueDays // Use the grouped OverdueDays
                         })
-                        .OrderByDescending(g => g.OverdueDays)
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead))
-                        .ThenBy(g => g.AccountHead)
-                        .Take(5) // Only take top 5 results after ordering
+                        .OrderByDescending(g => g.Balance) // Highest balance first
+                        .ThenByDescending(g => g.OverdueDays) // Highest overdue days next
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead)) // Sort null/empty last
+                        .ThenBy(g => g.AccountHead) // Alphabetical order if same Balance and OverdueDays
+                        .Take(5) // Top 5 only
                         .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
@@ -165,8 +166,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return StatusCode(500, "Internal server error");
                 }
             }
+
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetOutstandingChartData()
