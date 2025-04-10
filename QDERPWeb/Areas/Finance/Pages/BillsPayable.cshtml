@@ -129,19 +129,19 @@
                 // Grid Band: Bills Payable
                 columns.Add().Caption(new JS("formatMessage('Bills Payable')")).Columns(band =>
             {
-                band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('AccountHeadNo')")).Alignment(HorizontalAlignment.Center).Width(150);
+                band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('Account Head No')")).Alignment(HorizontalAlignment.Center).Width(150);
                 band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250);
                 band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0); // Group by this column
 
-                band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('ReferenceNo')")).Alignment(HorizontalAlignment.Center)
+                band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Alignment(HorizontalAlignment.Center)
             .CellTemplate(@<text>
         <a href="/<%= tenantName %>/Finance/PurchaseVoucher?argsledno=<%= data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
             <%= data.ReferenceNo %>
         </a>
     </text>);
-                band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('VoucherDate')")).Alignment(HorizontalAlignment.Center)
+                band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center)
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('VoucherRefNo')")).Alignment(HorizontalAlignment.Center);
+                band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Center);
                 band.AddFor(m => m.InvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Invoice Amount')"))
     .Alignment(HorizontalAlignment.Right)
     .CustomizeText(@"
@@ -183,10 +183,10 @@
     return '(' + formattedValue + ')';
     }
     ");
-                band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('InvoiceDueDate')")).Alignment(HorizontalAlignment.Center).Width("100%")
+                band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('Invoice Due Date')")).Alignment(HorizontalAlignment.Center).Width("100%")
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('NoOfDaysCreditPeriod')")).Alignment(HorizontalAlignment.Center).Width("100%");
-                band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('OverdueDays')")).Alignment(HorizontalAlignment.Center).Width("100%");
+                band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('No Of Days Credit Period')")).Alignment(HorizontalAlignment.Center).Width("100%");
+                band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width("100%");
 
 
                 columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
