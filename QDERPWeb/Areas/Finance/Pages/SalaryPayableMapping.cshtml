@@ -236,11 +236,12 @@
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))
                     .HeaderFilter(filter => filter.Visible(true))
-                    .Height(300)
                     .ColumnAutoWidth(true)
                     .FilterRow(filterRow => filterRow.Visible(false))
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
+                    .Height(550)
+                    .ElementAttr("style", "min-height: 500px;")
                     .Width("100%"))
 </div>
 

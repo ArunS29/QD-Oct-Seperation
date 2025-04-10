@@ -1,4 +1,4 @@
-﻿@page
+﻿ @page
 @using DevExtreme.AspNet.Mvc;
 @using DevExtreme.AspNet.Data;
 <style type="text/css">
@@ -126,7 +126,7 @@
 
 
 
-    <div style="padding-top: 15px">
+    <div>
         @(Html.DevExtreme().Button()
             .ID("btnShowRecords")
             .Text("Show Mapping Details") // Removed JS formatting function
@@ -166,7 +166,8 @@
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
                 .HeaderFilter(filter => filter.Visible(true))
-                .Height(300)
+                .Height(550)
+                .ElementAttr("style", "min-height: 500px;")
                 .ColumnAutoWidth(true)
                 .FilterRow(filterRow => filterRow.Visible(false))
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
