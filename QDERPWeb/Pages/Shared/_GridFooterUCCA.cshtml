@@ -202,15 +202,17 @@
             .ID("btnDifferences")
             .Text(new JS("formatMessage('Differences')"))
             .Icon("preferences")
-            .Width(150)
-            .DropDownOptions(options => options.Width(200))
+            .Width(180)
+            .DropDownOptions(options => options.Width(300))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Show Differences')"));
-                items.Add().Text(new JS("formatMessage('Clear Differences')"));
+                items.Add().Text("Print Cost Differences");
+                items.Add().Text("Cost on BalanceSheet Items");
+                items.Add().Text("Clear All wrong Allocation of Cost");
             })
             .ShowArrowIcon(true)
             )
+
     </div>
 
 <div class="btn-container">
