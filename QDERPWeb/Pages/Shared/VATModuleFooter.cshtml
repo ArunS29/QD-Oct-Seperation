@@ -188,6 +188,13 @@
         border: none;
     }
 
+    .update-button {
+        font-weight: bold;
+        padding: 10px 20px;
+        background-color: #e0e7f0;
+        border-radius: 6px;
+    }
+
 
 </style>
 
@@ -280,8 +287,17 @@
             .OnClick("showColumnChooser")
             )
     </div>
+    <div class="btn-containerIvoiceEdit">
 
-
+    @(Html.DevExtreme().Button()
+        .ID("btnUpdate")
+        .Text(new JS("formatMessage('Update')"))
+        .Icon("save") // Icon similar to a floppy/save
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Contained)
+        .ElementAttr(new { @class = "update-button" }) // Custom CSS class
+        )
+    </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
