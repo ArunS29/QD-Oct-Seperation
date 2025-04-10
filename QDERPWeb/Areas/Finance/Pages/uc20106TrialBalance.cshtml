@@ -203,7 +203,7 @@
         }
     } $(document).ready(function () {
         // Load all records on page load (ignore default date values)
-        loadAllRecords();
+       // loadAllRecords();
     });
 
     function loadAllRecords() {
@@ -328,22 +328,22 @@
                     { dataField: "MasterGroup", area: "row", caption: "Master Group" },
                     { dataField: "LedgerNo", area: "row", caption: "Ledger No" },
                     { dataField: "Category", area: "row", caption: "Category" },
-                    { dataField: "VoucherNo", area: "column", caption: "Voucher No" },
-                    { dataField: "VoucherDate", area: "column", caption: "Voucher Date", dataType: "date", format: "shortDate" },
-                    { dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No" },
+                    //{ dataField: "VoucherNo", area: "column", caption: "Voucher No" },
+                   // { dataField: "VoucherDate", area: "column", caption: "Voucher Date", dataType: "date", format: "shortDate" },
+                    //{ dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No" },
                     { dataField: "DrCr", area: "column", caption: "Dr Cr" },
                     { dataField: "VoucherType", area: "column", caption: "Voucher Type" },
                     { dataField: "DrAmount", area: "data", caption: "Debit Amount", summaryType: "sum" },
                     { dataField: "CrAmount", area: "data", caption: "Credit Amount", summaryType: "sum" },
                     { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount", summaryType: "sum" },
-                    { dataField: "VoucherNarration", area: "column", caption: "Voucher Narration" },
-                    { dataField: "EntryNarration", area: "column", caption: "Entry Narration" },
-                    { dataField: "SysRemarks", area: "column", caption: "System Remarks" },
-                    { dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No" },
-                    { dataField: "Transactions", area: "data", caption: "Transactions", summaryType: "count" },
+                    //{ dataField: "VoucherNarration", area: "column", caption: "Voucher Narration" },
+                    //{ dataField: "EntryNarration", area: "column", caption: "Entry Narration" },
+                    //{ dataField: "SysRemarks", area: "column", caption: "System Remarks" },
+                    //{ dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No" },
+                    //{ dataField: "Transactions", area: "data", caption: "Transactions", summaryType: "count" },
                     { dataField: "OpeningBalance", area: "data", caption: "Opening Balance", summaryType: "sum" },
-                    { dataField: "MonthYear", area: "column", caption: "Month Year" },
-                    { dataField: "MonthNumber", area: "column", caption: "Month Number" }
+                    //{ dataField: "MonthYear", area: "column", caption: "Month Year" },
+                    //{ dataField: "MonthNumber", area: "column", caption: "Month Number" }
                 ]
             },
             width: "100%",
