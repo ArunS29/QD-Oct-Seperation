@@ -143,6 +143,14 @@ QD.ERP.Web.Areas.Utility.EmailHelper.Initialize(app.Configuration);
 
 #region **3. Configure Routing**
 
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=HomeController}/{action=Index}/{id?}"); 
+app.MapControllerRoute(
+    name: "VAT",
+    pattern: "VAT/{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
