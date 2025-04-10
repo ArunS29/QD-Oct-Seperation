@@ -645,6 +645,7 @@
                         )
 }
 <script>
+    let paymentaccheadId;
     function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
         if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -951,4 +952,82 @@
 
         grid.option("filterRow.visible", !currentVisibility);
     }
+         $("#btnSave").on("click", function (e) {
+            e.preventDefault();
+
+
+
+            var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+            var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
+
+
+            if (rowCount !== 0) {
+
+                var VM = {
+                    // alert($("#VoucherNo").dxTextBox("instance").option("value"));
+                    "ClaimRefNo": $("#VoucherNo").dxTextBox("instance").option("value"),
+
+                    "ClaimDate": $("#claimerdate").dxDateBox("instance").option("value"),
+
+                    "ProjectClaimedFor": paymentaccheadId,
+                    "ClaimRemarks": $("#txtEntryNarration").dxTextArea("instance").option("value")
+
+
+
+                    
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/VoucherApproval/UpdateVoucher",
+                    contentType: "application/json",
+                    data: JSON.stringify(VM),
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+
+
+                            DevExpress.ui.dialog.alert(
+                                "Expense Claim Request Details updated Successfully.",
+                                "Update Sucessful"
+                            );
+
+                                    
+
+
+                            // Change button label to "Update"
+                            // var button = $("#btnSave").dxButton("instance");
+                            // button.option("text", "Update");
+                        } else {
+                            alert("Update failed: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        //  DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
+                        DevExpress.ui.dialog.alert(
+                            "Voucher has no line items to be saved, please enter transaction to save.!",
+                            "No Line Items"
+                        );
+                    }
+
+                });
+            } else {
+                        if(IsNotification==true)
+                        {
+
+                    DevExpress.ui.dialog.alert(
+                        "Cannot continue saving with errors,please clear the errors and continue.",
+                        "Clear Errors"
+                    );
+                }
+                        else
+                        {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+
+            }
+        });
 </script>

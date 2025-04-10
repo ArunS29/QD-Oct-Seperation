@@ -191,6 +191,7 @@
                     .OnValueChanged("onVoucherDrCrValueChanged") // JS function name
                     .Placeholder("Select Transaction Type")
                     .Width(112)
+                    .ReadOnly(true)
                     )
             </div>
             <div class="form-group">
@@ -444,7 +445,7 @@
                 .Value(new JS("data.AccountHead"))
                 .ValueExpr("AccountId")
                 .DisplayExpr("AccountHead")
-                .OnValueChanged("gridBox_valueChanged")
+                .OnValueChanged("gridData_valueChanged")
                 .OnOpened("onOpened")
                 .Width(250)
                 .TabIndex(1)
@@ -2586,7 +2587,7 @@
     }
 
 
-    function gridBox_valueChanged(e) {
+    function gridData_valueChanged(e) {
         var $dataGrid = $("#dataGrid");
 
         if ($dataGrid.length) {
