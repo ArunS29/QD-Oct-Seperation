@@ -1,6 +1,9 @@
 ﻿var dictionary = {
     "en": {
         "AccountBranch": "AccountBranch",
+        "Differences": "Differences",
+        "Show Differences": "Show Differences",
+        "Clear Differences":"Clear Differences",
         "SalesPersonCode": "SalesPersonCode",
         "CostAllocationMasterGroup":"CostAllocationMasterGroup",
         "Expr1": "Expr1",
@@ -1569,7 +1572,19 @@
         "Packing Unit:": "Packing Unit:",
         "Selling Rate:": "Selling Rate:",
         "Cost Price:": "Cost Price:",
-        "Unit of Measure:": "Unit of Measure:"
+        "Unit of Measure:": "Unit of Measure:",
+        "Signatory User ID:": "Signatory User ID:",
+        "ADD": "ADD",
+        "Signatory Contact No.":"Signatory Contact No.",
+        "Signatory Email": "Signatory Email",
+        "Upload Signature": "Upload Signature",
+        "Signatory Position(Arabic)": "Signatory Position(Arabic)",
+        "Signatory Position": "Signatory Position",
+        "Signatory Name(Arabic)": "Signatory Name(Arabic)",
+        "Signatory Name": "Signatory Name",
+        "Type a New Signatory & Add to the Existing List:": "Type a New Signatory & Add to the Existing List:",
+        "Upload Signature": "Upload Signature",
+
 
 
 
@@ -1578,6 +1593,8 @@
 
     },
     "ar": {
+        "Upload Signature": "تحميل التوقيع",
+        "Signatory User ID:": "معرّف المستخدم الموقّع:",
         "Unit of Measure:": "وحدة القياس:",
         "Selling Rate:": "سعر البيع:",
         "Cost Price:": "سعر التكلفة:",
@@ -3068,7 +3085,16 @@
         "Total:": ":الإجمالي",
         "Column Chooser": "اختيار الأعمدة",
         "PaymentMeans Type": "نوع وسيلة الدفع",
-        "Client Code should be entered":"يجب إدخال رمز العميل"
+        "Client Code should be entered": "يجب إدخال رمز العميل",
+        "ADD": ":إضافة",
+        "Signatory Contact No.": "رقم اتصال الموقّع",
+        "Signatory Email": "البريد الإلكتروني للموقّع",
+        "Upload Signature": "تحميل التوقيع",
+        "Signatory Position(Arabic)": "منصب الموقّع (بالعربية)",
+        "Signatory Position": "منصب الموقّع",
+        "Signatory Name(Arabic)": "اسم الموقّع (بالعربية)",
+        "Signatory Name": "اسم الموقّع",
+        "Type a New Signatory & Add to the Existing List:": "اكتب موقّعًا جديدًا وأضفه إلى القائمة الحالية:"
 
     }
 };

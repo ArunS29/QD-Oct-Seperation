@@ -25,6 +25,14 @@
         flex-direction: column; /* Stack the checkbox and button */
         gap: 10px; /* Add space between elements */
     }
+
+    .limited-footer .btn-container {
+        display: none !important;
+    }
+
+        .limited-footer .btn-container:has(#ddButtonLayout, #btnShowFields, #btnShowRowTotals, #btnPrint,#menuReports,#btnDifferences) {
+            display: block !important;
+        }
 </style>
 
 
@@ -34,10 +42,11 @@
     </div>
 </div>
 <div class="Head">
-    <div class="header-container">
-        <div class="footer">@await Html.PartialAsync("_GridFooterUCCA")</div>
+    <div class="limited-footer">
+        @await Html.PartialAsync("_GridFooterUCCA")
     </div>
 </div>
+
     <div class="dx-fieldset horizontal-container">
     <div class="dx-field">
         @(Html.DevExtreme().DropDownBox()
@@ -205,7 +214,7 @@
 
     $(document).ready(function () {
         // Load all records on page load (ignore default date values)
-        loadAllRecords();
+        //loadAllRecords();
     });
 
     function loadAllRecords() {

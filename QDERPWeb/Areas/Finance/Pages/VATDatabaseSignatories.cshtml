@@ -5,97 +5,188 @@
 @using DevExtreme.AspNet.Mvc
 @using DevExtreme.AspNet.Mvc.Builders
 <style>
+    .signatory-form-container {
+        padding: 20px;
+    }
 
-.signatory-form-container {
-    background-color: #f5f9ff;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #cbd5e1;
-    margin-bottom: 20px;
-}
+    .form-row {
+        display: flex;
+        gap:15px;
+        align-items: end;
+    }
 
-.form-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    gap: 16px;
-}
+    .form-row .form-row-btn {
+        margin: 2px;
+        
+        width: 340px;
+        padding: 0px;
+    }
 
-.form-row input,
-.form-row .dx-textbox,
-.form-row .dx-selectbox {
-    flex: 1;
-}
+        .form-row input,
+        .form-row .dx-textbox,
+        .form-row .dx-selectbox {
+            flex: 1;
+        }
 
-.image-upload-row {
-    align-items: center;
-    gap: 10px;
-}
+    .dx-fileuploader-input-wrapper .dx-button {
+        float: left;
+        margin-top: -10px;
+    }
+    .image-upload-row {
+        align-items: center;
+        gap: 10px;
+    }
 
-.signature-upload {
-    border: 1px solid #ccc;
-    padding: 8px;
-    background-color: #fff;
-}
+    .signature-upload {
+        border: 1px solid #ccc;
+        background-color: #fff;
+    }
 
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+        display: none !important;
+    }
+    
+    .upload{
+        display: block;
+        top: 26px;
+        position: relative;
+        left: 0px;
+    }
+
+    .grid{
+        padding:20px;
+    }
 </style>
 <div class="signatory-form-container">
+    <div id="DatabaseSignatories" class="no-border-title"></div>
     <h3>Type a New Signatory & Add to the Existing List:</h3>
-    
-    <div class="form-row">
-        @(Html.DevExtreme().TextBox().ID("SignatoryName").Label(new JS("formatMessage('Signatory Name')")).LabelMode(EditorLabelMode.Outside))
-        @(Html.DevExtreme().TextBox().ID("SignatoryNameArabic").Label(new JS("formatMessage('Signatory Name (Arabic)')")).LabelMode(EditorLabelMode.Outside))
-    </div>
 
     <div class="form-row">
-        @(Html.DevExtreme().TextBox().ID("SignatoryPosition").Label(new JS("foramtMessage('Signatory Position')")).LabelMode(EditorLabelMode.Outside))
-        @(Html.DevExtreme().TextBox().ID("SignatoryPositionArabic").Label(new JS("formatMessage('Signatory Position (Arabic)')")).LabelMode(EditorLabelMode.Outside))
-    </div>
+        @(Html.DevExtreme().TextBox()
+            .ID("SignatoryName")
+            .Label(new JS("formatMessage('Signatory Name')"))
+            .LabelMode(EditorLabelMode.Outside)
+            )
 
-    <div class="form-row">
-        @(Html.DevExtreme().TextBox().ID("SignatoryContact").Label(new JS("formatMessage('Signatory Contact No.')")).LabelMode(EditorLabelMode.Outside))
-        @(Html.DevExtreme().TextBox().ID("SignatoryEmail").Label(new JS("formatMessage('Signatory Email')"))
-        .LabelMode(EditorLabelMode.Outside))
-    </div>
-
-    <div class="form-row">
-        @(Html.DevExtreme().SelectBox()
-            .ID("SignatoryUserId")
-           
-            .DisplayExpr("UserName")
-            .ValueExpr("Id")
-            .Placeholder("Signatory User ID"))
-    </div>
-
-    <div class="form-row image-upload-row">
-        <label>Add Signature Image here:</label>
-        <input type="file" class="signature-upload" />
+        @(Html.DevExtreme().TextBox()
+            .ID("SignatoryNameArabic")
+            .Label(new JS("formatMessage('Signatory Name(Arabic)')"))
+            .LabelMode(EditorLabelMode.Outside)
+            )
+ 
     </div>
 
     <div class="form-row">
-        <button class="dx-button dx-button-success">Add</button>
-    </div>
-</div>
+        @(Html.DevExtreme().TextBox()
+            .ID("SignatoryPosition")
+            .Label(new JS("formatMessage('Signatory Position')"))
+            .LabelMode(EditorLabelMode.Outside)
+           )
 
-<hr />
+        @(Html.DevExtreme().TextBox()
+            .ID("SignatoryPositionArabic")
+            .Label(new JS("formatMessage('Signatory Position(Arabic)')"))
+            .LabelMode(EditorLabelMode.Outside)
+            )
+    </div>
+
+    <div class="form-row">
+        @(Html.DevExtreme().TextBox()
+            .ID("SignatoryContact")
+            .Label(new JS("formatMessage('Signatory Contact No.')"))
+            .LabelMode(EditorLabelMode.Outside)
+            )
+
+        @(Html.DevExtreme().TextBox()
+            .ID("SignatoryEmail")
+            .Label(new JS("formatMessage('Signatory Email')"))
+            .LabelMode(EditorLabelMode.Outside)
+            
+            )
+    </div>
+
+
+    <div class="form-row">
+        <div class="form-row-btn">
+            @(Html.DevExtreme().SelectBox()
+                .Label(new JS("formatMessage('Signatory User ID:')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("SignatoryUserId")
+                .DisplayExpr("UserName")
+                .ValueExpr("Id")
+               )
+        </div>
+
+        <div class="form-row-btn">
+            @(Html.DevExtreme().Button()
+                .ID("btnAddSalesPerson")
+                .Text(new JS("formatMessage('ADD')"))
+                .Icon("plus")
+                .OnClick("function() { addSignatoryToGrid(); }")
+                .ElementAttr(new { @class = "dx-button-add" })
+                )
+
+
+        </div>
+        <div class="form-row-btn upload">
+
+        @(Html.DevExtreme().FileUploader()
+            .ID("SignatureImageUploader")
+            .SelectButtonText(new JS("formatMessage('Upload Signature')"))
+            .Accept("image/*")
+            .UploadMode(FileUploadMode.UseForm)
+            .Multiple(false)
+
+            )
+        </div>
+        
+
+    </div> 
+        
+    </div>
+
+    <div class="grid">
 
 @(Html.DevExtreme().DataGrid()
     .ID("SignatoryGrid")
     .ShowBorders(true)
-   
     .Columns(columns => {
-        columns.Add().DataField("SignatoryID").Caption("Signatory ID").Width(80);
-        columns.Add().DataField("SignatoryName").Caption("Signatory Name");
-        columns.Add().DataField("SignatoryPosition").Caption("Signatory Position");
-        columns.Add().DataField("SignatoryContact").Caption("Signatory Contact");
-        columns.Add().DataField("SignatoryEmail").Caption("Signatory Email");
+        columns.Add().DataField("SignatoryID").Caption("Signatory ID").Width(100);
+            columns.Add().DataField("SignatoryName").Caption("Signatory Name").Alignment(HorizontalAlignment.Center);
+            columns.Add().DataField("SignatoryPosition").Caption("Signatory Position").Alignment(HorizontalAlignment.Center);
+            columns.Add().DataField("SignatoryContact").Caption("Signatory Contact").Alignment(HorizontalAlignment.Center);
+            columns.Add().DataField("SignatoryEmail").Caption("Signatory Email").Alignment(HorizontalAlignment.Center);
         columns.Add().Caption("Signature Image").CellTemplate(@<text>
             <img src="@Url.Content("~/uploads/@item.SignatureImage")" style="height:40px;" />
-        </text>);
+    </text>).Alignment(HorizontalAlignment.Center);
     }))
-
-<div style="margin-top: 20px;">
-    <button class="dx-button dx-button-default">Update</button>
-    <button class="dx-button dx-button-normal">Back</button>
+    </div>
+<div class="limited-footer">
+    @await Html.PartialAsync("VATModuleFooter")
 </div>
+ <script>
 
+    $(document).ready(function () {
+
+          $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+              if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                  $(this).remove();
+
+              }
+
+          });
+
+      });
+      $(function () {
+            $("#DatabaseSignatories").dxTextBox({
+                text: formatMessage("Database Signatories"),
+                readOnly: true,
+                           
+
+            });
+        });
+
+
+    </script>

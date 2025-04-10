@@ -2204,6 +2204,10 @@
             // Check if accountId is not selected
             if (!accountId) {
                 alert("Please select an account.");
+               
+                document.getElementById("submenuContainer4").style.display = 'none';
+                document.getElementById("submenuContainer5").style.display = 'none';
+                document.getElementById("submenuContainer6").style.display = 'none';
                 return;
             }
 
@@ -2271,6 +2275,9 @@
 
             // Optional: Adjust row height
             ChangeRowHeight(70);
+            document.getElementById("submenuContainer4").style.display = 'none';
+            document.getElementById("submenuContainer5").style.display = 'none';
+            document.getElementById("submenuContainer6").style.display = 'none';
         }
 
 

@@ -197,6 +197,23 @@
         //.OnClick("toggleGroupPanel")
         )
 </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnDifferences")
+            .Text(new JS("formatMessage('Differences')"))
+            .Icon("preferences")
+            .Width(180)
+            .DropDownOptions(options => options.Width(300))
+            .Items(items =>
+            {
+                items.Add().Text("Print Cost Differences");
+                items.Add().Text("Cost on BalanceSheet Items");
+                items.Add().Text("Clear All wrong Allocation of Cost");
+            })
+            .ShowArrowIcon(true)
+            )
+
+    </div>
 
 <div class="btn-container">
     @(Html.DevExtreme().Menu()
