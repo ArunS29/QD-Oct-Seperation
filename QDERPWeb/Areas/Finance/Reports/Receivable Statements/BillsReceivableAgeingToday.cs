@@ -1,13 +1,23 @@
 ﻿using System.Drawing;
+using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
 using DevExpress.XtraReports.UI;
+using System;
+using System.Drawing;
+using DevExpress.XtraReports.UI;
+using DevExpress.DataAccess.Sql;
+using DevExpress.DataAccess.ConnectionParameters;
+using QD.ERP.Web.Service; // Needed for TenantDbContextHelper
+
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
     public partial class BillsReceivableAgeingToday : XtraReport
     {
-        public BillsReceivableAgeingToday(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string companyNameAr, string companyAddressArb)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        public BillsReceivableAgeingToday(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string companyNameAr, string companyAddressArb, TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, companyNameAr, companyAddressArb);
         }
@@ -89,6 +99,20 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.sqlDataSource1.Queries.Clear();
             this.sqlDataSource1.Queries.Add(selectQuery);
             this.sqlDataSource1.Fill();
+
+            // Connection string logic
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            {
+                var connectionString = tenant.ConnectionString;
+                var connectionParams = new CustomStringConnectionParameters(connectionString);
+                sqlDataSource1.ConnectionParameters = connectionParams;
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
         }
+
+
     }
 }

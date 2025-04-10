@@ -1,22 +1,23 @@
-﻿using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using DevExpress.XtraReports.UI;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
-using Microsoft.Identity.Client;
+using DevExpress.XtraReports.UI;
+using System.Collections;
+using System.Drawing;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 {
     public partial class rpt201BillsPayable : XtraReport
     {
         private const string QueryName = "qry201SubLedgerPayablesMaster";
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public rpt201BillsPayable(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+
+        public rpt201BillsPayable(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
-          
+
         }
 
         public rpt201BillsPayable()
@@ -142,6 +143,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             // Check for empty data and show a message
             CheckForEmptyData();
+            // Connection string logic
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            {
+                var connectionString = tenant.ConnectionString;
+                var connectionParams = new CustomStringConnectionParameters(connectionString);
+                sqlDataSource1.ConnectionParameters = connectionParams;
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
         }
 
         private void CheckForEmptyData()

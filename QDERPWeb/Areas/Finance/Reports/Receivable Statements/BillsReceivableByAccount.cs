@@ -4,14 +4,17 @@ using System.Collections;
 using System.ComponentModel;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
+using DevExpress.DataAccess.ConnectionParameters;
 
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
     public partial class BillsReceivableByAccount : XtraReport
     {
-        public BillsReceivableByAccount(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        public BillsReceivableByAccount(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
         }
@@ -130,6 +133,18 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.sqlDataSource1.Queries.Clear();
             this.sqlDataSource1.Queries.Add(selectQuery);
             this.sqlDataSource1.Fill();
+
+            // Connection string logic
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            {
+                var connectionString = tenant.ConnectionString;
+                var connectionParams = new CustomStringConnectionParameters(connectionString);
+                sqlDataSource1.ConnectionParameters = connectionParams;
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            };
         }
     }
 }

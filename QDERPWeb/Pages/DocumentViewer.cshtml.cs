@@ -477,7 +477,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivablelandscapeformat(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
             else if (reportName == "BillsReceivableAll")
@@ -520,7 +520,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivableAll(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
             else if (reportName == "BillsReceivableByAccount")
@@ -563,7 +563,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivableByAccount(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
             else if (reportName == "BillsReceivableAgeingToday")
@@ -606,7 +606,7 @@ namespace QD.ERP.Web.Pages
 
                 Report = new BillsReceivableAgeingToday(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
 
             }
@@ -651,7 +651,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivableRentation(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
 
@@ -695,7 +695,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivableLedgerBalance(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
 
@@ -738,7 +738,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new BillsReceivableFormat(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
 
 
@@ -782,7 +782,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new Report4(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
 
 
@@ -842,7 +842,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new rpt201BillsPayable(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
 
             }
@@ -954,7 +954,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new rpt201BillsPayableWithVchNo(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
 
             }
@@ -1011,7 +1011,7 @@ namespace QD.ERP.Web.Pages
 
                 Report = new EndDate(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
 
             }
@@ -1058,7 +1058,7 @@ namespace QD.ERP.Web.Pages
 
                 Report = new Payablelandscape(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
             else if (reportName == "payableRetention")
@@ -1104,7 +1104,7 @@ namespace QD.ERP.Web.Pages
 
                 Report = new payableRetention(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
             else if (reportName == "Balance")
@@ -1149,7 +1149,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new Balance(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
             else if (reportName == "BillsPayablePaid")
@@ -1198,7 +1198,7 @@ namespace QD.ERP.Web.Pages
 
                 Report = new BillsPayablePaid(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
 

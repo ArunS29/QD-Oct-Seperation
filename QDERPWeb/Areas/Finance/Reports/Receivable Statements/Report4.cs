@@ -1,9 +1,8 @@
-﻿using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using DevExpress.XtraReports.UI;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
+using DevExpress.XtraReports.UI;
+using System.Collections;
+using System.Drawing;
 
 
 namespace QD.ERP.Web.Reports
@@ -14,15 +13,16 @@ namespace QD.ERP.Web.Reports
 
     {
         private const string QueryName = "qry205_027AgeingBillsReceivableWtColumns";
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public Report4(string accountId, DateTime frmDate, DateTime toDate,string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
-        
+        public Report4(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, TenantDbContextHelper tenantDbContextHelper)
+
 
         {
-
+            _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-
             SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+
 
         }
 
@@ -31,6 +31,7 @@ namespace QD.ERP.Web.Reports
         {
 
             InitializeComponent();
+
 
             SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
 
@@ -110,67 +111,77 @@ namespace QD.ERP.Web.Reports
         }
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
+        {
+            if (Parameters[paramName] == null)
             {
-                if (Parameters[paramName] == null)
+                Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
                 {
-                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
-                    {
-                        Name = paramName,
-                        Type = paramType,
-                        Value = paramValue ?? DBNull.Value,
-                        Visible = false
-                    });
-                }
-                else
-                {
-                    Parameters[paramName].Value = paramValue ?? DBNull.Value;
-                    Parameters[paramName].Visible = false;
-                }
+                    Name = paramName,
+                    Type = paramType,
+                    Value = paramValue ?? DBNull.Value,
+                    Visible = false
+                });
             }
-
-            private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
+            else
             {
-                // Define the SQL query
-                CustomSqlQuery selectQuery = new CustomSqlQuery()
-                {
-                    Name = QueryName,
-                    Sql = @"SELECT * FROM qry205_027AgeingBillsReceivableWtColumns
+                Parameters[paramName].Value = paramValue ?? DBNull.Value;
+                Parameters[paramName].Visible = false;
+            }
+        }
+
+        private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
+        {
+            // Define the SQL query
+            CustomSqlQuery selectQuery = new CustomSqlQuery()
+            {
+                Name = QueryName,
+                Sql = @"SELECT * FROM qry205_027AgeingBillsReceivableWtColumns
                         WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
                         AND VoucherDate BETWEEN @StartDate AND @EndDate"
+            };
+
+            // Add query parameters
+            selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId ?? (object)DBNull.Value));
+            selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(string), frmDate.ToString("yyyy-MM-dd")));
+            selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(string), toDate.ToString("yyyy-MM-dd")));
+
+            // Attach query to SqlDataSource
+            sqlDataSource1.Queries.Clear();
+            sqlDataSource1.Queries.Add(selectQuery);
+            sqlDataSource1.Fill();
+
+            // Check for empty data and show a message
+            CheckForEmptyData();
+
+            // Connection string logic
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            {
+                var connectionString = tenant.ConnectionString;
+                var connectionParams = new CustomStringConnectionParameters(connectionString);
+                sqlDataSource1.ConnectionParameters = connectionParams;
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+        }
+
+        private void CheckForEmptyData()
+        {
+            if (sqlDataSource1.Result[QueryName] is IList result && result.Count == 0)
+            {
+                XRLabel noDataLabel = new XRLabel()
+                {
+                    Text = "No records found to display.",
+                    BoundsF = new RectangleF(0, 0, 650, 50),
+                    TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+                    Font = new Font("Arial", 14, FontStyle.Bold)
                 };
 
-                // Add query parameters
-                selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId ?? (object)DBNull.Value));
-                selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(string), frmDate.ToString("yyyy-MM-dd")));
-                selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(string), toDate.ToString("yyyy-MM-dd")));
-
-                // Attach query to SqlDataSource
-                sqlDataSource1.Queries.Clear();
-                sqlDataSource1.Queries.Add(selectQuery);
-                sqlDataSource1.Fill();
-
-                // Check for empty data and show a message
-                CheckForEmptyData();
+                this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
             }
-
-            private void CheckForEmptyData()
-            {
-                if (sqlDataSource1.Result[QueryName] is IList result && result.Count == 0)
-                {
-                    XRLabel noDataLabel = new XRLabel()
-                    {
-                        Text = "No records found to display.",
-                        BoundsF = new RectangleF(0, 0, 650, 50),
-                        TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
-                        Font = new Font("Arial", 14, FontStyle.Bold)
-                    };
-
-                    this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-                }
-            }
-
-
-
         }
+
+    }
 
 }

@@ -1,10 +1,7 @@
-﻿using System;
+﻿using DevExpress.XtraReports.UI;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using DevExpress.XtraReports.UI;
-using Microsoft.Extensions.Configuration;
-using System.IO;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.test
 {
