@@ -876,6 +876,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             SignatoryID = s.SignatoryId.ToString(),
                             SignatoryName = s.SignatoryName
                         })
+
                         .ToList(); // Materialize the query first
 
                     var combinedSignatories = dbSignatories
@@ -980,7 +981,46 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public IActionResult GetAllSign()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var dbSignatories = dbContext.Tbl90104DocumentSignatories
+                        .Select(s => new
+                        {
+                            SignatoryID = s.SignatoryId.ToString(),
+                            SignatoryName = s.SignatoryName,
+                            SignatoryPosition = s.SignatoryPosition,
+                            SignatoryContact = s.SignatoryContact,
+                            SignatoryEmail = s.SignatoryEmail,
+                            SignatureDescription = s.SignatureDescription,
+                            SignatureCode = s.SignatureCode,
+                            SignatoryMobile1 = s.SignatoryMobile1,
+                            SignatoryMobile2 = s.SignatoryMobile2,
+                            SignatoryNameAr = s.SignatoryNameAr,
+                            SignatoryPositionAr = s.SignatoryPositionAr,
+                            IsFinanceManager = s.IsFinanceManager,
+                            UserId = s.UserId,
+                            SignatureImageBase64 = s.SignatureImage != null
+                                ? Convert.ToBase64String(s.SignatureImage)
+                                : null
+                        })
+                        .ToList();
 
-	}
+                    return Ok(dbSignatories);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message, success = false });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+    }
 }
 
