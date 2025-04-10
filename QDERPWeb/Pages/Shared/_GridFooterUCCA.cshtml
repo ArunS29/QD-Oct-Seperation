@@ -197,6 +197,21 @@
         //.OnClick("toggleGroupPanel")
         )
 </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnDifferences")
+            .Text(new JS("formatMessage('Differences')"))
+            .Icon("preferences")
+            .Width(150)
+            .DropDownOptions(options => options.Width(200))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Show Differences')"));
+                items.Add().Text(new JS("formatMessage('Clear Differences')"));
+            })
+            .ShowArrowIcon(true)
+            )
+    </div>
 
 <div class="btn-container">
     @(Html.DevExtreme().Menu()

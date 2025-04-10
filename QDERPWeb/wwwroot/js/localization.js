@@ -1,6 +1,9 @@
 ﻿var dictionary = {
     "en": {
         "AccountBranch": "AccountBranch",
+        "Differences": "Differences",
+        "Show Differences": "Show Differences",
+        "Clear Differences":"Clear Differences",
         "SalesPersonCode": "SalesPersonCode",
         "CostAllocationMasterGroup":"CostAllocationMasterGroup",
         "Expr1": "Expr1",
