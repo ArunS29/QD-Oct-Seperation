@@ -835,11 +835,17 @@
                     .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
                     .DisplayExpr("name")
                     .ValueExpr("value")
-                    .Width("8em")
+                    .Width("10em")
                     .Value(new JS("locale"))
                     .OnValueChanged("changeLocale")
                     .Label(new JS("formatMessage('Language')"))
                     .LabelMode(EditorLabelMode.Outside)
+                    .ItemTemplate(@<text>
+                    <div style="display: flex; align-items: center;">
+                        <img src="<%- flag %>" alt="" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;" />
+                        <span><%- name %></span>
+                    </div>
+                </text>)
                     )
             </div>
             @* <button id="themeToggle">Toggle Dark Mode</button> *@
@@ -1828,42 +1834,51 @@
             function showFinanceSubmenu() {
                 const sidebar2 = document.getElementById('sidebar2');
                 sidebar2.innerHTML = `
-                                <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                                       <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
                                     <i class="fas fa-book-open"></i>
-                                   <div class="text">${formatMessage("Finance Dashboard")}</div>
+                                    <div class="text">${formatMessage("Finance Dashboard")}</div>
                                 </div>
                                 <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
+                                        <i class="fas fa-tachometer-alt"></i>
                                         <div class="text">${formatMessage("My Dashboard")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
+                                        <i class="fas fa-check-double"></i>
                                         <div class="text">${formatMessage("Voucher Verification")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsReceivable">
+                                        <i class="fas fa-file-invoice-dollar"></i>
                                         <div class="text">${formatMessage("Bills Receivable")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
+                                        <i class="fas fa-money-check-alt"></i>
                                         <div class="text">${formatMessage("Bills Payable")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
+                                        <i class="fas fa-chart-pie"></i>
                                         <div class="text">${formatMessage("Cost Analysis")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
+                                        <i class="fas fa-wallet"></i>
                                         <div class="text">${formatMessage("Salary Payable")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
+                                        <i class="fas fa-book"></i>
                                         <div class="text">${formatMessage("Chart Of Accounts")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
+                                        <i class="fas fa-project-diagram"></i>
                                         <div class="text">${formatMessage("Chart of Cost Centers")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/uc20106TrialBalance">
+                                        <i class="fas fa-balance-scale"></i>
                                         <div class="text">${formatMessage("Financial Reports")}</div>
                                     </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetView">
+                                        <i class="fas fa-boxes"></i>
                                         <div class="text">${formatMessage("Asset Register")}</div>
                                     </a>
-
                                 </div>
 
                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
