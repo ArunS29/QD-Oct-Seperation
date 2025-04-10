@@ -29,6 +29,11 @@
     .dx-field-label {
         font-weight: bold !important;
     }
+
+
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnRefresh,#btnPrint,#btnToggleSearch,#btnBack,#btntoggleGroupPanel)) {
+        display: none !important;
+    }
 </style>
 <div class="title">
     <div class="header-container">
@@ -259,6 +264,7 @@
 
             .Columns(columns =>
             {
+                columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Visible(false);
                 columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Visible(false);
                 columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')"));
 
@@ -353,7 +359,7 @@
         .AllowUpdating(true)   // Enable editing of existing rows
         .AllowDeleting(true)   // Enable deleting rows
         .UseIcons(true)
-
+       
         )
         .OnEditorPreparing("onEditorPreparing")
         // ✅ Add Total Summary for Debit & Credit Fields
@@ -488,10 +494,12 @@
     </div>
 </div>
 <input type="file" id="fileInput" style="display: none;">
+@* @await Html.PartialAsync("_FormFooter") *@
 
-
-<div>
-    @await Html.PartialAsync("_FormFooter")
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("VATModuleFooter")
+    </div>
 </div>
 
 
@@ -750,7 +758,7 @@
         .ShowTitle(true)
         @* .ToolbarItems(toolbar =>
     {
-    toolbar.Add()
+    toolbar.Add(F
     .Widget(w => w.Button()
     .Icon("minus")
     .OnClick("minimizePopup")
@@ -796,7 +804,22 @@
     //     dataGrid.on("rowRemoved", calculateTotals);  // When row is deleted
     // });
     //default
+    $(document).ready(function () {
 
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+            if (!$(this).find("#ddButtonLayout,#btnRefresh,#btnPrint,#btnToggleSearch,#btnBack,#btntoggleGroupPanel").length) {
+                $(this).remove();
+            }
+
+        });
+
+        // Handle Back button click
+        $(document).on('click', '#btnBack', function () {
+            window.history.back();
+        });
+
+    });
     $(function () {
         $("#JournalVoucherEntry").dxTextBox({
             text: formatMessage("Journal Voucher Entry"),
@@ -1170,7 +1193,7 @@
     });
 
 
-
+ 
 
     function dataGridAccountHeadSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
@@ -1276,35 +1299,24 @@
         dataGrid = e.component;
     }
     function onRowRemoved(e) {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You are about to delete the Voucher Entry from the database. You cannot revert the changes.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "Cancel"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "/api/VoucherJournal/Delete",
-                    type: 'GET',
-                    data: { VoucherEntryNo: e.data.VoucherEntryNo },
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire("Deleted!", "Line Entry has been successfully removed from the database.", "success");
-                        } else {
-                            Swal.fire("Error!", "Failed to delete the item. " + response.message, "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Error!", "An error occurred while deleting the item.", "error");
-                    }
-                });
+        $.ajax({
+            url: "/api/VoucherJournal/Delete",
+            type: 'GET',
+            data: { VoucherEntryNo: e.data.VoucherEntryNo },
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire("Deleted!", "Line Entry has been successfully removed from the database.", "success");
+                } else {
+                    Swal.fire("Error!", "Failed to delete the item. " + response.message, "error");
+                }
+            },
+            error: function () {
+                Swal.fire("Error!", "An error occurred while deleting the item.", "error");
             }
         });
     }
+
+
 
 
 
@@ -1988,13 +2000,55 @@
         }
     }
 
-    function confirmToDeleteAllVoucher(onConfirm) {
+    function confirmToDeleteAll(onConfirm) {
         DevExpress.ui.dialog.confirm(
             "You are about to delete the Voucher Entries from the database. You cannot revert the changes. Are you sure you want to delete?",
             "Delete Confirmation"
         ).done(function (dialogResult) {
             if (dialogResult) {
                 onConfirm(); // Proceed only if the user clicks "Yes"
+            }
+        });
+    }
+    function onAllRowRemoving() {
+    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+
+    // Retrieve the unique identifier for the row
+    var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+
+    // **Ask for confirmation before proceeding**
+    confirmDeleteAll(function () {
+        // User clicked "Yes", proceed with deletion
+        $.ajax({
+                url: `/api/VoucherJournal/DeleteAllEntries?VoucherNo=${encodeURIComponent(voucherNo)}`,
+            type: "POST",
+            success: function (response) {
+                if (response.data) {
+                    $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+                   // DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
+                } else {
+                    DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+            }
+        });
+    });
+}
+    function confirmDeleteAll(onConfirm) {
+        DevExpress.ui.dialog.confirm(
+            "You are about to delete the Voucher Entries from the database. You cannot revert the changes. Are you sure you want to delete?",
+            "Delete Confirm."
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                onConfirm(); // Proceed only if the user clicks "Yes"
+                DevExpress.ui.dialog.alert(
+                    "All Entries has been successfully removed from the database.",
+                    "Data Deleted Successfully"
+                );
             }
         });
     }

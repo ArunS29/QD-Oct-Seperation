@@ -5010,11 +5010,17 @@ function syncSupVATNumbers(e) {
         //   var obAddressar = $('#txtObsSupAddressAr').dxTextBox('option', 'value');
 
         var obVATNo = $('#txtObsSupRegNo').dxNumberBox('option', 'value');
+        var button = $("#btnSave").dxButton("instance");
+        var buttonText = button ? button.option("text") : "";
 
+        // Only set CreatedBy on insert
+        if (buttonText !== "Update") {
+            $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+        }
       
 
         
-         $("#CreatedBy").dxTextBox("instance").option("value",getUN);
+        // $("#CreatedBy").dxTextBox("instance").option("value",getUN);
          const CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
  console.log("userN1:",getUN);
        console.log("userN2:",CreatedBy);

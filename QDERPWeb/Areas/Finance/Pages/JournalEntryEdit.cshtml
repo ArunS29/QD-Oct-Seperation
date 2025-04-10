@@ -2,6 +2,10 @@
 @model QD.ERP.Web.Areas.Finance.Pages.JournalEntryEditModel
 @{
 }
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
     #dataGrid .dx-data-row {
         border-bottom: 1px solid lightgrey;
@@ -489,7 +493,7 @@
     function saveJournalEntry() {
         debugger;
         var button = $("#btnSave").dxButton("instance");
-
+    
         var gridInstance = $("#dataGrid").dxDataGrid("instance");
         var gridData = gridInstance.getDataSource().items();
 
@@ -591,6 +595,224 @@
         });
     }
 
+    //Save and close
+    $("#btnSaveAndClose").on("click", function (e) {
+   
+       
+    
+        debugger;
+        var button = $("#btnSaveAndClose").dxButton("instance");
+
+        var gridInstance = $("#dataGrid").dxDataGrid("instance");
+        var gridData = gridInstance.getDataSource().items();
+
+        if (!gridData || gridData.length === 0) {
+            DevExpress.ui.notify("There are no line items to save. Please add transaction details.", "error", 2000);
+            return;
+        }
+        gridData = gridData.map(entry => {
+            return {
+                ...entry,
+                DrAmount: entry.DrAmount !== "" ? parseFloat(entry.DrAmount) : null,
+                CrAmount: entry.CrAmount !== "" ? parseFloat(entry.CrAmount) : null,
+                TotalEmpAllocated: entry.TotalEmpAllocated !== "" ? parseFloat(entry.TotalEmpAllocated) : null,
+                TotalCostAllocated: entry.TotalCostAllocated !== "" ? parseFloat(entry.TotalCostAllocated) : null,
+                JournalChildNo: (entry.JournalChildNo !== "" && entry.JournalChildNo != null)
+                    ? parseInt(entry.JournalChildNo)
+                    : 0 // <-- this ensures you're never sending "" or null
+            };
+        });
+        var totalDrAmount = 0;
+        var totalCrAmount = 0;
+
+        gridData.forEach(function (row) {
+            if (row.DrCr === "Dr" && row.VoucherAmount && row.VoucherAmount > 0) {
+                totalDrAmount += row.VoucherAmount;
+            }
+            if (row.DrCr === "Cr" && row.VoucherAmount && row.VoucherAmount > 0) {
+                totalCrAmount += row.VoucherAmount;
+            }
+        });
+
+        if (totalDrAmount !== totalCrAmount) {
+            DevExpress.ui.notify("Voucher Entry is not tallying, please check the Debit / Credit Totals.", "error", 2000);
+            return;
+        }
+
+        // Determine action and voucher number
+        var action =  "SaveVoucher";
+        var finalVoucherNo = $("#VoucherNo").dxTextBox("instance").option("value") || "";
+
+        var VM = {
+            JournalVoucherMaster: {
+                JournalRefNo: finalVoucherNo,
+                JournalEntryDate: $("#VoucherDate").dxDateBox("instance").option("value"),
+                JournalEffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value"),
+                JournalVoucherNarration: ($("#VoucherNarration").dxTextArea("instance").option("value") || "").trim(),
+                //BillRemarks: ($("#Remarks").dxTextBox("instance").option("value") || "").trim(),
+
+                // IsSubmittedToFinance: $("#SubmittedBy").dxCheckBox("instance").option("value"),
+                // SubmittedBy: ($("#SubmittedBytext").dxTextBox("instance").option("value") || "").trim(),
+                // SubmittedOn: ($("#SubmittedOnDate").dxTextBox("instance").option("value") || null),
+
+                // IsVerified: $("#VerifiedBy").dxCheckBox("instance").option("value"),
+                // VerifiedBy: ($("#VerifiedBytext").dxTextBox("instance").option("value") || "").trim(),
+                // VerifiedOn: ($("#VerifiedOnDate").dxTextBox("instance").option("value") || null),
+
+                // IsApproved: $("#ApprovedBy").dxCheckBox("instance").option("value"),
+                // ApprovedBy: ($("#ApprovedBytext").dxTextBox("instance").option("value") || "").trim(),
+                // ApprovedOn: ($("#ApprovedOntext").dxTextBox("instance").option("value") || null),
+
+                // PostedVoucherNo: ($("#PostedVoucherNo").dxTextBox("instance").option("value") || "").trim(),
+                // PostedBy: ($("#PostedBy").dxTextBox("instance").option("value") || "").trim(),
+                // PostedOn: ($("#PostedOnDate").dxTextBox("instance").option("value") || null),
+
+                // JournalType: ($("#VoucherType").dxSelectBox("instance").option("value") || "").trim()
+            },
+            JournalVoucherEntries: gridData
+        };
+
+        button.option("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            url: `/api/JournalEntryEdit/${action}`,
+            contentType: "application/json",
+            data: JSON.stringify(VM),
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    let msg = action === "SaveVoucher"
+                        ? "Journal entry saved successfully!"
+                        : "Journal entry updated successfully!";
+                    DevExpress.ui.notify(msg, "success", 2000);
+
+                    setTimeout(function () {
+                        window.history.back(); // Navigate to the previous page
+                    }, 2000);
+                } else {
+                    DevExpress.ui.notify("Update failed: " + response.message, "error", 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                let errMsg = xhr.responseText || "An error occurred while saving the journal entry.";
+                DevExpress.ui.notify(errMsg, "error", 3000);
+            },
+            complete: function () {
+                button.option("disabled", false);
+            }
+        });
+    });
+    //Submit
+
+    $("#btnSubmit").on("click", function (e) {
+        e.preventDefault();
+        saveJournalEntrys();
+    });
+    function saveJournalEntrys() {
+        debugger;
+        var button = $("#btnSubmit").dxButton("instance");
+
+        var gridInstance = $("#dataGrid").dxDataGrid("instance");
+        var gridData = gridInstance.getDataSource().items();
+
+        if (!gridData || gridData.length === 0) {
+            DevExpress.ui.notify("There are no line items to save. Please add transaction details.", "error", 2000);
+            return;
+        }
+        gridData = gridData.map(entry => {
+            return {
+                ...entry,
+                DrAmount: entry.DrAmount !== "" ? parseFloat(entry.DrAmount) : null,
+                CrAmount: entry.CrAmount !== "" ? parseFloat(entry.CrAmount) : null,
+                TotalEmpAllocated: entry.TotalEmpAllocated !== "" ? parseFloat(entry.TotalEmpAllocated) : null,
+                TotalCostAllocated: entry.TotalCostAllocated !== "" ? parseFloat(entry.TotalCostAllocated) : null,
+                JournalChildNo: (entry.JournalChildNo !== "" && entry.JournalChildNo != null)
+                    ? parseInt(entry.JournalChildNo)
+                    : 0 // <-- this ensures you're never sending "" or null
+            };
+        });
+        var totalDrAmount = 0;
+        var totalCrAmount = 0;
+
+        gridData.forEach(function (row) {
+            if (row.DrCr === "Dr" && row.VoucherAmount && row.VoucherAmount > 0) {
+                totalDrAmount += row.VoucherAmount;
+            }
+            if (row.DrCr === "Cr" && row.VoucherAmount && row.VoucherAmount > 0) {
+                totalCrAmount += row.VoucherAmount;
+            }
+        });
+
+        if (totalDrAmount !== totalCrAmount) {
+            DevExpress.ui.notify("Voucher Entry is not tallying, please check the Debit / Credit Totals.", "error", 2000);
+            return;
+        }
+
+        // Determine action and voucher number
+        var action =  "SaveVoucher";
+        var finalVoucherNo =  $("#VoucherNo").dxTextBox("instance").option("value") || "";
+
+        var VM = {
+            JournalVoucherMaster: {
+                JournalRefNo: finalVoucherNo,
+                JournalEntryDate: $("#VoucherDate").dxDateBox("instance").option("value"),
+                JournalEffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value"),
+                JournalVoucherNarration: ($("#VoucherNarration").dxTextArea("instance").option("value") || "").trim(),
+                //BillRemarks: ($("#Remarks").dxTextBox("instance").option("value") || "").trim(),
+
+                // IsSubmittedToFinance: $("#SubmittedBy").dxCheckBox("instance").option("value"),
+                // SubmittedBy: ($("#SubmittedBytext").dxTextBox("instance").option("value") || "").trim(),
+                // SubmittedOn: ($("#SubmittedOnDate").dxTextBox("instance").option("value") || null),
+
+                // IsVerified: $("#VerifiedBy").dxCheckBox("instance").option("value"),
+                // VerifiedBy: ($("#VerifiedBytext").dxTextBox("instance").option("value") || "").trim(),
+                // VerifiedOn: ($("#VerifiedOnDate").dxTextBox("instance").option("value") || null),
+
+                // IsApproved: $("#ApprovedBy").dxCheckBox("instance").option("value"),
+                // ApprovedBy: ($("#ApprovedBytext").dxTextBox("instance").option("value") || "").trim(),
+                // ApprovedOn: ($("#ApprovedOntext").dxTextBox("instance").option("value") || null),
+
+                // PostedVoucherNo: ($("#PostedVoucherNo").dxTextBox("instance").option("value") || "").trim(),
+                // PostedBy: ($("#PostedBy").dxTextBox("instance").option("value") || "").trim(),
+                // PostedOn: ($("#PostedOnDate").dxTextBox("instance").option("value") || null),
+
+                // JournalType: ($("#VoucherType").dxSelectBox("instance").option("value") || "").trim()
+            },
+            JournalVoucherEntries: gridData
+        };
+
+        button.option("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            url: `/api/JournalEntryEdit/${action}`,
+            contentType: "application/json",
+            data: JSON.stringify(VM),
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    let msg = action === "SaveVoucher"
+                        ? "Journal entry saved successfully!"
+                        : "Journal entry updated successfully!";
+                    DevExpress.ui.notify(msg, "success", 2000);
+
+                    setTimeout(function () {
+     window.history.back(); // Navigate to the previous page
+ }, 2000);
+                } else {
+                    DevExpress.ui.notify("Update failed: " + response.message, "error", 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                let errMsg = xhr.responseText || "An error occurred while saving the journal entry.";
+                DevExpress.ui.notify(errMsg, "error", 3000);
+            },
+            complete: function () {
+                button.option("disabled", false);
+            }
+        });
+    }
 
 
     $(document).ready(function () {
@@ -731,6 +953,111 @@
         }
     });
 
+    function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
 
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Approved",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithApproval();
+        }
+    }
+
+    function proceedWithApproval() {
+        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).replace(/ /g, '-');
+
+        $.ajax({
+            success: function () {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Voucher has been Approved.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    disableEditing();
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please save the transactions after proceeding!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    }
+    
+
+    function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Approved",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithApproval();
+        }
+    }
+
+    function proceedWithApproval() {
+        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).replace(/ /g, '-');
+
+        $.ajax({
+            success: function () {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Voucher has been Approved.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    disableEditing();
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please save the transactions after proceeding!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    }
 
 </script>

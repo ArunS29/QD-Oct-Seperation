@@ -528,7 +528,61 @@ namespace QDWEB.Areas.Finance.Controllers
                 return StatusCode(500, $"Error deleting voucher: {ex.Message}");
             }
         }
+        [HttpPost]
+        public async Task<ActionResult> DeleteAllEntries(DataSourceLoadOptions loadOptions, string VoucherNo)
+        {
+            
+                try
+                {
+                    // Find all records matching the given VoucherNo
+                    var records = await _context.Tbl201VoucherEntries
+                                                .Where(v => v.VoucherNo == VoucherNo)
+                                                .ToListAsync();
 
+                    if (records == null || !records.Any())
+                    {
+                        return NotFound(new { message = "No records found for the provided VoucherNo!" });
+                    }
+
+                    // Remove all matching records
+                    _context.Tbl201VoucherEntries.RemoveRange(records);
+                    await _context.SaveChangesAsync();
+
+                    // Fetch updated voucher list
+                    var voucherEntries = await _context.Tbl201VoucherEntries
+                                                       .Where(ve => ve.VoucherNo == VoucherNo)
+                                                       .ToListAsync();
+
+                    var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct().ToList();
+
+                    // Query the updated display list
+                    var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
+                                                        .Where(p => voucherNos.Contains(p.VoucherNo))
+                                                        .OrderBy(i => i.DrCr == "Dr")
+                                                        .Select(i => new VoucherEntryDisplayDTO
+                                                        {
+                                                            VoucherNo = i.VoucherNo,
+                                                            VoucherEntryNo = i.VoucherEntryNo,
+                                                            DrCr = i.DrCr,
+                                                            VoucherAmount = i.VoucherAmount, // No need for special handling for "Cr"
+                                                            EntryNarration = i.EntryNarration,
+                                                            AccountHead = i.AccountHead,
+                                                            SysRemarks = i.SysRemarks
+
+                                                        });
+
+                    var resultList = await qryListOfAccountLists.ToListAsync();
+
+                    // Return the modified list for DataSourceLoader
+                    return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    // Return a detailed error response
+                    return StatusCode(500, new { message = "An error occurred while deleting the records.", error = ex.Message });
+                }
+            
+        }
 
     }
 }
