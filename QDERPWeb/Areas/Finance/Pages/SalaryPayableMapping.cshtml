@@ -212,38 +212,40 @@
  *@
 
  <div class="dx-field ledgerResult">
-            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20191SalaryPayableMasterMapped02>()
-                    .ID("dataGrid")
-                    .KeyExpr("AccountHeadNo")
-                    .RemoteOperations(false)
-                    .DataSource(ds => ds.Mvc()
-                        .Controller("SalaryPayableMapping")
-                        .LoadAction("GetSalaryMapping")
-                        .LoadParams(new { acchedid = "0" }) // Placeholder value, will be updated dynamically
-                    )
-                    .Columns(columns =>
-                    {
-                    columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')"));
-                    columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')"));
-                    columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee No')"));
-                    columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')"));
-                    columns.Add().DataField("NationalID").Caption(new JS("formatMessage('National ID')"));
-                    columns.Add().DataField("VoucherAmount").Caption(new JS("formatMessage('Voucher Amount')"));
-                    columns.Add().DataField("TotalMappedAmount").Caption(new JS("formatMessage('Total Mapped Amount')"));
-                    columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping Status')"));
-                    })
-                    .AllowColumnReordering(true)
-                    .AllowColumnResizing(true)
-                    .ColumnFixing(fixing => fixing.Enabled(true))
-                    .HeaderFilter(filter => filter.Visible(true))
-                    .ColumnAutoWidth(true)
-                    .FilterRow(filterRow => filterRow.Visible(false))
-                    .GroupPanel(groupPanel => groupPanel.Visible(false))
-                    .ShowBorders(true)
-                    .Height(550)
-                    .ElementAttr("style", "min-height: 500px;")
-                    .Width("100%"))
-</div>
+     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20191SalaryPayableMasterMapped02>()
+         .ID("dataGrid")
+         .KeyExpr("AccountHeadNo")
+         .RemoteOperations(false)
+         .DataSource(ds => ds.Mvc()
+             .Controller("SalaryPayableMapping")
+             .LoadAction("GetSalaryMapping")
+             .LoadParams(new { acchedid = "0" }) // Placeholder value, will be updated dynamically
+         )
+         .Columns(columns =>
+         {
+             columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')"));
+             columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')"));
+             columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee No')"));
+             columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')"));
+             columns.Add().DataField("NationalID").Caption(new JS("formatMessage('National ID')"));
+             columns.Add().DataField("VoucherAmount").Caption(new JS("formatMessage('Voucher Amount')"));
+             columns.Add().DataField("TotalMappedAmount").Caption(new JS("formatMessage('Total Mapped Amount')"));
+             columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping Status')"));
+         })
+         .AllowColumnReordering(true)
+         .AllowColumnResizing(true)
+         .ColumnFixing(fixing => fixing.Enabled(true))
+         .HeaderFilter(filter => filter.Visible(true))
+         .ColumnAutoWidth(true)
+         .FilterRow(filterRow => filterRow.Visible(false))
+         .GroupPanel(groupPanel => groupPanel.Visible(false))
+         .ShowBorders(true)
+         .Height(550)
+         .ElementAttr("style", "min-height: 500px;")
+         .Width("100%")
+         .Paging(paging => paging.Enabled(false)) // Disable paging
+     )
+ </div>
 
 
        

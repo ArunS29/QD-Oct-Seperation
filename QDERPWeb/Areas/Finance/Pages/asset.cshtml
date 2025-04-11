@@ -89,7 +89,7 @@
         width: 100%;
     }
 
-    
+
 
     .button-group{
         align-items: center;
@@ -109,8 +109,12 @@
     }
 </style>
 
+    <div class="title">
+        <div class="header-container">
+            <div id="assetregister" class="no-border-title"></div>
+        </div>
+    </div>
 <div class="form-container1">
-    <h2>Asset Register </h2>
 
     <div class="col-md-12">
         <div class="outline-container p-3"  ">
@@ -977,6 +981,7 @@
     <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
 </script>
 <script>
+  
     $(document).ready(function () {
         // Extract assetLedgerNo from the URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -1607,7 +1612,15 @@
         return null; // If the date is invalid, return null
     }
 
-
+    $(function () {
+        $("#assetregister").dxTextBox({
+            text:formatMessage("Asset Register"),
+            readOnly: true,
+            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
 
 
 
