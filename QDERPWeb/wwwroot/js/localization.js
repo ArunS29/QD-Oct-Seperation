@@ -1584,10 +1584,20 @@
         "Signatory Name": "Signatory Name",
         "Type a New Signatory & Add to the Existing List:": "Type a New Signatory & Add to the Existing List:",
         "Upload Signature": "Upload Signature",
-        "Asset Register":"Asset Register",
+        "Asset Register": "Asset Register",
+        "Currency Name": "Currency Name",
+        "Currency Name (In Arabic):": "Currency Name (In Arabic):",
+        "Currency Exchange Rate:": "Currency Exchange Rate:",
+        "Currency Code:": "Currency Code:",
+        "Currency Code (In Arabic):": "Currency Code (In Arabic):"
 
     },
     "ar": {
+        "Currency Name": "اسم العملة",
+        "Currency Name (In Arabic):": "اسم العملة (بالعربية):",
+        "Currency Exchange Rate:": "سعر صرف العملة:",
+        "Currency Code:": "رمز العملة:",
+        "Currency Code (In Arabic):": "رمز العملة (بالعربية):",
         "Asset Register":"سجل الأصول",
         "Upload Signature": "تحميل التوقيع",
         "Signatory User ID:": "معرّف المستخدم الموقّع:",

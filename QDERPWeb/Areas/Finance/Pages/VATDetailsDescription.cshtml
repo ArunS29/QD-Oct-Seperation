@@ -1,0 +1,223 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.VATDetailsDescriptionModel
+@{
+    ViewData["Title"] = "VAT Details Description";
+}
+<style>
+    .form-wrapper {
+        /* background-color: #3b80b1; */
+        padding: 20px;
+        border-radius: 6px;
+        width: 500%;
+        height:750px;
+        max-width: 1600px; 
+        padding:10px;
+    }
+
+    .form-group {
+        position: relative;
+        padding :10px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .element.style {
+        height: 110px !important;
+    }
+
+    .dx-textarea-input,
+    .dx-dropdowneditor-input,
+    .dx-datebox-input {
+        color: black !important;
+        height: 45px !important;
+    }
+
+    .dx-textarea, .dx-texteditor-input {
+        resize: none;
+        font-family: inherit;
+        display: block;
+        overflow: auto;
+        white-space: pre-wrap;
+        margin: 0;
+        height: 100px !important;
+    }
+    .arabic-button {
+        position: absolute;
+        top: 75px;
+        right: 10px;
+        z-index: 2;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+        /* .arabic-button:hover { */
+        /*     color: #ddd; */
+        /* } */
+
+    .top-buttons {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        gap: 8px;
+    }
+
+        .top-buttons .dx-button {
+            height: 30px;
+            color:black;
+        }
+
+    .arabic-textbox-wrapper {
+        position: relative;
+        width: 100%;
+    }
+</style>
+
+<div class="form-wrapper">
+
+    <!-- Row 1: Detailed Description + 2 Buttons -->
+    <div class="form-group">
+        <div class="top-buttons">
+            @(Html.DevExtreme().Button()
+                .ID("btnUseDetailedDesc")
+                .Text("Use Detailed Description")
+                .Type(ButtonType.Default)
+                )
+            @(Html.DevExtreme().Button()
+                .ID("btnUseItemDesc")
+                .Text("Use Item Desc.")
+                .Type(ButtonType.Default)
+                )
+        </div>
+        <label>Detailed Description / Specification:</label>
+        @(Html.DevExtreme().TextArea()
+            .ID("DetailedDescription")
+            .Height(100)
+            )
+    </div>
+
+    <!-- Row 2: Arabic Description + Convert Button -->
+    <div class="form-group arabic-textbox-wrapper">
+        <label>Detailed Description / Specification (In Arabic):</label>
+        @(Html.DevExtreme().TextArea()
+            .ID("DetailedDescriptionArabic")
+            .Height(100)
+            )
+        @(Html.DevExtreme().Button()
+            .ID("btnConvertDescription")
+            .Icon("fas fa-language")
+            .ElementAttr(new { @class = "arabic-button" })
+            .OnClick("function() { convertToArabic('DetailedDescription', 'DetailedDescriptionArabic'); }")
+            )
+    </div>
+
+    <!-- Row 3: Cost Allocations -->
+    <div class="form-row">
+        <div class="form-group" style="flex: 1;">
+            @(Html.DevExtreme().SelectBox()
+                .ID("CostAllocationEmployees")
+                .Placeholder("Select Employees")
+                .Label("Cost Allocation for Employees:")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+        <div class="form-group" style="flex: 1;">
+            @(Html.DevExtreme().SelectBox()
+                .ID("CostAllocationProperty")
+                .Placeholder("Select Property/Equipments")
+                .Label("Cost Allocation for Property/Equipments:")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+    </div>
+
+    <!-- Row 4: Batch, Expiry, Discount -->
+    <div class="form-row">
+        <div class="form-group" style="flex: 1;">
+            @(Html.DevExtreme().TextBox()
+                .ID("BatchLotNo")
+                .Label("Batch/Lot No:")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+        <div class="form-group" style="flex: 1;">
+            @(Html.DevExtreme().DateBox()
+                .ID("ExpiryDate")
+                .Label("Expiry Date:")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+        <div class="form-group" style="flex: 1;">
+            @(Html.DevExtreme().TextBox()
+                .ID("DiscountText")
+                .Label("Discount Text:")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+    </div>
+
+    <!-- Row 5: Remarks + Arabic Discount -->
+    <div class="form-row">
+        <div class="form-group" style="flex: 1;">
+            @(Html.DevExtreme().TextBox()
+                .ID("Remarks")
+                .Label("Remarks:")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+        <div class="form-group arabic-textbox-wrapper" style="flex: 1;">
+            @(Html.DevExtreme().TextBox()
+                .ID("DiscountTextArabic")
+                .Label("Discount Text: (Arabic)")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+            @(Html.DevExtreme().Button()
+                .ID("btnConvertDiscount")
+                .Icon("fas fa-language")
+                .ElementAttr(new { @class = "arabic-button" })
+                .OnClick("function() { convertToArabic('DiscountText', 'DiscountTextArabic'); }")
+                )
+        </div>
+    </div>
+
+    <!-- Row 6: Service Dates -->
+    <div class="form-row">
+        <div class="form-group" style="flex: 1;">
+            @(Html.DevExtreme().DateBox()
+                .ID("ServiceStartDate")
+                .Label("Service Start Date:")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+        <div class="form-group" style="flex: 1;">
+            @(Html.DevExtreme().DateBox()
+                .ID("ServiceEndDate")
+                .Label("Service End Date:")
+                .LabelMode(EditorLabelMode.Outside)
+                )
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function convertToArabic(sourceId, targetId) {
+            const sourceValue = $("#" + sourceId).dxTextBox("instance")?.option("value") || $("#" + sourceId).dxTextArea("instance")?.option("value");
+            const arabicText = sourceValue + " (Arabic)";
+            const targetInstance = $("#" + targetId).dxTextBox("instance") || $("#" + targetId).dxTextArea("instance");
+            if (targetInstance) {
+                targetInstance.option("value", arabicText);
+            }
+        }
+    </script>
+}
