@@ -921,38 +921,57 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-		[HttpPost]
-		public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				// Check if the UnitType or the combination already exists
-				bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
-					u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
-					u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
-					u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
+        [HttpPost]
+        public ActionResult AddUom(string unitCode, string unitType, string unitDesc, string unitDescAr)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // If UnitCode is provided, we try to update
+                if (!string.IsNullOrEmpty(unitCode) && byte.TryParse(unitCode, out byte parsedUnitCode))
+                {
+                    var existingUom = dbContext.Tbl40111PropertyUnitCodes
+                    .FirstOrDefault(u => u.UnitCode == parsedUnitCode);
 
-				if (exists)
-				{
-					return Json(new { success = false, message = "This Unit Rate Method already exists." });
-				}
+                    if (existingUom != null)
+                    {
+                        existingUom.UnitType = unitType;
+                        existingUom.UnitDesc = unitDesc;
+                        existingUom.UnitDescAr = unitDescAr;
 
-				// Add new entry
-				var newUom = new Tbl40111PropertyUnitCode
-				{
-					UnitType = unitType,
-					UnitDesc = unitDesc,
-					UnitDescAr = unitDescAr
-				};
+                        dbContext.SaveChanges();
 
-				dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
-				dbContext.SaveChanges();
+                        return Json(new { success = true, message = "Unit updated successfully" });
+                    }
+                }
 
-				return Json(new { success = true, unitCode = newUom.UnitCode });
-			}
+                // Check if the same combination already exists before inserting
+                bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
+                    u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
+                    u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
+                    u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
 
-			return Json(new { success = false, message = "Unable to get tenant context" });
-		}
+                if (exists)
+                {
+                    return Json(new { success = false, message = "This Unit Rate Method already exists." });
+                }
+
+                // Insert new
+                var newUom = new Tbl40111PropertyUnitCode
+                {
+                    UnitType = unitType,
+                    UnitDesc = unitDesc,
+                    UnitDescAr = unitDescAr
+                };
+
+                dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
+                dbContext.SaveChanges();
+
+                return Json(new { success = true, message = "Unit added successfully", unitCode = newUom.UnitCode });
+            }
+
+            return Json(new { success = false, message = "Unable to get tenant context" });
+        }
+
 
         [HttpGet]
         public IActionResult GetVatTaxSlabs()
