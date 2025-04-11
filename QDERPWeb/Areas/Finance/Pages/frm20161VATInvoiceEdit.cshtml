@@ -1453,6 +1453,10 @@
 					</div>
 				</div>
 			</text>);
+
+								columns.Add().DataField("Descriptions")
+										.Caption(new JS("formatMessage('...')"))
+										.Width(200);
 								columns.Add().DataField("DescriptionDetails")
 							.Caption(new JS("formatMessage('Unit Rate Method')"))
 							.Width(200)
