@@ -1584,15 +1584,11 @@
         "Signatory Name": "Signatory Name",
         "Type a New Signatory & Add to the Existing List:": "Type a New Signatory & Add to the Existing List:",
         "Upload Signature": "Upload Signature",
-
-
-
-
-
-
+        "Asset Register":"Asset Register",
 
     },
     "ar": {
+        "Asset Register":"سجل الأصول",
         "Upload Signature": "تحميل التوقيع",
         "Signatory User ID:": "معرّف المستخدم الموقّع:",
         "Unit of Measure:": "وحدة القياس:",
