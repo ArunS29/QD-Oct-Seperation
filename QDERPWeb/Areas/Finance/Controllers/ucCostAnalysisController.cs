@@ -113,6 +113,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<ActionResult> GetUsers()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var users = await dbContext.Qry20108ChartOfCostCenters.ToListAsync();
+                return new JsonResult(users);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
     }
 }
