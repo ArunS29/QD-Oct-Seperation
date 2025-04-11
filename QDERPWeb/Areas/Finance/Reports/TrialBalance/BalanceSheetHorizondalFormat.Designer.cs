@@ -60,6 +60,8 @@
             this.pageInfo1 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel28 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel8 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -75,18 +77,20 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel8,
+            this.xrLabel1,
             this.xrLabel7,
             this.xrLabel6});
-            this.Detail.HeightF = 65.66666F;
+            this.Detail.HeightF = 98.79166F;
             this.Detail.Name = "Detail";
             // 
             // xrLabel7
             // 
-            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(527.4168F, 0F);
+            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(527.4167F, 0F);
             this.xrLabel7.Multiline = true;
             this.xrLabel7.Name = "xrLabel7";
             this.xrLabel7.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel7.SizeF = new System.Drawing.SizeF(514.5833F, 65.66664F);
+            this.xrLabel7.SizeF = new System.Drawing.SizeF(514.5834F, 88.79166F);
             // 
             // xrLabel6
             // 
@@ -94,7 +98,7 @@
             this.xrLabel6.Multiline = true;
             this.xrLabel6.Name = "xrLabel6";
             this.xrLabel6.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel6.SizeF = new System.Drawing.SizeF(514.5833F, 65.66664F);
+            this.xrLabel6.SizeF = new System.Drawing.SizeF(514.5833F, 88.79166F);
             // 
             // sqlDataSource1
             // 
@@ -268,7 +272,6 @@
             this.xrLabel30.StylePriority.UseBorders = false;
             this.xrLabel30.StylePriority.UseFont = false;
             this.xrLabel30.StylePriority.UseTextAlignment = false;
-            this.xrLabel30.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
             this.xrLabel30.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // xrLabel41
@@ -283,7 +286,6 @@
             this.xrLabel41.StylePriority.UseBorders = false;
             this.xrLabel41.StylePriority.UseFont = false;
             this.xrLabel41.StylePriority.UseTextAlignment = false;
-            this.xrLabel41.Text = "Al  Injaz  Contracting  Company ";
             this.xrLabel41.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // PageFooter
@@ -338,6 +340,28 @@
             this.xrLabel28.StylePriority.UseForeColor = false;
             this.xrLabel28.Text = "Quickdice ERP Solutions";
             // 
+            // xrLabel1
+            // 
+            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(12.83341F, 0F);
+            this.xrLabel1.Multiline = true;
+            this.xrLabel1.Name = "xrLabel1";
+            this.xrLabel1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
+            this.xrLabel1.SizeF = new System.Drawing.SizeF(429.1666F, 88.79166F);
+            this.xrLabel1.StylePriority.UseTextAlignment = false;
+            this.xrLabel1.Text = "\r\nName :XrSubReport1\r\nReport Source:rpt20138BalanceSheetAssets";
+            this.xrLabel1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            // 
+            // xrLabel8
+            // 
+            this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(545.2084F, 0F);
+            this.xrLabel8.Multiline = true;
+            this.xrLabel8.Name = "xrLabel8";
+            this.xrLabel8.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel8.SizeF = new System.Drawing.SizeF(429.1666F, 88.79166F);
+            this.xrLabel8.StylePriority.UseTextAlignment = false;
+            this.xrLabel8.Text = "\r\nName :XrSubReport1\r\nReport Source:rpt20138BalanceSheetLiabilities";
+            this.xrLabel8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            // 
             // BalanceSheetHorizondalFormat
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -351,7 +375,7 @@
             this.sqlDataSource1,
             this.sqlDataSource2});
             this.DataMember = "sp20113BalanceSheet";
-            this.DataSource = this.sqlDataSource2;
+            this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.Margins = new DevExpress.Drawing.DXMargins(24F, 32F, 29.58334F, 25F);
             this.PageWidth = 1100;
@@ -387,5 +411,7 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel7;
         private DevExpress.XtraReports.UI.XRLabel xrLabel6;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox1;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel1;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel8;
     }
 }
