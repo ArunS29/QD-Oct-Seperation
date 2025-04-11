@@ -352,5 +352,31 @@
             throw error;
         }
     }
+    function addSignatoryToGrid() {
+        const data = {
+            SignatoryName: $("#SignatoryName").dxTextBox("instance").option("value"),
+            SignatoryNameArabic: $("#SignatoryNameArabic").dxTextBox("instance").option("value"),
+            SignatoryPosition: $("#SignatoryPosition").dxTextBox("instance").option("value"),
+            SignatoryPositionArabic: $("#SignatoryPositionArabic").dxTextBox("instance").option("value"),
+            SignatoryContact: $("#SignatoryContact").dxTextBox("instance").option("value"),
+            SignatoryEmail: $("#SignatoryEmail").dxTextBox("instance").option("value"),
+            SignatoryUserId: $("#SignatoryUserId").dxDropDownBox("instance").option("value")
+        };
+
+        $.ajax({
+            url: "/api/Finance/VATModule/SaveSignatory",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
+                $("#SignatoryGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+            }
+        });
+    }
+
 
     </script>

@@ -6,6 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="Areas\Finance\Controllers\VATModuleController.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATSalesReporting.cshtml.cs" />
 		<Compile Remove="Controllers\LoginController.cs" />
 		<Compile Remove="Pages\Login.cshtml.cs" />
@@ -13,6 +14,7 @@
 
 	<ItemGroup>
 		<Content Remove="Areas\Finance\Pages\SalesPersonorProjectList.cshtml" />
+		<Content Remove="Areas\Finance\Pages\SalesRegisterVAT.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATSalesReporting.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
 	</ItemGroup>
