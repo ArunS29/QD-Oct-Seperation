@@ -2509,7 +2509,7 @@
         griddatacount = rowCount;
         // Optionally, call API to delete from the backend
         $.ajax({
-            url: `/api/VoucherMaster/DeleteVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
+            url: `/api/VoucherMaster/DeleteBPVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadId)}&Gridcount=${encodeURIComponent(griddatacount)}`,
             type: "POST",
             contentType: "application/json",
             success: function (response) {

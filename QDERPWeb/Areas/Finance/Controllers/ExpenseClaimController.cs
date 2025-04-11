@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
+using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Views;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
@@ -323,6 +324,92 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateVoucher([FromBody] ExpenseClaimViewModel model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (model == null || model.ExpenseDetails == null || !model.ExpenseDetails.Any())
+            {
+                return BadRequest(new { success = false, message = "No data received" });
+            }
+
+            try
+            {
+                // Get user session data
+                string userIdStr = HttpContext.Session.GetString("UserId");
+                byte claimerId = Convert.ToByte(userIdStr); // ✅ Convert string to byte
+
+                string userName = HttpContext.Session.GetString("UserName");
+                DateTime now = DateTime.Now;
+                // Check if master record exists
+                var existingMaster = await dbContext.Tbl20102ExpenseClaimMasters
+                    .FirstOrDefaultAsync(m => m.ClaimRefNo == model.ClaimRefNo);
+
+                if (existingMaster != null)
+                {
+                    // ✅ Update master record
+                    existingMaster.ClaimDate = model.ClaimDate;
+                    existingMaster.ProjectClaimedFor = model.ProjectClaimedFor;
+                    existingMaster.ClaimRemarks = model.ClaimRemarks;
+                    existingMaster.ClaimModifiedBy = userName;
+                    existingMaster.ClaimModifiedOn = now;
+                    dbContext.Tbl20102ExpenseClaimMasters.Update(existingMaster);
+                }
+                else
+                {
+                    // ✅ Insert new master
+                    var newMaster = new Tbl20102ExpenseClaimMaster
+                    {
+                        ClaimRefNo = model.ClaimRefNo,
+                        ClaimDate = model.ClaimDate,
+                        ProjectClaimedFor = model.ProjectClaimedFor,
+                        ClaimRemarks = model.ClaimRemarks,
+                        ClaimerId = claimerId,
+                        ClaimCreatedBy = userName,
+                        ClaimCreatedOn = now
+                    };
+
+                    dbContext.Tbl20102ExpenseClaimMasters.Add(newMaster);
+                }
+
+                // ✅ Remove existing child rows for this ClaimRefNo
+                var existingChildren = dbContext.Tbl20103ExpenseClaimChildren
+                    .Where(c => c.ClaimRefNo == model.ClaimRefNo);
+
+                dbContext.Tbl20103ExpenseClaimChildren.RemoveRange(existingChildren);
+
+                // ✅ Add new child rows
+                foreach (var item in model.ExpenseDetails)
+                {
+                    var child = new Tbl20103ExpenseClaimChild
+                    {
+                        ClaimRefNo = model.ClaimRefNo,
+                        ExpenseDescription = item.ExpenseDescription,
+                        BillRefNo = item.BillRefNo,
+                        BillDate = item.BillDate,
+                        ClaimedAmount = item.ClaimedAmount,
+                        ApprovedAmount = item.ApprovedAmount,
+                        AccountId = item.AccountId,
+                        CostCenterCode = item.CostCenterCode
+                    };
+
+                    dbContext.Tbl20103ExpenseClaimChildren.Add(child);
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
     }
 }
 
