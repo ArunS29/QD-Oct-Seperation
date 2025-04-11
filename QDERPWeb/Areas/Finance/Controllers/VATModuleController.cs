@@ -1029,6 +1029,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var now = DateTime.Now;
 
+                    // ✅ Check if SignatoryName already exists (excluding current record)
+                    bool isDuplicate = await dbContext.Tbl90104DocumentSignatories
+                        .AnyAsync(x => x.SignatoryName == model.SignatoryName && x.SignatoryId != model.SignatoryId);
+
+                    if (isDuplicate)
+                    {
+                        return Conflict(new { success = false, message = "Signatory name already exists." });
+                    }
+
                     var existing = await dbContext.Tbl90104DocumentSignatories
                         .FirstOrDefaultAsync(x => x.SignatoryId == model.SignatoryId);
 
@@ -1047,7 +1056,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         existing.SignatoryPositionAr = model.SignatoryPositionAr;
                         existing.IsFinanceManager = model.IsFinanceManager;
                         existing.UserId = model.UserId;
-                        // No Created/Modified dates in entity? Add if needed
                     }
                     else
                     {
