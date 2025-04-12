@@ -7,7 +7,7 @@
 
 @{
     ViewData["Title"] = "Clients";
-  
+
 }
 
 <style>
@@ -21,22 +21,22 @@
         align-items: center;
         border-radius: 4px 4px 0 0;
         width: 300px;
-        height:200px;
-        margin-left:15px;
+        height: 200px;
+        margin-left: 15px;
     }
 
         .header-box i {
             margin-right: 10px;
             font-size: 24px;
         }
-        .header-box h5{
+
+        .header-box h5 {
             margin-top: 40px;
         }
 
-    .datagrid{
-        height:600px;
-        padding:18px;
-
+    .datagrid {
+        height: 600px;
+        padding: 18px;
     }
 
     .toolbar-buttons {
@@ -46,10 +46,9 @@
         display: flex;
         gap: 10px; /* Space between buttons */
         /* z-index: 9999; /* Make sure it's on top */ */
-        /* background-color: white; /* Optional: background */ */
-        padding: 10px; /* Optional: inner spacing */
+        /* background-color: white; /* Optional: background */ */ padding: 10px; /* Optional: inner spacing */
         border-radius: 6px;
-        margin-top:10px;
+        margin-top: 10px;
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     }
 
@@ -68,13 +67,13 @@
 <div>
     @(
         Html.DevExtreme().DataGrid<Qry30101ClientList>()
-            .ID("clientsGrid")
+        .ID("clientsGrid")
         .DataSource(d => d.Mvc()
         .Controller("ClientLeads")
         .LoadAction("Get"))
-     .KeyExpr("ClientCode")
+        .KeyExpr("ClientCode")
         .ElementAttr("class", "datagrid")
-    
+
         .Columns(columns =>
         {
             columns.Add().DataField("ClientCode").Caption("Client Code").Visible(true);
@@ -84,58 +83,26 @@
             columns.Add().DataField("ContactMobile1").Caption("Contact Mobile").Visible(true);
             columns.Add().DataField("ContactPhone1").Caption("Contact Phone").Visible(true);
             columns.Add().DataField("ClientLedgerNo").Caption("Client Ledger No").Visible(true);
+            @*
+    columns.Add().Caption("Business Card").CellTemplate(@<text>
+    function (cellElement, cellInfo) {
+    const data = cellInfo.data;
+    console.log("Raw BusinessCard1 value:", data.BusinessCard1);
 
+    if (data.BusinessCard1) {
+    const base64 = "data:image/jpeg;base64," + data.BusinessCard1; // or image/png
+    console.log("Image src:", base64);
 
-            columns.Add().DataField("ClientCategory").Caption("Client Category").Visible(false);
-            columns.Add().DataField("ContactPhone2").Caption("Contact Phone 2").Visible(false);
-            columns.Add().DataField("ClientNameAr").Caption("Client Name Ar").Visible(false);
-            columns.Add().DataField("ClientAddress").Caption("Client Address").Visible(false);
-            columns.Add().DataField("ContactMobile2").Caption("Contact Mobile 2").Visible(false);
-            columns.Add().DataField("ContactEmail").Caption("Contact Email").Visible(false);
-            columns.Add().DataField("ContactFaxNo").Caption("Contact Fax No").Visible(false);
-            columns.Add().DataField("ContactRemarks").Caption("Contact Remarks").Visible(false);
-            columns.Add().DataField("IsDiscontinued").Caption("Is Discontinued").Visible(false);
-            columns.Add().DataField("ReasonDiscontinued").Caption("Reason Discontinued").Visible(false);
-            columns.Add().DataField("CreatedBy").Caption("Created By").Visible(false);
-            columns.Add().DataField("CreatedOn").Caption("Created On").Visible(false);
-            columns.Add().DataField("ModifiedBy").Caption("Modified By").Visible(false);
-            columns.Add().DataField("ModifiedOn").Caption("Modified On").Visible(false);
-            columns.Add().DataField("DiscontinuedBy").Caption("Discontinued By").Visible(false);
-            columns.Add().DataField("DiscontinuedOn").Caption("Discontinued On").Visible(false);
-            columns.Add().DataField("DateVisitedFirst").Caption("Date Visited First").Visible(false);
-            columns.Add().DataField("Category").Caption("Category").Visible(false);
-            columns.Add().DataField("ReportedBy").Caption("Reported By").Visible(false);
-            columns.Add().DataField("ReportedOn").Caption("Reported On").Visible(false);
-            columns.Add().DataField("StatusRemarks").Caption("Status Remarks").Visible(false);
-            columns.Add().DataField("FollowupOn").Caption("Followup On").Visible(false);
-            columns.Add().DataField("Status").Caption("Status").Visible(false);
-            columns.Add().DataField("SalesPersonCode").Caption("Sales Person Code").Visible(false);
-            columns.Add().DataField("SalesPersonName").Caption("Sales Person Name").Visible(false);
-            columns.Add().DataField("UserCode").Caption("User Code").Visible(false);
-            columns.Add().DataField("VendorNo").Caption("Vendor No").Visible(false);
-            columns.Add().DataField("ClientLedgerName").Caption("Client Ledger Name").Visible(false);
-            columns.Add().DataField("BusinessCard2").Caption("Business Card 2").Visible(false);
-
-@* 
-            columns.Add().Caption("Business Card").CellTemplate(@<text>
-        function (cellElement, cellInfo) {
-        const data = cellInfo.data;
-        console.log("Raw BusinessCard1 value:", data.BusinessCard1);
-
-        if (data.BusinessCard1) {
-        const base64 = "data:image/jpeg;base64," + data.BusinessCard1; // or image/png
-        console.log("Image src:", base64);
-
-        const img = $("<img>").attr("src", base64).css({
-        height: "80px",
-        width: "auto",
-        borderRadius: "6px"
-        });
-        cellElement.append(img);
-        } else {
-        cellElement.text("No Image");
-        }
-        }
+    const img = $("<img>").attr("src", base64).css({
+    height: "80px",
+    width: "auto",
+    borderRadius: "6px"
+    });
+    cellElement.append(img);
+    } else {
+    cellElement.text("No Image");
+    }
+    }
     </text>); *@
 
 
@@ -150,7 +117,7 @@
             items.Add().Column("ClientCode")
             .SummaryType(SummaryType.Count)
             .DisplayFormat(" Totan no.of Clients: {0}");
-           
+
         }))
         .OnContentReady("onGridReady")
         .ShowBorders(true)
@@ -160,13 +127,13 @@
         .AllowColumnResizing(true) // Enable column resizing
         .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
         .AllowColumnReordering(true) // Optional: allow dragging columns
-        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        @*   .ColumnChooser(chooser => chooser
+    .Enabled(true)
+    .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
+    ) *@
         .Paging(p => p.Enabled(false))
-        .FilterRow(filterRow => filterRow.Visible(false))
-        .HeaderFilter(filter => filter.Visible(true))
-        .GroupPanel(groupPanel => groupPanel.Visible(false))
-       
- )
+
+        )
 
 </div>
 <div class="Head">
@@ -178,7 +145,7 @@
 
 
 <script>
-    
+
     $(document).ready(function () {
 
           $(".limited-footer .btn-containerIvoiceEdit").each(function () {
@@ -201,5 +168,3 @@
 
       }
 </script>
-
-
