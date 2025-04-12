@@ -1821,17 +1821,18 @@
                 updateBreadcrumbFromSidebar2('');
                 sidebar2.style.display = 'none';
             } else if (name === 'Inventory Management') {
+                showFinanceSubmenu1();
                 breadcrumbTrail.length = 0;
                 updateBreadcrumb();
                 updateBreadcrumbFromSidebar2('');
-                sidebar2.style.display = 'none';
+                // sidebar2.style.display = 'none';
             } else if (name === 'Projects Control') {
                 breadcrumbTrail.length = 0;
                 updateBreadcrumb();
                 updateBreadcrumbFromSidebar2('');
                 sidebar2.style.display = 'none';
             }
-            function showFinanceSubmenu() {
+            function showFinanceSubmenu1() {
                 const sidebar2 = document.getElementById('sidebar2');
                 sidebar2.innerHTML = `
                                        <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">

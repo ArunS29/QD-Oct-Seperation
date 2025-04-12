@@ -1643,10 +1643,15 @@
         "Currency Name Ar": "Currency Name Ar",
         "Exchange Rate": "Exchange Rate",
         "Currency Code": "Currency Code",
-        "Currency Code Ar": "Currency Code Ar"
-
+        "Currency Code Ar": "Currency Code Ar",
+        "Type a New Asset Category & Add to the Existing List": "Type a New Asset Category & Add to the Existing List",
+        "Asset Category Management": "Asset Category Management",
+        "Asset Maintenance Master": "Asset Maintenance Master"
     },
     "ar": {
+        "Asset Maintenance Master": "ماجستير صيانة الأصول",
+        "Asset Category Management": "إدارة فئات الأصول",
+        "Type a New Asset Category & Add to the Existing List": "اكتب فئة أصول جديدة وأضفها إلى القائمة الموجودة",
         "ID": "المعرف",
         "Currency Name": "اسم العملة",
         "Currency Name Ar": "اسم العملة (بالعربية)",

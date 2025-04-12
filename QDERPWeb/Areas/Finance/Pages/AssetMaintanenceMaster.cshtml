@@ -78,15 +78,50 @@
         .action-buttons-container .dx-button {
             margin-right: 10px; /* Space between buttons */
         }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 0em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .card-container1 {
+        display: flex;
+        align-items: end;
+        justify-content: flex-start;
+        gap: 0px;
+    }
 </style>
-
+<div class="title">
+    <div class="header-container">
+        <div id="AssetMaintenanceMaster" class="no-border-input"></div>
+    </div>
+</div>
 <div class="content-container-top">
-    <div class="container">
-        <h2 id="AssetMaintenanceMaster" class="no-border-input"></h2>
-        <div class="row g-6">
+    <div class="container4">
             <div class="card-container">
+            <div class="card-container1">
 
-                <div class="col-md-8">
                     <div class="form-group">
                         @(
                             Html.DevExtreme().TextBox()
@@ -94,6 +129,7 @@
                             .LabelMode(EditorLabelMode.Outside)
                             .ID("txtmaintanence")
                             .Value(null)
+                            .Width(550)
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired()
@@ -101,8 +137,6 @@
                             })
                             )
                     </div>
-                </div>
-                <div class="col-md-4">
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
                             .ID("btnadd")
@@ -115,12 +149,11 @@
                             )
                     </div>
                 </div>
-            </div>
-        </div>
         <div class="clear"></div>
         <br />
         <div id="gridContainer"></div>
     </div> <!-- End of card-container -->
+</div>
 </div>
 <script type="text/javascript">
 $(function () {
