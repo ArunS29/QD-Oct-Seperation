@@ -30,7 +30,7 @@
         display: none !important;
     }
 
-        .limited-footer .btn-container:has(#ddButtonLayout, #btnShowFields, #btnShowRowTotals, #btnPrint,#menuReports,#btnDifferences) {
+        .limited-footer .btn-container:has(#ddButtonLayout, #btnShowFields, #btnShowRowTotals, #btnPrint) {
             display: block !important;
         }
 </style>
@@ -38,7 +38,7 @@
 
 <div class="title">
     <div class="header-container">
-        <div id="costAnalysis" class="no-border-input"></div>
+        <div id="CostCenterMaster" class="no-border-input"></div>
     </div>
 </div>
 <div class="Head">
@@ -53,13 +53,13 @@
             .ID("requestedBy")
             .DataSource(d => d.Mvc()
             .Controller("UCCostAnalysis")
-            .LoadAction("GetUser")
+            .LoadAction("GetUsers")
             .LoadMode(DataSourceLoadMode.Raw))
             .Width(500)
             .Label("Select a Cost Center")
             .LabelMode(EditorLabelMode.Outside)
-            .ValueExpr("CostAllocationUnit")
-            .DisplayExpr("CostAllocationUnit")
+            .ValueExpr("BranchName")
+            .DisplayExpr("BranchName")
             .ShowClearButton(true)
             .ContentTemplate(new TemplateName("CostCenterTemplate"))
             )
@@ -134,7 +134,7 @@
                 .ID("costcenter-datagrid")
                 .DataSource(d => d.Mvc()
                     .Controller("UCCostAnalysis")
-                    .LoadAction("GetUser")
+                    .LoadAction("GetUsers")
                     .LoadMode(DataSourceLoadMode.Raw))
                 .ShowBorders(true)
                 .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
@@ -147,8 +147,8 @@
                 .OnSelectionChanged("onCostCenterSelected")
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("CostAllocationUnit").Caption("Cost Center").Width(250);
-                    columns.Add().DataField("CostAllocationGroup").Caption("Group").Width(250);
+                    columns.Add().DataField("BranchCode").Caption("BranchCode").Width(250);
+                    columns.Add().DataField("BranchName").Caption("BranchName").Width(250);
                 })
             )
 }
@@ -166,7 +166,7 @@
         const dropDownBox = $("#requestedBy").dxDropDownBox("instance");
 
         if (selectedData) {
-            dropDownBox.option("value", selectedData.CostAllocationUnit);
+            dropDownBox.option("value", selectedData.BranchName);
             dropDownBox.close();
         }
     }
@@ -309,7 +309,7 @@
         });
 
         $.ajax({
-            url: '/api/UCCostAnalysis/getusers',
+            url: '/api/UCCostAnalysis/GetUsers',
             type: 'GET',
             data: {
                 startDate: startDate ? startDate.toISOString().split('T')[0] : null,
@@ -325,71 +325,105 @@
         });
     }
 
-    function initializePivotGrid(data) {
-        $("#pivotGridContainer").dxPivotGrid({
-            dataSource: {
-                fields: [
-                    { dataField: "CostGroup", area: "row", caption: "Cost Group" },
-                    { dataField: "CostCenter", area: "row", caption: "Cost Center" },
-                    { dataField: "IncomeExpense", area: "column", caption: "Income / Expense" },
-                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Income" },
-                    { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses" },
-                    { dataField: "GrandTotal", area: "data", summaryType: "sum", caption: "Grand Total" }
-                ],
-                store: data
-            },
+  function initializePivotGrid(data) {
+    $("#pivotGridContainer").dxPivotGrid({
+        dataSource: {
+            fields: [
+                // Row Area
+                { dataField: "BranchName", area: "row", caption: "Branch Name" },
+                { dataField: "AccountGroup", area: "row", caption: "Account Group" },
+                { dataField: "AccountHead", area: "row", caption: "Ledger Account Name" },
+                { dataField: "CostAllocationMasterGroup", area: "row", caption: "Cost Group" },
+                { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
 
-            width: "100%",
-            height: $(window).height() - 50,
-            allowSortingBySummary: true,
-            allowSorting: true,
-            allowFiltering: true,
-            allowExpandAll: true,
-            showBorders: true,
-            showColumnHeaders: true,
-            columnAutoWidth: true,
-            allowColumnResizing: true,
-            rowHeaderLayout: "tree",
-            wordWrapEnabled: true,
+                // Column Area
+                { dataField: "PL", area: "column", caption: "Income / Expense", sortOrder: "desc" },
 
-            fieldChooser: {
-                enabled: true,
-                allowSearch: true
-            },
-            fieldPanel: {
-                visible: true,
-                allowFieldDragging: true,
-                showRowFields: true,
-                showColumnFields: true,
-                showDataFields: true,
-                showFilterFields: true
-            },
-            showColumnTotals: false,
-            showColumnGrandTotals: false,
-            showDataHeaders: true,
-            showRowTotals: false,
-            showRowGrandTotals: false
-        });
+                // Data Area
+                {
+                    dataField: "CostAmount", area: "data", caption: "Cost Amount", summaryType: "sum",
+                    format: {
+                        type: "fixedPoint",
+                        precision: 2
+                    }
+                },
 
-        $(window).resize(function () {
-            $("#pivotGridContainer").dxPivotGrid("instance").option("height", $(window).height() - 50);
-        });
+                // Additional hidden fields with formatting (for filters/tooltips if needed)
+                { dataField: "VoucherEntryID", visible: false },
+                { dataField: "CostAllocationUnitID", visible: false },
+                { dataField: "EffectiveDate", visible: false, dataType: "date", format: "dd-MMM-yyyy" },
+                { dataField: "VoucherDate", visible: false, dataType: "date", format: "dd-MMM-yyyy" },
+                { dataField: "VoucherMonth", visible: false, dataType: "date", format: "MMM-yyyy" },
+                { dataField: "VoucherYear", visible: false, dataType: "date", format: "yyyy" },
+                { dataField: "EffectiveMonth", visible: false, dataType: "date", format: "MMM-yyyy" },
+                { dataField: "EffectiveYear", visible: false, dataType: "date", format: "yyyy" },
+                { dataField: "VoucherTypeAndNo", visible: false },
+                { dataField: "CostCenterIncharge", visible: false },
+                { dataField: "EntryNarration", visible: false },
+                { dataField: "VoucherType", visible: false },
+                { dataField: "SysRemarks", visible: false },
+                { dataField: "BranchCode", visible: false },
+                { dataField: "ProjectMasterCode", visible: false },
+            ],
+            store: data
+        },
 
-        $(".dx-pivotgrid-container").css({
-            "font-size": "14px",
-            "border-radius": "8px"
-        });
+        width: "100%",
+        height: $(window).height() - 50,
+        allowSortingBySummary: true,
+        allowSorting: true,
+        allowFiltering: true,
+        allowExpandAll: true,
+        showBorders: true,
+        showColumnHeaders: true,
+        columnAutoWidth: true,
+        allowColumnResizing: true,
+        rowHeaderLayout: "tree",
+        wordWrapEnabled: true,
 
-        $(".dx-pivotgrid-row, .dx-pivotgrid-column").css({
-            "padding": "10px",
-            "border-bottom": "1px solid #ddd"
-        });
+        fieldChooser: {
+            enabled: true,
+            allowSearch: true
+        },
+        fieldPanel: {
+            visible: true,
+            allowFieldDragging: true,
+            showRowFields: true,
+            showColumnFields: true,
+            showDataFields: true,
+            showFilterFields: true
+        },
 
-        $(".dx-pivotgrid-cell").hover(function () {
-            $(this).css("background-color", "#f5f5f5");
-        }, function () {
-            $(this).css("background-color", "");
-        });
-    }
+        // Show/hide totals and headers
+        showColumnTotals: false,
+        showColumnGrandTotals: false,
+        showDataHeaders: true,
+        showRowTotals: false,
+        showRowGrandTotals: false
+    });
+
+    // Responsive resize
+    $(window).resize(function () {
+        $("#pivotGridContainer").dxPivotGrid("instance").option("height", $(window).height() - 50);
+    });
+
+    // Styling
+    $(".dx-pivotgrid-container").css({
+        "font-size": "14px",
+        "border-radius": "8px"
+    });
+
+    $(".dx-pivotgrid-row, .dx-pivotgrid-column").css({
+        "padding": "10px",
+        "border-bottom": "1px solid #ddd"
+    });
+
+    $(".dx-pivotgrid-cell").hover(function () {
+        $(this).css("background-color", "#f5f5f5");
+    }, function () {
+        $(this).css("background-color", "");
+    });
+}
+
 
 </script>
