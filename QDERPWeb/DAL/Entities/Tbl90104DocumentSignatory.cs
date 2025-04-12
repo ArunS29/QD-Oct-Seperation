@@ -9,8 +9,7 @@ namespace QD.ERP.Web.DAL.Entities;
 
 public partial class Tbl90104DocumentSignatory
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    
     public byte SignatoryId { get; set; }
 
     public string SignatoryName { get; set; }
