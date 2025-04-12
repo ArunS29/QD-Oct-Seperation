@@ -1,4 +1,7 @@
-﻿@page
+﻿
+
+
+@page
 @model QD.ERP.Web.Areas.Finance.Pages.JournalEntryEditModel
 @{
 }
@@ -1007,57 +1010,43 @@
     }
     
 
-    function onApproveButtonClick() {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const rowCount = dataGrid.getVisibleRows().length;
+    
+    $("#btnDelete").on("click", function (e) {
+        e.preventDefault();
+        onDeleteButtonClick();
+    });
+    function onDeleteButtonClick(e) {
+        var journalRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
-        if (rowCount == 0) {
-            Swal.fire({
-                title: "Voucher is not Approved",
-                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            })
-        } else {
-            proceedWithApproval();
+        if (!journalRefNo) {
+            DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
+            return;
         }
-    }
-
-    function proceedWithApproval() {
-        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
 
         $.ajax({
-            success: function () {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Voucher has been Approved.",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    disableEditing();
-                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-                });
+            url: "/api/JournalEntryEdit/DeleteJournalEntry",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(journalRefNo), // 👈 plain string
+            success: function (response) {
+                DevExpress.ui.notify(response.message, 'success', 3000);
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
             },
-            error: function () {
-                Swal.fire({
-                    title: "Error",
-                    text: "Please save the transactions after proceeding!",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
+            error: function (xhr) {
+                const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+                DevExpress.ui.notify(msg, 'error', 3000);
             }
         });
     }
+  
+
+  
+
+
+
+
+
 
 </script>

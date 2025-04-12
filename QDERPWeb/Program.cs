@@ -15,7 +15,7 @@ using QD.ERP.Web.Service;
 using Serilog;
 using Serilog.Events;
 using Microsoft.ApplicationInsights.Extensibility;
-using QD.ERP.Web.ReportService;
+using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
 

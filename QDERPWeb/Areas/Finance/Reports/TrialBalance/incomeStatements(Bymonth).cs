@@ -6,9 +6,9 @@ using DevExpress.XtraReports.UI;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 {
-	public partial class TrilBalanceDrCrFormat : DevExpress.XtraReports.UI.XtraReport
+	public partial class incomeStatements_Bymonth_ : DevExpress.XtraReports.UI.XtraReport
 	{	
-		public TrilBalanceDrCrFormat()
+		public incomeStatements_Bymonth_()
 		{
 			InitializeComponent();
 		}

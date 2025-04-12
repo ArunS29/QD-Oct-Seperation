@@ -1821,10 +1821,11 @@
                 updateBreadcrumbFromSidebar2('');
                 sidebar2.style.display = 'none';
             } else if (name === 'Inventory Management') {
+                showInventorySubmenu();
                 breadcrumbTrail.length = 0;
                 updateBreadcrumb();
                 updateBreadcrumbFromSidebar2('');
-                sidebar2.style.display = 'none';
+                // sidebar2.style.display = 'none';
             } else if (name === 'Projects Control') {
                 breadcrumbTrail.length = 0;
                 updateBreadcrumb();
@@ -1938,11 +1939,11 @@
             function showVATModuleSubmenu() {
                 const sidebar2 = document.getElementById('sidebar2');
                 sidebar2.innerHTML = `
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalesRegisterVAT">
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/SalesRegisterVAT">
                                     <i class="fas fa-book"></i>
                                     <div class="text">${formatMessage("VAT Sales Invoice Register")}</div>
                                 </a>
-                                <a class="submenu-item" onclick="hideSidebars()" href="">
+                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATCreditNotRegister">
                                     <i class="fas fa-book"></i>
                                     <div class="text">${formatMessage("Credit Note Register")}</div>
                                 </a>
@@ -1960,109 +1961,72 @@
         }
 
 
-        function showFinanceSubmenu() {
+        function showInventorySubmenu() {
             const sidebar2 = document.getElementById('sidebar2');
             sidebar2.innerHTML = `
-                                <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu')" role="button" aria-expanded="false">
+                                <div class="submenu-item" onclick="toggleSubmenu('financeDashboardSubmenu1')" role="button" aria-expanded="false">
                                     <i class="fas fa-book-open"></i>
-                                    <div class="text">${formatMessage("Finance Dashboard")}</div>
+                                    <div class="text">${formatMessage("Inventory Dashboard")}</div>
                                 </div>
-                                <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
+                                <div id="financeDashboardSubmenu1" class="nested-submenu" style="display: none; margin-left: 30px;">
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
-                                        <div id="MyDashboard" class="text no-border-input"></div>
+                                        <div class="text">${formatMessage("My Dashboard")}</div>
                                     </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
-                                        <div class="text">Voucher Verification</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsReceivable">
-                                        <div class="text">Bills Receivable</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/BillsPayable">
-                                        <div class="text">Bills Payable</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ucCostAnalysis">
-                                        <div class="text">Cost Analysis</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalaryPayable">
-                                        <div class="text">Salary Payable</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
-                                        <div class="text">Chart Of Accounts</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
-                                        <div class="text">Chart of Cost Centers</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/uc20106TrialBalance">
-                                        <div class="text">Financial Reports</div>
-                                    </a>
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AssetView">
-                                        <div class="text">Asset Register</div>
-                                    </a>
-
                                 </div>
 
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">Accounting Ledgers</div>
+                               <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingLedgers">
+                                    <i class="fas fa-boxes"></i> 
+                                    <div class="text">${formatMessage("Stock Inventory")}</div>
                                 </a>
                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/AccountingRegister">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">Accounting Register</div>
+                                    <i class="fas fa-clipboard-list"></i> 
+                                    <div class="text">${formatMessage("Material Requests")}</div>
                                 </a>
                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfAccounts">
-                                    <i class="fas fa-chart-pie"></i>
-                                    <div class="text">Chart Of Accounts</div>
+                                    <i class="fas fa-file-signature"></i> 
+                                    <div class="text">${formatMessage("Quotations To Clients")}</div>
                                 </a>
                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/ChartOfCostCenters">
-                                    <i class="fas fa-chart-pie"></i>
-                                    <div class="text">Chart of Cost Centers</div>
+                                    <i class="fas fa-shopping-bag"></i> 
+                                    <div class="text">${formatMessage("Sales Orders")}</div>
                                 </a>
                                 <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherBankPayment">
-                                    <i class="fas fa-university"></i>
-                                    <div class="text">Bank Payment</div>
+                                    <i class="fas fa-truck"></i> 
+                                    <div class="text">${formatMessage("Delivery Note")}</div>
                                 </a>
                                 <a class="submenu-item" href="/${tenantName}/Finance/VoucherCashPayment">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                    <div class="text">Cash Payment</div>
+                                    <i class="fas fa-database"></i> 
+                                    <div class="text">${formatMessage("RFQ Database")}</div>
                                 </a>
                                 <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryCashReceipts">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    <div class="text">Cash Receipt</div>
+                                    <i class="fas fa-chart-line"></i> 
+                                    <div class="text">${formatMessage("Quotation Analysis")}</div>
                                 </a>
                                 <a class="submenu-item" href="/${tenantName}/Finance/VoucherEntryReceipts">
-                                    <i class="fas fa-receipt"></i>
-                                    <div class="text">Bank Receipt</div>
-                                </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/salesVoucher">
-                                    <i class="fas fa-tags"></i>
-                                    <div class="text">Sales Voucher</div>
+                                    <i class="fas fa-file-invoice"></i>
+                                    <div class="text">${formatMessage("Purchase Orders")}</div>
                                 </a>
                                 <a class="submenu-item" href="/${tenantName}/Finance/purchasevoucher">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <div class="text">Purchase Voucher</div>
+                                    <i class="fas fa-dolly-flatbed"></i> 
+                                    <div class="text">${formatMessage("Material Receipts")}</div>
                                 </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/ExpensesClaims">
-                                    <i class="fas fa-file-invoice-dollar"></i>
-                                    <div class="text">Expense Claim</div>
+                                <a class="submenu-item" href="/${tenantName}/IMS/ClientLeads">
+                                    <i class="fas fa-user-plus"></i> 
+                                    <div class="text">${formatMessage("Client Leads")}</div>
                                 </a>
-                                <a class="submenu-item" href="/${tenantName}/Finance/Voucherjournal">
-                                    <i class="fas fa-book-open"></i>
-                                    <div class="text">Journal Voucher</div>
+                                <a class="submenu-item" href="/${tenantName}/IMS/Suppliers">
+                                    <i class="fas fa-people-carry"></i>
+                                    <div class="text">${formatMessage("Suppliers")}</div>
                                 </a>
                                 <a class="submenu-item" href="/${tenantName}/Finance/JournalRegister">
-                                    <i class="fas fa-newspaper"></i>
-                                    <div class="text">Journal Register</div>
-                                </a>`;
-        }
-
-        function showVATModuleSubmenu() {
-            const sidebar2 = document.getElementById('sidebar2');
-            sidebar2.innerHTML = `
-                                <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/SalesRegisterVAT">
-                                    <i class="fas fa-book"></i>
-                                    <div class="text">VAT Sales Invoice Register</div>
+                                    <i class="fas fa-tasks"></i> 
+                                    <div class="text">${formatMessage("Job Orders")}</div>
                                 </a>
-                               `;
+                                <a class="submenu-item" href="/${tenantName}/Finance/JournalRegister">
+                                    <i class="fas fa-sliders-h"></i> 
+                                    <div class="text">${formatMessage("Stock Adjustments")}</div>
+                                </a>
+        `;
         }
 
 

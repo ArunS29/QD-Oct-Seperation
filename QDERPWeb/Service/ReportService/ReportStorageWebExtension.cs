@@ -8,7 +8,7 @@ using DevExpress.XtraReports.Web.Extensions;
 using QD.ERP.Web.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace QD.ERP.Web.ReportService
+namespace QD.ERP.Web.Service.ReportService
 {
     public class ReportStorageWebExtension : DevExpress.XtraReports.Web.Extensions.ReportStorageWebExtension
     {
@@ -74,7 +74,7 @@ namespace QD.ERP.Web.ReportService
                     Console.WriteLine($"Found report '{url}' in ReportsFactory.");
                     using var ms = new MemoryStream();
                     using XtraReport report = ReportsFactory.Reports[url]();
-                    report.SaveLayoutToXml(ms);  
+                    report.SaveLayoutToXml(ms);
                     return ms.ToArray();
                 }
 
@@ -83,7 +83,7 @@ namespace QD.ERP.Web.ReportService
                 {
                     Console.WriteLine($"Found report '{url}' in the database via fallback.");
                     using var ms = new MemoryStream();
-                    reportFromDb.SaveLayoutToXml(ms);  
+                    reportFromDb.SaveLayoutToXml(ms);
                     return ms.ToArray();
                 }
 
@@ -99,7 +99,7 @@ namespace QD.ERP.Web.ReportService
             }
         }
 
-        
+
         public override async Task SetDataAsync(XtraReport report, string url)
         {
             try
@@ -110,7 +110,7 @@ namespace QD.ERP.Web.ReportService
                 }
 
                 using var stream = new MemoryStream();
-                report.SaveLayoutToXml(stream);  
+                report.SaveLayoutToXml(stream);
 
                 var reportData = await DbContext.ReportAttributes
                     .FirstOrDefaultAsync(x => x.ReportName == url);
@@ -120,7 +120,7 @@ namespace QD.ERP.Web.ReportService
                     reportData = new ReportAttribute
                     {
                         ReportName = url,
-                        ReportXML = stream.ToArray()  
+                        ReportXML = stream.ToArray()
                     };
 
                     if (reportData.ReportName.Length > 255)
@@ -128,7 +128,7 @@ namespace QD.ERP.Web.ReportService
                         throw new Exception("Report name is too long.");
                     }
 
-                    reportData.ReportNo = GenerateReportNo(); 
+                    reportData.ReportNo = GenerateReportNo();
                     await DbContext.ReportAttributes.AddAsync(reportData);
                 }
                 else
@@ -150,7 +150,7 @@ namespace QD.ERP.Web.ReportService
         {
             try
             {
-                await SetDataAsync(report, defaultUrl);  
+                await SetDataAsync(report, defaultUrl);
                 return defaultUrl;
             }
             catch (Exception ex)
@@ -165,8 +165,8 @@ namespace QD.ERP.Web.ReportService
         {
             try
             {
-                var guid = Guid.NewGuid().ToString("N"); 
-                return guid.Substring(0, 10);  
+                var guid = Guid.NewGuid().ToString("N");
+                return guid.Substring(0, 10);
             }
             catch (Exception ex)
             {

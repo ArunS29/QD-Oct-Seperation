@@ -26,6 +26,14 @@ namespace QD.ERP.Web.Areas.Finance.Models
     //    public string AccountGroup { get; set; }
     //}
 
+
+    public class ClientCategoryDisplayDTO
+    {
+        public string CategoryCode { get; set; }
+        public string ClientCategory { get; set; }
+        public short ClientCategoryCode { get; set; }
+    }
+
     public class VoucherEntryDisplayDTO
     {
         public string VoucherNo { get; set; }
@@ -344,6 +352,15 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string SignatoryName { get; set; }
        
 
+    }
+    public class ExpenseClaimViewModel
+    {
+        public string ClaimRefNo { get; set; }
+        public DateTime? ClaimDate { get; set; }
+        public string ProjectClaimedFor { get; set; }
+        public string ClaimRemarks { get; set; }
+
+        public List<Tbl20103ExpenseClaimChild> ExpenseDetails { get; set; }
     }
 
 

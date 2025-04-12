@@ -9,6 +9,8 @@
     <meta charset="utf-8" />
     <title>Goods and Services</title>
     <style>
+
+
         .dx-fieldset {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -194,8 +196,18 @@
                     .VisibleIndex(3)
                     .Alignment(HorizontalAlignment.Center);
                 })
+                .KeyExpr("UnitCode") // 👈 Must be unique
+                .Editing(editing => editing
+                .Mode(GridEditMode.Batch)
+                .AllowUpdating(true)
+
+                )
+                .Toolbar(toolbar =>
+                {
+                    toolbar.Items(items => { }); // hide default toolbar
+                })
+                .OnRowUpdating("onUnitRowUpdating")
            
-            .OnCellClick("function(e) {handleCellClick(e);}")
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
             .HeaderFilter(filter => filter.Visible(false))
@@ -204,6 +216,7 @@
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .ShowBorders(true)
             .ShowRowLines(true)
+                .ColumnChooser(c => c.Enabled(false))
             .Width("100%")
             )
 
@@ -321,6 +334,37 @@
             },
             error: function () {
                 DevExpress.ui.notify("An error occurred while adding the UOM.", "error", 3000);
+            }
+        });
+    }
+    $("#btnSave").on("click", function () {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        grid.saveEditData(); // Triggers onUnitRowUpdating
+    });
+
+
+    function onUnitRowUpdating(e) {
+        const data = {
+            unitCode: e.oldData.UnitCode, // Include when updating
+            unitType: e.newData.UnitType ?? e.oldData.UnitType,
+            unitDesc: e.newData.UnitDesc ?? e.oldData.UnitDesc,
+            unitDescAr: e.newData.UnitDescAr ?? e.oldData.UnitDescAr
+        };
+
+        return $.ajax({
+            url: '/api/VATModule/AddUom',
+            method: "POST",
+            data: data, // No need to stringify if not using JSON
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify(response.message, "success", 1500);
+                    $("#dataGrid").dxDataGrid("instance").refresh();
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 1500);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Server error", "error", 1500);
             }
         });
     }

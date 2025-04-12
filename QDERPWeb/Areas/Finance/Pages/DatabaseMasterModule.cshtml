@@ -5,131 +5,155 @@
 
 <style>
     .dx-fieldset {
-        border: 1px solid #d3d3d3;
-        padding: 15px;
-        border-radius: 5px;
         margin-bottom: 20px;
-        background-color: #f8f9fa; /* Light background */
+       
+        
+    }
+
+    .dx-field-container{
+        width:  500px ! important;
+    }
+
+    .dx-field label {
+        width: 200px;
+        font-weight: bold;
+        color: #333;
+        text-align: right;
+        padding-right: 10px;
     }
 
     .dx-field {
         display: flex;
         align-items: center;
-        margin-bottom: 12px;
+       margin: 5px;
+       /*  width: 400px ! important ; */
+      /*   height: 100px ! important ; */
+
     }
 
-        .dx-field label {
-            width: 200px; /* Adjust label width for alignment */
-            font-weight: bold;
-            color: #333;
-            text-align: right; /* Align labels properly */
-            padding-right: 10px;
-        }
 
-        .dx-field .dx-textbox,
-        .dx-field .dx-numberbox {
-            flex-grow: 1; /* Makes input fields take remaining space */
-            max-width: 400px; /* Ensures width consistency */
-        }
 
     .dx-fieldset .dx-field-container {
         display: flex;
-        align-items: center;
-        gap: 15px;
+        align-items: flex-end;
+        gap: 10px;
+        /* margin-top: 12px; */
+      
     }
 
+/*     .dx-editor-outlined    {
+        margin-top: 24px;
+        width: 520px !important; */
+    }
     .dx-field-container div {
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
-    }
-
-    .dx-button {
-        margin-left: 10px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-    }
-
-    #gridCurrencyMaster .dx-datagrid-headers .dx-header-row {
-        background-color: #007bff;
-        color: white;
-        font-weight: bold;
-    }
-
-    .dx-datagrid {
-        margin-top: 15px;
     }
 
     .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
         display: none !important;
     }
 
+    .dx-datagrid {
+        margin-top: 15px;
+    }
+
+    .dx-button {
+        margin-top: 10px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+    }
+    .plus{
+        width:40px;
+    }
 </style>
-
+<div class="title">
+    <div class="header-container">
+        <div id="DatabaseMasterModule" class="no-border-title"></div>
+    </div>
+</div>
+        <div id="TypeCurrency" class="no-border-input"></div>
 <div class="dx-fieldset">
-    <label style="font-size: 14px; font-weight: bold;">Type a New Currency Details & Add to the Existing List:</label>
 
     <div class="dx-field">
-        <label>Currency Name:</label>
-        @(Html.DevExtreme().TextBox().ID("txtCurrencyName").Width(400))
-    </div>
-
-    <div class="dx-field">
-        <label>Currency Name (In Arabic):</label>
-        @(Html.DevExtreme().TextBox().ID("txtCurrencyNameAr").Width(400))
-    </div>
-
-    <div class="dx-field">
-        <label><b>Currency Exchange Rate:</b></label>
-        @(Html.DevExtreme().NumberBox()
-            .ID("currencyexchangerate")
-            .Min(1)
-            .Step(1)
-            .ShowSpinButtons(true)
-            .Width(200)
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Currency Name:')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("txtCurrencyName")
+            .Width("60%")
             )
     </div>
 
+    <div class="dx-field">
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Currency Name (In Arabic):')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("txtCurrencyNameAr")
+            .Width("60%")
+           
+            )
+    </div>
+    <div class="dx-field">
+        @(Html.DevExtreme().NumberBox()
+            .ID("currencyexchangerate")
+            .Label(new JS("formatMessage('Currency Exchange Rate:')"))
+            .LabelMode(EditorLabelMode.Outside)       
+            .Min(1)
+            .Step(1)
+            .ShowSpinButtons(true)
+            .Width("60%")
+            )
+    </div>
+    </div>
+
     <div class="dx-fieldset">
-        <div class="dx-field-container">
-            <div>
-                <label>Currency Code:</label>
-                @(Html.DevExtreme().TextBox().ID("txtCurrencyCode").Width(180))
+        <div class="dx-field-container" style="margin-left:0px;">
+            <div> 
+                @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Currency Code:')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("txtCurrencyCode")
+                    .Width(400))
             </div>
             <div>
-                <label>Currency Code (In Arabic):</label>
-                @(Html.DevExtreme().TextBox().ID("txtCurrencyCodeAr").Width(180))
+                @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Currency Code (In Arabic):')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("txtCurrencyCodeAr")
+                    .Width(400))
             </div>
-            <div>
+            <div class="plus">
                 @(Html.DevExtreme().Button()
                     .ID("btnAddCurrency")
                     .Text("Add")
                     .Icon("plus")
                     .Type(ButtonType.Success)
-                    .Width(100)
-                    .OnClick("addCurrency")
-                    )
+                    
+                    .OnClick("addCurrency"))
             </div>
         </div>
     </div>
-</div>
 
+<div class="ledgerResult">
 
 @(Html.DevExtreme().DataGrid()
     .ID("gridCurrencyMaster")
    .DataSource(new JS("[]")) // Assuming a Model with Currency List.
     .ShowBorders(true)
+        .Height(350) // Increase height
+        .Width("100%")
     .Columns(columns =>
     {
-        columns.Add().DataField("ID").Caption("ID").Width(50);
-        columns.Add().DataField("CurrencyName").Caption("Currency Name").Alignment(HorizontalAlignment.Center);
-        columns.Add().DataField("CurrencyNameAr").Caption("Currency Name Ar").Alignment(HorizontalAlignment.Center);
-        columns.Add().DataField("ExchangeRate").Caption("Exchange Rate").Format("#,##0.##").Alignment(HorizontalAlignment.Center);
-        columns.Add().DataField("CurrencyCode").Caption("Currency Code").Alignment(HorizontalAlignment.Center);
-        columns.Add().DataField("CurrencyCodeAr").Caption("Currency Code Ar").Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("ID").Caption(new JS("formatMessage('ID')")).Width(70);
+        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')")).Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('Currency Name Ar')")).Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format("#,##0.##").Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Currency Code')")).Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("CurrencyCodeAr").Caption(new JS("formatMessage('Currency Code Ar')")).Alignment(HorizontalAlignment.Center);
     })
 )
+</div>
 <div class="Head">
     <div class="limited-footer">
         @await Html.PartialAsync("VATModuleFooter")
@@ -142,7 +166,7 @@
 
         $(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-            if (!$(this).find("#btnSave,#btnBack").length) {
+            if (!$(this).find("#btnUpdate,#btnBack").length) {
 
                 $(this).remove();
 
@@ -165,5 +189,23 @@
         // Navigation logic here
         window.history.back();
     }
+     $(function () {
+            $("#DatabaseMasterModule").dxTextBox({
+                text: formatMessage("Database Master Module:Foriegn Currency Master"),
+                readOnly: true,
+                width: "600px",
+                onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+            });
+        });
+    $(function () {
+        $("#TypeCurrency").dxTextBox({
+            width: "600px",
+            text: formatMessage("Type a New Currency Details & Add to the Existing List:"),
+            readOnly: true,
+            
+        });
+    });
 </script>
 

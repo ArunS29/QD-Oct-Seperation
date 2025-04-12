@@ -118,7 +118,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var users = await dbContext.Qry20108ChartOfCostCenters.ToListAsync();
+                var users = await dbContext.Qry70011projectCostAnalyses
+                    .Where(u => u.BranchName != null && u.BranchCode != null)
+                    .ToListAsync();
+
                 return new JsonResult(users);
             }
 

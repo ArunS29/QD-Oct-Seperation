@@ -122,7 +122,7 @@
         .ID("btnDelete")
         .Text(new JS("formatMessage('Delete')"))
         .Icon("close")
-        .OnClick("onDeleteButtonClick")
+       // .OnClick("onDeleteButtonClick")
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
@@ -472,47 +472,47 @@
     });
 
 
-    function onDeleteButtonClick() {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var rowCount = dataGrid.getVisibleRows().length;
-        var dataSource = dataGrid.option("dataSource");
+    // function onDeleteButtonClick() {
+    //     var dataGrid = $("#dataGrid").dxDataGrid("instance");
+    //     var rowCount = dataGrid.getVisibleRows().length;
+    //     var dataSource = dataGrid.option("dataSource");
 
-        if (rowCount === 0 || rowCount === null) {
-            DevExpress.ui.dialog.alert(
-                "No records available to delete. Please enter some transactions.",
-                "Data Not Found"
-            ).done(function () {
+    //     if (rowCount === 0 || rowCount === null) {
+    //         DevExpress.ui.dialog.alert(
+    //             "No records available to delete. Please enter some transactions.",
+    //             "Data Not Found"
+    //         ).done(function () {
 
-            });
-        } else {
-            // Retrieve the unique identifier for the row
-            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+    //         });
+    //     } else {
+    //         // Retrieve the unique identifier for the row
+    //         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
-            // **Ask for confirmation before proceeding**
-            confirmToDeleteAllVoucher(function () {
-                // User clicked "Yes", proceed with deletion
-                $.ajax({
-                    url: `/api/VoucherMaster/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}`,
-                    type: "POST",
-                    success: function (response) {
-                        if (response.data) {
-                            $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                            DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.",
-                                "Data Deleted Successfully").done(function () {
-                                    history.back(); // Execute only when "OK" is clicked
-                                });
+    //         // **Ask for confirmation before proceeding**
+    //         confirmToDeleteAllVoucher(function () {
+    //             // User clicked "Yes", proceed with deletion
+    //             $.ajax({
+    //                 url: `/api/VoucherMaster/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}`,
+    //                 type: "POST",
+    //                 success: function (response) {
+    //                     if (response.data) {
+    //                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+    //                         DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.",
+    //                             "Data Deleted Successfully").done(function () {
+    //                                 history.back(); // Execute only when "OK" is clicked
+    //                             });
 
-                        } else {
-                            DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
-                    }
-                });
-            });
-        }
-    }
+    //                     } else {
+    //                         DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+    //                     }
+    //                 },
+    //                 error: function (xhr, status, error) {
+    //                     DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+    //                 }
+    //             });
+    //         });
+    //     }
+    // }
 
 
     function confirmToDeleteAllVoucher(onConfirm) {

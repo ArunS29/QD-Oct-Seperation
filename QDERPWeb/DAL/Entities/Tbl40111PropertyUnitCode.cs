@@ -9,8 +9,7 @@ namespace QD.ERP.Web.DAL.Entities;
 
 public partial class Tbl40111PropertyUnitCode
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+  
     public byte UnitCode { get; set; }
 
     public string UnitType { get; set; }

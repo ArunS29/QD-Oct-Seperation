@@ -35,16 +35,50 @@
     .action-buttons-container .dx-button {
         margin-right: 10px;
     }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 0em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .card-container1 {
+        display: flex;
+        align-items: end;
+        justify-content: flex-start;
+        gap: 0px;
+    }
 </style>
-
+<div class="title">
+    <div class="header-container">
+        <div id="AssetLocationManagement" class="no-border-input"></div>
+    </div>
+</div>
 <div class="content-container-top">
-    <div class="container">
-        <h2 id="AssetLocationManagement" class="no-border-input"></h2>
-
-        <!-- Asset Location Form -->
+    <div class="container4">
         <div class="card-container">
-            <div class="row g-6">
-                <div class="col-md-8">
+        <!-- Asset Location Form -->
+        <div class="card-container1">
                     <div class="form-group">
                         @(
                             Html.DevExtreme().TextBox()
@@ -57,9 +91,9 @@
                              rules.AddRequired()
                                 .Message(new JS("formatMessage('Email is required')"));
                              })
+                             .Width(550)
                             )
                     </div>
-                </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
@@ -72,13 +106,13 @@
                             .ElementAttr(new { @class = "dx-button-add" })
                             )
                     </div>
-                </div>
             </div>
             </div>
             <!-- Grid to Display Asset Locations -->
             <div id="gridContainer"></div>
       
 
+    </div>
     </div>
 </div>
 

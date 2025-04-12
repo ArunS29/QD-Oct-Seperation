@@ -1,4 +1,7 @@
-﻿@page
+﻿
+
+
+@page
 @using DevExtreme.AspNet.Mvc
 @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
@@ -155,7 +158,9 @@
         font-size: 16px;
         color: black;
         pointer-events: none; /* Prevents hover and click effects */
+       
     }
+
 
     .container {
         display: none !important;
@@ -531,9 +536,9 @@
                         </tr>
 
                         <tr>
-                            <td colspan="2">
+                            <td>
                             </td>
-                            <td colspan="2">
+                            <td >
                                 <div id="LedgerActive" class="no-border-input"></div>
                             </td>
                             <td>
@@ -893,14 +898,11 @@
                 <div class="background">
                     <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                         <tr>
-                            <td>
+                            @*  <td>
                                 <div id="ClientBilling" class="no-border-input"></div>
-                            </td>
-                        
-                            <tr>
-
-                            <td colspan="3">
-                                <div style="display: flex; align-items: center;">
+                            </td>   *@                              
+                            <td colspan="2">
+                                <div style="display: flex; align-items: end;">
                                     @(Html.DevExtreme().Button()
                                         .ID("dwnarrow")
                                         .Width("75")
@@ -915,15 +917,19 @@
                                        @*  .ValidationRules(rules => rules
                                         .AddRequired()  // This adds the required validation rule
                                         ) *@
+                                        .Label(new JS("formatMessage('Client Billing Name: *')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                         )
+                                      
+                                        
 
                                 </div>
                             </td>
-                            <td>
+                            @* <td>
                                 <div id="ClientBillingAr" class="no-border-input"></div>
-                            </td>
-                            <td colspan="3">
-                                <div style="display: flex; align-items: center;gap: 5px;">
+                            </td> *@
+                            <td colspan="5">
+                                <div style="display: flex; align-items: end;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientBillingAr")
                                         // .Text("Action")
@@ -935,6 +941,8 @@
                                         .ID("txtClientBillingAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Billing")
+                                            .Label(new JS("formatMessage('Client Billing Name(Arabic):')"))
+                                            .LabelMode(EditorLabelMode.Outside)
 
                                         )
                                 </div>
@@ -942,27 +950,29 @@
                         </tr>
 
                         <tr>
-                            <td>
-                                <div id="ClientVATNo" class="no-border-input"></div>
-                            </td>
-                            <td colspan="3">
+                            @* <td> *@
+                            @*     <div id="ClientVATNo" class="no-border-input"></div> *@
+                            @* </td> *@
+                            <td colspan="2">
                                     @(Html.DevExtreme().NumberBox()
                                         .ID("txtClientVATNo") // Keep the same ID
-                                        .Width("50%") // Set the width to 50%
+                                        .Width("100%") // Set the width to 50%
                                         .InputAttr("aria-label", "txtClientVATNo")
                                         .Min(0) // No negative numbers allowed
                                         .Max(999999999999999) // Max limit of 15 digits
                                         .InputAttr("maxlength", "15") // Set the max length attribute to 15
                                         .Format("###########") // Ensures only integers (up to 15 digits)
                                         .OnValueChanged("syncVATNumbers")
+                                        .Label(new JS("formatMessage('Client VAT No')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                        // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                         )
 
                             </td>
-                            <td>
+                           @*  <td>
                                 <div id="GrouptVATNo" class="no-border-input"></div>
-                            </td>
-                            <td>
+                            </td> *@
+                            <td colspan="2">
                                     @(Html.DevExtreme().NumberBox()
                                         .ID("txtGrouptVATNo") // Keep the same ID
                                         .Width("100%") // Set width to 100%
@@ -971,17 +981,20 @@
                                         .Max(999999999999999) // Max limit of 15 digits
                                         .InputAttr("maxlength", "15") // Set max length to 15
                                         .Format("###########") // Format for numeric input (max 15 digits)
-                                      //  .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                                        .Label(new JS("formatMessage('Group VAT Number:')"))
+                                        .LabelMode(EditorLabelMode.Outside)
+                        
+                                        //  .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                         )
 
                             </td>
                         </tr>
 
                         <tr>
-                            <td>
+                           @*  <td>
                                 <div id="OtherType" class="no-border-input"></div>
-                            </td>
-                            <td colspan="3">
+                            </td> *@
+                            <td colspan="2">
                                 @(Html.DevExtreme().DropDownBox()
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
@@ -1006,16 +1019,20 @@
                                     .OnKeyDown("ddlOtherTypeonKeyDown")
                                     .OnValueChanged("ddlOtherTypeValueChanged")
                                     .ContentTemplate(new TemplateName("OtherTypeContentTemplate"))
+                                        .Label(new JS("formatMessage('Other ID Type: *')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                     )
                             </td>
-                            <td>
+                          @*   <td colspan="1"> 
                                 <div id="OtherId" class="no-border-input"></div>
-                            </td>
-                            <td>
+                            </td> *@
+                            <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtOtherId")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtOtherId")
+                                    .Label(new JS("formatMessage('Client Other ID')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                    @*  .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     ) *@
@@ -1024,22 +1041,23 @@
                         </tr>
 
                         <tr>
-                            <td colspan="2">
+                           @*  <td colspan="4">
                                 <div id="ClientAddress" class="no-border-input"></div>
-                            </td>
+                            </td>  *@
                             <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtClientAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAddress")
-
+                                    .Label(new JS("formatMessage('Client Address - Street Name: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
                             </td>
-                            <td colspan="2">
+                        @*     <td colspan="3">
                                 <div id="ClientAddressAr" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td colspan="2">
-                                <div style="display: flex; align-items: center;gap: 5px;">
+                                <div style="display: flex; align-items: end;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientAddressAr")
                                         .Width("75")
@@ -1051,27 +1069,32 @@
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Address")
                                         .ValidationRules(rules => rules.AddRequired())
+                                            .Label(new JS("formatMessage('Client Address - Street Name (Arabic):')"))
+                                            .LabelMode(EditorLabelMode.Outside)
                                         )
                                 </div>
                             </td>
                         </tr>
 
                         <tr>
-                            <td colspan="2">
+                            @* <td colspan="4">
                                 <div id="ClientAdditionalAddress" class="no-border-input"></div>
-                            </td>
+                            </td>    *@
                             <td colspan="2">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtClientAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAdditionalAddress")
+                                        .Label(new JS("formatMessage('Client Address - Additional Address:')"))
+                                        .LabelMode(EditorLabelMode.Outside)
+
                                     )
                             </td>
-                            <td colspan="2">
+                           @*  <td colspan="3">
                                 <div id="ClientAdditionalAddressAr" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                <div style="display: flex; align-items: center;gap: 5px;">
+                            </td> *@
+                            <td colspan="4">
+                                <div style="display: flex; align-items: end;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientAdditionalAddressAr")
                                         .Icon("fas fa-language")
@@ -1082,15 +1105,17 @@
                                         .ID("txtClientAdditionalAddressAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
+                                            .Label(new JS("formatMessage('Client Address - Additional Address (Arabic):')"))
+                                            .LabelMode(EditorLabelMode.Outside)
                                         )
                                 </div>
                             </td>
                         </tr>
 
                         <tr>
-                            <td>
+                           @*  <td colspan="3">
                                 <div id="BuildingNo" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
                                     @(Html.DevExtreme().NumberBox()
                                         .ID("txtBuildingNo") // Keep the same ID
@@ -1104,12 +1129,15 @@
                                         .ValidationRules(rules => rules
                                         .AddRequired()  // This adds the required validation rule
                                         )
+                                        .Label(new JS("formatMessage('Building No: *')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                         )
+                                        
 
                             </td>
-                            <td>
+                          @*   <td colspan="3">
                                 <div id="ClientCity" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtClientCity")
@@ -1118,13 +1146,16 @@
                                    @*  .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     ) *@
-                                    )
+                                        .Label(new JS("formatMessage('Client City: *')"))
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        )
+                                    
                             </td>
-                            <td colspan="2">
+                            @* <td colspan="3">
                                 <div id="ClientCityAr" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                <div style="display: flex; align-items: center;gap: 5px;">
+                            </td> *@
+                            <td colspan="3">
+                                <div style="display: flex; align-items: end;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnClientCityAr")
                                         .Icon("fas fa-language")
@@ -1135,15 +1166,18 @@
                                         .ID("txtClientCityAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
+                                        .Label(new JS("formatMessage('Client City(Arabic):')"))
+                                        .LabelMode(EditorLabelMode.Outside)
+
                                         )
                                 </div>
                             </td>
                         </tr>
 
                         <tr>
-                            <td colspan="2">
+                           @*  <td colspan="2">
                                 <div id="AdditionalNo" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
                                     @(Html.DevExtreme().NumberBox()
                                         .ID("txtAdditionalNo") // Keep the same ID
@@ -1153,25 +1187,31 @@
                                         .InputAttr("aria-label", "txtAdditionalNo")
                                         .InputAttr("maxlength", "4") // Set max length to 4
                                         .Format("####") // Format for numeric input (max 4 digits)
+                                        .Label(new JS("formatMessage('Additional Number:*')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                         //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                         )
 
                             </td>
-                            <td>
+                            @* <td colspan="3">
                                 <div id="State" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtState")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientCity")
-                                    )
+                                        .Label(new JS("formatMessage('Province/State:')"))
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        )
+                                    
+                                
                             </td>
-                            <td colspan="2">
+                          @*   <td colspan="4">
                                 <div id="StateAr" class="no-border-input"></div>
-                            </td>
+                            </td>  *@
                             <td>
-                                <div style="display: flex; align-items: center;gap: 5px;">
+                                <div style="display: flex; align-items: end;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnStateAr")
                                         .Icon("fas fa-language")
@@ -1182,15 +1222,18 @@
                                         .ID("txtStateAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
-                                        )
+                                            .Label(new JS("formatMessage('Province/State(Arabic)')"))
+                                            .LabelMode(EditorLabelMode.Outside)
+                                            )
+                                        
                                 </div>
                             </td>
                         </tr>
 
                         <tr>
-                            <td>
+                          @*   <td>
                                 <div id="PostalCode" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
                                     @(Html.DevExtreme().NumberBox()
                                         .ID("txtPostalCode") // Keep the same ID
@@ -1204,27 +1247,32 @@
                                         .ValidationRules(rules => rules
                                         .AddRequired()  // This adds the required validation rule
                                         )
+                                        .Label(new JS("formatMessage('Postal Code: *')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                         )
+                                        
 
                             </td>
-                            <td>
+                            @* <td colspan="1">
                                 <div id="District" class="no-border-input"></div>
-                            </td>
-                            <td>
+                            </td> *@
+                            <td colspan="1">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtDistrict")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtDistrict")
+                                        .Label(new JS("formatMessage('District/Neighbourhood: *')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                   @*   .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     ) *@
                                     )
                             </td>
-                            <td colspan="2">
+                           @*  <td colspan="3">
                                 <div id="DistrictAr" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                <div style="display: flex; align-items: center;gap: 5px;">
+                            </td> *@
+                            <td colspan="7">
+                                <div style="display: flex; align-items:end;gap: 5px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("btnDistrictAr")
                                         .Icon("fas fa-language")
@@ -1235,15 +1283,17 @@
                                         .ID("txtDistrictAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "District")
+                                            .Label(new JS("formatMessage('District/Neighborhood (Arabic):')"))
+                                            .LabelMode(EditorLabelMode.Outside)
                                       @*   .ValidationRules(rules => rules.AddRequired()) *@
                                         )
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            @* <td>
                                 <div id="ClientCountryCode" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
                                     @(Html.DevExtreme().DropDownBox()
                                         .DataSource(d => d.WebApi()
@@ -1270,6 +1320,8 @@
                                         .OnKeyDown("ddlCountryCodeonKeyDown")
                                         .OnValueChanged("ddlCountryCodeValueChanged")
                                         .ContentTemplate(new TemplateName("CountryCodeContentTemplate"))
+                                    .Label(new JS("formatMessage('Country Code: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                         )
 
                             </td>
@@ -1291,18 +1343,17 @@
 
                     <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                         <tr>
-                            <td>
+                          @*   <td colspan="3">
                                 <div id="SupBilling" class="no-border-input"></div>
-                            </td>
+                            </td> *@
 
-                            <td colspan="3">
-                                <div style="display: flex; align-items: center;">
+                            <td colspan="4">
+                                <div style="display: flex; align-items: end;">
                                     @(Html.DevExtreme().Button()
                                         .ID("dwnarrowsup")
-                                        .Width("75")
+                                        .Width("65")
                                         .Icon("fas fa-chevron-down")
                                         .OnClick("onDownArrowSupClick")
-
                                         )
                                     @(Html.DevExtreme().TextBox()
                                         .ID("txtSupBilling")
@@ -1311,14 +1362,16 @@
                                         .ValidationRules(rules => rules
                                         .AddRequired()  // This adds the required validation rule
                                         )
+                                        .Label(new JS("formatMessage('Supplier Billing Name:')"))
+                                        .LabelMode(EditorLabelMode.Outside)
                                         )
+                                        
                                 </div>
-
                             </td>
-                            <td>
+                           @*  <td colspan="2">
                                 <div id="SupBillingAr" class="no-border-input"></div>
-                            </td>
-                            <td style="display: flex; align-items: center;">
+                            </td> *@
+                            <td style="display: flex; align-items: end;">
 
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupBillingAr")
@@ -1330,17 +1383,20 @@
                                     .ID("txtSupBillingAr")
                                     .Value("")
                                     .Width("100%")
+                                    .Label(new JS("formatMessage('Supplier Billing Name(Arabic):')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
 
                             </td>
                         </tr>
 
                         <tr>
-                            <td>
+                           @*  <td>
                                 <div id="SupVATNo" class="no-border-input"></div>
 
-                            </td>
-                            <td colspan="3">
+                            </td> *@
+                            <td colspan="4">
                                 @(Html.DevExtreme().NumberBox()
                                     .ID("txtSupVATNo") // Keep the same ID
                                     .Width("100%") // Set width to 100%
@@ -1354,32 +1410,36 @@
                                     .AddRequired()  // This adds the required validation rule
                                     )
                                     .OnValueChanged("syncSupVATNumbers")
+                                    .Label(new JS("formatMessage('Supplier VAT Number: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
 
                             </td>
-                            <td>
+                         @*    <td>
                                 <div id="SupGroupVATNo" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
+                            </td> *@
+                            <td colspan="4">
                                @(Html.DevExtreme().NumberBox()
-    .ID("txtSupGroupVATNo") // Keep the same ID
-    .Width("100%") // Set width to 100%
-    .Min(0) // No negative numbers allowed
-    .Max(999999999999999) // Max limit of 15 digits for VAT number
-    .InputAttr("aria-label", "txtSupGroupVATNo")
-    .InputAttr("maxlength", "15") // Set max length to 15
-    .Format("###########") // Format for numeric input (max 15 digits)
-   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                                .ID("txtSupGroupVATNo") // Keep the same ID
+                                .Width("100%") // Set width to 100%
+                                .Min(0) // No negative numbers allowed
+                                .Max(999999999999999) // Max limit of 15 digits for VAT number
+                                .InputAttr("aria-label", "txtSupGroupVATNo")
+                                .InputAttr("maxlength", "15") // Set max length to 15
+                                .Format("###########") // Format for numeric input (max 15 digits)
+                                .Label(new JS("formatMessage('Group VAT Number:')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                                // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
 )
 
                             </td>
                         </tr>
 
                         <tr>
-                            <td>
+                         @*    <td>
                                 <div id="SupOtherType" class="no-border-input"></div>
-                            </td>
-                            <td colspan="3">
+                            </td> *@
+                            <td colspan="4">
                                 @(Html.DevExtreme().DropDownBox()
                                     .DataSource(d => d.WebApi()
                                     .Controller("AccountLedgerMaster")
@@ -1404,16 +1464,21 @@
                                     .OnKeyDown("ddlSupOtherTypeonKeyDown")
                                     .OnValueChanged("ddlSupOtherTypeValueChanged")
                                     .ContentTemplate(new TemplateName("SupOtherTypeContentTemplate"))
+                                    .Label(new JS("formatMessage('Other ID Type: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
                             </td>
-                            <td>
+                            @* <td>
                                 <div id="SuprOtherId" class="no-border-input"></div>
-                            </td>
-                            <td>
+                            </td> *@
+                            <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupOtherId")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupOtherId")
+                                    .Label(new JS("formatMessage('Supplier Other ID: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                  @*    .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     ) *@
@@ -1424,10 +1489,10 @@
 
 
                         <tr>
-                            <td colspan="2">
+                           @*  <td colspan="2">
                                 <div id="SupAddress" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
+                            </td> *@
+                            <td colspan="4">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupAddress")
                                     .Width("100%")
@@ -1435,42 +1500,51 @@
                                     .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     )
+                                    .Label(new JS("formatMessage('Supplier Address - Street Name: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
                             </td>
-                            <td colspan="2">
-                                <div id="SupAddress1" class="no-border-input"></div>
-                            </td>
-                            <td style="display: flex; align-items: center;gap: 5px;">
+                            @* <td colspan="2"> *@
+                            @*     <div id="SupAddress1" class="no-border-input"></div> *@
+                            @* </td> *@
+                            <td colspan="5" style="display: flex; align-items: end;gap: 5px;">
 
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupAddress1")
                                     .Icon("fas fa-language")
-                                    .Width("75")
+                                    .Width("100")
                                     .OnClick("onSupAddressClick")
                                     )
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupAddressAr1")
                                     .Value("")
-                                    .Width("100%")
+                                    .Width("200%")
+                                    .Label(new JS("formatMessage('Supplier Address-Street Name (Arabic):')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
                             </td>
                         </tr>
 
                         <tr>
-                            <td colspan="2">
+                           @*  <td colspan="2">
                                 <div id="SupAdditionalAddress" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
+                            </td> *@
+                            <td colspan="4">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAdditionalAddress")
+                                    .Label(new JS("formatMessage('Supplier Address - Street Name: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
                             </td>
-                            <td colspan="2">
+                           @*  <td colspan="2">
                                 <div id="SupAdditionalAddress1" class="no-border-input"></div>
-                            </td>
-                            <td style="display: flex; align-items: center;gap: 5px;">
+                            </td> *@
+                            <td colspan="4" style="display: flex; align-items: end;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupAdditionalAddress1")
                                     .Icon("fas fa-language")
@@ -1481,18 +1555,21 @@
                                     .ID("txtSupAdditionalAddressAr1")
                                     .Value("")
                                     .Width("100%")
+                                    .Label(new JS("formatMessage('Address-Additional Address (Arabic):')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
                             </td>
                         </tr>
 
                         <tr>
-                            <td>
+                            @* <td>
                                 <div id="SupBuildingNo" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
                                 @(Html.DevExtreme().NumberBox()
                                     .ID("txtSupBuildingNo") // Keep the same ID
-                                    .Width("100%") // Set width to 100%
+                                    .Width("75%") // Set width to 100%
                                     .Min(0) // No negative numbers allowed
                                     .Max(9999) // Max limit of 4 digits for building number
                                     .InputAttr("aria-label", "txtSupBuildingNo")
@@ -1502,13 +1579,16 @@
                                     .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     )
+                                    .Label(new JS("formatMessage('Building No: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
 
                             </td>
-                            <td>
+                           @*  <td colspan="2">
                                 <div id="SupCity" class="no-border-input"></div>
-                            </td>
-                            <td>
+                            </td> *@
+                            <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupCity")
                                     .Width("100%")
@@ -1516,12 +1596,14 @@
                                     .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     )
+                                    .Label(new JS("formatMessage('Client City: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
                             </td>
-                            <td>
+                            @* <td>
                                 <div id="SupCity1" class="no-border-input"></div>
-                            </td>
-                            <td style="display: flex; align-items: center;gap: 5px;">
+                            </td> *@
+                            <td colspan="" style="display: flex; align-items: end;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupCity1")
                                     .Icon("fas fa-language")
@@ -1532,41 +1614,48 @@
                                     .ID("txtSupCityAr1")
                                     .Value("")
                                     .Width("100%")
+                                    .Label(new JS("formatMessage('Client City(Arabic):')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
                             </td>
                         </tr>
 
                         <tr>
-                            <td>
+                           @*  <td>
                                 <div id="SupAdditionalNo" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
-                               @(Html.DevExtreme().NumberBox()
-    .ID("txtSupAdditionalNo") // Keep the same ID
-    .Width("100%") // Set width to 100%
-    .Min(0) // No negative numbers allowed
-    .Max(9999) // Max limit of 4 digits for additional number
-    .InputAttr("aria-label", "txtSupAdditionalNo")
-    .InputAttr("maxlength", "4") // Set max length to 4
-    .Format("####") // Format for numeric input (max 4 digits)
-    //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
-)
+                                @(Html.DevExtreme().NumberBox()
+                                    .ID("txtSupAdditionalNo") // Keep the same ID
+                                    .Width("100%") // Set width to 100%
+                                    .Min(0) // No negative numbers allowed
+                                    .Max(9999) // Max limit of 4 digits for additional number
+                                    .InputAttr("aria-label", "txtSupAdditionalNo")
+                                    .InputAttr("maxlength", "4") // Set max length to 4
+                                    .Format("####") // Format for numeric input (max 4 digits)
+                                    //.ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                                    .Label(new JS("formatMessage('Additional Number: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
+                                    )
 
                             </td>
-                            <td>
+                           @*  <td>
                                 <div id="SupState" class="no-border-input"></div>
-                            </td>
-                            <td>
+                            </td> *@
+                            <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupState")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupState")
+                                    .Label(new JS("formatMessage('Province/State:')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
                             </td>
-                            <td>
+                            @* <td>
                                 <div id="SupState1" class="no-border-input"></div>
-                            </td>
-                            <td style="display: flex; align-items: center;gap: 5px;">
+                            </td> *@
+                            <td colspan="4" style="display: flex; align-items: end;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupState1")
                                     .Icon("fas fa-language")
@@ -1577,34 +1666,40 @@
                                     .ID("txtSupStateAr1")
                                     .Value("")
                                     .Width("100%")
+                                    .Label(new JS("formatMessage('Province/State(Arabic):')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
                             </td>
                         </tr>
 
                         <tr>
-                            <td>
+                          @*   <td>
                                 <div id="SupPostalCode" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
-                               @(Html.DevExtreme().NumberBox()
-    .ID("txtSupPostalCode") // Keep the same ID
-    .Width("100%") // Set width to 100%
-    .Min(0) // No negative numbers allowed
-    .Max(99999) // Max limit of 5 digits for postal code
-    .InputAttr("aria-label", "txtSupPostalCode")
-    .InputAttr("maxlength", "5") // Set max length to 5
-    .Format("#####") // Format for numeric input (max 5 digits)
-   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
-    .ValidationRules(rules => rules
-        .AddRequired()  // This adds the required validation rule
-    )
-)
+                          @(Html.DevExtreme().NumberBox()
+                            .ID("txtSupPostalCode") // Keep the same ID
+                            .Width("100%") // Set width to 100%
+                            .Min(0) // No negative numbers allowed
+                            .Max(99999) // Max limit of 5 digits for postal code
+                            .InputAttr("aria-label", "txtSupPostalCode")
+                            .InputAttr("maxlength", "5") // Set max length to 5
+                            .Format("#####") // Format for numeric input (max 5 digits)
+                           // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+                            .ValidationRules(rules => rules
+                            .AddRequired()  // This adds the required validation rule 
+                            )
+                            .Label(new JS("formatMessage('Postal Code: *')"))
+                            .LabelMode(EditorLabelMode.Outside)
+                            )
+                
 
                             </td>
-                            <td>
+                           @*  <td>
                                 <div id="SupDistrict" class="no-border-input"></div>
-                            </td>
-                            <td>
+                            </td> *@
+                            <td colspan="3">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtSupDistrict")
                                     .Width("100%")
@@ -1612,12 +1707,14 @@
                                     .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     )
+                                    .Label(new JS("formatMessage('District/Neighbourhood: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
                             </td>
-                            <td>
+                           @*  <td>
                                 <div id="SupDistrict1" class="no-border-input"></div>
-                            </td>
-                            <td style="display: flex; align-items: center;gap: 5px;">
+                            </td> *@
+                            <td style="display: flex; align-items: end;gap: 5px;">
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSupDistrict1")
                                     .Icon("fas fa-language")
@@ -1628,13 +1725,15 @@
                                     .ID("txtSupDistrictAr1")
                                     .Value("")
                                     .Width("100%")
+                                    .Label(new JS("formatMessage('Neighborhood (Arabic):')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            @* <td>
                                 <div id="SupCountryCode" class="no-border-input"></div>
-                            </td>
+                            </td> *@
                             <td>
                                 @(Html.DevExtreme().DropDownBox()
                                     .DataSource(d => d.WebApi()
@@ -1661,7 +1760,10 @@
                                     .OnKeyDown("ddlSupCountryCodeonKeyDown")
                                     .OnValueChanged("ddlSupCountryCodeValueChanged")
                                     .ContentTemplate(new TemplateName("SupCountryCodeContentTemplate"))
+                                    .Label(new JS("formatMessage('Country Code: *')"))
+                                    .LabelMode(EditorLabelMode.Outside)
                                     )
+                                    
 
                             </td>
                             @* <td>

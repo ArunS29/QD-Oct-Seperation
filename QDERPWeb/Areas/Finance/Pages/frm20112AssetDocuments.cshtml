@@ -45,18 +45,47 @@
     #btnBack .dx-button-text {
         font-weight: bold;
     }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 0em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
 </style>
 
-<h2 id="AssetDocuments" class="cards-container-title no-border-input"></h2>
-
-<div class="container my-3" style="max-width:2000px;">
+<div class="title">
+    <div class="header-container">
+        <div id="AssetDocuments" class="no-border-input"></div>
+    </div>
+</div>
+<h3 id="EnteraNewDocumentAddtotheExistingList" class="no-border-input"></h3>
+<div class="container4 my-3" style="max-width:2000px;">
     <div class="row g-3">
         <!-- Card -->
         <div class="col-12">
-            <div class="card p-3 shadow-sm bg-light">
+            <div class="p-3">
 
                 <!-- First Row -->
-                <h3 id="EnteraNewDocumentAddtotheExistingList" class="no-border-input"></h3>
                 <div class="row mb-3">
                     <div class="col-12 col-md-4">
                         @(Html.DevExtreme().TextBox()
@@ -367,7 +396,7 @@
         <div class="dx-fieldset horizontal-container mt-2">
             @(Html.DevExtreme().Button()
                 .ID("btnUpdate")
-                .Text(new JS("formatMessage('Update')")))
+                .Text(new JS("formatMessage('Update')"))
                 .Icon("save")
                 .OnClick("function() { UpdateVoucherEntry(); }")
                 )
@@ -480,7 +509,7 @@ $(function () {
 													text:formatMessage("Enter a New Document Add to the Existing List"),
                                                         readOnly: true,
 													onContentReady: function(e) {
-				$(e.element).addClass("dx-textbox-heading");
+				$(e.element).addClass("dx-textbox-heading10");
 		}
 
                                     });

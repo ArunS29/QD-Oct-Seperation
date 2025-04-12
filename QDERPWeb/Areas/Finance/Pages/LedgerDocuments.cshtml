@@ -153,7 +153,7 @@
                             .ID("btnAttachment")
                             .Icon("fa fa-paperclip")
                             .Width("100%")
-                          @*   .OnClick("onAttachClicked") *@
+                           .OnClick("onAttachButtonClick")
                           )
                     </div>
                     <input type="file" id="fileInput" style="display: none;" />
@@ -690,43 +690,43 @@
         }
 
        // Handle the button click to trigger the file input
-        function onAttachClicked(e) {
+        // function onAttachClicked(e) {
 
-            document.getElementById("fileInput").click();
-          //  var docno = $("#DocumentNo").dxTextBox("instance").option("value");
-             // // Handle file selection and upload the file
-        document.getElementById("fileInput").addEventListener("change", function (event) {
-            const files = event.target.files; // Get the selected files
+        //     document.getElementById("fileInput").click();
+        //   //  var docno = $("#DocumentNo").dxTextBox("instance").option("value");
+        //      // // Handle file selection and upload the file
+        // document.getElementById("fileInput").addEventListener("change", function (event) {
+        //     const files = event.target.files; // Get the selected files
 
-            if (files.length > 0) {
-                const selectedFile = files[0]; // Get the first selected file
+        //     if (files.length > 0) {
+        //         const selectedFile = files[0]; // Get the first selected file
 
-                // Display the file name (optional)
-               // alert(`File selected: ${selectedFile.name}`);
+        //         // Display the file name (optional)
+        //        // alert(`File selected: ${selectedFile.name}`);
 
-                // Create a FormData object to prepare the file for upload
-                const formData = new FormData();
-                formData.append("file", selectedFile);
+        //         // Create a FormData object to prepare the file for upload
+        //         const formData = new FormData();
+        //         formData.append("file", selectedFile);
 
-                // Use AJAX to upload the file to the server
-                $.ajax({
-                    url: "/api/LedgerAccountMaster/UploadFile", // Change to your API endpoint
-                    type: "POST",
-                    data: formData,
-                    processData: false, // Important for FormData
-                    contentType: false, // Important for FormData
-                    success: function (response) {
-                        // Handle successful response
-                        DevExpress.ui.notify("File uploaded successfully!", "success", 2000);
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle error
-                        alert(`Error uploading file: ${xhr.responseText || error}`);
-                    }
-                });
-            }
-        });
-        }
+        //         // Use AJAX to upload the file to the server
+        //         $.ajax({
+        //             url: "/api/LedgerAccountMaster/UploadFile", // Change to your API endpoint
+        //             type: "POST",
+        //             data: formData,
+        //             processData: false, // Important for FormData
+        //             contentType: false, // Important for FormData
+        //             success: function (response) {
+        //                 // Handle successful response
+        //                 DevExpress.ui.notify("File uploaded successfully!", "success", 2000);
+        //             },
+        //             error: function (xhr, status, error) {
+        //                 // Handle error
+        //                 alert(`Error uploading file: ${xhr.responseText || error}`);
+        //             }
+        //         });
+        //     }
+        // });
+        // }
 
     function onDocumentNoClick(e) {
             if (e.column && e.column.dataField === "DocumentNo") {
@@ -769,5 +769,69 @@
             }, 500);
         }
 
+            //Attachment functionality
+            function onAttachButtonClick() {
+                const dialog = DevExpress.ui.dialog.custom({
+                    title: "Attach File",
+                    messageHtml: "<p>Click below to attach a file.</p>",
+                    buttons: [
+                        { text: "Select File", onClick: () => handleFileSelection() }
+                    ]
+                });
 
+                let dialogContainer = dialog.show(); // Show the dialog
+
+                setTimeout(() => {
+                    // Add a close button to the popup
+                    let titleElement = document.querySelector(".dx-dialog .dx-popup-title");
+                    if (titleElement) {
+                        let closeButton = document.createElement("span");
+                        closeButton.innerHTML = "&times;";
+                        closeButton.classList.add("dx-dialog-custom-close");
+
+                        titleElement.style.position = "relative"; // Ensure positioning works
+                        titleElement.appendChild(closeButton);
+
+                        // Close the dialog when clicking the close button
+                        closeButton.addEventListener("click", () => {
+                            let dialogElement = document.querySelector(".dx-dialog");
+                            if (dialogElement) {
+                                dialogElement.remove(); // Remove the dialog
+                            }
+                        });
+                    }
+
+                    // Disable Dragging
+                    let dialogPopup = document.querySelector(".dx-dialog");
+                    if (dialogPopup) {
+                        dialogPopup.classList.remove("dx-draggable");
+                    }
+                }, 0);
+            }
+
+            function handleFileSelection() {
+                const fileInput = document.getElementById("fileInput");
+
+                if (!fileInput) {
+                    console.error("Error: fileInput element not found!");
+                    return;
+                }
+
+                fileInput.multiple = false; // Force single file selection
+                fileInput.click(); // Open file picker
+            }
+
+            // Handle file selection
+            document.addEventListener("DOMContentLoaded", function () {
+                const fileInput = document.getElementById("fileInput");
+
+                if (fileInput) {
+                    fileInput.addEventListener("change", function () {
+                        const files = this.files;
+                        console.log("Selected file:", files[0]); // Log the selected file
+                    });
+                } else {
+                    console.error("Error: fileInput element not found on page load!");
+                }
+            });
 </script>

@@ -15,6 +15,20 @@
         align-items: end;
     }
 
+    .dx-datagrid-save-button,
+    .dx-datagrid-cancel-button {
+        display: none !important;
+    }
+
+    /* Also hide the entire right-aligned toolbar space */
+    .dx-toolbar-after {
+        display: none !important;
+    }
+
+    /* Optionally, remove padding/margin if needed */
+    .dx-datagrid-headers .dx-toolbar {
+        padding-right: 0 !important;
+    }
     .form-row .form-row-btn {
         margin: 2px;
         
@@ -73,6 +87,10 @@
             .ID("SignatoryName")
             .Label(new JS("formatMessage('Signatory Name')"))
             .LabelMode(EditorLabelMode.Outside)
+            .ValidationRules(rules =>
+            {
+                rules.AddRequired().Message("Signatory Name is required");
+            })
             )
 
         @(Html.DevExtreme().Button()
@@ -95,6 +113,10 @@
             .ID("SignatoryPosition")
             .Label(new JS("formatMessage('Signatory Position')"))
             .LabelMode(EditorLabelMode.Outside)
+            .ValidationRules(rules =>
+            {
+                rules.AddRequired().Message("Signatory Name is required");
+            })
             )
 
         @(Html.DevExtreme().Button()
@@ -210,63 +232,58 @@
 <div class="dx-field ledgerResult">
     @(Html.DevExtreme().DataGrid()
             .ID("SignatoryGrid")
+            .KeyExpr("SignatoryID")
             .RemoteOperations(false)
             .DataSource(d => d.WebApi()
             .Controller("VATModule")
             .LoadAction("GetAllSign")
             .LoadMode(DataSourceLoadMode.Raw)
             )
+        .Editing(editing => editing
+        .Mode(GridEditMode.Batch)
+        .AllowUpdating(true)
+
+        )
+        .Toolbar(toolbar =>
+        {
+            toolbar.Items(items => { }); // hide default toolbar
+        })
+        .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
             .Columns(columns =>
             {
-                columns.Add().DataField("SignatoryID")
-            .Caption("Signatory ID")
-            .Width(80)
-            .Alignment(HorizontalAlignment.Center);
-
-                columns.Add().DataField("SignatoryName")
-            .Caption("Signatory Name")
-            .Width(200)
-            .Alignment(HorizontalAlignment.Center);
-
-                columns.Add().DataField("SignatoryPosition")
-            .Caption("Signatory Position")
-            .Width(200)
-            .Alignment(HorizontalAlignment.Center);
-
-                columns.Add().DataField("SignatoryContact")
-            .Caption("Signatory Contact")
-            .Width(150)
-            .Alignment(HorizontalAlignment.Center);
-
-                columns.Add().DataField("SignatoryEmail")
-            .Caption("Signatory Email")
-            .Width(220)
-            .Alignment(HorizontalAlignment.Center);
-
-                columns.Add().Caption("Signature Image")
-            .Width(140)
-            .Alignment(HorizontalAlignment.Center)
+                columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
+                columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
+                columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
+                columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
+                columns.Add().DataField("SignatoryEmail").Caption("Email").Width(220);
+                @* columns.Add().Caption("Signature Image").AllowEditing(false)
             .CellTemplate(@<text>
         function(cellElement, cellInfo) {
-        if (cellInfo.data && cellInfo.data.SignatureImageBase64) {
+        if (cellInfo.data?.SignatureImageBase64) {
         $("<img>")
         .attr("src", "data:image/png;base64," + cellInfo.data.SignatureImageBase64)
         .css({ height: "40px", borderRadius: "4px" })
         .appendTo(cellElement);
         } else {
-        cellElement.text("No image data");
+        cellElement.text("No image");
         }
         }
-    </text>);
+    </text>); *@
             })
+        .Height(500)
+        .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
-        .HeaderFilter(filter => filter.Visible(false))
-        .FilterRow(filterRow => filterRow.Visible(false))
-        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ColumnFixing(f => f.Enabled(true))
+        .Paging(p => p.Enabled(true))
+        .Scrolling(s => s
+        .Mode(GridScrollingMode.Virtual)
+        .RowRenderingMode(GridRowRenderingMode.Virtual)
+        .PreloadEnabled(true)
+        .ScrollByContent(true)
+        )
         .ShowBorders(true)
         .ShowRowLines(true)
-        .Height(400)
         .Width("100%")
         )
 
@@ -292,6 +309,11 @@
           });
 
       });
+
+    $(document).on("click", "#btnBack", function () {
+        window.history.back();
+    });
+
       $(function () {
             $("#DatabaseSignatories").dxTextBox({
                 text: formatMessage("Database Signatories"),
@@ -353,6 +375,15 @@
         }
     }
     function addSignatoryToGrid() {
+        // Validate fields using the Validator components
+        const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
+        const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
+
+        if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
+            DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+            return;
+        }
+
         const data = {
             SignatoryName: $("#SignatoryName").dxTextBox("instance").option("value"),
             SignatoryNameArabic: $("#SignatoryNameArabic").dxTextBox("instance").option("value"),
@@ -364,7 +395,7 @@
         };
 
         $.ajax({
-            url: "/api/Finance/VATModule/SaveSignatory",
+            url: '/api/VATModule/SaveSignatory',
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -377,6 +408,40 @@
             }
         });
     }
+
+
+    $("#btnUpdate").on("click", function () {
+        const grid = $("#SignatoryGrid").dxDataGrid("instance");
+        grid.saveEditData(); // 🔥 only triggers on manual click
+    });
+
+
+    function onSignatoryUpdating(e) {
+        const data = {
+            SignatoryID: e.oldData.SignatoryID,
+            SignatoryName: e.newData.SignatoryName ?? e.oldData.SignatoryName,
+            SignatoryPosition: e.newData.SignatoryPosition ?? e.oldData.SignatoryPosition,
+            SignatoryContact: e.newData.SignatoryContact ?? e.oldData.SignatoryContact,
+            SignatoryEmail: e.newData.SignatoryEmail ?? e.oldData.SignatoryEmail
+        };
+
+        e.cancel = true; // prevents grid from doing its own update
+
+        return $.ajax({
+            url: '/api/VATModule/SaveSignatory',
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Saved!", "success", 1500);
+                $("#SignatoryGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save.", "error", 1500);
+            }
+        });
+    }
+
 
 
     </script>

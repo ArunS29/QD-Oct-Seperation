@@ -1,0 +1,170 @@
+﻿@page
+@using QD.ERP.Web.DAL.Entities
+@model QD.ERP.Web.Areas.IMS.Pages.ClientLeadsModel
+@{
+
+}
+
+@{
+    ViewData["Title"] = "Clients";
+
+}
+
+<style>
+    .header-box {
+        background-color: #3c8dbc;
+        color: white;
+        padding: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        /* display: flex; */
+        align-items: center;
+        border-radius: 4px 4px 0 0;
+        width: 300px;
+        height: 200px;
+        margin-left: 15px;
+    }
+
+        .header-box i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .header-box h5 {
+            margin-top: 40px;
+        }
+
+    .datagrid {
+        height: 600px;
+        padding: 18px;
+    }
+
+    .toolbar-buttons {
+        /* position: fixed; */
+        bottom: 20px; /* Distance from bottom */
+        left: 20px; /* Distance from left */
+        display: flex;
+        gap: 10px; /* Space between buttons */
+        /* z-index: 9999; /* Make sure it's on top */ */
+        /* background-color: white; /* Optional: background */ */ padding: 10px; /* Optional: inner spacing */
+        border-radius: 6px;
+        margin-top: 10px;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    }
+
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
+        display: none !important;
+    }
+
+</style>
+
+<!-- Client Header Box -->
+<div class="header-box">
+    <h5>QuickDice ERP Solutions</h5>
+    <i class="dx-icon dx-icon-user"></i> Clients
+</div>
+
+<div>
+    @(
+        Html.DevExtreme().DataGrid<Qry30101ClientList>()
+        .ID("clientsGrid")
+        .DataSource(d => d.Mvc()
+        .Controller("ClientLeads")
+        .LoadAction("Get"))
+        .KeyExpr("ClientCode")
+        .ElementAttr("class", "datagrid")
+
+        .Columns(columns =>
+        {
+            columns.Add().DataField("ClientCode").Caption("Client Code").Visible(true);
+
+            columns.Add().DataField("ClientName").Caption("Client Name").Visible(true);
+            columns.Add().DataField("ContactPerson").Caption("Contact Person").Visible(true);
+            columns.Add().DataField("ContactMobile1").Caption("Contact Mobile").Visible(true);
+            columns.Add().DataField("ContactPhone1").Caption("Contact Phone").Visible(true);
+            columns.Add().DataField("ClientLedgerNo").Caption("Client Ledger No").Visible(true);
+            @*
+    columns.Add().Caption("Business Card").CellTemplate(@<text>
+    function (cellElement, cellInfo) {
+    const data = cellInfo.data;
+    console.log("Raw BusinessCard1 value:", data.BusinessCard1);
+
+    if (data.BusinessCard1) {
+    const base64 = "data:image/jpeg;base64," + data.BusinessCard1; // or image/png
+    console.log("Image src:", base64);
+
+    const img = $("<img>").attr("src", base64).css({
+    height: "80px",
+    width: "auto",
+    borderRadius: "6px"
+    });
+    cellElement.append(img);
+    } else {
+    cellElement.text("No Image");
+    }
+    }
+    </text>); *@
+
+
+
+
+
+        })
+
+        .Summary(s => s.TotalItems(items =>
+        {
+            // Count for ClientName column
+            items.Add().Column("ClientCode")
+            .SummaryType(SummaryType.Count)
+            .DisplayFormat(" Totan no.of Clients: {0}");
+
+        }))
+        .OnContentReady("onGridReady")
+        .ShowBorders(true)
+        .ColumnAutoWidth(true)
+        .ShowColumnLines(true)
+        .ShowRowLines(true)
+        .AllowColumnResizing(true) // Enable column resizing
+        .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
+        .AllowColumnReordering(true) // Optional: allow dragging columns
+        @*   .ColumnChooser(chooser => chooser
+    .Enabled(true)
+    .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
+    ) *@
+        .Paging(p => p.Enabled(false))
+
+        )
+
+</div>
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("InventoryModuleFooter")
+    </div>
+</div>
+<!-- Bottom Toolbar -->
+
+
+<script>
+
+    $(document).ready(function () {
+
+          $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+                                if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
+                  $(this).remove();
+              }
+
+          });
+
+          // Handle Back button click
+          $(document).on('click', '#btnBack', function () {
+              window.history.back();
+          });
+
+      });
+     function onGridReady(e) {
+          const items = e.component.getDataSource().items();
+         console.log("Image src: ", "data:image/png;base64," + data.BusinessCard1);
+
+      }
+</script>

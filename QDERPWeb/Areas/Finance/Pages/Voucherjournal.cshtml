@@ -29,11 +29,6 @@
     .dx-field-label {
         font-weight: bold !important;
     }
-
-
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnRefresh,#btnPrint,#btnToggleSearch,#btnBack,#btntoggleGroupPanel)) {
-        display: none !important;
-    }
 </style>
 <div class="title">
     <div class="header-container">
@@ -359,7 +354,7 @@
         .AllowUpdating(true)   // Enable editing of existing rows
         .AllowDeleting(true)   // Enable deleting rows
         .UseIcons(true)
-       
+
         )
         .OnEditorPreparing("onEditorPreparing")
         // ✅ Add Total Summary for Debit & Credit Fields
@@ -494,12 +489,10 @@
     </div>
 </div>
 <input type="file" id="fileInput" style="display: none;">
-@* @await Html.PartialAsync("_FormFooter") *@
 
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("VATModuleFooter")
-    </div>
+
+<div>
+    @await Html.PartialAsync("_FormFooter")
 </div>
 
 
@@ -758,7 +751,7 @@
         .ShowTitle(true)
         @* .ToolbarItems(toolbar =>
     {
-    toolbar.Add(F
+    toolbar.Add()
     .Widget(w => w.Button()
     .Icon("minus")
     .OnClick("minimizePopup")
@@ -804,22 +797,7 @@
     //     dataGrid.on("rowRemoved", calculateTotals);  // When row is deleted
     // });
     //default
-    $(document).ready(function () {
 
-        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-            if (!$(this).find("#ddButtonLayout,#btnRefresh,#btnPrint,#btnToggleSearch,#btnBack,#btntoggleGroupPanel").length) {
-                $(this).remove();
-            }
-
-        });
-
-        // Handle Back button click
-        $(document).on('click', '#btnBack', function () {
-            window.history.back();
-        });
-
-    });
     $(function () {
         $("#JournalVoucherEntry").dxTextBox({
             text: formatMessage("Journal Voucher Entry"),
@@ -1300,23 +1278,21 @@
     }
     function onRowRemoved(e) {
         $.ajax({
-            url: "/api/VoucherJournal/Delete",
-            type: 'GET',
-            data: { VoucherEntryNo: e.data.VoucherEntryNo },
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire("Deleted!", "Line Entry has been successfully removed from the database.", "success");
-                } else {
-                    Swal.fire("Error!", "Failed to delete the item. " + response.message, "error");
-                }
-            },
-            error: function () {
-                Swal.fire("Error!", "An error occurred while deleting the item.", "error");
-            }
-        });
+     url: "/api/VoucherJournal/Delete",
+     type: 'GET',
+     data: { VoucherEntryNo: e.data.VoucherEntryNo },
+     success: function (response) {
+         if (response.success) {
+             Swal.fire("Deleted!", "Line Entry has been successfully removed from the database.", "success");
+         } else {
+             Swal.fire("Error!", "Failed to delete the item. " + response.message, "error");
+         }
+     },
+     error: function () {
+         Swal.fire("Error!", "An error occurred while deleting the item.", "error");
+     }
+ });
     }
-
-
 
 
 

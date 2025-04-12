@@ -1,0 +1,123 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.InventorySuppliersModel
+@{
+    ViewData["Title"] = "Supplier";
+    
+}
+
+
+
+
+<style>
+    .header {
+        display: flex;
+        margin: 30px;
+
+    }
+    .header-box {
+        background-color: #3c8dbc;
+        color: white;
+        padding: 12px 20px;
+        font-size: 20px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        border-radius: 4px 4px 0 0;
+        width: 300px;
+        height: 200px;
+    }
+
+        .header-box i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+    .dx-datagrid-headers{
+        font-weight: bold;
+        color: black;
+    }
+
+    .datagrid {
+        margin: 30px;
+        height: 600px;
+    }
+
+
+    .toolbar-buttons {
+        padding-top: 150px;
+        margin: 30px;
+        /* position: fixed; */
+        bottom: 20px; /* Distance from bottom */
+        left: 20px; /* Distance from left */
+        display: flex;
+        gap: 10px; /* Space between buttons */
+        /* z-index: 9999; /* Make sure it's on top */ */
+        /* background-color: white; /* Optional: background / */ padding: 10px; / Optional: inner spacing */
+        border-radius: 6px;
+        margin-top: 10px;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    }
+
+</style>
+<div class="header">
+    <div class="header-box">
+        <div>QuickDice ERP Solutions<br /><br /><i class="dx-icon dx-icon-user"></i> Suppliers</div>
+
+    </div>
+  
+</div>
+<div>
+    @(
+        Html.DevExtreme().DataGrid()
+        .ID("supplierGrid")
+       // .DataSource(supplierData)
+        .KeyExpr("SupplierCode")
+        .ElementAttr("class", "datagrid")
+        .ShowBorders(true)
+        .ColumnAutoWidth(true)
+        .ShowColumnLines(true)
+        .ShowRowLines(true)
+        .AllowColumnResizing(true) // Enable column resizing
+        .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
+        .AllowColumnReordering(true) // Optional: allow dragging columns
+        .ColumnChooser(chooser => chooser
+        .Enabled(true)
+        .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
+        )
+        .Paging(p => p.Enabled(false))
+        .Columns(columns =>
+        {
+            columns.Add().DataField("SupplierCode").Caption("Supplier Code").Visible(true).AllowHiding(true);
+            columns.Add().DataField("SupplierName").Caption("Supplier Name").Visible(true).AllowHiding(true);
+            columns.Add().DataField("SupplierType").Caption("Supplier Type").Visible(true).AllowHiding(true);
+            columns.Add().DataField("ContactPhone").Caption("Contact Phone").Visible(true).AllowHiding(true);
+            columns.Add().DataField("ContactMobile").Caption("Contact Mobile").Visible(true).AllowHiding(true);
+            columns.Add().DataField("ContactPerson").Caption("Contact Person").Visible(true).AllowHiding(true);
+            columns.Add().DataField("ContactPersonTitle").Caption("Contact Person Title").Visible(true).AllowHiding(true);
+            columns.Add().DataField("SupplierLedgerNo").Caption("Supplier Ledger No").Visible(true).AllowHiding(true);
+        })
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .Summary(s => s
+        .TotalItems(items =>
+        {
+            items.Add()
+            .Column("SupplierName") // Add the summary to the "Supplier Name" column
+            .SummaryType(SummaryType.Count) // Count the number of suppliers
+            .DisplayFormat("Total Suppliers: {0}"); // Display format
+        })
+        )
+        )
+</div>
+
+
+
+
+
+
+
+<script>
+  
+
+   
+
+</script>
