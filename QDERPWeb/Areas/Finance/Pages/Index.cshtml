@@ -21,7 +21,7 @@
 <!-- Total Outstanding Cards -->
 <div class="dx-card-container">
     <!-- Total Client Outstanding Card -->
-    <div class="dx-card" >
+    <div class="dx-card">
         <div class="dx-card-header">
             <div id="TotalClientOutstanding" class="no-border-input"></div>
         </div>
@@ -98,13 +98,14 @@
     <!-- Client Outstanding Aging Chart -->
     <div class="chart-container">
         <div id="ClientOutstandingAgingChart" class="no-border-title"></div>
-        <div id="clientOutstandingChart"></div>
+        <canvas id="clientOutstandingChart" width="600" height="400"></canvas>
     </div>
 
     <!-- Supplier Outstanding Aging Chart -->
     <div class="chart-container">
         <div id="SupplierOutstandingAgingChart" class="no-border-title"></div>
-        <div id="billsOutstandingChart"></div>
+        <canvas id="billsOutstandingChart" width="600" height="400"></canvas>
+        <div id=""></div>
     </div>
 
     <!-- Bank Accounts Chart -->
@@ -133,10 +134,10 @@
                                 labels: labels,
                                 datasets: [{
                                     label: "Balance Amount",
-                                
+
                                     data: balances,
-                                    backgroundColor: "#4caf50", // Updated color
-                                    borderColor: "#388e3c", // Updated border color
+                                    backgroundColor: "#007acc", // Updated color
+                                    borderColor: "#007acc", // Updated border color
                                     borderWidth: 1
                                 }]
                             },
@@ -536,37 +537,101 @@
             });
 
             // Bills Outstanding Aging Chart
-            $("#billsOutstandingChart").dxChart({
-                dataSource: DevExpress.data.AspNet.createStore({
-                    loadUrl: "/api/Dashboard/GetBillsOutstandingAgingForChart"
-                }),
-                series: [{
-                    argumentField: "OverDueGroup",
-                    valueField: "Balance",
-                    name: formatMessage("Balance Amount"),
-                    type: "bar",
-                    color: "#007acc"
-                }],
-                argumentAxis: {
-                    label: {
-                        rotationAngle: -45
-                    },
-                    title: formatMessage("Overdue Groups")
-                },
-                valueAxis: {
-                    title: formatMessage("Balance Amount"),
-                    label: {
-                        format: { type: "fixedPoint", precision: 2 }
-                    }
-                },
-                legend: {
-                    visible: true
-                },
-                tooltip: {
-                    enabled: true,
-                    format: { type: "fixedPoint", precision: 2 }
+    $(document).ready(function () {
+        $.ajax({
+            url: "/api/Dashboard/GetBillsOutstandingAgingForChart",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    const labels = response.data.map(item => `${item.AccountHead || item.OverDueGroup}`);
+                    const balances = response.data.map(item => item.Balance);
+
+                    const ctx = document.getElementById("billsOutstandingChart").getContext("2d");
+                    new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Balance Amount",
+                                data: balances,
+                                backgroundColor: "#007acc",
+                                borderColor: "#007acc",
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    labels: {
+                                        font: {
+                                            size: 12
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    enabled: true,
+                                    callbacks: {
+                                        label: function (context) {
+                                            return `Balance: ${context.raw.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+                                        }
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: "Top 5 Bills Outstanding by Overdue Group",
+                                    font: {
+                                        size: 16,
+                                        weight: "bold"
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: "Overdue Groups",
+                                        font: {
+                                            size: 14,
+                                            weight: "bold"
+                                        }
+                                    },
+                                    ticks: {
+                                        autoSkip: false,
+                                        maxRotation: 45,
+                                        minRotation: 0
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: "Balance Amount",
+                                        font: {
+                                            size: 14,
+                                            weight: "bold"
+                                        }
+                                    },
+                                    ticks: {
+                                        callback: function (value) {
+                                            return value.toLocaleString();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.error("Error loading data: ", response.message);
                 }
-            });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data: ", error);
+            }
+        });
+    });
 
             $.getJSON("/api/Dashboard/GetCashBalance", function (response) {
                 if (response.success) {
@@ -1009,6 +1074,7 @@
     .grid-section div {
         text-align: center; /* Center the title */
     }
+
     .dx-card-container {
         display: flex;
         justify-content: center;

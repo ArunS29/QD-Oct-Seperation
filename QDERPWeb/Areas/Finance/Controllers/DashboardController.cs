@@ -170,79 +170,92 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
-       [HttpGet]
-public async Task<IActionResult> GetOutstandingChartData()
-{
-    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
-    {
-        try
-        {
-            var clientData = dbContext.Qry20115BillsOutStandings
-                .Where(b => b.Balance > 0)
-                .Select(b => new
-                {
-                    b.AccountHeadNo,
-                    b.AccountHead,
-                    b.Balance,
-                    b.OverdueDays,
-                    Type = "Client"
-                });
-
-            var supplierData = dbContext.Qry20115BillsPayableOutStandings
-                .Where(b => b.Balance > 0)
-                .Select(b => new
-                {
-                    b.AccountHeadNo,
-                    b.AccountHead,
-                    b.Balance,
-                    b.OverdueDays,
-                    Type = "Supplier"
-                });
-
-            var combinedData = await clientData
-                .Concat(supplierData)
-                .OrderByDescending(x => x.Balance)
-                .ThenByDescending(x => x.OverdueDays)
-                .ThenBy(x => string.IsNullOrEmpty(x.AccountHead))
-                .ThenBy(x => x.AccountHead)
-                .Take(5)
-                .ToListAsync();
-
-            return Json(new { success = true, data = combinedData });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Error in GetOutstandingChartData: {ex.Message}");
-            return StatusCode(500, "Internal server error");
-        }
-    }
-
-    return Unauthorized(new { message = "Invalid tenant.", success = false });
-}
-
-
-
-
         [HttpGet]
-        public async Task<IActionResult> GetBillsOutstandingAgingForChart(DataSourceLoadOptions loadOptions)
+        public async Task<IActionResult> GetOutstandingChartData()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var data = await Task.Run(() => dbContext.Qry20117BillsOutstandingAgingForCharts
+                    var clientData = dbContext.Qry20115BillsOutStandings
                         .Where(b => b.Balance > 0)
-                        .OrderByDescending(b => b.Balance)
-                        .Take(5)
                         .Select(b => new
                         {
-                            b.OverdueDays,
+                            b.AccountHeadNo,
+                            b.AccountHead,
                             b.Balance,
-                            b.OverDueGroup
-                        })
-                        .ToList());
+                            b.OverdueDays,
+                            Type = "Client"
+                        });
 
-                    return Ok(new { success = true, data });
+                    var supplierData = dbContext.Qry20115BillsPayableOutStandings
+                        .Where(b => b.Balance > 0)
+                        .Select(b => new
+                        {
+                            b.AccountHeadNo,
+                            b.AccountHead,
+                            b.Balance,
+                            b.OverdueDays,
+                            Type = "Supplier"
+                        });
+
+                    var combinedData = await clientData
+                        .Concat(supplierData)
+                        .OrderByDescending(x => x.Balance)
+                        .ThenByDescending(x => x.OverdueDays)
+                        .ThenBy(x => string.IsNullOrEmpty(x.AccountHead))
+                        .ThenBy(x => x.AccountHead)
+                        .Take(5)
+                        .ToListAsync();
+
+                    return Json(new { success = true, data = combinedData });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetOutstandingChartData: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetBillsOutstandingAgingForChart()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Define overdue day ranges with labels
+                    var overdueRanges = new[]
+                    {
+                new { Min = 0, Max = 30, Label = "0-30 Days" },
+                new { Min = 31, Max = 60, Label = "31-60 Days" },
+                new { Min = 61, Max = 90, Label = "61-90 Days" },
+                new { Min = 91, Max = int.MaxValue, Label = "91+ Days" }
+            };
+
+                    // Group and project data into labeled overdue buckets
+                    var overdueData = overdueRanges.SelectMany(range =>
+                        dbContext.Qry20115BillsPayableOutStandings
+                            .Where(b => b.Balance > 0 && b.OverdueDays >= range.Min && b.OverdueDays <= range.Max)
+                            .Select(b => new
+                            {
+                                OverdueRange = range.Label,
+                                b.Balance,
+                                b.OverdueDays,
+                                b.AccountHead
+                            }))
+                        .OrderByDescending(b => b.Balance)
+                        .ThenByDescending(b => b.OverdueDays)
+                        .Take(5)
+                        .ToList();
+
+                    return Ok(new { success = true, data = overdueData });
                 }
                 catch (Exception ex)
                 {
