@@ -211,11 +211,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var userName = HttpContext.Session.GetString("UserName") ?? "Unknown User"; // Get username from session
-
+                    var userId = HttpContext.Session.GetString("UserId");
                     return Ok(new
                     {
                         success = true,
-                        UserName = userName
+                        UserName = userName,
+                        UserId=userId
 
                     });
                 }

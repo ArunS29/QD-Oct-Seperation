@@ -1,0 +1,202 @@
+﻿@page
+
+@model QD.ERP.Web.Areas.Finance.Pages.ClientStatusUpdateModel
+
+@{
+    ViewBag.Title = "Client Status Update";
+}
+
+
+<!-- Styles -->
+<style>
+    .form-container {
+        width: 100%;
+
+        margin: 100px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background: #f9f9f9;
+    }
+
+    .form-group-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+        .form-group-row > div {
+            flex: 1;
+            min-width: 250px;
+        }
+
+    .status-with-button {
+        align-items: end;
+        display: flex;
+    }
+
+    .plus-btn-wrapper {
+
+        display: flex;
+        align-items: center;
+
+    }
+
+    .inline-plus-button {
+        background-color: #b6e265;
+        border-radius: 50%;
+        height: 32px;
+        width: 32px;
+        min-width: 32px;
+        padding: 0;
+    }
+
+    /* Targets the input inside DevExtreme's TextArea */
+    .custom-textarea-with-scroll .dx-texteditor-input {
+        overflow-y: scroll !important;
+    }
+
+
+
+
+</style>
+
+<div class="form-container">
+
+    <h3>Client Status Update</h3>
+
+    <div class="form-group-row">
+        @(Html.DevExtreme().TextBox()
+            .ID("statusId")
+            .Label("Status ID")
+            .LabelMode(EditorLabelMode.Outside)
+            .TabIndex(1)
+            )
+        @(Html.DevExtreme().SelectBox()
+            .ID("client")
+            .Label("Client")
+            .LabelMode(EditorLabelMode.Outside)
+            .DataSource(d => d.WebApi().Controller("Client").LoadAction("GetClients").Key("ClientId"))
+            .DisplayExpr("ClientName")
+            .ValueExpr("ClientId")
+            .SearchEnabled(true)
+            .ShowClearButton(true)
+            .TabIndex(2)
+            )
+
+      
+    </div>
+
+    <div class="form-group-row">
+        @(Html.DevExtreme().SelectBox()
+            .ID("reportedOn")
+            .Label("Reported On")
+            .LabelMode(EditorLabelMode.Outside)
+            .SearchEnabled(true)
+            .ShowClearButton(true)
+            .TabIndex(3)
+            )
+        @(Html.DevExtreme().TextBox()
+            .ID("reportedBy")
+            .Label("Reported By")
+            .LabelMode(EditorLabelMode.Outside)
+            .TabIndex(4)
+            )
+    </div>
+    <div class="form-group-row">
+        @(Html.DevExtreme().TextArea()
+            .ID("reportRemarks")
+            .Name("reportRemarks")
+            .Label("Report Remarks")
+            .LabelMode(EditorLabelMode.Outside)
+            .Height(300) // Initial height
+            .TabIndex(5)
+            .ElementAttr(new
+            {
+                @class = "custom-textarea-with-scroll"
+            })
+            )
+    </div>
+
+    <!-- Status with inline plus button -->
+    <div class="form-group-row status-with-button">
+        @(Html.DevExtreme().SelectBox()
+            .ID("statusSelectBox")
+            .Label("Status")
+            .LabelMode(EditorLabelMode.Outside)
+            .DisplayExpr("Name")
+            .ValueExpr("Id")
+            .ShowClearButton(true)
+            .SearchEnabled(true)
+            .Width("100%")
+            .TabIndex(6)
+            )
+
+        <div class="plus-btn-wrapper">
+            @(Html.DevExtreme().Button()
+                .ID("btnAddStatus")
+                .Icon("plus")
+                .Width("60")
+
+                .Hint("Add new status")
+                .ElementAttr(new { @class = "inline-plus-button dx-button-mode-contained dx-button-normal" })
+                .OnClick("onAddStatusClicked")
+                )
+        </div>
+    </div>
+
+    <!-- Followup Date -->
+    <div class="form-group-row">
+        @(Html.DevExtreme().SelectBox()
+            .ID("followUpOn")
+            .Label("Followup On")
+            .LabelMode(EditorLabelMode.Outside)
+
+            .TabIndex(7)
+            )
+    </div>
+
+
+    <div class="container1">
+        <div class="card-footer">
+            <div class="dx-fieldset horizontal-container1 mt-2">
+
+                @(Html.DevExtreme().Button()
+                    .ID("btnSave")
+                    .Text(new JS("formatMessage('Save')"))
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("Save")
+                    )
+
+                @(Html.DevExtreme().Button()
+                    .ID("btnDelete")
+                    .Text(new JS("formatMessage('Delete')"))
+                    .Icon("remove")
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    //.OnClick("navigateToHome")
+                    )
+                @(Html.DevExtreme().Button()
+                    .ID("btnBack")
+                    .Text(new JS("formatMessage('Back')"))
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("back")
+                    )
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- JavaScript handler (optional) -->
+<script>
+    function onAddStatusClicked(e) {
+        DevExpress.ui.notify("Add Status clicked", "info", 1000);
+        // You can replace this with a custom popup/modal logic
+    }
+</script>

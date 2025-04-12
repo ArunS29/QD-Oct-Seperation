@@ -1,4 +1,5 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.XtraRichEdit.Import.Html;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -293,6 +294,85 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
         }
+
+
+        [HttpPost]
+
+        [HttpPost]
+        public IActionResult DeleteJournalEntry([FromBody] string journalRefNo)
+        {
+            try
+            {
+                var userIdString = HttpContext.Session.GetString("UserId");
+                var userName = HttpContext.Session.GetString("UserName") ?? "Unknown User";
+
+                if (string.IsNullOrEmpty(userIdString))
+                    return Unauthorized("User session expired. Please log in again.");
+
+                int userId = int.Parse(userIdString);
+
+                //// 🔒 Check Delete Access
+                //var access = _context.TblUserAccesses
+                //    .FirstOrDefault(x => x.UserId == userId && x.ItemName == "btnDelete" && x.ItemVisible == true);
+
+                //if (access == null)
+                //    return BadRequest("You have no Access rights to delete this Journal Entry.");
+
+                // 🔍 Find journal master
+
+                // 🔍 Find journal master
+                var master = _context.Tbl20126JournalRegisterMasters
+                    .FirstOrDefault(x => x.JournalRefNo == journalRefNo);
+
+                if (master == null)
+                    return NotFound("Journal Entry not found.");
+
+                if (master.IsSubmittedToFinance == true)
+                    return BadRequest("Journal Entry is already submitted. You cannot delete it.");
+
+                if (master.IsApproved == true)
+                    return BadRequest("Journal Entry is already approved. You cannot delete it.");
+
+                if (master.IsPosted == true)
+                    return BadRequest("Journal Entry is already posted. You cannot delete it.");
+
+                // 🗑️ Delete related child entries
+                _context.Tbl20127JournalRegisterChildren.RemoveRange(
+                    _context.Tbl20127JournalRegisterChildren.Where(x => x.JournalRefNo == journalRefNo));
+
+                _context.Tbl20128JournalRegisterCostAllocations.RemoveRange(
+                    _context.Tbl20128JournalRegisterCostAllocations.Where(x => x.VoucherNo == journalRefNo));
+
+                _context.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(
+                    _context.Tbl20129JournalRegisterEmployeeAllocations.Where(x => x.VoucherNo == journalRefNo));
+
+                _context.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(
+                    _context.Tbl20130JournalRegisterPropertyAllocations.Where(x => x.VoucherNo == journalRefNo));
+
+                _context.Tbl20126JournalRegisterMasters.Remove(master);
+
+                // 📝 Log the delete action
+                _context.Database.ExecuteSqlRaw(
+                    "EXEC sp90116InsertUserLogEntry @p0, @p1, @p2, @p3",
+                    "Journal Entry Form",
+                    $"Journal Entry Ref No. {journalRefNo} has been deleted.",
+                    userName,
+                    journalRefNo
+                );
+
+                _context.SaveChanges();
+
+                return Ok(new { message = "Journal Entry Form has been successfully removed from the Register." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting journal entry with RefNo: {JournalRefNo}", journalRefNo);
+                return StatusCode(500, "An unexpected error occurred while trying to delete the Journal Entry.");
+            }
+        }
+
+
+
 
     }
 }

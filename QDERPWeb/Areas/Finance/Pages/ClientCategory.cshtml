@@ -1,0 +1,291 @@
+﻿@page
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+   
+
+    .dx-field-label {
+        font-weight: bold !important;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="JournalVoucherEntry" class="no-border-input"></div>
+    </div>
+</div>
+
+<div id="costAllocationPopup" style="display:none;">
+    <div style="margin-bottom:10px">
+        @(Html.DevExtreme().Button()
+            .ID("btnSaveCostAllocation")
+            .Icon("save")
+            .Text(new JS("formatMessage('Save')"))
+            .OnClick("function() { saveCostAllocation(); }")
+            )
+    </div>
+</div>
+
+
+<div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
+    <div class="form-group">
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Type a New Client & Add  to the Existing List:')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("ClientCategory")
+            .Value("")
+         
+            )
+    </div>
+    
+    <div class="form-group">
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Client Category Code:')"))
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("CategoryCode")
+            .Value("")
+           
+          
+            )
+    </div>
+</div>
+
+
+
+
+<div class="dx-fieldset horizontal-container" style="margin-top:10px;">
+    <div class="form-group">
+    </div>
+
+  
+    <div class="form-group" style="margin-top: 25px;">
+        @(Html.DevExtreme().Button()
+            .ID("btnVoucherEntry")
+            .Text(new JS("formatMessage('Add')"))
+            .Height(40)
+            .Width(178)
+            .Icon("plus")
+            .OnClick("function() { addVoucherEntry(); }")
+            )
+    </div>
+
+</div>
+
+
+<div class="dx-field ledgerResult">
+    @(
+        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl30102ClientCategory>()
+                    .ID("dataGrid")
+        .DataSource(ds => ds.Mvc()
+        .Controller("ClientCategory")
+        .LoadAction("Get"))
+        .KeyExpr("ClientCategoryCode")
+                    .RemoteOperations(false)
+                   // .OnRowRemoved("onRowRemoved")
+
+                    .Columns(columns =>
+                    {
+            columns.AddFor(m => m.ClientCategoryCode).Caption(new JS("formatMessage('Client Category Code')")).AllowEditing(false).Alignment(HorizontalAlignment.Center);
+            columns.AddFor(m => m.ClientCategory).Caption(new JS("formatMessage('Client Category')")).AllowEditing(true).Alignment(HorizontalAlignment.Left);
+            columns.AddFor(m => m.CategoryCode).Caption(new JS("formatMessage('Category Code')")).AllowEditing(true).Alignment(HorizontalAlignment.Center);
+                    }
+    )
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(true))
+        .Height(250)
+        .ColumnAutoWidth(true)
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+
+        .Editing(editing => editing
+        .Mode(GridEditMode.Cell)
+        .AllowUpdating(true)
+      
+        )
+        .OnRowUpdating("onUnitRowUpdating")
+       
+        )
+</div>
+
+
+
+
+
+
+
+
+    <div class="container1">
+        <div class="card-footer">
+            <div class="dx-fieldset horizontal-container1 mt-2">
+
+                @(Html.DevExtreme().Button()
+                    .ID("btnUpdate")
+                    .Text(new JS("formatMessage('Update')"))
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("Update")
+                    )
+            
+                @(Html.DevExtreme().Button()
+                    .ID("btnBack")
+                    .Text(new JS("formatMessage('Back')"))
+                    .Icon("arrowleft")
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    //.OnClick("navigateToHome")
+                    )
+            </div>
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+<script>
+    $("#btnUpdate").on("click", function () {
+
+        const grid = $("#dataGrid").dxDataGrid("instance");
+
+        grid.saveEditData(); // Triggers onUnitRowUpdating
+
+    });
+
+
+    function onUnitRowUpdating(e) {
+
+        const data = {
+
+            ClientCategoryCode: e.oldData.ClientCategoryCode, // Include when updating
+
+            ClientCategory: e.newData.ClientCategory ?? e.oldData.ClientCategory,
+
+            CategoryCode: e.newData.CategoryCode ?? e.oldData.CategoryCode
+
+        };
+
+        return $.ajax({
+
+            url: '/api/ClientCategory/UpdateClientCategories',
+
+            method: "POST",
+            contentType: "application/json", // ✅ Tells the server this is JSON
+            data: JSON.stringify([data]),
+
+            success: function (response) {
+
+                    DevExpress.ui.notify(response.message, "success", 1500); // ✅ Green message
+
+                    $("#dataGrid").dxDataGrid("instance").refresh();
+                  },
+
+            error: function () {
+
+                DevExpress.ui.notify("Server error", "error", 1500);
+
+            }
+
+        });
+
+    }
+
+
+    // function updateClientCategories() {
+    //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+    //     // Save any in-progress cell edit before getting data
+    //     dataGrid.saveEditData().done(function () {
+    //         const visibleRows = dataGrid.getVisibleRows();
+    //         const updatedData = visibleRows.map(row => row.data);
+
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/api/ClientCategory/UpdateClientCategories",
+    //             contentType: "application/json",
+    //             data: JSON.stringify(updatedData),
+    //             success: function (response) {
+    //                 DevExpress.ui.notify("Updated successfully!", "success", 2000);
+    //                 dataGrid.refresh();
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 DevExpress.ui.notify("Update failed: " + error, "error", 3000);
+    //             }
+    //         });
+    //     });
+    // }
+
+
+    // $("#btnUpdate").on("click", function () {
+    //     debugger;
+    //     const grid = $("#dataGrid").dxDataGrid("instance");
+    //     const allData = grid.option("dataSource");
+
+    //     $.ajax({
+    //         url: "/api/ClientCategory/UpdateClientCategories", // your API endpoint
+    //         type: "POST",
+    //         contentType: "application/json",
+    //         data: JSON.stringify(allData),
+    //         success: function (response) {
+    //             DevExpress.ui.notify("Updated successfully!", "success", 2000);
+    //             grid.refresh(); // Optional: refresh to reload from server
+    //         },
+    //         error: function (xhr, status, error) {
+    //             DevExpress.ui.notify("Update failed: " + error, "error", 3000);
+    //         }
+    //     });
+    // });
+
+    function addVoucherEntry() {
+        debugger;
+        // Get values from the fields
+        var clientCategory = $("#ClientCategory").dxTextBox("instance").option("value");
+        var CategoryCode = $("#CategoryCode").dxTextBox("instance").option("value");
+
+
+        // Prepare the object to send
+        var VE = {
+            "ClientCategory": clientCategory,
+            "CategoryCode": CategoryCode,
+        };
+
+        // AJAX request to add voucher entry
+        $.ajax({
+            type: "POST",
+            url: "/api/ClientCategory/CreateClientCategory",
+            contentType: "application/json",
+            data: JSON.stringify(VE),
+            dataType: "json",
+            success: function (response) {
+                console.log(response.data);
+                // Update the data grid with the new data
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+
+                $("#ClientCategory").dxTextBox("instance").option("value", "");
+                $("#CategoryCode").dxTextBox("instance").option("value", "");
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 3000);
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+       
+</script>
