@@ -876,6 +876,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             SignatoryID = s.SignatoryId.ToString(),
                             SignatoryName = s.SignatoryName
                         })
+
                         .ToList(); // Materialize the query first
 
                     var combinedSignatories = dbSignatories
@@ -920,38 +921,57 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-		[HttpPost]
-		public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				// Check if the UnitType or the combination already exists
-				bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
-					u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
-					u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
-					u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
+        [HttpPost]
+        public ActionResult AddUom(string unitCode, string unitType, string unitDesc, string unitDescAr)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // If UnitCode is provided, we try to update
+                if (!string.IsNullOrEmpty(unitCode) && byte.TryParse(unitCode, out byte parsedUnitCode))
+                {
+                    var existingUom = dbContext.Tbl40111PropertyUnitCodes
+                    .FirstOrDefault(u => u.UnitCode == parsedUnitCode);
 
-				if (exists)
-				{
-					return Json(new { success = false, message = "This Unit Rate Method already exists." });
-				}
+                    if (existingUom != null)
+                    {
+                        existingUom.UnitType = unitType;
+                        existingUom.UnitDesc = unitDesc;
+                        existingUom.UnitDescAr = unitDescAr;
 
-				// Add new entry
-				var newUom = new Tbl40111PropertyUnitCode
-				{
-					UnitType = unitType,
-					UnitDesc = unitDesc,
-					UnitDescAr = unitDescAr
-				};
+                        dbContext.SaveChanges();
 
-				dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
-				dbContext.SaveChanges();
+                        return Json(new { success = true, message = "Unit updated successfully" });
+                    }
+                }
 
-				return Json(new { success = true, unitCode = newUom.UnitCode });
-			}
+                // Check if the same combination already exists before inserting
+                bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
+                    u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
+                    u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
+                    u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
 
-			return Json(new { success = false, message = "Unable to get tenant context" });
-		}
+                if (exists)
+                {
+                    return Json(new { success = false, message = "This Unit Rate Method already exists." });
+                }
+
+                // Insert new
+                var newUom = new Tbl40111PropertyUnitCode
+                {
+                    UnitType = unitType,
+                    UnitDesc = unitDesc,
+                    UnitDescAr = unitDescAr
+                };
+
+                dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
+                dbContext.SaveChanges();
+
+                return Json(new { success = true, message = "Unit added successfully", unitCode = newUom.UnitCode });
+            }
+
+            return Json(new { success = false, message = "Unable to get tenant context" });
+        }
+
 
         [HttpGet]
         public IActionResult GetVatTaxSlabs()
@@ -980,6 +1000,132 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public IActionResult GetAllSign()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var dbSignatories = dbContext.Tbl90104DocumentSignatories
+                        .Select(s => new
+                        {
+                            SignatoryID = s.SignatoryId.ToString(),
+                            SignatoryName = s.SignatoryName,
+                            SignatoryPosition = s.SignatoryPosition,
+                            SignatoryContact = s.SignatoryContact,
+                            SignatoryEmail = s.SignatoryEmail,
+                            SignatureDescription = s.SignatureDescription,
+                            SignatureCode = s.SignatureCode,
+                            SignatoryMobile1 = s.SignatoryMobile1,
+                            SignatoryMobile2 = s.SignatoryMobile2,
+                            SignatoryNameAr = s.SignatoryNameAr,
+                            SignatoryPositionAr = s.SignatoryPositionAr,
+                            IsFinanceManager = s.IsFinanceManager,
+                            UserId = s.UserId,
+                            SignatureImageBase64 = s.SignatureImage != null
+                                ? Convert.ToBase64String(s.SignatureImage)
+                                : null
+                        })
+                        .ToList();
+
+                    return Ok(dbSignatories);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message, success = false });
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveSignatory([FromBody] Tbl90104DocumentSignatory model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var now = DateTime.Now;
+
+                    // ✅ Check if SignatoryName already exists (excluding current record)
+                    bool isDuplicate = await dbContext.Tbl90104DocumentSignatories
+                        .AnyAsync(x => x.SignatoryName == model.SignatoryName && x.SignatoryId != model.SignatoryId);
+
+                    if (isDuplicate)
+                    {
+                        return Conflict(new { success = false, message = "Signatory name already exists." });
+                    }
+
+                    var existing = await dbContext.Tbl90104DocumentSignatories
+                        .FirstOrDefaultAsync(x => x.SignatoryId == model.SignatoryId);
+
+                    if (existing != null)
+                    {
+                        existing.SignatoryName = model.SignatoryName;
+                        existing.SignatoryPosition = model.SignatoryPosition;
+                        existing.SignatoryContact = model.SignatoryContact;
+                        existing.SignatoryEmail = model.SignatoryEmail;
+                        existing.SignatureImage = model.SignatureImage;
+                        existing.SignatureDescription = model.SignatureDescription;
+                        existing.SignatureCode = model.SignatureCode;
+                        existing.SignatoryMobile1 = model.SignatoryMobile1;
+                        existing.SignatoryMobile2 = model.SignatoryMobile2;
+                        existing.SignatoryNameAr = model.SignatoryNameAr;
+                        existing.SignatoryPositionAr = model.SignatoryPositionAr;
+                        existing.IsFinanceManager = model.IsFinanceManager;
+                        existing.UserId = model.UserId;
+                    }
+                    else
+                    {
+                        dbContext.Tbl90104DocumentSignatories.Add(model);
+                    }
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Saved successfully", id = model.SignatoryId });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in SaveSignatory: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
+        }
+		[HttpGet]
+		public async Task<ActionResult> GetVatInvoice(string frmDate, string toDate)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					// Base query (IQueryable for optional filtering)
+					var query = dbContext.Qry201807vatcreditNoteRegisterMainViews.AsQueryable();
+
+					// Apply date filter only if both dates are passed
+					if (!string.IsNullOrEmpty(frmDate) && !string.IsNullOrEmpty(toDate) &&
+						DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from) &&
+						DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+					{
+						query = query.Where(x => x.InvoiceDateWtTime >= from && x.InvoiceDateWtTime <= to);
+					}
+
+					var vatInvoices = await query.ToListAsync();
+
+					return Json(vatInvoices);
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(500, $"Internal server error: {ex.Message}");
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+
+
 
 	}
 }

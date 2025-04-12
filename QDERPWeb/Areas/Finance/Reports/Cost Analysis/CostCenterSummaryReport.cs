@@ -2,6 +2,7 @@
 using System.Drawing;
 using DevExpress.DataAccess.Sql;
 using DevExpress.XtraReports.UI;
+using Microsoft.Identity.Client;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
 {
@@ -120,6 +121,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 Type = typeof(DateTime),
                 ValueInfo = toDate.ToString("yyyy-MM-dd")
             });
+
+
+
 
             this.sqlDataSource1.Queries.Clear();
             this.sqlDataSource1.Queries.Add(selectQuery);

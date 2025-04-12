@@ -5,6 +5,113 @@
 }
 
 <style>
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		margin-right: 10px;
+		transition: transform 0.2s;
+	}
+
+		.toggle-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #e53935; /* RED = OFF */
+		transition: .4s;
+		border-radius: 20px;
+	}
+
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 16px;
+			width: 16px;
+			left: 2px;
+			bottom: 2px;
+			background-color: white;
+			transition: .4s;
+			border-radius: 50%;
+		}
+
+	.toggle-switch input:checked + .slider {
+		background-color: #4CAF50; /* GREEN = ON */
+		transform: scale(0.95);
+	}
+
+		.toggle-switch input:checked + .slider:before {
+			transform: translateX(20px);
+		}
+
+	.vat-item {
+		display: flex;
+		align-items: center;
+		padding: 6px 10px;
+		color: #666666; /* grey text */
+		background-color: transparent !important; /* remove any background */
+	}
+
+	.vat-label {
+		font-weight: bold;
+		color: #666666; /* grey label */
+	}
+
+	/* Remove list background */
+	#vatTransactionList {
+		background-color: transparent !important;
+	}
+
+	
+
+
+	.address-form-container {
+		padding: 8px;
+		box-sizing: border-box;
+		width: 100%;
+		font-size: 12px;
+	}
+
+	.address-form-table {
+		width: 100%;
+		border-collapse: collapse;
+		table-layout: fixed;
+	}
+
+		.address-form-table td {
+			padding: 6px;
+			vertical-align: top;
+			width: 33%;
+		}
+
+		.address-form-table label {
+			display: block;
+			font-weight: bold;
+			font-size: 11px;
+			margin-bottom: 3px;
+			white-space: nowrap;
+			color: black;
+		}
+
+		.address-form-table input[type="text"],
+		.address-form-table select {
+			width: 100%;
+			padding: 4px;
+			font-size: 11px;
+			border: 1px solid #aaa;
+			border-radius: 3px;
+			box-sizing: border-box;
+		}
 	.body {
 	padding-top: 0px;
 	}
@@ -13,6 +120,33 @@
 	margin: 0px;
 	}
 
+	.icon-btn {
+		background-color: #ffffff;
+		border: 1px solid #d1d5db; /* soft gray border */
+		border-radius: 6px;
+		margin-top: 24px; /* aligns with DevExtreme label */
+		padding: 0;
+		height: 38px;
+		width: 38px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	}
+
+		.icon-btn:hover {
+			background-color: #f3f4f6; /* light hover */
+			border-color: #9ca3af;
+		}
+
+		.icon-btn i {
+			font-size: 14px;
+			color: #374151; /* neutral icon */
+		}
+
+	
 	.content-container-top {
 	width: 1700px;
 	}
@@ -282,16 +416,25 @@
 																																							.Disabled(true))
 								</td>
 								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Invoice Transactions Code')")).ID("InvoiceTransactionsCode")
-																																							.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getTransactionCodes").LoadMode(DataSourceLoadMode.Raw).Key("TransactionCode")).AcceptCustomValue(true)
-																																							.OpenOnFieldClick(false)
-																																							.ValueChangeEvent("input")
-																																							.HoverStateEnabled(true)
-																																							.Value(0100000) // Ensure this matches an actual key value
-																																							.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
-																																							.DisplayExpr("InvoiceType") // Set display value if needed
-																																							)
+									@(Html.DevExtreme().DropDownBox()
+																			.ID("InvoiceTransactionsCode")
+																			.Label("Invoice Transaction Type")
+																			.Value(new[] { 1 }) // Default selected value
+																			.ValueExpr("ID")
+																			.DisplayExpr("Name")
+																			.Placeholder("Choose VAT Transaction Types")
+																			.ContentTemplate(new JS("VATTransactionTemplate"))
+																			.DataSource(new[] {
+									new { ID = 1, Name = "3rd Party Tax Invoice" },
+									new { ID = 2, Name = "Nominal Tax Invoice" },
+									new { ID = 3, Name = "Export Tax Invoice" },
+									new { ID = 4, Name = "Summary Tax Invoice" },
+									new { ID = 5, Name = "Self Billed Tax Invoice" }
+									})
+																			)
 								</td>
+
+
 							</tr>
 						</table>
 					</div>
@@ -387,45 +530,6 @@
 																			.OpenOnFieldClick(true)
 																			.ContentTemplate(@<text>
 
-										<style>
-											.address-form-container {
-												padding: 8px;
-												box-sizing: border-box;
-												width: 100%;
-												font-size: 12px;
-											}
-
-											.address-form-table {
-												width: 100%;
-												border-collapse: collapse;
-												table-layout: fixed;
-											}
-
-												.address-form-table td {
-													padding: 6px;
-													vertical-align: top;
-													width: 33%;
-												}
-
-												.address-form-table label {
-													display: block;
-													font-weight: bold;
-													font-size: 11px;
-													margin-bottom: 3px;
-													white-space: nowrap;
-													color: black;
-												}
-
-												.address-form-table input[type="text"],
-												.address-form-table select {
-													width: 100%;
-													padding: 4px;
-													font-size: 11px;
-													border: 1px solid #aaa;
-													border-radius: 3px;
-													box-sizing: border-box;
-												}
-										</style>
 
 										<div class="dx-viewport address-form-container">
 											<table class="address-form-table">
@@ -1105,109 +1209,96 @@
 
 						<tr>
 							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Prepared By')")).ID("PreparedBy")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
-								@(Html.DevExtreme().DropDownBox()
-																													.Label(new JS("formatMessage('Prepared By')"))
-																													.DataSource(d => d.WebApi()
-																													.Controller("VATModule")
-																													.LoadAction("GetAllSignatories")
-																													.LoadMode(DataSourceLoadMode.Raw)
-																													.Key("SignatoryID")
-																													)
-
-																													.LabelMode(EditorLabelMode.Outside)
-																													.ID("ddlGoodsGroup9")
-																													.ShowClearButton(true)
-																													.AcceptCustomValue(true)
-																													.OpenOnFieldClick(false)
-																													.ValueChangeEvent("input")
-																													.HoverStateEnabled(true)
-																													.ValueExpr("SignatoryID")
-																													.DisplayExpr("SignatoryName")
-																													.OnInput("dropDownBoxOnInput")
-																													.OnOpened("onOpened")
-																													//.Width(650)
-																													.TabIndex(1)
-																													.DropDownOptions(o => o
-																													.Width(1000)
-																													)
-																													//  .OnKeyDown("onKeyDown")
-																													//.OnValueChanged("dropDownBoxValueChanged")
-																													.ContentTemplate(new TemplateName("PreparedByTemplate"))
-																													.Width("85%")
-																													)
+								<div style="display: flex; align-items: center; gap: 4px;">
+									@(Html.DevExtreme().DropDownBox()
+																			.Label(new JS("formatMessage('Prepared By')"))
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetAllSignatories")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("SignatoryID"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("ddlGoodsGroup9")
+																			.ShowClearButton(true)
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
+																			.HoverStateEnabled(true)
+																			.ValueExpr("SignatoryID")
+																			.DisplayExpr("SignatoryName")
+																			.OnInput("dropDownBoxOnInput")
+																			.OnOpened("onOpened")
+																			.DropDownOptions(o => o.Width(1000))
+																			.ContentTemplate(new TemplateName("PreparedByTemplate"))
+																			.Width("100%")
+																			)
+									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
+										<i class="fa fa-plus"></i>
+									</button>
+								</div>
 							</td>
 							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Checked By')")).ID("CheckedBy")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans"))) *@
-								@(Html.DevExtreme().DropDownBox()
-																													.Label(new JS("formatMessage('Checked By')"))
-																													.DataSource(d => d.WebApi()
-																													.Controller("VATModule")
-																													.LoadAction("GetAllSignatories")
-																													.LoadMode(DataSourceLoadMode.Raw)
-																													.Key("SignatoryID")
-																													)
-
-																													.LabelMode(EditorLabelMode.Outside)
-																													.ID("ddlGoodsGroup10")
-																													.ShowClearButton(true)
-																													.AcceptCustomValue(true)
-																													.OpenOnFieldClick(false)
-																													.ValueChangeEvent("input")
-																													.HoverStateEnabled(true)
-																													.ValueExpr("SignatoryID")
-																													.DisplayExpr("SignatoryName")
-																													.OnInput("dropDownBoxOnInput")
-																													.OnOpened("onOpened")
-																													//.Width(650)
-																													.TabIndex(1)
-																													.DropDownOptions(o => o
-																													.Width(1000)
-																													)
-																													//  .OnKeyDown("onKeyDown")
-																													//.OnValueChanged("dropDownBoxValueChanged")
-																													.ContentTemplate(new TemplateName("CheckedByTemplate"))
-																													.Width("85%")
-																													)
+								<div style="display: flex; align-items: center; gap: 4px;">
+									@(Html.DevExtreme().DropDownBox()
+																			.Label(new JS("formatMessage('Checked By')"))
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetAllSignatories")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("SignatoryID"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("ddlGoodsGroup10")
+																			.ShowClearButton(true)
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
+																			.HoverStateEnabled(true)
+																			.ValueExpr("SignatoryID")
+																			.DisplayExpr("SignatoryName")
+																			.OnInput("dropDownBoxOnInput")
+																			.OnOpened("onOpened")
+																			.DropDownOptions(o => o.Width(1000))
+																			.ContentTemplate(new TemplateName("CheckedByTemplate"))
+																			.Width("100%")
+																			)
+									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
+										<i class="fa fa-plus"></i>
+									</button>
+								</div>
 							</td>
 							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Approved By')")).ID("ApprovedBy1")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans"))) *@
-								@(Html.DevExtreme().DropDownBox()
-																													.Label(new JS("formatMessage('Approved By')"))
-																													.DataSource(d => d.WebApi()
-																													.Controller("VATModule")
-																													.LoadAction("GetAllSignatories")
-																													.LoadMode(DataSourceLoadMode.Raw)
-																													.Key("SignatoryID")
-																													)
-
-																													.LabelMode(EditorLabelMode.Outside)
-																													.ID("ddlGoodsGroup11")
-																													.ShowClearButton(true)
-																													.AcceptCustomValue(true)
-																													.OpenOnFieldClick(false)
-																													.ValueChangeEvent("input")
-																													.HoverStateEnabled(true)
-																													.ValueExpr("SignatoryID")
-																													.DisplayExpr("SignatoryName")
-																													.OnInput("dropDownBoxOnInput")
-																													.OnOpened("onOpened")
-																													//.Width(650)
-																													.TabIndex(1)
-																													.DropDownOptions(o => o
-																													.Width(1000)
-																													)
-																													//  .OnKeyDown("onKeyDown")
-																													//.OnValueChanged("dropDownBoxValueChanged")
-																													.ContentTemplate(new TemplateName("ApprovedByTemplate"))
-																													.Width("85%")
-																													)
+								<div style="display: flex; align-items: center; gap: 4px;">
+									@(Html.DevExtreme().DropDownBox()
+																			.Label(new JS("formatMessage('Approved By')"))
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetAllSignatories")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("SignatoryID"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("ddlGoodsGroup11")
+																			.ShowClearButton(true)
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
+																			.HoverStateEnabled(true)
+																			.ValueExpr("SignatoryID")
+																			.DisplayExpr("SignatoryName")
+																			.OnInput("dropDownBoxOnInput")
+																			.OnOpened("onOpened")
+																			.DropDownOptions(o => o.Width(1000))
+																			.ContentTemplate(new TemplateName("ApprovedByTemplate"))
+																			.Width("100%")
+																			)
+									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
+										<i class="fa fa-plus"></i>
+									</button>
+								</div>
 							</td>
-
 						</tr>
+
+
+
 						<tr>
 							<td>
 								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Arabic Numbers in Invoice')"))
@@ -1362,6 +1453,10 @@
 					</div>
 				</div>
 			</text>);
+
+								columns.Add().DataField("Descriptions")
+										.Caption(new JS("formatMessage('...')"))
+										.Width(200);
 								columns.Add().DataField("DescriptionDetails")
 							.Caption(new JS("formatMessage('Unit Rate Method')"))
 							.Width(200)
@@ -1524,6 +1619,31 @@
 
 								})
 								)
+		}
+		@using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
+		{
+			@(Html.DevExtreme().List()
+					.ID("vatTransactionList")
+					.DataSource(new[] {
+		new { ID = 1, Name = "3rd Party Tax Invoice" },
+		new { ID = 2, Name = "Nominal Tax Invoice" },
+		new { ID = 3, Name = "Export Tax Invoice" },
+		new { ID = 4, Name = "Summary Tax Invoice" },
+		new { ID = 5, Name = "Self Billed Tax Invoice" }
+		})
+					.DisplayExpr("Name")
+					.KeyExpr("ID")
+					.SelectionMode(ListSelectionMode.Multiple)
+					.ItemTemplate(@<text>
+			<div class="vat-item">
+				<label class="toggle-switch">
+					<input type="checkbox" name="vatOption" value="<%- ID %>" />
+					<span class="slider"></span>
+				</label>
+				<label class="vat-label"><%- Name %></label>
+			</div>
+		</text>)
+					)
 		}
 
 		@using (Html.DevExtreme().NamedTemplate("ClientCodeContentTemplate"))
@@ -2348,6 +2468,12 @@
 <!-- Modal Structure -->
 
 <script>
+	function navigateToLedgerAccountForm() {
+	// make sure this is available in the view
+		const url = `/${tenantName}/Finance/VATDatabaseSignatories`;
+		const title = "VATDatabase Signatories";
+		openModal(url, title); // opens in modal instead of new window
+	}
 
 		  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
@@ -5372,5 +5498,44 @@
 
 		dataGrid1.refresh();
 	}
+	$(function () {
+		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+
+		// On initial load - set checkboxes
+		const selectedVals = dropDown.option("value") || [];
+		selectedVals.forEach(id => {
+			$(`input[name="vatOption"][value="${id}"]`)
+				.prop("checked", true)
+				.closest(".vat-item").addClass("selected");
+		});
+	});
+
+	// Handle checkbox change
+	$(document).on("change", 'input[name="vatOption"]', function () {
+		const selectedIds = $('input[name="vatOption"]:checked')
+			.map(function () { return parseInt(this.value); }).get();
+
+		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+		dropDown.option("value", selectedIds);
+
+		// Highlight selected
+		$(".vat-item").removeClass("selected");
+		$('input[name="vatOption"]:checked').each(function () {
+			$(this).closest(".vat-item").addClass("selected");
+		});
+	});
+
+	// Close only on outside click
+	$(document).on("click", function (e) {
+		const $target = $(e.target);
+		const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
+
+		if (!isInside) {
+			const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+			dropDown.close();
+		}
+	});
+
+
 </script>
 

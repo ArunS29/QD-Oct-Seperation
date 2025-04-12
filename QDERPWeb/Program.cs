@@ -15,7 +15,7 @@ using QD.ERP.Web.Service;
 using Serilog;
 using Serilog.Events;
 using Microsoft.ApplicationInsights.Extensibility;
-using QD.ERP.Web.ReportService;
+using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
 
@@ -142,14 +142,6 @@ QD.ERP.Web.Areas.Utility.EmailHelper.Initialize(app.Configuration);
 #endregion
 
 #region **3. Configure Routing**
-
-
-app.MapControllerRoute(
-    name: "areas",
-    pattern: "{area:exists}/{controller=HomeController}/{action=Index}/{id?}"); 
-app.MapControllerRoute(
-    name: "VAT",
-    pattern: "VAT/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "areas",

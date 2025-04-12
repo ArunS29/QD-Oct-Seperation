@@ -21,7 +21,7 @@
 <!-- Total Outstanding Cards -->
 <div class="dx-card-container">
     <!-- Total Client Outstanding Card -->
-    <div class="dx-card">
+    <div class="dx-card" >
         <div class="dx-card-header">
             <div id="TotalClientOutstanding" class="no-border-input"></div>
         </div>
@@ -113,36 +113,94 @@
         <div id="bankAccountsChart"></div>
     </div>
 </div>
-
 <script>
         $(document).ready(function () {
             $.ajax({
-                url: "/api/Dashboard/GetClientOutstandingAgingForChart",
+                url: "/api/Dashboard/GetClientOutstandingByOverdueDays",
                 type: "GET",
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                        $("#clientOutstandingChart").dxChart({
-                            dataSource: response.agingData,
-                            series: [{
-                                argumentField: "OverDueGroup",
-                                valueField: "Balance",
-                                name: formatMessage("Balance Amount"),
-                                type: "bar",
-                                color: "#007acc"
-                            }],
-                            argumentAxis: {
-                                label: { rotationAngle: -45 },
-                                 title: formatMessage("Overdue Groups")
+                        // Extract data for the chart
+                        const labels = response.data.map(item => `${item.AccountHead} (${item.OverdueDays} Days)`);
+                        const balances = response.data.map(item => item.Balance);
+
+                        // Render the bar chart
+                        const ctx = document.getElementById("clientOutstandingChart").getContext("2d");
+                        new Chart(ctx, {
+                            type: "bar",
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: "Balance Amount",
+                                
+                                    data: balances,
+                                    backgroundColor: "#4caf50", // Updated color
+                                    borderColor: "#388e3c", // Updated border color
+                                    borderWidth: 1
+                                }]
                             },
-                            valueAxis: {
-                                title: formatMessage("Balance Amount"),
-                                label: { format: { type: "fixedPoint", precision: 2 } }
-                            },
-                            legend: { visible: true },
-                            tooltip: {
-                                enabled: true,
-                                format: { type: "fixedPoint", precision: 2 }
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true,
+                                        labels: {
+                                            font: {
+                                                size: 12 // Adjust legend font size
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        enabled: true,
+                                        callbacks: {
+                                            label: function (context) {
+                                                return `Balance: ${context.raw.toLocaleString()}`;
+                                            }
+                                        }
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: "Client Outstanding Balances by Overdue Days", // Chart title
+                                        font: {
+                                            size: 16,
+                                            weight: "bold"
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: "Clients (Overdue Days)", // X-axis title
+                                            font: {
+                                                size: 14,
+                                                weight: "bold"
+                                            }
+                                        },
+                                        ticks: {
+                                            autoSkip: false, // Prevent skipping labels
+                                            maxRotation: 45, // Rotate labels for better readability
+                                            minRotation: 0
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: "Balance Amount", // Y-axis title
+                                            font: {
+                                                size: 14,
+                                                weight: "bold"
+                                            }
+                                        },
+                                        ticks: {
+                                            callback: function (value) {
+                                                return value.toLocaleString(); // Format Y-axis values
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         });
                     } else {
@@ -153,7 +211,6 @@
                     console.error("Error fetching data: ", error);
                 }
             });
-
             $.ajax({
                 url: "/api/Dashboard/GetBankAccounts",
                 type: "GET",

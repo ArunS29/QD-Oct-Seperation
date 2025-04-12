@@ -16,12 +16,14 @@
             background-color: #e6eef7;
             width: 1200px;
 
+
         }
 
         .dx-field {
             display: flex;
             flex-direction: column;
             gap: 5px;
+            align-items: end;
         }
 
         .field-label {
@@ -250,7 +252,7 @@
                 <table style="width: 1300px;">
                     <tr>
                             <td>
-                                <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="display: flex; align-items: end; gap: 8px; margin-right:10px;">
                                     @(Html.DevExtreme().DropDownBox()
                                         .Label(new JS("formatMessage('Unit of Measure:')"))
                                         .LabelMode(EditorLabelMode.Outside)
@@ -282,7 +284,7 @@
                                         .ID("btnAddUOM")
                                         .Icon("plus")
                                         .Hint("Add Unit")
-                                        .Width(40)
+                                        .Width(50)
                                         .Height(40)
                                         .StylingMode(ButtonStylingMode.Contained)
                                         .ElementAttr(new
@@ -296,7 +298,7 @@
                                 </div>
                             </td>
 
-                        <td>
+                        <td colspan="3">
                             @(Html.DevExtreme().NumberBox()
                                 .ID("packingUnit")
                                 .Label(new JS("formatMessage('Packing Unit:')"))
@@ -306,7 +308,7 @@
                                 .Step(1)
                                 .ShowSpinButtons(true)
                                 .Format("#") // no decimals
-                                .Width("70%")
+                                .Width("76%")
                                 )
                         </td>
 
@@ -355,13 +357,13 @@
                             .ElementAttr(new { @class = "heightTextArea" })
                             .Width("100%").Height(80))
                         </td>
-                        <td>
+                        
                             <td style="width:0%;padding:1em;">
                                     @(Html.DevExtreme().Button()
-                                        .ID("convertToArabicDesc")
+                                        .ID("convertToArabicDesc1")
                                         .Icon("fas fa-language")
                                         .ElementAttr(new { @class = "input-button" })
-                                        .OnClick("function() { convertDescriptionToArabic(); }")
+                                    .OnClick("function() { convertDetailedDescToArabic(); }")
                                         )
                             </td>
                         

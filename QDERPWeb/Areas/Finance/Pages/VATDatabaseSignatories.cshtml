@@ -15,6 +15,20 @@
         align-items: end;
     }
 
+    .dx-datagrid-save-button,
+    .dx-datagrid-cancel-button {
+        display: none !important;
+    }
+
+    /* Also hide the entire right-aligned toolbar space */
+    .dx-toolbar-after {
+        display: none !important;
+    }
+
+    /* Optionally, remove padding/margin if needed */
+    .dx-datagrid-headers .dx-toolbar {
+        padding-right: 0 !important;
+    }
     .form-row .form-row-btn {
         margin: 2px;
         
@@ -22,6 +36,9 @@
         padding: 0px;
     }
 
+    .rtl-textbox input {
+        text-align: right;
+    }
         .form-row input,
         .form-row .dx-textbox,
         .form-row .dx-selectbox {
@@ -64,20 +81,31 @@
 </div>
 <div class="signatory-form-container">
     <div id="DatabaseSignatories" class="no-border-title"></div>
-
+   
     <div class="form-row">
         @(Html.DevExtreme().TextBox()
             .ID("SignatoryName")
             .Label(new JS("formatMessage('Signatory Name')"))
             .LabelMode(EditorLabelMode.Outside)
+            .ValidationRules(rules =>
+            {
+                rules.AddRequired().Message("Signatory Name is required");
+            })
+            )
+
+        @(Html.DevExtreme().Button()
+            .ID("btnConvertName")
+            .Icon("fas fa-language")
+            .ElementAttr(new { @class = "input-button" })
+            .OnClick("function() { convertToArabic('SignatoryName', 'SignatoryNameArabic'); }")
             )
 
         @(Html.DevExtreme().TextBox()
             .ID("SignatoryNameArabic")
+            .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
             .Label(new JS("formatMessage('Signatory Name(Arabic)')"))
             .LabelMode(EditorLabelMode.Outside)
             )
- 
     </div>
 
     <div class="form-row">
@@ -85,10 +113,22 @@
             .ID("SignatoryPosition")
             .Label(new JS("formatMessage('Signatory Position')"))
             .LabelMode(EditorLabelMode.Outside)
-           )
+            .ValidationRules(rules =>
+            {
+                rules.AddRequired().Message("Signatory Name is required");
+            })
+            )
+
+        @(Html.DevExtreme().Button()
+            .ID("btnConvertPosition")
+            .Icon("fas fa-language")
+            .ElementAttr(new { @class = "input-button" })
+            .OnClick("function() { convertToArabic('SignatoryPosition', 'SignatoryPositionArabic'); }")
+            )
 
         @(Html.DevExtreme().TextBox()
             .ID("SignatoryPositionArabic")
+            .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
             .Label(new JS("formatMessage('Signatory Position(Arabic)')"))
             .LabelMode(EditorLabelMode.Outside)
             )
@@ -111,15 +151,56 @@
 
 
     <div class="form-row">
-        <div class="form-row-btn">
-            @(Html.DevExtreme().SelectBox()
-                .Label(new JS("formatMessage('Signatory User ID:')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("SignatoryUserId")
-                .DisplayExpr("UserName")
-                .ValueExpr("Id")
-               )
-        </div>
+      <div class="form-row-btn">
+    @(Html.DevExtreme().DropDownBox()
+        .ID("SignatoryUserId")
+        .Label(new JS("formatMessage('Signatory User ID:')"))
+        .LabelMode(EditorLabelMode.Outside)
+        .ShowClearButton(true)
+        .OpenOnFieldClick(true)
+        .AcceptCustomValue(false)
+        .DataSource(d => d.WebApi()
+                .Controller("VATModule") // Update controller if needed
+                .LoadAction("GetAllSign")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("SignatoryID")
+        )
+        .ValueExpr("SignatoryID")
+        .DisplayExpr("SignatoryName")
+                .ContentTemplate(@<text>
+                <div id="SignatoryGridContainer"></div>
+                <script>
+                    $(function () {
+                        $("#SignatoryGridContainer").dxDataGrid({
+                            dataSource: DevExpress.data.AspNet.createStore({
+                                key: "SignatoryID",
+                                loadUrl: "/api/VATModule/GetAllSign"
+                            }),
+                            height: 250,
+                            selection: { mode: "single" },
+                            hoverStateEnabled: true,
+                            paging: { pageSize: 10 },
+                            pager: {
+                                showPageSizeSelector: true,
+                                allowedPageSizes: [5, 10, 20]
+                            },
+                            columns: [
+                                { dataField: "SignatoryID", caption: "ID", width: 60 },
+                                { dataField: "SignatoryName", caption: "Name", width: 200 }
+                            ],
+                            onSelectionChanged: function (e) {
+                                var selected = e.selectedRowsData[0];
+                                if (selected) {
+                                    $("#SignatoryUserId").dxDropDownBox("instance").option("value", selected.SignatoryID);
+                                }
+                            }
+                        });
+                    });
+                </script>
+            </text>)
+)
+</div>
+
 
         <div class="form-row-btn">
             @(Html.DevExtreme().Button()
@@ -148,23 +229,68 @@
     </div> 
         
     </div>
+<div class="dx-field ledgerResult">
+    @(Html.DevExtreme().DataGrid()
+            .ID("SignatoryGrid")
+            .KeyExpr("SignatoryID")
+            .RemoteOperations(false)
+            .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetAllSign")
+            .LoadMode(DataSourceLoadMode.Raw)
+            )
+        .Editing(editing => editing
+        .Mode(GridEditMode.Batch)
+        .AllowUpdating(true)
 
-    <div class="grid">
+        )
+        .Toolbar(toolbar =>
+        {
+            toolbar.Items(items => { }); // hide default toolbar
+        })
+        .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
+            .Columns(columns =>
+            {
+                columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
+                columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
+                columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
+                columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
+                columns.Add().DataField("SignatoryEmail").Caption("Email").Width(220);
+                @* columns.Add().Caption("Signature Image").AllowEditing(false)
+            .CellTemplate(@<text>
+        function(cellElement, cellInfo) {
+        if (cellInfo.data?.SignatureImageBase64) {
+        $("<img>")
+        .attr("src", "data:image/png;base64," + cellInfo.data.SignatureImageBase64)
+        .css({ height: "40px", borderRadius: "4px" })
+        .appendTo(cellElement);
+        } else {
+        cellElement.text("No image");
+        }
+        }
+    </text>); *@
+            })
+        .Height(500)
+        .ColumnAutoWidth(true)
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(f => f.Enabled(true))
+        .Paging(p => p.Enabled(true))
+        .Scrolling(s => s
+        .Mode(GridScrollingMode.Virtual)
+        .RowRenderingMode(GridRowRenderingMode.Virtual)
+        .PreloadEnabled(true)
+        .ScrollByContent(true)
+        )
+        .ShowBorders(true)
+        .ShowRowLines(true)
+        .Width("100%")
+        )
 
-@(Html.DevExtreme().DataGrid()
-    .ID("SignatoryGrid")
-    .ShowBorders(true)
-    .Columns(columns => {
-        columns.Add().DataField("SignatoryID").Caption("Signatory ID").Width(100);
-            columns.Add().DataField("SignatoryName").Caption("Signatory Name").Alignment(HorizontalAlignment.Center);
-            columns.Add().DataField("SignatoryPosition").Caption("Signatory Position").Alignment(HorizontalAlignment.Center);
-            columns.Add().DataField("SignatoryContact").Caption("Signatory Contact").Alignment(HorizontalAlignment.Center);
-            columns.Add().DataField("SignatoryEmail").Caption("Signatory Email").Alignment(HorizontalAlignment.Center);
-        columns.Add().Caption("Signature Image").CellTemplate(@<text>
-            <img src="@Url.Content("~/uploads/@item.SignatureImage")" style="height:40px;" />
-    </text>).Alignment(HorizontalAlignment.Center);
-    }))
-    </div>
+
+</div>
+
+
 <div class="limited-footer">
     @await Html.PartialAsync("VATModuleFooter")
 </div>
@@ -183,6 +309,11 @@
           });
 
       });
+
+    $(document).on("click", "#btnBack", function () {
+        window.history.back();
+    });
+
       $(function () {
             $("#DatabaseSignatories").dxTextBox({
                 text: formatMessage("Database Signatories"),
@@ -191,10 +322,9 @@
 
             });
         });
-
-        $(function () {
+    $(function () {
         $("#TypeSignatory").dxTextBox({
-            width:"600px",
+            width: "600px",
             text: formatMessage("Type a New Signatory & Add to the Existing List"),
             readOnly: true,
             onContentReady: function (e) {
@@ -202,4 +332,116 @@
             }
         });
     });
+    async function convertToArabic(sourceId, targetId) {
+        const sourceBox = $("#" + sourceId).dxTextBox("instance");
+        const targetBox = $("#" + targetId).dxTextBox("instance");
+
+        if (!sourceBox || !targetBox) {
+            console.error("TextBox not initialized.");
+            return;
+        }
+
+        const sourceText = sourceBox.option("value");
+
+        if (!sourceText || sourceText.trim() === "") {
+            alert("Please enter a value to translate.");
+            return;
+        }
+
+        try {
+            const translatedText = await translateToArabic(sourceText);
+            targetBox.option("value", translatedText);
+        } catch (error) {
+            console.error("Translation failed", error);
+            alert("Translation failed. Please try again.");
+        }
+    }
+
+    async function translateToArabic(text) {
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+            );
+
+            if (!response.ok) {
+                throw new Error("Translation API request failed.");
+            }
+
+            const data = await response.json();
+            return data?.responseData?.translatedText || "Translation not found";
+        } catch (error) {
+            console.error("Translation failed:", error);
+            throw error;
+        }
+    }
+    function addSignatoryToGrid() {
+        // Validate fields using the Validator components
+        const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
+        const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
+
+        if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
+            DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+            return;
+        }
+
+        const data = {
+            SignatoryName: $("#SignatoryName").dxTextBox("instance").option("value"),
+            SignatoryNameArabic: $("#SignatoryNameArabic").dxTextBox("instance").option("value"),
+            SignatoryPosition: $("#SignatoryPosition").dxTextBox("instance").option("value"),
+            SignatoryPositionArabic: $("#SignatoryPositionArabic").dxTextBox("instance").option("value"),
+            SignatoryContact: $("#SignatoryContact").dxTextBox("instance").option("value"),
+            SignatoryEmail: $("#SignatoryEmail").dxTextBox("instance").option("value"),
+            SignatoryUserId: $("#SignatoryUserId").dxDropDownBox("instance").option("value")
+        };
+
+        $.ajax({
+            url: '/api/VATModule/SaveSignatory',
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
+                $("#SignatoryGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+            }
+        });
+    }
+
+
+    $("#btnUpdate").on("click", function () {
+        const grid = $("#SignatoryGrid").dxDataGrid("instance");
+        grid.saveEditData(); // 🔥 only triggers on manual click
+    });
+
+
+    function onSignatoryUpdating(e) {
+        const data = {
+            SignatoryID: e.oldData.SignatoryID,
+            SignatoryName: e.newData.SignatoryName ?? e.oldData.SignatoryName,
+            SignatoryPosition: e.newData.SignatoryPosition ?? e.oldData.SignatoryPosition,
+            SignatoryContact: e.newData.SignatoryContact ?? e.oldData.SignatoryContact,
+            SignatoryEmail: e.newData.SignatoryEmail ?? e.oldData.SignatoryEmail
+        };
+
+        e.cancel = true; // prevents grid from doing its own update
+
+        return $.ajax({
+            url: '/api/VATModule/SaveSignatory',
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Saved!", "success", 1500);
+                $("#SignatoryGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save.", "error", 1500);
+            }
+        });
+    }
+
+
+
     </script>

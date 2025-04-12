@@ -76,7 +76,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
-
         [HttpGet]
         public async Task<IActionResult> GetBankAccounts(DataSourceLoadOptions loadOptions)
         {
@@ -94,10 +93,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             Amount = g.Sum(v => v.CrAmount - v.DrAmount),
                             AccountGroup = g.Key.AccountGroup
                         })
-                        .OrderByDescending(g => g.Amount)
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHeadName))
-                        .ThenBy(g => g.AccountHeadName)
-                        .Take(5) // Limit to top 5 records
+                        .OrderByDescending(g => g.Amount) // Highest amount first
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHeadName)) // Null/empty names last
+                        .ThenBy(g => g.AccountHeadName) // Alphabetical order
+                        .Take(5)
                         .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync<sp20103GetBankAccountsResult>(data, loadOptions));
@@ -142,19 +141,20 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var data = dbContext.Qry20115BillsPayableOutStandings
-                        .Where(b => b.Balance > 0)
-                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead })
+                        .Where(b => b.Balance > 0) // Only bills with outstanding balance
+                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Group by Balance, OverdueDays, AccountHeadNo, and AccountHead
                         .Select(g => new
                         {
                             AccountHeadNo = g.Key.AccountHeadNo,
                             AccountHead = g.Key.AccountHead,
-                            Balance = g.Sum(b => b.Balance),
-                            OverdueDays = g.Max(b => b.OverdueDays)
+                            Balance = g.Key.Balance,         // Use the grouped Balance
+                            OverdueDays = g.Key.OverdueDays // Use the grouped OverdueDays
                         })
-                        .OrderByDescending(g => g.OverdueDays)
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead))
-                        .ThenBy(g => g.AccountHead)
-                        .Take(5) // Only take top 5 results after ordering
+                        .OrderByDescending(g => g.Balance) // Highest balance first
+                        .ThenByDescending(g => g.OverdueDays) // Highest overdue days next
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead)) // Sort null/empty last
+                        .ThenBy(g => g.AccountHead) // Alphabetical order if same Balance and OverdueDays
+                        .Take(5) // Top 5 only
                         .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
@@ -165,56 +165,60 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return StatusCode(500, "Internal server error");
                 }
             }
+
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetOutstandingChartData()
+
+       [HttpGet]
+public async Task<IActionResult> GetOutstandingChartData()
+{
+    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+    {
+        try
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
-            {
-                try
+            var clientData = dbContext.Qry20115BillsOutStandings
+                .Where(b => b.Balance > 0)
+                .Select(b => new
                 {
+                    b.AccountHeadNo,
+                    b.AccountHead,
+                    b.Balance,
+                    b.OverdueDays,
+                    Type = "Client"
+                });
 
-                    var clientData = dbContext.Qry20115BillsOutStandings
-                        .Where(b => b.Balance > 0)
-                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead })
-                        .Select(g => new
-                        {
-                            AccountHead = g.Key.AccountHead,
-                            Balance = g.Sum(b => b.Balance),
-                            OverdueDays = g.Max(b => b.OverdueDays),
-                            Type = "Client"
-                        });
-
-                    var supplierData = dbContext.Qry20115BillsPayableOutStandings
-                        .Where(b => b.Balance > 0)
-                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead })
-                        .Select(g => new
-                        {
-                            AccountHead = g.Key.AccountHead,
-                            Balance = g.Sum(b => b.Balance),
-                            OverdueDays = g.Max(b => b.OverdueDays),
-                            Type = "Supplier"
-                        });
-
-                    var combinedData = await clientData
-                        .Concat(supplierData)
-                        .OrderByDescending(g => g.Balance)
-                        .Take(5)
-                        .ToListAsync();
-
-                    return Json(new { success = true, data = combinedData });
-                }
-                catch (Exception ex)
+            var supplierData = dbContext.Qry20115BillsPayableOutStandings
+                .Where(b => b.Balance > 0)
+                .Select(b => new
                 {
-                    _logger.LogError($"Error in GetOutstandingChartData: {ex.Message}");
-                    return StatusCode(500, "Internal server error");
-                }
-            }
+                    b.AccountHeadNo,
+                    b.AccountHead,
+                    b.Balance,
+                    b.OverdueDays,
+                    Type = "Supplier"
+                });
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            var combinedData = await clientData
+                .Concat(supplierData)
+                .OrderByDescending(x => x.Balance)
+                .ThenByDescending(x => x.OverdueDays)
+                .ThenBy(x => string.IsNullOrEmpty(x.AccountHead))
+                .ThenBy(x => x.AccountHead)
+                .Take(5)
+                .ToListAsync();
+
+            return Json(new { success = true, data = combinedData });
         }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error in GetOutstandingChartData: {ex.Message}");
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+    return Unauthorized(new { message = "Invalid tenant.", success = false });
+}
 
 
 
@@ -257,28 +261,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    // Fetch and filter aging data (Balance > 0)
-                    var data = await dbContext.Qry20117BillsOutstandingAgingForCharts
-                        .Where(b => b.Balance > 0)
-                        .OrderByDescending(b => b.Balance)
-                        .Take(5)
-                        .Select(b => new
-                        {
-                            b.OverdueDays,
-                            b.Balance,
-                            b.OverDueGroup
-                        })
-                        .ToListAsync();
+                    // Define overdue day ranges
+                    var overdueRanges = new[]
+                    {
+                        new { Min = 0, Max = 30, Label = "0-30 Days" },
+                        new { Min = 31, Max = 60, Label = "31-60 Days" },
+                        new { Min = 61, Max = 90, Label = "61-90 Days" },
+                        new { Min = 91, Max = int.MaxValue, Label = "91+ Days" }
+                    };
 
-                    // Calculate total of top 5 only (optional)
-                    decimal totalOutstanding = data.Sum(b => b.Balance ?? 0);
+                    // Group and aggregate data by overdue day ranges asynchronously
+                    var agingData = new List<object>();
+                    foreach (var range in overdueRanges)
+                    {
+                        var totalBalance = await dbContext.Qry20117BillsOutstandingAgingForCharts
+                            .Where(b => b.Balance > 0 && b.OverdueDays >= range.Min && b.OverdueDays <= range.Max)
+                            .SumAsync(b => b.Balance ?? 0);
+
+                        agingData.Add(new
+                        {
+                            OverdueRange = range.Label,
+                            TotalBalance = totalBalance
+                        });
+                    }
+
+                    // Calculate total outstanding balance
+                    decimal totalOutstanding = agingData.Sum(a => (decimal)((dynamic)a).TotalBalance);
 
                     // Prepare final dataset
                     var result = new
                     {
                         success = true,
                         totalOutstanding,
-                        agingData = data
+                        agingData
                     };
 
                     return Json(result);
@@ -295,7 +310,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
-
         [HttpGet]
         public async Task<IActionResult> GetClientOutstanding(DataSourceLoadOptions loadOptions)
         {
@@ -304,20 +318,20 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var data = dbContext.Qry20115BillsOutStandings
-                        .Where(b => b.Balance > 0)
-                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead, b.AccountGroupId })
+                        .Where(b => b.Balance > 0) // Only bills with outstanding balance
+                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Match grouping with Payables
                         .Select(g => new
                         {
                             AccountHeadNo = g.Key.AccountHeadNo,
                             AccountHead = g.Key.AccountHead,
-                            AccountGroupId = g.Key.AccountGroupId,
-                            Balance = g.Sum(b => b.Balance),
-                            OverdueDays = g.Max(b => b.OverdueDays)
+                            Balance = g.Key.Balance,
+                            OverdueDays = g.Key.OverdueDays
                         })
                         .OrderByDescending(g => g.Balance)
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead))
+                        .ThenByDescending(g => g.OverdueDays)
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead)) // Optional: push nulls last
                         .ThenBy(g => g.AccountHead)
-                        .Take(5) // Return only top 5 records
+                        .Take(5)
                         .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
@@ -328,8 +342,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return StatusCode(500, "Internal server error");
                 }
             }
+
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetBankAccountsFrequency()
@@ -378,6 +394,48 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
             }
             return StatusCode(500, "Internal server error");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetClientOutstandingByOverdueDays()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Define overdue day ranges
+                    var overdueRanges = new[]
+                    {
+                        new { Min = 0, Max = 30, Label = "0-30 Days" },
+                        new { Min = 31, Max = 60, Label = "31-60 Days" },
+                        new { Min = 61, Max = 90, Label = "61-90 Days" },
+                        new { Min = 91, Max = int.MaxValue, Label = "91+ Days" }
+                    };
+
+                    // Fetch and group data by overdue day ranges, then sort and take top 5
+                    var overdueData = overdueRanges.SelectMany(range => dbContext.Qry20115BillsOutStandings
+                        .Where(b => b.Balance > 0 && b.OverdueDays >= range.Min && b.OverdueDays <= range.Max)
+                        .Select(b => new
+                        {
+                            OverdueRange = range.Label,
+                            Balance = b.Balance,
+                            AccountHead = b.AccountHead,
+                            OverdueDays = b.OverdueDays
+                        }))
+                        .OrderByDescending(b => b.Balance) // Sort by balance in descending order
+                        .ThenByDescending(b => b.OverdueDays) // Then by overdue days in descending order
+                        .Take(5) // Take the top 5 records
+                        .ToList();
+
+                    return Json(new { success = true, data = overdueData });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientOutstandingByOverdueDays: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
     }
 }
