@@ -40,13 +40,12 @@
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
             this.sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
+            this.xrLabel32 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLine1 = new DevExpress.XtraReports.UI.XRLine();
+            this.xrLabel31 = new DevExpress.XtraReports.UI.XRLabel();
             this.GroupHeader1 = new DevExpress.XtraReports.UI.GroupHeaderBand();
             this.GroupFooter1 = new DevExpress.XtraReports.UI.GroupFooterBand();
-            this.xrLabel31 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLine1 = new DevExpress.XtraReports.UI.XRLine();
-            this.xrLabel32 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel28 = new DevExpress.XtraReports.UI.XRLabel();
-            this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel21 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo1 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.PageFooter = new DevExpress.XtraReports.UI.PageFooterBand();
@@ -105,15 +104,29 @@
             this.ReportHeader.HeightF = 140.625F;
             this.ReportHeader.Name = "ReportHeader";
             // 
-            // GroupHeader1
+            // xrLabel32
             // 
-            this.GroupHeader1.HeightF = 0F;
-            this.GroupHeader1.Name = "GroupHeader1";
+            this.xrLabel32.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel32.Font = new DevExpress.Drawing.DXFont("Arial", 11F);
+            this.xrLabel32.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.xrLabel32.LocationFloat = new DevExpress.Utils.PointFloat(0F, 92.99998F);
+            this.xrLabel32.Multiline = true;
+            this.xrLabel32.Name = "xrLabel32";
+            this.xrLabel32.SizeF = new System.Drawing.SizeF(1042F, 47.00002F);
+            this.xrLabel32.StylePriority.UseBorderColor = false;
+            this.xrLabel32.StylePriority.UseFont = false;
+            this.xrLabel32.StylePriority.UseForeColor = false;
+            this.xrLabel32.StylePriority.UseTextAlignment = false;
+            this.xrLabel32.Text = "\r\nFor the period starting from [Parameters.StartDate!dd MMM yyyy] to [Parameters." +
+    "EndDate!dd MMM yyyy]\r\n";
+            this.xrLabel32.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
-            // GroupFooter1
+            // xrLine1
             // 
-            this.GroupFooter1.HeightF = 0F;
-            this.GroupFooter1.Name = "GroupFooter1";
+            this.xrLine1.LineWidth = 2F;
+            this.xrLine1.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 87.16676F);
+            this.xrLine1.Name = "xrLine1";
+            this.xrLine1.SizeF = new System.Drawing.SizeF(1030F, 5.291649F);
             // 
             // xrLabel31
             // 
@@ -132,29 +145,15 @@
             this.xrLabel31.Text = "  I N C O M E   S T A T E M E N T S";
             this.xrLabel31.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
-            // xrLine1
+            // GroupHeader1
             // 
-            this.xrLine1.LineWidth = 2F;
-            this.xrLine1.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 87.16676F);
-            this.xrLine1.Name = "xrLine1";
-            this.xrLine1.SizeF = new System.Drawing.SizeF(1030F, 5.291649F);
+            this.GroupHeader1.HeightF = 0F;
+            this.GroupHeader1.Name = "GroupHeader1";
             // 
-            // xrLabel32
+            // GroupFooter1
             // 
-            this.xrLabel32.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel32.Font = new DevExpress.Drawing.DXFont("Arial", 11F);
-            this.xrLabel32.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.xrLabel32.LocationFloat = new DevExpress.Utils.PointFloat(0F, 92.99998F);
-            this.xrLabel32.Multiline = true;
-            this.xrLabel32.Name = "xrLabel32";
-            this.xrLabel32.SizeF = new System.Drawing.SizeF(1042F, 47.00002F);
-            this.xrLabel32.StylePriority.UseBorderColor = false;
-            this.xrLabel32.StylePriority.UseFont = false;
-            this.xrLabel32.StylePriority.UseForeColor = false;
-            this.xrLabel32.StylePriority.UseTextAlignment = false;
-            this.xrLabel32.Text = "\r\nFor the period starting from [Parameters.StartDate!dd MMM yyyy] to [Parameters." +
-    "EndDate!dd MMM yyyy]\r\n";
-            this.xrLabel32.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.GroupFooter1.HeightF = 0F;
+            this.GroupFooter1.Name = "GroupFooter1";
             // 
             // xrLabel28
             // 
@@ -168,15 +167,6 @@
             this.xrLabel28.StylePriority.UseFont = false;
             this.xrLabel28.StylePriority.UseForeColor = false;
             this.xrLabel28.Text = "Quickdice ERP Solutions";
-            // 
-            // pageInfo2
-            // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(431.6667F, 6.357829E-05F);
-            this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(95.83331F, 20.6668F);
-            this.pageInfo2.StylePriority.UseTextAlignment = false;
-            this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
             // 
             // xrLabel21
             // 
@@ -205,7 +195,6 @@
             this.PageFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.pageInfo1,
             this.xrLabel21,
-            this.pageInfo2,
             this.xrLabel28});
             this.PageFooter.Name = "PageFooter";
             // 
@@ -244,7 +233,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel31;
         private DevExpress.XtraReports.UI.XRLabel xrLabel32;
         private DevExpress.XtraReports.UI.XRLabel xrLabel28;
-        private DevExpress.XtraReports.UI.XRPageInfo pageInfo2;
         private DevExpress.XtraReports.UI.XRLabel xrLabel21;
         private DevExpress.XtraReports.UI.XRPageInfo pageInfo1;
         private DevExpress.XtraReports.UI.PageFooterBand PageFooter;
