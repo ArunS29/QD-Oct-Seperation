@@ -1027,6 +1027,63 @@
     }
 });
 
+$("#btnSaveAndClose").on("click", function (e) {
+    e.preventDefault();
+
+    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+    var rowCount = dataGrid.getVisibleRows().length;
+
+    if (rowCount !== 0) {
+        var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+        var VM = {
+            ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+            ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
+            ProjectClaimedFor: paymentaccheadId,
+            ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+            ExpenseDetails: gridData // 🔁 Add the grid rows here
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/ExpenseClaim/UpdateVoucher",
+            contentType: "application/json",
+            data: JSON.stringify(VM),
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.dialog.alert(
+                            "Expenses Claim Request Details Updated Sucessfully.",
+                            "Data Saved Successfully"
+                        ).done(function () {
+                            history.back(); // Go back to the previous page
+                        });
+                } else {
+                    alert("Update failed: " + response.message);
+                }
+            },
+            error: function () {
+                DevExpress.ui.dialog.alert(
+                    "Voucher has no line items to be saved, please enter transaction to save.!",
+                    "No Line Items"
+                );
+            }
+        });
+    } else {
+        if (IsNotification === true) {
+            DevExpress.ui.dialog.alert(
+                "Cannot continue saving with errors, please clear the errors and continue.",
+                "Clear Errors"
+            );
+        } else {
+            DevExpress.ui.dialog.alert(
+                "Voucher has no line items to be saved, please enter transaction to save.!",
+                "No Line Items"
+            );
+        }
+    }
+});
+
        function onClaimedAmountChanged(e) {
            
     const grid = $("#dataGrid").dxDataGrid("instance");
