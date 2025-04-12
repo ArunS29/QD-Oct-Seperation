@@ -1,33 +1,34 @@
 ﻿//using System;
-//using System.Drawing;
 //using System.Collections;
 //using System.ComponentModel;
+//using System.Drawing;
 //using DevExpress.XtraReports.UI;
 
 //namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 //{
-//	public partial class ClaimDetailed : DevExpress.XtraReports.UI.XtraReport
-//	{	
-//		public ClaimDetailed()
-//		{
-//			InitializeComponent();
-//		}
-//	}
+//    public partial class test : DevExpress.XtraReports.UI.XtraReport
+//    {
+//        public test()
+//        {
+//            InitializeComponent();
+//        }
+//    }
 //}
+
 
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
-using Microsoft.Extensions.Configuration;
 using DevExpress.XtraReports.UI;
+using Microsoft.Extensions.Configuration;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 {
-    public partial class ClaimDetailed : XtraReport
+    public partial class test : XtraReport
     {
-        public ClaimDetailed(string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+        public test(string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
         {
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
@@ -62,7 +63,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
 
-            // Bind data to report UI controls if they exist
             if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -113,7 +113,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("spGetClaimDetailedByVoucher", conn)) // Use your actual SP here
+                    using (SqlCommand cmd = new SqlCommand("spGetClaimRequestFormByVoucher", conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
@@ -144,4 +144,3 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
         }
     }
 }
-

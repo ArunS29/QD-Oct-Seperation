@@ -129,6 +129,10 @@
             items.Add().Text(new JS("formatMessage('Claim /Request Form Entry Checking')")).Icon("textdocument");
 
         })
+        .OnItemClick("handlePreviewClick") 
+       )
+
+ 
         
         )
     @(Html.DevExtreme().Button()
@@ -363,6 +367,50 @@
     
         history.back();
     }
+    function handlePreviewClick(e) {
+        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        var voucherNo = voucherNoBox.option("value");
+
+        // Ensure Voucher No is available
+        if (!voucherNo) {
+            alert("Voucher No is required.");
+            return;
+        }
+
+        // Get the selected item text
+        var selectedText = e.itemData.text;
+        console.log("Selected Report:", selectedText);
+
+        // Determine the report name based on the selected text
+        var reportName = "";
+        if (selectedText === formatMessage('Preview Claim/Request')) {
+            reportName = "PreviewClaimRequestForm";
+        } else if (selectedText === formatMessage('Preview Claim/Request Form (wt VAT)')) {
+            reportName = "PreviewClaimRequestForm_wtVAT_";
+        }else if (selectedText === formatMessage('Preview Claim/Request Form (Detailed)')) {
+            reportName = "ClaimDetailed";
+        }else if (selectedText === formatMessage('Claim /Request Form Entry Checking')) {
+            reportName = "ClaimEntryCheck";
+        }
+        // Add more conditions here if you plan to support additional formats
+        else {
+            reportName = "";
+        }
+
+        // Ensure a valid report is selected
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+        // Open the XtraReport with Voucher No as a parameter
+        window.open(
+            `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
+            '_blank',
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+    }
+
 </script>
 
 
