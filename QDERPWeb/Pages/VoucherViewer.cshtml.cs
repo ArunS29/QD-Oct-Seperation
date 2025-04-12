@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
 
 namespace QD.ERP.Web.Pages
 {
@@ -69,6 +70,9 @@ namespace QD.ERP.Web.Pages
                     break;
                 case "cashPayments":
                     Report = new cashPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
+                    break;
+                case "PreviewClaimRequestForm":
+                    Report = new PreviewClaimRequestForm(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
                     break;
                 default:
                     return NotFound("Report not found.");

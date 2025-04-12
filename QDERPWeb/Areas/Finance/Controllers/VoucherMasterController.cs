@@ -1528,7 +1528,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         }
                         entry.AccountHead = accountHead;
-                        if (Remarks == "")
+                            if (entry.DrCr == "Cr" && crCount == 1)
+                            {
+                                entry.DrAmount = 0;
+                                entry.CrAmount = 0;
+                                entry.SysRemarks = "";
+                            }
+                            if (Remarks == "")
                         {
                             Remarks = entry.AccountHead;
                         }
@@ -1597,7 +1603,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 var resultList1 = await qryListOfAccountlists1.ToListAsync();
                 int crCount1 = resultList1.Count(i => i.DrCr == "Cr");
-                if (crCount1 >= 2)
+                    int drCount1 = resultList1.Count(i => i.DrCr == "Dr");
+                    if (crCount1 >= 2)
                 {
                     matchingEntries = resultList1.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
                     IsMatchingEntry = true;
@@ -1695,10 +1702,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 int debitamt = 0; // Initialize debit amount
 
                 int crCount = resultList.Count(i => i.DrCr == "Cr");
+                    int drCount = resultList.Count(i => i.DrCr == "Dr");
 
-                //var lastCrEntry = resultList.LastOrDefault(i => i.DrCr == "Cr");
+                    //var lastCrEntry = resultList.LastOrDefault(i => i.DrCr == "Cr");
 
-                var newCrEntry = resultList
+                    var newCrEntry = resultList
     .Where(i => i.DrCr == "Cr")
     .OrderByDescending(i => i.VoucherEntryNo) // Assuming this is sequential
     .FirstOrDefault();
@@ -1824,7 +1832,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         }
                         entry.AccountHead = accountHead;
-                        if (Remarks == "")
+                            if (entry.DrCr == "Cr" && crCount == 1 && drCount ==0)
+                            {
+                                entry.DrAmount = 0;
+                                entry.CrAmount = 0;
+                                entry.SysRemarks = "";
+                            }
+                                
+                            if (Remarks == "")
                         {
                             Remarks = entry.AccountHead;
                         }

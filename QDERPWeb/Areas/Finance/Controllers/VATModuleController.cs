@@ -1094,8 +1094,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+		[HttpGet]
+		public async Task<ActionResult> GetVatInvoice(string frmDate, string toDate)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					// Base query (IQueryable for optional filtering)
+					var query = dbContext.Qry201807vatcreditNoteRegisterMainViews.AsQueryable();
+
+					// Apply date filter only if both dates are passed
+					if (!string.IsNullOrEmpty(frmDate) && !string.IsNullOrEmpty(toDate) &&
+						DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from) &&
+						DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+					{
+						query = query.Where(x => x.InvoiceDateWtTime >= from && x.InvoiceDateWtTime <= to);
+					}
+
+					var vatInvoices = await query.ToListAsync();
+
+					return Json(vatInvoices);
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(500, $"Internal server error: {ex.Message}");
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
 
 
-    }
+
+	}
 }
 

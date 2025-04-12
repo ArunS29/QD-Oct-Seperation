@@ -345,6 +345,15 @@ namespace QD.ERP.Web.Areas.Finance.Models
        
 
     }
+    public class ExpenseClaimViewModel
+    {
+        public string ClaimRefNo { get; set; }
+        public DateTime? ClaimDate { get; set; }
+        public string ProjectClaimedFor { get; set; }
+        public string ClaimRemarks { get; set; }
+
+        public List<Tbl20103ExpenseClaimChild> ExpenseDetails { get; set; }
+    }
 
 
 
