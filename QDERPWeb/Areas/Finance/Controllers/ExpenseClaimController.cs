@@ -409,6 +409,55 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> CheckClaimRefNo([FromBody] ExpenseClaimViewModel model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var exists = await dbContext.Tbl20102ExpenseClaimMasters
+                    .AnyAsync(c => c.ClaimRefNo == model.ClaimRefNo);
+
+                return Json(new { exists });
+            }
+
+            return Json(new { exists = false });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitClaim([FromBody] ExpenseClaimViewModel model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var userName = HttpContext.Session.GetString("UserName");
+                var submittedOn = DateTime.Now;
+
+                var claim = await dbContext.Tbl20102ExpenseClaimMasters
+                    .FirstOrDefaultAsync(c => c.ClaimRefNo == model.ClaimRefNo);
+
+                if (claim != null)
+                {
+                    claim.IsSubmittedToFinance = true;
+                    claim.SubmittedBy = userName;
+                    claim.SubmittedOn = submittedOn;
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Json(new
+                    {
+                        success = true,
+                        submittedBy = userName,
+                        submittedOn = submittedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+
+                return Json(new { success = false, message = "Claim not found." });
+            }
+
+            return Json(new { success = false, message = "Tenant not found." });
+        }
+
+
 
     }
 }
