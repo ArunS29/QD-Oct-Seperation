@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace QD.ERP.Web.ReportService
+namespace QD.ERP.Web.Service.ReportService
 {
     public static class ReportsFactory
     {
@@ -28,7 +28,7 @@ namespace QD.ERP.Web.ReportService
 
                     using (var stream = new MemoryStream(reportData.ReportXML))
                     {
-                        report.LoadLayoutFromXml(stream);  
+                        report.LoadLayoutFromXml(stream);
                     }
 
                     return report;

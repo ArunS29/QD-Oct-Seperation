@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 using System.Data.SqlClient;
 
 
-namespace QD.ERP.Web.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.VAT.Controllers
 {
 
     [Route("api/[controller]/[action]")]
@@ -141,7 +141,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         i.PaymentMeansTypeCode,
                         i.PaymentMeansType
-                    
+
                     });
 
 
@@ -265,7 +265,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     return Ok(data);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -311,7 +311,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // Generate new invoice number
                     string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
 
-                  //  return Ok(new { InvoiceNumber = newInvoiceNumber });
+                    //  return Ok(new { InvoiceNumber = newInvoiceNumber });
                     return Json(newInvoiceNumber);
                 }
 
@@ -333,7 +333,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     var maxCounter = await dbContext.Qry00101invoiceCounterValues
-                    .MaxAsync(x => (long?)(x.InvoiceCounterValue)) ;
+                    .MaxAsync(x => (long?)x.InvoiceCounterValue);
 
 
                     var newCounterValue = maxCounter + 1;
@@ -346,7 +346,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 throw ex;
             }
             return BadRequest("Failed to retrieve tenant and database context.");
-           
+
         }
 
         [HttpPost]
@@ -359,7 +359,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     Guid newGuid = Guid.NewGuid();
                     string registryFormatGuid = newGuid.ToString("D"); // Format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 
-                   // return Ok(new { guid = registryFormatGuid }); // More conventional for Web APIs
+                    // return Ok(new { guid = registryFormatGuid }); // More conventional for Web APIs
                     return Json(registryFormatGuid);
                 }
 
@@ -367,7 +367,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             catch (Exception ex)
             {
-               
+
                 return StatusCode(500, "An error occurred while generating GUID.");
             }
         }
@@ -911,7 +911,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         g.UnitDescAr,   // Primary Key
                         g.UnitDesc,     // Display text
-                        g.UnitType,  
+                        g.UnitType,
                         g.UnitCode // Optional extra info
                     })
                     .ToList();
@@ -921,38 +921,38 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-		[HttpPost]
-		public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				// Check if the UnitType or the combination already exists
-				bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
-					u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
-					u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
-					u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
+        [HttpPost]
+        public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // Check if the UnitType or the combination already exists
+                bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
+                    u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
+                    u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
+                    u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
 
-				if (exists)
-				{
-					return Json(new { success = false, message = "This Unit Rate Method already exists." });
-				}
+                if (exists)
+                {
+                    return Json(new { success = false, message = "This Unit Rate Method already exists." });
+                }
 
-				// Add new entry
-				var newUom = new Tbl40111PropertyUnitCode
-				{
-					UnitType = unitType,
-					UnitDesc = unitDesc,
-					UnitDescAr = unitDescAr
-				};
+                // Add new entry
+                var newUom = new Tbl40111PropertyUnitCode
+                {
+                    UnitType = unitType,
+                    UnitDesc = unitDesc,
+                    UnitDescAr = unitDescAr
+                };
 
-				dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
-				dbContext.SaveChanges();
+                dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
+                dbContext.SaveChanges();
 
-				return Json(new { success = true, unitCode = newUom.UnitCode });
-			}
+                return Json(new { success = true, unitCode = newUom.UnitCode });
+            }
 
-			return Json(new { success = false, message = "Unable to get tenant context" });
-		}
+            return Json(new { success = false, message = "Unable to get tenant context" });
+        }
 
         [HttpGet]
         public IActionResult GetVatTaxSlabs()
@@ -963,7 +963,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var vatTaxSlabs = dbContext.Tbl20163VatTaxSlabs
          .Select(x => new
-         {   x.TaxSlabCode,
+         {
+             x.TaxSlabCode,
              x.TaxSlab,
              x.TaxRate,
              x.TaxCodeToDisplay
@@ -992,18 +993,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         .Select(s => new
                         {
                             SignatoryID = s.SignatoryId.ToString(),
-                            SignatoryName = s.SignatoryName,
-                            SignatoryPosition = s.SignatoryPosition,
-                            SignatoryContact = s.SignatoryContact,
-                            SignatoryEmail = s.SignatoryEmail,
-                            SignatureDescription = s.SignatureDescription,
-                            SignatureCode = s.SignatureCode,
-                            SignatoryMobile1 = s.SignatoryMobile1,
-                            SignatoryMobile2 = s.SignatoryMobile2,
-                            SignatoryNameAr = s.SignatoryNameAr,
-                            SignatoryPositionAr = s.SignatoryPositionAr,
-                            IsFinanceManager = s.IsFinanceManager,
-                            UserId = s.UserId,
+                            s.SignatoryName,
+                            s.SignatoryPosition,
+                            s.SignatoryContact,
+                            s.SignatoryEmail,
+                            s.SignatureDescription,
+                            s.SignatureCode,
+                            s.SignatoryMobile1,
+                            s.SignatoryMobile2,
+                            s.SignatoryNameAr,
+                            s.SignatoryPositionAr,
+                            s.IsFinanceManager,
+                            s.UserId,
                             SignatureImageBase64 = s.SignatureImage != null
                                 ? Convert.ToBase64String(s.SignatureImage)
                                 : null
