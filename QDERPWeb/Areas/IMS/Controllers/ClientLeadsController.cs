@@ -6,18 +6,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Areas.IMS.Controllers;
 
-namespace QD.ERP.Web.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class ClientLeadsController : Controller
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private readonly ILogger<BillsPayableController> _logger;
+        private readonly ILogger<ClientLeadsController> _logger;
 
 
-        public ClientLeadsController(ILogger<BillsPayableController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public ClientLeadsController(ILogger<ClientLeadsController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;

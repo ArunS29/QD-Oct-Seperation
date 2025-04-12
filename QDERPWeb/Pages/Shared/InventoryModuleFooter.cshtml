@@ -278,7 +278,8 @@
             // .OnClick("onBackButtonClick")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
-    </div> <div class="btn-container">
+    </div> 
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnRefresh")
             .Icon("refresh")
@@ -287,7 +288,8 @@
             .ElementAttr(new { style = "display: none;" })
             .OnClick("refreshPage")
             )
-             <div class="btn-container">
+    </div>
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddClientLeads")
             .Icon("add")
@@ -323,7 +325,6 @@
         </div>
     </div>
 
-</div>
 
 
 

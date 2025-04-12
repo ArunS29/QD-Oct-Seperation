@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QD.ERP.Web.Areas.Finance.Pages
+namespace QD.ERP.Web.Areas.IMS.Pages
 {
-    public class ClientContactListModel : PageModel
+    public class ClientLeadsModel : PageModel
     {
         public void OnGet()
         {

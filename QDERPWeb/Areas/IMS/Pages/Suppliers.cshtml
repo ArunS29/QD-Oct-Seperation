@@ -64,7 +64,11 @@
     <h5>QuickDice ERP Solutions</h5>
     <i class="dx-icon dx-icon-user"></i>Suppliers
 </div>
-
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("InventoryModuleFooter")
+    </div>
+</div>
 <div>
     @(
             Html.DevExtreme().DataGrid<Qry30199QrySupplierList>()
@@ -112,11 +116,7 @@
         )
 
 </div>
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
-    </div>
-</div>
+
 <!-- Bottom Toolbar -->
 
 
@@ -125,7 +125,7 @@
 
           $(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-            if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddSuppliers").length) {
+            if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnRefresh,#btnAddSuppliers").length) {
                   $(this).remove();
               }
 

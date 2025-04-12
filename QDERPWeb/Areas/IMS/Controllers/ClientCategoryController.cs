@@ -7,7 +7,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 
-namespace QD.ERP.Web.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

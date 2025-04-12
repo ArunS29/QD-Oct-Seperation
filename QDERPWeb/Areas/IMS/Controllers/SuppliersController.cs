@@ -2,10 +2,11 @@
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QD.ERP.Web.Areas.Finance.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 
-namespace QD.ERP.Web.Areas.Finance.Controllers
+namespace QD.ERP.Web.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
@@ -13,9 +14,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
 
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private readonly ILogger<BillsPayableController> _logger;
+        private readonly ILogger<ClientLeadsController> _logger;
 
-        public SuppliersController(ILogger<BillsPayableController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public SuppliersController(ILogger<ClientLeadsController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;

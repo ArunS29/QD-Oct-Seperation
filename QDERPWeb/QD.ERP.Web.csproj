@@ -50,7 +50,6 @@
 
 	<ItemGroup>
 		<Folder Include="Areas\Finance\Data\" />
-		<Folder Include="Areas\IMS\Controllers\" />
 		<Folder Include="Models\DALCommon\" />
 	</ItemGroup>
 
