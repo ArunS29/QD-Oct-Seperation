@@ -1,0 +1,171 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.frm201useraccesModel
+@using DevExtreme.AspNet.Data
+@using DevExtreme.AspNet.Mvc
+@{
+
+}
+<div class="title">
+    <div class="header-container">
+        <div id="UserAccess" class="no-border-input"></div>
+    </div>
+</div>
+<div class="content-container-top">
+
+<div class="form-group">
+    @(Html.DevExtreme().SelectBox()
+        .ID("ddUserList")
+        .DataSource(ds => ds.WebApi()
+        .Controller("Utility")
+        .LoadAction("Getuserdetails")
+        .LoadMode(DataSourceLoadMode.Raw)
+        )
+        .DisplayExpr("UserName")
+        .ValueExpr("UserId")
+        .SearchEnabled(true)
+        .ShowClearButton(true)
+        .Placeholder("Select User")
+        .Label("User")
+        .LabelMode(EditorLabelMode.Outside)
+        .Width(400)
+        )
+</div>
+<div class="form-group">
+    @(Html.DevExtreme().SelectBox()
+        .ID("ddModuleList")
+        .DataSource(ds => ds.WebApi()
+        .Controller("Utility")
+        .LoadAction("GetDistinctModules")
+        .LoadMode(DataSourceLoadMode.Raw)
+        )
+        .DisplayExpr("Module")
+        .ValueExpr("Module")
+        .SearchEnabled(true)
+        .ShowClearButton(true)
+        .Placeholder("Select Module")
+        .Label("Module")
+        .LabelMode(EditorLabelMode.Outside)
+        .OnValueChanged("onModuleChanged")
+        .Width(400)
+        )
+</div>
+<div class="form-group">
+    @(Html.DevExtreme().SelectBox()
+        .ID("ddPrefixList")
+        .Items(Enumerable.Empty<string>())
+        .DisplayExpr("Prefix")
+        .ValueExpr("Prefix")
+        .SearchEnabled(true)
+        .ShowClearButton(true)
+        .Placeholder("Select Prefix")
+        .Label("Form")
+        .LabelMode(EditorLabelMode.Outside)
+        .Disabled(true)
+        .Width(400)
+        .OnValueChanged("loadbuttons")
+        )
+</div>
+
+    <div id="gridContainer"></div>
+</div>
+@section Scripts {
+    <script>
+        function onModuleChanged(e) {
+            const selectedModule = e.value;
+            const prefixBox = $("#ddPrefixList").dxSelectBox("instance");
+
+            if (!selectedModule) {
+                prefixBox.option({
+                    items: [],
+                    value: null,
+                    disabled: true
+                });
+                return;
+            }
+
+            $.ajax({
+                url: "/api/Utility/GetDistinctAccessPrefixes",
+                method: "GET",
+                data: { module: selectedModule },
+                success: function (data) {
+                    prefixBox.option({
+                        items: data.data || data,
+                        value: null,
+                        disabled: false
+                    });
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load prefixes.", "error", 3000);
+                    prefixBox.option({
+                        items: [],
+                        value: null,
+                        disabled: true
+                    });
+                }
+            });
+        }
+
+        $(function () {
+            $("#loadGridButton").on("click", function () {
+                loadGrid();
+            });
+        });
+
+        function loadGrid() {
+            const userId = $("#ddUserList").dxSelectBox("instance").option("value");
+            const module = $("#ddModuleList").dxSelectBox("instance").option("value");
+            const prefix = $("#ddPrefixList").dxSelectBox("instance").option("value");
+
+            if (!userId || !module || !prefix) {
+                DevExpress.ui.notify("Please select all fields: User, Module, and Form (Prefix).", "warning", 3000);
+                return;
+            }
+
+            $("#gridContainer").dxDataGrid("instance")?.dispose(); // Destroy if exists
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "ItemName",
+                    loadUrl: "/api/Utility/GetUserAccessDetails",
+                    loadParams: {
+                        userId: userId,
+                        module: module,
+                        prefix: prefix
+                    }
+                }),
+                remoteOperations: true,
+                columns: [
+                    { dataField: "ItemName", caption: "Item Name" },
+                    { dataField: "Prefix", caption: "Prefix" },
+                    { dataField: "ActionName", caption: "Action Name" },
+                    { dataField: "UserID", caption: "User ID" },
+                    { dataField: "Module", caption: "Module" }
+                ],
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 50],
+                    showInfo: true
+                },
+                filterRow: { visible: true, applyFilter: "auto" },
+                searchPanel: { visible: true, width: 240, placeholder: "Search..." },
+                headerFilter: { visible: true },
+                groupPanel: { visible: true },
+                sorting: { mode: "multiple" },
+                selection: { mode: "multiple" },
+                columnChooser: { enabled: true },
+                export: { enabled: true, fileName: "UserAccessDetails" }
+            });
+        }
+    </script>
+}
+
+
+<style>
+    .hidden {
+        display: none;
+    } 
+   
+</style>
