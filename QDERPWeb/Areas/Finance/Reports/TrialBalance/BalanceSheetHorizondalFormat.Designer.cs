@@ -56,12 +56,12 @@
             this.xrLabel30 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel41 = new DevExpress.XtraReports.UI.XRLabel();
             this.PageFooter = new DevExpress.XtraReports.UI.PageFooterBand();
-            this.xrLabel29 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo1 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel28 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel8 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrSubreport1 = new DevExpress.XtraReports.UI.XRSubreport();
+            this.xrSubreport2 = new DevExpress.XtraReports.UI.XRSubreport();
+            this.xrLabel21 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -77,8 +77,8 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrLabel8,
-            this.xrLabel1,
+            this.xrSubreport2,
+            this.xrSubreport1,
             this.xrLabel7,
             this.xrLabel6});
             this.Detail.HeightF = 98.79166F;
@@ -86,7 +86,7 @@
             // 
             // xrLabel7
             // 
-            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(527.4167F, 0F);
+            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(529.4166F, 0F);
             this.xrLabel7.Multiline = true;
             this.xrLabel7.Name = "xrLabel7";
             this.xrLabel7.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -291,36 +291,25 @@
             // PageFooter
             // 
             this.PageFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrLabel29,
+            this.xrLabel21,
             this.pageInfo1,
             this.pageInfo2,
             this.xrLabel28});
             this.PageFooter.HeightF = 52.08333F;
             this.PageFooter.Name = "PageFooter";
             // 
-            // xrLabel29
-            // 
-            this.xrLabel29.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel29.Font = new DevExpress.Drawing.DXFont("Arial", 9F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel29.ForeColor = System.Drawing.Color.DimGray;
-            this.xrLabel29.LocationFloat = new DevExpress.Utils.PointFloat(690.3859F, 18.33331F);
-            this.xrLabel29.Name = "xrLabel29";
-            this.xrLabel29.SizeF = new System.Drawing.SizeF(165.0723F, 14.66666F);
-            this.xrLabel29.StylePriority.UseBorderColor = false;
-            this.xrLabel29.StylePriority.UseFont = false;
-            this.xrLabel29.StylePriority.UseForeColor = false;
-            this.xrLabel29.Text = "Reported By:[AccountHead]";
-            // 
             // pageInfo1
             // 
-            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(843.5418F, 18.33337F);
+            this.pageInfo1.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(846.6669F, 2.333133F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
             this.pageInfo1.SizeF = new System.Drawing.SizeF(147.4999F, 14.66663F);
+            this.pageInfo1.StylePriority.UseFont = false;
             // 
             // pageInfo2
             // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(471.25F, 9.999974F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(438.9583F, 0F);
             this.pageInfo2.Name = "pageInfo2";
             this.pageInfo2.SizeF = new System.Drawing.SizeF(95.83331F, 23F);
             this.pageInfo2.StylePriority.UseTextAlignment = false;
@@ -332,7 +321,7 @@
             this.xrLabel28.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel28.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel28.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel28.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 9.999974F);
+            this.xrLabel28.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 2.333133F);
             this.xrLabel28.Name = "xrLabel28";
             this.xrLabel28.SizeF = new System.Drawing.SizeF(165.3535F, 20.66685F);
             this.xrLabel28.StylePriority.UseBorderColor = false;
@@ -340,27 +329,30 @@
             this.xrLabel28.StylePriority.UseForeColor = false;
             this.xrLabel28.Text = "Quickdice ERP Solutions";
             // 
-            // xrLabel1
+            // xrSubreport1
             // 
-            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(12.83341F, 0F);
-            this.xrLabel1.Multiline = true;
-            this.xrLabel1.Name = "xrLabel1";
-            this.xrLabel1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
-            this.xrLabel1.SizeF = new System.Drawing.SizeF(429.1666F, 88.79166F);
-            this.xrLabel1.StylePriority.UseTextAlignment = false;
-            this.xrLabel1.Text = "\r\nName :XrSubReport1\r\nReport Source:rpt20138BalanceSheetAssets";
-            this.xrLabel1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
+            this.xrSubreport1.Name = "xrSubreport1";
+            this.xrSubreport1.SizeF = new System.Drawing.SizeF(514.5833F, 88.79164F);
             // 
-            // xrLabel8
+            // xrSubreport2
             // 
-            this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(545.2084F, 0F);
-            this.xrLabel8.Multiline = true;
-            this.xrLabel8.Name = "xrLabel8";
-            this.xrLabel8.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel8.SizeF = new System.Drawing.SizeF(429.1666F, 88.79166F);
-            this.xrLabel8.StylePriority.UseTextAlignment = false;
-            this.xrLabel8.Text = "\r\nName :XrSubReport1\r\nReport Source:rpt20138BalanceSheetLiabilities";
-            this.xrLabel8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrSubreport2.LocationFloat = new DevExpress.Utils.PointFloat(529.0834F, 0F);
+            this.xrSubreport2.Name = "xrSubreport2";
+            this.xrSubreport2.SizeF = new System.Drawing.SizeF(512.9167F, 88.79167F);
+            // 
+            // xrLabel21
+            // 
+            this.xrLabel21.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel21.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel21.ForeColor = System.Drawing.Color.Black;
+            this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(611.1696F, 0F);
+            this.xrLabel21.Name = "xrLabel21";
+            this.xrLabel21.SizeF = new System.Drawing.SizeF(294.1035F, 15.49992F);
+            this.xrLabel21.StylePriority.UseBorderColor = false;
+            this.xrLabel21.StylePriority.UseFont = false;
+            this.xrLabel21.StylePriority.UseForeColor = false;
+            this.xrLabel21.Text = "Reported By:[Parameters.TenantName]";
             // 
             // BalanceSheetHorizondalFormat
             // 
@@ -403,7 +395,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel28;
         private DevExpress.XtraReports.UI.XRPageInfo pageInfo2;
         private DevExpress.XtraReports.UI.XRPageInfo pageInfo1;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel29;
         private DevExpress.XtraReports.UI.XRLabel xrLabel3;
         private DevExpress.XtraReports.UI.XRLabel xrLabel2;
         private DevExpress.XtraReports.UI.XRLabel xrLabel5;
@@ -411,7 +402,8 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel7;
         private DevExpress.XtraReports.UI.XRLabel xrLabel6;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox1;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel1;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel8;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport2;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport1;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel21;
     }
 }
