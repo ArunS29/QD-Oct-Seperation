@@ -1146,7 +1146,7 @@
         "Confirm Creating New STANDARD TAX Invoice?"
     ).done(function (dialogResult) {
         if (dialogResult) {
-            url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+            url = `/${tenantName}/VAT/frm20161VATInvoiceEdit`;
             title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
             openModal(url, title);
         }
@@ -1155,7 +1155,7 @@
             break;
 
         case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
-            url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
+            url = `/${tenantName}/VAT/frmVATInvoiceEditB2C`;
             title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
             openModal(url, title);
             break;
