@@ -126,7 +126,7 @@
         <div class="dx-field ledgerResult">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202101journalRegisterChild>()
                     .ID("dataGrid")
-                    .KeyExpr("JournalRefNo")
+                    
                     .Columns(columns =>
                     {
                         columns.Add().Caption("#").Width(50).Alignment(HorizontalAlignment.Center)
@@ -144,35 +144,56 @@
 
 
                         columns.Add().DataField("AccountHead").Caption("Account Ledger").Width(300).AllowEditing(true)
-                    .EditCellTemplate(@<text>
-                <div class="account-ledger-dropdown">
+                    .CellTemplate(@<text>
+                <span>
+                    <% if (data.AccountHead) { %>
+                    <%= data.AccountHead %>
+                    <% } else { %>
+                    <span style="color: black;"></span>
+                    <% } %>
+                </span>
+            </text>)
+                // Edit Mode
+                .EditCellTemplate(@<text>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
                     @(Html.DevExtreme().DropDownBox()
-                    .DataSource(d => d.WebApi().Controller("JournalEntryEdit").LoadAction("GetCostAllocationUnits").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+                    .DataSource(d => d.WebApi().Controller("JournalEntryEdit")
+                    .LoadAction("GetCostAllocationUnits")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("AccountId"))
                     .LabelMode(EditorLabelMode.Outside)
-                    .ID("AccountLedgerDropdown_{rowIndex}")
+                    .ID("accountDropDownBoxEdit")
                     .ShowClearButton(false)
                     .AcceptCustomValue(true)
                     .OpenOnFieldClick(false)
-                    .OnInput("dropDownBoxOnInput")
-                    .ValueChangeEvent("input")
                     .HoverStateEnabled(true)
+                    .OnValueChanged("gridLedger_valueChanged")
                     .ValueExpr("AccountId")
                     .DisplayExpr("AccountHead")
-                    .Placeholder("Select Cost Allocation")
-                    .Width(280)
-                    .TabIndex(1)
+                    .Placeholder("Select AccountHead")
+                    .Width(350)
                     .DropDownOptions(o => o.Width(800))
-                    .ContentTemplate(new TemplateName("costAllocationDropdownContentTemplate"))
+                    .Value(new JS("data.AccountId"))
+                    .ContentTemplate(new TemplateName("ReceivingAccountDropdownContentTemplate"))
                     )
+
+
                 </div>
+
             </text>);
 
 
 
                         columns.Add().DataField("EntryNarration").Caption("Entry Narration").Width(200);
-                        columns.Add().DataField("DrCr").Caption("Dr/Cr").Width(80).Alignment(HorizontalAlignment.Center);
-                        columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right);
-                        columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("DrCr").Caption("Dr/Cr").Width(80).Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.String).Lookup(lookup => lookup
+                    .DataSource(new[] { "Dr", "Cr" })
+                    .ValueExpr("this")
+                    .DisplayExpr("this")
+                    ); 
+                        columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right)
+                .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                        columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right)
+                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                         columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
                         columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150);
                         // columns.Add().DataField("EmpAllocated").Caption("Employees Allocation").Width(150);
@@ -193,7 +214,13 @@
                 .Height(300)
                 .ColumnAutoWidth(true)
                 .ShowBorders(true)
-                .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
+                .Editing(editing => editing
+                .Mode(GridEditMode.Cell)
+                .AllowUpdating(true)
+                .AllowDeleting(true)
+                .UseIcons(true)
+                )
+                .OnRowUpdating("onLedgerRowUpdating")
                 )
         </div>
 
@@ -316,31 +343,59 @@
 
         </div>
 
-        @using (Html.DevExtreme().NamedTemplate("costAllocationDropdownContentTemplate"))
+        @using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
         {
-            @(Html.DevExtreme().DataGrid()
-                    .ID("costAllocationDropdownGrid")
-                    .DataSource(d => d.WebApi().Controller("JournalEntryEdit").LoadAction("GetCostAllocationUnits").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+            @(
+                Html.DevExtreme().DataGrid()
+                .ID("accountDropDownBoxeditGrid")
+                .DataSource(d => d.WebApi()
+                .Controller("JournalEntryEdit")
+                .LoadAction("GetCostAllocationUnits")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("AccountHead")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+                .SelectedRowKeys(new JS(@"component.option(""value"")"))
+                .OnSelectionChanged(@<text>
+            function(selectedItems) {
+            var keys = selectedItems.selectedRowKeys;
+            component.option("value", keys);
+            console.log(keys);
+            }
+        </text>)
+
+
+                    .HeaderFilter(p => p.Visible(true))
                     .ShowBorders(true)
-                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                    .OnSelectionChanged("dataGridSelectionChanged")
+                    .HoverStateEnabled(true)
                     .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(true))
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                     .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("AccountId").DataField("AccountId");
-                        columns.Add().Caption("AccountHead").DataField("AccountHead");
-                        columns.Add().Caption("ReferenceNo").DataField("ReferenceNo");
-                        columns.Add().Caption("AccountGroup").DataField("AccountGroup");
-                        columns.Add().Caption("AccountHeadArabic").DataField("AccountHeadArabic");
-                        columns.Add().Caption("IsLedgerObselete").DataField("IsLedgerObselete")
+                        columns.Add().Caption("Account ID").DataField("AccountId");
+                        columns.Add().Caption("Account").DataField("AccountHead");
+                        columns.Add().Caption("Account Group").DataField("AccountGroup");
+                        columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
+                        columns.Add().Caption("Reference No").DataField("ReferenceNo");
+                        columns.Add().DataField("IsLedgerObselete")
+
+
+                    .Alignment(HorizontalAlignment.Center)
                     .CellTemplate(@<text>
             <div class="dx-icon">
-                <%= data.IsDisabled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>);
+
                     })
+                .OnRowPrepared("onAccountHeadRowPrepared")
                 )
         }
 
@@ -368,24 +423,24 @@
     });
 
     function addRow() {
-        var gridInstance = $("#dataGrid").dxDataGrid("instance");
-        gridInstance.getDataSource().store().insert({
-            JournalChildNo: '',
-            AccountId: '',
-            EntryNarration: '',
-            DrCr: 'Dr',
-            DrAmount: '',
-            CrAmount: '',
-            CostAllocationDescription: '',
-            TotalCostAllocated: '',
-            // EmpAllocated: '',
-            TotalEmpAllocated: ''
-        }).then(function () {
-            gridInstance.refresh();
-        }).catch(function (error) {
-            console.error("Error adding row:", error);
-        });
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var dataSource = dataGrid.option("dataSource") || [];
+
+        if (!Array.isArray(dataSource)) {
+            dataSource = [];
+        }
+
+        // Add an empty row with default values if the last row is not empty
+        if (dataSource.length === 0 || Object.keys(dataSource[dataSource.length - 1]).length !== 0) {
+            dataSource.push({
+                DrAmount: 0.00,   // Default to 0.00
+                CrAmount: 0.00,   // Default to 0.00
+                DrCr: 'Dr'
+            });
+            dataGrid.option("dataSource", dataSource);
+        }
     }
+    
 
     $(function () {
         $("#btnAddLine").dxButton({
@@ -409,34 +464,37 @@
                         }
                     );
                 }
+                if (e.column.dataField === "DrAmount") {
+                    e.cellElement.css({ "color": "red", "font-weight": "bold" });
+                }
+                if (e.column.dataField === "CrAmount") {
+                    e.cellElement.css({ "color": "green", "font-weight": "bold" });
+                }
             },
             onEditorPreparing: function (e) {
-                if (e.parentType === "dataRow" && e.dataField === "Account Ledger") {
-                    e.editorOptions.visible = true;
+                if (e.parentType === "dataRow") {
+
+                    // Your existing logic (example)
+                    if (e.dataField === "Account Ledger") {
+                        e.editorOptions.visible = true;
+                    }
+
+                    // 🔐 Disable DrAmount if DrCr is Cr
+                    if (e.dataField === "DrAmount" && e.row?.data?.DrCr === "Cr") {
+                        e.cancel = true;
+                    }
+
+                    // 🔐 Disable CrAmount if DrCr is Dr
+                    if (e.dataField === "CrAmount" && e.row?.data?.DrCr === "Dr") {
+                        e.cancel = true;
+                    }
                 }
             }
+
         });
     });
 
-    function dataGridSelectionChanged(e) {
-        var selectedData = e.selectedRowsData[0];
-        if (!selectedData) return;
-
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var focusedRowIndex = dataGrid.option("focusedRowIndex");
-
-        // Set AccountHead for display
-        dataGrid.cellValue(focusedRowIndex, "AccountHead", selectedData.AccountHead);
-
-        // Set AccountId for saving
-        dataGrid.cellValue(focusedRowIndex, "AccountId", selectedData.AccountId);
-
-        // Close dropdown
-        var dropdownBox = $("#AccountLedgerDropdown_" + focusedRowIndex).dxDropDownBox("instance");
-        if (dropdownBox) {
-            dropdownBox.close();
-        }
-    }
+    
 
     $(document).ready(function () {
         $("#ClaimNameDropdown").closest(".dx-dropdownbox").show();
@@ -1040,13 +1098,51 @@
             }
         });
     }
-  
-
-  
 
 
+    function onAccountHeadRowPrepared(e) {
+        if (e.rowType === "data" && e.data.IsLedgerObselete) {
+            e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color
+        }
+    }
 
 
+    function gridLedger_valueChanged(e) {
+        var $dataGrid = $("#dataGrid");
 
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+        }
+
+        if (e.value) {
+            let grid = $("#dataGrid").dxDataGrid("instance");
+            let rowIndex = e.element.closest("tr").index();
+            let rowData = grid.getVisibleRows()[rowIndex].data;
+
+            let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+            let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0];
+
+            if (selectedRowData) {
+                rowData.AccountId = selectedRowData.AccountId;
+                rowData.AccountHead = selectedRowData.AccountHead; // Update AccountHead
+                grid.cellValue(rowIndex, "AccountId", selectedRowData.AccountId);
+                grid.cellValue(rowIndex, "AccountHead", selectedRowData.AccountHead); // Reflect change
+            }
+        }
+
+        e.component.option("opened", false);
+    }
+
+    function onLedgerRowUpdating(e) {
+        const drCr = e.newData.DrCr || e.oldData.DrCr;
+
+        // Clear the opposite field when DrCr is changed
+        if (e.newData.DrCr === "Dr") {
+            e.newData.CrAmount = 0.00;
+        } else if (e.newData.DrCr === "Cr") {
+            e.newData.DrAmount = 0.00;
+        }
+    }
 
 </script>
