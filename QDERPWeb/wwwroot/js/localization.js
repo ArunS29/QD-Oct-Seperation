@@ -1,6 +1,12 @@
 ﻿var dictionary = {
     "en": {
-
+        "Status":"Status",
+        "Status Code": "Status Code",
+        "Type a New Status & Add  to the Existing List:": "Type a New Status & Add  to the Existing List:",
+        "Save":"Save",
+        "Delete":"Delete",
+        "Supplier Category":"Supplier Category",
+        "Category":"Category",
         "Client Category": "Client Category",
         "Contact Phone 2": "Contact Phone 2",
         "Client Name (Arabic)": "Client Name (Arabic)",

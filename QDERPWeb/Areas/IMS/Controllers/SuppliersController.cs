@@ -38,6 +38,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             i.ContactPhone1,
                             i.ContactPersonTitle,
                             i.SupplierAccountLedgerNo,
+                            i.SupplierCategory
                           
                         });
 

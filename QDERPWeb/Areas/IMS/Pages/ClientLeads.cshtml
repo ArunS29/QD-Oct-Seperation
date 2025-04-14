@@ -52,7 +52,7 @@
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
         display: none !important;
     }
 
@@ -68,14 +68,26 @@
     @(
         Html.DevExtreme().DataGrid<Qry30101ClientList>()
         .ID("clientsGrid")
-        .DataSource(d => d.Mvc()
+        .DataSource(ds => ds.Mvc()
         .Controller("ClientLeads")
         .LoadAction("Get"))
         .KeyExpr("ClientCode")
         .ElementAttr("class", "datagrid")
-
+        .ShowBorders(true)
+        .ColumnAutoWidth(true)
+        .ShowColumnLines(true)
+        .ShowRowLines(true)
+        .AllowColumnResizing(true) // Enable column resizing
+        .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
+        .AllowColumnReordering(true) // Optional: allow dragging columns
+        .ColumnChooser(chooser => chooser
+        .Enabled(true)
+        .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
+        )
+        .Paging(p => p.Enabled(false))
         .Columns(columns =>
         {
+            columns.Add().DataField("Category").Caption("Category").Visible(true).GroupIndex(0);
             columns.Add().DataField("ClientCode").Caption("Client Code").Visible(true);
 
             columns.Add().DataField("ClientName").Caption("Client Name").Visible(true);
@@ -83,30 +95,6 @@
             columns.Add().DataField("ContactMobile1").Caption("Contact Mobile").Visible(true);
             columns.Add().DataField("ContactPhone1").Caption("Contact Phone").Visible(true);
             columns.Add().DataField("ClientLedgerNo").Caption("Client Ledger No").Visible(true);
-            @*
-    columns.Add().Caption("Business Card").CellTemplate(@<text>
-    function (cellElement, cellInfo) {
-    const data = cellInfo.data;
-    console.log("Raw BusinessCard1 value:", data.BusinessCard1);
-
-    if (data.BusinessCard1) {
-    const base64 = "data:image/jpeg;base64," + data.BusinessCard1; // or image/png
-    console.log("Image src:", base64);
-
-    const img = $("<img>").attr("src", base64).css({
-    height: "80px",
-    width: "auto",
-    borderRadius: "6px"
-    });
-    cellElement.append(img);
-    } else {
-    cellElement.text("No Image");
-    }
-    }
-    </text>); *@
-
-
-
 
 
         })
@@ -119,19 +107,6 @@
             .DisplayFormat(" Totan no.of Clients: {0}");
 
         }))
-        .OnContentReady("onGridReady")
-        .ShowBorders(true)
-        .ColumnAutoWidth(true)
-        .ShowColumnLines(true)
-        .ShowRowLines(true)
-        .AllowColumnResizing(true) // Enable column resizing
-        .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
-        .AllowColumnReordering(true) // Optional: allow dragging columns
-        @*   .ColumnChooser(chooser => chooser
-    .Enabled(true)
-    .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
-    ) *@
-        .Paging(p => p.Enabled(false))
 
         )
 
@@ -150,7 +125,7 @@
 
           $(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-                                if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
+                                if (!$(this).find("#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
                   $(this).remove();
               }
 

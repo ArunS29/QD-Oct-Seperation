@@ -39,42 +39,44 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             i.ContactMobile1,
                             i.ContactPhone1,
                             i.ClientLedgerNo,
-                            BusinessCard1 = i.BusinessCard1 != null ? Convert.ToBase64String(i.BusinessCard1) : null,
-
-
-                          
-                            i.ClientCategory,
-                            i.ContactPhone2,
-                            i.ClientNameAr,
-                            i.ClientAddress,
-                            i.ContactMobile2,                          
-                            i.ContactEmail,
-                            i.ContactFaxNo,
-                            i.ContactRemarks,
-                            i.IsDiscontinued,
-                            i.ReasonDiscontinued,
-                            i.CreatedBy,
-                            i.CreatedOn,
-                            i.ModifiedBy,
-                            i.ModifiedOn,
-                            i.DiscontinuedBy,
-                            i.DiscontinuedOn,
-                            i.DateVisitedFirst,
                             i.Category,
-                            i.ReportedBy,
-                            i.ReportedOn,
-                            i.StatusRemarks,
-                            i.FollowupOn,
-                            i.Status,
-                     
-                            i.SalesPersonCode,
-                            i.SalesPersonName,
-                            i.UserCode,
-                            i.VendorNo,
-                        
-                            i.ClientLedgerName,
+                            i.BusinessCard1,
+                           // BusinessCard1 = i.BusinessCard1 != null ? Convert.ToBase64String(i.BusinessCard1) : null,
+
+
+
+                            //i.ClientCategory,
+                            //i.ContactPhone2,
+                            //i.ClientNameAr,
+                            //i.ClientAddress,
+                            //i.ContactMobile2,                          
+                            //i.ContactEmail,
+                            //i.ContactFaxNo,
+                            //i.ContactRemarks,
+                            //i.IsDiscontinued,
+                            //i.ReasonDiscontinued,
+                            //i.CreatedBy,
+                            //i.CreatedOn,
+                            //i.ModifiedBy,
+                            //i.ModifiedOn,
+                            //i.DiscontinuedBy,
+                            //i.DiscontinuedOn,
+                            //i.DateVisitedFirst,
                           
-                            i.BusinessCard2,
+                            //i.ReportedBy,
+                            //i.ReportedOn,
+                            //i.StatusRemarks,
+                            //i.FollowupOn,
+                            //i.Status,
+                     
+                            //i.SalesPersonCode,
+                            //i.SalesPersonName,
+                            //i.UserCode,
+                            //i.VendorNo,
+                        
+                            //i.ClientLedgerName,
+                          
+                            //i.BusinessCard2,
 
                         })
                         .ToListAsync();
