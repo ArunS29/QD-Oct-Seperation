@@ -10,6 +10,7 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/jquery.idle.js"></script>
 <script src="~/js/jwt-decode.min.js"></script>
+<link rel="stylesheet" href="~/css/loader.css" />
 <style>
     /* Fullscreen background */
     body {
@@ -240,8 +241,6 @@
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 1000;
-        font-size: 24px;
-        color: #007bff;
     }
 </style>
 <div class="background-container">
@@ -284,9 +283,9 @@
         </form>
     </div>
 
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner">
-        <i class="fas fa-spinner fa-spin"></i> Logging in...
+    
+    <div id="loadingSpinner" class="spinner-overlay">
+        <div class="loader"></div>
     </div>
 
     <!-- Skyline Background -->
