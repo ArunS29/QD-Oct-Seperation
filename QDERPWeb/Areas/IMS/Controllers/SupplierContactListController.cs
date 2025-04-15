@@ -27,7 +27,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     dbContext.Tbl3019902SupplierContactLists.Add(item);
                     dbContext.SaveChanges();
-                    return Ok(new { message = "Client Category saved successfully" });
+                   return Ok(new 
+            { 
+                success = true, 
+                message = "Client Category saved successfully",
+                lastSupplierContactSlNo = item.SupplierContactSlNo 
+            });
                 }
                 catch (Exception ex)
                 {
@@ -38,14 +43,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
-        public IActionResult DeleteSupplierContactList([FromBody] string SupplierCode)
+        public IActionResult DeleteSupplierContactList([FromBody] long SupplierContactSlNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
                     var entity = dbContext.Tbl3019902SupplierContactLists
-                        .FirstOrDefault(x => x.SupplierCode == SupplierCode);
+                        .FirstOrDefault(x => x.SupplierContactSlNo == SupplierContactSlNo);
 
                     if (entity == null)
                     {

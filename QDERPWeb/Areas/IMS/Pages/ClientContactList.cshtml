@@ -83,6 +83,7 @@
         <div class="form-field">
             @(Html.DevExtreme().TextBox()
                 .ID("clientHidden")
+                 .Disabled(true)
                 .Width("100%")
                 .Value("-1")
                 .ReadOnly(true)
@@ -320,9 +321,16 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (res) {
-                DevExpress.ui.notify(res.message, "success", 2000);
-                // setTimeout(() => window.location.reload(), 2000);
-            },
+                 if (res.success) {
+            DevExpress.ui.notify(res.message, "success", 2000);
+            console.log("Saved with ClientContactSlNo:", res.lastClientContactSlNo);
+
+            // Set the value to the TextBox
+            $("#clientHidden").dxTextBox("instance").option("value", res.lastClientContactSlNo);
+        } else {
+            DevExpress.ui.notify(res.message, "error", 3000);
+        }
+    },
             error: function (err) {
                 DevExpress.ui.notify("Save failed: " + err.responseText, "error", 3000);
             }
@@ -333,9 +341,9 @@
         onDeleteButtonClick();
     });
     function onDeleteButtonClick(e) {
-        var ClientCode = $("#clientCode").dxTextBox("instance").option("value");
+        var ClientContactSlNo = $("#clientHidden").dxTextBox("instance").option("value");
 
-        if (!ClientCode) {
+        if (!ClientContactSlNo) {
             DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
             return;
         }
@@ -344,7 +352,7 @@
             url: "/api/ClientContactList/DeleteClientCategory",
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(ClientCode), // 👈 plain string
+            data: JSON.stringify(ClientContactSlNo), // 👈 plain string
             success: function (response) {
                 DevExpress.ui.notify(response.message, 'success', 3000);
                 setTimeout(function () {

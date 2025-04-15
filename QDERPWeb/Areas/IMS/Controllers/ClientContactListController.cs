@@ -29,8 +29,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 dbContext.Tbl3010102clientContactLists.Add(item);
                 dbContext.SaveChanges();
-                return Ok(new { message = "Client Category saved successfully" });
-            }
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Client Category saved successfully",
+                        lastClientContactSlNo = item.ClientContactSlNo
+                    });
+                }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Error saving data: " + ex.Message });
@@ -40,14 +45,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
-        public IActionResult DeleteClientCategory([FromBody] string ClientCode)
+        public IActionResult DeleteClientCategory([FromBody] long ClientContactSlNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
             {
                 var entity = dbContext.Tbl3010102clientContactLists
-                    .FirstOrDefault(x => x.ClientCode == ClientCode);
+                    .FirstOrDefault(x => x.ClientContactSlNo == ClientContactSlNo);
 
                 if (entity == null)
                 {

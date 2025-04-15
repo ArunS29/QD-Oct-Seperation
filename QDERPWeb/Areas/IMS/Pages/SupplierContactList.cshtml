@@ -87,6 +87,7 @@
                 .Value("-1")
                 .ReadOnly(true)
                 .Label(" ")
+                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
         </div>
@@ -100,12 +101,10 @@
                 .Width("100%")
                 .Label("Supplier Name")
                 .LabelMode(EditorLabelMode.Outside)
-
                 .ElementAttr("class", "white-bg")
                 )
             @(Html.DevExtreme().Button()
                 .Icon("font") // built-in person icon
-
                 .Type(ButtonType.Normal)
                 )
 
@@ -320,9 +319,16 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (res) {
-                DevExpress.ui.notify(res.message, "success", 2000);
-                // setTimeout(() => window.location.reload(), 2000);
-            },
+        if (res.success) {
+            DevExpress.ui.notify(res.message, "success", 2000);
+            console.log("Saved with ClientStatusNo:", res.lastSupplierContactSlNo);
+
+            // Set the value to the TextBox
+            $("#txtSupplierHidden").dxTextBox("instance").option("value", res.lastSupplierContactSlNo);
+        } else {
+            DevExpress.ui.notify(res.message, "error", 3000);
+        }
+    },
             error: function (err) {
                 DevExpress.ui.notify("Save failed: " + err.responseText, "error", 3000);
             }
@@ -333,7 +339,7 @@
         onDeleteButtonClick();
     });
     function onDeleteButtonClick(e) {
-        var txtSupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
+        var SupplierContactSlNo = $("#txtSupplierHidden").dxTextBox("instance").option("value");
 
         if (!txtSupplierCode) {
             DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
@@ -344,7 +350,7 @@
             url: "/api/SupplierContactList/DeleteSupplierContactList",
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(txtSupplierCode), // 👈 plain string
+            data: JSON.stringify(SupplierContactSlNo), // 👈 plain string
             success: function (response) {
                 DevExpress.ui.notify(response.message, 'success', 3000);
                 setTimeout(function () {
