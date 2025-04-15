@@ -27,6 +27,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetCashBalance()
         {
@@ -49,8 +50,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> GetTotalClientOutstanding()
         {
@@ -72,9 +71,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> GetBankAccounts(DataSourceLoadOptions loadOptions)
@@ -111,7 +107,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetTotalBillsOutstanding()
         {
@@ -133,6 +128,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
         public async Task<IActionResult> GetBillsPayableOutstanding(DataSourceLoadOptions loadOptions)
         {
@@ -168,7 +164,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetOutstandingChartData()
@@ -220,9 +215,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-
-
-
         [HttpGet]
         public async Task<IActionResult> GetBillsOutstandingAgingForChart()
         {
@@ -233,11 +225,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // Define overdue day ranges with labels
                     var overdueRanges = new[]
                     {
-                new { Min = 0, Max = 30, Label = "0-30 Days" },
-                new { Min = 31, Max = 60, Label = "31-60 Days" },
-                new { Min = 61, Max = 90, Label = "61-90 Days" },
-                new { Min = 91, Max = int.MaxValue, Label = "91+ Days" }
-            };
+                        new { Min = 0, Max = 30, Label = "0-30 Days" },
+                        new { Min = 31, Max = 60, Label = "31-60 Days" },
+                        new { Min = 61, Max = 90, Label = "61-90 Days" },
+                        new { Min = 91, Max = int.MaxValue, Label = "91+ Days" }
+                    };
 
                     // Group and project data into labeled overdue buckets
                     var overdueData = overdueRanges.SelectMany(range =>
@@ -321,8 +313,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> GetClientOutstanding(DataSourceLoadOptions loadOptions)
         {
@@ -358,7 +348,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetBankAccountsFrequency()
@@ -408,6 +397,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return StatusCode(500, "Internal server error");
         }
+
         [HttpGet]
         public async Task<IActionResult> GetClientOutstandingByOverdueDays()
         {
