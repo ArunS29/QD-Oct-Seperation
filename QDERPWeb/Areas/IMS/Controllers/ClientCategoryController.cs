@@ -21,57 +21,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
 
-        //[HttpPost]
-        //public async Task<ActionResult> AddClientEntry(DataSourceLoadOptions loadOptions, ClientCategoryDisplayDTO VE)
-        //{
-        //    if (VE == null)
-        //    {
-        //        return BadRequest(new { success = false, message = "Invalid data received." });
-        //    }
-
-        //    try
-        //    {
-        //        short lastCode = await _context.Tbl30102ClientCategories
-        //         .Where(e => e.CategoryCode == VE.CategoryCode)
-        //       .Select(e => (dynamic)e.ClientCategoryCode)
-        //       .OrderByDescending(e => e)
-        //       .FirstOrDefaultAsync() ?? 0;
-
-        //        VE.ClientCategoryCode = (short)(lastCode + 1);
-
-
-        //        // Map DTO to Entity
-        //        var newEntity = new Tbl30102ClientCategory
-        //        {
-        //            CategoryCode = VE.CategoryCode,
-        //            ClientCategory = VE.ClientCategory,
-        //            ClientCategoryCode = (short)(lastCode + 1),
-        //           // AddedOn = DateTime.Now, // Optional: if you have audit fields
-        //           //AddedBy = "CurrentUser" // Replace with actual user context
-        //        };
-
-        //        _context.Tbl30102ClientCategories.Add(newEntity);
-        //        await _context.SaveChangesAsync();
-
-        //        // Query updated list for return
-        //        var query = _context.Tbl30102ClientCategories
-        //            .Where(p => p.CategoryCode == VE.CategoryCode)
-        //            .OrderBy(e => e.ClientCategoryCode)
-        //            .Select(e => new ClientCategoryDisplayDTO
-        //            {
-        //                CategoryCode = e.CategoryCode,
-        //                ClientCategory = e.ClientCategory,
-        //                ClientCategoryCode = e.ClientCategoryCode
-        //            });
-
-        //        var result = await DataSourceLoader.LoadAsync<ClientCategoryDisplayDTO>(query, loadOptions);
-        //        return Json(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-        //    }
-        //}
+      
 
         [HttpGet]
         public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
