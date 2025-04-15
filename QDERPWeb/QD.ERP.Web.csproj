@@ -7,6 +7,7 @@
 
 	<ItemGroup>
 		<Compile Remove="Areas\Finance\Controllers\VATModuleController.cs" />
+		<Compile Remove="Areas\Finance\Pages\VATDatabaseSignatories.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATSalesReporting.cshtml.cs" />
 		<Compile Remove="Controllers\LoginController.cs" />
 		<Compile Remove="Pages\Login.cshtml.cs" />
@@ -17,6 +18,10 @@
 		<Content Remove="Areas\Finance\Pages\frmVATInvoiceEditB2C.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesPersonorProjectList.cshtml" />
 		<Content Remove="Areas\Finance\Pages\SalesRegisterVAT.cshtml" />
+		<Content Remove="Areas\Finance\Pages\VATCreditNotRegister.cshtml" />
+		<Content Remove="Areas\Finance\Pages\VATDatabaseSignatories.cshtml" />
+		<Content Remove="Areas\Finance\Pages\VATGoodsandServices.cshtml" />
+		<Content Remove="Areas\Finance\Pages\VATMasterModule.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATSalesReporting.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
 	</ItemGroup>

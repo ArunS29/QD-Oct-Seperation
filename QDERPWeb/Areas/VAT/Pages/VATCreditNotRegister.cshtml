@@ -490,10 +490,8 @@
 		)
 </div>
 
-
 <ul id="submenu" class="custom-submenu">
-  <li><a href="#">Add New e-Invoice Credit Note</a></li>
-
+	<li id="addCreditNote">Add New e-Invoice</li>
 </ul>
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
@@ -504,11 +502,11 @@
 
 
 <script>
-	// Assuming tenantName is already defined globally
-	function viewInvoice() {
-		const url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-		window.location.href = url;
-	}
+	// // Assuming tenantName is already defined globally
+	// function viewInvoice() {
+	// 	const url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+	// 	window.location.href = url;
+	// }
 
 
 
@@ -731,5 +729,10 @@
     $(document).on('click', function () {
         $('#submenu').hide();
     });
+	$(document).on('click', '#addCreditNote', function (e) {
+    e.stopPropagation();
+			const url = `/${tenantName}/VAT/frmVATInvoiceEditB2C`;
+    window.location.href = url;
+});
 });
 </script>

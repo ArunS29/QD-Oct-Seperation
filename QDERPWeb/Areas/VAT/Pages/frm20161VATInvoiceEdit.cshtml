@@ -3,8 +3,76 @@
 @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
 }
-
 <style>
+.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		margin-right: 10px;
+		transition: transform 0.2s;
+	}
+
+		.toggle-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #e53935; /* RED = OFF */
+		transition: .4s;
+		border-radius: 20px;
+	}
+
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 16px;
+			width: 16px;
+			left: 2px;
+			bottom: 2px;
+			background-color: white;
+			transition: .4s;
+			border-radius: 50%;
+		}
+
+	.toggle-switch input:checked + .slider {
+		background-color: #4CAF50; /* GREEN = ON */
+		transform: scale(0.95);
+	}
+
+		.toggle-switch input:checked + .slider:before {
+			transform: translateX(20px);
+		}
+
+	.vat-item {
+		display: flex;
+		align-items: center;
+		padding: 6px 10px;
+		color: #666666; /* grey text */
+		background-color: transparent !important; /* remove any background */
+	}
+
+	.vat-label {
+		font-weight: bold;
+		color: #666666; /* grey label */
+	}
+
+	/* Remove list background */
+	#vatTransactionList {
+		background-color: transparent !important;
+	}
+
+
+
+
 	.address-form-container {
 		padding: 8px;
 		box-sizing: border-box;
@@ -76,7 +144,7 @@
 			color: #374151; /* neutral icon */
 		}
 
-	
+
 	.content-container-top {
 	width: 1700px;
 	}
@@ -238,7 +306,6 @@
 	display: none !important;
 	}
 	.playIcon {display: none;	}
-
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -346,15 +413,22 @@
 																																							.Disabled(true))
 								</td>
 								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Invoice Transactions Code')")).ID("InvoiceTransactionsCode")
-																																							.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getTransactionCodes").LoadMode(DataSourceLoadMode.Raw).Key("TransactionCode")).AcceptCustomValue(true)
-																																							.OpenOnFieldClick(false)
-																																							.ValueChangeEvent("input")
-																																							.HoverStateEnabled(true)
-																																							.Value(0100000) // Ensure this matches an actual key value
-																																							.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
-																																							.DisplayExpr("InvoiceType") // Set display value if needed
-																																							)
+									@(Html.DevExtreme().DropDownBox()
+																			.ID("InvoiceTransactionsCode")
+																			.Label("Invoice Transaction Type")
+																			.Value(new[] { 1 }) // Default selected value
+																			.ValueExpr("ID")
+																			.DisplayExpr("Name")
+																			.Placeholder("Choose VAT Transaction Types")
+																			.ContentTemplate(new JS("VATTransactionTemplate"))
+																			.DataSource(new[] {
+									new { ID = 1, Name = "3rd Party Tax Invoice" },
+									new { ID = 2, Name = "Nominal Tax Invoice" },
+									new { ID = 3, Name = "Export Tax Invoice" },
+									new { ID = 4, Name = "Summary Tax Invoice" },
+									new { ID = 5, Name = "Self Billed Tax Invoice" }
+									})
+																			)
 								</td>
 							</tr>
 						</table>
@@ -2286,6 +2360,31 @@
 
 																	)
 
+}
+@using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
+{
+	@(Html.DevExtreme().List()
+						.ID("vatTransactionList")
+						.DataSource(new[] {
+		new { ID = 1, Name = "3rd Party Tax Invoice" },
+		new { ID = 2, Name = "Nominal Tax Invoice" },
+		new { ID = 3, Name = "Export Tax Invoice" },
+		new { ID = 4, Name = "Summary Tax Invoice" },
+		new { ID = 5, Name = "Self Billed Tax Invoice" }
+		})
+						.DisplayExpr("Name")
+						.KeyExpr("ID")
+						.SelectionMode(ListSelectionMode.Multiple)
+						.ItemTemplate(@<text>
+	<div class="vat-item">
+		<label class="toggle-switch">
+			<input type="checkbox" name="vatOption" value="<%- ID %>" />
+			<span class="slider"></span>
+		</label>
+		<label class="vat-label"><%- Name %></label>
+	</div>
+</text>)
+						)
 }
 
 @using (Html.DevExtreme().NamedTemplate("ApprovedByTemplate"))
@@ -6261,6 +6360,43 @@
 			}
 		});
 	}
+	$(function () {
+		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+
+		// On initial load - set checkboxes
+		const selectedVals = dropDown.option("value") || [];
+		selectedVals.forEach(id => {
+			$(`input[name="vatOption"][value="${id}"]`)
+				.prop("checked", true)
+				.closest(".vat-item").addClass("selected");
+		});
+	});
+
+	// Handle checkbox change
+	$(document).on("change", 'input[name="vatOption"]', function () {
+		const selectedIds = $('input[name="vatOption"]:checked')
+			.map(function () { return parseInt(this.value); }).get();
+
+		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+		dropDown.option("value", selectedIds);
+
+		// Highlight selected
+		$(".vat-item").removeClass("selected");
+		$('input[name="vatOption"]:checked').each(function () {
+			$(this).closest(".vat-item").addClass("selected");
+		});
+	});
+
+	// Close only on outside click
+	$(document).on("click", function (e) {
+		const $target = $(e.target);
+		const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
+
+		if (!isInside) {
+			const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+			dropDown.close();
+		}
+	});
 
 	
 </script>

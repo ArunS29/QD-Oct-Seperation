@@ -2367,7 +2367,7 @@
 <script>
 		function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
-			const url = `/${tenantName}/Finance/VATDatabaseSignatories`;
+			const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
 			const title = "VATDatabase Signatories";
 			openModal(url, title); // opens in modal instead of new window
 		}
@@ -2800,7 +2800,7 @@
 
 									  // Replace or fetch dynamically
 
-										let url = `/${tenantName}/Finance/VATGoodsandServices`; // Example add page
+										let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
 
 										window.location.href = url;
 
@@ -2824,7 +2824,7 @@
 
 									  // Replace or fetch dynamically
 
-										let url = `/${tenantName}/Finance/VATGoodsandServices`; // Example edit page
+										let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
 
 										window.location.href = url;
 
@@ -2832,7 +2832,7 @@
 
 									width: 60,
 
-									height: 30
+									height: 30 
 
 								}).appendTo($container);
 
@@ -2954,7 +2954,7 @@
 
 									onClick: function () {
 
-										let url = `/${tenantName}/Finance/VATMasterModule`; // Update this route if needed
+										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
 										window.location.href = url;
 
