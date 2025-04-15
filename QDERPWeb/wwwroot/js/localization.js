@@ -1,5 +1,10 @@
 ﻿var dictionary = {
     "en": {
+       
+        "Supplier Category Code:":"Supplier Category Code:",
+        "Supplier Category is required":"Supplier Category is required",
+        "Client Category is required":"Client Category is required",
+        "Type a New Supplier Category & Add to the Existing List:":"Type a New Supplier Category & Add to the Existing List:",
         "Status":"Status",
         "Status Code": "Status Code",
         "Type a New Status & Add  to the Existing List:": "Type a New Status & Add  to the Existing List:",

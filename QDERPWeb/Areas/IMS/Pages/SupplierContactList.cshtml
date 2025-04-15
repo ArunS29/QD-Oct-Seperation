@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.ClientContactListModel
+@model QD.ERP.Web.Areas.IMS.Pages.SupplierContactListModel
 @{
     ViewData["Title"] = "Client Contact List";
 }
@@ -67,14 +67,14 @@
 </style>
 
 <div class="formContainer">
-    <div class="form-header"> <i class="dx-icon dx-icon-user" style=" font-size: 40px; "></i>Client Contact List</div>
+    <div class="form-header"> <i class="dx-icon dx-icon-user" style=" font-size: 40px; "></i>Supplier Contact List</div>
 
     <div class="form-row">
         <div class="form-field">
             @(Html.DevExtreme().TextBox()
-                .ID("clientCode")
+                .ID("txtSupplierCode")
                 .Value("")
-                .Label("Client Code")
+                .Label("Supplier Code")
                 .Width("100%")
                 .LabelMode(EditorLabelMode.Outside)
                 .ElementAttr("class", "white-bg"))
@@ -82,7 +82,7 @@
         </div>
         <div class="form-field">
             @(Html.DevExtreme().TextBox()
-                .ID("clientHidden")
+                .ID("txtSupplierHidden")
                 .Width("100%")
                 .Value("-1")
                 .ReadOnly(true)
@@ -95,10 +95,10 @@
     <div class="form-row">
         <div class="form-field" style="display: flex;  align-items: end;">
             @(Html.DevExtreme().TextBox()
-                .ID("clientName")
+                .ID("txtSupplierName")
                 .Value("")
                 .Width("100%")
-                .Label("Client Name")
+                .Label("Supplier Name")
                 .LabelMode(EditorLabelMode.Outside)
 
                 .ElementAttr("class", "white-bg")
@@ -145,7 +145,7 @@
         </div>
     </div>
 
-    <div class="form-row">
+    @* <div class="form-row">
         <div class="form-field" style="display: flex; align-items: end;">
             @(Html.DevExtreme().TextBox()
                 .ID("division")
@@ -175,7 +175,7 @@
                 )
         </div>
     </div>
-
+ *@
     <div class="form-row">
         <div class="form-field" style="display: flex; align-items: end;">
             @(Html.DevExtreme().TextBox()
@@ -298,13 +298,13 @@
 <script>
     function saveClientList() {
         const data = {
-            ClientCode: $("#clientCode").dxTextBox("instance").option("value"),
-           // ClientContactSlNo: $("#clientHidden").dxTextBox("instance").option("value"),
-            ClientName: $("#clientName").dxTextBox("instance").option("value"),
+            SupplierCode: $("#txtSupplierCode").dxTextBox("instance").option("value"),
+           // ClientContactSlNo: $("#txtSupplierHidden").dxTextBox("instance").option("value"),
+            SupplierName: $("#txtSupplierName").dxTextBox("instance").option("value"),
             ContactPerson: $("#contactPerson").dxTextBox("instance").option("value"),
             ContactPersonTitle: $("#title").dxTextBox("instance").option("value"),
-              ContactDivision: $("#division").dxTextBox("instance").option("value"),
-              ContactLocation: $("#location").dxTextBox("instance").option("value"),
+             // ContactDivision: $("#division").dxTextBox("instance").option("value"),
+             // ContactLocation: $("#location").dxTextBox("instance").option("value"),
             ContactMobile1: $("#mobile1").dxTextBox("instance").option("value"),
             ContactPhone1: $("#phone1").dxTextBox("instance").option("value"),
             ContactMobile2: $("#mobile2").dxTextBox("instance").option("value"),
@@ -315,7 +315,7 @@
         };
 
         $.ajax({
-            url: '/api/ClientContactList/SaveClientCategory',
+            url: '/api/SupplierContactList/SaveSupplierContactList',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -333,18 +333,18 @@
         onDeleteButtonClick();
     });
     function onDeleteButtonClick(e) {
-        var ClientCode = $("#clientCode").dxTextBox("instance").option("value");
+        var txtSupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
 
-        if (!ClientCode) {
+        if (!txtSupplierCode) {
             DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
             return;
         }
 
         $.ajax({
-            url: "/api/ClientContactList/DeleteClientCategory",
+            url: "/api/SupplierContactList/DeleteSupplierContactList",
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(ClientCode), // 👈 plain string
+            data: JSON.stringify(txtSupplierCode), // 👈 plain string
             success: function (response) {
                 DevExpress.ui.notify(response.message, 'success', 3000);
                 setTimeout(function () {
