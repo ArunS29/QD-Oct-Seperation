@@ -226,7 +226,7 @@
             // .OnClick("onBackButtonClick")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
-    </div> 
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnRefresh")
@@ -244,25 +244,25 @@
             .Width(50)
             .Text(new JS("formatMessage('Add New Client')"))
             .ElementAttr(new { style = "display: none;" })
-           // .OnClick("toggleGroupPanel")
+            .OnClick("clientMaster")
             )
- 
+
     </div>
-     <div class="btn-container">
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddSuppliers")
             .Icon("add")
             .Width(50)
             .Text(new JS("formatMessage('Add New Supplier')"))
             .ElementAttr(new { style = "display: none;" })
-           // .OnClick("toggleGroupPanel")
+            // .OnClick("toggleGroupPanel")
             )
- 
-    </div>
-    </div>
 
-  
-  
+    </div>
+</div>
+
+
+
 
 
 
@@ -778,7 +778,7 @@
             $("#overlay").fadeOut();
             $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
         }
-   
+
         // Handle button clicks
         function addRecipitsButton_click(e) {
             let url = "";
@@ -834,6 +834,11 @@
         //     openModal(url, title);
         // }
 
+        function clientMaster(){
+            const url = `/${tenantName}/IMS/ClientLeadMaster`;
+            const title = "";
+                openModal(url, title);
+        }
 
         function addPaymentButton_click(e) {
         let url = "";
