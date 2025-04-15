@@ -440,15 +440,6 @@
 <script>
 
 	let invoiceNo=null;
-
-	   // Function to open modal with URL and title
-    function openModal(url, title) {
-        document.getElementById("modalIframe").src = url + "?modal=true"; // Append ?modal=true
-        document.getElementById("modalTitle").innerText = title; // Set modal title
-        document.getElementById("customModal").style.display = "block";
-    }
-
-
 	// Assuming tenantName is already defined globally
 	function viewInvoice() {
 		const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}`;

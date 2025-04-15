@@ -139,58 +139,7 @@
         .btn-container:hover .dx-dropdownbutton .dx-button-text {
             display: inline-block;
         }
-    /* Modal Styling */
-    .modal {
-        display: none; /* Hidden by default */
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
-    }
-
-    /* Modal Content */
-    .modal-content {
-        position: absolute;
-        top: 40%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        max-width: 1200px;
-        height: 90%;
-        max-height: 800px;
-        background: white;
-        border-radius: 8px;
-        padding: 0;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-        overflow: hidden; /* Prevents content overflow */
-    }
-
-    /* Modal Header */
-    .modal-header {
-        display: flex;
-        justify-content: end;
-        align-items: center;
-        color: #000;
-        padding: 10px 10px 0px 0px;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    /* Close Button */
-    .close {
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    /* Fullscreen iframe */
-    #modalIframe {
-        width: 100%;
-        height: calc(100% - 50px); /* Adjusted for header height */
-        border: none;
-    }
+  
 
 </style>
 
@@ -386,17 +335,7 @@
         </div>
     }
     
-    
-    <!-- Modal Structure -->
-    <div id="customModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle" class="modalTitle">Modal Title</h2>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <iframe id="modalIframe" src="" frameborder="0"></iframe>
-        </div>
-    </div>
+  
     <div id="supplierPaymentRequestModal">
 
         @(Html.DevExtreme().Popup()
@@ -864,19 +803,7 @@
         $("#overlay").fadeOut();
         $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
     }
-    // Function to open modal with URL and title
-    function openModal(url, title) {
-        document.getElementById("modalIframe").src = url + "?modal=true"; // Append ?modal=true
-        document.getElementById("modalTitle").innerText = title; // Set modal title
-        document.getElementById("customModal").style.display = "block";
-    }
-
-    // Function to close modal
-    function closeModal() {
-        document.getElementById("customModal").style.display = "none";
-        document.getElementById("modalIframe").src = ""; // Clear iframe on close
-    }
-
+  
     // Handle button clicks
     function addRecipitsButton_click(e) {
         let url = "";
