@@ -1,10 +1,18 @@
 ﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.CCModel
+@{
+}
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-   
+
+    .form-group {
+        display: grid;
+        width: 100%;
+    }
+
 
     .dx-field-label {
         font-weight: bold !important;
@@ -28,76 +36,71 @@
 </div>
 
 
-<div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
-    <div class="form-group">
+
+<div>
+    <h2 style="text-align: center;">Client Category</h2>
+    <div class="dx-fieldset horizontal-container">
+
         @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Type a New Client & Add  to the Existing List:')"))
             .LabelMode(EditorLabelMode.Outside)
             .ID("ClientCategory")
             .Value("")
-         
+            .Width("60%")
             )
     </div>
-    
-    <div class="form-group">
+
+    <div class="dx-fieldset horizontal-container">
+
         @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Client Category Code:')"))
             .LabelMode(EditorLabelMode.Outside)
             .ID("CategoryCode")
             .Value("")
-           
-          
+            .Width("80%")
             )
-    </div>
-</div>
-
-
-
-
-<div class="dx-fieldset horizontal-container" style="margin-top:10px;">
-    <div class="form-group">
-    </div>
-
-  
-    <div class="form-group" style="margin-top: 25px;">
         @(Html.DevExtreme().Button()
             .ID("btnVoucherEntry")
             .Text(new JS("formatMessage('Add')"))
-            .Height(40)
-            .Width(178)
+            .Height(60)
             .Icon("plus")
             .OnClick("function() { addVoucherEntry(); }")
+            .ElementAttr("style", "width: 170; margin-top: 20px; padding: 2px;")
             )
+
     </div>
 
+
+
 </div>
+
 
 
 <div class="dx-field ledgerResult">
     @(
         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl30102ClientCategory>()
-                    .ID("dataGrid")
+        .ID("dataGrid")
         .DataSource(ds => ds.Mvc()
         .Controller("ClientCategory")
         .LoadAction("Get"))
         .KeyExpr("ClientCategoryCode")
-                    .RemoteOperations(false)
-                   // .OnRowRemoved("onRowRemoved")
+        .RemoteOperations(false)
+        // .OnRowRemoved("onRowRemoved")
 
-                    .Columns(columns =>
-                    {
+        .Columns(columns =>
+        {
             columns.AddFor(m => m.ClientCategoryCode).Caption(new JS("formatMessage('Client Category Code')")).AllowEditing(false).Alignment(HorizontalAlignment.Center);
             columns.AddFor(m => m.ClientCategory).Caption(new JS("formatMessage('Client Category')")).AllowEditing(true).Alignment(HorizontalAlignment.Left);
             columns.AddFor(m => m.CategoryCode).Caption(new JS("formatMessage('Category Code')")).AllowEditing(true).Alignment(HorizontalAlignment.Center);
-                    }
-    )
+        }
+        )
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
         .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(true))
-        .Height(250)
+        .Height(500)
         .ColumnAutoWidth(true)
         .FilterRow(filterRow => filterRow.Visible(false))
         .GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -106,10 +109,10 @@
         .Editing(editing => editing
         .Mode(GridEditMode.Cell)
         .AllowUpdating(true)
-      
+
         )
         .OnRowUpdating("onUnitRowUpdating")
-       
+
         )
 </div>
 
@@ -120,18 +123,20 @@
 
 
 
-    <div class="container1">
-        <div class="card-footer">
-            <div class="dx-fieldset horizontal-container1 mt-2">
-
+<div class="container1">
+    <div class="card-footer">
+        <div class="dx-fieldset horizontal-container1 mt-2" style="display: flex; justify-content: space-between; width:100%; ">
+            <div>
                 @(Html.DevExtreme().Button()
                     .ID("btnUpdate")
                     .Text(new JS("formatMessage('Update')"))
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("Update")
+
                     )
-            
+            </div>
+            <div>
                 @(Html.DevExtreme().Button()
                     .ID("btnBack")
                     .Text(new JS("formatMessage('Back')"))
@@ -139,9 +144,11 @@
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     //.OnClick("navigateToHome")
+
                     )
             </div>
-        
+        </div>
+
     </div>
 </div>
 
@@ -183,10 +190,10 @@
 
             success: function (response) {
 
-                    DevExpress.ui.notify(response.message, "success", 1500); // ✅ Green message
+                DevExpress.ui.notify(response.message, "success", 1500); // ✅ Green message
 
-                    $("#dataGrid").dxDataGrid("instance").refresh();
-                  },
+                $("#dataGrid").dxDataGrid("instance").refresh();
+            },
 
             error: function () {
 
@@ -287,5 +294,5 @@
 
 
 
-       
+
 </script>

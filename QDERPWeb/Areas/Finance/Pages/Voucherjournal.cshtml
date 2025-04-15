@@ -2029,39 +2029,39 @@
         });
     }
 
-    // function onDeleteButtonClick() {
-    //     debugger;
-    //     var dataGrid = $("#dataGrid").dxDataGrid("instance");
-    //     var rowCount = dataGrid.getVisibleRows().length;
+    function onDeleteButtonClick() {
+        debugger;
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
 
-    //     if (rowCount === 0 || rowCount === null) {
-    //         DevExpress.ui.dialog.alert("No records available to delete. Please enter some transactions.", "Data Not Found");
-    //     } else {
-    //         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-    //         var temporaryNo = $("#TemporaryNo").dxTextBox("instance").option("value");
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.dialog.alert("No records available to delete. Please enter some transactions.", "Data Not Found");
+        } else {
+            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            var temporaryNo = $("#TemporaryNo").dxTextBox("instance").option("value");
 
-    //         confirmToDeleteAllVoucher(function () {
-    //             $.ajax({
-    //                 url: `/api/VoucherJournal/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&TemporaryNo=${encodeURIComponent(temporaryNo)}`,
-    //                 type: "POST",
-    //                 success: function (response) {
-    //                     if (response.data) {
-    //                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-    //                         DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.", "Data Deleted Successfully")
-    //                             .done(function () {
-    //                                 history.back(); // Execute only when "OK" is clicked
-    //                             });
-    //                     } else {
-    //                         DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
-    //                     }
-    //                 },
-    //                 error: function (xhr, status, error) {
-    //                     DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
-    //                 }
-    //             });
-    //         });
-    //     }
-    // }
+            confirmToDeleteAllVoucher(function () {
+                $.ajax({
+                    url: `/api/VoucherJournal/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&TemporaryNo=${encodeURIComponent(temporaryNo)}`,
+                    type: "POST",
+                    success: function (response) {
+                        if (response.data) {
+                            $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+                            DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.", "Data Deleted Successfully")
+                                .done(function () {
+                                    history.back(); // Execute only when "OK" is clicked
+                                });
+                        } else {
+                            DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+                    }
+                });
+            });
+        }
+    }
 
 
 

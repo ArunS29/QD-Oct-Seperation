@@ -1018,6 +1018,7 @@
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const rowCount = dataGrid.getVisibleRows().length;
 
+
         if (rowCount == 0) {
             Swal.fire({
                 title: "Voucher is not Approved",
@@ -1068,7 +1069,58 @@
     }
     
 
-    
+    function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Approved",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithApproval();
+        }
+    }
+
+    function proceedWithApproval() {
+        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).replace(/ /g, '-');
+
+        $.ajax({
+            success: function () {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Voucher has been Approved.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    disableEditing();
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please save the transactions after proceeding!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    }
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
         onDeleteButtonClick();
@@ -1143,6 +1195,109 @@
         } else if (e.newData.DrCr === "Cr") {
             e.newData.DrAmount = 0.00;
         }
+    }
+
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Approved",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithApproval();
+        }
+    }
+
+    function proceedWithApproval() {
+        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).replace(/ /g, '-');
+
+        $.ajax({
+            success: function () {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Voucher has been Approved.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    disableEditing();
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please save the transactions after proceeding!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    }
+    
+
+    function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount == 0) {
+            Swal.fire({
+                title: "Voucher is not Approved",
+                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+        } else {
+            proceedWithApproval();
+        }
+    }
+
+    function proceedWithApproval() {
+        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).replace(/ /g, '-');
+
+        $.ajax({
+            success: function () {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Voucher has been Approved.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    disableEditing();
+                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
+                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please save the transactions after proceeding!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
     }
 
 </script>

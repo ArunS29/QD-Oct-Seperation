@@ -27,6 +27,13 @@ namespace QD.ERP.Web.Areas.Finance.Models
     //}
 
 
+    public class ClientStatusDisplayDTO
+    {
+        public byte StatusCode { get; set; }
+
+        public string Status { get; set; }
+    }
+    
     public class ClientCategoryDisplayDTO
     {
         public string CategoryCode { get; set; }
