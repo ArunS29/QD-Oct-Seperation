@@ -8,10 +8,7 @@
         display: none !important;
     }
 
-        .limited-footer .btn-container:has(#ddButtonLayout, #btnShowFields, #btnShowRowTotals, #btnPrint, #btnFinancialReports, #btnFinancialReportsArabic) {
-            display: block !important;
-        }
-
+    
     .dx-fieldset.horizontal-container {
         display: flex;
         align-items: center;
@@ -66,8 +63,8 @@
 <div class="container" style="display: flex; flex-direction: column; gap: 20px;">
 
     <div class="Head">
-        <div class="limited-footer">
-            @await Html.PartialAsync("_GridFooterUCCA")
+        <div>
+            @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
         </div>
     </div>
 
