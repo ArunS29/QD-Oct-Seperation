@@ -438,10 +438,24 @@
 
 
 <script>
+
+	let invoiceNo=null;
+
+	   // Function to open modal with URL and title
+    function openModal(url, title) {
+        document.getElementById("modalIframe").src = url + "?modal=true"; // Append ?modal=true
+        document.getElementById("modalTitle").innerText = title; // Set modal title
+        document.getElementById("customModal").style.display = "block";
+    }
+
+
 	// Assuming tenantName is already defined globally
 	function viewInvoice() {
-		const url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-		window.location.href = url;
+		const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}`;
+
+		//window.location.href = url;
+		 title = "VAT Invoice Edit(B2B)";
+		openModal(url, title);
 	}
 
 
@@ -538,6 +552,7 @@
 			e.preventDefault();
 			var rowIndex = $(this).index();
 			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+			 invoiceNo = rowData.InvoiceNo;
 			console.log(rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
@@ -615,6 +630,7 @@
 					VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
 					var firstRow = dataSource[0];
 					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
+					
 				}
 			},
 			error: function () {

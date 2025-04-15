@@ -1255,6 +1255,30 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
 
+        [HttpGet]
+        public async Task<ActionResult> GetInvoiceDetails(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var result = dbContext.Qry201607vatinvoiceRegisterMainViews
+                      .Where(x => x.InvoiceNo == InvoiceNo)
+                      .ToList();
+
+
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
 
 	}
