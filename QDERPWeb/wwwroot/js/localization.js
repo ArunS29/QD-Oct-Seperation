@@ -1676,12 +1676,29 @@
         "Client Leads": "Client Leads",
         "Suppliers": "Suppliers",
         "Job Orders": "Job Orders",
-        "Stock Adjustments": "Stock Adjustments"
-
-
+        "Stock Adjustments": "Stock Adjustments",
+        "Category": "Category",
+        "Client Code": "Client Code",
+        "Client Name": "Client Name",
+        "Contact Person": "Contact Person",
+        "Contact Mobile": "Contact Mobile",
+        "Contact Phone": "Contact Phone",
+        "Client Ledger No": "Client Ledger No",
+        "Totan no.of Clients": "Totan no.of Clients",
+        "Total Clients: {0}": "Total Clients: {0}"
         
     },
     "ar": {
+        "Total Clients: {0}": "{0} :إجمالي العملاء",
+        "Totan no.of Clients":"توتان عدد العملاء",
+        "Client Ledger No": "رقم سجل العميل",
+        "Contact Phone": "هاتف الاتصال",
+        "Contact Mobile": "اتصل بالهاتف المحمول",
+        "Contact Person": "اتصل الشخص",
+        "Client Name": "اسم العميل",
+        "Client Code": "رمز العميل",
+        "Add New Client":"إضافة عميل جديد",
+        "Category": "باب",
         "Stock Inventory": "مخزون السلع",
         "Inventory Dashboard": "لوحة تحكم المخزون",
         "Material Requests": "طلبات المواد",

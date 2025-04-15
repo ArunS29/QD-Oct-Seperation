@@ -45,7 +45,7 @@
         left: 20px; /* Distance from left */
         display: flex;
         gap: 10px; /* Space between buttons */
-        /* z-index: 9999; /* Make sure it's on top */ */
+        /* z-index: 9999; /* Make sure it's on top */ 
         /* background-color: white; /* Optional: background */ */ padding: 10px; /* Optional: inner spacing */
         border-radius: 6px;
         margin-top: 10px;
@@ -87,14 +87,13 @@
         .Paging(p => p.Enabled(false))
         .Columns(columns =>
         {
-            columns.Add().DataField("Category").Caption("Category").Visible(true).GroupIndex(0);
-            columns.Add().DataField("ClientCode").Caption("Client Code").Visible(true);
-
-            columns.Add().DataField("ClientName").Caption("Client Name").Visible(true);
-            columns.Add().DataField("ContactPerson").Caption("Contact Person").Visible(true);
-            columns.Add().DataField("ContactMobile1").Caption("Contact Mobile").Visible(true);
-            columns.Add().DataField("ContactPhone1").Caption("Contact Phone").Visible(true);
-            columns.Add().DataField("ClientLedgerNo").Caption("Client Ledger No").Visible(true);
+        columns.Add().DataField("Category").Caption(new JS("formatMessage('Category')")).Visible(true).GroupIndex(0);
+            columns.Add().DataField("ClientCode").Caption(new JS("formatMessage('Client Code')")).Visible(true);
+        columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')")).Visible(true);
+        columns.Add().DataField("ContactPerson").Caption(new JS("formatMessage('Contact Person')")).Visible(true);
+        columns.Add().DataField("ContactMobile1").Caption(new JS("formatMessage('Contact Mobile')")).Visible(true);
+        columns.Add().DataField("ContactPhone1").Caption(new JS("formatMessage('Contact Phone')")).Visible(true);
+            columns.Add().DataField("ClientLedgerNo").Caption(new JS("formatMessage('Client Ledger No')")).Visible(true);
 
 
         })
@@ -104,8 +103,7 @@
             // Count for ClientName column
             items.Add().Column("ClientCode")
             .SummaryType(SummaryType.Count)
-            .DisplayFormat(" Totan no.of Clients: {0}");
-
+            .DisplayFormat(new JS("formatMessage('Total Clients: {0}')"));
         }))
 
         )
