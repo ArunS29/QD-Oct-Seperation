@@ -81,8 +81,8 @@
     <div class="form-group-row">
         @(Html.DevExtreme().TextBox()
             .ID("statusId")
-            .Label("Status ID")
              .Disabled(true)
+            .Label(new JS("formatMessage('Status ID')"))
             .Value("-1")
             .LabelMode(EditorLabelMode.Outside)
             .TabIndex(1)
@@ -95,7 +95,7 @@
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("StatusCode")
                 )
-                .Label("Client")
+            .Label(new JS("formatMessage('Client')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("GetClientDropDown")
                 .Width(900)
@@ -120,7 +120,7 @@
     <div class="form-group-row">
     
         @(Html.DevExtreme().DateBox()
-            .Label("Reported On")
+            .Label(new JS("formatMessage('Reported On')"))
             .ID("reportedOn")
             .InputAttr("aria-label", "Date")
             .LabelMode(EditorLabelMode.Outside)
@@ -132,7 +132,7 @@
 
         @(Html.DevExtreme().TextBox()
             .ID("reportedBy")
-            .Label("Reported By")
+            .Label(new JS("formatMessage('Reported By')"))
             .LabelMode(EditorLabelMode.Outside)
             .TabIndex(4)
             )
@@ -142,7 +142,7 @@
         @(Html.DevExtreme().TextArea()
             .ID("reportRemarks")
             .Name("reportRemarks")
-            .Label("Report Remarks")
+            .Label(new JS("formatMessage('Report Remarks')"))
             .LabelMode(EditorLabelMode.Outside)
             .Height("200px")
             .ElementAttr(new { @class = "custom-textarea-with-scroll" })
@@ -159,7 +159,7 @@
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("StatusCode")
             )
-            .Label("Status")
+            .Label(new JS("formatMessage('Status')"))
             .LabelMode(EditorLabelMode.Outside)
             .ID("GetStatusDropDown")
             .Width(900)
@@ -184,7 +184,7 @@
                 .ID("btnAddStatus")
                 .Icon("plus")
                 .Width("60")
-                .Hint("Add new status")
+                .Hint(new JS("formatMessage('Add New Status')"))
                 .ElementAttr(new { @class = "inline-plus-button dx-button-mode-contained dx-button-normal" })
                // .OnClick("onAddStatusClicked")
                 )
@@ -194,7 +194,7 @@
     <div class="  form-group-row " style="width:49.5%;">
     
         @(Html.DevExtreme().DateBox()
-            .Label("Followup On")
+            .Label(new JS("formatMessage('Followup On')"))
             .ID("followUpOn")
             .InputAttr("aria-label", "Date")
             .LabelMode(EditorLabelMode.Outside)
@@ -204,10 +204,10 @@
             )
     </div>
     <div class="toolbar-buttons">
-        @(Html.DevExtreme().Button().ID("btnSave").Text("Save").Icon("save").OnClick("saveClientList"))
-        @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("save").OnClick("onSaveAndClose"))
-        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").OnClick("onDeleteClient"))
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("back").OnClick("onBackToList"))
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("save").OnClick("saveClientList"))
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("save").OnClick("onSaveAndClose"))
+        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash").OnClick("onDeleteClient"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("back").OnClick("onBackToList"))
     </div>
 
     @using (Html.DevExtreme().NamedTemplate("GetStatusContentTemplate"))

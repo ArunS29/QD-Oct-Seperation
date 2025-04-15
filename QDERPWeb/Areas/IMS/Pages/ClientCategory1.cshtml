@@ -12,7 +12,7 @@
 <style type="text/css">
     /* Card container styling */
     .card-container {
-        background-color: white /* Set background color for the card */
+        background-color: white; /* Set background color for the card */
         padding: 20px; /* Add some padding inside the card */
         border-radius: 8px; /* Rounded corners */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
@@ -113,7 +113,7 @@
 
         @(
             Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Type a New Client & Add  to the Existing List:')"))
+            .Label(new JS("formatMessage('Type a New Client & Add to the Existing List:')"))
             .LabelMode(EditorLabelMode.Outside)
             .ID("txtClientCategory")
             .Value(null)

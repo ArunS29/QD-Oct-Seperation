@@ -29,8 +29,17 @@
         flex-direction: column;
         position: relative;
         min-height: 100vh;
+       
     }
 
+    /* Login Image */
+    .logo-img {
+        margin: 5px;
+        width: 300px;
+        height: 150px;
+        z-index: 9;
+        position: relative;
+    }
     /* Login Box */
     .login-container {
         background: #ffffff;
@@ -43,6 +52,8 @@
         border: 1px solid #ddd;
         animation: fadeIn 1s ease-in-out; /* Apply fade-in animation */
     }
+   
+
 
     /* Labels and Input fields */
     label {
@@ -234,6 +245,9 @@
     }
 </style>
 <div class="background-container">
+
+    <img src="~/images/login_logo.png" class="logo-img" />
+
     <!-- Login Box -->
     <div class="login-container">
         <h2>Login</h2>
