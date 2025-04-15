@@ -18,15 +18,19 @@
         border-bottom: 2px solid lightgrey;
     }
 
-
-    .dx-dropdownbox {
-        display: none;
+    /* Money button: white icon on light orange background */
+    .money-button .dx-icon {
+        color: white;
+        background-color: #FFA07A; /* Light salmon / light orange */
     }
 
-    /* Show dropdown on hover */
-    .hovered-cell .dx-dropdownbox {
-        display: inline-block !important;
+    /* Card button: blue icon on white background */
+    .card-button .dx-icon {
+        color: white; /* Bootstrap primary blue */
+        background-color: #007BFF;
+        border: 1px solid #007BFF; /* optional: add a border for visibility */
     }
+
 
     .custom-modal .modal-dialog {
         max-width: 90%; /* Adjust width */
@@ -129,7 +133,7 @@
                     
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("#").Width(50).Alignment(HorizontalAlignment.Center)
+                        columns.Add().DataField("LineOrderNo").Caption("#").Width(50).Alignment(HorizontalAlignment.Center)
                     .CellTemplate(@<text>
                 <div>
                     <%= row.rowIndex + 1 %>
@@ -138,9 +142,7 @@
 
 
 
-                        columns.Add().DataField("select").Caption("Select").CellTemplate(@<text>
-                <input type="checkbox" class="dx-checkbox" />
-            </text>).Width(50).AllowEditing(false);
+                        
 
 
                         columns.Add().DataField("AccountHead").Caption("Account Ledger").Width(300).AllowEditing(true)
@@ -194,25 +196,53 @@
                 .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                         columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right)
                     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-                        columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
+                        columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(150);
                         columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150);
-                        // columns.Add().DataField("EmpAllocated").Caption("Employees Allocation").Width(150);
-                        columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150);
+                        columns.Add().Caption("...").Width(100).CellTemplate(@<text>
+                <div class="text-center">
+                    @(Html.DevExtreme().Button()
+
+                    .Type(ButtonType.Default)
+                    .Icon("money")
+                    .ElementAttr("class", "money-button")
+                   
+                    )
+                </div>
+            </text>)
+                .HeaderCellTemplate(@<text>
+                <div class="headerBolder">...</div>
+            </text>);
+                        columns.Add().DataField("EmpAllocated").Caption("Employees Allocation").Width(150);
+                        columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150).Visible(true);
+                        columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
+                <div class="text-center" >
+                    @(Html.DevExtreme().Button()
+
+                    .Type(ButtonType.Default)
+                    .Icon("card")
+                    .ElementAttr("class", "card-button")
+                    )
+                </div>
+            </text>)
+                .HeaderCellTemplate(@<text>
+                <div class="headerBolder">...</div>
+            </text>);
                         // ✅ Additional columns from entity
-                        columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150);
-                        columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200);
-                        columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120);
-                        columns.Add().DataField("AccountId").Caption("Account ID").Width(150);
-                        columns.Add().DataField("EmployeeCostDescription").Caption("Employee Cost Desc").Width(200);
-                        columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200);
-                        columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Format("currency").Width(150).Alignment(HorizontalAlignment.Right);
-                        columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right);
+                        columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(true);
+                        columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
+                        columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120).Visible(false);
+                        columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
+                        columns.Add().DataField("EmployeeCostDescription").Caption("Employee Cost Desc").Width(200).Visible(false);
+                        columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200).Visible(false);
+                        columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Format("currency").Width(150).Alignment(HorizontalAlignment.Right).Visible(false);
+                        columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false);
                     })
                 .DataSource(new List<object>())
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
                 .Height(300)
                 .ColumnAutoWidth(true)
+                .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
                 .ShowBorders(true)
                 .Editing(editing => editing
                 .Mode(GridEditMode.Cell)
@@ -423,26 +453,69 @@
     });
 
     function addRow() {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var dataSource = dataGrid.option("dataSource") || [];
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
-        if (!Array.isArray(dataSource)) {
-            dataSource = [];
+        if (!voucherNo) {
+            DevExpress.ui.notify("Voucher No is missing!", "error", 2000);
+            return;
         }
 
-        // Add an empty row with default values if the last row is not empty
-        if (dataSource.length === 0 || Object.keys(dataSource[dataSource.length - 1]).length !== 0) {
-            dataSource.push({
-                DrAmount: 0.00,   // Default to 0.00
-                CrAmount: 0.00,   // Default to 0.00
-                DrCr: 'Dr'
+        // 🔁 Step 1: Get existing LineOrder count
+        $.get("/api/JournalEntryEdit/GetNextLineOrderNo?voucherNo=" + voucherNo)
+            .done(function (nextLineOrderNo) {
+                var newRow = {
+                    DrAmount: 0.00,
+                    CrAmount: 0.00,
+                    DrCr: 'Dr',
+                    JournalRefNo: voucherNo,
+                    LineOrderNo: nextLineOrderNo
+                };
+
+                // Save the new row to the database
+                $.ajax({
+                    url: '/api/JournalEntryEdit/SaveJournalRegisterChild', // 🔁 update this path
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(newRow),
+                    success: function () {
+                        var button = $("#btnSave").dxButton("instance");
+                        button.option("text", "Update");
+                        // Reload the grid after saving
+                        loadLedgerGridData(voucherNo);
+                    },
+                    error: function (err) {
+                        DevExpress.ui.notify("Error saving data", "error", 2000);
+                        console.error(err);
+                    }
+                });
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Failed to get next LineOrderNo", "error", 2000);
             });
-            dataGrid.option("dataSource", dataSource);
-        }
     }
-    
+
+
+    function loadLedgerGridData(voucherNo) {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        $.ajax({
+            url: '/api/JournalEntryEdit/GetJournalRegisterChildren?voucherNo=' + voucherNo,
+            method: 'GET',
+            success: function (data) {
+                dataGrid.option("dataSource", data);
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to load ledger data", "error", 2000);
+            }
+        });
+    }
+
 
     $(function () {
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        if (voucherNo) {
+            loadLedgerGridData(voucherNo);
+        }
         $("#btnAddLine").dxButton({
             text: "Add Line",
             icon: "add",
@@ -454,16 +527,7 @@
 
         $("#dataGrid").dxDataGrid({
             onCellPrepared: function (e) {
-                if (e.rowType === "data" && e.column.caption === "Account Ledger") {
-                    $(e.cellElement).hover(
-                        function () {
-                            $(this).addClass("hovered-cell");
-                        },
-                        function () {
-                            $(this).removeClass("hovered-cell");
-                        }
-                    );
-                }
+                
                 if (e.column.dataField === "DrAmount") {
                     e.cellElement.css({ "color": "red", "font-weight": "bold" });
                 }
@@ -471,25 +535,7 @@
                     e.cellElement.css({ "color": "green", "font-weight": "bold" });
                 }
             },
-            onEditorPreparing: function (e) {
-                if (e.parentType === "dataRow") {
-
-                    // Your existing logic (example)
-                    if (e.dataField === "Account Ledger") {
-                        e.editorOptions.visible = true;
-                    }
-
-                    // 🔐 Disable DrAmount if DrCr is Cr
-                    if (e.dataField === "DrAmount" && e.row?.data?.DrCr === "Cr") {
-                        e.cancel = true;
-                    }
-
-                    // 🔐 Disable CrAmount if DrCr is Dr
-                    if (e.dataField === "CrAmount" && e.row?.data?.DrCr === "Dr") {
-                        e.cancel = true;
-                    }
-                }
-            }
+           
 
         });
     });
@@ -1188,7 +1234,18 @@
 
     function onLedgerRowUpdating(e) {
         const drCr = e.newData.DrCr || e.oldData.DrCr;
+        if (drCr === "Dr") {
+            if ("CrAmount" in e.newData) {
+                delete e.newData.CrAmount; // prevent CrAmount from updating
+            }
+        }
 
+        // If DrCr is "Cr", allow only CrAmount to update
+        if (drCr === "Cr") {
+            if ("DrAmount" in e.newData) {
+                delete e.newData.DrAmount; // prevent DrAmount from updating
+            }
+        }
         // Clear the opposite field when DrCr is changed
         if (e.newData.DrCr === "Dr") {
             e.newData.CrAmount = 0.00;

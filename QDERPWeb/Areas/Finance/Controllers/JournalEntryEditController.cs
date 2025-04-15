@@ -371,8 +371,51 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult SaveJournalRegisterChild([FromBody] Tbl20127JournalRegisterChild newEntry)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (ModelState.IsValid)
+            {
+                    // Save to DB
+                    dbContext.Tbl20127JournalRegisterChildren.Add(newEntry);
+                    dbContext.SaveChanges();
+                return Ok();
+            }
+            return BadRequest(ModelState);
+            }
 
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
+        [HttpGet]
+        public IActionResult GetJournalRegisterChildren(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var records = dbContext.Tbl20127JournalRegisterChildren
+                .Where(j => j.JournalRefNo == voucherNo)
+                .ToList();
+            return Json(records);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public IActionResult GetNextLineOrderNo(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var count = dbContext.Tbl20127JournalRegisterChildren
+                .Count(j => j.JournalRefNo == voucherNo);
+
+            return Ok(count + 1); // Next LineOrderNo
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
     }
 }
