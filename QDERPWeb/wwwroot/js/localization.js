@@ -41,6 +41,7 @@
         "Vendor No": "Vendor No",
         "Client Ledger Name": "Client Ledger Name",
         "Business Card 2": "Business Card 2",
+        "Business Card": "Business Card",
 
         "Client Category Code": "Client Category Code",
         "Client Category": "Client Category",
@@ -1691,10 +1692,16 @@
         "Status ID": "Status ID",
         "Client": "Client",
         "Report Remarks": "Report Remarks",
-        "Add New Status": "Add New Status"
+        "Add New Status": "Add New Status",
+        "Client Status": "Client Status",
+        "Contact List": "Contact List",
+        "Client Master":"Client Master"
     },
     "ar": {
-
+        "Client Master":"العميل الرئيسي",
+        "Business Card": "بطاقة عمل",
+        "Client Status": "حالة العميل",
+        "Contact List":"قائمة جهات الاتصال",
         "Add New Status": "إضافة حالة جديدة",
         "Followup On": "متابعة",
         "Report Remarks": "ملاحظات التقرير",

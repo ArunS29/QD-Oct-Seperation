@@ -11,28 +11,6 @@
 }
 
 <style>
-    .header-box {
-        background-color: #3c8dbc;
-        color: white;
-        padding: 20px;
-        font-size: 20px;
-        font-weight: bold;
-        /* display: flex; */
-        align-items: center;
-        border-radius: 4px 4px 0 0;
-        width: 300px;
-        height: 200px;
-        margin-left: 15px;
-    }
-
-        .header-box i {
-            margin-right: 10px;
-            font-size: 24px;
-        }
-
-        .header-box h5 {
-            margin-top: 40px;
-        }
 
     .datagrid {
         height: 600px;
@@ -57,11 +35,15 @@
     }
 
 </style>
-
-<!-- Client Header Box -->
-<div class="header-box">
-    <h5>QuickDice ERP Solutions</h5>
-    <i class="dx-icon dx-icon-user"></i> Clients
+<div class="title">
+    <div class="header-container">
+        <div id="ClientLeads" class="no-border-input"></div>
+    </div>
+</div>
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("InventoryModuleFooter")
+    </div>
 </div>
 
 <div>
@@ -109,11 +91,7 @@
         )
 
 </div>
-<div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
-    </div>
-</div>
+
 <!-- Bottom Toolbar -->
 
 
@@ -140,4 +118,13 @@
          console.log("Image src: ", "data:image/png;base64," + data.BusinessCard1);
 
       }
+      $(function () {
+        $("#ClientLeads").dxTextBox({
+            text: formatMessage("Client Leads"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
 </script>
