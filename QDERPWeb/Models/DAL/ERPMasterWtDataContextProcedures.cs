@@ -75,7 +75,7 @@ namespace QD.ERP.Web.Models.DAL
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProAccountLedgerResult>("EXEC @returnValue = [dbo].[StProAccountLedger] @ParamAccountNo = @ParamAccountNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProAccountLedgerResult>("EXEC @returnValue = [StProAccountLedger] @ParamAccountNo = @ParamAccountNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -114,7 +114,7 @@ namespace QD.ERP.Web.Models.DAL
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProAccountLedgerByVoucherTypeResult>("EXEC @returnValue = [dbo].[StProAccountLedgerByVoucherType] @VoucherType = @VoucherType, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProAccountLedgerByVoucherTypeResult>("EXEC @returnValue = [StProAccountLedgerByVoucherType] @VoucherType = @VoucherType, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

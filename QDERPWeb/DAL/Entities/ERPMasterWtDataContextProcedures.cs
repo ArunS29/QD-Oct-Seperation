@@ -82,7 +82,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<GetNoOfQuotesApprovedResult>("EXEC @returnValue = [dbo].[GetNoOfQuotesApproved] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<GetNoOfQuotesApprovedResult>("EXEC @returnValue = [GetNoOfQuotesApproved] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -127,7 +127,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<Obselete_stpro401_11GetDayshiftOprtDataForUpdatingTSResult>("EXEC @returnValue = [dbo].[Obselete_stpro401_11GetDayshiftOprtDataForUpdatingTS] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<Obselete_stpro401_11GetDayshiftOprtDataForUpdatingTSResult>("EXEC @returnValue = [Obselete_stpro401_11GetDayshiftOprtDataForUpdatingTS] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -207,7 +207,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[Obselete_stpro401_12UpdateDayShiftOprtrDataToTbl40122PropertyTimeSheetChild] @PropertyNo = @PropertyNo, @MobilizedDate = @MobilizedDate, @DemobilizedDate = @DemobilizedDate, @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeID = @EmployeeID, @OperatorRegHourlyRate = @OperatorRegHourlyRate, @OperatorOTHourlyRate = @OperatorOTHourlyRate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [Obselete_stpro401_12UpdateDayShiftOprtrDataToTbl40122PropertyTimeSheetChild] @PropertyNo = @PropertyNo, @MobilizedDate = @MobilizedDate, @DemobilizedDate = @DemobilizedDate, @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeID = @EmployeeID, @OperatorRegHourlyRate = @OperatorRegHourlyRate, @OperatorOTHourlyRate = @OperatorOTHourlyRate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -252,7 +252,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<Obselete_stpro401_13GetNightShiftOprtDataForUpdatingTSResult>("EXEC @returnValue = [dbo].[Obselete_stpro401_13GetNightShiftOprtDataForUpdatingTS] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<Obselete_stpro401_13GetNightShiftOprtDataForUpdatingTSResult>("EXEC @returnValue = [Obselete_stpro401_13GetNightShiftOprtDataForUpdatingTS] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -332,7 +332,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[Obselete_stpro401_14UpdateNightShiftOprtrDataToTbl40122PropertyTimeSheetChild] @PropertyNo = @PropertyNo, @MobilizedDate = @MobilizedDate, @DemobilizedDate = @DemobilizedDate, @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeID = @EmployeeID, @OperatorRegHourlyRate = @OperatorRegHourlyRate, @OperatorOTHourlyRate = @OperatorOTHourlyRate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [Obselete_stpro401_14UpdateNightShiftOprtrDataToTbl40122PropertyTimeSheetChild] @PropertyNo = @PropertyNo, @MobilizedDate = @MobilizedDate, @DemobilizedDate = @DemobilizedDate, @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeID = @EmployeeID, @OperatorRegHourlyRate = @OperatorRegHourlyRate, @OperatorOTHourlyRate = @OperatorOTHourlyRate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -359,7 +359,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<ReportAccountLedgerResult>("EXEC @returnValue = [dbo].[ReportAccountLedger] @ParamAccountNo = @ParamAccountNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<ReportAccountLedgerResult>("EXEC @returnValue = [ReportAccountLedger] @ParamAccountNo = @ParamAccountNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -379,7 +379,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
             {
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sendEmailToAllResult>("EXEC @returnValue = [dbo].[sendEmailToAll]", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sendEmailToAllResult>("EXEC @returnValue = [sendEmailToAll]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -399,7 +399,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
             {
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<SendEmailToEmployeesResult>("EXEC @returnValue = [dbo].[SendEmailToEmployees]", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<SendEmailToEmployeesResult>("EXEC @returnValue = [SendEmailToEmployees]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -419,7 +419,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
             {
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<SendEmailToSalesPersonsResult>("EXEC @returnValue = [dbo].[SendEmailToSalesPersons]", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<SendEmailToSalesPersonsResult>("EXEC @returnValue = [SendEmailToSalesPersons]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -460,7 +460,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp_BackupDatabases] @databaseName = @databaseName, @backupType = @backupType, @backupLocation = @backupLocation", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp_BackupDatabases] @databaseName = @databaseName, @backupType = @backupType, @backupLocation = @backupLocation", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -533,7 +533,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp101_12InsertToInvoiceFromBillSummary] @VATInvoiceNo = @VATInvoiceNo, @PayrollInvoiceNo = @PayrollInvoiceNo, @AddedBy = @AddedBy, @ItemCode = @ItemCode, @InvoiceDueDate = @InvoiceDueDate, @TaxPercentage = @TaxPercentage, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp101_12InsertToInvoiceFromBillSummary] @VATInvoiceNo = @VATInvoiceNo, @PayrollInvoiceNo = @PayrollInvoiceNo, @AddedBy = @AddedBy, @ItemCode = @ItemCode, @InvoiceDueDate = @InvoiceDueDate, @TaxPercentage = @TaxPercentage, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -606,7 +606,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp101_12InsertToInvoiceFromBillSummary_Shahig] @VATInvoiceNo = @VATInvoiceNo, @PayrollInvoiceNo = @PayrollInvoiceNo, @AddedBy = @AddedBy, @ItemCode = @ItemCode, @InvoiceDueDate = @InvoiceDueDate, @TaxPercentage = @TaxPercentage, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp101_12InsertToInvoiceFromBillSummary_Shahig] @VATInvoiceNo = @VATInvoiceNo, @PayrollInvoiceNo = @PayrollInvoiceNo, @AddedBy = @AddedBy, @ItemCode = @ItemCode, @InvoiceDueDate = @InvoiceDueDate, @TaxPercentage = @TaxPercentage, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -639,7 +639,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp101_13UpdateProjectDetailsInPayroll] @PayrollMasterID = @PayrollMasterID, @ProjectDetails = @ProjectDetails", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp101_13UpdateProjectDetailsInPayroll] @PayrollMasterID = @PayrollMasterID, @ProjectDetails = @ProjectDetails", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -665,7 +665,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp101_14GetPayrollAssignmentsResult>("EXEC @returnValue = [dbo].[sp101_14GetPayrollAssignments] @PayrollMasterID = @PayrollMasterID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp101_14GetPayrollAssignmentsResult>("EXEC @returnValue = [sp101_14GetPayrollAssignments] @PayrollMasterID = @PayrollMasterID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -704,7 +704,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp101_15UpdateDailyLogToTimesheet] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp101_15UpdateDailyLogToTimesheet] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -743,7 +743,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp101_16CloneEmployeeAssignment] @FromEmpSiteAssignmentID = @FromEmpSiteAssignmentID, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp101_16CloneEmployeeAssignment] @FromEmpSiteAssignmentID = @FromEmpSiteAssignmentID, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -782,7 +782,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp101_18UpdateProjectToTSLogforEmployee] @EmployeeNo = @EmployeeNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp101_18UpdateProjectToTSLogforEmployee] @EmployeeNo = @EmployeeNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -808,7 +808,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp101_19InsertDailyLogForADay] @TimesheetDate = @TimesheetDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp101_19InsertDailyLogForADay] @TimesheetDate = @TimesheetDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -834,7 +834,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp101_20EmployeesStandbyReport] @ReportDate = @ReportDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp101_20EmployeesStandbyReport] @ReportDate = @ReportDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -861,7 +861,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp10102GetMonthIDResult>("EXEC @returnValue = [dbo].[sp10102GetMonthID] @MonthName = @MonthName", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp10102GetMonthIDResult>("EXEC @returnValue = [sp10102GetMonthID] @MonthName = @MonthName", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -900,7 +900,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp10103LeaveCalendarByEmployeeResult>("EXEC @returnValue = [dbo].[sp10103LeaveCalendarByEmployee] @StartDate = @StartDate, @EndDate = @EndDate, @EmpID = @EmpID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp10103LeaveCalendarByEmployeeResult>("EXEC @returnValue = [sp10103LeaveCalendarByEmployee] @StartDate = @StartDate, @EndDate = @EndDate, @EmpID = @EmpID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -926,7 +926,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp10104LeaveCalendarByDateResult>("EXEC @returnValue = [dbo].[sp10104LeaveCalendarByDate] @CalendarDate = @CalendarDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp10104LeaveCalendarByDateResult>("EXEC @returnValue = [sp10104LeaveCalendarByDate] @CalendarDate = @CalendarDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -953,7 +953,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10105DeleteEmployeeRecords] @EmployeeID = @EmployeeID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10105DeleteEmployeeRecords] @EmployeeID = @EmployeeID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -980,7 +980,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10106DeletePayrollInvoice] @InvoiceNo = @InvoiceNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10106DeletePayrollInvoice] @InvoiceNo = @InvoiceNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1066,7 +1066,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10107InsertPayrollToJournal] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VoucherNarration = @VoucherNarration, @PayrollMasterID = @PayrollMasterID, @PayrollMonth = @PayrollMonth, @EmployeeNo = @EmployeeNo, @PayableAccountHead = @PayableAccountHead, @IsNoTimeSheetData = @IsNoTimeSheetData", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10107InsertPayrollToJournal] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VoucherNarration = @VoucherNarration, @PayrollMasterID = @PayrollMasterID, @PayrollMonth = @PayrollMonth, @EmployeeNo = @EmployeeNo, @PayableAccountHead = @PayableAccountHead, @IsNoTimeSheetData = @IsNoTimeSheetData", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1092,7 +1092,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10108DeleteEmployeeLeave] @EmployeeLeaveID = @EmployeeLeaveID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10108DeleteEmployeeLeave] @EmployeeLeaveID = @EmployeeLeaveID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1150,7 +1150,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10109InsertEmployeeLeave] @EmployeeID = @EmployeeID, @LeaveDate = @LeaveDate, @LeaveType = @LeaveType, @IsLeavePaid = @IsLeavePaid, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10109InsertEmployeeLeave] @EmployeeID = @EmployeeID, @LeaveDate = @LeaveDate, @LeaveType = @LeaveType, @IsLeavePaid = @IsLeavePaid, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1176,7 +1176,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10110DeletePayrollInvoiceLineItem] @InvoiceLineNo = @InvoiceLineNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10110DeletePayrollInvoiceLineItem] @InvoiceLineNo = @InvoiceLineNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1215,7 +1215,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp10111EmployeeLedgerResult>("EXEC @returnValue = [dbo].[sp10111EmployeeLedger] @ParamEmployeeNo = @ParamEmployeeNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp10111EmployeeLedgerResult>("EXEC @returnValue = [sp10111EmployeeLedger] @ParamEmployeeNo = @ParamEmployeeNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1241,7 +1241,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10112DeleteEmployeeAssignment] @EmpSiteAssignmentID = @EmpSiteAssignmentID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10112DeleteEmployeeAssignment] @EmpSiteAssignmentID = @EmpSiteAssignmentID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1267,7 +1267,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10113DeleteEmployeeAsset] @EmployeeAssetID = @EmployeeAssetID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10113DeleteEmployeeAsset] @EmployeeAssetID = @EmployeeAssetID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1323,7 +1323,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp10114GetPayrollReportResult>("EXEC @returnValue = [dbo].[sp10114GetPayrollReport] @StartDate = @StartDate, @EndDate = @EndDate, @ByDepartment = @ByDepartment, @DepartmentCode = @DepartmentCode, @ByLevel = @ByLevel, @HRLevelCode = @HRLevelCode", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp10114GetPayrollReportResult>("EXEC @returnValue = [sp10114GetPayrollReport] @StartDate = @StartDate, @EndDate = @EndDate, @ByDepartment = @ByDepartment, @DepartmentCode = @DepartmentCode, @ByLevel = @ByLevel, @HRLevelCode = @HRLevelCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1350,7 +1350,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10115DeleteManpowerPayroll] @ManpowerPayrollNo = @ManpowerPayrollNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10115DeleteManpowerPayroll] @ManpowerPayrollNo = @ManpowerPayrollNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1451,7 +1451,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp10116InsertRentalPayslipToJournal] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VoucherNarration = @VoucherNarration, @ManpowerPayrollNo = @ManpowerPayrollNo, @PayrollMonth = @PayrollMonth, @EmployeeNo = @EmployeeNo, @PayableAccountHead = @PayableAccountHead, @AdditionsAccountHead = @AdditionsAccountHead, @DeductionsAccountHead = @DeductionsAccountHead, @LoanDeductionsAccountHead = @LoanDeductionsAccountHead", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp10116InsertRentalPayslipToJournal] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VoucherNarration = @VoucherNarration, @ManpowerPayrollNo = @ManpowerPayrollNo, @PayrollMonth = @PayrollMonth, @EmployeeNo = @EmployeeNo, @PayableAccountHead = @PayableAccountHead, @AdditionsAccountHead = @AdditionsAccountHead, @DeductionsAccountHead = @DeductionsAccountHead, @LoanDeductionsAccountHead = @LoanDeductionsAccountHead", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1477,7 +1477,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_05DeleteClaimChild] @ClaimChildSlNo = @ClaimChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_05DeleteClaimChild] @ClaimChildSlNo = @ClaimChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1537,7 +1537,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_27InsertClaimMaster] @ClaimRefNo = @ClaimRefNo, @ClaimRemarks = @ClaimRemarks, @ClaimCreatedBy = @ClaimCreatedBy, @ClaimerID = @ClaimerID, @FundRequestTypeID = @FundRequestTypeID, @SupplierPaymentLedgerNo = @SupplierPaymentLedgerNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_27InsertClaimMaster] @ClaimRefNo = @ClaimRefNo, @ClaimRemarks = @ClaimRemarks, @ClaimCreatedBy = @ClaimCreatedBy, @ClaimerID = @ClaimerID, @FundRequestTypeID = @FundRequestTypeID, @SupplierPaymentLedgerNo = @SupplierPaymentLedgerNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1563,7 +1563,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_57InsertStockLastPurchasedCostPrice] @InvoiceDate = @InvoiceDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_57InsertStockLastPurchasedCostPrice] @InvoiceDate = @InvoiceDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1590,7 +1590,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_61DeleteEInvoiceAllLineItems] @InvoiceNo = @InvoiceNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_61DeleteEInvoiceAllLineItems] @InvoiceNo = @InvoiceNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1616,7 +1616,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_61DeleteProformaInvoiceChild] @InvoiceChildSlNo = @InvoiceChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_61DeleteProformaInvoiceChild] @InvoiceChildSlNo = @InvoiceChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1642,7 +1642,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_61DeleteVATInvoiceChild] @InvoiceChildSlNo = @InvoiceChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_61DeleteVATInvoiceChild] @InvoiceChildSlNo = @InvoiceChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1687,7 +1687,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_62InsertVATtoVoucher] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_62InsertVATtoVoucher] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1732,7 +1732,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_62InsertVATtoVoucher_BHD] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_62InsertVATtoVoucher_BHD] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1785,7 +1785,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_63InsertDuplicateInvoice] @FromInvoiceNo = @FromInvoiceNo, @ToInvoiceNo = @ToInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_63InsertDuplicateInvoice] @FromInvoiceNo = @FromInvoiceNo, @ToInvoiceNo = @ToInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1838,7 +1838,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_63InsertDuplicateProformaInvoice] @FromProformaInvoiceNo = @FromProformaInvoiceNo, @ToProformaInvoiceNo = @ToProformaInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_63InsertDuplicateProformaInvoice] @FromProformaInvoiceNo = @FromProformaInvoiceNo, @ToProformaInvoiceNo = @ToProformaInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1872,7 +1872,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_64ModifyInvoiceNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_64ModifyInvoiceNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1906,7 +1906,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_64ModifyProformaInvoiceNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_64ModifyProformaInvoiceNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1979,7 +1979,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_65InsertInvoiceFromProforma] @ProformaInvoiceNo = @ProformaInvoiceNo, @ToInvoiceNo = @ToInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue, @InvoiceTransactionCode = @InvoiceTransactionCode", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_65InsertInvoiceFromProforma] @ProformaInvoiceNo = @ProformaInvoiceNo, @ToInvoiceNo = @ToInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue, @InvoiceTransactionCode = @InvoiceTransactionCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2039,7 +2039,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_66InsertCreditNoteFromInvoice] @InvoiceNo = @InvoiceNo, @CreditNoteNo = @CreditNoteNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @CreditNoteUUID = @CreditNoteUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_66InsertCreditNoteFromInvoice] @InvoiceNo = @InvoiceNo, @CreditNoteNo = @CreditNoteNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @CreditNoteUUID = @CreditNoteUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2105,7 +2105,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_67InsertClone_EInvoice] @FromInvoiceNo = @FromInvoiceNo, @ToInvoiceNo = @ToInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_67InsertClone_EInvoice] @FromInvoiceNo = @FromInvoiceNo, @ToInvoiceNo = @ToInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2132,7 +2132,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_68UpdateCOGSInCreditNote] @CreditNoteNo = @CreditNoteNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_68UpdateCOGSInCreditNote] @CreditNoteNo = @CreditNoteNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2159,7 +2159,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_71DeleteAllVATChildLineItems] @PurchaseVoucherNo = @PurchaseVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_71DeleteAllVATChildLineItems] @PurchaseVoucherNo = @PurchaseVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2185,7 +2185,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_71DeleteVATPurchaseChild] @PurchaseChildSlNo = @PurchaseChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_71DeleteVATPurchaseChild] @PurchaseChildSlNo = @PurchaseChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2236,7 +2236,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_72InsertVATPurchasetoVoucher] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount, @IsExpensesAccount = @IsExpensesAccount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_72InsertVATPurchasetoVoucher] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount, @IsExpensesAccount = @IsExpensesAccount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2287,7 +2287,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_72InsertVATPurchasetoVoucher_BHD] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount, @IsExpensesAccount = @IsExpensesAccount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_72InsertVATPurchasetoVoucher_BHD] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount, @IsExpensesAccount = @IsExpensesAccount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2340,7 +2340,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_73InsertDuplicatePurchaseBill] @FromInvoiceNo = @FromInvoiceNo, @ToInvoiceNo = @ToInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_73InsertDuplicatePurchaseBill] @FromInvoiceNo = @FromInvoiceNo, @ToInvoiceNo = @ToInvoiceNo, @InvoiceDate = @InvoiceDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2374,7 +2374,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_74ModifyPurchaseVoucherNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_74ModifyPurchaseVoucherNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2401,7 +2401,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_81DeleteAllCreditNoteChildLineItems] @CreditNoteNo = @CreditNoteNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_81DeleteAllCreditNoteChildLineItems] @CreditNoteNo = @CreditNoteNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2427,7 +2427,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_81DeleteCreditNoteChild] @CreditNoteChildSlNo = @CreditNoteChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_81DeleteCreditNoteChild] @CreditNoteChildSlNo = @CreditNoteChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2466,7 +2466,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_82InsertVATCreditNotetoVoucher] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_82InsertVATCreditNotetoVoucher] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2505,7 +2505,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_82InsertVATCreditNotetoVoucher_BHD] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_82InsertVATCreditNotetoVoucher_BHD] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2539,7 +2539,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_84ModifyCreditNoteNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_84ModifyCreditNoteNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2565,7 +2565,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_91DeleteDebitNoteChild] @DebitNoteChildSlNo = @DebitNoteChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_91DeleteDebitNoteChild] @DebitNoteChildSlNo = @DebitNoteChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2610,7 +2610,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_92InsertVATDebitNotetoVoucher] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_92InsertVATDebitNotetoVoucher] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2655,7 +2655,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_92InsertVATDebitNotetoVoucher_BHD] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_92InsertVATDebitNotetoVoucher_BHD] @VoucherNo = @VoucherNo, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @IsCashOrBankAccount = @IsCashOrBankAccount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2675,7 +2675,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
             {
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_93DeleteWronglyAllocatedEntries]", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_93DeleteWronglyAllocatedEntries]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2709,7 +2709,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_94ModifyDebitNoteNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_94ModifyDebitNoteNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2756,7 +2756,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_95InsertCogsToVoucher] @InvoiceNo = @InvoiceNo, @CogsVoucherNo = @CogsVoucherNo, @AddedBy = @AddedBy, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_95InsertCogsToVoucher] @InvoiceNo = @InvoiceNo, @CogsVoucherNo = @CogsVoucherNo, @AddedBy = @AddedBy, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2803,7 +2803,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_96InsertCreditNoteCogsToVoucher] @CreditNoteNo = @CreditNoteNo, @CogsVoucherNo = @CogsVoucherNo, @AddedBy = @AddedBy, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_96InsertCreditNoteCogsToVoucher] @CreditNoteNo = @CreditNoteNo, @CogsVoucherNo = @CogsVoucherNo, @AddedBy = @AddedBy, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2842,7 +2842,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp201_999ExportLedgerTransactionReport] @ParamAccountNo = @ParamAccountNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp201_999ExportLedgerTransactionReport] @ParamAccountNo = @ParamAccountNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2874,7 +2874,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp201_999VATFinalReturnsResult>("EXEC @returnValue = [dbo].[sp201_999VATFinalReturns] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp201_999VATFinalReturnsResult>("EXEC @returnValue = [sp201_999VATFinalReturns] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2906,7 +2906,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20101BalanceSheetResult>("EXEC @returnValue = [dbo].[sp20101BalanceSheet] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20101BalanceSheetResult>("EXEC @returnValue = [sp20101BalanceSheet] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2944,7 +2944,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20101IncomeStatementResult>("EXEC @returnValue = [dbo].[sp20101IncomeStatement] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20101IncomeStatementResult>("EXEC @returnValue = [sp20101IncomeStatement] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2989,7 +2989,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20101IncomeStatement_ByGroupResult>("EXEC @returnValue = [dbo].[sp20101IncomeStatement_ByGroup] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate, @MasterGroupCategory = @MasterGroupCategory", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20101IncomeStatement_ByGroupResult>("EXEC @returnValue = [sp20101IncomeStatement_ByGroup] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate, @MasterGroupCategory = @MasterGroupCategory", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3027,7 +3027,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20101TrialBalanceResult>("EXEC @returnValue = [dbo].[sp20101TrialBalance] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20101TrialBalanceResult>("EXEC @returnValue = [sp20101TrialBalance] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3065,7 +3065,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20101TrialBalanceReportResult>("EXEC @returnValue = [dbo].[sp20101TrialBalanceReport] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20101TrialBalanceReportResult>("EXEC @returnValue = [sp20101TrialBalanceReport] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3103,7 +3103,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20101TrialBalanceReportArResult>("EXEC @returnValue = [dbo].[sp20101TrialBalanceReportAr] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20101TrialBalanceReportArResult>("EXEC @returnValue = [sp20101TrialBalanceReportAr] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3136,7 +3136,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20102GetAccountBalanceResult>("EXEC @returnValue = [dbo].[sp20102GetAccountBalance] @ParamAccountNo = @ParamAccountNo, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20102GetAccountBalanceResult>("EXEC @returnValue = [sp20102GetAccountBalance] @ParamAccountNo = @ParamAccountNo, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3163,7 +3163,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20102GetAccountDetailsResult>("EXEC @returnValue = [dbo].[sp20102GetAccountDetails] @ParamAccountNo = @ParamAccountNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20102GetAccountDetailsResult>("EXEC @returnValue = [sp20102GetAccountDetails] @ParamAccountNo = @ParamAccountNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3196,7 +3196,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20102GetBankClearedBalanceResult>("EXEC @returnValue = [dbo].[sp20102GetBankClearedBalance] @ParamAccountNo = @ParamAccountNo, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20102GetBankClearedBalanceResult>("EXEC @returnValue = [sp20102GetBankClearedBalance] @ParamAccountNo = @ParamAccountNo, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3229,7 +3229,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20103GetBankAccountsResult>("EXEC @returnValue = [dbo].[sp20103GetBankAccounts] @MasterGroupID = @MasterGroupID, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20103GetBankAccountsResult>("EXEC @returnValue = [sp20103GetBankAccounts] @MasterGroupID = @MasterGroupID, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3269,7 +3269,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20104ExpensesForChartResult>("EXEC @returnValue = [dbo].[sp20104ExpensesForChart] @StartDate = @StartDate, @EndDate = @EndDate, @AmountLimit = @AmountLimit", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20104ExpensesForChartResult>("EXEC @returnValue = [sp20104ExpensesForChart] @StartDate = @StartDate, @EndDate = @EndDate, @AmountLimit = @AmountLimit", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3313,7 +3313,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20105ExpenseClaimViewResult>("EXEC @returnValue = [dbo].[sp20105ExpenseClaimView] @ClaimerID = @ClaimerID, @StartDate = @StartDate, @EndDate = @EndDate, @IfShowAll = @IfShowAll", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20105ExpenseClaimViewResult>("EXEC @returnValue = [sp20105ExpenseClaimView] @ClaimerID = @ClaimerID, @StartDate = @StartDate, @EndDate = @EndDate, @IfShowAll = @IfShowAll", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3386,7 +3386,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20105InsertClaimToVoucher] @ClaimRefNo = @ClaimRefNo, @PaymentVoucherNo = @PaymentVoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount, @JustAddedVoucherEntryNo = @JustAddedVoucherEntryNo, @TypeOfClaim = @TypeOfClaim, @EffectiveDate = @EffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20105InsertClaimToVoucher] @ClaimRefNo = @ClaimRefNo, @PaymentVoucherNo = @PaymentVoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount, @JustAddedVoucherEntryNo = @JustAddedVoucherEntryNo, @TypeOfClaim = @TypeOfClaim, @EffectiveDate = @EffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3413,7 +3413,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20106ExpenseClaimPayableTotalResult>("EXEC @returnValue = [dbo].[sp20106ExpenseClaimPayableTotal] @ClaimRefNo = @ClaimRefNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20106ExpenseClaimPayableTotalResult>("EXEC @returnValue = [sp20106ExpenseClaimPayableTotal] @ClaimRefNo = @ClaimRefNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3440,7 +3440,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20106ExpenseClaimTotalResult>("EXEC @returnValue = [dbo].[sp20106ExpenseClaimTotal] @ClaimRefNo = @ClaimRefNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20106ExpenseClaimTotalResult>("EXEC @returnValue = [sp20106ExpenseClaimTotal] @ClaimRefNo = @ClaimRefNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3467,7 +3467,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20106GetExpenseClaimDifferenceResult>("EXEC @returnValue = [dbo].[sp20106GetExpenseClaimDifference] @ClaimRefNo = @ClaimRefNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20106GetExpenseClaimDifferenceResult>("EXEC @returnValue = [sp20106GetExpenseClaimDifference] @ClaimRefNo = @ClaimRefNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3494,7 +3494,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20107ExpenseClaimFomResult>("EXEC @returnValue = [dbo].[sp20107ExpenseClaimFom] @ClaimRefNo = @ClaimRefNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20107ExpenseClaimFomResult>("EXEC @returnValue = [sp20107ExpenseClaimFom] @ClaimRefNo = @ClaimRefNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3526,7 +3526,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20108ExpensesInfoGraphResult>("EXEC @returnValue = [dbo].[sp20108ExpensesInfoGraph] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20108ExpensesInfoGraphResult>("EXEC @returnValue = [sp20108ExpensesInfoGraph] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3558,7 +3558,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20109IncomeInfoGraphResult>("EXEC @returnValue = [dbo].[sp20109IncomeInfoGraph] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20109IncomeInfoGraphResult>("EXEC @returnValue = [sp20109IncomeInfoGraph] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3590,7 +3590,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20109NetIncomeInfoGraphResult>("EXEC @returnValue = [dbo].[sp20109NetIncomeInfoGraph] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20109NetIncomeInfoGraphResult>("EXEC @returnValue = [sp20109NetIncomeInfoGraph] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3628,7 +3628,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20110GetProfitOrLossResult>("EXEC @returnValue = [dbo].[sp20110GetProfitOrLoss] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20110GetProfitOrLossResult>("EXEC @returnValue = [sp20110GetProfitOrLoss] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3696,7 +3696,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20111InsertProfitAndLossVoucher] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20111InsertProfitAndLossVoucher] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3722,7 +3722,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20112GetPreviousProfitOrLossResult>("EXEC @returnValue = [dbo].[sp20112GetPreviousProfitOrLoss] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20112GetPreviousProfitOrLossResult>("EXEC @returnValue = [sp20112GetPreviousProfitOrLoss] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3754,7 +3754,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20113BalanceSheetResult>("EXEC @returnValue = [dbo].[sp20113BalanceSheet] @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20113BalanceSheetResult>("EXEC @returnValue = [sp20113BalanceSheet] @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3793,7 +3793,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20113BalanceSheet_ByGroupResult>("EXEC @returnValue = [dbo].[sp20113BalanceSheet_ByGroup] @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate, @MasterGroupCategory = @MasterGroupCategory", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20113BalanceSheet_ByGroupResult>("EXEC @returnValue = [sp20113BalanceSheet_ByGroup] @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate, @MasterGroupCategory = @MasterGroupCategory", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3820,7 +3820,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20114PostEmpAllocationForJournal] @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20114PostEmpAllocationForJournal] @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3888,7 +3888,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20115InsertOpeningBalanceVoucher] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20115InsertOpeningBalanceVoucher] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3926,7 +3926,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20116IncomeStatementMonthPivotResult>("EXEC @returnValue = [dbo].[sp20116IncomeStatementMonthPivot] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20116IncomeStatementMonthPivotResult>("EXEC @returnValue = [sp20116IncomeStatementMonthPivot] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4006,7 +4006,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20116InsertOpeningBalanceBills] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount, @JustAddedVoucherEntryNo = @JustAddedVoucherEntryNo, @DueOn = @DueOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20116InsertOpeningBalanceBills] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount, @JustAddedVoucherEntryNo = @JustAddedVoucherEntryNo, @DueOn = @DueOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4061,7 +4061,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20117PostDepreciationSchedule] @StartDate = @StartDate, @EndDate = @EndDate, @DepreciationValue = @DepreciationValue, @BalanceValue = @BalanceValue, @LedgerAccount = @LedgerAccount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20117PostDepreciationSchedule] @StartDate = @StartDate, @EndDate = @EndDate, @DepreciationValue = @DepreciationValue, @BalanceValue = @BalanceValue, @LedgerAccount = @LedgerAccount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4142,7 +4142,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20118InsertDepreciationToJournal] @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VoucherNarration = @VoucherNarration, @DepScheduleID = @DepScheduleID, @DepreciationDate = @DepreciationDate, @DepreciationAmount = @DepreciationAmount, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20118InsertDepreciationToJournal] @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VoucherNarration = @VoucherNarration, @DepScheduleID = @DepScheduleID, @DepreciationDate = @DepreciationDate, @DepreciationAmount = @DepreciationAmount, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4195,7 +4195,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20119InsertDuplicateVoucher] @FromVoucherNo = @FromVoucherNo, @ToVoucherNo = @ToVoucherNo, @VoucherDate = @VoucherDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20119InsertDuplicateVoucher] @FromVoucherNo = @FromVoucherNo, @ToVoucherNo = @ToVoucherNo, @VoucherDate = @VoucherDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4221,7 +4221,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20120InsertSalaryLedgerMappings] @SalaryPostingGroupNo = @SalaryPostingGroupNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20120InsertSalaryLedgerMappings] @SalaryPostingGroupNo = @SalaryPostingGroupNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4248,7 +4248,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20121DeleteAssetRegister] @AssetLedgerNo = @AssetLedgerNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20121DeleteAssetRegister] @AssetLedgerNo = @AssetLedgerNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4280,7 +4280,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20122AssetsDepreciationReportResult>("EXEC @returnValue = [dbo].[sp20122AssetsDepreciationReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20122AssetsDepreciationReportResult>("EXEC @returnValue = [sp20122AssetsDepreciationReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4312,7 +4312,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20123AssetsDepreciationMasterReportResult>("EXEC @returnValue = [dbo].[sp20123AssetsDepreciationMasterReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20123AssetsDepreciationMasterReportResult>("EXEC @returnValue = [sp20123AssetsDepreciationMasterReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4338,7 +4338,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20124AgeingReports] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20124AgeingReports] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4364,7 +4364,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20125AgeingPayableReports] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20125AgeingPayableReports] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4390,7 +4390,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20125AgeingPayableReportsWtAdvances] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20125AgeingPayableReportsWtAdvances] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4416,7 +4416,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20125AgeingReceivableReports] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20125AgeingReceivableReports] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4442,7 +4442,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20125AgeingReceivableReportsWtAdvances] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20125AgeingReceivableReportsWtAdvances] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4524,7 +4524,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20126InsertSalaryPaymentVoucher] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VoucherNarration = @VoucherNarration, @PaymentType = @PaymentType, @PayableAccountHead = @PayableAccountHead, @PaymentAccountHead = @PaymentAccountHead, @PaymentAmount = @PaymentAmount", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20126InsertSalaryPaymentVoucher] @VoucherNo = @VoucherNo, @VoucherDate = @VoucherDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VoucherNarration = @VoucherNarration, @PaymentType = @PaymentType, @PayableAccountHead = @PayableAccountHead, @PaymentAccountHead = @PaymentAccountHead, @PaymentAmount = @PaymentAmount", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4556,7 +4556,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20127GetAssetTransactionsResult>("EXEC @returnValue = [dbo].[sp20127GetAssetTransactions] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20127GetAssetTransactionsResult>("EXEC @returnValue = [sp20127GetAssetTransactions] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4588,7 +4588,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20127GetAssetTransactionsOnly] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20127GetAssetTransactionsOnly] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4640,7 +4640,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20127GetAssetTransactionsReport] @StartDate = @StartDate, @EndDate = @EndDate, @DocumentNo = @DocumentNo, @CreatedBy = @CreatedBy, @CreatedOn = @CreatedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20127GetAssetTransactionsReport] @StartDate = @StartDate, @EndDate = @EndDate, @DocumentNo = @DocumentNo, @CreatedBy = @CreatedBy, @CreatedOn = @CreatedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4722,7 +4722,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20128InsertDepreciationToVoucher] @DepreciationDocNo = @DepreciationDocNo, @PaymentVoucherNo = @PaymentVoucherNo, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount, @VoucherNarration = @VoucherNarration, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount, @JustAddedVoucherEntryNo = @JustAddedVoucherEntryNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20128InsertDepreciationToVoucher] @DepreciationDocNo = @DepreciationDocNo, @PaymentVoucherNo = @PaymentVoucherNo, @DebitAccount = @DebitAccount, @CreditAccount = @CreditAccount, @VoucherNarration = @VoucherNarration, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @TotalAmount = @TotalAmount, @JustAddedVoucherEntryNo = @JustAddedVoucherEntryNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4749,7 +4749,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20129DeleteDepreciationDocument] @DepreciationDocNo = @DepreciationDocNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20129DeleteDepreciationDocument] @DepreciationDocNo = @DepreciationDocNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4776,7 +4776,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20129DepreciationTotalResult>("EXEC @returnValue = [dbo].[sp20129DepreciationTotal] @DepreciationDocNo = @DepreciationDocNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20129DepreciationTotalResult>("EXEC @returnValue = [sp20129DepreciationTotal] @DepreciationDocNo = @DepreciationDocNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4803,7 +4803,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20130UpdateVoucherNarrationSetNull] @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20130UpdateVoucherNarrationSetNull] @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4835,7 +4835,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20131InsertGoodsCombinedMaster] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20131InsertGoodsCombinedMaster] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4861,7 +4861,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20132InsertSalaryPayableByDateReport] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20132InsertSalaryPayableByDateReport] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4893,7 +4893,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20155CashFlowMaster01Result>("EXEC @returnValue = [dbo].[sp20155CashFlowMaster01] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20155CashFlowMaster01Result>("EXEC @returnValue = [sp20155CashFlowMaster01] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4925,7 +4925,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20156CashFlowMasterReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20156CashFlowMasterReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4945,7 +4945,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
             {
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20157AssetRegisterViewResult>("EXEC @returnValue = [dbo].[sp20157AssetRegisterView]", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20157AssetRegisterViewResult>("EXEC @returnValue = [sp20157AssetRegisterView]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4989,7 +4989,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20201JournalRegisterViewResult>("EXEC @returnValue = [dbo].[sp20201JournalRegisterView] @RequesterID = @RequesterID, @StartDate = @StartDate, @EndDate = @EndDate, @IfShowAll = @IfShowAll", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20201JournalRegisterViewResult>("EXEC @returnValue = [sp20201JournalRegisterView] @RequesterID = @RequesterID, @StartDate = @StartDate, @EndDate = @EndDate, @IfShowAll = @IfShowAll", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5015,7 +5015,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20202DeleteJournalEntryChild] @JournalChildNo = @JournalChildNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20202DeleteJournalEntryChild] @JournalChildNo = @JournalChildNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5042,7 +5042,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp20203GetJournalEntryDifferenceResult>("EXEC @returnValue = [dbo].[sp20203GetJournalEntryDifference] @JournalRefNo = @JournalRefNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp20203GetJournalEntryDifferenceResult>("EXEC @returnValue = [sp20203GetJournalEntryDifference] @JournalRefNo = @JournalRefNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5095,7 +5095,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20203InsertJournalEntryToVoucher] @JournalRefNo = @JournalRefNo, @PostingVoucherNo = @PostingVoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @JustAddedVoucherEntryNo = @JustAddedVoucherEntryNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20203InsertJournalEntryToVoucher] @JournalRefNo = @JournalRefNo, @PostingVoucherNo = @PostingVoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @JustAddedVoucherEntryNo = @JustAddedVoucherEntryNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5154,7 +5154,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20204CloneJournalEntry] @FromJournalRefNo = @FromJournalRefNo, @ToJournalRefNo = @ToJournalRefNo, @JournalEntryDate = @JournalEntryDate, @RequesterID = @RequesterID, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20204CloneJournalEntry] @FromJournalRefNo = @FromJournalRefNo, @ToJournalRefNo = @ToJournalRefNo, @JournalEntryDate = @JournalEntryDate, @RequesterID = @RequesterID, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5215,7 +5215,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20204InsertJVCostEntries] @JournalChildNo = @JournalChildNo, @CostAllocDrCr = @CostAllocDrCr, @AmountAllocated = @AmountAllocated, @EffectiveDate = @EffectiveDate, @EnteredBy = @EnteredBy, @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20204InsertJVCostEntries] @JournalChildNo = @JournalChildNo, @CostAllocDrCr = @CostAllocDrCr, @AmountAllocated = @AmountAllocated, @EffectiveDate = @EffectiveDate, @EnteredBy = @EnteredBy, @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5248,7 +5248,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20205ResetDrCrInCost] @JournalChildNo = @JournalChildNo, @DrCr = @DrCr", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20205ResetDrCrInCost] @JournalChildNo = @JournalChildNo, @DrCr = @DrCr", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5308,7 +5308,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20206AddDefaultCostForIncreasedValue] @JournalChildNo = @JournalChildNo, @IncreasedAmount = @IncreasedAmount, @DrCr = @DrCr, @EffectiveDate = @EffectiveDate, @AddedBy = @AddedBy, @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20206AddDefaultCostForIncreasedValue] @JournalChildNo = @JournalChildNo, @IncreasedAmount = @IncreasedAmount, @DrCr = @DrCr, @EffectiveDate = @EffectiveDate, @AddedBy = @AddedBy, @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5334,7 +5334,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20207RemoveCostForDecreasedValue] @JournalChildNo = @JournalChildNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20207RemoveCostForDecreasedValue] @JournalChildNo = @JournalChildNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5360,7 +5360,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp20207RemoveEmpAndPropCostForDecreasedValue] @JournalChildNo = @JournalChildNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp20207RemoveEmpAndPropCostForDecreasedValue] @JournalChildNo = @JournalChildNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5387,7 +5387,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp30101GetQuoteGrossAmountResult>("EXEC @returnValue = [dbo].[sp30101GetQuoteGrossAmount] @QuoteNo = @QuoteNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp30101GetQuoteGrossAmountResult>("EXEC @returnValue = [sp30101GetQuoteGrossAmount] @QuoteNo = @QuoteNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5428,7 +5428,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp30102InsertQuotation] @RFQNo = @RFQNo, @QuoteNo = @QuoteNo, @CreatedBy = @CreatedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp30102InsertQuotation] @RFQNo = @RFQNo, @QuoteNo = @QuoteNo, @CreatedBy = @CreatedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5481,7 +5481,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp400_22InsertDuplicateQuotation] @FromQuotationNo = @FromQuotationNo, @ToQuotationNo = @ToQuotationNo, @QuotationDate = @QuotationDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp400_22InsertDuplicateQuotation] @FromQuotationNo = @FromQuotationNo, @ToQuotationNo = @ToQuotationNo, @QuotationDate = @QuotationDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5528,7 +5528,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp400_23CreateNewRevisedQuotation] @QuotationNo = @QuotationNo, @NewQuotationNo = @NewQuotationNo, @RevisionNo = @RevisionNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp400_23CreateNewRevisedQuotation] @QuotationNo = @QuotationNo, @NewQuotationNo = @NewQuotationNo, @RevisionNo = @RevisionNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5554,7 +5554,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp401_05DeletePropQuotationChild] @QuotationChildSlNo = @QuotationChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp401_05DeletePropQuotationChild] @QuotationChildSlNo = @QuotationChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5580,7 +5580,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp401_06DeletePropDNChild] @DNChildSlNo = @DNChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp401_06DeletePropDNChild] @DNChildSlNo = @DNChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5607,7 +5607,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp401_07GetEquipmentPOChildTotalResult>("EXEC @returnValue = [dbo].[sp401_07GetEquipmentPOChildTotal] @PONo = @PONo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp401_07GetEquipmentPOChildTotalResult>("EXEC @returnValue = [sp401_07GetEquipmentPOChildTotal] @PONo = @PONo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5660,7 +5660,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40101InsertPropertyInvoiceMonthly] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientCode = @ClientCode, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40101InsertPropertyInvoiceMonthly] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientCode = @ClientCode, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5713,7 +5713,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40102PropertyInvoiceRentalMonthly] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientCode = @ClientCode, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40102PropertyInvoiceRentalMonthly] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientCode = @ClientCode, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5739,7 +5739,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40103DeleteInvoiceChild] @InvoiceChildSlNo = @InvoiceChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40103DeleteInvoiceChild] @InvoiceChildSlNo = @InvoiceChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5765,7 +5765,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40104DeletePOChild] @PropertyPOChildNo = @PropertyPOChildNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40104DeletePOChild] @PropertyPOChildNo = @PropertyPOChildNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5791,7 +5791,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40105DeletePropertySalesOrderChild] @SalesOrderChildSlNo = @SalesOrderChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40105DeletePropertySalesOrderChild] @SalesOrderChildSlNo = @SalesOrderChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5832,7 +5832,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40105InsertToPropertySalesOrderFromQuotation] @SalesOrderNo = @SalesOrderNo, @QuotationNo = @QuotationNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40105InsertToPropertySalesOrderFromQuotation] @SalesOrderNo = @SalesOrderNo, @QuotationNo = @QuotationNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5858,7 +5858,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40106DeleteSpareItem] @SpareSlNo = @SpareSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40106DeleteSpareItem] @SpareSlNo = @SpareSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5884,7 +5884,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40107DeletePropertyOperator] @PropertyOperatorCode = @PropertyOperatorCode", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40107DeletePropertyOperator] @PropertyOperatorCode = @PropertyOperatorCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5916,7 +5916,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp40108EquipmentRevenueCostReportResult>("EXEC @returnValue = [dbo].[sp40108EquipmentRevenueCostReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp40108EquipmentRevenueCostReportResult>("EXEC @returnValue = [sp40108EquipmentRevenueCostReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5955,7 +5955,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp40109Eqp_Cost_ClientTimesheetResult>("EXEC @returnValue = [dbo].[sp40109Eqp_Cost_ClientTimesheet] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp40109Eqp_Cost_ClientTimesheetResult>("EXEC @returnValue = [sp40109Eqp_Cost_ClientTimesheet] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -5994,7 +5994,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp40110Eqp_Cost_InvSummaryResult>("EXEC @returnValue = [dbo].[sp40110Eqp_Cost_InvSummary] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp40110Eqp_Cost_InvSummaryResult>("EXEC @returnValue = [sp40110Eqp_Cost_InvSummary] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6033,7 +6033,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp40111Eqp_Cost_RevenueAllocatedResult>("EXEC @returnValue = [dbo].[sp40111Eqp_Cost_RevenueAllocated] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp40111Eqp_Cost_RevenueAllocatedResult>("EXEC @returnValue = [sp40111Eqp_Cost_RevenueAllocated] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6072,7 +6072,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp40112Eqp_Cost_ExpensesAllocatedResult>("EXEC @returnValue = [dbo].[sp40112Eqp_Cost_ExpensesAllocated] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp40112Eqp_Cost_ExpensesAllocatedResult>("EXEC @returnValue = [sp40112Eqp_Cost_ExpensesAllocated] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6098,7 +6098,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp40113DeleteSupplierSummaryInvoiceChild] @InvoiceChildSlNo = @InvoiceChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp40113DeleteSupplierSummaryInvoiceChild] @InvoiceChildSlNo = @InvoiceChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6139,7 +6139,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_01InsertToPOfromEnquiry] @PONo = @PONo, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_01InsertToPOfromEnquiry] @PONo = @PONo, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6180,7 +6180,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_01InsertToRfqFromEnquiry] @RFQNo = @RFQNo, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_01InsertToRfqFromEnquiry] @RFQNo = @RFQNo, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6221,7 +6221,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_02InsertToPOfromRFQ] @PONo = @PONo, @RFQNo = @RFQNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_02InsertToPOfromRFQ] @PONo = @PONo, @RFQNo = @RFQNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6262,7 +6262,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_03InsertToQuotationFromEnquiry] @QuotationNo = @QuotationNo, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_03InsertToQuotationFromEnquiry] @QuotationNo = @QuotationNo, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6323,7 +6323,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_04InsertToCostCenterFromSalesOrder] @SalesOrderNo = @SalesOrderNo, @ClientName = @ClientName, @AddedBy = @AddedBy, @IsCreateCostCenterFromSalesOrder = @IsCreateCostCenterFromSalesOrder, @DefaultCostCenterMasterFromSalesOrder = @DefaultCostCenterMasterFromSalesOrder, @SalesPersonName = @SalesPersonName", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_04InsertToCostCenterFromSalesOrder] @SalesOrderNo = @SalesOrderNo, @ClientName = @ClientName, @AddedBy = @AddedBy, @IsCreateCostCenterFromSalesOrder = @IsCreateCostCenterFromSalesOrder, @DefaultCostCenterMasterFromSalesOrder = @DefaultCostCenterMasterFromSalesOrder, @SalesPersonName = @SalesPersonName", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6377,7 +6377,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_04InsertToSalesOrderFromQuotation] @SalesOrderNo = @SalesOrderNo, @QuotationNo = @QuotationNo, @AddedBy = @AddedBy, @IsCreateCostCenterFromSalesOrder = @IsCreateCostCenterFromSalesOrder, @DefaultCostCenterMasterFromSalesOrder = @DefaultCostCenterMasterFromSalesOrder", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_04InsertToSalesOrderFromQuotation] @SalesOrderNo = @SalesOrderNo, @QuotationNo = @QuotationNo, @AddedBy = @AddedBy, @IsCreateCostCenterFromSalesOrder = @IsCreateCostCenterFromSalesOrder, @DefaultCostCenterMasterFromSalesOrder = @DefaultCostCenterMasterFromSalesOrder", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6424,7 +6424,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_05CreateNewRevisedQuotation] @QuotationNo = @QuotationNo, @NewQuotationNo = @NewQuotationNo, @RevisionNo = @RevisionNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_05CreateNewRevisedQuotation] @QuotationNo = @QuotationNo, @NewQuotationNo = @NewQuotationNo, @RevisionNo = @RevisionNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6471,7 +6471,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_05InsertToDeliveryNoteFromSalesOrder] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @SalesOrderNo = @SalesOrderNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_05InsertToDeliveryNoteFromSalesOrder] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @SalesOrderNo = @SalesOrderNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6525,7 +6525,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_05InsertToProformaFromSalesOrder] @ProformaInvoiceNo = @ProformaInvoiceNo, @SalesOrderNo = @SalesOrderNo, @ClientLedgerNo = @ClientLedgerNo, @DueDate = @DueDate, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_05InsertToProformaFromSalesOrder] @ProformaInvoiceNo = @ProformaInvoiceNo, @SalesOrderNo = @SalesOrderNo, @ClientLedgerNo = @ClientLedgerNo, @DueDate = @DueDate, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6586,7 +6586,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_06InsertToInvoiceFromDeliveryNote] @InvoiceNo = @InvoiceNo, @ClientAccountNo = @ClientAccountNo, @DeliveryNoteNo = @DeliveryNoteNo, @AddedBy = @AddedBy, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_06InsertToInvoiceFromDeliveryNote] @InvoiceNo = @InvoiceNo, @ClientAccountNo = @ClientAccountNo, @DeliveryNoteNo = @DeliveryNoteNo, @AddedBy = @AddedBy, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6647,7 +6647,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_06InsertToInvoiceFromDeliveryNote2] @InvoiceNo = @InvoiceNo, @ClientAccountNo = @ClientAccountNo, @DeliveryNoteNo = @DeliveryNoteNo, @AddedBy = @AddedBy, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_06InsertToInvoiceFromDeliveryNote2] @InvoiceNo = @InvoiceNo, @ClientAccountNo = @ClientAccountNo, @DeliveryNoteNo = @DeliveryNoteNo, @AddedBy = @AddedBy, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6701,7 +6701,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_07aInsertPartialDeliveryFromStoreAvailability] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @SalesOrderNo = @SalesOrderNo, @AddedBy = @AddedBy, @StoreIssuedFrom = @StoreIssuedFrom", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_07aInsertPartialDeliveryFromStoreAvailability] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @SalesOrderNo = @SalesOrderNo, @AddedBy = @AddedBy, @StoreIssuedFrom = @StoreIssuedFrom", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6735,7 +6735,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_07bUpdateDeliveryQtyFromStoreAvailability] @SalesOrderNo = @SalesOrderNo, @StoreIssuedFrom = @StoreIssuedFrom", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_07bUpdateDeliveryQtyFromStoreAvailability] @SalesOrderNo = @SalesOrderNo, @StoreIssuedFrom = @StoreIssuedFrom", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6782,7 +6782,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_07InsertPartialDeliveryFromSalesOrder] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @SalesOrderNo = @SalesOrderNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_07InsertPartialDeliveryFromSalesOrder] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @SalesOrderNo = @SalesOrderNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6829,7 +6829,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_08InsertToDeliveryNoteFromMaterialRequest] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_08InsertToDeliveryNoteFromMaterialRequest] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6870,7 +6870,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_09InsertToQuotationFromMultipleEnquiry] @QuotationNo = @QuotationNo, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_09InsertToQuotationFromMultipleEnquiry] @QuotationNo = @QuotationNo, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6917,7 +6917,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_15InsertToReceiptNoteFromPurchaseOrder] @ReceiptNoteNo = @ReceiptNoteNo, @ModeOfReceiptID = @ModeOfReceiptID, @PONo = @PONo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_15InsertToReceiptNoteFromPurchaseOrder] @ReceiptNoteNo = @ReceiptNoteNo, @ModeOfReceiptID = @ModeOfReceiptID, @PONo = @PONo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -6978,7 +6978,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_16InsertToBillFromReceiptNote] @PurchaseVoucherNo = @PurchaseVoucherNo, @SupplierAccountNo = @SupplierAccountNo, @ReceiptNoteNo = @ReceiptNoteNo, @AddedBy = @AddedBy, @DefaultPurchaseLedgerNo = @DefaultPurchaseLedgerNo, @BillDueDate = @BillDueDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_16InsertToBillFromReceiptNote] @PurchaseVoucherNo = @PurchaseVoucherNo, @SupplierAccountNo = @SupplierAccountNo, @ReceiptNoteNo = @ReceiptNoteNo, @AddedBy = @AddedBy, @DefaultPurchaseLedgerNo = @DefaultPurchaseLedgerNo, @BillDueDate = @BillDueDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7025,7 +7025,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_16InsertToPartialReceiptFromPurchaseOrder] @ReceiptNoteNo = @ReceiptNoteNo, @ModeOfReceiptID = @ModeOfReceiptID, @PONo = @PONo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_16InsertToPartialReceiptFromPurchaseOrder] @ReceiptNoteNo = @ReceiptNoteNo, @ModeOfReceiptID = @ModeOfReceiptID, @PONo = @PONo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7067,7 +7067,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_17UpdateStockOpeningBalance] @StockNo = @StockNo, @QtyReceived = @QtyReceived, @UnitPrice = @UnitPrice", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_17UpdateStockOpeningBalance] @StockNo = @StockNo, @QtyReceived = @QtyReceived, @UnitPrice = @UnitPrice", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7115,7 +7115,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_18InsertStockOpeningBalance] @StockNo = @StockNo, @QtyReceived = @QtyReceived, @UnitPrice = @UnitPrice, @UnitRateMethod = @UnitRateMethod", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_18InsertStockOpeningBalance] @StockNo = @StockNo, @QtyReceived = @QtyReceived, @UnitPrice = @UnitPrice, @UnitRateMethod = @UnitRateMethod", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7149,7 +7149,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_19InsertTermsAndCond] @ConditionsCode = @ConditionsCode, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_19InsertTermsAndCond] @ConditionsCode = @ConditionsCode, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7202,7 +7202,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_20InsertDuplicatePurchaseRequest] @FromMPRNo = @FromMPRNo, @ToMPRNo = @ToMPRNo, @MPRDate = @MPRDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_20InsertDuplicatePurchaseRequest] @FromMPRNo = @FromMPRNo, @ToMPRNo = @ToMPRNo, @MPRDate = @MPRDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7255,7 +7255,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_20InsertDuplicateQuotation] @FromQuotationNo = @FromQuotationNo, @ToQuotationNo = @ToQuotationNo, @QuotationDate = @QuotationDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_20InsertDuplicateQuotation] @FromQuotationNo = @FromQuotationNo, @ToQuotationNo = @ToQuotationNo, @QuotationDate = @QuotationDate, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7320,7 +7320,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_21InventoryUploading] @StockGroupCode = @StockGroupCode, @LastNoInStockGroup = @LastNoInStockGroup, @LastNoInUnit = @LastNoInUnit, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @MPRNo = @MPRNo, @GSGroupID = @GSGroupID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_21InventoryUploading] @StockGroupCode = @StockGroupCode, @LastNoInStockGroup = @LastNoInStockGroup, @LastNoInUnit = @LastNoInUnit, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @MPRNo = @MPRNo, @GSGroupID = @GSGroupID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7385,7 +7385,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_21InventoryUploadingToInvoice] @StockGroupCode = @StockGroupCode, @LastNoInStockGroup = @LastNoInStockGroup, @LastNoInUnit = @LastNoInUnit, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @InvoiceNo = @InvoiceNo, @GSGroupID = @GSGroupID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_21InventoryUploadingToInvoice] @StockGroupCode = @StockGroupCode, @LastNoInStockGroup = @LastNoInStockGroup, @LastNoInUnit = @LastNoInUnit, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @InvoiceNo = @InvoiceNo, @GSGroupID = @GSGroupID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7450,7 +7450,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_21InventoryUploadingToProformaInvoice] @StockGroupCode = @StockGroupCode, @LastNoInStockGroup = @LastNoInStockGroup, @LastNoInUnit = @LastNoInUnit, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @ProformaInvoiceNo = @ProformaInvoiceNo, @GSGroupID = @GSGroupID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_21InventoryUploadingToProformaInvoice] @StockGroupCode = @StockGroupCode, @LastNoInStockGroup = @LastNoInStockGroup, @LastNoInUnit = @LastNoInUnit, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @ProformaInvoiceNo = @ProformaInvoiceNo, @GSGroupID = @GSGroupID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7515,7 +7515,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_21InventoryUploadingToVATPurchaseVoucherNo] @StockGroupCode = @StockGroupCode, @LastNoInStockGroup = @LastNoInStockGroup, @LastNoInUnit = @LastNoInUnit, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VATPurchaseVoucherNo = @VATPurchaseVoucherNo, @GSGroupID = @GSGroupID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_21InventoryUploadingToVATPurchaseVoucherNo] @StockGroupCode = @StockGroupCode, @LastNoInStockGroup = @LastNoInStockGroup, @LastNoInUnit = @LastNoInUnit, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @VATPurchaseVoucherNo = @VATPurchaseVoucherNo, @GSGroupID = @GSGroupID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7562,7 +7562,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_22InsertCostOfGoodsSoldToVoucher] @DeliveryNoteNo = @DeliveryNoteNo, @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_22InsertCostOfGoodsSoldToVoucher] @DeliveryNoteNo = @DeliveryNoteNo, @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7609,7 +7609,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_22InsertStockConsumptionToVoucher] @DeliveryNoteNo = @DeliveryNoteNo, @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_22InsertStockConsumptionToVoucher] @DeliveryNoteNo = @DeliveryNoteNo, @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7656,7 +7656,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_22InsertStockTransferToVoucher] @DeliveryNoteNo = @DeliveryNoteNo, @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_22InsertStockTransferToVoucher] @DeliveryNoteNo = @DeliveryNoteNo, @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7710,7 +7710,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_23InsertProductionReceiptToVoucher] @DeliveryNoteNo = @DeliveryNoteNo, @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @ReceiptVoucherNo = @ReceiptVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_23InsertProductionReceiptToVoucher] @DeliveryNoteNo = @DeliveryNoteNo, @VoucherNo = @VoucherNo, @AddedBy = @AddedBy, @AddedOn = @AddedOn, @ReceiptVoucherNo = @ReceiptVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7764,7 +7764,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_24InsertToDeliveryNoteFromInvoice] @InvoiceNo = @InvoiceNo, @ClientCode = @ClientCode, @DeliveryNoteNo = @DeliveryNoteNo, @AddedBy = @AddedBy, @DeliveryType = @DeliveryType", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_24InsertToDeliveryNoteFromInvoice] @InvoiceNo = @InvoiceNo, @ClientCode = @ClientCode, @DeliveryNoteNo = @DeliveryNoteNo, @AddedBy = @AddedBy, @DeliveryType = @DeliveryType", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7805,7 +7805,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_25InsertReportTemplate] @ReportDocCode = @ReportDocCode, @JobOrderNo = @JobOrderNo, @ReportType = @ReportType", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_25InsertReportTemplate] @ReportDocCode = @ReportDocCode, @JobOrderNo = @JobOrderNo, @ReportType = @ReportType", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7838,7 +7838,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_26InsertStockAvgCostPrice] @EndDate = @EndDate, @GSCode = @GSCode", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_26InsertStockAvgCostPrice] @EndDate = @EndDate, @GSCode = @GSCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7864,7 +7864,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_26InsertStockAvgCostPriceAllItems] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_26InsertStockAvgCostPriceAllItems] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7904,7 +7904,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_27InsertStockCostPriceForInvoice] @EndDate = @EndDate, @InvoiceNo = @InvoiceNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_27InsertStockCostPriceForInvoice] @EndDate = @EndDate, @InvoiceNo = @InvoiceNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7944,7 +7944,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_27UpdateAvgCostPriceInDeliveryNote] @DeliveryNoteNo = @DeliveryNoteNo, @EndDate = @EndDate, @GSCode = @GSCode", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_27UpdateAvgCostPriceInDeliveryNote] @DeliveryNoteNo = @DeliveryNoteNo, @EndDate = @EndDate, @GSCode = @GSCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -7983,7 +7983,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_27UpdateAvgCostPriceInDeliveryNoteChild] @DeliveryNoteSlNo = @DeliveryNoteSlNo, @EndDate = @EndDate, @GSCode = @GSCode", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_27UpdateAvgCostPriceInDeliveryNoteChild] @DeliveryNoteSlNo = @DeliveryNoteSlNo, @EndDate = @EndDate, @GSCode = @GSCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8030,7 +8030,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_28CreateNewRevisedPO] @PONo = @PONo, @NewPONo = @NewPONo, @NewRevisionID = @NewRevisionID, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_28CreateNewRevisedPO] @PONo = @PONo, @NewPONo = @NewPONo, @NewRevisionID = @NewRevisionID, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8088,7 +8088,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_29InsertJVfromDeliveryNote] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryNoteDate = @DeliveryNoteDate, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_29InsertJVfromDeliveryNote] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryNoteDate = @DeliveryNoteDate, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8146,7 +8146,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_30InsertJVfromDNForStoreConsumption] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryNoteDate = @DeliveryNoteDate, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_30InsertJVfromDNForStoreConsumption] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryNoteDate = @DeliveryNoteDate, @JustAddedVoucherEntryNoSubLedger = @JustAddedVoucherEntryNoSubLedger, @JustAddedVoucherEntryNoCostAlloc = @JustAddedVoucherEntryNoCostAlloc, @AddedBy = @AddedBy, @AddedOn = @AddedOn", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8193,7 +8193,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_31InsertToMaterialReceiptfromEnquiry] @ReceiptNoteNo = @ReceiptNoteNo, @ModeOfReceiptID = @ModeOfReceiptID, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_31InsertToMaterialReceiptfromEnquiry] @ReceiptNoteNo = @ReceiptNoteNo, @ModeOfReceiptID = @ModeOfReceiptID, @MPRNo = @MPRNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8240,7 +8240,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp600_32CreateNewRevisedMPR] @MPRNo = @MPRNo, @NewMPRNo = @NewMPRNo, @NewRevisionID = @NewRevisionID, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp600_32CreateNewRevisedMPR] @MPRNo = @MPRNo, @NewMPRNo = @NewMPRNo, @NewRevisionID = @NewRevisionID, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8266,7 +8266,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp601_01DeleteQuotationChild] @QuotationChildSlNo = @QuotationChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp601_01DeleteQuotationChild] @QuotationChildSlNo = @QuotationChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8292,7 +8292,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp602_01DeleteSalesOrderChild] @SalesOrderChildSlNo = @SalesOrderChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp602_01DeleteSalesOrderChild] @SalesOrderChildSlNo = @SalesOrderChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8318,7 +8318,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp603_01DeleteDeliveryNoteChild] @DeliveryNoteSlNo = @DeliveryNoteSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp603_01DeleteDeliveryNoteChild] @DeliveryNoteSlNo = @DeliveryNoteSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8345,7 +8345,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp603_02DeleteDeliveryNoteMaster] @DeliveryNoteNo = @DeliveryNoteNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp603_02DeleteDeliveryNoteMaster] @DeliveryNoteNo = @DeliveryNoteNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8371,7 +8371,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp604_01DeletePurchaseOrderChild] @POChildNo = @POChildNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp604_01DeletePurchaseOrderChild] @POChildNo = @POChildNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8398,7 +8398,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp604_01GetPurchaseOrderChildTotalResult>("EXEC @returnValue = [dbo].[sp604_01GetPurchaseOrderChildTotal] @PONo = @PONo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp604_01GetPurchaseOrderChildTotalResult>("EXEC @returnValue = [sp604_01GetPurchaseOrderChildTotal] @PONo = @PONo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8424,7 +8424,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp605_01DeleteMaterialReceiptChild] @ReceiptChildNo = @ReceiptChildNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp605_01DeleteMaterialReceiptChild] @ReceiptChildNo = @ReceiptChildNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8450,7 +8450,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp606_01DeletePurchaseRequestChild] @MPRChildSlNo = @MPRChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp606_01DeletePurchaseRequestChild] @MPRChildSlNo = @MPRChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8476,7 +8476,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp607_01DeleteRFQChild] @RFQChildSlNo = @RFQChildSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp607_01DeleteRFQChild] @RFQChildSlNo = @RFQChildSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8516,7 +8516,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp607_02UpdateRFQChild_IsWon] @RFQChildSlNo = @RFQChildSlNo, @UpdatedBy = @UpdatedBy, @ReasonForSelection = @ReasonForSelection", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp607_02UpdateRFQChild_IsWon] @RFQChildSlNo = @RFQChildSlNo, @UpdatedBy = @UpdatedBy, @ReasonForSelection = @ReasonForSelection", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8550,7 +8550,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp607_03UpdateRFQChild_SetZeroToWon] @MPRNo = @MPRNo, @GSCode = @GSCode", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp607_03UpdateRFQChild_SetZeroToWon] @MPRNo = @MPRNo, @GSCode = @GSCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8597,7 +8597,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp608_01InsertToJobOrderFromSalesOrderChild] @JobOrderNo = @JobOrderNo, @AddedBy = @AddedBy, @SalesOrderChildID = @SalesOrderChildID, @ValveType = @ValveType", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp608_01InsertToJobOrderFromSalesOrderChild] @JobOrderNo = @JobOrderNo, @AddedBy = @AddedBy, @SalesOrderChildID = @SalesOrderChildID, @ValveType = @ValveType", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8644,7 +8644,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp608_02InsertToDeliveryNoteFromJobOrder] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @JobOrderNo = @JobOrderNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp608_02InsertToDeliveryNoteFromJobOrder] @DeliveryNoteNo = @DeliveryNoteNo, @DeliveryType = @DeliveryType, @JobOrderNo = @JobOrderNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8678,7 +8678,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp608_03InsertToDNChildfromJO] @DeliveryNoteNo = @DeliveryNoteNo, @JobOrderNo = @JobOrderNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp608_03InsertToDNChildfromJO] @DeliveryNoteNo = @DeliveryNoteNo, @JobOrderNo = @JobOrderNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8698,7 +8698,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
             {
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp651_01InsertInventoryTransactions]", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp651_01InsertInventoryTransactions]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8730,7 +8730,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp651_01InsertInventoryTransByDate] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp651_01InsertInventoryTransByDate] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8756,7 +8756,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp651_02InsertInvTransByDateForStockAmt] @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp651_02InsertInvTransByDateForStockAmt] @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8788,7 +8788,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp653_01InsertStoreInvTransByDate] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp653_01InsertStoreInvTransByDate] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8820,7 +8820,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp701_01GetCostAnalysisForAllDivisionResult>("EXEC @returnValue = [dbo].[sp701_01GetCostAnalysisForAllDivision] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp701_01GetCostAnalysisForAllDivisionResult>("EXEC @returnValue = [sp701_01GetCostAnalysisForAllDivision] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8859,7 +8859,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp701_01GetCostAnalysisForOneDivisionResult>("EXEC @returnValue = [dbo].[sp701_01GetCostAnalysisForOneDivision] @StartDate = @StartDate, @EndDate = @EndDate, @BranchCode = @BranchCode", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp701_01GetCostAnalysisForOneDivisionResult>("EXEC @returnValue = [sp701_01GetCostAnalysisForOneDivision] @StartDate = @StartDate, @EndDate = @EndDate, @BranchCode = @BranchCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -8900,7 +8900,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp800_01InsertToInvoiceSummaryFromMNPPayroll] @PayrollInvoiceNo = @PayrollInvoiceNo, @ManpowerPayrollNo = @ManpowerPayrollNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp800_01InsertToInvoiceSummaryFromMNPPayroll] @PayrollInvoiceNo = @PayrollInvoiceNo, @ManpowerPayrollNo = @ManpowerPayrollNo, @AddedBy = @AddedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9006,7 +9006,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp800_02InsertToMNPPayrollfromAssignments] @ManpowerPayrollNo = @ManpowerPayrollNo, @EmpSiteAssignmentID = @EmpSiteAssignmentID, @AddedBy = @AddedBy, @PayrollStartDate = @PayrollStartDate, @PayrollEndDate = @PayrollEndDate, @BasicWorkHours = @BasicWorkHours, @ClientRegRatePerHour = @ClientRegRatePerHour, @ClientOTRatePerHour = @ClientOTRatePerHour, @ClientRegRatePerDay = @ClientRegRatePerDay, @SupplierRegRatePerHour = @SupplierRegRatePerHour, @SupplierOTRatePerHour = @SupplierOTRatePerHour, @SupplierRegRatePerDay = @SupplierRegRatePerDay", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp800_02InsertToMNPPayrollfromAssignments] @ManpowerPayrollNo = @ManpowerPayrollNo, @EmpSiteAssignmentID = @EmpSiteAssignmentID, @AddedBy = @AddedBy, @PayrollStartDate = @PayrollStartDate, @PayrollEndDate = @PayrollEndDate, @BasicWorkHours = @BasicWorkHours, @ClientRegRatePerHour = @ClientRegRatePerHour, @ClientOTRatePerHour = @ClientOTRatePerHour, @ClientRegRatePerDay = @ClientRegRatePerDay, @SupplierRegRatePerHour = @SupplierRegRatePerHour, @SupplierOTRatePerHour = @SupplierOTRatePerHour, @SupplierRegRatePerDay = @SupplierRegRatePerDay", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9045,7 +9045,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp800_03_InsertEmployeeAssignment_ByDate] @StartDate = @StartDate, @EndDate = @EndDate, @LastManpowerPayrollNo = @LastManpowerPayrollNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp800_03_InsertEmployeeAssignment_ByDate] @StartDate = @StartDate, @EndDate = @EndDate, @LastManpowerPayrollNo = @LastManpowerPayrollNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9078,7 +9078,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp800_04InsertBulkToMNPPayrollfromAssignments] @AddedBy = @AddedBy, @PayrollEffectiveDate = @PayrollEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp800_04InsertBulkToMNPPayrollfromAssignments] @AddedBy = @AddedBy, @PayrollEffectiveDate = @PayrollEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9104,7 +9104,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp80101DeletePOChild] @ManpowerPOChildNo = @ManpowerPOChildNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp80101DeletePOChild] @ManpowerPOChildNo = @ManpowerPOChildNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9151,7 +9151,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp901_01UpdateLayout] @LayoutXML = @LayoutXML, @FormID = @FormID, @UserID = @UserID, @IsFromWeb = @IsFromWeb", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp901_01UpdateLayout] @LayoutXML = @LayoutXML, @FormID = @FormID, @UserID = @UserID, @IsFromWeb = @IsFromWeb", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9192,7 +9192,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp901_02UpdateReportDefault] @DefaultText = @DefaultText, @ReportField = @ReportField, @ReportType = @ReportType", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp901_02UpdateReportDefault] @DefaultText = @DefaultText, @ReportField = @ReportField, @ReportType = @ReportType", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9219,7 +9219,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp901_03UpdateDashBoardLayout] @LayoutXML = @LayoutXML", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp901_03UpdateDashBoardLayout] @LayoutXML = @LayoutXML", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9252,7 +9252,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp901_04UpdateCompany_CSRFile] @EGSUnitID = @EGSUnitID, @CSR_File = @CSR_File", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp901_04UpdateCompany_CSRFile] @EGSUnitID = @EGSUnitID, @CSR_File = @CSR_File", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9286,7 +9286,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp901_04UpdateReportXMLLayoutResult>("EXEC @returnValue = [dbo].[sp901_04UpdateReportXMLLayout] @LayoutXML = @LayoutXML, @ReportNo = @ReportNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp901_04UpdateReportXMLLayoutResult>("EXEC @returnValue = [sp901_04UpdateReportXMLLayout] @LayoutXML = @LayoutXML, @ReportNo = @ReportNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9340,7 +9340,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp901_05UpdateCompany_CCSID_Keys] @EGSUnitID = @EGSUnitID, @PrivateKey = @PrivateKey, @ComplianceCSIDString = @ComplianceCSIDString, @ComplianceCSIDSecret = @ComplianceCSIDSecret, @CompliancePEM = @CompliancePEM", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp901_05UpdateCompany_CCSID_Keys] @EGSUnitID = @EGSUnitID, @PrivateKey = @PrivateKey, @ComplianceCSIDString = @ComplianceCSIDString, @ComplianceCSIDSecret = @ComplianceCSIDSecret, @CompliancePEM = @CompliancePEM", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9387,7 +9387,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp901_06UpdateCompany_PCSID_Keys] @EGSUnitID = @EGSUnitID, @ProductionCSIDString = @ProductionCSIDString, @ProductionCSIDSecret = @ProductionCSIDSecret, @ProductionPEM = @ProductionPEM", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp901_06UpdateCompany_PCSID_Keys] @EGSUnitID = @EGSUnitID, @ProductionCSIDString = @ProductionCSIDString, @ProductionCSIDSecret = @ProductionCSIDSecret, @ProductionPEM = @ProductionPEM", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9420,7 +9420,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp90101GetUserAccessResult>("EXEC @returnValue = [dbo].[sp90101GetUserAccess] @UserID = @UserID, @ItemName = @ItemName", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp90101GetUserAccessResult>("EXEC @returnValue = [sp90101GetUserAccess] @UserID = @UserID, @ItemName = @ItemName", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9446,7 +9446,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp90102GetUserAlertListResult>("EXEC @returnValue = [dbo].[sp90102GetUserAlertList] @UserID = @UserID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp90102GetUserAlertListResult>("EXEC @returnValue = [sp90102GetUserAlertList] @UserID = @UserID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9506,7 +9506,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90103InsertAlertNotification] @AlertNo = @AlertNo, @UserID = @UserID, @AlertMessage = @AlertMessage, @AlertCreatedBy = @AlertCreatedBy, @AlertMasterTimeOn = @AlertMasterTimeOn, @AlertStatusRemarks = @AlertStatusRemarks", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90103InsertAlertNotification] @AlertNo = @AlertNo, @UserID = @UserID, @AlertMessage = @AlertMessage, @AlertCreatedBy = @AlertCreatedBy, @AlertMasterTimeOn = @AlertMasterTimeOn, @AlertStatusRemarks = @AlertStatusRemarks", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9532,7 +9532,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90103UpdateAlertNotified] @AlertUserSlNo = @AlertUserSlNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90103UpdateAlertNotified] @AlertUserSlNo = @AlertUserSlNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9580,7 +9580,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90116InsertUserLogEntry] @EntryLogFor = @EntryLogFor, @EntryLogDetails = @EntryLogDetails, @LogCreatedBy = @LogCreatedBy, @LogDocumentNo = @LogDocumentNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90116InsertUserLogEntry] @EntryLogFor = @EntryLogFor, @EntryLogDetails = @EntryLogDetails, @LogCreatedBy = @LogCreatedBy, @LogDocumentNo = @LogDocumentNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9607,7 +9607,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90117InsertEmployeeDocAlerts] @AlertCreatedBy = @AlertCreatedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90117InsertEmployeeDocAlerts] @AlertCreatedBy = @AlertCreatedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9634,7 +9634,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90118InsertEquipmentDocAlerts] @AlertCreatedBy = @AlertCreatedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90118InsertEquipmentDocAlerts] @AlertCreatedBy = @AlertCreatedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9661,7 +9661,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90119InsertCompanyDocAlerts] @AlertCreatedBy = @AlertCreatedBy", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90119InsertCompanyDocAlerts] @AlertCreatedBy = @AlertCreatedBy", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9688,7 +9688,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90120RemoveReportXML] @ReportNo = @ReportNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90120RemoveReportXML] @ReportNo = @ReportNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9762,7 +9762,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90121CreateNewCustomisedReport] @ReportNo = @ReportNo, @NewReportNo = @NewReportNo, @CustomReportLineNo = @CustomReportLineNo, @CustomReportFormNo = @CustomReportFormNo, @CustomReportCode = @CustomReportCode, @ButtonText = @ButtonText, @AddedBy = @AddedBy, @CustomReportFormName = @CustomReportFormName", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90121CreateNewCustomisedReport] @ReportNo = @ReportNo, @NewReportNo = @NewReportNo, @CustomReportLineNo = @CustomReportLineNo, @CustomReportFormNo = @CustomReportFormNo, @CustomReportCode = @CustomReportCode, @ButtonText = @ButtonText, @AddedBy = @AddedBy, @CustomReportFormName = @CustomReportFormName", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9795,7 +9795,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp90122GetUserLedgerAccessResult>("EXEC @returnValue = [dbo].[sp90122GetUserLedgerAccess] @UserID = @UserID, @LedgerNo = @LedgerNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp90122GetUserLedgerAccessResult>("EXEC @returnValue = [sp90122GetUserLedgerAccess] @UserID = @UserID, @LedgerNo = @LedgerNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9937,7 +9937,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[sp90122InserteInvoiceLogTable] @ICV = @ICV, @eInvoiceNo = @eInvoiceNo, @eInvoiceDateTime = @eInvoiceDateTime, @eInvoiceTypeCode = @eInvoiceTypeCode, @eInvoiceSubTypeCode = @eInvoiceSubTypeCode, @previousHashFile = @previousHashFile, @InvoiceStatus = @InvoiceStatus, @currentHashFile = @currentHashFile, @QRCode = @QRCode, @SubmittedBy = @SubmittedBy, @SubmittedOn = @SubmittedOn, @SubmissionStatusText = @SubmissionStatusText, @InvoiceQRCode = @InvoiceQRCode, @XMLFileLocation = @XMLFileLocation, @InvoiceUUID = @InvoiceUUID, @jasonInvoiceHash = @jasonInvoiceHash, @jasonUUID = @jasonUUID, @jasonBase64Invoice = @jasonBase64Invoice", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [sp90122InserteInvoiceLogTable] @ICV = @ICV, @eInvoiceNo = @eInvoiceNo, @eInvoiceDateTime = @eInvoiceDateTime, @eInvoiceTypeCode = @eInvoiceTypeCode, @eInvoiceSubTypeCode = @eInvoiceSubTypeCode, @previousHashFile = @previousHashFile, @InvoiceStatus = @InvoiceStatus, @currentHashFile = @currentHashFile, @QRCode = @QRCode, @SubmittedBy = @SubmittedBy, @SubmittedOn = @SubmittedOn, @SubmissionStatusText = @SubmissionStatusText, @InvoiceQRCode = @InvoiceQRCode, @XMLFileLocation = @XMLFileLocation, @InvoiceUUID = @InvoiceUUID, @jasonInvoiceHash = @jasonInvoiceHash, @jasonUUID = @jasonUUID, @jasonBase64Invoice = @jasonBase64Invoice", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -9969,7 +9969,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<sp90123GetUserRegisterAccessResult>("EXEC @returnValue = [dbo].[sp90123GetUserRegisterAccess] @UserID = @UserID, @VoucherType = @VoucherType", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<sp90123GetUserRegisterAccessResult>("EXEC @returnValue = [sp90123GetUserRegisterAccess] @UserID = @UserID, @VoucherType = @VoucherType", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10025,7 +10025,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StoredProcedure1] @InvoiceNo = @InvoiceNo, @InvoiceDate = @InvoiceDate, @Discount = @Discount, @Transportation = @Transportation, @Remarks = @Remarks", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [StoredProcedure1] @InvoiceNo = @InvoiceNo, @InvoiceDate = @InvoiceDate, @Discount = @Discount, @Transportation = @Transportation, @Remarks = @Remarks", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10070,7 +10070,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro101_13GetDataForUpdatingEmployeeTimeSheetResult>("EXEC @returnValue = [dbo].[stpro101_13GetDataForUpdatingEmployeeTimeSheet] @EmployeeNo = @EmployeeNo, @StartDate = @StartDate, @EndDate = @EndDate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro101_13GetDataForUpdatingEmployeeTimeSheetResult>("EXEC @returnValue = [stpro101_13GetDataForUpdatingEmployeeTimeSheet] @EmployeeNo = @EmployeeNo, @StartDate = @StartDate, @EndDate = @EndDate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10133,7 +10133,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro101_14Updatetbl101TimeSheet] @EmpID = @EmpID, @MobilizedDate = @MobilizedDate, @DemobilizedDate = @DemobilizedDate, @ProjectID = @ProjectID, @BillingCode = @BillingCode, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro101_14Updatetbl101TimeSheet] @EmpID = @EmpID, @MobilizedDate = @MobilizedDate, @DemobilizedDate = @DemobilizedDate, @ProjectID = @ProjectID, @BillingCode = @BillingCode, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10178,7 +10178,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro101_15Updatetbl101TimeSheetWithEmpDate] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate, @EmploymentDate = @EmploymentDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro101_15Updatetbl101TimeSheetWithEmpDate] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate, @EmploymentDate = @EmploymentDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10223,7 +10223,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro101_16Updatetbl101TimeSheetWithDiscontinuedDate] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate, @DiscontinuedDate = @DiscontinuedDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro101_16Updatetbl101TimeSheetWithDiscontinuedDate] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate, @DiscontinuedDate = @DiscontinuedDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10249,7 +10249,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro10101UpdateHourlyRateEmpByOne] @PayrollMasterID = @PayrollMasterID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro10101UpdateHourlyRateEmpByOne] @PayrollMasterID = @PayrollMasterID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10275,7 +10275,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro10102UpdateHourlyRateEmpByAll] @MonthID = @MonthID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro10102UpdateHourlyRateEmpByAll] @MonthID = @MonthID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10314,7 +10314,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StPro10105ClientTimeSheetResult>("EXEC @returnValue = [dbo].[StPro10105ClientTimeSheet] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StPro10105ClientTimeSheetResult>("EXEC @returnValue = [StPro10105ClientTimeSheet] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10341,7 +10341,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro20126GetSalaryPayableForSelectedResult>("EXEC @returnValue = [dbo].[stpro20126GetSalaryPayableForSelected] @JVoucherList = @JVoucherList", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro20126GetSalaryPayableForSelectedResult>("EXEC @returnValue = [stpro20126GetSalaryPayableForSelected] @JVoucherList = @JVoucherList", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10400,7 +10400,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_01UpdatePropertyTimesheet] @PropertyNo = @PropertyNo, @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate, @JustInsertedTimeSheetMasterID = @JustInsertedTimeSheetMasterID, @RatePerHour = @RatePerHour", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_01UpdatePropertyTimesheet] @PropertyNo = @PropertyNo, @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate, @JustInsertedTimeSheetMasterID = @JustInsertedTimeSheetMasterID, @RatePerHour = @RatePerHour", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10445,7 +10445,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_02GetDataForUpdatingTimeSheetResult>("EXEC @returnValue = [dbo].[stpro401_02GetDataForUpdatingTimeSheet] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_02GetDataForUpdatingTimeSheetResult>("EXEC @returnValue = [stpro401_02GetDataForUpdatingTimeSheet] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate, @BillingCode = @BillingCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10555,7 +10555,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_03UpdateTbl40122PropertyTimeSheetChild] @PropertyNo = @PropertyNo, @MobilizedDate = @MobilizedDate, @DemobilizedDate = @DemobilizedDate, @ClientCode = @ClientCode, @BillingCode = @BillingCode, @StartDate = @StartDate, @EndDate = @EndDate, @ClientRatePerHour = @ClientRatePerHour, @PropertyIssueNo = @PropertyIssueNo, @ClientOTRatePerHour = @ClientOTRatePerHour, @SupplierCode = @SupplierCode, @SuppRatePerHour = @SuppRatePerHour, @SuppOTRatePerHour = @SuppOTRatePerHour", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_03UpdateTbl40122PropertyTimeSheetChild] @PropertyNo = @PropertyNo, @MobilizedDate = @MobilizedDate, @DemobilizedDate = @DemobilizedDate, @ClientCode = @ClientCode, @BillingCode = @BillingCode, @StartDate = @StartDate, @EndDate = @EndDate, @ClientRatePerHour = @ClientRatePerHour, @PropertyIssueNo = @PropertyIssueNo, @ClientOTRatePerHour = @ClientOTRatePerHour, @SupplierCode = @SupplierCode, @SuppRatePerHour = @SuppRatePerHour, @SuppOTRatePerHour = @SuppOTRatePerHour", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10594,7 +10594,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_04PropertyTimeSheetReportResult>("EXEC @returnValue = [dbo].[stpro401_04PropertyTimeSheetReport] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_04PropertyTimeSheetReportResult>("EXEC @returnValue = [stpro401_04PropertyTimeSheetReport] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyNo = @PropertyNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10626,7 +10626,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_04PropertyTimeSheetReport_01Result>("EXEC @returnValue = [dbo].[stpro401_04PropertyTimeSheetReport_01] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_04PropertyTimeSheetReport_01Result>("EXEC @returnValue = [stpro401_04PropertyTimeSheetReport_01] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10665,7 +10665,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_04PropertyTimeSheetReport_02Result>("EXEC @returnValue = [dbo].[stpro401_04PropertyTimeSheetReport_02] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyList = @PropertyList", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_04PropertyTimeSheetReport_02Result>("EXEC @returnValue = [stpro401_04PropertyTimeSheetReport_02] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyList = @PropertyList", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10698,7 +10698,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stPro401_05CheckWorkDayStatusResult>("EXEC @returnValue = [dbo].[stPro401_05CheckWorkDayStatus] @PropertyNo = @PropertyNo, @ForDate = @ForDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stPro401_05CheckWorkDayStatusResult>("EXEC @returnValue = [stPro401_05CheckWorkDayStatus] @PropertyNo = @PropertyNo, @ForDate = @ForDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10724,7 +10724,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_06DeleteEquipmentTimesheet] @TimesheetMasterID = @TimesheetMasterID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_06DeleteEquipmentTimesheet] @TimesheetMasterID = @TimesheetMasterID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10777,7 +10777,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_07InsertToEquipmentInvoice] @InvoiceNo = @InvoiceNo, @AddedBy = @AddedBy, @InvoicePeriod = @InvoicePeriod, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_07InsertToEquipmentInvoice] @InvoiceNo = @InvoiceNo, @AddedBy = @AddedBy, @InvoicePeriod = @InvoicePeriod, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10876,7 +10876,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_08InsertToEquipDetailedInvoiceFromBillSummary] @VATInvoiceNo = @VATInvoiceNo, @EquipInvoiceNo = @EquipInvoiceNo, @AddedBy = @AddedBy, @ItemCode = @ItemCode, @TaxPercentage = @TaxPercentage, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @RemarksInEn = @RemarksInEn, @RemarksInAr = @RemarksInAr, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue, @LastNoInStockGroup = @LastNoInStockGroup", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_08InsertToEquipDetailedInvoiceFromBillSummary] @VATInvoiceNo = @VATInvoiceNo, @EquipInvoiceNo = @EquipInvoiceNo, @AddedBy = @AddedBy, @ItemCode = @ItemCode, @TaxPercentage = @TaxPercentage, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @RemarksInEn = @RemarksInEn, @RemarksInAr = @RemarksInAr, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue, @LastNoInStockGroup = @LastNoInStockGroup", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -10969,7 +10969,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_08InsertToEquipInvoiceFromBillSummary] @VATInvoiceNo = @VATInvoiceNo, @EquipInvoiceNo = @EquipInvoiceNo, @AddedBy = @AddedBy, @ItemCode = @ItemCode, @TaxPercentage = @TaxPercentage, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @RemarksInEn = @RemarksInEn, @RemarksInAr = @RemarksInAr, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_08InsertToEquipInvoiceFromBillSummary] @VATInvoiceNo = @VATInvoiceNo, @EquipInvoiceNo = @EquipInvoiceNo, @AddedBy = @AddedBy, @ItemCode = @ItemCode, @TaxPercentage = @TaxPercentage, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @RemarksInEn = @RemarksInEn, @RemarksInAr = @RemarksInAr, @InvoiceUUID = @InvoiceUUID, @InvoiceCounterValue = @InvoiceCounterValue", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11001,7 +11001,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_09PropertyTSReportForSupp_01Result>("EXEC @returnValue = [dbo].[stpro401_09PropertyTSReportForSupp_01] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_09PropertyTSReportForSupp_01Result>("EXEC @returnValue = [stpro401_09PropertyTSReportForSupp_01] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11040,7 +11040,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_09PropertyTSReportForSupp_02Result>("EXEC @returnValue = [dbo].[stpro401_09PropertyTSReportForSupp_02] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyList = @PropertyList", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_09PropertyTSReportForSupp_02Result>("EXEC @returnValue = [stpro401_09PropertyTSReportForSupp_02] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyList = @PropertyList", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11072,7 +11072,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_10GetPropertyStatusData] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_10GetPropertyStatusData] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11111,7 +11111,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_15UpdateDayShiftOperatorToTimesheet] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_15UpdateDayShiftOperatorToTimesheet] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11150,7 +11150,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_16UpdateNightShiftOperatorToTimesheet] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_16UpdateNightShiftOperatorToTimesheet] @PropertyNo = @PropertyNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11183,7 +11183,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_17CopyClientTStoSupplierTS] @PropertyNo = @PropertyNo, @TimeSheetMasterID = @TimeSheetMasterID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_17CopyClientTStoSupplierTS] @PropertyNo = @PropertyNo, @TimeSheetMasterID = @TimeSheetMasterID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11216,7 +11216,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_18CopySupplierTStoDSOperatorTS] @PropertyNo = @PropertyNo, @TimeSheetMasterID = @TimeSheetMasterID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_18CopySupplierTStoDSOperatorTS] @PropertyNo = @PropertyNo, @TimeSheetMasterID = @TimeSheetMasterID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11249,7 +11249,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_19CopySupplierTStoNSOperatorTS] @PropertyNo = @PropertyNo, @TimeSheetMasterID = @TimeSheetMasterID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_19CopySupplierTStoNSOperatorTS] @PropertyNo = @PropertyNo, @TimeSheetMasterID = @TimeSheetMasterID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11281,7 +11281,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_21PropertyTSClientWtOTReportResult>("EXEC @returnValue = [dbo].[stpro401_21PropertyTSClientWtOTReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_21PropertyTSClientWtOTReportResult>("EXEC @returnValue = [stpro401_21PropertyTSClientWtOTReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11320,7 +11320,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_21PropertyTSClientWtOTReport_02Result>("EXEC @returnValue = [dbo].[stpro401_21PropertyTSClientWtOTReport_02] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyList = @PropertyList", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_21PropertyTSClientWtOTReport_02Result>("EXEC @returnValue = [stpro401_21PropertyTSClientWtOTReport_02] @StartDate = @StartDate, @EndDate = @EndDate, @PropertyList = @PropertyList", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11352,7 +11352,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_22GetDataForGeneratingTimesheetOneDayResult>("EXEC @returnValue = [dbo].[stpro401_22GetDataForGeneratingTimesheetOneDay] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_22GetDataForGeneratingTimesheetOneDayResult>("EXEC @returnValue = [stpro401_22GetDataForGeneratingTimesheetOneDay] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11384,7 +11384,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_22GetDataForGeneratingTSOneDay_02] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_22GetDataForGeneratingTSOneDay_02] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11416,7 +11416,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_23InsertTimesheetLogForDate] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_23InsertTimesheetLogForDate] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11442,7 +11442,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_24GetEquipDailyTotalResult>("EXEC @returnValue = [dbo].[stpro401_24GetEquipDailyTotal] @StartDate = @StartDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_24GetEquipDailyTotalResult>("EXEC @returnValue = [stpro401_24GetEquipDailyTotal] @StartDate = @StartDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11468,7 +11468,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_25GetEquipPreviousBalanceResult>("EXEC @returnValue = [dbo].[stpro401_25GetEquipPreviousBalance] @StartDate = @StartDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_25GetEquipPreviousBalanceResult>("EXEC @returnValue = [stpro401_25GetEquipPreviousBalance] @StartDate = @StartDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11494,7 +11494,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_26GetEquipClosingBalanceResult>("EXEC @returnValue = [dbo].[stpro401_26GetEquipClosingBalance] @StartDate = @StartDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_26GetEquipClosingBalanceResult>("EXEC @returnValue = [stpro401_26GetEquipClosingBalance] @StartDate = @StartDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11520,7 +11520,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_26GetEquipTodayCollectionResult>("EXEC @returnValue = [dbo].[stpro401_26GetEquipTodayCollection] @StartDate = @StartDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_26GetEquipTodayCollectionResult>("EXEC @returnValue = [stpro401_26GetEquipTodayCollection] @StartDate = @StartDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11546,7 +11546,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stpro401_26GetEquipTodaySalesResult>("EXEC @returnValue = [dbo].[stpro401_26GetEquipTodaySales] @StartDate = @StartDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stpro401_26GetEquipTodaySalesResult>("EXEC @returnValue = [stpro401_26GetEquipTodaySales] @StartDate = @StartDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11606,7 +11606,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stpro401_27InsertToBillFromSupplierSummaryInvoice] @PurchaseVoucherNo = @PurchaseVoucherNo, @SuppTimesheetSummaryNo = @SuppTimesheetSummaryNo, @TaxPercentage = @TaxPercentage, @AddedBy = @AddedBy, @LastNoInStockGroup = @LastNoInStockGroup, @SupplierLedgerNo = @SupplierLedgerNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stpro401_27InsertToBillFromSupplierSummaryInvoice] @PurchaseVoucherNo = @PurchaseVoucherNo, @SuppTimesheetSummaryNo = @SuppTimesheetSummaryNo, @TaxPercentage = @TaxPercentage, @AddedBy = @AddedBy, @LastNoInStockGroup = @LastNoInStockGroup, @SupplierLedgerNo = @SupplierLedgerNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11645,7 +11645,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stPro50101OccupanyReportResult>("EXEC @returnValue = [dbo].[stPro50101OccupanyReport] @StartDate = @StartDate, @EndDate = @EndDate, @ClientCode = @ClientCode", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stPro50101OccupanyReportResult>("EXEC @returnValue = [stPro50101OccupanyReport] @StartDate = @StartDate, @EndDate = @EndDate, @ClientCode = @ClientCode", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11677,7 +11677,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stPro50102MandaysReportResult>("EXEC @returnValue = [dbo].[stPro50102MandaysReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stPro50102MandaysReportResult>("EXEC @returnValue = [stPro50102MandaysReport] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11704,7 +11704,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StPro803_01ClientTimeSheetMNP] @ManpowerPayrollNo = @ManpowerPayrollNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [StPro803_01ClientTimeSheetMNP] @ManpowerPayrollNo = @ManpowerPayrollNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11737,7 +11737,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StPro804_CheckWorkDayStatusResult>("EXEC @returnValue = [dbo].[StPro804_CheckWorkDayStatus] @ManpowerPayrollNo = @ManpowerPayrollNo, @ForDate = @ForDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StPro804_CheckWorkDayStatusResult>("EXEC @returnValue = [StPro804_CheckWorkDayStatus] @ManpowerPayrollNo = @ManpowerPayrollNo, @ForDate = @ForDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11769,7 +11769,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro901_011UpdatePrintMargins] @TopMargin = @TopMargin, @BottomMargin = @BottomMargin", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro901_011UpdatePrintMargins] @TopMargin = @TopMargin, @BottomMargin = @BottomMargin", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11795,7 +11795,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro901_01InsertUserAccess] @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro901_01InsertUserAccess] @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11815,7 +11815,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
             {
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro901_02InsertUserAccessAllUsers]", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro901_02InsertUserAccessAllUsers]", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11841,7 +11841,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro901_03InsertUserAccessPermissions] @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro901_03InsertUserAccessPermissions] @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11873,7 +11873,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro901_04ReplicateUserAccessPermissions] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro901_04ReplicateUserAccessPermissions] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11900,7 +11900,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro901_05UnlockExpensesClaims] @ExpensesClaimNo = @ExpensesClaimNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro901_05UnlockExpensesClaims] @ExpensesClaimNo = @ExpensesClaimNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11927,7 +11927,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro901_06UnlockJVRegisterEntry] @JournalRefNo = @JournalRefNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro901_06UnlockJVRegisterEntry] @JournalRefNo = @JournalRefNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11959,7 +11959,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro90102UserAccessForAccountsPanel] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro90102UserAccessForAccountsPanel] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -11991,7 +11991,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro90103UserAccessForCampModules] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro90103UserAccessForCampModules] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12023,7 +12023,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro90103UserAccessForEmployeeFile] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro90103UserAccessForEmployeeFile] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12055,7 +12055,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro90103UserAccessForVATModules] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro90103UserAccessForVATModules] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12087,7 +12087,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro90104UserAccessForIMSModules] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro90104UserAccessForIMSModules] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12119,7 +12119,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro90105UserAccessForIMS_PurchaseRequest] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro90105UserAccessForIMS_PurchaseRequest] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12151,7 +12151,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stPro901UserAccessPermissions] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stPro901UserAccessPermissions] @FromUser = @FromUser, @ToUser = @ToUser", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12190,7 +12190,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProAccountLedgerResult>("EXEC @returnValue = [dbo].[StProAccountLedger] @ParamAccountNo = @ParamAccountNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProAccountLedgerResult>("EXEC @returnValue = [StProAccountLedger] @ParamAccountNo = @ParamAccountNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12229,7 +12229,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProAccountLedgerByVoucherTypeResult>("EXEC @returnValue = [dbo].[StProAccountLedgerByVoucherType] @VoucherType = @VoucherType, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProAccountLedgerByVoucherTypeResult>("EXEC @returnValue = [StProAccountLedgerByVoucherType] @VoucherType = @VoucherType, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12262,7 +12262,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stProCheckWorkDayStatusResult>("EXEC @returnValue = [dbo].[stProCheckWorkDayStatus] @EmpID = @EmpID, @ForDate = @ForDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stProCheckWorkDayStatusResult>("EXEC @returnValue = [stProCheckWorkDayStatus] @EmpID = @EmpID, @ForDate = @ForDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12300,7 +12300,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproDeletePayrollDataForMonth] @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproDeletePayrollDataForMonth] @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12338,7 +12338,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproDeletePayrollDataForMonthExpectTimesheet] @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproDeletePayrollDataForMonthExpectTimesheet] @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12376,7 +12376,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproDeletePayrollDataForMonthOnlyTimesheet] @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproDeletePayrollDataForMonthOnlyTimesheet] @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12402,7 +12402,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproDeletePayrollDataForOneEmployee] @PayrollMasterID = @PayrollMasterID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproDeletePayrollDataForOneEmployee] @PayrollMasterID = @PayrollMasterID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12441,7 +12441,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stproInvoiceRentalMonthlyResult>("EXEC @returnValue = [dbo].[stproInvoiceRentalMonthly] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stproInvoiceRentalMonthlyResult>("EXEC @returnValue = [stproInvoiceRentalMonthly] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12493,7 +12493,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproInvoiceRentalMonthlyInsert] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientID = @ClientID, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproInvoiceRentalMonthlyInsert] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientID = @ClientID, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12545,7 +12545,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproInvoiceRentalMonthlyTableData] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientID = @ClientID, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproInvoiceRentalMonthlyTableData] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientID = @ClientID, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12597,7 +12597,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproInvoiceRentalMonthlyTableOnly] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientID = @ClientID, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproInvoiceRentalMonthlyTableOnly] @InvoiceNo = @InvoiceNo, @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate, @ClientID = @ClientID, @QuotationNo = @QuotationNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12635,7 +12635,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproMassUpdatePayroll] @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproMassUpdatePayroll] @MonthID = @MonthID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12669,7 +12669,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stProModifyVoucherNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stProModifyVoucherNo] @OldVoucherNo = @OldVoucherNo, @NewVoucherNo = @NewVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12701,7 +12701,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipClientTS_RegandOTResult>("EXEC @returnValue = [dbo].[StProPaySlipClientTS_RegandOT] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipClientTS_RegandOTResult>("EXEC @returnValue = [StProPaySlipClientTS_RegandOT] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12740,7 +12740,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipClientTS_RegandOT02Result>("EXEC @returnValue = [dbo].[StProPaySlipClientTS_RegandOT02] @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeList = @EmployeeList", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipClientTS_RegandOT02Result>("EXEC @returnValue = [StProPaySlipClientTS_RegandOT02] @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeList = @EmployeeList", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12772,7 +12772,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetResult>("EXEC @returnValue = [dbo].[StProPaySlipEmployeesTimeSheet] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetResult>("EXEC @returnValue = [StProPaySlipEmployeesTimeSheet] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12811,7 +12811,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheet2Result>("EXEC @returnValue = [dbo].[StProPaySlipEmployeesTimeSheet2] @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeList = @EmployeeList", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheet2Result>("EXEC @returnValue = [StProPaySlipEmployeesTimeSheet2] @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeList = @EmployeeList", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12843,7 +12843,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetMainOnlyOTResult>("EXEC @returnValue = [dbo].[StProPaySlipEmployeesTimeSheetMainOnlyOT] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetMainOnlyOTResult>("EXEC @returnValue = [StProPaySlipEmployeesTimeSheetMainOnlyOT] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12875,7 +12875,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetMainWOOTResult>("EXEC @returnValue = [dbo].[StProPaySlipEmployeesTimeSheetMainWOOT] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetMainWOOTResult>("EXEC @returnValue = [StProPaySlipEmployeesTimeSheetMainWOOT] @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12914,7 +12914,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetSubOnlyOTResult>("EXEC @returnValue = [dbo].[StProPaySlipEmployeesTimeSheetSubOnlyOT] @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeList = @EmployeeList", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetSubOnlyOTResult>("EXEC @returnValue = [StProPaySlipEmployeesTimeSheetSubOnlyOT] @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeList = @EmployeeList", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12953,7 +12953,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetSubWOOTResult>("EXEC @returnValue = [dbo].[StProPaySlipEmployeesTimeSheetSubWOOT] @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeList = @EmployeeList", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipEmployeesTimeSheetSubWOOTResult>("EXEC @returnValue = [StProPaySlipEmployeesTimeSheetSubWOOT] @StartDate = @StartDate, @EndDate = @EndDate, @EmployeeList = @EmployeeList", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -12992,7 +12992,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetResult>("EXEC @returnValue = [dbo].[StProPaySlipTimeSheet] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetResult>("EXEC @returnValue = [StProPaySlipTimeSheet] @EmpID = @EmpID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13030,7 +13030,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetByAgencyResult>("EXEC @returnValue = [dbo].[StProPaySlipTimeSheetByAgency] @AgencyID = @AgencyID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetByAgencyResult>("EXEC @returnValue = [StProPaySlipTimeSheetByAgency] @AgencyID = @AgencyID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13068,7 +13068,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetByAgencyOnlyOTResult>("EXEC @returnValue = [dbo].[StProPaySlipTimeSheetByAgencyOnlyOT] @AgencyID = @AgencyID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetByAgencyOnlyOTResult>("EXEC @returnValue = [StProPaySlipTimeSheetByAgencyOnlyOT] @AgencyID = @AgencyID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13106,7 +13106,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetByAgencyWoOTResult>("EXEC @returnValue = [dbo].[StProPaySlipTimeSheetByAgencyWoOT] @AgencyID = @AgencyID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetByAgencyWoOTResult>("EXEC @returnValue = [StProPaySlipTimeSheetByAgencyWoOT] @AgencyID = @AgencyID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13144,7 +13144,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetGroupResult>("EXEC @returnValue = [dbo].[StProPaySlipTimeSheetGroup] @SponsorID = @SponsorID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProPaySlipTimeSheetGroupResult>("EXEC @returnValue = [StProPaySlipTimeSheetGroup] @SponsorID = @SponsorID, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13171,7 +13171,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stProPostCostAllocationForJournal] @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stProPostCostAllocationForJournal] @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13198,7 +13198,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stProPostJournalEntries] @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stProPostJournalEntries] @VoucherNo = @VoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13232,7 +13232,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stProPostJournalEntriesWtTemporaryVoucherNo] @NewVoucherNo = @NewVoucherNo, @TemporaryVoucherNo = @TemporaryVoucherNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stProPostJournalEntriesWtTemporaryVoucherNo] @NewVoucherNo = @NewVoucherNo, @TemporaryVoucherNo = @TemporaryVoucherNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13264,7 +13264,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stproRentBillingCombinedResult>("EXEC @returnValue = [dbo].[stproRentBillingCombined] @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stproRentBillingCombinedResult>("EXEC @returnValue = [stproRentBillingCombined] @InvoiceStartDate = @InvoiceStartDate, @InvoiceEndDate = @InvoiceEndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13303,7 +13303,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<stproStockCardResultsResult>("EXEC @returnValue = [dbo].[stproStockCardResults] @StockNo = @StockNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<stproStockCardResultsResult>("EXEC @returnValue = [stproStockCardResults] @StockNo = @StockNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13342,7 +13342,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproStockCardResultsInsert] @StockNo = @StockNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproStockCardResultsInsert] @StockNo = @StockNo, @StartDate = @StartDate, @EndDate = @EndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13380,7 +13380,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProTrialBalanceResult>("EXEC @returnValue = [dbo].[StProTrialBalance] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProTrialBalanceResult>("EXEC @returnValue = [StProTrialBalance] @StartDate = @StartDate, @EndDate = @EndDate, @IsUseEffectiveDate = @IsUseEffectiveDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13412,7 +13412,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<StProTrialBalanceSummaryResult>("EXEC @returnValue = [dbo].[StProTrialBalanceSummary] @MyStartDate = @MyStartDate, @MyEndDate = @MyEndDate", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StProTrialBalanceSummaryResult>("EXEC @returnValue = [StProTrialBalanceSummary] @MyStartDate = @MyStartDate, @MyEndDate = @MyEndDate", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13468,7 +13468,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproUpdateInvoiceMaster] @InvoiceNo = @InvoiceNo, @InvoiceDate = @InvoiceDate, @Discount = @Discount, @Transportation = @Transportation, @Remarks = @Remarks", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproUpdateInvoiceMaster] @InvoiceNo = @InvoiceNo, @InvoiceDate = @InvoiceDate, @Discount = @Discount, @Transportation = @Transportation, @Remarks = @Remarks", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13501,7 +13501,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[stproUpdatePayrollWOTimeSheet] @EmpID = @EmpID, @MonthID = @MonthID", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [stproUpdatePayrollWOTimeSheet] @EmpID = @EmpID, @MonthID = @MonthID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13540,7 +13540,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UpdateStockOpeningBalance] @QtyReceived = @QtyReceived, @ReceiveChildSlNo = @ReceiveChildSlNo, @StockNo = @StockNo", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [UpdateStockOpeningBalance] @QtyReceived = @QtyReceived, @ReceiveChildSlNo = @ReceiveChildSlNo, @StockNo = @StockNo", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -13628,7 +13628,7 @@ public partial class ERPMasterWtDataContextProcedures : IERPMasterWtDataContextP
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<usp_SendTextEmailResult>("EXEC @returnValue = [dbo].[usp_SendTextEmail] @ServerAddr = @ServerAddr, @From = @From, @To = @To, @Subject = @Subject, @Bodytext = @Bodytext, @User = @User, @Password = @Password, @SSLConnection = @SSLConnection, @ServerPort = @ServerPort, @AttachmentFile = @AttachmentFile", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<usp_SendTextEmailResult>("EXEC @returnValue = [usp_SendTextEmail] @ServerAddr = @ServerAddr, @From = @From, @To = @To, @Subject = @Subject, @Bodytext = @Bodytext, @User = @User, @Password = @Password, @SSLConnection = @SSLConnection, @ServerPort = @ServerPort, @AttachmentFile = @AttachmentFile", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

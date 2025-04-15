@@ -99,7 +99,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT * FROM [dbo].[qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
+                    string query = "SELECT * FROM [qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
