@@ -109,7 +109,6 @@ namespace QD.ERP.Web.Pages
                         return NotFound("Report not found.");
                 }
             }
-            // **CASE 2: Cost Reports with requestedBy (if provided) OR just frmDate and toDate**
             else if (frmDate.HasValue && toDate.HasValue)
             {
                 FrmDate = frmDate.Value;

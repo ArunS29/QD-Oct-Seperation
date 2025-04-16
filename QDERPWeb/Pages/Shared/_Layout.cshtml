@@ -1146,14 +1146,16 @@
         </div>
         <div id="submenuContainer7" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleCstReportClick('CostAllocationReport')">
                     <i class="fa fa-file"></i>
                     <span>Cost Allocation Report - Detailed</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+
+                <div class="submenu-item" onclick="handleCstReportClick('CostAllocationDetailedReport')">
                     <i class="fa fa-file"></i>
                     <span>Cost Allocation Report - Summary</span>
                 </div>
+
                 <div class="submenu-item" onclick="ChangeRowHeight(70)">
                     <i class="fa fa-file"></i>
                     <span>Employee Allocation Report - Detailed</span>
@@ -2597,6 +2599,31 @@
                 console.warn('No report mapping found for:', reportKey);
             }
         }
+
+
+        function handleCstReportClick(reportName) {
+            var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
+            var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+            var toDateBox = $("#todateBox").dxDateBox("instance");
+
+            var accountId = dropDownBox.option("value");
+            var frmDate = frmDateBox.option("value");
+            var toDate = toDateBox.option("value");
+
+            // Format dates as needed (e.g., yyyy-MM-dd)
+            var formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
+            var formattedToDate = new Date(toDate).toISOString().split('T')[0];
+
+            // Initialize the base URL for the report
+            var url = `/${tenantName}/Finance/${reportName}?accountId=${accountId}&fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
+
+            // Open the URL in a new tab or same window
+            window.open(url, '_blank'); // Or use '_self' to open in the same tab
+        }
+
+
+
+
 
 
     </script>
