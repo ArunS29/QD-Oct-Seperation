@@ -15,7 +15,11 @@
 	.limited-footer .btn-container:not(:has(#btnBack,#btnPastefromExcel,#btnUploadItems)) {
 		display: none !important;
 	}
+	.btnplus{
+		align-content:end;
+		border-radius: 50% !important;
 
+	}
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -167,12 +171,12 @@
 	.mainContainer {
 		margin-top: 1em;
 	}
+
 </style>
 
-<input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="VATInvoiceWithDetails" class="no-border-input"></div>
+		<div id="InventoryListtoUpload" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -213,13 +217,16 @@
 	@(Html.DevExtreme().Button()
 		.ID("btnAddAccount")
 		.Icon("plus")
-		.ElementAttr("class", "button-alignment-up button-group")
-		//.OnClick("redirectledgerAccountMaster")
+		.Width(80)
+		.Height(40)
+		.ElementAttr("class", "button-alignment-down button-group")
+		@* .OnClick("redirectledgerAccountMaster") *@
 		)
 
 	@(Html.DevExtreme().TextBox()
 		.ID("txtVatPurchaseNo")
 		.Label(new JS("formatMessage('Vat Purchase No')"))
+		.LabelMode(EditorLabelMode.Outside)
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
 		)
@@ -227,18 +234,21 @@
 	@(Html.DevExtreme().TextBox()
 		.ID("txtPurchaseInvoiceNo")
 		.Label(new JS("formatMessage('Proforma Invoice No')"))
+		.LabelMode(EditorLabelMode.Outside)
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
 		)
 	@(Html.DevExtreme().TextBox()
 		.ID("txtInvoiceNo")
 		.Label(new JS("formatMessage('Invoice No')"))
+		.LabelMode(EditorLabelMode.Outside)
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
 		)
 	@(Html.DevExtreme().TextBox()
 		.ID("txtRegisterNo")
 		.Label(new JS("formatMessage('Request No')"))
+		.LabelMode(EditorLabelMode.Outside)
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
 		)
@@ -301,7 +311,7 @@
 		})
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
-		.AllowUpdating(true)
+		@* .AllowUpdating(true) *@
 		)
 
 		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
@@ -422,7 +432,16 @@
 				let url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
 				window.location.href = url; // Navigate to the form
 			}
-
+			$(function () {
+			$("#InventoryListtoUpload").dxTextBox({
+				text: formatMessage("Inventory List to Upload"),
+				readOnly: true,
+				width: "600px",
+				onContentReady: function (e) {
+				$(e.element).addClass("dx-textbox-heading");
+			}
+			});
+		});
 
 	$(document).ready(function () {
 			console.log('Start permission handling AccountingLedgers');

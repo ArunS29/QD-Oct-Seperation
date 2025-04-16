@@ -1695,9 +1695,15 @@
         "Add New Status": "Add New Status",
         "Client Status": "Client Status",
         "Contact List": "Contact List",
-        "Client Master":"Client Master"
+        "Client Master": "Client Master",
+        "Invoice Profit or Loss Summary": "Invoice Profit or Loss Summary",
+        "Credit Not Register": "Credit Not Register",
+        "Inventory List to Upload": "Inventory List to Upload"
     },
     "ar": {
+        "Inventory List to Upload": "قائمة الجرد للتحميل",
+        "Credit Not Register": "عدم تسجيل الائتمان",
+        "Invoice Profit or Loss Summary": "ملخص الربح أو الخسارة للفاتورة",
         "Client Master":"العميل الرئيسي",
         "Business Card": "بطاقة عمل",
         "Client Status": "حالة العميل",

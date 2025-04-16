@@ -172,7 +172,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="VATInvoiceWithDetails" class="no-border-input"></div>
+		<div id="InvoiceCostPosting" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -268,7 +268,7 @@
 		})
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
-		.AllowUpdating(true)
+		@* .AllowUpdating(true) *@
 		)
 
 		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
@@ -389,7 +389,16 @@
 				let url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
 				window.location.href = url; // Navigate to the form
 			}
-
+			$(function () {
+			$("#InvoiceCostPosting").dxTextBox({
+				text: formatMessage("Invoice Cost Posting"),
+				readOnly: true,
+				width: "400px",
+				onContentReady: function (e) {
+				$(e.element).addClass("dx-textbox-heading");
+			}
+			});
+		});
 
 	$(document).ready(function () {
 			console.log('Start permission handling AccountingLedgers');
