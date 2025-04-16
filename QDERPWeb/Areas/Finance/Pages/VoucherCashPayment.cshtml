@@ -219,7 +219,7 @@
                     .DisplayExpr("AccountHead")
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
-                    .Width(650)
+                    .Width(315)
                     .TabIndex(1)
                     .DropDownOptions(o => o
                     .Width(1000)
@@ -296,7 +296,7 @@
                     .Placeholder("0.000")
                     .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
                     .InputAttr(new { type = "number", step = "0.01", style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;", maxLength = 16, autocomplete = "off" })
-                    .Width(180)// HTML attribute to allow decimal input
+                    .Width(160)// HTML attribute to allow decimal input
                     )
 
             </div>
@@ -324,7 +324,7 @@
                     .DisplayExpr("CurrencyName")
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
-                    .Width(200)
+                    .Width(160)
                     .TabIndex(1)
                     .DropDownOptions(o => o.Width(700))
                     .OnKeyDown("onKeyDown")

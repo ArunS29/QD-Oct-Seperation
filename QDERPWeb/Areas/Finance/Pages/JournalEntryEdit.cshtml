@@ -1,7 +1,4 @@
-﻿
-
-
-@page
+﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.JournalEntryEditModel
 @{
 }
@@ -18,19 +15,18 @@
         border-bottom: 2px solid lightgrey;
     }
 
+
     /* Money button: white icon on light orange background */
     .money-button .dx-icon {
         color: white;
         background-color: #FFA07A; /* Light salmon / light orange */
     }
-
     /* Card button: blue icon on white background */
     .card-button .dx-icon {
         color: white; /* Bootstrap primary blue */
         background-color: #007BFF;
         border: 1px solid #007BFF; /* optional: add a border for visibility */
     }
-
 
     .custom-modal .modal-dialog {
         max-width: 90%; /* Adjust width */
@@ -130,10 +126,10 @@
         <div class="dx-field ledgerResult">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry202101journalRegisterChild>()
                     .ID("dataGrid")
-                    
+
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("LineOrderNo").Caption("#").Width(50).Alignment(HorizontalAlignment.Center)
+                        columns.Add().Caption("#").DataField("LineOrderNo").Width(50).Alignment(HorizontalAlignment.Center)
                     .CellTemplate(@<text>
                 <div>
                     <%= row.rowIndex + 1 %>
@@ -142,7 +138,7 @@
 
 
 
-                        
+                       
 
 
                         columns.Add().DataField("AccountHead").Caption("Account Ledger").Width(300).AllowEditing(true)
@@ -191,12 +187,12 @@
                     .DataSource(new[] { "Dr", "Cr" })
                     .ValueExpr("this")
                     .DisplayExpr("this")
-                    ); 
+                    );
                         columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right)
-                .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                         columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right)
                     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-                        columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(150);
+                        columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
                         columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150);
                         columns.Add().Caption("...").Width(100).CellTemplate(@<text>
                 <div class="text-center">
@@ -205,7 +201,7 @@
                     .Type(ButtonType.Default)
                     .Icon("money")
                     .ElementAttr("class", "money-button")
-                   
+
                     )
                 </div>
             </text>)
@@ -215,7 +211,7 @@
                         columns.Add().DataField("EmpAllocated").Caption("Employees Allocation").Width(150);
                         columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150).Visible(true);
                         columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
-                <div class="text-center" >
+                <div class="text-center">
                     @(Html.DevExtreme().Button()
 
                     .Type(ButtonType.Default)
@@ -494,7 +490,6 @@
             });
     }
 
-
     function loadLedgerGridData(voucherNo) {
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
@@ -509,7 +504,6 @@
             }
         });
     }
-
 
     $(function () {
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
@@ -526,6 +520,7 @@
 
 
         $("#dataGrid").dxDataGrid({
+
             onCellPrepared: function (e) {
                 
                 if (e.column.dataField === "DrAmount") {
@@ -540,7 +535,7 @@
         });
     });
 
-    
+
 
     $(document).ready(function () {
         $("#ClaimNameDropdown").closest(".dx-dropdownbox").show();
@@ -600,7 +595,7 @@
     function saveJournalEntry() {
         debugger;
         var button = $("#btnSave").dxButton("instance");
-    
+
         var gridInstance = $("#dataGrid").dxDataGrid("instance");
         var gridData = gridInstance.getDataSource().items();
 
@@ -704,9 +699,9 @@
 
     //Save and close
     $("#btnSaveAndClose").on("click", function (e) {
-   
-       
-    
+
+
+
         debugger;
         var button = $("#btnSaveAndClose").dxButton("instance");
 
@@ -747,7 +742,7 @@
         }
 
         // Determine action and voucher number
-        var action =  "SaveVoucher";
+        var action = "SaveVoucher";
         var finalVoucherNo = $("#VoucherNo").dxTextBox("instance").option("value") || "";
 
         var VM = {
@@ -857,8 +852,8 @@
         }
 
         // Determine action and voucher number
-        var action =  "SaveVoucher";
-        var finalVoucherNo =  $("#VoucherNo").dxTextBox("instance").option("value") || "";
+        var action = "SaveVoucher";
+        var finalVoucherNo = $("#VoucherNo").dxTextBox("instance").option("value") || "";
 
         var VM = {
             JournalVoucherMaster: {
@@ -905,8 +900,8 @@
                     DevExpress.ui.notify(msg, "success", 2000);
 
                     setTimeout(function () {
-     window.history.back(); // Navigate to the previous page
- }, 2000);
+                        window.history.back(); // Navigate to the previous page
+                    }, 2000);
                 } else {
                     DevExpress.ui.notify("Update failed: " + response.message, "error", 2000);
                 }
@@ -993,20 +988,20 @@
     // Function to open modal and load the URL with passed data
     function openModalPopup(url) {
         let modalHtml = `
-                     <div class="modal fade custom-modal" id="contextModal" tabindex="-1" aria-labelledby="contextModalLabel" aria-hidden="true">
-                         <div class="modal-dialog modal-fullscreen">
-                             <div class="modal-content">
-                                 <div class="modal-header">
-                                     <h5 class="modal-title" id="contextModalLabel">Allocation Details</h5>
-                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                 </div>
-                                 <div class="modal-body">
-                                     <iframe src="${url}" width="100%" height="100%" frameborder="0"></iframe>
+                         <div class="modal fade custom-modal" id="contextModal" tabindex="-1" aria-labelledby="contextModalLabel" aria-hidden="true">
+                             <div class="modal-dialog modal-fullscreen">
+                                 <div class="modal-content">
+                                     <div class="modal-header">
+                                         <h5 class="modal-title" id="contextModalLabel">Allocation Details</h5>
+                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                     </div>
+                                     <div class="modal-body">
+                                         <iframe src="${url}" width="100%" height="100%" frameborder="0"></iframe>
+                                     </div>
                                  </div>
                              </div>
                          </div>
-                     </div>
-                 `;
+                     `;
 
         // Remove existing modal if it exists
         $("#contextModal").remove();
@@ -1024,7 +1019,7 @@
     }
     let journalRefNo = null;
     $(document).ready(function () {
-         journalRefNo = getUrlParameter('journalRefNo');
+        journalRefNo = getUrlParameter('journalRefNo');
         var button = $("#btnSave").dxButton("instance");
         if (journalRefNo) {
             button.option("text", "Update");
@@ -1064,7 +1059,6 @@
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const rowCount = dataGrid.getVisibleRows().length;
 
-
         if (rowCount == 0) {
             Swal.fire({
                 title: "Voucher is not Approved",
@@ -1113,60 +1107,9 @@
             }
         });
     }
-    
 
-    function onApproveButtonClick() {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const rowCount = dataGrid.getVisibleRows().length;
 
-        if (rowCount == 0) {
-            Swal.fire({
-                title: "Voucher is not Approved",
-                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            })
-        } else {
-            proceedWithApproval();
-        }
-    }
 
-    function proceedWithApproval() {
-        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
-
-        $.ajax({
-            success: function () {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Voucher has been Approved.",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    disableEditing();
-                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-                });
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Error",
-                    text: "Please save the transactions after proceeding!",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        });
-    }
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
         onDeleteButtonClick();
@@ -1248,113 +1191,10 @@
         }
         // Clear the opposite field when DrCr is changed
         if (e.newData.DrCr === "Dr") {
-            e.newData.CrAmount = 0.00;
+            e.newData.CrAmount = e.oldData.DrAmount;
         } else if (e.newData.DrCr === "Cr") {
-            e.newData.DrAmount = 0.00;
+            e.newData.DrAmount = e.oldData.CrAmount;
         }
-    }
-
-        if (rowCount == 0) {
-            Swal.fire({
-                title: "Voucher is not Approved",
-                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            })
-        } else {
-            proceedWithApproval();
-        }
-    }
-
-    function proceedWithApproval() {
-        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
-
-        $.ajax({
-            success: function () {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Voucher has been Approved.",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    disableEditing();
-                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-                });
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Error",
-                    text: "Please save the transactions after proceeding!",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        });
-    }
-    
-
-    function onApproveButtonClick() {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const rowCount = dataGrid.getVisibleRows().length;
-
-        if (rowCount == 0) {
-            Swal.fire({
-                title: "Voucher is not Approved",
-                text: "Voucher has not been Approved, Click Yes if you want to Verify and Approve this Voucher.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            })
-        } else {
-            proceedWithApproval();
-        }
-    }
-
-    function proceedWithApproval() {
-        $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-        var vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }).replace(/ /g, '-');
-
-        $.ajax({
-            success: function () {
-                Swal.fire({
-                    title: "Success!",
-                    text: "Voucher has been Approved.",
-                    icon: "success",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    disableEditing();
-                    $("#ApprovedBytext").dxTextBox("instance").option("value", "Admin");
-                    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-                });
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Error",
-                    text: "Please save the transactions after proceeding!",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        });
     }
 
 </script>

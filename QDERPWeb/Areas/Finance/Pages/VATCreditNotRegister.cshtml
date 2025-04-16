@@ -11,35 +11,6 @@
 		background: rgba(0, 0, 0, 0.5);
 		z-index: 1000;
 	}
-.custom-submenu {
-  display: none;
-  position: absolute;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  list-style: none;
-  padding: 10px 0;
-  min-width: 160px;
-  z-index: 999;
-}
-
-.custom-submenu li {
-  padding: 8px 16px;
-  transition: background-color 0.3s ease;
-}
-
-.custom-submenu li a {
-  text-decoration: none;
-  color: #333;
-  font-size: 14px;
-  display: block;
-}
-
-.custom-submenu li:hover {
-  background-color: #f0f0f0;
-}
-
 
 	.overlay-content {
 		position: absolute;
@@ -54,9 +25,7 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint1,#btntoggleGroupPanel,#btnAddNew,#ddReports)) {
-		display: none !important;
-	}
+
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -177,19 +146,14 @@
 		.context-menu-item:not(:last-child) {
 			border-bottom: 1px solid #e0e0e0;
 		}
+	.limited-footer .btn-containerIvoiceEdit:not(:has(#btnSave,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddButtonPayment,#btnInvoiceDetails,#ddReports)) {
+		display: none !important;
+	}
 </style>
 
-<input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="VATInvoiceRegister" class="no-border-input"></div>
-	</div>
-</div>
-
-
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("VATModuleFooter")
+		<div id="VATCreditNotRegister" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -268,143 +232,55 @@
 		{
 			columns.Add().Caption("Credit Note Details").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceZatcaStatus)
-			.Caption("Invoice Zatca Status")
-			.Alignment(HorizontalAlignment.Center)
-			
-			.Width(135).MinWidth(23);
-
-				subColumns.AddFor(m => m.CreditNoteNo)
-			.Caption("Credit Note No")
-			.Alignment(HorizontalAlignment.Center)
-			.Width(135).MinWidth(23);
-
-				subColumns.AddFor(m => m.CreditNoteDate)
-			.Caption("Credit Note Date")
-			.Alignment(HorizontalAlignment.Center)
-			.Format("dd-MMM-yyyy")
-			.Width(135).MinWidth(23);
-
-				subColumns.AddFor(m => m.AccountHead)
-			.Caption("Account Head")
-			.Alignment(HorizontalAlignment.Center)
-			.Width(341).MinWidth(23);
-
-				subColumns.AddFor(m => m.InvoiceStatus)
-			.Caption("Credit Note Status")
-			.Alignment(HorizontalAlignment.Center)
-			.Width(87).MinWidth(23);
+				subColumns.AddFor(m => m.InvoiceZatcaStatus).Caption("Invoice Zatca Status").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceTypeCode).Caption("Credit Note No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceNo).Caption("Credit Note Date").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceStatus).Caption("Credit Note Status").Alignment(HorizontalAlignment.Center).Visible(true);
 			});
 
 			columns.Add().Caption("Credit Note & Tax Amount").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.CalcLineAmount)
-			.Caption("Amount Before Tax")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.CalcTaxAmount)
-			.Caption("Total VAT Amount")
-			.Alignment(HorizontalAlignment.Right)
-		;
-
-				subColumns.AddFor(m => m.TotalCreditNoteAmount)
-			.Caption("Total Amount")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.CalcLineAmount).Caption("Amount Before Tax").Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
+				subColumns.AddFor(m => m.CalcTaxAmount).Caption("Total VAT Amount").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.TotalCreditNoteAmount).Caption("Total Amount").Alignment(HorizontalAlignment.Right).Visible(true);
 			});
 
-			columns.Add().Caption("Credit Not Classified").Columns(revenueColumns =>
+			columns.Add().Caption("Credit Note Classified").Columns(revenueColumns =>
 			{
 				revenueColumns.Add().Caption("Domestic").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
-			.Caption("Domestic Revenue @5%")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
-			.Caption("Domestic Revenue @10%")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
-			.Caption("Domestic Revenue @15%")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
-			.Caption("Domestic Zero Rated Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.DomesticExemptedRevenue)
-			.Caption("Domestic Exempted Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DomesticStandartRatedRevenue).Caption("Domestic Revenue @5%").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.TotalRevenueOf10Perc).Caption("Domestic Revenue @10%").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.TotalRevenueOf15Perc).Caption("Domestic Revenue @15%").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.DomesticZeroRatedRevenue).Caption("Domestic Zero Rated Revenue").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.DomesticExemptedRevenue).Caption("Domestic Exempted Revenue").Alignment(HorizontalAlignment.Right).Visible(true);
 			});
-
-				revenueColumns.Add().Caption("Imports").Columns(subColumns =>
+				revenueColumns.Add().Caption("Import VAT").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedRevenue)
-			.Caption("GCC Revenue")
-			.Alignment(HorizontalAlignment.Right)
-		;
+				subColumns.AddFor(m => m.GccstandardRatedTax).Caption("GCC Revenue)").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.ExportsTax).Caption("Exports Revenue").Alignment(HorizontalAlignment.Right).Visible(true);
+			});
 			});
 
-				revenueColumns.Add().Caption("Exports").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsRevenue)
-			.Caption("Exports Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
-			});
-			});
+				
 
 			columns.Add().Caption("VAT Amount Classified").Columns(vatColumns =>
 			{
 				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DomesticStandartRatedTax)
-			.Caption("Domestic VAT @5%")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.TotalTaxOf10Perc)
-			.Caption("Domestic VAT @10%")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.TotalTaxOf15Perc)
-			.Caption("Domestic VAT @15%")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.DomesticZeroRatedTax)
-			.Caption("Domestic Zero Rated VAT")
-			.Alignment(HorizontalAlignment.Right)
-			;
-
-				subColumns.AddFor(m => m.DomesticExemptedTax)
-			.Caption("Domestic Exempted VAT")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DomesticStandartRatedTax).Caption("Domestic VAT @5%").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.TotalTaxOf10Perc).Caption("Domestic VAT @10%").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.TotalTaxOf15Perc).Caption("Domestic VAT @15%").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.DomesticZeroRatedTax).Caption("Domestic Zero Rated VAT").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.DomesticExemptedTax).Caption("Domestic Exempted VAT").Alignment(HorizontalAlignment.Right).Visible(true);
 			});
 
-				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
+				// ✅ Renamed section: "Import VAT"
+				vatColumns.Add().Caption("Import VAT").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedTax)
-			.Caption("GCC Tax")
-			.Alignment(HorizontalAlignment.Right)
-			;
-			});
-
-				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsTax)
-			.Caption("Exports Tax")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.GccstandardRatedTax).Caption("GCC Tax)").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.ExportsTax).Caption("Exports Tax").Alignment(HorizontalAlignment.Right).Visible(true);
 			});
 			});
 
@@ -412,7 +288,7 @@
 
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
-		.AllowUpdating(true)
+		@* .AllowUpdating(true) *@
 		)
 
 		.OnCellClick("function(e) { handleCellClick(e); }")
@@ -491,10 +367,7 @@
 </div>
 
 
-<ul id="submenu" class="custom-submenu">
-  <li><a href="#">Add New e-Invoice Credit Note</a></li>
 
-</ul>
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
 		<span class="close-btn" onclick="closeOverlay()">×</span>
@@ -502,14 +375,35 @@
 	</div>
 </div>
 
+<div class="Head">
+	<div class="limited-footer">
+		@await Html.PartialAsync("VATModuleFooter")
+	</div>
+</div>
 
 <script>
+	$(document).ready(function () {
+		$(".limited-footer .btn-container").each(function () {
+			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddButtonPayment,#btnInvoiceDetails,#ddReports").length) {
+				$(this).remove();
+			}
+		});
+	});
 	// Assuming tenantName is already defined globally
 	function viewInvoice() {
 		const url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
 		window.location.href = url;
 	}
-
+	$(function () {
+			$("#VATCreditNotRegister").dxTextBox({
+				text: formatMessage("Credit Not Register"),
+				readOnly: true,
+				width: "800px",
+				onContentReady: function (e) {
+				$(e.element).addClass("dx-textbox-heading");
+			}
+			});
+		});
 
 
 	$(document).ready(function () {
@@ -712,24 +606,4 @@
 
 		return [day, strmonth, year].join('-');
 	}
-	$(document).ready(function () {
-		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint1,#btntoggleGroupPanel,#btnAddNew,#ddButtonPayment,#ddReports").length) {
-				$(this).remove();
-			}
-		});
-	});
-	$(document).ready(function () {
-    $('#btnAddNew').on('click', function (e) {
-        e.stopPropagation(); // prevent click from bubbling up
-        $('#submenu').toggle(); // toggle visibility
-        const offset = $(this).offset();
-        $('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
-    });
-
-    // Hide submenu when clicking outside
-    $(document).on('click', function () {
-        $('#submenu').hide();
-    });
-});
 </script>

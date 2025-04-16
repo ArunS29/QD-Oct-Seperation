@@ -170,10 +170,10 @@
 	}
 </style>
 
-<input id="formId" value="frm201LedgerView" type="hidden" />
+@* <input id="formId" value="frm201LedgerView" type="hidden" /> *@
 <div class="title">
 	<div class="header-container">
-		<div id="VATInvoiceWithDetails" class="no-border-input"></div>
+		<div id="InvoiceProfitorLossSummary" class="no-border-input"></div>
 	</div>
 </div>
 
@@ -255,7 +255,7 @@
 		})
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
-		.AllowUpdating(true)
+		@* .AllowUpdating(true) *@
 		)
 
 		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
@@ -376,6 +376,16 @@
 				let url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
 				window.location.href = url; // Navigate to the form
 			}
+			$(function () {
+			$("#InvoiceProfitorLossSummary").dxTextBox({
+				text: formatMessage("Invoice Profit or Loss Summary"),
+				readOnly: true,
+				width: "400px",
+				onContentReady: function (e) {
+				$(e.element).addClass("dx-textbox-heading");
+			}
+			});
+		});
 
 
 	$(document).ready(function () {

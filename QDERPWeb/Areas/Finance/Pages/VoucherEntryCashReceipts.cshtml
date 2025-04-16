@@ -130,14 +130,16 @@
 <div class="content-container-top" style="background-color:#909ead00;">
 
 
-    <div class="dx-fieldset horizontal-container" style="margin-bottom:0px">
+    <div class="dx-fieldset horizontal-container" style="margin-top:10px">
         <div class="form-group">
-            <label for="VoucherNo" class="button-alignment-down">Voucher No:</label>
+          
 
             @(
                         Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Voucher No')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("VoucherNo")
-                .OnValueChanged("onVoucherNoChanged")
+                        .OnValueChanged("onVoucherNoChanged")
                         .Value(null)
                         .ReadOnly(true)
                         .ValidationRules(rules =>
@@ -149,47 +151,35 @@
         </div>
 
         <div class="form-group">
-            <label for="VoucherDate" class="button-alignment-down">Voucher Date:</label>
+            
 
             @(Html.DevExtreme().DateBox()
-
+                        .Label(new JS("formatMessage('Voucher Date')"))
                         .ID("VoucherDate")
                         .OnValueChanged("onVoucherDateChanged")
-
-                        .InputAttr("aria-label", "Date")
-
                         .LabelMode(EditorLabelMode.Outside)
-
+                        .InputAttr("aria-label", "Date")
                         .Type(DateBoxType.Date)
-
                         .DisplayFormat("dd-MMM-yyyy")
-
                         .Value(DateTime.Now)
-
                         )
         </div>
         <div class="form-group">
-            <label for="EffectiveDate" class="button-alignment-down">Effective Date:</label>
-
+            
             @(Html.DevExtreme().DateBox()
-
+                        .Label(new JS("formatMessage('Effective Date')"))
                         .ID("VoucherEffectiveDate")
-
                         .InputAttr("aria-label", "Date")
-
                         .LabelMode(EditorLabelMode.Outside)
-
                         .Type(DateBoxType.Date)
-
                         .DisplayFormat("dd-MMM-yyyy")
-
                         .Value(DateTime.Now)
-
                         )
         </div>
         <div class="form-group">
-            <label for="" class="button-alignment-down">Receiving Account:</label>
+           
             @(Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('Receiving Account')"))
                         .DataSource(d => d.WebApi()
                         .Controller("VoucherEntryCashReceipts")
                         .LoadAction("GetReceivingAccount")
@@ -232,23 +222,26 @@
 
         <div class="form-group">
             <div class="button-alignment-down">
-                <label for="DrCr">Dr/Cr:</label>
+              
             </div>
             @(
                         Html.DevExtreme().SelectBox()
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Label(new JS("formatMessage('Dr/Cr')"))
                         .ID("TransactionTypeComboBox")
                         .DataSource(new[] { "Dr", "Cr" })
                         .Value("Cr")
                         .Placeholder("Select Transaction Type")
-                        .Width(90)
+                        .Width(112)
                 .ReadOnly(true)
                         )
         </div>
 
 
         <div class="form-group">
-            <label for="" class="button-alignment-down" style="color: black;">Account Head:</label>
+           
             @(Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('Account Head')"))
                         .DataSource(d => d.WebApi()
                         .Controller("VoucherEntryCashReceipts")
                         .LoadAction("GetAccountHead")
@@ -273,7 +266,7 @@
                         .OnInput("dropDownBoxOnInput")
                         .OnOpened("onOpened")
                         @* .OnOpened("onDropDownBoxOpened") *@
-                        .Width(720)
+                        .Width(315)
                         .TabIndex(1)
                         .DropDownOptions(o => o.Width(1000))
                         .OnKeyDown("onKeyDown")
@@ -282,7 +275,8 @@
         </div>
 
 
-        <div class="form-group" style="margin-top:56px;margin-left:-10px">
+        <div class="plusBtn">
+            <div class="form-group">
             @(Html.DevExtreme().Button()
                         .ID("btnAddAHead")
                         .Icon("plus")
@@ -307,7 +301,7 @@
                         )
         </div>
         <div id="popupContainer"></div>
-        <div class="form-group" style="margin-top:56px;margin-left:-10px">
+        <div class="form-group" >
             @(Html.DevExtreme().Button()
                         .ID("btnEditAHead")
                         .Icon("edit")
@@ -328,13 +322,17 @@
                     <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
                 </div>
             </text>)
-                        )
+                   )
+            </div>
         </div>
         <div class="form-group">
-            <label for="Amount" class="button-alignment-down">Amount:</label>
+           
             @(
                         Html.DevExtreme().NumberBox()
+                        .Label(new JS("formatMessage('Amount')"))
+                        .LabelMode(EditorLabelMode.Outside)
                         .ID("Amount")
+                        .Width(160)
                         .Value(null)
                         .ValidationRules(rules =>
                         {

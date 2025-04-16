@@ -2,74 +2,98 @@
 @model QD.ERP.Web.Areas.Finance.Pages.frm201useraccesModel
 @using DevExtreme.AspNet.Data
 @using DevExtreme.AspNet.Mvc
-@{
 
-}
 <div class="title">
     <div class="header-container">
-        <div id="UserAccess" class="no-border-input"></div>
+        <h2>Access Management</h2>
     </div>
 </div>
-<div class="content-container-top">
 
-<div class="form-group">
-    @(Html.DevExtreme().SelectBox()
-        .ID("ddUserList")
-        .DataSource(ds => ds.WebApi()
-        .Controller("Utility")
-        .LoadAction("Getuserdetails")
-        .LoadMode(DataSourceLoadMode.Raw)
-        )
-        .DisplayExpr("UserName")
-        .ValueExpr("UserId")
-        .SearchEnabled(true)
-        .ShowClearButton(true)
-        .Placeholder("Select User")
-        .Label("User")
-        .LabelMode(EditorLabelMode.Outside)
-        .Width(400)
-        )
-</div>
-<div class="form-group">
-    @(Html.DevExtreme().SelectBox()
-        .ID("ddModuleList")
-        .DataSource(ds => ds.WebApi()
-        .Controller("Utility")
-        .LoadAction("GetDistinctModules")
-        .LoadMode(DataSourceLoadMode.Raw)
-        )
-        .DisplayExpr("Module")
-        .ValueExpr("Module")
-        .SearchEnabled(true)
-        .ShowClearButton(true)
-        .Placeholder("Select Module")
-        .Label("Module")
-        .LabelMode(EditorLabelMode.Outside)
-        .OnValueChanged("onModuleChanged")
-        .Width(400)
-        )
-</div>
-<div class="form-group">
-    @(Html.DevExtreme().SelectBox()
-        .ID("ddPrefixList")
-        .Items(Enumerable.Empty<string>())
-        .DisplayExpr("Prefix")
-        .ValueExpr("Prefix")
-        .SearchEnabled(true)
-        .ShowClearButton(true)
-        .Placeholder("Select Prefix")
-        .Label("Form")
-        .LabelMode(EditorLabelMode.Outside)
-        .Disabled(true)
-        .Width(400)
-        .OnValueChanged("loadbuttons")
+<!-- DevExtreme Tab Panel -->
+<div id="tabPanelContainer">
+    @(Html.DevExtreme().TabPanel()
+            .ID("accessTabPanel")
+            .Items(items =>
+            {
+                items.Add()
+            .Title("Welcome")
+            .Template(@<text>
+        <div style="padding: 20px;">
+            <h3>Welcome to User Access Management</h3>
+            <p>Select the 'User Access' tab to manage user permissions for different modules and forms.</p>
+        </div>
+    </text>);
+
+                items.Add()
+            .Title("User Access")
+            .Template(@<text>
+        <div style="padding: 20px;">
+            <div class="form-group">
+                @(Html.DevExtreme().SelectBox()
+                .ID("ddUserList")
+                .DataSource(ds => ds.WebApi()
+                .Controller("Utility")
+                .LoadAction("Getuserdetails")
+                .LoadMode(DataSourceLoadMode.Raw))
+                .DisplayExpr("UserName")
+                .ValueExpr("UserId")
+                .SearchEnabled(true)
+                .ShowClearButton(true)
+                .Placeholder("Select User")
+                .Label("User")
+                .LabelMode(EditorLabelMode.Outside)
+                .Width(400)
+                )
+
+                @(Html.DevExtreme().SelectBox()
+                .ID("ddModuleList")
+                .DataSource(ds => ds.WebApi()
+                .Controller("Utility")
+                .LoadAction("GetDistinctModules")
+                .LoadMode(DataSourceLoadMode.Raw))
+                .DisplayExpr("Module")
+                .ValueExpr("Module")
+                .SearchEnabled(true)
+                .ShowClearButton(true)
+                .Placeholder("Select Module")
+                .Label("Module")
+                .LabelMode(EditorLabelMode.Outside)
+                .OnValueChanged("onModuleChanged")
+                .Width(400)
+                )
+
+                @(Html.DevExtreme().SelectBox()
+                .ID("ddPrefixList")
+                .Items(Enumerable.Empty<string>())
+                .DisplayExpr("Prefix")
+                .ValueExpr("Prefix")
+                .SearchEnabled(true)
+                .ShowClearButton(true)
+                .Placeholder("Select Prefix")
+                .Label("Form")
+                .LabelMode(EditorLabelMode.Outside)
+                .Disabled(true)
+                .Width(400)
+                .OnValueChanged("loadGrid")
+                )
+            </div>
+
+            <div id="gridContainer" style="margin-top: 20px;"></div>
+        </div>
+    </text>);
+            })
+        .Width("100%")
         )
 </div>
 
-    <div id="gridContainer"></div>
-</div>
 @section Scripts {
     <script>
+        $(document).ready(function () {
+            $("#loadGridButton").on("click", function () {
+                loadGrid();
+            });
+        });
+
         function onModuleChanged(e) {
             const selectedModule = e.value;
             const prefixBox = $("#ddPrefixList").dxSelectBox("instance");
@@ -105,67 +129,80 @@
             });
         }
 
-        $(function () {
-            $("#loadGridButton").on("click", function () {
-                loadGrid();
-            });
-        });
-
         function loadGrid() {
             const userId = $("#ddUserList").dxSelectBox("instance").option("value");
             const module = $("#ddModuleList").dxSelectBox("instance").option("value");
             const prefix = $("#ddPrefixList").dxSelectBox("instance").option("value");
 
-            if (!userId || !module || !prefix) {
-                DevExpress.ui.notify("Please select all fields: User, Module, and Form (Prefix).", "warning", 3000);
+            if (!userId || !module) {
+                DevExpress.ui.notify("Please select User, Module, and Prefix.", "warning", 3000);
                 return;
             }
 
-            $("#gridContainer").dxDataGrid("instance")?.dispose(); // Destroy if exists
-
             $("#gridContainer").dxDataGrid({
                 dataSource: DevExpress.data.AspNet.createStore({
-                    key: "ItemName",
+                    key: "SlNo",
                     loadUrl: "/api/Utility/GetUserAccessDetails",
                     loadParams: {
                         userId: userId,
                         module: module,
                         prefix: prefix
-                    }
+                    },
+                    updateUrl: "/api/Utility/UpdateItemVisibility"
                 }),
                 remoteOperations: true,
                 columns: [
+                    { dataField: "Prefix", caption: "Form Name" },
+                    { dataField: "SlNo", caption: "Serial No" },
                     { dataField: "ItemName", caption: "Item Name" },
-                    { dataField: "Prefix", caption: "Prefix" },
                     { dataField: "ActionName", caption: "Action Name" },
-                    { dataField: "UserID", caption: "User ID" },
-                    { dataField: "Module", caption: "Module" }
+                    { dataField: "ItemEnabled", caption: "Enable" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxCheckBox({
+                                    value: options.value,
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            slNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items);
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
                 ],
-                paging: {
-                    pageSize: 10
+                sorting: {
+                    mode: "multiple"
                 },
-                pager: {
-                    showPageSizeSelector: true,
-                    allowedPageSizes: [10, 20, 50],
-                    showInfo: true
+                selection: {
+                    mode: "multiple"
+                }
+            });
+        }
+
+        function updateItemVisibility(items) {
+            $.ajax({
+                url: "/api/Utility/UpdateItemVisible",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(items),
+                success: function (data) {
+                    if (data.success) {
+                        DevExpress.ui.notify(data.message, "success", 3000);
+                    } else {
+                        DevExpress.ui.notify(data.message, "error", 3000);
+                    }
                 },
-                filterRow: { visible: true, applyFilter: "auto" },
-                searchPanel: { visible: true, width: 240, placeholder: "Search..." },
-                headerFilter: { visible: true },
-                groupPanel: { visible: true },
-                sorting: { mode: "multiple" },
-                selection: { mode: "multiple" },
-                columnChooser: { enabled: true },
-                export: { enabled: true, fileName: "UserAccessDetails" }
+                error: function () {
+                    DevExpress.ui.notify("Failed to update item visibility.", "error", 3000);
+                }
             });
         }
     </script>
 }
-
-
-<style>
-    .hidden {
-        display: none;
-    } 
-   
-</style>
