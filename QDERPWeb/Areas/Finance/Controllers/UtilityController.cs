@@ -106,33 +106,44 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
-        public async Task<IActionResult> GetUserList(DataSourceLoadOptions loadOptions)
+        public async Task<IActionResult> GetUserDetailsprofile(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var userList = dbContext.TblUserMasters.Select(u => new
-                    {
-                        u.UserId,
-                        u.UserName,
-                        u.EmailAddress,
-                        u.MobileNo,
-                        u.CompanyId,
-                        u.CreatedBy,
-                        u.CreatedOn,
-                        u.ModifiedOn
-                    });
+                    //var userId = HttpContext.Session.GetInt32("UserId");
 
-                    return Json(await DataSourceLoader.LoadAsync(userList, loadOptions));
+                    //if (userId == null)
+                    //{
+                    //    return Unauthorized(new { message = "User is not logged in.", success = false });
+                    //}
+                    var userId = 106;
+
+                    var userDetails = dbContext.TblUserMasters
+                        .Where(u => u.UserId == userId)
+                        .Select(u => new
+                        {
+                            u.UserPicture,
+                            u.UserId,
+                            u.UserName,
+                            u.EmailAddress,
+                            u.MobileNo,
+                            u.CreatedBy,
+                            u.CreatedOn,
+                            u.ModifiedBy,
+                            u.ModifiedOn
+                        });
+
+                    return Json(await DataSourceLoader.LoadAsync(userDetails, loadOptions));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetUserList: {ex.Message}");
+                    _logger.LogError($"Error in GetUserDetails: {ex.Message}");
                     return StatusCode(500, new
                     {
                         success = false,
-                        message = "An error occurred while fetching the user list.",
+                        message = "An error occurred while fetching the user details.",
                         error = ex.Message
                     });
                 }
@@ -140,7 +151,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
 
         [HttpGet]
@@ -215,40 +225,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserAccessDetails(DataSourceLoadOptions loadOptions, int userId, string module)
+        public async Task<IActionResult> GetUserAccessDetails(DataSourceLoadOptions loadOptions, int userId, string module, string prefix)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                userId = 102;
                 try
                 {
-                    var query = @"
-                SELECT 
-                    ItemName,
-                    CASE 
-                        WHEN CHARINDEX('_', ItemName) > 0 
-                        THEN LEFT(ItemName, CHARINDEX('_', ItemName) - 1) 
-                        ELSE ItemName 
-                    END AS Prefix,
-                    
-                    CASE 
-                        WHEN CHARINDEX('_', ItemName) > 0 
-                        THEN RIGHT(ItemName, LEN(ItemName) - CHARINDEX('_', ItemName)) 
-                        ELSE NULL 
-                    END AS ActionName,
-                    
-                    *
-                FROM 
-                    tblUserAccess
-                WHERE 
-                    UserID = {0} 
-                    AND Module = {1}";
+                    var userAccessDetails = dbContext.TblUserAccesses
+                        .Where(u => u.UserId == userId && u.Module == module && (string.IsNullOrEmpty(prefix) || u.ItemName.StartsWith(prefix + "_")))
+                        .Select(u => new
+                        {
+                            u.ItemName,
+                            u.ItemEnabled,
+                            u.ItemVisible,
+                            u.SlNo,
+                            Prefix = u.ItemName.Contains("_") ? u.ItemName.Substring(0, u.ItemName.IndexOf("_")) : u.ItemName,
+                            ActionName = u.ItemName.Contains("_") ? u.ItemName.Substring(u.ItemName.IndexOf("_") + 1) : null
+                        });
 
-                    var userAccessDetails = await dbContext.TblUserAccesses
-                        .FromSqlRaw(query, userId, module)
-                        .ToListAsync();
-
-                    return Json(await DataSourceLoader.LoadAsync(userAccessDetails.AsQueryable(), loadOptions));
+                    return Json(await DataSourceLoader.LoadAsync(userAccessDetails, loadOptions));
                 }
                 catch (Exception ex)
                 {
@@ -263,6 +258,58 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateItemVisible([FromBody] List<ItemVisibilityUpdate> items)
+        {
+            _logger.LogInformation($"Received request to update visibility for items: {string.Join(", ", items.Select(i => $"SlNo={i.SlNo}, ItemVisible={i.ItemVisible}"))}");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    foreach (var item in items)
+                    {
+                        var userAccess = await dbContext.TblUserAccesses.FirstOrDefaultAsync(u => u.SlNo == item.SlNo);
+
+                        if (userAccess == null)
+                        {
+                            _logger.LogWarning($"User access with SlNo {item.SlNo} not found.");
+                            return NotFound(new { success = false, message = $"User access with SlNo {item.SlNo} not found." });
+                        }
+
+                        _logger.LogInformation($"Current ItemVisible for SlNo {item.SlNo}: {userAccess.ItemVisible}");
+                        userAccess.ItemVisible = item.ItemVisible;
+                        _logger.LogInformation($"Updated ItemVisible for SlNo {item.SlNo} to: {item.ItemVisible}");
+
+                        dbContext.TblUserAccesses.Update(userAccess);
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    _logger.LogInformation("Item visibility updated successfully for all items.");
+                    return Ok(new { success = true, message = "Item visibility updated successfully for all items." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateItemVisible: {ex.Message}");
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "An error occurred while updating the item visibility.",
+                        error = ex.Message
+                    });
+                }
+            }
+
+            _logger.LogWarning("Invalid tenant.");
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        public class ItemVisibilityUpdate
+        {
+            public int SlNo { get; set; }
+            public bool ItemVisible { get; set; }
         }
 
     }
