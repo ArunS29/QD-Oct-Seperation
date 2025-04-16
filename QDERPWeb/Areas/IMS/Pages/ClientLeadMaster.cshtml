@@ -30,10 +30,12 @@
     }
 
 
-
+    .mainContainer{
+        overflow-x: hidden;
+    }
     .form-container1 {
         margin: 15px;
-        width: 100%;
+        width: 98%;
         padding: 5px; /* Optional: Add some padding inside the border */
         border-radius: 1px; /* Optional: Rounded corners */
     }
@@ -48,7 +50,7 @@
         gap: 10px;
         padding: 10px;
         margin-bottom: 15px;
-        width: 100%;
+        width: 97%;
     }
 
 
@@ -60,6 +62,7 @@
         text-align: Left;
         display: flex;
         align-items: center;
+        gap:10px;
     }
 
     .dx-textbox .dx-texteditor-input,
@@ -68,6 +71,9 @@
         /*  background-color: white; */
     }
 
+    .dx-button{
+        margin-left:5px;
+    }
     .dx-selectbox {
         width: 100%;
     }
@@ -90,7 +96,13 @@
     }
 
 
-
+    .horizontal-container {
+    display: flex;
+    gap: 20px; /* Adds spacing between buttons */
+    justify-content: start; /* Aligns buttons to the left */
+    align-items: center; /* Vertically centers the buttons */
+    margin: 15px;
+}
     .button-group {
         align-items: center;
         justify-content: center;
@@ -134,10 +146,36 @@
     .playIcon {
         display: none;
     }
+    .select-box{
+        width:20vh;
+    }
 
+    .imagecontainer {
+        background-color: #e0f7fa;
+        border: 1px solid #90caf9;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
 
 </style>
-
+<meta charset="UTF-8">
 <div class="title">
     <div class="header-container">
         <div id="ClientMaster" class="no-border-title"></div>
@@ -153,7 +191,7 @@
                 <!-- Asset Ledger No Field -->
                 <div class="col-md-2">
                     <div class="form-label">
-                        <label for="AssetLedgerNo">Asset Ledger No</label>
+                        <label for="AssetLedgerNo">Client Code</label>
                     </div>
         @(Html.DevExtreme().TextBox().ID("txtacctledno").Value("").ReadOnly(true))
                 </div>
@@ -161,22 +199,23 @@
 
 
                 <!-- Asset Category Dropdown -->
-                <div class="col-md-2 ">
+                <div class="col-md-8 ">
                     <div class="form-label">
-                        <label for="AssetCategory">Asset Category</label>
+                        <label for="ClientCategory">Client Category</label>
                     </div>
                     <div class="form-group-row">
-        @(Html.DevExtreme().SelectBox().ID("ddassetCategory")
-            .LabelMode(EditorLabelMode.Outside).ValueExpr("AssetCategoryCode")
+        @(Html.DevExtreme().DropDownBox().ID("ddClientCategory")
+            .LabelMode(EditorLabelMode.Outside).ValueExpr("ClientCategoryCode")
             .InputAttr("aria-label", "Owner")
-            .DisplayExpr("AssetCategory")
+            .DisplayExpr("ClientCategory")
             .DataSource(d => d.WebApi().Controller("assetview")
-            .LoadAction("GetAssetCategoriesByCode")
+            .LoadAction("GetClientCategoriesByCode")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("AssetCategory")).SearchEnabled(true).ShowClearButton(true).TabIndex(1)
-
+            .Key("ClientCategory")).ShowClearButton(true).TabIndex(1)
+            .Width("100%")
+           
             )
-        @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToAssetCategoryView"))
+        @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToClientCategory"))
                     </div>
                 </div>
 
@@ -202,7 +241,7 @@
                             <!-- Asset Description Field -->
                             <div class="col-md-12">
                                 <div class="form-label">
-                                    <label for="AssetDescription">Asset Description</label>
+                                    <label for="AssetDescription">Client Name</label>
                                 </div>
         @(
             Html.DevExtreme().TextBox()
@@ -244,68 +283,82 @@
                 .Template(@<text>
             <div class="form-container">
                 <div class="form-row">
-                    <div class="col-md-3">
+                    <div class="col-md-6" style="">
                         <label>Client Visited On</label>
                         @Html.DevExtreme().DateBox().ID("ClientVisitedOn").DisplayFormat("dd-MMM-yyyy")
                     </div>
-                    <div class="col-md-3">
-                        <label>Client Ledger No</label>
-                        @Html.DevExtreme().TextBox().ID("ClientLedgerNo")
-                    </div>
                     <div class="col-md-6">
-                        <label>Client Address</label>
-                        @Html.DevExtreme().TextArea().ID("ClientAddress").Height(70)
-                    </div>
-                </div>
+                        <label>Client Ledger No</label>
+                        @Html.DevExtreme().DropDownBox().ID("ClientLedgerNo").Placeholder("Select a ledger")
 
+                    </div>
+                      
+                   
+                </div>
                 <div class="form-row">
-                    <div class="col-md-3">
+                        <div class="col-md-12">
+                            <label>Client Address</label>
+                            @Html.DevExtreme().TextArea().ID("ClientAddress").Height(70)
+                        </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
                         <label>Contact Person</label>
                         @Html.DevExtreme().TextBox().ID("ContactPerson")
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>Title</label>
                         @Html.DevExtreme().TextBox().ID("Title")
                     </div>
-                    <div class="col-md-3">
+                 
+                </div>
+                  <div class="form-row">
+                    <div class="col-md-6">
                         <label>Mobile Number (1)</label>
                         @Html.DevExtreme().TextBox().ID("MobileNumber1")
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>Phone No (1)</label>
                         @Html.DevExtreme().TextBox().ID("PhoneNumber1")
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>Mobile Number (2)</label>
                         @Html.DevExtreme().TextBox().ID("MobileNumber2")
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>Phone No (2)</label>
                         @Html.DevExtreme().TextBox().ID("PhoneNumber2")
                     </div>
-                    <div class="col-md-3">
+                    
+                </div>
+                <div class="form-row">
+                    <div class="col-md-6">
                         <label>Fax No</label>
                         @Html.DevExtreme().TextBox().ID("FaxNumber")
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>Email</label>
                         @Html.DevExtreme().TextBox().ID("Email")
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>Sales Person</label>
                         @Html.DevExtreme().TextBox().ID("SalesPerson")
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label>Vendor Code</label>
                         @Html.DevExtreme().TextBox().ID("VendorCode")
                     </div>
-                    <div class="col-md-6">
+                  
+                </div>
+                <div class="form-row">
+                  
+                    <div class="col-md-12">
                         <label>Remarks</label>
                         @Html.DevExtreme().TextArea().ID("Remarks").Height(60)
                     </div>
@@ -317,24 +370,24 @@
 
 
                     item.Add().Title("Business Card").Text("Business Card").Template(@<text>
-
-            <div class="dx-fieldset" style="display:flex;flex-direction:column;">
-
-                <div class="imagecontainer" style="background-color: #e0f7fa; border: 1px solid #90caf9; height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                    <span style="color: #555; font-style: italic;">No image data</span>
+            <div class="dx-fieldset" style="display:flex;flex-direction:column;gap: 10px;width:50%;">
+                <div class="imagecontainer" id="imgBox1">
+                    <span>No image data</span>
                 </div>
 
-
-                <div class="imagecontainer" style="background-color: #e0f7fa; border: 1px solid #90caf9; height: 200px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: #555; font-style: italic;">No image data</span>
+                <div class="imagecontainer" id="imgBox2">
+                    <span>No image data</span>
                 </div>
-
             </div>
+
+            <input type="file" id="imageInput" accept="image/*" style="display:none;" />
+
+
         </text>);
 
 
                     item.Add().Text("Client Status").Title("Client Status").Template(@<text>
-            <div class="form-container">
+            <div class="form-container" >
 
                         @* <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                             @(Html.DevExtreme().Button()
@@ -349,14 +402,14 @@
                         </div> *@
 
 
-                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;padding:8px;">
                     @(Html.DevExtreme().Button()
-                    .ID("docbtnAttach")
-                    .Text("Add & Attach Files")
+                    .ID("btnAddRepotStatus")
+                    .Text("Add Report Status")
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("save")
-                    .OnClick("redirectToAssetDocuments")
+                    .OnClick("redirectToStatusUpdate")
                     )
                 </div>
 
@@ -405,19 +458,19 @@
 
                     item.Add().Text("Contact List").Title("Contact List").Template(@<text>
 
-            <div class="form-container">
+            <div class="form-container" >
 
-                <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
+                <div class="form-row" style="display: flex; justify-content: flex-end; width: 100%;">
 
                     <!-- Add Scheduled Types Button -->
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
-                        .ID("btnAddScheduledTypes")
-                        .Text("Add Scheduled Types")
+                        .ID("btnAddNew")
+                        .Text("Add New Contact")
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("plus")
-                        .OnClick("addScheduledTypeRow")
+                        .OnClick("addContactList")
                         )
                     </div>
                 </div>
@@ -457,27 +510,14 @@
 
     </div>
 
-    <div class="form-container">
-        <div class="footer-buttons">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").OnClick("updateAsset"))
-                    </div>
-        @*<div class="col-md-2">
-                    @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
-                    </div> *@
-                    <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").OnClick("DeleteAsset"))
-                    </div>
-                    <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("function() { window.location.href = '/Home/Dashboard'; }"))
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+   
+       
+          
+       
+                    
+              
+         
+    
 
 
 </div>
@@ -534,7 +574,36 @@
     <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
 </script>
 <script>
+    let selectedContainer = null;
 
+      // Add event listeners after the DOM is ready
+      document.addEventListener("DOMContentLoaded", function () {
+          const containers = document.querySelectorAll('.imagecontainer');
+
+          containers.forEach(container => {
+              container.addEventListener('click', () => {
+                  selectedContainer = container;
+                  document.getElementById('imageInput').click();
+              });
+          });
+
+          document.getElementById('imageInput').addEventListener('change', function (event) {
+              const file = event.target.files[0];
+              if (file && selectedContainer) {
+                  const reader = new FileReader();
+
+                  reader.onload = function (e) {
+                      selectedContainer.innerHTML = '';
+                      const img = document.createElement('img');
+                      img.src = e.target.result;
+                      selectedContainer.appendChild(img);
+                  };
+
+                  reader.readAsDataURL(file);
+                  event.target.value = ''; // reset input
+              }
+          });
+      });
     $(document).ready(function () {
         // Extract assetLedgerNo from the URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -554,51 +623,51 @@
         grid.refresh();
     }
 
-    function addScheduledTypeRow() {
-        // Get the dxNumberBox and dxSelectBox instances
-        var readingBox = $("#txtMaintenanceReading").dxNumberBox("instance");
-        var typeBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
+    // function addScheduledTypeRow() {
+    //     Get the dxNumberBox and dxSelectBox instances
+    //     var readingBox = $("#txtMaintenanceReading").dxNumberBox("instance");
+    //     var typeBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
 
-        // Validate instances
-        if (!readingBox || !typeBox) {
-            console.error("dxNumberBox or dxSelectBox not initialized properly.");
-            return;
-        }
+    //     Validate instances
+    //     if (!readingBox || !typeBox) {
+    //         console.error("dxNumberBox or dxSelectBox not initialized properly.");
+    //         return;
+    //     }
 
-        // Get values
-        var maintenanceReading = readingBox.option("value");
-        var maintenanceType = typeBox.option("text");
+    //     Get values
+    //     var maintenanceReading = readingBox.option("value");
+    //     var maintenanceType = typeBox.option("text");
 
-        // Validate inputs
-        if (!maintenanceType || maintenanceReading === null) {
-            alert("Please select a maintenance type and enter a valid reading.");
-            return;
-        }
+    //     Validate inputs
+    //     if (!maintenanceType || maintenanceReading === null) {
+    //         alert("Please select a maintenance type and enter a valid reading.");
+    //         return;
+    //     }
 
-        // Prepare data
-        var today = new Date();
-        var formattedDate = today.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        });
+    //     Prepare data
+    //     var today = new Date();
+    //     var formattedDate = today.toLocaleDateString("en-GB", {
+    //         day: "2-digit",
+    //         month: "short",
+    //         year: "numeric",
+    //     });
 
-        // Add row to grid
-        var grid = $("#MaintenanceGrid").dxDataGrid("instance");
-        var dataSource = grid.option("dataSource") || [];
-        dataSource.push({
-            MaintenanceType: maintenanceType,
-            MaintenanceReading: maintenanceReading,
-            ScheduledOn: formattedDate,
-            ReminderDate: formattedDate,
-            MaintenanceDone: false,
-            Remarks: "",
-        });
+    //     Add row to grid
+    //     var grid = $("#MaintenanceGrid").dxDataGrid("instance");
+    //     var dataSource = grid.option("dataSource") || [];
+    //     dataSource.push({
+    //         MaintenanceType: maintenanceType,
+    //         MaintenanceReading: maintenanceReading,
+    //         ScheduledOn: formattedDate,
+    //         ReminderDate: formattedDate,
+    //         MaintenanceDone: false,
+    //         Remarks: "",
+    //     });
 
-        // Update grid
-        grid.option("dataSource", dataSource);
-        grid.refresh();
-    }
+    //     Update grid
+    //     grid.option("dataSource", dataSource);
+    //     grid.refresh();
+    // }
 
 
 
@@ -725,7 +794,7 @@
         }
     }
 
-    function refreshAssetCategorySelectBox() {
+    function refreshClientCategorySelectBox() {
         const assetCategorySelectBox = $("#ddassetCategory").dxSelectBox("instance");
 
         if (assetCategorySelectBox) {
@@ -1145,11 +1214,11 @@
 
 
 
-    function redirectToAssetCategoryView() {
-        let url = `/${tenantName}/Finance/AssetCategoryView`;
+    function redirectToClientCategory() {
+        let url = `/${tenantName}/IMS/ClientCategory1`;
         let title = "";
         openModal(url, title);
-        refreshAssetCategorySelectBox()
+        refreshClientCategorySelectBox()
     }
     function redirectToAssetLocationMaster() {
         let url = `/${tenantName}/Finance/AssetLocation`;
@@ -1157,8 +1226,13 @@
         openModal(url, title);
         refreshAssetLocationSelectBox();
     }
-    function redirectToAssetDocuments() {
-        let url = `/${tenantName}/Finance/frm20112AssetDocuments`;
+    function redirectToStatusUpdate() {
+        let url = `/${tenantName}/IMS/ClientStatusUpdate`;
+        let title = "";
+        openModal(url, title);
+    }
+     function addContactList() {
+        let url = `/${tenantName}/IMS/ClientContactList`;
         let title = "";
         openModal(url, title);
     }

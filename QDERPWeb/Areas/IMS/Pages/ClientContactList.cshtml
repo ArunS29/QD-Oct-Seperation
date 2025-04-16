@@ -42,6 +42,36 @@
         color: black !important;
     }
 
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
 
     .white-bg .dx-texteditor-input {
         background-color: white !important;
@@ -66,8 +96,12 @@
 
 </style>
 
+    <div class="title">
+        <div class="header-container">
+            <div id="ClientContactList" class="no-border-title"></div>
+        </div>
+    </div>
 <div class="formContainer">
-    <div class="form-header"> <i class="dx-icon dx-icon-user" style=" font-size: 40px; "></i>Client Contact List</div>
 
     <div class="form-row">
         <div class="form-field">
@@ -297,6 +331,15 @@
 
 
 <script>
+     $(function () {
+        $("#ClientContactList").dxTextBox({
+            text:formatMessage("Client Contact List"),
+            readOnly: true,
+            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
     function saveClientList() {
         const data = {
             ClientCode: $("#clientCode").dxTextBox("instance").option("value"),

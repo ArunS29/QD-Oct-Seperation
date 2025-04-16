@@ -73,10 +73,44 @@
         font-size: 10px;
     }
 
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
    
 </style>
+<div class="title">
+    <div class="header-container">
+        <div id="ClientStatusUpdate" class="no-border-title"></div>
+    </div>
+</div>
 <div class="form-container">
-    <h3>Client Status Update</h3>
+   
 
     <div class="form-group-row">
         @(Html.DevExtreme().TextBox()
@@ -282,7 +316,15 @@
 
 <!-- JavaScript handler -->
 <script>
-   
+    $(function () {
+        $("#ClientStatusUpdate").dxTextBox({
+            text:formatMessage("Client Status Update"),
+            readOnly: true,
+            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
     function onSaveClient() {
         DevExpress.ui.notify("Client Saved", "success", 1000);
     }

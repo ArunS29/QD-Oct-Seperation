@@ -1698,9 +1698,13 @@
         "Client Master": "Client Master",
         "Invoice Profit or Loss Summary": "Invoice Profit or Loss Summary",
         "Credit Not Register": "Credit Not Register",
-        "Inventory List to Upload": "Inventory List to Upload"
+        "Inventory List to Upload": "Inventory List to Upload",
+        "Client Contact List": "Client Contact List",
+        "Client Status Update":"Client Status Update"
     },
     "ar": {
+        "Client Status Update":"تحديث حالة العميل",
+        "Client Contact List":"قائمة جهات الاتصال بالعميل",
         "Inventory List to Upload": "قائمة الجرد للتحميل",
         "Credit Not Register": "عدم تسجيل الائتمان",
         "Invoice Profit or Loss Summary": "ملخص الربح أو الخسارة للفاتورة",
