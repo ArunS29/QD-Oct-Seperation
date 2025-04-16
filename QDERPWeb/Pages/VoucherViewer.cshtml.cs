@@ -83,9 +83,9 @@ namespace QD.ERP.Web.Pages
                 case "PreviewClaimRequestForm_wtVAT_":
                     Report = new PreviewClaimRequestForm_wtVAT_(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
                     break;
-                //case "":
-                //    Report = new PreviewClaimRequestForm(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
-                //    break;
+                case "PaymentsAdviceSupplierPayments":
+                    Report = new PaymentsAdviceSupplierPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
+                    break;
 
                 default:
                     return NotFound("Report not found.");

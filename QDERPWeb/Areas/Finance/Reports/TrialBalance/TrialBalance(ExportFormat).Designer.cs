@@ -52,6 +52,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrialBalance_ExportFormat_));
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
+            this.xrLabel34 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel39 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPageInfo1 = new DevExpress.XtraReports.UI.XRPageInfo();
@@ -124,7 +125,6 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.xrLabel34 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -143,6 +143,19 @@
             this.xrPageInfo1});
             this.BottomMargin.HeightF = 58.79161F;
             this.BottomMargin.Name = "BottomMargin";
+            // 
+            // xrLabel34
+            // 
+            this.xrLabel34.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel34.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel34.ForeColor = System.Drawing.Color.Black;
+            this.xrLabel34.LocationFloat = new DevExpress.Utils.PointFloat(483.0943F, 18.33337F);
+            this.xrLabel34.Name = "xrLabel34";
+            this.xrLabel34.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
+            this.xrLabel34.StylePriority.UseBorderColor = false;
+            this.xrLabel34.StylePriority.UseFont = false;
+            this.xrLabel34.StylePriority.UseForeColor = false;
+            this.xrLabel34.Text = "Reported By:[Parameters.TenantName]";
             // 
             // xrPageInfo2
             // 
@@ -201,11 +214,11 @@
             // xrLabel33
             // 
             this.xrLabel33.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel33.LocationFloat = new DevExpress.Utils.PointFloat(269.1667F, 140F);
+            this.xrLabel33.LocationFloat = new DevExpress.Utils.PointFloat(2.543131E-05F, 140F);
             this.xrLabel33.Multiline = true;
             this.xrLabel33.Name = "xrLabel33";
             this.xrLabel33.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel33.SizeF = new System.Drawing.SizeF(243.0626F, 23F);
+            this.xrLabel33.SizeF = new System.Drawing.SizeF(800F, 23F);
             this.xrLabel33.StylePriority.UseFont = false;
             this.xrLabel33.StylePriority.UseTextAlignment = false;
             this.xrLabel33.Text = "(Based On Voucher Date)";
@@ -1274,19 +1287,6 @@
             this.PageInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            // 
-            // xrLabel34
-            // 
-            this.xrLabel34.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel34.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel34.ForeColor = System.Drawing.Color.Black;
-            this.xrLabel34.LocationFloat = new DevExpress.Utils.PointFloat(483.0943F, 18.33337F);
-            this.xrLabel34.Name = "xrLabel34";
-            this.xrLabel34.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
-            this.xrLabel34.StylePriority.UseBorderColor = false;
-            this.xrLabel34.StylePriority.UseFont = false;
-            this.xrLabel34.StylePriority.UseForeColor = false;
-            this.xrLabel34.Text = "Reported By:[Parameters.TenantName]";
             // 
             // TrialBalance_ExportFormat_
             // 

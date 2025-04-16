@@ -55,6 +55,7 @@
 
 	<ItemGroup>
 		<Folder Include="Areas\Finance\Data\" />
+		<Folder Include="Areas\Finance\Reports\Journal Register\" />
 		<Folder Include="Models\DALCommon\" />
 	</ItemGroup>
 

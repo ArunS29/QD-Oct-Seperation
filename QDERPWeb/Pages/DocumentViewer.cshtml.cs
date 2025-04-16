@@ -13,6 +13,8 @@ using System.Xml;
 using System.IO;
 using System.Drawing;
 using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
+using QD.ERP.Web.Areas.Finance.Reports.TrialBalance;
+using QD.ERP.Web.Areas.Finance.Reports.Register;
 
 namespace QD.ERP.Web.Pages
 {
@@ -21,7 +23,8 @@ namespace QD.ERP.Web.Pages
 		public XtraReport Report { get; private set; }
 		public string ReportName { get; private set; }
 		public string AccountId { get; private set; }
-		public DateTime FrmDate { get; private set; }
+        public string AccountGroup { get; private set; }
+        public DateTime FrmDate { get; private set; }
 		public DateTime ToDate { get; private set; }
 
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
@@ -35,8 +38,9 @@ namespace QD.ERP.Web.Pages
 			_tenantDbContextHelper = tenantDbContextHelper;
 		}
 
-		public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate)
-		{
+		public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate,string accountGroup)
+		
+        {
 			if (string.IsNullOrEmpty(reportName))
 			{
 				return BadRequest("Invalid report name.");
@@ -1202,6 +1206,776 @@ namespace QD.ERP.Web.Pages
                 );
             }
 
+            else if (reportName == "Group")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new Group(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+
+
+            else if (reportName == "subGroup")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new subGroup(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+
+            else if (reportName == "TrialBalanceReport")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new TrialBalanceReport(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "TrialBalanceExportFormat")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new TrialBalance_ExportFormat_(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "TrialBalanceDrCr")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new TrialBalanceDrCr(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "incomestatement")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new incomestatement(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "incomeStatementsBymonth")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new incomeStatements_Bymonth_(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "IncomestatementsHorizondal")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new IncomestatementsHorizondal(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "balnceSheet")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new balnceSheet(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+
+            }
+            else if (reportName == "BalanceSheetHorizondalFormat")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new BalanceSheetHorizondalFormat(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "BillsReceivableAgeingEnddate")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new AgeingBalanceTrial(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+
+            else if (reportName == "BillsSummaryLedgerBalance")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new BillsSummaryLedgerBalance(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "BillsReceivableReportEnddate")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new BillsReceivableReportEnddate(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "BillsPayableEndDate")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new BillsPayableEndDate(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "billsPayableLedgerBalanceEnddate")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new billsPayableLedgerBalanceEnddate(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "billsPayableSummaryLedgerBalance")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new billsPayableSummaryLedgerBalance(
+                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
+            else if (reportName == "BillsPayableReportEnddate")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new BillsPayableReportEnddate(AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper);
+
+
+            }
             else
             {
                 switch (reportName)
