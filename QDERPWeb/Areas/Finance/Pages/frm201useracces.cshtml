@@ -13,14 +13,53 @@
 <div id="tabPanelContainer">
     @(Html.DevExtreme().TabPanel()
             .ID("accessTabPanel")
+            // .OnSelectionChanged("onTabSelectionChanged")
             .Items(items =>
             {
                 items.Add()
             .Title("Welcome")
             .Template(@<text>
+        <div id="userInfoGrid"></div>
+    </text>);
+                items.Add()
+            .Title("Module")
+            .Template(@<text>
         <div style="padding: 20px;">
-            <h3>Welcome to User Access Management</h3>
-            <p>Select the 'User Access' tab to manage user permissions for different modules and forms.</p>
+            <h3>Welcome to Module Access Management</h3>
+            <p>Select the 'Module Access' tab to manage user permissions for different modules and forms.</p>
+            @(Html.DevExtreme().SelectBox()
+            .ID("ddUserList1")
+            .DataSource(ds => ds.WebApi()
+            .Controller("Utility")
+            .LoadAction("Getuserdetails")
+            .LoadMode(DataSourceLoadMode.Raw))
+            .DisplayExpr("UserName")
+            .ValueExpr("UserId")
+            .SearchEnabled(true)
+            .ShowClearButton(true)
+            .Placeholder("Select User")
+            .Label("User")
+            .LabelMode(EditorLabelMode.Outside)
+            .Width(400)
+            .OnValueChanged("onUserChanged")
+            )
+            <div id="gridContainerformodule" style="margin-top: 20px; width: 500px;"></div>
+            @(Html.DevExtreme().SelectBox()
+            .ID("ddModuleList1")
+            .DataSource(ds => ds.WebApi()
+            .Controller("Utility")
+            .LoadAction("GetDistinctModules")
+            .LoadMode(DataSourceLoadMode.Raw))
+            .DisplayExpr("Module")
+            .ValueExpr("Module")
+            .SearchEnabled(true)
+            .ShowClearButton(true)
+            .Placeholder("Select Module")
+            .Label("Module")
+            .LabelMode(EditorLabelMode.Outside)
+
+            .Width(400)
+            )
         </div>
     </text>);
 
@@ -89,6 +128,8 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            loadWelcomeGrid();
+
             $("#loadGridButton").on("click", function () {
                 loadGrid();
             });
@@ -129,6 +170,55 @@
             });
         }
 
+        function onUserChanged(e) {
+            const selectedUserId = e.value;
+
+            if (!selectedUserId) {
+                DevExpress.ui.notify("Please select a user.", "warning", 3000);
+                return;
+            }
+            alert('1');
+            loadModulesByUserId(selectedUserId);
+            alert('10');
+        }
+        function loadModulesByUserId(userId) {
+
+            $.ajax({
+                url: `/api/Utility/GetDistinctModulesByUserId`,
+                method: 'GET',
+                data: {
+                    userId: userId
+                },
+                success: function (data) {
+                    populateGrid(data.data); // Access the data property
+                },
+                error: function (xhr, status, error) {
+                    DevExpress.ui.notify("Failed to load modules.", "error", 3000);
+                }
+            });
+        }
+
+        function populateGrid(data) {
+            $("#gridContainerformodule").dxDataGrid({
+                dataSource: data,
+                columns: [
+                    { dataField: "Module", caption: "Module" }
+                ],
+                showBorders: true,
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 50],
+                    showInfo: true
+                },
+                columnAutoWidth: true
+            });
+        }
+
+
+
         function loadGrid() {
             const userId = $("#ddUserList").dxSelectBox("instance").option("value");
             const module = $("#ddModuleList").dxSelectBox("instance").option("value");
@@ -138,6 +228,9 @@
                 DevExpress.ui.notify("Please select User, Module, and Prefix.", "warning", 3000);
                 return;
             }
+
+
+
 
             $("#gridContainer").dxDataGrid({
                 dataSource: DevExpress.data.AspNet.createStore({
@@ -185,6 +278,45 @@
                 }
             });
         }
+        function loadWelcomeGrid(userName = "aarankumar832@gmail.com") {
+            $("#userInfoGrid").dxDataGrid({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "UserName",
+                    loadUrl: "/api/Utility/GetUserIDdetails",
+                    loadParams: { userName: userName }
+                }),
+                remoteOperations: true,
+                columns: [
+                    { dataField: "UserId", caption: "User ID" },
+                    { dataField: "UserName", caption: "User Name" },
+                    { dataField: "EmailAddress", caption: "Email" },
+                    { dataField: "MobileNo", caption: "Mobile No" },
+                    {
+                        dataField: "LastLogOnTime",
+                        caption: "Last Log On",
+                        dataType: "datetime",
+                        format: "yyyy-MM-dd HH:mm"
+                    },
+                    {
+                        dataField: "LastLogOffTime",
+                        caption: "Last Log Off",
+                        dataType: "datetime",
+                        format: "yyyy-MM-dd HH:mm"
+                    }
+                ],
+                showBorders: true,
+                paging: {
+                    pageSize: 10
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 50],
+                    showInfo: true
+                },
+                columnAutoWidth: true
+            });
+        }
+
 
         function updateItemVisibility(items) {
             $.ajax({

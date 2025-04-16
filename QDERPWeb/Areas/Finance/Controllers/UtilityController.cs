@@ -106,44 +106,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
-        public async Task<IActionResult> GetUserDetailsprofile(DataSourceLoadOptions loadOptions)
+        public async Task<IActionResult> GetUserIDdetails(string userName)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    //var userId = HttpContext.Session.GetInt32("UserId");
-
-                    //if (userId == null)
-                    //{
-                    //    return Unauthorized(new { message = "User is not logged in.", success = false });
-                    //}
-                    var userId = 106;
-
-                    var userDetails = dbContext.TblUserMasters
-                        .Where(u => u.UserId == userId)
+                    var user = await dbContext.TblUserMasters
+                        .Where(u => u.UserName == userName)
                         .Select(u => new
                         {
-                            u.UserPicture,
                             u.UserId,
                             u.UserName,
                             u.EmailAddress,
                             u.MobileNo,
-                            u.CreatedBy,
-                            u.CreatedOn,
-                            u.ModifiedBy,
-                            u.ModifiedOn
-                        });
+                            u.LastLogOffTime,
+                            u.LastLogOnTime
+                        })
+                        .FirstOrDefaultAsync();
 
-                    return Json(await DataSourceLoader.LoadAsync(userDetails, loadOptions));
+                    if (user == null)
+                    {
+                        return NotFound(new { success = false, message = "User not found." });
+                    }
+
+                    return Json(new { success = true, data = user });
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetUserDetails: {ex.Message}");
+                    _logger.LogError($"Error in GetUserID: {ex.Message}");
                     return StatusCode(500, new
                     {
                         success = false,
-                        message = "An error occurred while fetching the user details.",
+                        message = "An error occurred while fetching the user.",
                         error = ex.Message
                     });
                 }
@@ -151,7 +146,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetDistinctModules(DataSourceLoadOptions loadOptions)
@@ -167,6 +161,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetDistinctModulesByUserId(int userId, DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var modules = dbContext.TblUserAccesses
+                    .Where(x => x.UserId == userId) // Filter by userId
+                    .Select(x => x.Module)
+                    .Distinct()
+                    .Select(x => new { Module = x });
+
+                return Json(await DataSourceLoader.LoadAsync(modules, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetDistinctAccessPrefixes(DataSourceLoadOptions loadOptions, string module)
         {
