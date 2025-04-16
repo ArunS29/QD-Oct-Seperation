@@ -163,85 +163,85 @@
             )
     </div>
 
-    <div class="btn-container" id="menuContainer" style="display:none; position:absolute; z-index:1000;">
-        @(Html.DevExtreme().Menu()
-            .ID("menuReports")
-            .DataSource(new[] {
+    <div class="btn-container" id="menuContainer" style="display:none; position:absolute; z-index:1000;"> 
+         @(Html.DevExtreme().Menu() 
+             .ID("menuReports1") 
+             .DataSource(new[] { 
         new {
-        text = "Reports",
-        icon = "doc",
-        items = new[] {
-        new {
-        text = "Account Group Report",
+         text = "Reports", 
+         icon = "doc", 
+         items = new[] { 
+         new {
+       text = "Account Group Report", 
         icon = "search",
-        items = new[] {
-        new { text = "Account Group", icon = "chart-line" },
-        new { text = "Account Group Report(with subGroups)", icon = "chart-line" },
-        }
-        },
-        new {
-        text = "Trial Balance Report",
-        icon = "search",
-        items = new[] {
-        new { text = "Trial Balance", icon = "chart-line" },
-        new { text = "Trial Balance (Export Format)", icon = "chart-line" },
-        new { text = "Trial Balance (Dr/ Cr Format)", icon = "chart-line" },
-        new { text = "Trial Balance (Customizable Format)", icon = "chart-line" },
-        }
-        },
-        new {
-        text = "Income Statements",
-        icon = "search",
-        items = new[] {
-        new { text = "Income Statements", icon = "chart-line" },
-        new { text = "Income Statements(By Month)", icon = "chart-line" },
-        new { text = "Income Statements(Customizable Format)", icon = "chart-line" },
-        }
-        },
-        new {
-        text = "Balance Sheet",
-        icon = "search",
-        items = new[] {
-        new { text = "Balance Sheet", icon = "chart-line" },
-        new { text = "Balance Sheet(Horizondal Format)", icon = "chart-line" },
-        }
-        },
-        new {
-        text = "Cash Inflow & Outflow Reports",
-        icon = "search",
-        items = new[] {
-        new { text = "Cash Flow Statements", icon = "chart-line" },
-        }
-        },
-        new {
-        text = "Ageing Report",
-        icon = "search",
-        items = new[] {
-        new { text = "Bills Receivable- Ageing (By End Date)", icon = "chart-line" },
-        new { text = "Bills Receivable- Ageing as per Ledger Balance(By End Date)", icon = "chart-line" },
-        new { text = "Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)", icon = "chart-line" },
-        new { text = "Bills Receivable Report(By End Date)", icon = "chart-line" },
+         items = new[] { 
+        new { text = "Account Group", icon = "chart-line" }, 
+         new { text = "Account Group Report(with subGroups)", icon = "chart-line" }, 
+         } 
+     }, 
+      new { 
+      text = "Trial Balance Report", 
+      icon = "search", 
+       items = new[] {
+      new { text = "Trial Balance", icon = "chart-line" }, 
+      new { text = "Trial Balance (Export Format)", icon = "chart-line" }, 
+      new { text = "Trial Balance (Dr/ Cr Format)", icon = "chart-line" },
+      new { text = "Trial Balance (Customizable Format)", icon = "chart-line" }, 
+       } 
+       }, 
+         new { 
+      text = "Income Statements", 
+        icon = "search", 
+    items = new[] { 
+       new { text = "Income Statements", icon = "chart-line" }, 
+     new { text = "Income Statements(By Month)", icon = "chart-line" }, 
+       new { text = "Income Statements(Customizable Format)", icon = "chart-line" }, 
+      } 
+    }, 
+     new {
+       text = "Balance Sheet", 
+      icon = "search",
+       items = new[] { 
+     new { text = "Balance Sheet", icon = "chart-line" }, 
+      new { text = "Balance Sheet(Horizondal Format)", icon = "chart-line" }, 
+       } 
+      }, 
+        new { 
+         text = "Cash Inflow & Outflow Reports", 
+         icon = "search", 
+         items = new[] {
+     new { text = "Cash Flow Statements", icon = "chart-line" }, 
+    } 
+    }, 
+      new { 
+    text = "Ageing Report", 
+    icon = "search", 
+  items = new[] { 
+       new { text = "Bills Receivable- Ageing (By End Date)", icon = "chart-line" },
+     new { text = "Bills Receivable- Ageing as per Ledger Balance(By End Date)", icon = "chart-line" }, 
+       new { text = "Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)", icon = "chart-line" },
+        new { text = "Bills Receivable Report(By End Date)", icon = "chart-line" }, 
         new { text = "Bills Payable- Ageing (By End Date)", icon = "chart-line" },
-        new { text = "Bills Payable- Ageing as per Ledger Balance(By End Date)", icon = "chart-line" },
-        new { text = "Bills Payable Summary- Ageing as per Ledger Balance (By End Date)", icon = "chart-line" },
-        new { text = "Bills Payable Report (By End Date)", icon = "chart-line" },
+        new { text = "Bills Payable- Ageing as per Ledger Balance(By End Date)", icon = "chart-line" }, 
+     new { text = "Bills Payable Summary- Ageing as per Ledger Balance (By End Date)", icon = "chart-line" },
+      new { text = "Bills Payable Report (By End Date)", icon = "chart-line" }, 
         }
-        },
+         },
         new {
-        text = "Cost Reports",
-        icon = "search",
-        items = new[] {
-        new { text = "Property Allocation Report", icon = "chart-line" },
-        }
-        },
-        }
-        }
-        })
-            .DisplayExpr("text")
+      text = "Cost Reports",
+        icon = "search", 
+       items = new[] { 
+        new { text = "Property Allocation Report", icon = "chart-line" }, 
+        } 
+         }, 
+       } 
+        } 
+       }) 
+           .DisplayExpr("text") 
             .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
-         @*    .OnItemClick("handleTrialBalanceReportsClick") *@
+            .OnItemClick("handleReportsClick")
             )
-    </div>
+     </div>
 
 
     <div class="btn-container">
@@ -653,21 +653,7 @@
         }
     });
 
-    const reportMappings = {
-        "Summary Report": "SummaryReport",
-        "Summary Report (By Date)": "SummaryReportByDate",
-        "Cost Center Report": "CostCenterReport",
-        "Cost Center Report (By Date)": "CostCenterReportByDate",
-        "Cost Center Group Report": "CostCenterGroupReport",
-        "Cost Center Group Report (By Date)": "CostCenterGroupReportByDate",
-        "Detailed Report": "DetailReport",
-        "Detailed Report (By Date)": "DetailedBydate",
-        "Detailed Group Report": "DetailedGroup",
-        "Detailed Group Report (By Date)": "detailGroupBydate",
-        "Cost Center Master Report": "CostCenterMasterGroup",
-        "Cost Center Master Report (By Date)": "detailedMasterByDate"
-
-    };
+   
 
 
 
@@ -686,6 +672,95 @@
             menuContainer.style.display = "none";
         }
     }
+
+
+
+
+
+      const reportMappingss = {
+      "Account Group":"Group",
+      "Account Group Report(with subGroups)":"subGroup",
+         "Trial Balance":"TrialBalanceReport",
+         "Trial Balance (Export Format)":"TrialBalanceExportFormat",
+         "Trial Balance (Dr/ Cr Format)":"TrialBalanceDrCr",
+         "Trial Balance (Customizable Format)":"",
+         "Income Statements":"incomestatement",
+         "Income Statements(By Month)":"incomeStatementsBymonth",
+         "Income Statements(Customizable Format)":"IncomestatementsHorizondal",
+         "Balance Sheet":"balnceSheet",
+         "Balance Sheet(Horizondal Format)":"BalanceSheetHorizondalFormat",
+         "Cash Flow Statements":"",
+          "Bills Receivable- Ageing (By End Date)":"BillsReceivableAgeingEnddate",
+          "Bills Receivable- Ageing as per Ledger Balance(By End Date)":"billsreceivableledgerbalanceEnddate",
+          "Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)":"BillsSummaryLedgerBalance",
+          "Bills Receivable Report(By End Date)":"BillsReceivableReportEnddate",
+          "Bills Payable- Ageing (By End Date)":"BillsPayableEndDate",
+          "Bills Payable- Ageing as per Ledger Balance(By End Date)":"billsPayableLedgerBalanceEnddate",
+          "Bills Payable Summary- Ageing as per Ledger Balance (By End Date)":"billsPayableSummaryLedgerBalance",
+          "Bills Payable Report (By End Date)":"     BillsPayableReportEnddate",
+          "Property Allocation Report":"",
+
+      };
+
+
+
+
+
+        // Menu item click handler
+    function  handleReportsClick(e) {
+        alert ('click')
+        debugger
+        const selectedText = e.itemData.text;
+
+        // Get UI control instances
+        var accountGroup = $("#requestedBy").dxSelectBox("instance");
+        var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+        var toDateBox = $("#todateBox").dxDateBox("instance");
+
+        var accountGroup = accountGroup.option("value");
+        var frmDate = frmDateBox.option("value");
+        var toDate = toDateBox.option("value");
+
+        // Validation
+        if (!accountGroup || !frmDate || !toDate) {
+            alert("Please select Account Group, From Date, and To Date.");
+            return;
+        }
+
+        // Format date to D-MMM-YYYY
+        function formatDate(date) {
+            let dateObj = new Date(date);
+            let day = dateObj.getDate();
+            let month = dateObj.toLocaleString('en-US', { month: 'short' });
+            let year = dateObj.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        var frmDateStr = formatDate(frmDate);
+        var toDateStr = formatDate(toDate);
+
+        // If report mapping exists
+        if (reportMappingss[selectedText]) {
+            const reportName = reportMappingss[selectedText];
+
+            console.log("Opening report:", reportName);
+            console.log("Account Group:", accountGroup);
+            console.log("From Date:", frmDateStr);
+            console.log("To Date:", toDateStr);
+
+            // Customize your tenant name accordingly
+            const tenantName = "YourTenant"; // Replace with dynamic value if needed
+
+            // Construct the URL
+            let url = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}`;
+
+            // Open report
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } else {
+            console.warn("No report mapping found for:", selectedText);
+        }
+    }
+
 
 </script>
 

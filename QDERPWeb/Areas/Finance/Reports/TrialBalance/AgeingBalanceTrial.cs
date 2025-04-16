@@ -8,10 +8,10 @@ using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 {
-	public partial class BalanceSheetHorizondalFormat : DevExpress.XtraReports.UI.XtraReport
-    {
+	public partial class AgeingBalanceTrial : DevExpress.XtraReports.UI.XtraReport
+	{
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        public BalanceSheetHorizondalFormat(string accountGroup,
+        public AgeingBalanceTrial(string accountGroup,
                 DateTime frmDate,
                 DateTime toDate,
                 string tenantName,
@@ -23,6 +23,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
                 TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
             SetReportParameters(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
 
@@ -35,10 +36,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
                 throw new Exception("Error loading data: " + ex.Message, ex);
             }
         }
-        public BalanceSheetHorizondalFormat()
-        {
-            InitializeComponent();
-        }
+        public AgeingBalanceTrial()
+		{
+			InitializeComponent();
+		}
 
         private void SetReportParameters(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
@@ -82,7 +83,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             var storedProcQuery = new StoredProcQuery
             {
                 Name = "StProTrialbalance",
-                StoredProcName = "sp20113BalanceSheet"
+                StoredProcName = "sp20101TrialBalanceReport"
             };
 
             storedProcQuery.Parameters.AddRange(new[]

@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using DevExpress.XtraReports.UI;
-using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
+using DevExpress.DataAccess.ConnectionParameters;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 {
-	public partial class BalanceSheetHorizondalFormat : DevExpress.XtraReports.UI.XtraReport
+    public partial class BillsPayableReportEnddate : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        public BalanceSheetHorizondalFormat(string accountGroup,
-                DateTime frmDate,
-                DateTime toDate,
-                string tenantName,
-                string company_Name,
-                string company_address,
-                Image logoImage,
-                string Company_Name_Ar,
-                string company_address_arb,
-                TenantDbContextHelper tenantDbContextHelper)
+
+        public BillsPayableReportEnddate(
+     string accountGroup,
+     DateTime frmDate,
+     DateTime toDate,
+     string tenantName,
+     string company_Name,
+     string company_address,
+     Image logoImage,
+     string Company_Name_Ar,
+     string company_address_arb,
+     TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
             SetReportParameters(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
 
@@ -35,14 +36,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
                 throw new Exception("Error loading data: " + ex.Message, ex);
             }
         }
-        public BalanceSheetHorizondalFormat()
+
+        public BillsPayableReportEnddate()
         {
             InitializeComponent();
         }
 
         private void SetReportParameters(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
-            AddReportParameter("AccountGroup", typeof(string), accountGroup ?? "");
             AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
             AddReportParameter("EndDate", typeof(DateTime), toDate == DateTime.MinValue ? DateTime.Today : toDate);
             AddReportParameter("TenantName", typeof(string), tenantName ?? "");
@@ -51,15 +52,15 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
             AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
 
-            ApplyReportControls(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            ApplyReportControls(frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
         }
 
-        private void ApplyReportControls(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void ApplyReportControls(DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
-            if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
 
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
@@ -74,23 +75,22 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
 
-            ConfigureSqlQuery(accountGroup, frmDate, toDate);
+            ConfigureSqlQuery(frmDate, toDate);
         }
 
-        private void ConfigureSqlQuery(string accountGroup, DateTime frmDate, DateTime toDate)
+        private void ConfigureSqlQuery(DateTime frmDate, DateTime toDate)
         {
             var storedProcQuery = new StoredProcQuery
             {
-                Name = "StProTrialbalance",
-                StoredProcName = "sp20113BalanceSheet"
+                Name = "StProBillsPayable",
+                StoredProcName = "sp20101TrialBalanceReport" // replace with your actual stored proc name
             };
 
             storedProcQuery.Parameters.AddRange(new[]
             {
-                new QueryParameter { Name = "@ParamAccountGroup", Type = typeof(string), ValueInfo = accountGroup ?? "L00567" },
-                new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd") },
-                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd") }
-                });
+                new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = frmDate.ToString("yyyy-MM-dd") },
+                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = toDate.ToString("yyyy-MM-dd") }
+            });
 
             sqlDataSource1.Queries.Clear();
             sqlDataSource1.Queries.Add(storedProcQuery);
@@ -126,3 +126,4 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
         }
     }
 }
+
