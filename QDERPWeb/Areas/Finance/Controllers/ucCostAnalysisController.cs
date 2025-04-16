@@ -99,7 +99,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.BranchCode,
                         item.BranchName,
                         item.VoucherNarration,
-                        item.VoucherRefNo
+                        item.VoucherRefNo,
+                      
                     }).ToList();
 
                     return Ok(pivotGridData);
@@ -127,6 +128,85 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCostAllocationReport([FromQuery] string accountId, [FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Qry20106CostAnalyses.AsQueryable();
+
+                    if (!string.IsNullOrEmpty(accountId))
+                    {
+                        query = query.Where(x => x.AccountId == accountId);
+                    }
+
+                    if (fromDate.HasValue)
+                    {
+                        query = query.Where(x => x.VoucherDate >= fromDate.Value);
+                    }
+
+                    if (toDate.HasValue)
+                    {
+                        query = query.Where(x => x.VoucherDate <= toDate.Value);
+                    }
+
+                    var result = await query.Select(item => new
+                    {
+                        item.CostAllocationMasterGroup,
+                        item.CostAllocationGroup,
+                        item.CostAllocationUnit,
+                        item.CostAmount,
+                        item.Income,
+                        item.Expenses,
+                        VoucherDate = item.VoucherDate != null ? item.VoucherDate.Value.ToString("MMM-yyyy") : null,
+                        EffectiveDate = item.EffectiveDate != null ? item.EffectiveDate.Value.ToString("MMM-yyyy") : null,
+                        AllocationEffectiveDate = item.AllocationEffectiveDate != null ? item.AllocationEffectiveDate.Value.ToString("MMM-yyyy") : null,
+                        item.CostAllocationId,
+                        item.VoucherEntryId,
+                        item.CostAllocationUnitId,
+                        item.CostAllocDrCr,
+                        item.AmountAllocated,
+                        item.CostAllocRemarks,
+                        item.IsDisabled,
+                        item.AccountHead,
+                        item.AccountGroup,
+                        item.MasterGroup,
+                        item.Pl,
+                        item.AccountId,
+                        item.VoucherNo,
+                        item.VoucherType,
+                        item.VoucherTypeAndNo,
+                        item.CostCenterIncharge,
+                        item.EntryNarration,
+                        item.SysRemarks,
+                        item.VoucherMonth,
+                        item.VoucherYear,
+                        item.EffectiveMonth,
+                        item.EffectiveYear,
+                        item.AllocationEffectiveMonth,
+                        item.AllocationEffectiveYear,
+                        item.ProjectMasterCode,
+                        item.BranchCode,
+                        item.BranchName,
+                        item.VoucherNarration,
+                        item.VoucherRefNo,
+                    }).ToListAsync();
+
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetCostAllocationReport: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
     }
 }

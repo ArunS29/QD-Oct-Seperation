@@ -123,6 +123,15 @@
                 .Message(new JS("formatMessage('Branch Name is required')"));
             })
             )
+        @(
+            Html.DevExtreme().Button()
+            .ID("convertToArabic1")
+            .Width(75)
+            .Height(33)
+            .Icon("fas fa-language") // Ensure Font Awesome class is correct
+            .ElementAttr(new { @class = "input-button" })
+            .OnClick("function() { convertToArabic(); }")
+            )
 
     </div>
 
@@ -160,6 +169,75 @@
 </div>
 
 <script type="text/javascript">
+     async function translateToArabic(text) {
+
+        try {
+
+
+            const response = await fetch(
+
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+            );
+
+            const data = await response.json();
+            console.log(data);
+            return data.responseData.translatedText;
+
+        } catch (error) {
+
+            console.error("Translation failed:", error);
+
+            return "Translation Error";
+
+        }
+
+    }
+
+    async function convertToArabic() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtbranchName").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtarabName").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
     $(function () {
         var updatedRows = []; // To store the updated rows
         var searchPanelVisible = false; // Track the visibility of the search panel

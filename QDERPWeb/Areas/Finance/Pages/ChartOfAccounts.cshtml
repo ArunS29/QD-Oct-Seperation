@@ -1,5 +1,5 @@
 ﻿@page
-<style>
+<style >
     .content-container {
         background-color: #c0dceb;
         border-radius: 10px;
@@ -9,35 +9,6 @@
     .dx-datagrid .dx-row {
         border-bottom: 1px solid #ccc; /* Border between rows */
     }
-
-    .context-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-        border-radius: 5px;
-    }
-
-    .context-menu-item {
-        cursor: pointer;
-        font-size: 14px;
-        display: flex;
-        flex-direction: row;
-        padding: 10px;
-        align-items: center;
-    }
-    }
-
-        .context-menu-item i {
-            margin-right: 10px; /* Space for the icon */
-        }
-
-        .context-menu-item:hover {
-            background-color: var(--hover-bg-color);
-        }
-
     .popup-message {
         position: fixed;
         top: 50%;
@@ -66,9 +37,10 @@
         <div id="ChartOfAccounts" class="no-border-title"></div>
     </div>
 </div>
-<div>
-    @await Html.PartialAsync("chartofaccountsFooter")
-</div>
+
+ <div> 
+     @await Html.PartialAsync("chartofaccountsFooter") 
+ </div> 
 <div id="popupContainer"></div>
 
 <div class="dx-field ledgerResult">
