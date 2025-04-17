@@ -1741,7 +1741,7 @@
         "Our Group VAT No:": "Our Group VAT No:",
         "Our VAT No:": "Our VAT No:",
         "Our Company Name in Arabic": "Our Company Name in Arabic",
-        "Credit Note Edit Form": "Credit Note Edit Form"
+        "Credit Note Edit Form": "Credit Note Edit Form",
         "Inventory List to Upload": "Inventory List to Upload",
         "Client Contact List": "Client Contact List",
         "Client Status Update":"Client Status Update"
