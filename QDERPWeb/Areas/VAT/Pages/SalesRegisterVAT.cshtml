@@ -25,8 +25,8 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#btnSave,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddButtonPayment,#btnInvoiceDetails,#ddReports)) {
-		display: none !important;
+	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser,#btnInvoiceDetails,#ddReports,#ddButtonPayment)) {
+		display: none !important
 	}
 
 	#overlay-frame {
@@ -312,7 +312,7 @@
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
-		.Width("100%")
+		.Width("100vw")
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
@@ -655,7 +655,7 @@
 	}
 	$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddButtonPayment,#btnInvoiceDetails,#ddReports").length) {
+			if (!$(this).find("#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser,#btnInvoiceDetails,#ddReports,#ddButtonPayment").length) {
 				$(this).remove();
 			}
 		});

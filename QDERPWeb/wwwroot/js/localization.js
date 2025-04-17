@@ -1,6 +1,6 @@
 ﻿var dictionary = {
     "en": {
-       
+        "Add New":"Add New",
         "Supplier Category Code:":"Supplier Category Code:",
         "Supplier Category is required":"Supplier Category is required",
         "Client Category is required":"Client Category is required",

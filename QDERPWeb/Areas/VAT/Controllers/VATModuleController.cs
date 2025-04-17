@@ -1279,9 +1279,55 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetVatPurchaseDetails(string frmDate, string toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
 
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
 
+                    // Fetch records based on the date range
+                    var vatInvoices = await dbContext.Qry201707vatpurchaseRegisterMainViews
+                        .FromSqlRaw("SELECT * FROM qry201_707VATPurchaseRegisterMainView WHERE InvoiceDate BETWEEN @p0 AND @p1", from, to)
+                        .ToListAsync();
+
+                    return Json(vatInvoices);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+			[HttpGet]
+			public IActionResult GetVATInvoiceMaster()
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					// Fetch data from the tbl00105BuyerIDTypes table
+					var units = dbContext.Tbl00105BuyerIdtypes
+						.Select(u => new
+						{
+							u.BuyerOtherIdtype,  // Primary key (or value)
+							u.BuyerIdtypeName    // Display text
+						})
+						.ToList();
+
+					return Ok(units);
+				}
+
+				return Unauthorized(new { message = "Invalid tenant.", success = false });
+			}
+
+		}
 	}
-}
 
 

@@ -191,7 +191,7 @@
             .Text(new JS("formatMessage('Print')"))
             .ElementAttr(new { style = "display: none;" })
             .Width(50)
-            .OnClick("exportGridToPDF")
+            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
 
@@ -280,6 +280,16 @@
             .ShowArrowIcon(false)
             )
     </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNewPayment")
+            .Icon("money")
+            .Width(300)
+            .Text("Add New VAT Purchase Bill")
+          @*   .OnClick("addPaymentButton_click") *@
+            )
+    </div>
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
             .ID("btngetcostofgoodssold")
@@ -307,6 +317,15 @@
             .Icon("card")
             .Width(150)
             .OnClick("navigateToInvoiceEdit")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPurchaseDetails")
+            .Text("Purchase Details")
+            .Icon("card")
+            .Width(150)
+          @*   .OnClick("navigateToInvoiceEdit") *@
             )
     </div>
     <div class="btn-containerIvoiceEdit">
@@ -349,6 +368,25 @@
             .ShowArrowIcon(false)
             )
     </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReport")
+            .Icon("doc")
+            .Width(100)
+            .Text(new JS("formatMessage('Report')"))
+            .ElementAttr(new { @class = "report-button" }) // changed here
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Tax Summary Report - Purchases").Icon("file");
+                items.Add().Text("Tax Summary Report").Icon("file");
+                items.Add().Text("VAT Purchase & Expenses Report").Icon("file");
+            })
+            .ShowArrowIcon(false)
+            )
+    </div>
+
  
 
         <div class="btn-containerIvoiceEdit">
@@ -387,6 +425,7 @@
 
                         </div>
 
+
                  
 
      <div class="btn-containerIvoiceEdit">
@@ -409,6 +448,15 @@
                             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                             )
                         </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNew1")
+            .Text(new JS("formatMessage('Add New')"))
+            .Icon("plus")
+            // .OnClick("addNewRow") // Attach function
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
       
    <div class="btn-containerIvoiceEdit">
     @(Html.DevExtreme().DropDownButton()

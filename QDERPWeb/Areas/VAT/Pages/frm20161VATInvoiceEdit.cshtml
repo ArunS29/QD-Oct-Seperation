@@ -302,7 +302,7 @@
 	background: #fff;
 	}
 
-	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	.limited-footer .btn-container:not(:has(#dButtonLayout,btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
 	display: none !important;
 	}
 	.playIcon {display: none;	}
@@ -513,7 +513,28 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType"))</td>
+								
+							<td>
+    @(Html.DevExtreme().DropDownBox()
+        .Label(new JS("formatMessage('Other ID Type')"))
+        .DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerIdtypeName"))
+        .LabelMode(EditorLabelMode.Outside)
+        .ID("OtherIDType")
+        .ShowClearButton(true)
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .ValueChangeEvent("input")
+        .HoverStateEnabled(true)
+        .Value(null)
+        .ValueExpr("BuyerIdtypeName")
+        .DisplayExpr("BuyerIdtypeName")
+        .Width("100%")
+        .TabIndex(1)
+        .DropDownOptions(o => o.Width(1000))
+        .OnKeyDown("onKeyDown")
+        .ContentTemplate(new TemplateName("ClientNameContent"))
+    )
+</td>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID"))</td>
 								<td>
 									@(Html.DevExtreme().DropDownBox()
@@ -1684,7 +1705,38 @@
 								})
 								)
 		}
-
+	@using (Html.DevExtreme().NamedTemplate("ClientNameContent"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("clientname")
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetVATInvoiceMaster")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("BuyerOtherIdtype")
+        )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        .ShowColumnHeaders(false)
+        .FilterRow(f => f.Visible(false))
+        .SearchPanel(sp => sp.HighlightSearchText(false))
+        .Selection(sl => sl.Mode(SelectionMode.Single))
+        .HeaderFilter(p => p.Visible(false))
+        .ShowBorders(true)
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(200)
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .Columns(columns =>
+        {
+            columns.Add().DataField("BuyerIdtypeName").Caption("Branch Code");
+            columns.Add().DataField("BuyerOtherIdtype").Caption("Other ID Type");
+        })
+        .OnSelectionChanged("dataGridSelectionChanged")   
+        .OnInitialized("dataGridInitialized")  
+    )
+}
 		@using (Html.DevExtreme().NamedTemplate("DescriptionDropdownContentTemplate"))
 		{
 			@(
@@ -6397,7 +6449,34 @@
 			dropDown.close();
 		}
 	});
+// Function to handle selection change in the DataGrid
 
+
+// Function to handle initialization of the DataGrid (optional)
+function dataGridInitialized(e) {
+    console.log("DataGrid Initialized");
+    // Perform any initialization logic if needed
+}
+
+
+	  function dataGridSelectionChanged(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#OtherIDType").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+					ddbInstance.close();
+			}
+			var selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
+			  if (selectedRowData.length > 0) {
+							paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
+
+						} else {
+							DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+							return;
+						}
+
+		}
 	
 </script>
 
