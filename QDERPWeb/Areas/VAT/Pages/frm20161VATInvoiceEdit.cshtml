@@ -745,11 +745,11 @@
 						<tr>
 							<td>
 								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Sales Order No')")).ID("OurSalesOrderNo")
-																													.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+															.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")).LabelMode(EditorLabelMode.Outside))
 							</td>
 							
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client PO No')")).ID("ClientPONo"))</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client PO No')")).ID("ClientPONo").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 
 						</tr>
 
@@ -760,9 +760,9 @@
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
 							<h5>Contract / Project References</h5>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("PaymentTerms"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("PaymentTerms").LabelMode(EditorLabelMode.Outside))</td>
 						</tr>
 
 					</table>
@@ -771,9 +771,9 @@
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
 							<h5>Quotation / Delivery Details</h5>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Delivery Notes')")).ID("DeliveryNotes"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client GRN Reference')")).ID("ClientGRNReference"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Delivery Notes')")).ID("DeliveryNotes").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client GRN Reference')")).ID("ClientGRNReference").LabelMode(EditorLabelMode.Outside))</td>
 
 						</tr>
 					</table>
@@ -1116,13 +1116,13 @@
 																													)
 							</td>
 
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Submitted On')")).ID("InvoiceSubmittedDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Submitted On')")).ID("InvoiceSubmittedDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							<td>
 								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
 																													.ID("SubmittedBy")
 																													.Value(null) // Default value
 																													)
-								@(Html.DevExtreme().TextBox()
+								@(Html.DevExtreme().TextBox().LabelMode(EditorLabelMode.Outside)
 																													.Label(new JS("formatMessage('Invoice Submitted By')"))
 																													.LabelMode(EditorLabelMode.Outside)
 																													.ID("SubmittedBytext")
@@ -1173,12 +1173,12 @@
 																													.Width("85%")
 																													)
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Outside))</td>
 						</tr>
 						<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No')")).ID("OurGroupVATNo"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No')")).ID("OurVATNo"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No')")).ID("OurVATNo").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Outside))</td>
 						</tr>
 						<tr>
 							<td>
@@ -1215,10 +1215,10 @@
 																													.Width("85%")
 																													)
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID')")).ID("OtherID1"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID')")).ID("OtherID1").LabelMode(EditorLabelMode.Outside))</td>
 							<td>
 								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Address Details')")).ID("OurAddressDetails")
-																													.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+															.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")).LabelMode(EditorLabelMode.Outside))
 							</td>
 						</tr>
 
