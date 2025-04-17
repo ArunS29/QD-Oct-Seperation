@@ -10,6 +10,7 @@ using DevExtreme.AspNet.Data;
 using QD.ERP.Web.Areas.Finance.Models;
 using System.Text.RegularExpressions;
 using System.Data.SqlClient;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
 
 
 namespace QD.ERP.Web.Areas.VAT.Controllers
@@ -1034,9 +1035,9 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                             s.SignatoryPositionAr,
                             s.IsFinanceManager,
                             s.UserId,
-                            SignatureImageBase64 = s.SignatureImage != null
-                                ? Convert.ToBase64String(s.SignatureImage)
-                                : null
+                            SignatureImage = s.SignatureImage != null
+            ? Convert.ToBase64String(s.SignatureImage)
+            : null
                         })
                         .ToList();
 
@@ -1388,8 +1389,35 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 				return Unauthorized(new { message = "Invalid tenant.", success = false });
 			}
+		[HttpGet]
+		public async Task<IActionResult> getInvoiceSubTypeCode(DataSourceLoadOptions loadOptions)
+		{
+			
+			try
+			{
 
-    }
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var qryListOfAccountlists = dbContext.Tbl00108InvoiceSubTypeCodes.Select(i => new
+					{
+
+						i.InvoiceSubTypeCode,
+						i.InvoiceSubType
+
+					});
+
+
+					return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+				}
+
+			}
+			catch (Exception ex) { throw ex; }
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+		}
+
+	}
 }
 
 

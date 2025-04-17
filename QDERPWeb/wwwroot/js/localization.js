@@ -1312,6 +1312,7 @@
         "Client GRN Reference": "Client GRN Reference",
         "Not Overdue": "Not Overdue",
         "Less 30 Days": "Less 30 Days",
+        "Delivery Notes":"Delivery Notes",
         "Less 30 to 60": "Less 30 to 60",
         "Less 60 to 90": "Less 60 to 90",
         "Less 90 to 120": "Less 90 to 120",

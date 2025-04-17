@@ -732,9 +732,10 @@
 
         switch (selectedText) {
             case (formatMessage('Ledger to Salary Payable Mapping')):
-                if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
-                    pageUrl = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
-                } else {
+                var accountDropDown = $("#accountDropDownBox").dxDropDownBox("instance");
+                var selectedAccountId = accountDropDown.option("value");
+
+                if (!selectedAccountId) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Please select the Account to Review',
@@ -743,6 +744,39 @@
                     });
                     return;
                 }
+
+                // Load full item from DataSource
+                var dataSource = accountDropDown.getDataSource();
+                dataSource.load().done(function (items) {
+                    var selectedItem = items.find(x => x.AccountId === selectedAccountId);
+
+                    if (!selectedItem) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Account not found',
+                            text: 'Please reselect the account.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+
+                    var frmDate = $("#frmdateBox").dxDateBox("instance").option("value");
+                    var toDate = $("#todateBox").dxDateBox("instance").option("value");
+
+                    var formattedFromDate = frmDate;
+                    var formattedToDate = toDate;
+
+                    var acchedid = selectedItem.AccountId;
+                    var accheadname = selectedItem.AccountHead;
+                   
+                    // ✅ Construct the URL
+                    var pageUrl = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&FromDate=${encodeURIComponent(formattedFromDate)}&ToDate=${encodeURIComponent(formattedToDate)}`;
+
+                    // ✅ Open the modal with the page URL
+                    if (pageUrl) {
+                        openModal(pageUrl, selectedText);
+                    }
+                });
                 break;
 
             case (formatMessage('Ledger to Receivable/Payable Mapping')):

@@ -1,27 +1,9 @@
-﻿//using System;
-//using System.Drawing;
-//using System.Collections;
-//using System.ComponentModel;
-//using DevExpress.XtraReports.UI;
+﻿
 
-//namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
-//{
-//	public partial class PreviewClaimRequestForm : DevExpress.XtraReports.UI.XtraReport
-//	{	
-//		public PreviewClaimRequestForm()
-//		{
-//			InitializeComponent();
-//		}
-//	}
-//}
-
-
-using System;
+using DevExpress.XtraReports.UI;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using Microsoft.Extensions.Configuration;
-using DevExpress.XtraReports.UI;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 {
@@ -112,10 +94,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("spGetClaimRequestFormByVoucher", conn))
+                    string query = "SELECT * FROM tbl20103ExpenseClaimChild WHERE ClaimRefNo=@ClaimRefNo";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                        cmd.CommandType = CommandType.Text; // 👈 Fixed here
+                        cmd.Parameters.AddWithValue("@ClaimRefNo", voucherNo);
 
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         conn.Open();

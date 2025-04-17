@@ -1,24 +1,21 @@
-﻿
-
-using System;
+﻿using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using DevExpress.XtraReports.UI;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.IO;
-using Microsoft.Extensions.Configuration;
-using DevExpress.XtraReports.UI;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 {
-    public partial class ClaimDetailed : XtraReport
-    {
-        public ClaimDetailed(string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+	public partial class ClaimEntryCheck : DevExpress.XtraReports.UI.XtraReport
+	{	
+		public ClaimEntryCheck(string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
         {
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
             LoadReportData(voucherNo);
         }
-
         private void SetReportParameters(string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -47,7 +44,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
 
-            // Bind data to report UI controls if they exist
             if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -83,7 +79,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
             }
         }
 
-   
         private DataTable GetReportData(string voucherNo)
         {
             DataTable dt = new DataTable();
@@ -119,6 +114,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
             return dt;
         }
+
         private void CreateNoDataLabel()
         {
             XRLabel noDataLabel = new XRLabel
@@ -131,4 +127,3 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
         }
     }
 }
-
