@@ -78,7 +78,7 @@ namespace QD.ERP.Web.Pages
                     Report = new ClaimDetailed(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
                     break;
                 case "ClaimEntryCheck":
-                    Report = new test(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
+                    Report = new ClaimEntryCheck(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number
                     break;
                 case "PreviewClaimRequestForm_wtVAT_":
                     Report = new PreviewClaimRequestForm_wtVAT_(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);  // Pass voucher number

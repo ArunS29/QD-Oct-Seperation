@@ -82,7 +82,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
                 this.DataMember = "";
             }
         }
-
         private DataTable GetReportData(string voucherNo)
         {
             DataTable dt = new DataTable();
@@ -98,10 +97,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("spGetClaimRequestFormByVoucher", conn))
+                    string query = "SELECT * FROM tbl20103ExpenseClaimChild WHERE ClaimRefNo=@ClaimRefNo";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                        cmd.CommandType = CommandType.Text; // 👈 Fixed here
+                        cmd.Parameters.AddWithValue("@ClaimRefNo", voucherNo);
 
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         conn.Open();

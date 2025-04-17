@@ -1,22 +1,4 @@
-﻿//using System;
-//using System.Drawing;
-//using System.Collections;
-//using System.ComponentModel;
-//using DevExpress.XtraReports.UI;
-
-//namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
-//{
-//	public partial class PreviewClaimRequestForm_wtVAT_ : DevExpress.XtraReports.UI.XtraReport
-//	{	
-//		public PreviewClaimRequestForm_wtVAT_()
-//		{
-//			InitializeComponent();
-//		}
-//	}
-//}
-
-
-
+﻿
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -121,10 +103,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("spGetClaimRequestFormByVoucherWithVAT", conn)) // Adjust the SP name if needed
+                    string query = "SELECT * FROM tbl20103ExpenseClaimChild WHERE ClaimRefNo=@ClaimRefNo";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                        cmd.CommandType = CommandType.Text; // 👈 Fixed here
+                        cmd.Parameters.AddWithValue("@ClaimRefNo", voucherNo);
 
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         conn.Open();
@@ -149,6 +133,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
                 TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
             };
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
+        }
+
+        private void xrTableCell9_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
         }
     }
 }
