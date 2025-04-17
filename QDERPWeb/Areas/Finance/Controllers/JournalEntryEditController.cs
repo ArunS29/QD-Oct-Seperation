@@ -163,213 +163,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-        [HttpPost]
-        public async Task<ActionResult> SaveVoucher([FromBody] RegisterVoucherViewModel VM)
-        {
-            //if (VM == null || VM.JournalVoucherMaster == null)
-            if (VM == null || VM.JournalVoucherEntries == null || VM.JournalVoucherEntries.Count == 0)
-            {
-                return BadRequest(new { success = false, message = "Invalid data received." });
-            }
-
-            try
-            {
-                using (var transaction = await _context.Database.BeginTransactionAsync())
-                {
-                    string journalRefNo = VM.JournalVoucherMaster.JournalRefNo;
-
-                    if (string.IsNullOrWhiteSpace(journalRefNo))
-                    {
-                        return BadRequest(new { success = false, message = "JournalRefNo is required." });
-                    }
-
-                   // Map AccountHead to AccountId for each entry
-                    foreach (var entry in VM.JournalVoucherEntries)
-                        {
-                        entry.JournalRefNo = journalRefNo;
-                            //entry.AccountHead = await _context.Tbl201ChartOfAccounts
-                            //    .Where(a => a.AccountHead == entry.AccountHead)
-                            //    .Select(a => a.AccountId)
-                            //    .FirstOrDefaultAsync();
-                        }
-
-                    // Insert into Tbl20126JournalRegisterMaster
-                    var journalMaster = new Tbl20126JournalRegisterMaster
-                    {
-                        JournalRefNo = journalRefNo,
-                        JournalEntryDate = VM.JournalVoucherMaster.JournalEntryDate,
-                        JournalEffectiveDate = VM.JournalVoucherMaster.JournalEffectiveDate,
-                        JournalVoucherNarration = VM.JournalVoucherMaster.JournalVoucherNarration,
-                        //BillRemarks = VM.JournalVoucherMaster.BillRemarks,
-                        //JournalType = VM.JournalVoucherMaster.VoucherType,
-                        //IsVerified = VM.JournalVoucherMaster.IsVerified,
-                        //IsApproved = VM.JournalVoucherMaster.IsApproved,
-                        //VoucherVerifiedBy = VM.JournalVoucherMaster.VoucherVerifiedBy,
-                        //VoucherApprovedBy = VM.JournalVoucherMaster.VoucherApprovedBy,
-                        //VoucherVerifiedOn = DateTime.Now,
-                        //VoucherApprovedOn = DateTime.Now
-                    };
-
-                    _context.Tbl20126JournalRegisterMasters.Add(journalMaster);
-                    
-
-                    //Save voucher entries directly to qry202_101JournalRegisterChild
-                    await _context.Tbl20127JournalRegisterChildren.AddRangeAsync(VM.JournalVoucherEntries);
-
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-
-                    return Ok(new { success = true, message = "Journal entry saved successfully!", journalRefNo });
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> UpdateVoucher([FromBody] RegisterVoucherViewModel VM)
-        {
-            if (VM == null || VM.JournalVoucherMaster == null || string.IsNullOrEmpty(VM.JournalVoucherMaster.JournalRefNo) || VM.JournalVoucherEntries == null || !VM.JournalVoucherEntries.Any())
-            {
-                return BadRequest(new { success = false, message = "Invalid data received or missing journal reference number." });
-            }
-
-            try
-            {
-                using (var transaction = await _context.Database.BeginTransactionAsync())
-                {
-                    // ✅ Find existing Journal Master
-                    var journalMaster = await _context.Tbl20126JournalRegisterMasters
-                        .FirstOrDefaultAsync(j => j.JournalRefNo == VM.JournalVoucherMaster.JournalRefNo);
-
-                    if (journalMaster == null)
-                    {
-                        return NotFound(new { success = false, message = "Journal master not found." });
-                    }
-
-                    // ✅ Update Master Record
-                    journalMaster.JournalEntryDate = VM.JournalVoucherMaster.JournalEntryDate;
-                    journalMaster.JournalEffectiveDate = VM.JournalVoucherMaster.JournalEffectiveDate;
-                    journalMaster.JournalVoucherNarration = VM.JournalVoucherMaster.JournalVoucherNarration;
-                    // Update additional fields if needed
-
-                    // ✅ Delete Old Entries (children)
-                    var existingEntries = await _context.Tbl20127JournalRegisterChildren
-                        .Where(e => e.JournalRefNo == VM.JournalVoucherMaster.JournalRefNo)
-                        .ToListAsync();
-
-                    _context.Tbl20127JournalRegisterChildren.RemoveRange(existingEntries);
-                    await _context.SaveChangesAsync();
-
-                    // ✅ Add new entries
-                    var newEntries = new List<Tbl20127JournalRegisterChild>();
-
-                    foreach (var entry in VM.JournalVoucherEntries)
-                    {
-                       
-
-
-                        newEntries.Add(new Tbl20127JournalRegisterChild
-                        {
-                            JournalRefNo = VM.JournalVoucherMaster.JournalRefNo,
-                            DrCr = entry.DrCr,
-                            DrAmount=entry.DrAmount,
-                            CrAmount=entry.CrAmount,
-                            EntryNarration = entry.EntryNarration,
-                            AccountId=entry.AccountId
-                        });
-                    }
-
-                    await _context.Tbl20127JournalRegisterChildren.AddRangeAsync(newEntries);
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-
-                    return Ok(new { success = true, message = "Journal voucher updated successfully!" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
-        }
-
-
-        [HttpPost]
-
-        [HttpPost]
-        public IActionResult DeleteJournalEntry([FromBody] string journalRefNo)
-        {
-            try
-            {
-                var userIdString = HttpContext.Session.GetString("UserId");
-                var userName = HttpContext.Session.GetString("UserName") ?? "Unknown User";
-
-                if (string.IsNullOrEmpty(userIdString))
-                    return Unauthorized("User session expired. Please log in again.");
-
-                int userId = int.Parse(userIdString);
-
-                //// 🔒 Check Delete Access
-                //var access = _context.TblUserAccesses
-                //    .FirstOrDefault(x => x.UserId == userId && x.ItemName == "btnDelete" && x.ItemVisible == true);
-
-                //if (access == null)
-                //    return BadRequest("You have no Access rights to delete this Journal Entry.");
-
-                // 🔍 Find journal master
-
-                // 🔍 Find journal master
-                var master = _context.Tbl20126JournalRegisterMasters
-                    .FirstOrDefault(x => x.JournalRefNo == journalRefNo);
-
-                if (master == null)
-                    return NotFound("Journal Entry not found.");
-
-                if (master.IsSubmittedToFinance == true)
-                    return BadRequest("Journal Entry is already submitted. You cannot delete it.");
-
-                if (master.IsApproved == true)
-                    return BadRequest("Journal Entry is already approved. You cannot delete it.");
-
-                if (master.IsPosted == true)
-                    return BadRequest("Journal Entry is already posted. You cannot delete it.");
-
-                // 🗑️ Delete related child entries
-                _context.Tbl20127JournalRegisterChildren.RemoveRange(
-                    _context.Tbl20127JournalRegisterChildren.Where(x => x.JournalRefNo == journalRefNo));
-
-                _context.Tbl20128JournalRegisterCostAllocations.RemoveRange(
-                    _context.Tbl20128JournalRegisterCostAllocations.Where(x => x.VoucherNo == journalRefNo));
-
-                _context.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(
-                    _context.Tbl20129JournalRegisterEmployeeAllocations.Where(x => x.VoucherNo == journalRefNo));
-
-                _context.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(
-                    _context.Tbl20130JournalRegisterPropertyAllocations.Where(x => x.VoucherNo == journalRefNo));
-
-                _context.Tbl20126JournalRegisterMasters.Remove(master);
-
-                // 📝 Log the delete action
-                _context.Database.ExecuteSqlRaw(
-                    "EXEC sp90116InsertUserLogEntry @p0, @p1, @p2, @p3",
-                    "Journal Entry Form",
-                    $"Journal Entry Ref No. {journalRefNo} has been deleted.",
-                    userName,
-                    journalRefNo
-                );
-
-                _context.SaveChanges();
-
-                return Ok(new { message = "Journal Entry Form has been successfully removed from the Register." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting journal entry with RefNo: {JournalRefNo}", journalRefNo);
-                return StatusCode(500, "An unexpected error occurred while trying to delete the Journal Entry.");
-            }
-        }
+        
 
         [HttpPost]
         public IActionResult SaveJournalRegisterChild([FromBody] Tbl20127JournalRegisterChild newEntry)
@@ -389,19 +183,34 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+
         [HttpGet]
         public IActionResult GetJournalRegisterChildren(string voucherNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var records = dbContext.Tbl20127JournalRegisterChildren
-                .Where(j => j.JournalRefNo == voucherNo)
-                .ToList();
-            return Json(records);
+                var records = (from jr in dbContext.Tbl20127JournalRegisterChildren
+                               join acc in dbContext.Tbl201ChartOfAccounts
+                               on jr.AccountId equals acc.AccountId into accJoin
+                               from acc in accJoin.DefaultIfEmpty()
+                               where jr.JournalRefNo == voucherNo
+                               select new
+                               {
+                                   jr.LineOrderNo,
+                                   jr.AccountId,
+                                   AccountHead = acc != null ? acc.AccountHead : "",
+                                   jr.EntryNarration,
+                                   jr.DrCr,
+                                   jr.DrAmount,
+                                   jr.CrAmount
+                               }).ToList();
+
+                return Json(records);
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public IActionResult GetNextLineOrderNo(string voucherNo)
@@ -415,6 +224,91 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateVoucher([FromBody] JournalRegisterViewModel model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (model == null || model.JournalDetails == null || !model.JournalDetails.Any())
+            {
+                return BadRequest(new { success = false, message = "No data received" });
+            }
+
+            try
+            {
+                // Get user session data
+                string userIdStr = HttpContext.Session.GetString("UserId");
+                byte claimerId = Convert.ToByte(userIdStr); // ✅ Convert string to byte
+
+                string userName = HttpContext.Session.GetString("UserName");
+                DateTime now = DateTime.Now;
+                // Check if master record exists
+                var existingMaster = await dbContext.Tbl20126JournalRegisterMasters
+                    .FirstOrDefaultAsync(m => m.JournalRefNo == model.JournalRefNo);
+
+                if (existingMaster != null)
+                {
+                    // ✅ Update master record
+                    existingMaster.JournalEntryDate = model.JournalEntryDate;
+                    existingMaster.JournalEffectiveDate = model.JournalEffectiveDate;
+                    existingMaster.JournalVoucherNarration = model.JournalVoucherNarration;
+                    existingMaster.JournalModifiedBy = userName;
+                    existingMaster.JournalModifiedOn = now;
+                    dbContext.Tbl20126JournalRegisterMasters.Update(existingMaster);
+                }
+                else
+                {
+                    // ✅ Insert new master
+                    var newMaster = new Tbl20126JournalRegisterMaster
+                    {
+                        JournalRefNo = model.JournalRefNo,
+                        JournalEntryDate = model.JournalEntryDate,
+                        JournalEffectiveDate = model.JournalEffectiveDate,
+                        JournalVoucherNarration = model.JournalVoucherNarration,
+                        RequesterId = claimerId,
+                        JournalCreatedBy = userName,
+                        JournalCreatedOn = now
+                    };
+
+                    dbContext.Tbl20126JournalRegisterMasters.Add(newMaster);
+                }
+
+                // ✅ Remove existing child rows for this ClaimRefNo
+                var existingChildren = dbContext.Tbl20127JournalRegisterChildren
+                    .Where(c => c.JournalRefNo == model.JournalRefNo);
+
+                dbContext.Tbl20127JournalRegisterChildren.RemoveRange(existingChildren);
+
+                // ✅ Add new child rows
+                foreach (var item in model.JournalDetails)
+                {
+                    var child = new Tbl20127JournalRegisterChild
+                    {
+                        JournalRefNo = model.JournalRefNo,
+                        LineOrderNo = item.LineOrderNo,
+                        DrCr = item.DrCr,
+                        DrAmount = item.DrAmount,
+                        CrAmount = item.CrAmount,
+                        EntryNarration = item.EntryNarration,
+                        AccountId = item.AccountId,
+                        
+                    };
+
+                    dbContext.Tbl20127JournalRegisterChildren.Add(child);
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
 
     }

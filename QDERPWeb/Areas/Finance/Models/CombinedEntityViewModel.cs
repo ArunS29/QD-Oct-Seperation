@@ -370,7 +370,15 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public List<Tbl20103ExpenseClaimChild> ExpenseDetails { get; set; }
     }
 
+    public class JournalRegisterViewModel
+    {
+        public string JournalRefNo { get; set; }
+        public DateTime? JournalEntryDate { get; set; }
+        public DateTime? JournalEffectiveDate { get; set; }
+        public string JournalVoucherNarration { get; set; }
 
+        public List<Tbl20127JournalRegisterChild> JournalDetails { get; set; }
+    }
 
 }
 
