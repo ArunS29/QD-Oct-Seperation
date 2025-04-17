@@ -60,10 +60,7 @@
 </style>
 
 <!-- Client Header Box -->
-<div class="header-box">
-    <h5>QuickDice ERP Solutions</h5>
-    <i class="dx-icon dx-icon-user"></i>Suppliers
-</div>
+
 <div class="Head">
     <div class="limited-footer">
         @await Html.PartialAsync("InventoryModuleFooter")
@@ -89,6 +86,9 @@
             .Enabled(false)
             .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
             )
+            .HeaderFilter(filter => filter.Visible(true))
+        .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
+
             .Paging(p => p.Enabled(false))
             .Columns(columns =>
             {
@@ -124,7 +124,7 @@
 <script>
     $(document).ready(function () {
 
-          $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+          $(".limited-footer .btn-container").each(function () {
 
             if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnRefresh,#btnAddSuppliers").length) {
                   $(this).remove();

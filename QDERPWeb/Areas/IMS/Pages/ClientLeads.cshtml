@@ -30,16 +30,12 @@
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
         display: none !important;
     }
 
 </style>
-<div class="title">
-    <div class="header-container">
-        <div id="ClientLeads" class="no-border-input"></div>
-    </div>
-</div>
+
 <div class="Head">
     <div class="limited-footer">
         @await Html.PartialAsync("InventoryModuleFooter")
@@ -59,13 +55,16 @@
         .ColumnAutoWidth(true)
         .ShowColumnLines(true)
         .ShowRowLines(true)
+        .HeaderFilter(filter => filter.Visible(true))
         .AllowColumnResizing(true) // Enable column resizing
         .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
         .AllowColumnReordering(true) // Optional: allow dragging columns
         .ColumnChooser(chooser => chooser
         .Enabled(true)
+        
         .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
         )
+        .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
         .Paging(p => p.Enabled(false))
         .Columns(columns =>
         {
@@ -99,15 +98,16 @@
 
     $(document).ready(function () {
 
-          $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+          $(".limited-footer .btn-container").each(function () {
 
-                                if (!$(this).find("#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
+                                if (!$(this).find("#ddButtonLayout,#btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
                   $(this).remove();
               }
 
           });
 
           // Handle Back button click
+          $(document).on('click', '#btnBack', function () {
           $(document).on('click', '#btnBack', function () {
               window.history.back();
           });

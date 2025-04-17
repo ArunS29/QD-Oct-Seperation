@@ -371,10 +371,15 @@
 
                     item.Add().Title("Business Card").Text("Business Card").Template(@<text>
             <div class="dx-fieldset" style="display:flex;flex-direction:column;gap: 10px;width:50%;">
+                <label>
+                    Business Card:(Front)
+                </label>
                 <div class="imagecontainer" id="imgBox1">
                     <span>No image data</span>
                 </div>
-
+                <label>
+                    Business Card:(Back)
+                </label>
                 <div class="imagecontainer" id="imgBox2">
                     <span>No image data</span>
                 </div>
@@ -409,6 +414,8 @@
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("save")
+                   
+
                     .OnClick("redirectToStatusUpdate")
                     )
                 </div>
@@ -441,8 +448,9 @@
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                     .HeaderFilter(filter => filter.Visible(true))
                     .Height(250)
+                    .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
+
                     .ColumnAutoWidth(true)
-                    .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                     .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
                     .ShowBorders(true)
                     .Width("100%")
@@ -492,7 +500,10 @@
                     })
                     .Height(250)
                     .Width("100%")
+
+                    .HeaderFilter(filter => filter.Visible(true))
                     .DataSource(new object[0])
+                    .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
                     .RemoteOperations(false)
                     )
 
@@ -534,7 +545,7 @@
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
-                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                             .OnSelectionChanged("dataGridSelectionChanged")
                             .OnInitialized("dataGridInitialized")
