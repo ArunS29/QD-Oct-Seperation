@@ -146,7 +146,7 @@
 
 
 	.content-container-top {
-	width: 1700px;
+	width: 100%;
 	}
 	/* Custom CSS to adjust the height of tab headers */
 	.dx-tabpanel .dx-tab {
@@ -244,7 +244,7 @@
 	.containerLedgerAccount {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	}
 
 	.titleLedgerAccount {
@@ -343,12 +343,12 @@
 					<div class="card">
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Issued Date & Time')")).ID("InvoiceIssuedDateTime").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Issued Date & Time')")).ID("InvoiceIssuedDateTime").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
 								<td>
@@ -361,6 +361,7 @@
 																																							.LoadMode(DataSourceLoadMode.Raw)
 																																							.Key("InvoiceType"))
 																																							.AcceptCustomValue(true)
+																			.LabelMode(EditorLabelMode.Outside)
 																																							.OpenOnFieldClick(false)
 																																							.ValueChangeEvent("input")
 																																							.HoverStateEnabled(true)
@@ -381,6 +382,7 @@
 																																							.OpenOnFieldClick(false)
 																																							.ValueChangeEvent("input")
 																																							.HoverStateEnabled(true)
+																			.LabelMode(EditorLabelMode.Outside)
 																																							.Value("Payment to bank account")
 																																							.ValueExpr("PaymentMeansTypeCode")
 																																							.DisplayExpr("PaymentMeansType")
@@ -406,6 +408,7 @@
 																																							.AcceptCustomValue(true)
 																																							.OpenOnFieldClick(false)
 																																							.ValueChangeEvent("input")
+																			.LabelMode(EditorLabelMode.Outside)
 																																							.HoverStateEnabled(true)
 																																							.Value("Tax Invoice") // Ensure this matches an actual key value
 																																							.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
@@ -418,6 +421,7 @@
 																			.Label("Invoice Transaction Type")
 																			.Value(new[] { 1 }) // Default selected value
 																			.ValueExpr("ID")
+																			.LabelMode(EditorLabelMode.Outside)
 																			.DisplayExpr("Name")
 																			.Placeholder("Choose VAT Transaction Types")
 																			.ContentTemplate(new JS("VATTransactionTemplate"))
@@ -453,7 +457,7 @@
 																																							.OpenOnFieldClick(false)
 																																							.ValueChangeEvent("input")
 																																							.HoverStateEnabled(true)
-
+																			.LabelMode(EditorLabelMode.Outside)
 																																							.ValueExpr("AccountHead")
 																																							.DisplayExpr("AccountId")
 
@@ -507,9 +511,9 @@
 								</td>
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo"))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo"))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic"))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo")	.LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
 							<tr>
@@ -535,13 +539,14 @@
         .ContentTemplate(new TemplateName("ClientNameContent"))
     )
 </td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID"))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside))</td>
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ClientAddressDetails")
 																			.Label(new JS("formatMessage('Client Address Details')"))
 																			.ShowClearButton(true)
 																			.Width(300)
+																			.LabelMode(EditorLabelMode.Outside)
 																			.DropDownOptions(o => o.Width(900).Height(600))
 																			.OpenOnFieldClick(true)
 																			.ContentTemplate(@<text>
@@ -598,8 +603,8 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue"))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID"))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 						</table>
 					</div>
@@ -611,11 +616,11 @@
 				<div class="card">
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							<td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-								@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now)	.LabelMode(EditorLabelMode.Outside))</td>
+								@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 
 						</tr>
 						<tr>
@@ -667,6 +672,7 @@
 																													.LabelMode(EditorLabelMode.Outside)
 																													.ID("ddlGoodsGroup1")
 																													.ShowClearButton(true)
+
 																													.AcceptCustomValue(true)
 																													.OpenOnFieldClick(false)
 																													.ValueChangeEvent("input")
@@ -702,6 +708,7 @@
 																													.Value("")
 																													.Height(40)
 																													.Width(720)
+
 																													.Placeholder(new JS("formatMessage('Enter your comments here...')"))
 																													.MaxLength(111500)
 
@@ -5563,7 +5570,7 @@
 			//PaymentMeansTypeCode: paymentmeanstypecode,
 			 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
 			 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-			 // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
+			 // InvoiceTransactionCode: $("#InvoiceTransactionsCode     ").dxDropDownBox("instance").option("value")|| null,
 
 			 ClientCode: accheadid|| null,
 			 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,

@@ -9,7 +9,6 @@
     .mainContainer {
         width: 100%;
         color: black;
-        padding: 10px;
         border-radius: 6px;
     }
 
@@ -64,10 +63,43 @@
         color: black !important;
     }
 
-</style>
+    .container {
+        display: none !important;
+    }
 
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="SupplierContactList" class="no-border-title"></div>
+    </div>
+</div>
 <div class="formContainer">
-    <div class="form-header"> <i class="dx-icon dx-icon-user" style=" font-size: 40px; "></i>Supplier Contact List</div>
 
     <div class="form-row">
         <div class="form-field">
@@ -295,6 +327,16 @@
 
 
 <script>
+     $(function () {
+        $("#SupplierContactList").dxTextBox({
+            text:formatMessage("Supplier Contact List"),
+            readOnly: true,
+            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+
     function saveClientList() {
         const data = {
             SupplierCode: $("#txtSupplierCode").dxTextBox("instance").option("value"),

@@ -5,6 +5,76 @@
 }
 
 <style>
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		margin-right: 10px;
+		transition: transform 0.2s;
+	}
+
+		.toggle-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #e53935; /* RED = OFF */
+		transition: .4s;
+		border-radius: 20px;
+	}
+
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 16px;
+			width: 16px;
+			left: 2px;
+			bottom: 2px;
+			background-color: white;
+			transition: .4s;
+			border-radius: 50%;
+		}
+
+	.toggle-switch input:checked + .slider {
+		background-color: #4CAF50; /* GREEN = ON */
+		transform: scale(0.95);
+	}
+
+		.toggle-switch input:checked + .slider:before {
+			transform: translateX(20px);
+		}
+
+	.vat-item {
+		display: flex;
+		align-items: center;
+		padding: 6px 10px;
+		color: #666666; /* grey text */
+		background-color: transparent !important; /* remove any background */
+	}
+
+	.vat-label {
+		font-weight: bold;
+		color: #666666; /* grey label */
+	}
+
+	/* Remove list background */
+	#vatTransactionList {
+		background-color: transparent !important;
+	}
+
+
+
+
 	.address-form-container {
 		padding: 8px;
 		box-sizing: border-box;
@@ -79,7 +149,7 @@
 
 
 	.content-container-top {
-		width: 100%;
+		width: 1700px;
 	}
 	/* Custom CSS to adjust the height of tab headers */
 	.dx-tabpanel .dx-tab {
@@ -198,27 +268,7 @@
 		pointer-events: none; /* Prevents hover and click effects */
 	}
 
-	.container {
-		display: none !important;
-	}
-
-	.frame {
-		display: none !important;
-	}
-
-	.footerContainer {
-		display: none !important;
-	}
-
-	.bodyContainer {
-		display: flex;
-		justify-content: center;
-	}
-
-	.mainContainer {
-		margin-top: 1em;
-		width: 100%;
-	}
+	
 
 	.card-container {
 		display: flex;
@@ -243,13 +293,39 @@
 		display: none;
 	}
 
+	.card1{
+		width:50%;
+	}
+
+	.card-container {
+		display: flex;
+		justify-content: space-between;
+		gap: 40px;
+		flex-wrap: wrap;
+	}
+
+	#leftCard,
+	#rightCard {
+		background-color: #fff;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		padding: 20px;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+		flex: 1 1 48%; /* 48% width to allow side-by-side cards */
+		min-width: 400px;
+	}
+
+	.plusbtn{
+		justify-content:center;
+	}
+
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount1" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="InvoiceEdit" class="no-border-title"></div>
+		<div id="CreditNoteEditForm" class="no-border-title"></div>
 	</div>
 </div>
 <div class="containerLedgerAccount">
@@ -258,9 +334,8 @@
 			@(Html.DevExtreme().Tabs()
 						.Items(items =>
 						{
-							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Invoice Details')"));
+							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Credit Note Details')"));
 							items.Add().Icon("accountbox").Text(new JS("formatMessage('Other Details')"));
-							items.Add().Icon("description").Text(new JS("formatMessage('Documents')"));
 							items.Add().Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')"));
 							items.Add().Icon("group").Text(new JS("formatMessage('Branch/Division Details')"));
 							items.Add().Icon("attach").Text(new JS("formatMessage('Signatories')"));
@@ -280,12 +355,12 @@
 					<div class="card">
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Credit Note No')")).ID("CreditNoteNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Credit Note Date')")).ID("CreditNoteDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Issued Date & Time')")).ID("InvoiceIssuedDateTime").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Credit Note Issued Date & Time')")).ID("CreditNoteIssuedDateTime").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
 								<td>
@@ -305,6 +380,7 @@
 																			.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
 																			.DisplayExpr("InvoiceType") // Set display value if needed
 																			.Disabled(true)
+																			.LabelMode(EditorLabelMode.Outside)
 																			)
 
 								</td>
@@ -324,6 +400,7 @@
 																			@*  .OnInput("dropDownBoxOnInput")
                                                                                                                                                             .OnOpened("onOpened") *@
 																			.Width("100%")
+																			.LabelMode(EditorLabelMode.Outside)
 																			.TabIndex(1)
 																			.DropDownOptions(o => o
 																			//.Width("100%") // Set the desired width for the dropdown content*@
@@ -344,22 +421,33 @@
 																			.OpenOnFieldClick(false)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
+																			.LabelMode(EditorLabelMode.Outside)
 																			.Value("Tax Invoice") // Ensure this matches an actual key value
 																			.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
 																			.DisplayExpr("InvoiceType") // Set display value if needed
 																			.Disabled(true))
 								</td>
 								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Invoice Transactions Code')")).ID("InvoiceTransactionsCode")
-																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getTransactionCodes").LoadMode(DataSourceLoadMode.Raw).Key("TransactionCode")).AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.Value(0100000) // Ensure this matches an actual key value
-																			.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
-																			.DisplayExpr("InvoiceType") // Set display value if needed
+									@(Html.DevExtreme().DropDownBox()
+																			.ID("InvoiceTransactionsCode")
+																			.Label("Invoice Transaction Type")
+																			.Value(new[] { 1 }) // Default selected value
+																			.ValueExpr("ID")
+																			.DisplayExpr("Name")
+																			.LabelMode(EditorLabelMode.Outside)
+																			.Placeholder("Choose VAT Transaction Types")
+																			.ContentTemplate(new JS("VATTransactionTemplate"))
+																			.DataSource(new[] {
+									new { ID = 1, Name = "3rd Party Tax Invoice" },
+									new { ID = 2, Name = "Nominal Tax Invoice" },
+									new { ID = 3, Name = "Export Tax Invoice" },
+									new { ID = 4, Name = "Summary Tax Invoice" },
+									new { ID = 5, Name = "Self Billed Tax Invoice" }
+									})
 																			)
 								</td>
+
+
 							</tr>
 						</table>
 					</div>
@@ -381,6 +469,7 @@
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
+																			.LabelMode(EditorLabelMode.Outside)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
 
@@ -394,7 +483,7 @@
 																			.Width(1000)
 																			)
 																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
-								<td>
+								@* <td>
 										@(Html.DevExtreme().Button()
 																				.ID("AddClient")
 																				.Icon("plus")
@@ -408,13 +497,16 @@
 																				.Width(50)
 																				)
 								</td>
+								</td> *@
 								</td>
 								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
-																			.DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientNames").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
+
+								
+									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
+																			@* .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientNames").LoadMode(DataSourceLoadMode.Raw).Key("ClientName")) *@
 																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("ddclientname")
-																			.ValidationRules(rules =>
+																			.ID("ddclientname"))
+																			@* .ValidationRules(rules =>
 																			{
 																				rules.AddRequired()
 																				.Message(new JS("formatMessage('Client Name should be entered')"));
@@ -431,21 +523,21 @@
 																			.TabIndex(1)
 																			.DropDownOptions(o => o
 																			//.Width("100%") // Set the desired width for the dropdown content*@
-																			.Width(1000)
+																			@* .Width(1000)
 																			)
 																			.OnKeyDown("onKeyDown")
-																			.ContentTemplate(new TemplateName("ClientNameContentTemplate")))
+																			.ContentTemplate(new TemplateName("ClientNameContentTemplate"))) *@ 
 								</td>
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo"))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo"))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic"))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType"))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID"))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside))</td>
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ClientAddressDetails")
@@ -454,6 +546,7 @@
 																			.Width(300)
 																			.DropDownOptions(o => o.Width(900).Height(600))
 																			.OpenOnFieldClick(true)
+																			.LabelMode(EditorLabelMode.Outside)
 																			.ContentTemplate(@<text>
 
 
@@ -508,8 +601,9 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue"))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID"))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No:')")).ID("InvoiceNo").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reason for Issurance of Credit Note:')")).ID("ReasonforIssuranceofCreditNote").LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 						</table>
 					</div>
@@ -518,31 +612,68 @@
 
 
 			<div id="tab-content-2" class="tab-content">
-				<div class="card">
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-							<td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-								@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
 
-						</tr>
+				<!-- Card 1: Dates & Dropdowns -->
+				<div class="card" style="display:flex;flex-direction: row;align-items:baseline;">
+				<div class="card1">
+						<table style="font-size:14px; margin:10px 0;width: 90%;">
 						<tr>
 							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Revenue Account')")).ID("RevenueAccount")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
+								@(Html.DevExtreme().DateBox()
+															.Label(new JS("formatMessage('Effective Date')"))
+																			.LabelMode(EditorLabelMode.Outside)
+															.ID("EffectiveDate")
+															.Type(DateBoxType.Date)
+															.DisplayFormat("dd-MMM-yyyy")
+															.Width("90%")
+															.Value(DateTime.Now))
+							</td></tr>
+							<tr>
+
+							<td>
+								@(Html.DevExtreme().DateBox()
+															.Label(new JS("formatMessage('Invoice Start Date')"))
+																			.LabelMode(EditorLabelMode.Outside)
+															.ID("InvoiceStartDate")
+															.Type(DateBoxType.Date)
+															.DisplayFormat("dd-MMM-yyyy")
+															.Width("90%")
+															.Value(DateTime.Now))
+							</td>
+							</tr>
+							<tr>
+
+							<td>
+								@(Html.DevExtreme().DateBox()
+															.Label(new JS("formatMessage('Invoice End Date')"))
+																			.LabelMode(EditorLabelMode.Outside)
+															.ID("InvoiceEndDate1")
+															.Type(DateBoxType.Date)
+															.DisplayFormat("dd-MMM-yyyy")
+															.Width("90%")
+															.Value(DateTime.Now))
+							</td>
+							
+						</tr>
+
+						
+					</table>
+				</div>
+					<div class="card1">
+						<table style="width: 100%;">
+
+					<tr>
+					
+						<td>
 								@(Html.DevExtreme().DropDownBox()
 															.Label(new JS("formatMessage('Revenue Account')"))
 															.DataSource(d => d.WebApi()
 															.Controller("VATModule")
 															.LoadAction("GetRevenueAccount")
 															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("IncomeLedger")
-															)
-
+															.Key("IncomeLedger"))
+															.ID("ddlRevenueAccount")
 															.LabelMode(EditorLabelMode.Outside)
-															.ID("ddlGoodsGroup2")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
@@ -552,30 +683,22 @@
 															.DisplayExpr("AccountGroup")
 															.OnInput("dropDownBoxOnInput")
 															.OnOpened("onOpened")
-															//.Width(650)
-															.TabIndex(1)
-															.DropDownOptions(o => o
-															.Width(1000)
-															)
-															//  .OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
+															.DropDownOptions(o => o.Width(1000))
 															.ContentTemplate(new TemplateName("RevenueAccountTemplate"))
-															.Width("85%")
-															)
-							</td>
-							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Cost Center Account')")).ID("CostCenterAccount")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans"))) *@
+															.Width("90%"))
+						</td>
+						</tr>
+						<tr>
+						<td>
 								@(Html.DevExtreme().DropDownBox()
 															.Label(new JS("formatMessage('Cost Center Account')"))
 															.DataSource(d => d.WebApi()
 															.Controller("VATModule")
 															.LoadAction("GetCostCenterAccount")
 															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("CostAllocationUnitId")
-															)
+															.Key("CostAllocationUnitId"))
+															.ID("ddlCostCenterAccount")
 															.LabelMode(EditorLabelMode.Outside)
-															.ID("ddlGoodsGroup1")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
@@ -585,189 +708,246 @@
 															.DisplayExpr("CostAllocationUnit")
 															.OnInput("dropDownBoxOnInput")
 															.OnOpened("onOpened")
-															//.Width(650)
-															.TabIndex(1)
-															.DropDownOptions(o => o
-															.Width(1000)
-															)
-															//  .OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
+															.DropDownOptions(o => o.Width(1000))
 															.ContentTemplate(new TemplateName("CostCenterAccountTemplate"))
-															.Width("85%")
-															)
-							</td>
-
-						</tr>
+															.Width("90%"))
+						</td>
+					</tr>
 					</table>
 				</div>
+				</div>
 
+				<!-- Card 2: Remarks & Arabic Notes -->
 				<div class="card">
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
 							<td>
 								@(Html.DevExtreme().TextArea()
-															.Label(new JS("formatMessage('Invoice Notes')"))
+															.Label(new JS("formatMessage('Credit Note Remarks')"))
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("txtInvoiceNotes")
 															.Value("")
-															.Height(40)
-															.Width(720)
+															.Height(80)
+															.Width(680)
 															.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-															.MaxLength(111500)
-
-															)
-
+															.MaxLength(1000))
 							</td>
-
 							<td>
 								@(Html.DevExtreme().TextArea()
 															.Label(new JS("formatMessage('Notes in Arabic')"))
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("txtNotesinArabic")
 															.Value("")
-															.Height(40)
-															.Width(720)
+															.Height(80)
+															.Width(680)
 															.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-															.MaxLength(111500)
-
-															)
-
+															.MaxLength(1000))
 							</td>
-
-
 						</tr>
-
 					</table>
 				</div>
 			</div>
+
 
 			<div id="tab-content-3" class="tab-content">
-				<div class="card">
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<h5>Purchase Order Details</h5>
-						<tr>
-							<td>
-								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Sales Order No')")).ID("OurSalesOrderNo")
-															.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
-							</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client PO No')")).ID("ClientPONo"))</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
+				<div class="card-container">
+					<!-- Left Card: Foreign Currency Billing -->
+					<div class="card" id="leftCard">
+						<h5>Foreign Currency Billing</h5>
+						<table style="font-size:14px; margin:10px 0;" cellpadding="5" width="100%">
+							<tr>
+								<td>
+									<div style="display: flex; align-items: center; gap: 10px;">
+										@(Html.DevExtreme().DropDownBox()
+																				.Label(new JS("formatMessage('Invoice Currency')"))
+																				.ID("OurSalesOrderNo")
+																				.Width("70%")
+																				.LabelMode(EditorLabelMode.Outside)
+																				.DataSource(d => d.WebApi().Controller("AccountLedgerMaster")
+																				.LoadAction("getVATInvoiceTypes")
+																				.LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))
+																				)
+										@(Html.DevExtreme().Button()
+																				.ID("EditClient")
+																				.Icon("edit")
+																				.Hint("Edit Description")
+																				.Width(40)
+																				)
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div style="display: flex; align-items: center; gap: 10px;">
+										@(Html.DevExtreme().DropDownBox()
+																				.Label(new JS("formatMessage('Tax Currency')"))
+																				.ID("OurSalesOrderNo1")
+																				.Width("70%")
+																				.LabelMode(EditorLabelMode.Outside)
+																				.DataSource(d => d.WebApi().Controller("AccountLedgerMaster")
+																				.LoadAction("getVATInvoiceTypes")
+																				.LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))
+																				)
+										@(Html.DevExtreme().Button()
+																				.ID("EditClient1")
+																				.Icon("edit")
+																				.Hint("Edit Description")
+																				.Width(50)
 
-						</tr>
+																				)
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate")
+																			.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Width(50)
+																			)
+								</td>
+							</tr>
+						</table>
+					</div>
 
-					</table>
-				</div>
 
-				<div class="card">
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
-							<h5>Contract / Project References</h5>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("PaymentTerms"))</td>
-						</tr>
+					<!-- Right Card: Deductions -->
+					<div class="card" id="rightCard">
+						<h5>Deduction Advance / Retention</h5>
+						<table style="font-size:14px; margin:10px 0;" cellpadding="5" width="100%">
+							<tr>
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.Placeholder(new JS("formatMessage('Less: Advance')"))
+																			.ID("ProjectRef"))
+								</td>
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate3")
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Width("60%"))
+								</td>
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.Placeholder(new JS("formatMessage('')"))
+																			.ID("PaymentTerms"))
+								</td>
+								<td style="width:0%;padding:1em;">
+									@(Html.DevExtreme().Button()
+																			.ID("convertToArabicDesc")
+																			.Icon("fas fa-language")
+																			.ElementAttr(new { @class = "input-button" })
+																			.OnClick("function() { convertDescriptionToArabic(); }"))
+								</td>
+							</tr>
 
-					</table>
-				</div>
-				<div class="card">
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
-							<h5>Quotation / Delivery Details</h5>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Delivery Date')")).ID("DeliveryDate"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client GRN Reference')")).ID("ClientGRNReference"))</td>
+							<tr>
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.Placeholder(new JS("formatMessage('Less: Other Deductions')"))
+																			.ID("SESReference1"))
+								</td>
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate1")
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Width("60%"))
+								</td>
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.Placeholder(new JS("formatMessage('')"))
+																			.ID("PaymentTerms1"))
+								</td>
+								<td style="width:0%;padding:1em;">
+									@(Html.DevExtreme().Button()
+																			.ID("convertToArabicDesc1")
+																			.Icon("fas fa-language")
+																			.ElementAttr(new { @class = "input-button" })
+																			.OnClick("function() { convertDescriptionToArabic(); }"))
+								</td>
+							</tr>
 
-						</tr>
-					</table>
+							<tr>
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.Placeholder(new JS("formatMessage('Less: Retention')"))
+																			.ID("PaymentTerms2"))
+								</td>
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate2")
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Width("60%"))
+								</td>
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.Placeholder(new JS("formatMessage('')"))
+																			.ID("PaymentTerms3"))
+								</td>
+								<td style="width:0%;padding:1em;">
+									@(Html.DevExtreme().Button()
+																			.ID("convertToArabicDesc4")
+																			.Icon("fas fa-language")
+																			.ElementAttr(new { @class = "input-button" })
+																			.OnClick("function() { convertDescriptionToArabic(); }"))
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
 			</div>
+
 
 			<div id="tab-content-4" class="tab-content">
 				<div class="card">
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
-							<h5>Foregin Currency Billing:</h5>
 							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Invoice Currency')")).ID("InvoiceCurrency")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Invoice Currency')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetInvoiceCurrency")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("CurrencyExchangeId")
-															)
-
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("ddlGoodsGroup3")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("CurrencyExchangeId")
-															.DisplayExpr("CurrencyName")
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															//.Width(650)
-															.TabIndex(1)
-															.DropDownOptions(o => o
-															.Width(1000)
-															)
-															//  .OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
-															.Width("85%")
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Division')")).ID("Division").LabelMode(EditorLabelMode.Outside)
+								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+								
+							</td></tr>
+							<tr>
+							<td>
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Credit Note Submitted On:')")).ID("CreditNoteSubmittedOn").LabelMode(EditorLabelMode.Outside)
+								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+								</td>
+							<td>
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Sales Person / Co-ordinator')")).ID("SalesPerson/Co-Ordinator").LabelMode(EditorLabelMode.Outside)
+															.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+								
+							</td></tr>
+							<tr>
+							<td>
+								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Credit Note Submitted By:')")).LabelMode(EditorLabelMode.Outside).ID("CreditNoteSubmittedBy")
 															)
 							</td>
 							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Tax Currency')")).ID("TaxCurrency")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Tax Currency')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetTaxCurrency")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("CurrencyExchangeId")
-															)
+								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Contract / PO No:')")).LabelMode(EditorLabelMode.Outside).ID("Contract/PONo")
+															)</td>
 
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("ddlGoodsGroup4")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("CurrencyExchangeId")
-															.DisplayExpr("CurrencyName")
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															//.Width(650)
-															.TabIndex(1)
-															.DropDownOptions(o => o
-															.Width(1000)
-															)
-															//  .OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
-															.Width("85%")
-															)
+						</tr>
+						<tr>
+							
+							<td>
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Items Returned to Store:')")).ID("ItemsReturedtoStore").LabelMode(EditorLabelMode.Outside)
+															.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+
 							</td>
 							<td>
-								@(
-															Html.DevExtreme().NumberBox()
-															.Label(new JS("formatMessage('Currency Exchange Rate')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("txtCurrencyExchangeRate")
-															.Value(null)
-															.Width(180)// HTML attribute to allow decimal input
+								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reference No:')")).ID("ReferenceNo").LabelMode(EditorLabelMode.Outside)
 															)
-
 							</td>
-
 						</tr>
 
 					</table>
@@ -776,367 +956,51 @@
 				<div class="card">
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
-							<h5>Deductions:Advance / Retention</h5>
-
-							<td>@(Html.DevExtreme().TextBox().ID("LessAdvance").Value("Less: Advance"))</td>
 							<td>
-								@(
-															Html.DevExtreme().NumberBox()
-															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("numLessAdvance")
-															.Value(null)
-															.Width(180)// HTML attribute to allow decimal input
-															)
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Company Branch')")).ID("CompanyBranch").LabelMode(EditorLabelMode.Outside)
+															.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
 							</td>
 							<td>
-								<span class="input-group-prepend" style="margin-right: 10px;">
-									@(
-																			Html.DevExtreme().Button()
-																			.ID("convertToArabic1")
-																			.Height(35)
-																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
-																			.ElementAttr(new { @class = "input-button" })
-																			///.OnClick("function() { convertToArabic(); }")
-																			)
-								</span>
-							</td>
-							<td>
-								@(
-															Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("AccountGroup1")
-															.Value(null)
-															.Width(250)
-															.RtlEnabled(true)
-															)
-
-							</td>
-
-
-						</tr>
-
-						<tr>
-
-							<td>@(Html.DevExtreme().TextBox().ID("LessOtherDeductions").Value("Less: Other Deductions"))</td>
-							<td>
-								@(
-															Html.DevExtreme().NumberBox()
-															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("numLessOtherDeductions")
-															.Value(null)
-															.Width(180)// HTML attribute to allow decimal input
+								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("Ourcompanyregisteredname").LabelMode(EditorLabelMode.Outside)
 															)
 							</td>
-							<td>
-								<span class="input-group-prepend" style="margin-right: 10px;">
-									@(
-																			Html.DevExtreme().Button()
-																			.ID("convertToArabic2")
-																			.Height(35)
-																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
-																			.ElementAttr(new { @class = "input-button" })
-																			///.OnClick("function() { convertToArabic(); }")
-																			)
-								</span>
-							</td>
-							<td>
-								@(
-															Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("AccountGroup2")
-															.Value(null)
-															.Width(250)
-															.RtlEnabled(true)
-															)
-
-							</td>
-						</tr>
-
-						<tr>
-
-							<td>@(Html.DevExtreme().TextBox().ID("LessRetention").Value("Less: Retention"))</td>
-							<td>
-								@(
-															Html.DevExtreme().NumberBox()
-															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("numLessRetention")
-															.Value(null)
-															.Width(180)// HTML attribute to allow decimal input
-															)
-							</td>
-							<td>
-								<span class="input-group-prepend" style="margin-right: 10px;">
-									@(
-																			Html.DevExtreme().Button()
-																			.ID("convertToArabic3")
-																			.Height(35)
-																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
-																			.ElementAttr(new { @class = "input-button" })
-																			///.OnClick("function() { convertToArabic(); }")
-																			)
-								</span>
-							</td>
-							<td>
-								@(
-															Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("AccountGroup3")
-															.Value(null)
-															.Width(250)
-															.RtlEnabled(true)
-															)
-
-							</td>
-
-						</tr>
-						<tr>
-							<td>
-
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-															.ID("VerifiedBy")
-															.Value(null) // Default value
-
-															)
-								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Verified By')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("VerifiedBytext")
-															.Value(null) // Default value
-															.Disabled(true)
-															)
-
-								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Verified On')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("VerifiedOnDate")
-															.Value(null) // Default value
-															.Disabled(true)
-															)
-
-							</td>
-							<td>
-
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-															.ID("ApprovedBy")
-															.Value(null) // Default value
-															)
-								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Approved By')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("ApprovedBytext")
-															.Value(null) // Default value
-															.Disabled(true)
-															)
-								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Approved On')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("ApprovedOntext")
-															.Value(null) // Default value
-															.Disabled(true)
-															)
-							</td>
-						</tr>
+							<tr>
+								<td>
+									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No:')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Outside)
+																)
+								</td>
+								<td>
+									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No:')")).ID("OurVATNo").LabelMode(EditorLabelMode.Outside)
+																)
+								</td>
+								<td>
+									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurcompanynameinArabic").LabelMode(EditorLabelMode.Outside)
+																)
+								</td>
+							</tr>
+							<tr>
+								<td>
+									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType1") .LabelMode(EditorLabelMode.Outside)  
+																.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+								</td>
+								<td>
+									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID:')")).ID("OtherID").LabelMode(EditorLabelMode.Outside)
+																)
+								</td>
+								<td>
+									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Address Details:')")).ID("OurAddressDetails").LabelMode(EditorLabelMode.Outside)
+																)
+								</td>
+							</tr>
 					</table>
 				</div>
 			</div>
 
 			<div id="tab-content-5" class="tab-content">
-				<div class="card">
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
-							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Division')")).ID("Division")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Division')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetDivision")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("BranchCode")
-															)
-
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("ddlGoodsGroup5")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("BranchCode")
-															.DisplayExpr("BranchName")
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															//.Width(650)
-															.TabIndex(1)
-															.DropDownOptions(o => o
-															.Width(1000)
-															)
-															//  .OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("DivisionTemplate"))
-															.Width("85%")
-															)
-							</td>
-							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Sales Person/Co-ordinator')")).ID("SalesPersonCoordinator")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetSalesPerson")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("SalesPersonCode")
-															)
-
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("ddlGoodsGroup6")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("SalesPersonCode")
-															.DisplayExpr("SalesPersonName")
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															//.Width(650)
-															.TabIndex(1)
-															.DropDownOptions(o => o
-															.Width(1000)
-															)
-															//  .OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("SalesPersonTemplate"))
-															.Width("85%")
-															)
-							</td>
-
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Submitted On')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now))</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
-															.ID("SubmittedBy")
-															.Value(null) // Default value
-															)
-								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Invoice Submitted By')"))
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("SubmittedBytext")
-															.Value(null) // Default value
-															.Disabled(true)
-															)
-							</td>
-
-						</tr>
-
-					</table>
-				</div>
-
-				<div class="card">
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
-							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Company Branch')")).ID("CompanyBranch")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Company Branch')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetCompanyBranch")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("CompanyId")
-															)
-
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("ddlGoodsGroup7")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("CompanyId")
-															.DisplayExpr("CompanyName")
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															//.Width(650)
-															.TabIndex(1)
-															.DropDownOptions(o => o
-															.Width(1000)
-															)
-															//  .OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("CompanyBranchTemplate"))
-															.Width("85%")
-															)
-							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName"))</td>
-						</tr>
-						<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No')")).ID("OurGroupVATNo"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No')")).ID("OurVATNo"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic"))</td>
-						</tr>
-						<tr>
-							<td>
-								@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType1")
-								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Other ID Type')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetOtherIDType")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("SellerOtherIdtype")
-															)
-
-															.LabelMode(EditorLabelMode.Outside)
-															.ID("ddlGoodsGroup8")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("SellerOtherIdtype")
-															.DisplayExpr("SellerIdtypeName")
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															//.Width(650)
-															.TabIndex(1)
-															.DropDownOptions(o => o
-															.Width(1000)
-															)
-															//  .OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("OtherIDTypeTemplate"))
-															.Width("85%")
-															)
-							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID')")).ID("OtherID1"))</td>
-							<td>
-								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Address Details')")).ID("OurAddressDetails")
-															.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
-							</td>
-						</tr>
-
-					</table>
-				</div>
-			</div>
-
-			<div id="tab-content-6" class="tab-content">
-				<div class="card">
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-
-						<tr>
-							<td>
-								<div style="display: flex; align-items: center; gap: 4px;">
-									@(Html.DevExtreme().DropDownBox()
+			
+								<div class="horizontal-container" style="display: flex; align-items: center;">
+																<div >
+																	@(Html.DevExtreme().DropDownBox()
 																			.Label(new JS("formatMessage('Prepared By')"))
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
@@ -1158,130 +1022,48 @@
 																			.ContentTemplate(new TemplateName("PreparedByTemplate"))
 																			.Width("100%")
 																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
+																</div>
+					                         <div style="margin-top:24px;">
+														@(Html.DevExtreme().Button()
+																.ID("AddClient")
+																.Icon("plus")
+																.Hint("Add Description")
+																.Width(50)
+													.ElementAttr("class", "plusbtn")
+																)
+													</div>
+																			
+									
 								</div>
-							</td>
-							<td>
-								<div style="display: flex; align-items: center; gap: 4px;">
-									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Checked By')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetAllSignatories")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("ddlGoodsGroup10")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("SignatoryID")
-																			.DisplayExpr("SignatoryName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("CheckedByTemplate"))
-																			.Width("100%")
-																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
-								</div>
-							</td>
-							<td>
-								<div style="display: flex; align-items: center; gap: 4px;">
-									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Approved By')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetAllSignatories")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("ddlGoodsGroup11")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("SignatoryID")
-																			.DisplayExpr("SignatoryName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("ApprovedByTemplate"))
-																			.Width("100%")
-																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
-								</div>
-							</td>
-						</tr>
+					
+		</div>
+				<div style="display: flex; align-items: center; gap: 4px;">
+					<table cellpadding="10">
 
 
-
-						<tr>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Arabic Numbers in Invoice')"))
-															.ID("ArabicNumInvoice")
-															.Value(null) // Default value
-															)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY-MM-DD)with Time')"))
-															.ID("UseDateFormatWithTime")
-															.Value(null) // Default value
-															)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Signatures At Bottom')"))
-															.ID("UseDateFormat")
-															.Value(null) // Default value
-															)
-							</td>
-						</tr>
-
-						<tr>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Company Seal')"))
-															.ID("CompanySeal")
-															.Value(null) // Default value
-															)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY - MM - DD)')"))
-															.ID("UseDateFormat1")
-															.Value(null) // Default value
-															)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use 2 Digits in Total Before Tax in Line Items')"))
-															.ID("TaxInLineItems")
-															.Value(null) // Default value
-															)
-							</td>
+					<tr>
+						<td >
+							@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Company Seal')"))
+														.ID("ShowCompanySeal")
+														.Value(null) // Default value
+														)
+						</td>
+						<td>
+							@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY-MM-DD)')"))
+														.ID("UseDateFormatWithTime")
+														.Value(null) // Default value
+														)
+						</td>
 						</tr>
 						<tr>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Signature')"))
-															.ID("ShowSignature1")
-															.Value(null) // Default value
-															)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY - MM - DD)')"))
-															.ID("UseDateFormat2")
-															.Value(null) // Default value
-															)
-							</td>
 
-						</tr>
-						<tr>
+						<td>
+							@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Signature')"))
+														.ID("ShowSignature")
+														.Value(null) // Default value
+														)
+						</td>
+						
 							<td>
 								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Invoice in Letter Head')"))
 															.ID("PrintInvoiceinLetterHead")
@@ -1289,11 +1071,16 @@
 															)
 							</td>
 						</tr>
+						
 
-					</table>
+						
+							</table>
+						</div>
+
+					
 				</div>
-			</div>
-		</div>
+			
+			
 
 
 
@@ -1379,6 +1166,10 @@
 					</div>
 				</div>
 			</text>);
+
+								columns.Add().DataField("Descriptions")
+							.Caption(new JS("formatMessage('...')"))
+							.Width(200);
 								columns.Add().DataField("DescriptionDetails")
 							.Caption(new JS("formatMessage('Unit Rate Method')"))
 							.Width(200)
@@ -1540,6 +1331,31 @@
 
 
 					})
+					)
+		}
+		@using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
+		{
+			@(Html.DevExtreme().List()
+					.ID("vatTransactionList")
+					.DataSource(new[] {
+		new { ID = 1, Name = "3rd Party Tax Invoice" },
+		new { ID = 2, Name = "Nominal Tax Invoice" },
+		new { ID = 3, Name = "Export Tax Invoice" },
+		new { ID = 4, Name = "Summary Tax Invoice" },
+		new { ID = 5, Name = "Self Billed Tax Invoice" }
+		})
+					.DisplayExpr("Name")
+					.KeyExpr("ID")
+					.SelectionMode(ListSelectionMode.Multiple)
+					.ItemTemplate(@<text>
+			<div class="vat-item">
+				<label class="toggle-switch">
+					<input type="checkbox" name="vatOption" value="<%- ID %>" />
+					<span class="slider"></span>
+				</label>
+				<label class="vat-label"><%- Name %></label>
+			</div>
+		</text>)
 					)
 		}
 
@@ -2832,7 +2648,7 @@
 
 									width: 60,
 
-									height: 30 
+									height: 30
 
 								}).appendTo($container);
 
@@ -4067,8 +3883,8 @@
 					});
 				});
 				$(function () {
-					$("#InvoiceEdit").dxTextBox({
-						text: formatMessage("e-Invoice Edit Form"),
+					$("#CreditNoteEditForm").dxTextBox({
+						text: formatMessage("Credit Note Edit Form"),
 						readOnly: true,
 									onContentReady: function(e) {
 									$(e.element).addClass("dx-textbox-heading");
@@ -5395,320 +5211,43 @@
 
 		dataGrid1.refresh();
 	}
+	$(function () {
+		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
 
-
-	function disableEditing() {
-		// Disable all input fields and buttons except for specific ones
-		$('input, select, textarea').prop('disabled', true);
-
-		$('.dx-button').each(function () {
-			const allowedButtons = ['btnMoveDown',  'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
-			if (!allowedButtons.includes($(this).attr('id'))) {
-				$(this).dxButton('option', 'disabled', true);
-			}
+		// On initial load - set checkboxes
+		const selectedVals = dropDown.option("value") || [];
+		selectedVals.forEach(id => {
+			$(`input[name="vatOption"][value="${id}"]`)
+				.prop("checked", true)
+				.closest(".vat-item").addClass("selected");
 		});
-
-
-	// Disable DataGrid Editing and Deleting
-	var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-	if (dataGrid) {
-		dataGrid.option("editing.allowUpdating", false);
-		dataGrid.option("editing.allowDeleting", false);
-	}
-
-	}
-
-
-	$("#btnBack").on("click", function (e) {
-		history.back(); // Closes or navigates back
 	});
 
+	// Handle checkbox change
+	$(document).on("change", 'input[name="vatOption"]', function () {
+		const selectedIds = $('input[name="vatOption"]:checked')
+			.map(function () { return parseInt(this.value); }).get();
 
-	$("#btnVerify").on("click", function (e) {
-		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		IsDirect = false;
-		// Ensure dataGrid exists
-		if (!dataGrid) {
-			console.error("DataGrid instance not found.");
-			return;
-		}
+		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+		dropDown.option("value", selectedIds);
 
-		const rowCount = dataGrid.getVisibleRows().length;
-
-
-		// Check if DataGrid contains rows
-		if (rowCount === 0) {
-			DevExpress.ui.dialog.custom({
-				title: "Invoice verification has failed.",
-				message: "Invoice has not been Verified. Please enter transactions to proceed with verification.",
-				buttons: [{ text: "Ok", onClick: () => false }],
-				showTitle: true
-			}).show();
-		} else {
-			DevExpress.ui.dialog.custom({
-				title: "Confirm Verification",
-				// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
-				message: "Are you sure want to verify this Invoice?",
-				buttons: [
-					{ text: "Yes", onClick: () => true },
-					{ text: "No", onClick: () => false }
-				],
-				showTitle: true
-			}).show().done(function (dialogResult) {
-				if (dialogResult) {
-					proceedWithVerification(); // Proceed if user clicks Yes
-				}
-			});
-		}
+		// Highlight selected
+		$(".vat-item").removeClass("selected");
+		$('input[name="vatOption"]:checked').each(function () {
+			$(this).closest(".vat-item").addClass("selected");
+		});
 	});
 
+	// Close only on outside click
+	$(document).on("click", function (e) {
+		const $target = $(e.target);
+		const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
 
-
-	function proceedWithVerification() {
-		// Set VerifiedBy checkbox to true
-		$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-
-		const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
-
-
-		if (!vno) {
-			DevExpress.ui.notify("Voucher number is required!", "error", 2000);
-			return;
-		}
-
-		const currentDate = new Date();
-
-		const formattedDate = currentDate.toLocaleDateString("en-GB", {
-
-			day: "2-digit",
-
-			month: "short",
-
-			year: "numeric"
-
-		}).replace(/ /g, '-');
-
-		$.ajax({
-			type: "POST",
-			//url: "/api/VATModule/VerifyVoucher",
-			url: `/api/VATModule/VerifyVoucher?InvoiceNo=${encodeURIComponent(vno)}`,
-
-			contentType: "application/json",
-			dataType: "json",
-			data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
-			success: function (response) {
-				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(
-						"VAT Invoice has been Verified.",
-						"Verified"
-					).done(() => {
-						$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
-						$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-					});
-				}
-				else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
-					? xhr.responseJSON.Message
-					: "An error occurred.";
-			}
-		});
-	}
-
-
-
-	$("#btnApprove").on("click", function (e) {
-		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-
-		// Ensure dataGrid exists
-		if (!dataGrid) {
-			console.error("DataGrid instance not found.");
-			return;
-		}
-
-		const rowCount = dataGrid.getVisibleRows().length;
-
-		// Check if DataGrid contains rows
-		if (rowCount === 0) {
-			DevExpress.ui.dialog.custom({
-				title: "Invoice approval has failed.",
-				message: "Invoice has not been Approved. Please enter transactions to proceed with approval.",
-				buttons: [{ text: "Ok", onClick: () => false }],
-				showTitle: true
-			}).show();
-		} else {
-			DevExpress.ui.dialog.custom({
-				title: "Confirm Approval",
-				message: "Are you sure want to approve this Invoice?",
-				buttons: [
-					{ text: "Yes", onClick: () => true },
-					{ text: "No", onClick: () => false }
-				],
-				showTitle: true
-			}).show().done(function (dialogResult) {
-				if (dialogResult) {
-					proceedWithApproval(); // Proceed if user clicks Yes
-				}
-			});
+		if (!isInside) {
+			const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+			dropDown.close();
 		}
 	});
-
-
-	  function proceedWithApproval() {
-		// Set ApprovedBy checkbox to true
-		$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-
-		const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
-
-		if (!vno) {
-			DevExpress.ui.notify("Invoice number is required!", "error", 2000);
-			return;
-		}
-
-		// Define IsDirect if not already defined (adjust as needed)
-		const IsDirect = true; // or false, depending on your logic
-
-		const currentDate = new Date();
-		const formattedDate = currentDate.toLocaleDateString("en-GB", {
-			day: "2-digit",
-			month: "short",
-			year: "numeric"
-		}).replace(/ /g, '-');
-
-		$.ajax({
-			type: "POST",
-			url: `/api/VATModule/ApproveVoucher?InvoiceNo=${encodeURIComponent(vno)}`,
-			contentType: "application/json",
-			dataType: "json",
-			// Uncomment the following line if the API expects data in the request body:
-			// data: JSON.stringify({ voucherNo: vno }),
-			success: function (response) {
-				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(
-						"VAT InvoiceNo has been Approved.",
-						"Approved"
-					).done(() => {
-						disableEditing();
-						$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-						$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
-
-						if (IsDirect === true) {
-							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-						}
-					});
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-					? xhr.responseJSON.Message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
-			}
-		});
-	}
-
-
-	$("#btnPostToLedgers").on("click", function (e) {
-		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-
-		// Ensure dataGrid exists
-		if (!dataGrid) {
-			console.error("DataGrid instance not found.");
-			return;
-		}
-
-		const rowCount = dataGrid.getVisibleRows().length;
-
-		// Check if DataGrid contains rows
-		if (rowCount === 0) {
-			DevExpress.ui.dialog.custom({
-				title: "Invoice postal has failed.",
-				message: "Invoice has not been posted. Please enter transactions to proceed with postal.",
-				buttons: [{ text: "Ok", onClick: () => false }],
-				showTitle: true
-			}).show();
-		} else {
-			DevExpress.ui.dialog.custom({
-				title: "Confirm Post To Ledger",
-				message: "Are you sure want to post this Invoice?",
-				buttons: [
-					{ text: "Yes", onClick: () => true },
-					{ text: "No", onClick: () => false }
-				],
-				showTitle: true
-			}).show().done(function (dialogResult) {
-				if (dialogResult) {
-					proceedWithPost(); // Proceed if user clicks Yes
-				}
-			});
-		}
-	});
-
-
-	  function proceedWithPost() {
-		// Set ApprovedBy checkbox to true
-	//	$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-
-		const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
-
-		if (!vno) {
-			DevExpress.ui.notify("Invoice number is required!", "error", 2000);
-			return;
-		}
-
-		// Define IsDirect if not already defined (adjust as needed)
-		const IsDirect = true; // or false, depending on your logic
-
-		const currentDate = new Date();
-		const formattedDate = currentDate.toLocaleDateString("en-GB", {
-			day: "2-digit",
-			month: "short",
-			year: "numeric"
-		}).replace(/ /g, '-');
-
-		$.ajax({
-			type: "POST",
-			url: `/api/VATModule/PostInvoice?InvoiceNo=${encodeURIComponent(vno)}`,
-			contentType: "application/json",
-			dataType: "json",
-			// Uncomment the following line if the API expects data in the request body:
-			// data: JSON.stringify({ voucherNo: vno }),
-			success: function (response) {
-				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(
-						"VAT Invoice has been posted to the Accounting Books.",
-						"Invoice Posted Successfully."
-					)
-					// .done(() => {
-					// 	disableEditing();
-					// 	$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-					// 	$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
-
-					// 	if (IsDirect === true) {
-					// 		$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-					// 		$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-					// 		$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-					// 	}
-					// });
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-					? xhr.responseJSON.Message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
-			}
-		});
-	}
 
 
 </script>

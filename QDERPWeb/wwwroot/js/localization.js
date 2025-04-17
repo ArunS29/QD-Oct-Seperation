@@ -3,9 +3,12 @@
         "Add New":"Add New",
         "Supplier Category Code:":"Supplier Category Code:",
         "Supplier Category is required":"Supplier Category is required",
-        "Client Category is required":"Client Category is required",
+        "Client Category is required": "Client Category is required",
+        "Credit Note Issued Date & Time":"Credit Note Issued Date & Time",
         "Type a New Supplier Category & Add to the Existing List:":"Type a New Supplier Category & Add to the Existing List:",
-        "Status":"Status",
+        "Status": "Status",
+        "Reason for Issurance of Credit Note:":"Reason for Issurance of Credit Note:",
+        "Invoice No:":"Invoice No:",
         "Status Code": "Status Code",
         "Type a New Status & Add  to the Existing List:": "Type a New Status & Add  to the Existing List:",
         "Save":"Save",
@@ -42,6 +45,7 @@
         "Client Ledger Name": "Client Ledger Name",
         "Business Card 2": "Business Card 2",
         "Business Card": "Business Card",
+        "AccountDebtors":"AccountDebtors",
 
         "Client Category Code": "Client Category Code",
         "Client Category": "Client Category",
@@ -1744,9 +1748,13 @@
         "Credit Note Edit Form": "Credit Note Edit Form",
         "Inventory List to Upload": "Inventory List to Upload",
         "Client Contact List": "Client Contact List",
-        "Client Status Update":"Client Status Update"
+        "Client Status Update": "Client Status Update",
+        "Supplier Master": "Supplier Master",
+        "Supplier Contact List": "Supplier Contact List"
     },
     "ar": {
+        "Supplier Contact List": "قائمة الاتصال بالموردين",
+        "Supplier Master": "سيد المورد",
         "Credit Note Edit Form": "نموذج تعديل إشعار الدائن",
         "Credit Note Submitted On:": "تم تقديم إشعار الدائن في:",
         "Sales Person / Co-ordinator": "مندوب المبيعات / المنسق",
