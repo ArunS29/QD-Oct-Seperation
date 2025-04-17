@@ -399,7 +399,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetClientOutstandingByOverdueDays()
+        public Task<IActionResult> GetClientOutstandingByOverdueDays()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
             {
@@ -429,16 +429,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         .Take(5) // Take the top 5 records
                         .ToList();
 
-                    return Json(new { success = true, data = overdueData });
+                    return Task.FromResult<IActionResult>(Json(new { success = true, data = overdueData }));
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError($"Error in GetClientOutstandingByOverdueDays: {ex.Message}");
-                    return StatusCode(500, "Internal server error");
+                    return Task.FromResult<IActionResult>(StatusCode(500, "Internal server error"));
                 }
             }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            return Task.FromResult<IActionResult>(Unauthorized(new { message = "Invalid tenant.", success = false }));
         }
     }
 }

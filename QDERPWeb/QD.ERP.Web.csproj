@@ -10,6 +10,7 @@
 		<Compile Remove="Areas\Finance\Pages\VATDatabaseSignatories.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATSalesReporting.cshtml.cs" />
 		<Compile Remove="Controllers\LoginController.cs" />
+		<Compile Remove="Pages\Dashboard.cshtml.cs" />
 		<Compile Remove="Pages\Login.cshtml.cs" />
 	</ItemGroup>
 
@@ -23,6 +24,7 @@
 		<Content Remove="Areas\Finance\Pages\VATGoodsandServices.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATMasterModule.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATSalesReporting.cshtml" />
+		<Content Remove="Pages\Dashboard.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
 	</ItemGroup>
 
