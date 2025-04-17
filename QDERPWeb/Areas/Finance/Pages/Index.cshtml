@@ -8,7 +8,7 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <div class="title">
     <div class="header-container">
-        <div id="Top 5 OutstandingDetails" class="no-border-title"></div>
+        <div id="OutstandingDetails" class="no-border-title"></div>
     </div>
 </div><!-- DevExtreme Scripts & Styles -->
 <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.light.css">
@@ -438,70 +438,70 @@
             //         console.error("AJAX Error:", status, error);
             //     }
             // });
-            $.ajax({
-                url: "/api/Dashboard/GetOutstandingChartData",
-                type: "GET",
-                dataType: "json",
-                success: function (response) {
-                    if (response.success) {
-                        const data = response.data;
+          $.ajax({
+    url: "/api/Dashboard/GetOutstandingChartData",
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+        if (response.success) {
+            const data = response.data;
 
-                        const clientData = data.filter(item => item.Type === "Client");
-                        const supplierData = data.filter(item => item.Type === "Supplier");
+            const clientData = data.filter(item => item.Type === "Client");
+            const supplierData = data.filter(item => item.Type === "Supplier");
 
-                        const labels = [...new Set(data.map(item => item.AccountHead))];
+            const labels = [...new Set(data.map(item => item.AccountHead))];
 
-                        const clientBalances = labels.map(label => {
-                            const item = clientData.find(d => d.AccountHead === label);
-                            return item ? item.Balance : 0;
-                        });
+            const clientBalances = labels.map(label => {
+                const item = clientData.find(d => d.AccountHead === label);
+                return item ? item.Balance : 0;
+            });
 
-                        const supplierBalances = labels.map(label => {
-                            const item = supplierData.find(d => d.AccountHead === label);
-                            return item ? item.Balance : 0;
-                        });
-                        new Chart("outstandingChart", {
-                            type: "bubble",
-                            data: {
-                                datasets: [
-                                    {
-                                        label: formatMessage("Client Outstanding"),
-                                        backgroundColor: "rgba(0, 123, 255, 0.5)",
-                                        borderColor: "rgba(0, 123, 255, 1)",
-                                        data: clientData.map(item => ({
-                                            x: labels.indexOf(item.AccountHead),
-                                            y: item.Balance,
-                                            r: item.Balance / 1000000 // Bubble size based on balance
-                                        }))
-                                    },
-                                    {
-                                        label: formatMessage("Supplier Outstanding"),
-                                        backgroundColor: "rgba(255, 99, 132, 0.5)",
-                                        borderColor: "rgba(255, 99, 132, 1)",
-                                        data: supplierData.map(item => ({
-                                            x: labels.indexOf(item.AccountHead),
-                                            y: item.Balance,
-                                            r: item.Balance / 1000000
-                                         }))
-                                    }
-                                ]
-                            },
-                            options: {
-                                responsive: true,
-                                scales: {
-                                    x: { title: { display: true, text: formatMessage("Accounts") } },
-                                    y: { title: { display: true, text: formatMessage("Outstanding Amount") } }
-                                }
-                            }
-                        });
-                    } else {
-                        console.error("Error fetching data");
-                    }
+            const supplierBalances = labels.map(label => {
+                const item = supplierData.find(d => d.AccountHead === label);
+                return item ? item.Balance : 0;
+            });
+
+            new Chart("outstandingChart", {
+                type: "bar", // Correct chart type to "bar"
+                data: {
+                    labels: labels, // Set labels directly for x-axis
+                    datasets: [
+                        {
+                            label: formatMessage("Client Outstanding"),
+                            backgroundColor: "rgba(0, 123, 255, 0.5)",
+                            borderColor: "rgba(0, 123, 255, 1)",
+                            data: clientBalances, // Use the prepared balances directly
+                        },
+                        {
+                            label: formatMessage("Supplier Outstanding"),
+                            backgroundColor: "rgba(255, 99, 132, 0.5)",
+                            borderColor: "rgba(255, 99, 132, 1)",
+                            data: supplierBalances, // Use the prepared balances directly
+                        }
+                    ]
                 },
-                error: function (error) {
-                    console.error("Error fetching data: ", error);
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: { display: true, text: formatMessage("Accounts") },
+                            // Optionally, you can set the "category" scale if needed
+                        },
+                        y: {
+                            title: { display: true, text: formatMessage("Outstanding Amount") }
+                        }
+                    }
                 }
             });
+        } else {
+            console.error("Error fetching data");
+        }
+    },
+    error: function (error) {
+        console.error("Error fetching data: ", error);
+    }
+});
+
         });
 
     // Handle click on "Total Client Outstanding" card
@@ -642,7 +642,7 @@
             ],
             columnAutoWidth: true,
             showBorders: true,
-            filterRow: { visible: true },
+            filterRow: { visible: false },
             paging: { enabled: false },
 
             // Enable vertical scrolling
@@ -735,7 +735,7 @@
             ],
             columnAutoWidth: true,
             showBorders: true,
-            filterRow: { visible: true },
+            filterRow: { visible: false },
             paging: { enabled: false },
 
             // Enable vertical scrolling
@@ -799,7 +799,7 @@
             ],
             columnAutoWidth: true,
             showBorders: true,
-            filterRow: { visible: true },
+            filterRow: { visible: false },
             paging: { enabled: false }, // Show all data
 
             // Enable vertical scrolling
