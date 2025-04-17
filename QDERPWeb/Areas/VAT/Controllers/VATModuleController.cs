@@ -1280,6 +1280,39 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> GetGridInvoiceDetails(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var result1 = dbContext.Tbl20162VatinvoiceChildren
+                      .Where(x => x.InvoiceNo == InvoiceNo)
+                      .ToList();
+
+                    foreach(var gridDetails in result1)
+                    {
+                        var taxRateInWord = dbContext.Tbl20163VatTaxSlabs
+    .Where(x => x.TaxSlabCode == gridDetails.TaxSlabCode)
+    .Select(x => x.TaxRateInWord)
+    .FirstOrDefault();
+                       // gridDetails.Add(taxRateInWord);
+                    }
+
+
+
+                    return Json(result1);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
         public async Task<ActionResult> GetVatPurchaseDetails(string frmDate, string toDate)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1327,7 +1360,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 				return Unauthorized(new { message = "Invalid tenant.", success = false });
 			}
 
-		}
-	}
+    }
+}
 
 

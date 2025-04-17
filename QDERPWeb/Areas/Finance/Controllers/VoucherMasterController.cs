@@ -2437,6 +2437,74 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return BadRequest("Failed to retrieve tenant and database context.");
         }
 
+        //[HttpPost]
+        //public async Task<ActionResult> UpdateInvoiceChildDetails(List<InvoiceItem> InvoiceChildren)
+        //{
+        //    if (InvoiceChildren == null)
+        //    {
+        //        return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
+        //    }
+
+        //    try
+        //    {
+        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            Tbl20162VatinvoiceChild aTbl20162VatinvoiceChild = new Tbl20162VatinvoiceChild();
+
+
+        //            // Process child records if available
+        //            foreach (var child in InvoiceChildren)
+        //            {
+        //                if (child == null) continue;  // Skip null child records if any
+
+        //                //var existingChild = await dbContext.Tbl20162VatinvoiceChildren
+        //                //                                   .FirstOrDefaultAsync(c => c.InvoiceNo == child.InvoiceNo
+        //                //                                                        );
+        //                aTbl20162VatinvoiceChild.InvoiceNo = child.InvoiceNo;
+        //                aTbl20162VatinvoiceChild.UnitRate = child.UnitPrice.GetDecimal();
+        //                //child.Amount.GetDecimal();
+        //                aTbl20162VatinvoiceChild.DetailedDescription = child.Description.GetString();
+        //                //  aTbl20162VatinvoiceChild.Discount = child.Discount.GetString();
+        //                //aTbl20162VatinvoiceChild.TaxExemptionReasonCode = child.ExemptionCode.GetString();
+        //                //aTbl20162VatinvoiceChild.ItemCode = child.ItemCode.GetString();
+        //                aTbl20162VatinvoiceChild.QuantityInvoiced = child.Qty.GetDecimal();
+        //                aTbl20162VatinvoiceChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
+
+        //                //(byte?)Convert.ToByte(child.TaxSlabCode.Value);
+        //                aTbl20162VatinvoiceChild.UnitsToBill = 1;
+        //                aTbl20162VatinvoiceChild.UnitRateMethod = 49;
+        //                aTbl20162VatinvoiceChild.UoM = "Each";
+
+        //                //if (existingChild != null)
+        //                //{
+        //                //    // Update the existing child record
+        //                //    dbContext.Entry(existingChild).CurrentValues.SetValues(aTbl20162VatinvoiceChild);
+        //                //}
+        //                //else
+        //                //{
+        //                    // Add a new child record
+        //                    await dbContext.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
+        //               // }
+        //                await dbContext.SaveChangesAsync();
+        //            }
+
+        //            // Save changes to the database
+
+        //            // await transaction.CommitAsync();
+
+        //            return Ok(new { success = true, message = "Invoice child records updated successfully!" });
+        //        }
+        //    }
+
+        //    catch (Exception ex)
+        //    {
+        //        //await transaction.RollbackAsync();
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+
+        //    return BadRequest("Failed to retrieve tenant and database context.");
+        //}
+
         [HttpPost]
         public async Task<ActionResult> UpdateInvoiceChildDetails(List<InvoiceItem> InvoiceChildren)
         {
@@ -2449,60 +2517,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    Tbl20162VatinvoiceChild aTbl20162VatinvoiceChild = new Tbl20162VatinvoiceChild();
-
-
-                    // Process child records if available
                     foreach (var child in InvoiceChildren)
                     {
-                        if (child == null) continue;  // Skip null child records if any
+                        if (child == null) continue;
 
-                        var existingChild = await dbContext.Tbl20162VatinvoiceChildren
-                                                           .FirstOrDefaultAsync(c => c.InvoiceNo == child.InvoiceNo
-                                                                                );
-                        aTbl20162VatinvoiceChild.InvoiceNo = child.InvoiceNo;
-                        aTbl20162VatinvoiceChild.UnitRate = child.UnitPrice.GetDecimal();
-                        //child.Amount.GetDecimal();
-                        aTbl20162VatinvoiceChild.DetailedDescription = child.Description.GetString();
-                        //  aTbl20162VatinvoiceChild.Discount = child.Discount.GetString();
-                        //aTbl20162VatinvoiceChild.TaxExemptionReasonCode = child.ExemptionCode.GetString();
-                        //aTbl20162VatinvoiceChild.ItemCode = child.ItemCode.GetString();
-                        aTbl20162VatinvoiceChild.QuantityInvoiced = child.Qty.GetDecimal();
-                        aTbl20162VatinvoiceChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
-
-                        //(byte?)Convert.ToByte(child.TaxSlabCode.Value);
-                        aTbl20162VatinvoiceChild.UnitsToBill = 1;
-                        aTbl20162VatinvoiceChild.UnitRateMethod = 49;
-                        aTbl20162VatinvoiceChild.UoM = "Each";
-
-                        if (existingChild != null)
+                        // Create a new instance for each child
+                        var aTbl20162VatinvoiceChild = new Tbl20162VatinvoiceChild
                         {
-                            // Update the existing child record
-                            dbContext.Entry(existingChild).CurrentValues.SetValues(aTbl20162VatinvoiceChild);
-                        }
-                        else
-                        {
-                            // Add a new child record
-                            await dbContext.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
-                        }
+                            InvoiceNo = child.InvoiceNo,
+                            UnitRate = child.UnitPrice.GetDecimal(),
+                            DetailedDescription = child.Description.GetString(),
+                            QuantityInvoiced = child.Qty.GetDecimal(),
+                            TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                            UnitsToBill = 1,
+                            UnitRateMethod = 49,
+                            UoM = "Each"
+                            // Do NOT set the ID or primary key if it is auto-incremented
+                        };
+
+                        await dbContext.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
                     }
 
-                    // Save changes to the database
                     await dbContext.SaveChangesAsync();
-                    // await transaction.CommitAsync();
 
                     return Ok(new { success = true, message = "Invoice child records updated successfully!" });
                 }
             }
-
             catch (Exception ex)
             {
-                //await transaction.RollbackAsync();
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
 
             return BadRequest("Failed to retrieve tenant and database context.");
         }
+
+
 
     }
 
