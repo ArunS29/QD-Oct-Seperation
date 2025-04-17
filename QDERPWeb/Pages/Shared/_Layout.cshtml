@@ -1063,6 +1063,10 @@
                     <i class="fa fa-th-list"></i>
                     <span id="StatementOfAccountOrderByVoucherNo" class="no-border-input"></span>
                 </div>
+                <div class="submenu-item" onclick="handleClick('AccountDebtors')">
+                    <i class="fa fa-th-list"></i>
+                    <span id="AccountDebtors" class="no-border-input"></span>
+                </div>
             </div>
         </div>
 
@@ -1156,19 +1160,19 @@
                     <span>Cost Allocation Report - Summary</span>
                 </div>
 
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleCstReportClick('EmpReport')">
                     <i class="fa fa-file"></i>
                     <span>Employee Allocation Report - Detailed</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleCstReportClick('EmpSummaryReport')">
                     <i class="fa fa-file"></i>
                     <span>Employee Allocation Report - Summary</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleCstReportClick('EmpReport')">
                     <i class="fa fa-file"></i>
                     <span>Property Cost Allocation Report - Detailed</span>
                 </div>
-                <div class="submenu-item" onclick="ChangeRowHeight(70)">
+                <div class="submenu-item" onclick="handleCstReportClick('EmpSummaryReport')">
                     <i class="fa fa-file"></i>
                     <span>Property Cost Allocation Report - Summary</span>
                 </div>
@@ -2319,7 +2323,8 @@
                 "Balance": "Balance",
                 "BillsPayablePaid": "BillsPayablePaid",
                 "XtraReportBillsReceivableAgeingReport": "XtraReportBillsReceivableAgeingReport",
-                "XtraReportAgeingreportsummary": "XtraReportAgeingreportsummary"
+                "XtraReportAgeingreportsummary": "XtraReportAgeingreportsummary",
+                "AccountDebtors": "AccountDebtors"
             };
 
             // Check if selectedText matches any report name
@@ -2628,16 +2633,21 @@
             var frmDate = frmDateBox.option("value");
             var toDate = toDateBox.option("value");
 
-            // Format dates as needed (e.g., yyyy-MM-dd)
             var formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
             var formattedToDate = new Date(toDate).toISOString().split('T')[0];
 
-            // Initialize the base URL for the report
-            var url = `/${tenantName}/Finance/${reportName}?accountId=${accountId}&fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
+            // Get the AccountHead manually from the data source
+            dropDownBox.getDataSource().load().done(function (items) {
+                var selectedAccount = items.find(x => x.AccountId === accountId);
+                var accountHead = selectedAccount && selectedAccount.AccountHead ? encodeURIComponent(selectedAccount.AccountHead) : "";
 
-            // Open the URL in a new tab or same window
-            window.open(url, '_blank'); // Or use '_self' to open in the same tab
+                var url = `/${tenantName}/Finance/${reportName}?accountId=${accountId}&fromDate=${formattedFrmDate}&toDate=${formattedToDate}&accountHead=${accountHead}`;
+                window.open(url, '_blank');
+            });
         }
+
+
+
 
 
 

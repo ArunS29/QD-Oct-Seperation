@@ -42,6 +42,7 @@
         "Client Ledger Name": "Client Ledger Name",
         "Business Card 2": "Business Card 2",
         "Business Card": "Business Card",
+        "AccountDebtors":"AccountDebtors",
 
         "Client Category Code": "Client Category Code",
         "Client Category": "Client Category",
