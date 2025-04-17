@@ -238,97 +238,71 @@
 			// 🔹 PURCHASE DETAILS
 			columns.Add().Caption("Purchase Details").Columns(detail =>
 			{
-				detail.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchaseVoucherDate).Caption("Purchase Voucher Date").Alignment(HorizontalAlignment.Right).Visible(true);
-			    detail.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchaseBillNo).Caption("Bill No").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchaseBillDate).Caption("Bill Date").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchaseEffectiveDate).Caption("Effective Date").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchaseDeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchasePeriod).Caption("Purchase Period").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.TypeOfPurchase).Caption("Type of Purchase").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchaseOrderNo).Caption("Order No").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchaseOrderDate).Caption("Order Date").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.MaterialReceiptNo).Caption("Receipt No").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.MaterialReceiptDate).Caption("Receipt Date").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.Remarks).Caption("Remarks").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.RemarksAr).Caption("Remarks (Arabic)").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.VoucherStatus).Caption("Voucher Status").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.SupplierVatno).Caption("Supplier VAT No").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.SupplierName).Caption("Supplier Name").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.SupplierNameAr).Caption("Supplier Name (Arabic)").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.SupplierAddress).Caption("Supplier Address").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.PurchaseDueDate).Caption("Purchase Due Date").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.SupplierInvRecdOn).Caption("Invoice Received On").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.SupplierInvRecdBy).Caption("Invoice Received By").Alignment(HorizontalAlignment.Right).Visible(true);
-				detail.AddFor(m => m.AccountHeadArabic).Caption("Account Head (Arabic)").Alignment(HorizontalAlignment.Right).Visible(true);
+				detail.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No");
+				detail.AddFor(m => m.PurchaseVoucherDate).Caption("Purchase Voucher Date");
+				detail.AddFor(m => m.AccountHead).Caption("Account Head");
+				detail.AddFor(m => m.VoucherStatus).Caption("Voucher Status");
 			});
 
 			// 🔹 PURCHASE & TAX AMOUNT
 			columns.Add().Caption("Purchase & Tax Amount").Columns(amount =>
 			{
-				amount.AddFor(m => m.CalcLineAmount).Caption("Amount Before Tax").Alignment(HorizontalAlignment.Right).Visible(true);
-				amount.AddFor(m => m.CalcTaxAmount).Caption("Total VAT Amount").Alignment(HorizontalAlignment.Right).Visible(true);
-				amount.AddFor(m => m.TotalPurchaseAmount).Caption("Invoiced Amount").Alignment(HorizontalAlignment.Right).Visible(true);
-				amount.AddFor(m => m.Discount).Caption("Discount").Alignment(HorizontalAlignment.Right).Visible(true);
-				amount.AddFor(m => m.DiscountText).Caption("Discount Text").Alignment(HorizontalAlignment.Right).Visible(true);
-				amount.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Alignment(HorizontalAlignment.Right).Visible(true);
-				amount.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Right).Visible(true);
-				amount.AddFor(m => m.AdvanceText).Caption("Advance Text").Alignment(HorizontalAlignment.Right).Visible(true);
-				amount.AddFor(m => m.RetentionText).Caption("Retention Text").Alignment(HorizontalAlignment.Right).Visible(true);
+				amount.AddFor(m => m.CalcLineAmount).Caption("Amount Before Tax");
+				amount.AddFor(m => m.CalcTaxAmount).Caption("Total VAT Amount");
+				amount.AddFor(m => m.TotalPurchaseAmount).Caption("Bill Amount");
 			});
 
-			// 🔹 PURCHASE CLASSIFIED
-			columns.Add().Caption("Purchase Classified").Columns(pclass =>
+			// 🔹 PURCHASE CLASSIFIED - Domestic & Imports
+			columns.Add().Caption("Revenue Classified").Columns(pclass =>
 			{
-				// Domestic Section
+				// Domestic
 				pclass.Add().Caption("Domestic").Columns(domestic =>
 			{
-				domestic.AddFor(m => m.DomesticStandardPurchases).Caption("Domestic @5%").Alignment(HorizontalAlignment.Right).Visible(true);
-				domestic.AddFor(m => m.DomesticZeroTaxPurchases).Caption("Domestic @0%").Alignment(HorizontalAlignment.Right).Visible(true);
-				domestic.AddFor(m => m.DomesticExemptedTaxPurchases).Caption("Domestic Exempted").Alignment(HorizontalAlignment.Right).Visible(true);
-				domestic.AddFor(m => m.TotalDspurchase10Perc).Caption("Domestic 10% Total").Alignment(HorizontalAlignment.Right).Visible(true);
-				domestic.AddFor(m => m.TotalDspurchase15Perc).Caption("Domestic 15% Total").Alignment(HorizontalAlignment.Right).Visible(true);
+				domestic.AddFor(m => m.DomesticStandardPurchases).Caption("Domestic Purchases @5%");
+				domestic.AddFor(m => m.TotalDspurchase10Perc).Caption("Domestic Purchases @10%");
+				domestic.AddFor(m => m.TotalDspurchase15Perc).Caption("Domestic Purchases @15%");
+				domestic.AddFor(m => m.DomesticZeroTaxPurchases).Caption("Domestic Zero Rated Purchases");
+				domestic.AddFor(m => m.DomesticExemptedTaxPurchases).Caption("Domestic Exempted Purchases");
 			});
 
-				// Imports Section
+				// Imports
 				pclass.Add().Caption("Imports").Columns(imports =>
 			{
-				imports.AddFor(m => m.ImportsVatpaidAtCustoms).Caption("Imports VAT at Customs").Alignment(HorizontalAlignment.Right).Visible(true);
-				imports.AddFor(m => m.ImportsVatthruRcm).Caption("Imports VAT through RCM").Alignment(HorizontalAlignment.Right).Visible(true);
-				imports.AddFor(m => m.TotalImportPurchase10Perc).Caption("Imports 10% Total").Alignment(HorizontalAlignment.Right).Visible(true);
-				imports.AddFor(m => m.TotalImportPurchase15Perc).Caption("Imports 15% Total").Alignment(HorizontalAlignment.Right).Visible(true);
-				imports.AddFor(m => m.TotalRcmpurchase10Perc).Caption("RCM 10% Total").Alignment(HorizontalAlignment.Right).Visible(true);
-				imports.AddFor(m => m.TotalRcmpurchase15Perc).Caption("RCM 15% Total").Alignment(HorizontalAlignment.Right).Visible(true);
+				imports.AddFor(m => m.ImportsVatpaidAtCustoms).Caption("Imports Purchases thru Customs 5%");
+				imports.AddFor(m => m.TotalImportPurchase10Perc).Caption("Imports Purchases thru Customs 10%");
+				imports.AddFor(m => m.TotalImportPurchase15Perc).Caption("Imports Purchases thru Customs 15%");
+				imports.AddFor(m => m.ImportsVatthruRcm).Caption("Imports RCM 5%");
+				imports.AddFor(m => m.TotalRcmpurchase10Perc).Caption("Imports RCM 10%");
+				imports.AddFor(m => m.TotalRcmpurchase15Perc).Caption("Imports RCM 15%");
 			});
 			});
 
-			// 🔹 VAT AMOUNT CLASSIFIED
+			// 🔹 VAT AMOUNT CLASSIFIED - Domestic VAT & Imports VAT
 			columns.Add().Caption("VAT Amount Classified").Columns(vat =>
 			{
-				// Domestic VAT Section
+				// Domestic VAT
 				vat.Add().Caption("Domestic VAT").Columns(domesticVAT =>
 			{
-				domesticVAT.AddFor(m => m.DomesticStandardPurTax).Caption("Domestic VAT @5%").Alignment(HorizontalAlignment.Right).Visible(true);
-				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax).Caption("Domestic VAT @0%").Alignment(HorizontalAlignment.Right).Visible(true);
-				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax).Caption("Domestic VAT Exempted").Alignment(HorizontalAlignment.Right).Visible(true);
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc).Caption("Domestic VAT 10% Total").Alignment(HorizontalAlignment.Right).Visible(true);
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc).Caption("Domestic VAT 15% Total").Alignment(HorizontalAlignment.Right).Visible(true);
+				domesticVAT.AddFor(m => m.DomesticStandardPurTax).Caption("Domestic Purchases VAT @5%");
+				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc).Caption("Domestic Purchases VAT @10%");
+				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc).Caption("Domestic Purchases VAT @15%");
+				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax).Caption("Domestic Zero Rated VAT");
+				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax).Caption("Domestic Exempted VAT");
 			});
 
-				// Imports VAT Section
+				// Imports VAT
 				vat.Add().Caption("Imports VAT").Columns(importsVAT =>
 			{
-				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax).Caption("Imports VAT at Customs Tax").Alignment(HorizontalAlignment.Right).Visible(true);
-				importsVAT.AddFor(m => m.ImportsVatthruRcmtax).Caption("Imports VAT through RCM Tax").Alignment(HorizontalAlignment.Right).Visible(true);
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc).Caption("Imports VAT 10% Total").Alignment(HorizontalAlignment.Right).Visible(true);
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc).Caption("Imports VAT 15% Total").Alignment(HorizontalAlignment.Right).Visible(true);
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc).Caption("RCM VAT 10% Total").Alignment(HorizontalAlignment.Right).Visible(true);
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc).Caption("RCM VAT 15% Total").Alignment(HorizontalAlignment.Right).Visible(true);
+				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax).Caption("VAT Paid in Customs 5%");
+				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc).Caption("VAT Paid in Customs 10%");
+				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc).Caption("VAT Paid in Customs 15%");
+				importsVAT.AddFor(m => m.ImportsVatthruRcmtax).Caption("VAT thru RCM 5%");
+				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc).Caption("VAT thru RCM 10%");
+				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc).Caption("VAT thru RCM 15%");
 			});
 			});
 		})
+
 		
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
@@ -641,7 +615,7 @@
 		toDateBox.option("value", toDate);
 
 		$.ajax({
-			url: '/api/VATModule/GetVatInvoices',
+			url: '/api/VATModule/GetVat',
 			type: 'GET',
 			data: {
 				frmDate: frmDate,
