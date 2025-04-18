@@ -2560,13 +2560,13 @@
 
 		$(document).ready(function () {
 		var urlParams = new URLSearchParams(window.location.search);
-		var InvoiceNo = urlParams.get('InvoiceNo');
+				var InvoiceNo = urlParams.get('InvoiceNo');
 		var IsEditflag = urlParams.get('IsEditflag');
 
-		IsCurrent=IsEditflag;
-		
-
-		if (IsEditflag === "true") {
+			IsCurrent=IsEditflag.toString();
+				
+			// console.log("Iseditflag",IsEditflag)
+			if (IsCurrent === "true") {
 			$.ajax({
 				url: `/api/VATModule/GetInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
 				type: 'GET',
@@ -2576,6 +2576,8 @@
 
 					if (response && response.length > 0) {
 						var account = response[0];
+
+						
 
 						$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
 							ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
@@ -2616,7 +2618,7 @@
 										dataGridPreparedByHeadSelectionChanged({ selectedRowKeys: [account.InvoicePreparedBy]});
 										dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
 										dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
-											alert(account.IsApproved)
+											
 										if(account.IsApproved==true)
 										{
 											disableEditing();
@@ -2655,6 +2657,27 @@
 					console.error("Error fetching invoice details:", error);
 				}
 			});
+		}
+		else
+		{
+				$.ajax({
+					url: "/api/VATModule/GetVATInvoiceNo",
+					type: "GET",
+					success: function (data) {
+						console.log("Success:", data);
+
+						const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+						if (invoiceBox) {
+							invoiceBox.option("value", data || "");
+						} else {
+							console.warn("Invoice TextBox not initialized.");
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("Error loading Payment Accounts:", error);
+						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					}
+				});
 		}
 	});
 
@@ -3926,21 +3949,29 @@
 		});
 	}
 
-	$(document).ready(function () {
-		$.ajax({
-			url: "/api/VATModule/GetVATInvoiceNo",
-			type: 'GET',
-			success: function (data) {
-				console.log("Success:", data);
+	// $(document).ready(function () {
+	// 	if (IsCurrent !== "true") {
+	// 		$.ajax({
+	// 			url: "/api/VATModule/GetVATInvoiceNo",
+	// 			type: "GET",
+	// 			success: function (data) {
+	// 				console.log("Success:", data);
 
-			   $("#InvoiceNo").dxTextBox("instance").option("value", data);
-			},
-			error: function (xhr, status, error) {
-				console.error("Error loading Payment Accounts:", error);
-				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-			}
-		});
-	});
+	// 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+	// 				if (invoiceBox) {
+	// 					invoiceBox.option("value", data || "");
+	// 				} else {
+	// 					console.warn("Invoice TextBox not initialized.");
+	// 				}
+	// 			},
+	// 			error: function (xhr, status, error) {
+	// 				console.error("Error loading Payment Accounts:", error);
+	// 				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+	// 			}
+	// 		});
+	// 	}
+	// });
+
 
 
 	  function PaymentMeansdataGridSelectionChanged(e) {
@@ -4136,7 +4167,7 @@
 			if (selectedRowData.length > 0) {
 						revaccheadid = selectedRowData[0].AccountId;
 
-							alert(revaccheadid)
+							
 
 			} else {
 				DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -4169,7 +4200,7 @@
 			// Get ReferenceNo from selected row
 			if (selectedRowData.length > 0) {
 							InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId;
-								alert(InvoiceCurrencyExchangeId)
+								
 
 
 			} else {
@@ -4211,7 +4242,7 @@
 			if (selectedRowData.length > 0) {
 
 						TaxCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId;
-							alert(TaxCurrencyExchangeId)
+							
 
 			} else {
 
