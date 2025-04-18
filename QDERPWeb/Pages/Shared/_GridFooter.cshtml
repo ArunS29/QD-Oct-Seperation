@@ -337,6 +337,12 @@
                     items.Add().Text(new JS("formatMessage('Ledger to Receivable/Payable Mapping')")).Icon("product");
                     items.Add().Text(new JS("formatMessage('Ledger to Salary Payable Mapping')")).Icon("product");
                 })
+                            .ItemTemplate(@<text>
+                        <div class="<%- text.replace(/\s+/g, '-').toLowerCase() %> submenu-item">
+                            <i class="dx-icon dx-icon-<%- icon %>"></i>
+                            <span><%- text %></span>
+                        </div>
+                    </text>)
                 .OnItemClick("addReportsButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -994,7 +1000,7 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth +610;
+        var leftPos = offset.left - submenuWidth +620;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
@@ -1003,7 +1009,7 @@
 
         // Position submenu
         $submenu.css({
-            'width': 250,
+            'width': 470,
             'position': 'absolute',
             'top': offset.top,
             'left': leftPos,
@@ -1032,7 +1038,7 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth + 610;
+        var leftPos = offset.left - submenuWidth + 620;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
@@ -1041,7 +1047,7 @@
 
         // Position submenu
         $submenu.css({
-            'width': 250,
+            'width': 390    ,
             'position': 'absolute',
             'top': offset.top,
             'left': leftPos,
@@ -1070,7 +1076,7 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth + 610;
+        var leftPos = offset.left - submenuWidth + 620;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
@@ -1079,7 +1085,7 @@
 
         // Position submenu
         $submenu.css({
-            'width': 250,
+            'width': 370,
             'position': 'absolute',
             'top': offset.top,
             'left': leftPos,
@@ -1108,7 +1114,7 @@
         var submenuWidth = $submenu.outerWidth();
 
         // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth + 610;
+        var leftPos = offset.left - submenuWidth + 620;
 
         // Prevent submenu from going off-screen on the left
         if (leftPos < 0) {
@@ -1117,7 +1123,7 @@
 
         // Position submenu
         $submenu.css({
-            'width': 250,
+            'width': 370,
             'position': 'absolute',
             'top': offset.top,
             'left': leftPos,
