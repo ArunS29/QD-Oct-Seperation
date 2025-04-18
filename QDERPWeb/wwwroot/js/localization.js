@@ -1751,7 +1751,8 @@
         "Client Contact List": "Client Contact List",
         "Client Status Update": "Client Status Update",
         "Supplier Master": "Supplier Master",
-        "Supplier Contact List": "Supplier Contact List"
+        "Supplier Contact List": "Supplier Contact List",
+        "Code":"Code"
     },
     "ar": {
         "Supplier Contact List": "قائمة الاتصال بالموردين",
@@ -3348,7 +3349,8 @@
         "Signatory Position": "منصب الموقّع",
         "Signatory Name(Arabic)": "اسم الموقّع (بالعربية)",
         "Signatory Name": "اسم الموقّع",
-        "Type a New Signatory & Add to the Existing List:": "اكتب موقّعًا جديدًا وأضفه إلى القائمة الحالية:"
+        "Type a New Signatory & Add to the Existing List:": "اكتب موقّعًا جديدًا وأضفه إلى القائمة الحالية:",
+        "Code": "الرمز"
 
     }
 };
