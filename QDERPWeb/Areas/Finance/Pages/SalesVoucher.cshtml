@@ -286,7 +286,7 @@
 						.Controller("SalesVoucher")
 						.LoadAction("GetClientName")
 						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("AccountId")
+						.Key("AccountHead")
 						)
 						.ValidationRules(rules =>
 						{
@@ -870,7 +870,7 @@
 
 </div>
 <script>
-			let refno,accheadar,accgroup,accgroupid,accheadid,accheadname,supplierId,suprefno,supaccheadar,supaccgroup,supaccgroupid,suppliername;
+	let refno, accheadar, accgroup, accgroupid, accheadid, accheadname, supplierId, suprefno, supaccheadar, supaccgroup, supaccgroupid, suppliername,IsNotification = false, storedAccountHead;
 
 		$(function () {
 										$("#EditCostAllocation").dxTextBox({
@@ -1208,17 +1208,10 @@
 		 var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
 		 var ClientNameValidator = $("#accountDropDownBox").dxValidator("instance");
 		 var accountHeadValidation = accountHeadValidator.validate();
-		 
+		 var voucherNoValidation = voucherNoValidator.validate();
 		 var voucherAmtValidation = voucherAmtValidator.validate();
-
-		 // Ensure paymentaccheadname and paymentaccheadId are assigned before use
-		 if (!paymentaccheadname || !paymentaccheadId) {
-			 DevExpress.ui.dialog.alert(
-				 "Default Receiving Account not set. Please refresh the page or check the setup.",
-				 "Error"
-			 );
-			 return;
-		 }
+		 var ClientNameValidation = ClientNameValidator.validate();
+		 
 
 		 var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
 
@@ -1481,58 +1474,34 @@
 
 			 });
 
-		 } else {
-			 IsNotification=true;
-						  // Append the stored value back when the user clicks Add again
-	 if (storedAccountHead) {
+		} else {
+			IsNotification = true;
+			// Append the stored value back when the user clicks Add again
+			if (storedAccountHead) {
 
-	const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
-			 ddbInstance.option("value", storedAccountHead);
-		 var currentValue = accountHeadInstance.option("value");
+				const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+				ddbInstance.option("value", storedAccountHead);
+				var currentValue = accountHeadInstance.option("value");
 
-		 if (!currentValue.includes(storedAccountHead)) {
+				if (!currentValue.includes(storedAccountHead)) {
 
-			 accountHeadInstance.option("value", storedAccountHead);
-		 }
-	 }
+					accountHeadInstance.option("value", storedAccountHead);
+				}
+			}
 
-			  DevExpress.ui.dialog.alert(
-				 "Cannot continue saving with errors,please clear the errors and continue.",
-				 "Clear Errors"
-			 );
+			DevExpress.ui.dialog.alert(
+				"Cannot continue saving with errors,please clear the errors and continue.",
+				"Clear Errors"
+			);
 
 
-		 }
-		 // alert(accheadname)
-		 // if(accheadname!=null)
-		 // {
-		 var accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
+		}
+		// alert(accheadname)
+		// if(accheadname!=null)
+		// {
+		var accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
 
-		 storedAccountHead = accountHeadInstance.option("value"); // Store before reset
-
-		 if (accheadname != null) {
-
-			 if (accheadname.startsWith("Salary Payable")) {
-
-				 var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
-
-				 $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
-
-				 dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [accheadname] });
-
-				 $("#SPtxtVoucherAmount").dxNumberBox("instance").option("value", amount + ".00");
-
-				 // Show the button
-
-				 // alert("1");
-
-				 //       window.location.href = `/Finance/SalaryPaidEntryRes?VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAmount=${encodeURIComponent(accheadname)}&Amount=${encodeURIComponent(amount)}&AccountHeadID=${encodeURIComponent(accheadid)}`;
-
-				 // return;
-
-			 }
-
-		 }
+		storedAccountHead = accountHeadInstance.option("value");
 
 	 }
 

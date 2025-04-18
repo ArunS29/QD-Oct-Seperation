@@ -1541,7 +1541,7 @@
         "Priority:": "Priority:",
         "Client Code should be entered":"Client Code should be entered",
         
-        "Outstanding Details": "Outstanding Details",
+        "Outstanding Details": "Top 5 Outstanding Details",
         "Total Client Outstanding": "Total Client Outstanding",
         "Total Cash Balance": "Total Cash Balance",
         "Total Supplier Outstanding": "Total Supplier Outstanding",
