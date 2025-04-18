@@ -23,19 +23,23 @@
         left: 20px; /* Distance from left */
         display: flex;
         gap: 10px; /* Space between buttons */
-        /* z-index: 9999; /* Make sure it's on top */ 
+        /* z-index: 9999; /* Make sure it's on top */
         /* background-color: white; /* Optional: background */ */ padding: 10px; /* Optional: inner spacing */
         border-radius: 6px;
         margin-top: 10px;
         /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
+    .limited-footer .btn-container:not(:has(#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads)) {
         display: none !important;
     }
 
 </style>
-
+<div class="title">
+    <div class="header-container">
+        <div id="ClientLeads" class="no-border-input"></div>
+    </div>
+</div>
 <div class="Head">
     <div class="limited-footer">
         @await Html.PartialAsync("InventoryModuleFooter")
@@ -55,25 +59,26 @@
         .ColumnAutoWidth(true)
         .ShowColumnLines(true)
         .ShowRowLines(true)
-        .HeaderFilter(filter => filter.Visible(true))
+        .OnContextMenuPreparing("onClientsGridContextMenu")
         .AllowColumnResizing(true) // Enable column resizing
         .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
         .AllowColumnReordering(true) // Optional: allow dragging columns
         .ColumnChooser(chooser => chooser
         .Enabled(true)
-        
+
         .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
+
+
         )
-        .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
         .Paging(p => p.Enabled(false))
         .Columns(columns =>
         {
-        columns.Add().DataField("Category").Caption(new JS("formatMessage('Category')")).Visible(true).GroupIndex(0);
+            columns.Add().DataField("Category").Caption(new JS("formatMessage('Category')")).Visible(true).GroupIndex(0);
             columns.Add().DataField("ClientCode").Caption(new JS("formatMessage('Client Code')")).Visible(true);
-        columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')")).Visible(true);
-        columns.Add().DataField("ContactPerson").Caption(new JS("formatMessage('Contact Person')")).Visible(true);
-        columns.Add().DataField("ContactMobile1").Caption(new JS("formatMessage('Contact Mobile')")).Visible(true);
-        columns.Add().DataField("ContactPhone1").Caption(new JS("formatMessage('Contact Phone')")).Visible(true);
+            columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')")).Visible(true);
+            columns.Add().DataField("ContactPerson").Caption(new JS("formatMessage('Contact Person')")).Visible(true);
+            columns.Add().DataField("ContactMobile1").Caption(new JS("formatMessage('Contact Mobile')")).Visible(true);
+            columns.Add().DataField("ContactPhone1").Caption(new JS("formatMessage('Contact Phone')")).Visible(true);
             columns.Add().DataField("ClientLedgerNo").Caption(new JS("formatMessage('Client Ledger No')")).Visible(true);
 
 
@@ -98,27 +103,26 @@
 
     $(document).ready(function () {
 
-          $(".limited-footer .btn-container").each(function () {
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-                                if (!$(this).find("#ddButtonLayout,#btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
-                  $(this).remove();
-              }
+            if (!$(this).find("#ddButtonLayout,btnRefresh,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddClientLeads").length) {
+                $(this).remove();
+            }
 
-          });
+        });
 
-          // Handle Back button click
-          $(document).on('click', '#btnBack', function () {
-          $(document).on('click', '#btnBack', function () {
-              window.history.back();
-          });
+        // Handle Back button click
+        $(document).on('click', '#btnBack', function () {
+            window.history.back();
+        });
 
-      });
-     function onGridReady(e) {
-          const items = e.component.getDataSource().items();
-         console.log("Image src: ", "data:image/png;base64," + data.BusinessCard1);
+    });
+    function onGridReady(e) {
+        const items = e.component.getDataSource().items();
+        console.log("Image src: ", "data:image/png;base64," + data.BusinessCard1);
 
-      }
-      $(function () {
+    }
+    $(function () {
         $("#ClientLeads").dxTextBox({
             text: formatMessage("Client Leads"),
             readOnly: true,
@@ -127,4 +131,23 @@
             }
         });
     });
+
+    function onClientsGridContextMenu(e) {
+        if (e.target === "content" && e.row) {
+            e.items = [{
+                text: "Client Edit",
+                onItemClick: function () {
+                    let clientCode = e.row.data.ClientCode;
+                    let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+                    let url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
+                    let title = `Edit Client - ${clientCode}`;
+                    openModal(url, title);
+                }
+            }];
+        }
+    }
+
+
+
+
 </script>

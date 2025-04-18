@@ -122,6 +122,7 @@
              .Disabled(true)
             .Label(new JS("formatMessage('Status ID')"))
             .Value("-1")
+             .ReadOnly(true)
             .LabelMode(EditorLabelMode.Outside)
             .TabIndex(1)
             )
@@ -242,7 +243,7 @@
             )
     </div>
     <div class="toolbar-buttons">
-        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("save").OnClick("saveClientList"))
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("save").OnClick("saveOrUpdateClientStatus"))
         @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("save").OnClick("onSaveAndClose"))
         @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash").OnClick("onDeleteClient"))
         @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("back").OnClick("onBackToList"))
@@ -320,6 +321,43 @@
 
 <!-- JavaScript handler -->
 <script>
+       
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
+       
+         $("#statusId").dxTextBox("instance").option("value",clientStatusNo);
+         
+         if (clientStatusNo) {
+        bindClientStatusById(clientStatusNo);
+        $("#btnSave").dxButton("instance").option("text", "Update");
+    }
+       
+        
+    });
+    function bindClientStatusById(clientStatusNo) {
+    $.ajax({
+        url: `/api/ClientStatusUpdate/GetClientStatusById?clientStatusNo=${clientStatusNo}`,
+        type: 'GET',
+        success: function (data) {
+            console.log("getdat:",data);
+            if (data) {
+                $("#statusId").dxTextBox("instance").option("value", data.ClientStatusNo);
+                $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
+                $("#reportedBy").dxTextBox("instance").option("value", data.ReportedBy);
+                $("#reportedOn").dxDateBox("instance").option("value", data.ReportedOn);
+                $("#reportRemarks").dxTextArea("instance").option("value", data.StatusRemarks);
+                $("#GetStatusDropDown").dxDropDownBox("instance").option("value", data.Status);
+                $("#followUpOn").dxDateBox("instance").option("value", data.FollowupOn);
+            }
+        },
+        error: function (xhr, status, error) {
+            DevExpress.ui.notify("Error loading client status data", "error", 3000);
+        }
+    });
+}
+
+
     $(function () {
         $("#ClientStatusUpdate").dxTextBox({
             text:formatMessage("Client Status Update"),
@@ -392,38 +430,45 @@
         function onKeyDown(event) {
             console.log("Key pressed:", event.key);
         }
+//save
+    function saveOrUpdateClientStatus() {
+    const clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
 
-             function saveClientList() {
-                 debugger;
-            const data = {
-               // ClientStatusNo: $("#statusId").dxTextBox("instance").option("value"),
-                ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
-                ReportedBy: $("#reportedBy").dxTextBox("instance").option("value"),
-                ReportedOn: $("#reportedOn").dxDateBox("instance").option("value"),
-                StatusRemarks: $("#reportRemarks").dxTextArea("instance").option("value"),
-                Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
-                FollowupOn: $("#followUpOn").dxDateBox("instance").option("value"),
-               
+    const data = {
+        ClientCode: String($("#GetClientDropDown").dxDropDownBox("instance").option("value")),
+        ReportedBy: $("#reportedBy").dxTextBox("instance").option("value"),
+        ReportedOn: $("#reportedOn").dxDateBox("instance").option("value"),
+        StatusRemarks: $("#reportRemarks").dxTextArea("instance").option("value"),
+        Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
+        FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
+    };
 
-            };
+    // Only include ClientStatusNo if it's an update
+    if (clientStatusNo) {
+        data.ClientStatusNo = parseInt(clientStatusNo);
+    }
 
-            $.ajax({
-                url: '/api/ClientStatusUpdate/SaveClientStatusUpdate',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function (res) {
-                    DevExpress.ui.notify(res.message, "success", 2000);
-                    // setTimeout(() => window.location.reload(), 2000);
-                     console.log("Saved with ClientStatusNo:", res.lastClientStatusNo);
-                      // Set the value to the TextBox
-            $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
-                },
-                error: function (err) {
-                    DevExpress.ui.notify("Save failed: " + err.responseText, "error", 3000);
-                }
-            });
+    $.ajax({
+        url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (res) {
+            if (res.success) {
+                DevExpress.ui.notify(res.message, "success", 2000);
+
+                // Set the returned ID back to the textbox
+                $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
+            } else {
+                DevExpress.ui.notify(res.message, "error", 3000);
+            }
+        },
+        error: function (err) {
+            DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
         }
+    });
+}
+
         $("#btnDelete").on("click", function (e) {
             e.preventDefault();
             onDeleteButtonClick();
