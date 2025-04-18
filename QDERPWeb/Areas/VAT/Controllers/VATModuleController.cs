@@ -957,7 +957,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                // Check if the UnitType or the combination already exists
+                // Check if the UnitType and UnitDesc already exists
                 bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
                     u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
                     u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
@@ -968,9 +968,20 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     return Json(new { success = false, message = "This Unit Rate Method already exists." });
                 }
 
-                // Add new entry
+                int nextUnitCode = 1;
+                if (dbContext.Tbl40111PropertyUnitCodes.Any())
+                {
+                    nextUnitCode = dbContext.Tbl40111PropertyUnitCodes.Max(u => u.UnitCode) + 1;
+                }
+
+                if (nextUnitCode > byte.MaxValue)
+                {
+                    return Json(new { success = false, message = "Unit code limit exceeded (max 255)." });
+                }
+
                 var newUom = new Tbl40111PropertyUnitCode
                 {
+                    UnitCode = (byte)nextUnitCode,
                     UnitType = unitType,
                     UnitDesc = unitDesc,
                     UnitDescAr = unitDescAr
