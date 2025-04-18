@@ -124,7 +124,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Register
                     Parameters[paramName].Visible = false;
                 }
             }
-        }
+
+		private void xrLabel8_BeforePrint(object sender, CancelEventArgs e)
+		{
+
+		}
+	}
     }
 
 
