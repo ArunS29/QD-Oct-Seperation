@@ -1751,11 +1751,19 @@
         "Inventory List to Upload": "Inventory List to Upload",
         "Client Contact List": "Client Contact List",
         "Client Status Update": "Client Status Update",
+
         "Supplier Master": "Supplier Master",
         "Supplier Contact List": "Supplier Contact List",
-        "Code":"Code"
+        "Code":"Code",
+
+        "Delivery Notes": "Delivery Notes",
+        "Invoice Submitted On:": "Invoice Submitted On:"
+
+
     },
     "ar": {
+        "Invoice Submitted On:": ":تم تقديم الفاتورة",
+        "Delivery Notes": "ملاحظات التسليم",
         "Supplier Contact List": "قائمة الاتصال بالموردين",
         "Supplier Master": "سيد المورد",
         "Credit Note Edit Form": "نموذج تعديل إشعار الدائن",
