@@ -35,7 +35,7 @@
 
 <div class="title">
     <div class="header-container">
-        <div id="ExpensesClaimRequest" class="no-border-title"></div>
+        <div id="PettyCashRequest" class="no-border-title"></div>
     </div>
 </div>
 
@@ -996,5 +996,13 @@
             loadUrl: "/api/VoucherMaster/" + loadAction
         }));
     }
-
+     $(function () {
+                $("#PettyCashRequest").dxTextBox({
+                    text: formatMessage("Petty Cash Request"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
 </script>
