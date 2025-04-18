@@ -198,7 +198,7 @@
 
         $(".limited-footer .btn-container").each(function () {
 
-            if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel").length) {
+            if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnBack").length) {
 
                 $(this).remove();
 
@@ -206,6 +206,9 @@
 
         });
 
+    });
+    document.getElementById("btnBack").addEventListener("click", function () {
+        window.history.back();
     });
 </script>
 
@@ -292,7 +295,7 @@
         border-radius: 0 0 12px 12px;
     }
 
-    .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel)) {
+        .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btnBack)) {
         display: none !important;
     }
 
