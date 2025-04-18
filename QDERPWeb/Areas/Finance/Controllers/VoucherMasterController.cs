@@ -2531,6 +2531,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
                             UnitsToBill = 1,
                             UnitRateMethod = 49,
+                            ItemCode= child.ItemCode,
                             UoM = "Each"
                             // Do NOT set the ID or primary key if it is auto-incremented
                         };

@@ -10,6 +10,7 @@ using DevExtreme.AspNet.Data;
 using QD.ERP.Web.Areas.Finance.Models;
 using System.Text.RegularExpressions;
 using System.Data.SqlClient;
+using System.Dynamic;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
 
 
@@ -1293,7 +1294,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 try
                 {
 
-                    var result = dbContext.Qry201607vatinvoiceRegisterMainViews
+                    var result = dbContext.Tbl20161VatinvoiceMasters
                       .Where(x => x.InvoiceNo == InvoiceNo)
                       .ToList();
 
@@ -1316,23 +1317,58 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 try
                 {
+                    var resultWithVAT = new List<ExpandoObject>();
 
-                    var result1 = dbContext.Tbl20162VatinvoiceChildren
-                      .Where(x => x.InvoiceNo == InvoiceNo)
-                      .ToList();
+                    var result1 = dbContext.Qry201601vatinvoiceChildren
+                        .Where(x => x.InvoiceNo == InvoiceNo)
+                        .ToList();
 
-                    foreach(var gridDetails in result1)
+                    foreach (var gridDetails in result1)
                     {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = gridDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        // Get the TaxRateInWord from the TaxSlab table
                         var taxRateInWord = dbContext.Tbl20163VatTaxSlabs
-    .Where(x => x.TaxSlabCode == gridDetails.TaxSlabCode)
-    .Select(x => x.TaxRateInWord)
-    .FirstOrDefault();
-                       // gridDetails.Add(taxRateInWord);
+                            .Where(x => x.TaxSlabCode == gridDetails.TaxSlabCode)
+                            .Select(x => x.TaxRateInWord)
+                            .FirstOrDefault();
+
+                        var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
+                   .Where(x => x.UnitCode == gridDetails.UnitRateMethod)
+                   .Select(x => x.UnitDesc)
+                   .FirstOrDefault();
+
+
+
+
+
+                        //var qty = gridDetails.UnitsToBill;
+                        //var unitPrice = gridDetails.UnitRate;
+                        //var vatRate = decimal.TryParse(taxRateInWord.Replace("%", ""), out decimal rate) ? rate / 100 : 0;
+
+                        //var amount = qty * unitPrice;
+                        //var vatValue = amount * vatRate;
+                        //var totalValue = amount + vatValue;
+
+                        // Add new dynamic column
+                        dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
+                        dict["VATPercentage"] = taxRateInWord;
+                        
+                        //dict["VAT"] = vatValue;
+                        //dict["TotalVAT"] = totalValue;
+
+                        resultWithVAT.Add(item);
                     }
 
-
-
-                    return Json(result1);
+                    return Json(resultWithVAT);
                 }
                 catch (Exception ex)
                 {
@@ -1342,6 +1378,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
         public async Task<ActionResult> GetVatPurchaseDetails(string frmDate, string toDate)
         {
