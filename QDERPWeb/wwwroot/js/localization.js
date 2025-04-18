@@ -1757,11 +1757,13 @@
         "Code":"Code",
 
         "Delivery Notes": "Delivery Notes",
-        "Invoice Submitted On:": "Invoice Submitted On:"
+        "Invoice Submitted On:": "Invoice Submitted On",
+        "Journal Voucher Edit": "Journal Voucher Edit"
 
 
     },
     "ar": {
+        "Journal Voucher Edit": "تحرير قسيمة المجلة",
         "Invoice Submitted On:": ":تم تقديم الفاتورة",
         "Delivery Notes": "ملاحظات التسليم",
         "Supplier Contact List": "قائمة الاتصال بالموردين",
