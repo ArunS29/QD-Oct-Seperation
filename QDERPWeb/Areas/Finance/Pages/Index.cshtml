@@ -71,12 +71,13 @@
 
 <div class="chart-row">
     <canvas id="outstandingChart" style="width:100%;max-width:700px"></canvas>
-    <canvas id="myChart1" style="width:100%;max-width:700px"></canvas>
-</div>
-<div class="chart-row1">
     <div id="myChart2" style="width: 70%; height: 350px;"></div>
-
+    
 </div>
+@* <div class="chart-row">
+    <canvas id="myChart1" style="width:100%;max-width:700px"></canvas>
+
+</div> *@
 <!-- Pie Chart Containers -->
 @* <div class="chart-row"> *@
 @*     <div class="chart-container"> *@
@@ -120,86 +121,86 @@
 
 
     $(document).ready(function () {
-            $.ajax({
-            url: "/api/Dashboard/GetOutstandingChartData",
-            type: "GET",
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
-                    const data = response.data;
+        //     $.ajax({
+        //     url: "/api/Dashboard/GetOutstandingChartData",
+        //     type: "GET",
+        //     dataType: "json",
+        //     success: function (response) {
+        //         if (response.success) {
+        //             const data = response.data;
 
-                    // Separate client and supplier data
-                    const clientData = data.filter(item => item.Type === "Client");
-                    const supplierData = data.filter(item => item.Type === "Supplier");
+        //             // Separate client and supplier data
+        //             const clientData = data.filter(item => item.Type === "Client");
+        //             const supplierData = data.filter(item => item.Type === "Supplier");
 
-                    // Aggregate data for ranking
-                    const accountBalances = [...new Set(data.map(item => item.AccountHead))].map(label => {
-                        const clientBalance = clientData.find(d => d.AccountHead === label)?.Balance || 0;
-                        const supplierBalance = supplierData.find(d => d.AccountHead === label)?.Balance || 0;
-                        return {
-                            label: label,
-                            clientBalance: clientBalance,
-                            supplierBalance: supplierBalance,
-                            totalBalance: clientBalance + supplierBalance
-                        };
-                    });
+        //             // Aggregate data for ranking
+        //             const accountBalances = [...new Set(data.map(item => item.AccountHead))].map(label => {
+        //                 const clientBalance = clientData.find(d => d.AccountHead === label)?.Balance || 0;
+        //                 const supplierBalance = supplierData.find(d => d.AccountHead === label)?.Balance || 0;
+        //                 return {
+        //                     label: label,
+        //                     clientBalance: clientBalance,
+        //                     supplierBalance: supplierBalance,
+        //                     totalBalance: clientBalance + supplierBalance
+        //                 };
+        //             });
 
-                    // Sort by total balance and take top 10
-                    const topAccounts = accountBalances
-                        .sort((a, b) => b.totalBalance - a.totalBalance) // Descending order
-                        .slice(0, 10); // Top 10
+        //             // Sort by total balance and take top 10
+        //             const topAccounts = accountBalances
+        //                 .sort((a, b) => b.totalBalance - a.totalBalance) // Descending order
+        //                 .slice(0, 10); // Top 10
 
-                    // Extract labels and data for the chart
-                    const labels = topAccounts.map(item => item.label);
-                    const clientBalances = topAccounts.map(item => item.clientBalance);
-                    const supplierBalances = topAccounts.map(item => item.supplierBalance);
+        //             // Extract labels and data for the chart
+        //             const labels = topAccounts.map(item => item.label);
+        //             const clientBalances = topAccounts.map(item => item.clientBalance);
+        //             const supplierBalances = topAccounts.map(item => item.supplierBalance);
 
-                    // Example third dataset (optional)
-                    const otherData = labels.map((_, index) => index * 500);
+        //             // Example third dataset (optional)
+        //             const otherData = labels.map((_, index) => index * 500);
 
-                    // Create the chart
-                    new Chart("myChart1", {
-                        type: "line",
-                        data: {
-                            labels: labels, // Account Names
-                            datasets: [
-                                {
-                                    label: formatMessage("Client Outstanding"),
-                                    data: clientBalances,
-                                    borderColor: "red",
-                                    fill: false
-                                },
-                                {
-                                    label: formatMessage("Supplier Outstanding"),
-                                    data: supplierBalances,
-                                    borderColor: "green",
-                                    fill: false
-                                },
-                                {
-                                    label: formatMessage("Other Data"),
-                                    data: otherData,
-                                    borderColor: "blue",
-                                    fill: false
-                                }
-                            ]
-                        },
-                        options: {
-                            plugins: {
-                                legend: { display: true }
-                            },
-                            scales: {
-                                y: { beginAtZero: true }
-                            }
-                        }
-                    });
-                } else {
-                    console.error("Error fetching data");
-                }
-            },
-            error: function (error) {
-                console.error("Error fetching data: ", error);
-            }
-        });
+        //             // Create the chart
+        //             new Chart("myChart1", {
+        //                 type: "line",
+        //                 data: {
+        //                     labels: labels, // Account Names
+        //                     datasets: [
+        //                         {
+        //                             label: formatMessage("Client Outstanding"),
+        //                             data: clientBalances,
+        //                             borderColor: "red",
+        //                             fill: false
+        //                         },
+        //                         {
+        //                             label: formatMessage("Supplier Outstanding"),
+        //                             data: supplierBalances,
+        //                             borderColor: "green",
+        //                             fill: false
+        //                         },
+        //                         {
+        //                             label: formatMessage("Other Data"),
+        //                             data: otherData,
+        //                             borderColor: "blue",
+        //                             fill: false
+        //                         }
+        //                     ]
+        //                 },
+        //                 options: {
+        //                     plugins: {
+        //                         legend: { display: true }
+        //                     },
+        //                     scales: {
+        //                         y: { beginAtZero: true }
+        //                     }
+        //                 }
+        //             });
+        //         } else {
+        //             console.error("Error fetching data");
+        //         }
+        //     },
+        //     error: function (error) {
+        //         console.error("Error fetching data: ", error);
+        //     }
+        // });
             // $.ajax({
             //     url: "/api/Dashboard/GetClientOutstandingByOverdueDays",
             //     type: "GET",
