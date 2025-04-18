@@ -345,6 +345,13 @@
 		justify-content: center;
 	}
 
+	.center-icon-button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -517,20 +524,27 @@
 																			)
 																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
 								</td>
-								<td style="align-content:end;">
-									@(Html.DevExtreme().Button()
-																			.ID("AddClient")
-																			.Icon("plus")
-																			.Hint("Add Description")
-																			.Width(55)
-																			)
+								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
+									<div style="display:flex; gap:5px;">
+										@(Html.DevExtreme().Button()
+																				.ID("AddClient")
+																				.Icon("plus")
+																				.Hint("Add Description")
+																				.Width(35)
+																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
 
-									@(Html.DevExtreme().Button()
-																			.ID("EditClient")
-																			.Icon("edit")
-																			.Hint("Edit Description")
-																			.Width(55)
-																			)
+
+																				)
+										@(Html.DevExtreme().Button()
+																				.ID("EditClient")
+																				.Icon("edit")
+																				.Hint("Edit Description")
+																				.Width(35)
+																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+
+
+																				)
+									</div>
 								</td>
 								<td>
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
@@ -793,8 +807,8 @@
 
 			<div id="tab-content-3" class="tab-content">
 				<div class="card-container">
-					<div class="card" id="leftcard">
-						@* <h5>Purchase Order Details</h5> *@
+					<div class="card" style="padding:20px;"id="leftcard">
+						<h5>Purchase Order Details</h5>
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 								<td>
@@ -820,7 +834,7 @@
 					</div>
 
 					<div class="card" id="centercard">
-						@* <h5>Contract / Project References</h5> *@
+						<h5>Contract / Project References</h5>
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 
@@ -838,8 +852,8 @@
 
 						</table>
 					</div>
-					<div class="card" id="rightcard">
-						@* <h5>Quotation / Delivery Details</h5> *@
+					<div class="card" style="padding:20px;"  id="rightcard">
+						<h5>Quotation / Delivery Details</h5>
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>					
 
@@ -1156,7 +1170,7 @@
 																			.OnOpened("onOpened")
 																			.DropDownOptions(o => o.Width(1000))
 																			.ContentTemplate(new TemplateName("DivisionTemplate"))
-																			.Width("100%")
+																			.Width("150%")
 																			)
 								</td>
 							</tr>
@@ -1185,15 +1199,17 @@
 																					.Width("100%")
 																					)
 										</div>
-										<div>
+										<div style="padding-top: 24px;">
 											@(Html.DevExtreme().Button()
 																					.ID("AddSalesPersonButton")
 																					.Icon("plus")
 																					.Hint("Add Sales Person")
 																					.Width(40)
-																					.Height(40)
+																					.ElementAttr("style", "display: flex; justify-content: center; align-items:bottom;")
+
 																					)
 										</div>
+										
 									</div>
 								</td>
 							</tr>
@@ -1218,17 +1234,24 @@
 																			)
 								</td>
 								<td>
-									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
-																			.ID("SubmittedBy")
-																			.Value(null) // Default value
-																			)
-									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Invoice Submitted By')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("SubmittedBytext")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			)
+									<div style="display: flex; align-items: flex-end; gap: 10px;">
+										@(Html.DevExtreme().CheckBox()
+																				.Text(new JS("formatMessage('')"))
+																				.ID("SubmittedBy")
+																				.Value(null)
+																				.ElementAttr("style", "padding-bottom:37px;")
+
+																				)
+
+										@(Html.DevExtreme().TextBox()
+																				.Label(new JS("formatMessage('Invoice Submitted By')"))
+																				.LabelMode(EditorLabelMode.Outside)
+																				.ID("SubmittedBytext")
+																				.Value(null)
+																				// .Disabled(true)
+																				)
+									</div>
+
 								</td>
 
 							</tr>

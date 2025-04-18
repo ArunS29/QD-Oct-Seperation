@@ -3292,12 +3292,12 @@
 
 		$(document).ready(function () {
 			$.ajax({
-				url: "/api/VATModule/GetVATInvoiceNo",
+			url: "/api/VATModule/GetVATCreditNoteNo",
 				type: 'GET',
 				success: function (data) {
 					console.log("Success:", data);
 
-				   $("#InvoiceNo").dxTextBox("instance").option("value", data);
+				$("#CreditNoteNo").dxTextBox("instance").option("value", data);
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);

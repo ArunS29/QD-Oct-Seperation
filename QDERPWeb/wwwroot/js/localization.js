@@ -1751,17 +1751,22 @@
         "Inventory List to Upload": "Inventory List to Upload",
         "Client Contact List": "Client Contact List",
         "Client Status Update": "Client Status Update",
-
         "Supplier Master": "Supplier Master",
         "Supplier Contact List": "Supplier Contact List",
         "Code":"Code",
-
         "Delivery Notes": "Delivery Notes",
-        "Invoice Submitted On:": "Invoice Submitted On:"
-
+        "Invoice Submitted On:": "Invoice Submitted On",
+        "Journal Voucher Edit": "Journal Voucher Edit",
+        "Expenses Claim Request": "Expenses Claim Request",
+        "Petty Cash Request": "Petty Cash Request",
+        "Supplier Payment Request":"Supplier Payment Request"
 
     },
     "ar": {
+        "Supplier Payment Request": "طلب دفع المورد",
+        "Expenses Claim Request": "طلب المطالبة بالنفقات",
+        "Petty Cash Request": "طلب سلفة نقدية صغيرة",
+        "Journal Voucher Edit": "تحرير قسيمة المجلة",
         "Invoice Submitted On:": ":تم تقديم الفاتورة",
         "Delivery Notes": "ملاحظات التسليم",
         "Supplier Contact List": "قائمة الاتصال بالموردين",
