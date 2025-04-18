@@ -139,7 +139,8 @@
                     .Value(0)
                     .ShowSpinButtons(true)
                     .Min(0)
-                    .Max(1000)
+                    .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
+                    .InputAttr(new { type = "number", step = "1.00",  maxLength = 16, autocomplete = "off" })
                     .Step(1))
                 </div>
             </div>
