@@ -1464,7 +1464,103 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 
 		}
+		[HttpGet]
+		public async Task<ActionResult> GetVATCreditNoteNo(DataSourceLoadOptions loadOptions)
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					string yearSuffix = DateTime.Now.ToString("yy"); // e.g., "25"
+					string creditNoteAbbrv = "CRN"; // Hardcoded abbreviation
 
+					// Get last credit note number
+					var lastCreditNoteNumber = await dbContext.Tbl20170VatcreditNoteMasters
+						.Where(cn => cn.CreditNoteNo.StartsWith($"{creditNoteAbbrv}{yearSuffix}-"))
+						.OrderByDescending(cn => cn.CreditNoteNo)
+						.Select(cn => cn.CreditNoteNo)
+						.FirstOrDefaultAsync();
+
+					int newNumber = 1; // Default if no previous credit notes exist
+					if (!string.IsNullOrEmpty(lastCreditNoteNumber))
+					{
+						var match = Regex.Match(lastCreditNoteNumber, @"-(\d+)$");
+						if (match.Success)
+						{
+							newNumber = int.Parse(match.Groups[1].Value) + 1;
+						}
+					}
+
+					// Generate new Credit Note number
+					string newCreditNoteNumber = $"{creditNoteAbbrv}{yearSuffix}-{newNumber:D5}";
+
+					return Json(newCreditNoteNumber);
+				}
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+
+			return BadRequest("Failed to retrieve tenant and database context.");
+		}
+
+		[HttpGet]
+		public async Task<ActionResult> GetVatPurchaseDetail(string frmDate, string toDate)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+						return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+
+					if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+						return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+					// Fetch records based on the date range
+					var vatInvoices = await dbContext.Qry201717vatpurchaseInDetails
+						.FromSqlRaw("SELECT * FROM qry201_717VATPurchaseInDetails WHERE PurchaseVoucherDate BETWEEN @p0 AND @p1", from, to)
+						.ToListAsync();
+
+					return Json(vatInvoices);
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(500, $"Internal server error: {ex.Message}");
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+		[HttpGet]
+		public async Task<ActionResult> GetVatPurchase(string frmDate, string toDate)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+						return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+
+					if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+						return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+					// Fetch records based on the date range
+					var vatInvoices = await dbContext.Qry201723vatonPurchaseAndExpenses
+						.FromSqlRaw("SELECT * FROM qry201_723VATonPurchaseAndExpenses WHERE PurchaseVoucherDate BETWEEN @p0 AND @p1", from, to)
+						.ToListAsync();
+
+					return Json(vatInvoices);
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(500, $"Internal server error: {ex.Message}");
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
 	}
 }
 
