@@ -7,6 +7,7 @@
         "Credit Note Issued Date & Time":"Credit Note Issued Date & Time",
         "Type a New Supplier Category & Add to the Existing List:":"Type a New Supplier Category & Add to the Existing List:",
         "Status": "Status",
+        "Database Signatories":"Database Signatories",
         "Reason for Issurance of Credit Note:":"Reason for Issurance of Credit Note:",
         "Invoice No:":"Invoice No:",
         "Status Code": "Status Code",

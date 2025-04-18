@@ -102,7 +102,7 @@
     </div>
 </div>
 <div class="signatory-form-container">
-    <div id="" class="no-border-title"></div>
+    <div id="DatabaseSignatories" class="no-border-title"></div>
    
     <div class="form-row">
         @(Html.DevExtreme().TextBox()
@@ -338,16 +338,17 @@
 
       $(function () {
             $("#DatabaseSignatories").dxTextBox({
-                text: formatMessage("Database Signatories"),
+                text: formatMessage("Database "),
                 readOnly: true,
                            
 
             });
         });
+
     $(function () {
         $("#TypeSignatory").dxTextBox({
             width: "600px",
-            text: formatMessage("Type a New Signatory & Add to the Existing List"),
+            text: formatMessage("Database Signatories"),
             readOnly: true,
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");
