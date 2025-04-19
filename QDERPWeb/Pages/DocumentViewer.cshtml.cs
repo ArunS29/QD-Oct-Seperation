@@ -1480,51 +1480,51 @@ namespace QD.ERP.Web.Pages
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "incomestatement")
-            {
-                if (accountGroup == null || frmDate == null || toDate == null)
-                {
-                    return BadRequest("Missing required parameters for Group.");
-                }
+            //else if (reportName == "incomestatement")
+            //{
+            //    if (accountGroup == null || frmDate == null || toDate == null)
+            //    {
+            //        return BadRequest("Missing required parameters for Group.");
+            //    }
 
-                AccountGroup = accountGroup;
-                FrmDate = frmDate.Value;
-                ToDate = toDate.Value;
-
-
-                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+            //    AccountGroup = accountGroup;
+            //    FrmDate = frmDate.Value;
+            //    ToDate = toDate.Value;
 
 
-                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
-                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
-                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
-                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+            //    var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            //    ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+            //        .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
-                string logoBase64 = string.Empty;
-                Image logoImage = null;
 
-                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
-                {
-                    try
-                    {
-                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
-                        {
-                            logoImage = Image.FromStream(ms);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
+            //    var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+            //    var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+            //    var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+            //    var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
-                        Console.WriteLine("Error processing company logo: " + ex.Message);
-                    }
-                }
-                Report = new incomestatement(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
-                );
-            }
+            //    string logoBase64 = string.Empty;
+            //    Image logoImage = null;
+
+            //    if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+            //    {
+            //        try
+            //        {
+            //            using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+            //            {
+            //                logoImage = Image.FromStream(ms);
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+
+            //            Console.WriteLine("Error processing company logo: " + ex.Message);
+            //        }
+            //    }
+            //    Report = new incomestatement(
+            //        AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+            //        companyNameAr, companyAddressAr, _tenantDbContextHelper
+            //    );
+            //}
             else if (reportName == "incomeStatementsBymonth")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
