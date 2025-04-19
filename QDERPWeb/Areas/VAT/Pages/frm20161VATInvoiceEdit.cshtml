@@ -575,7 +575,19 @@
 								</td>
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo").LabelMode(EditorLabelMode.Outside))</td>
+@* 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo")	.LabelMode(EditorLabelMode.Outside))</td>
+ *@								
+                                <td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("GroupVATNo")
+																			.Label(new JS("formatMessage('Group VAT No')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.MaxLength(15)
+																			.Mask("000000000000000") // 15 digits
+																			.MaskChar(" ") // Optional: makes it more readable
+																			//.ShowClearButton(true) // Optional: adds a clear (X) button
+																			)
+								</td>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
 
@@ -1866,24 +1878,24 @@
 					.ShowBorders(true)
 					.ShowColumnHeaders(true)
 
-					.SearchPanel(sp => sp.HighlightSearchText(false))
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("PaymentMeansdataGridSelectionChanged")
-					.OnInitialized("CommondataGridInitialized")
-					.HeaderFilter(p => p.Visible(false))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					@*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
-					.FilterRow(f => f.Visible(true))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						// columns.Add().DataField("OpeningBalanceDrCr");
-						columns.Add().DataField("PaymentMeansTypeCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(200);
-						columns.Add().DataField("PaymentMeansType").Caption(new JS("formatMessage('PaymentMeans Type')")).Alignment(HorizontalAlignment.Center); ;
+								.SearchPanel(sp => sp.HighlightSearchText(false))
+								.Selection(sl => sl.Mode(SelectionMode.Single))
+								.OnSelectionChanged("PaymentMeansdataGridSelectionChanged")
+								.OnInitialized("CommondataGridInitialized")
+								.HeaderFilter(p => p.Visible(false))
+								.ShowBorders(true)
+								.HoverStateEnabled(true)
+								.Paging(p => p.PageSize(15))
+								@*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
+								.FilterRow(f => f.Visible(true))
+								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+								.Height(200)
+								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+								.Columns(columns =>
+								{
+									// columns.Add().DataField("OpeningBalanceDrCr");
+									columns.Add().DataField("PaymentMeansTypeCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(200);
+									columns.Add().DataField("PaymentMeansType").Caption(new JS("formatMessage('PaymentMeans Type')")).Alignment(HorizontalAlignment.Center);
 
 
 
@@ -1894,37 +1906,38 @@
 		@using (Html.DevExtreme().NamedTemplate("ClientCodeContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
-					.ID("clientcode-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetClientCode")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("AccountHead")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.ShowColumnHeaders(true)
-					.FilterRow(f => f.Visible(false))
-					.SearchPanel(sp => sp.HighlightSearchText(false))
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("ClientCodedataGridSelectionChanged")
-					.OnInitialized("ClientCodedataGridInitialized")
-					.HeaderFilter(p => p.Visible(false))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
+								.ID("clientcode-datagrid")
+								.DataSource(d => d.WebApi()
+								.Controller("VATModule")
+								.LoadAction("GetClientCode")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("AccountHead")
+								)
+								.WordWrapEnabled(true)
+								.ShowBorders(true)
+								.ShowColumnHeaders(true)
+								.FilterRow(f => f.Visible(false))
+								.SearchPanel(sp => sp.HighlightSearchText(true))
+								.Selection(sl => sl.Mode(SelectionMode.Single))
+								.OnSelectionChanged("ClientCodedataGridSelectionChanged")
+								.OnInitialized("ClientCodedataGridInitialized")
+					            .OnRowPrepared("onClientCodeRowPrepared")
+								.HeaderFilter(p => p.Visible(false))
+								.ShowBorders(true)
+								.HoverStateEnabled(true)
+								.Paging(p => p.PageSize(15))
 
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						// columns.Add().DataField("OpeningBalanceDrCr");
-						columns.Add().DataField("AccountId").Caption("Account Code");
-						columns.Add().DataField("AccountHead").Caption("Client Name");
-						columns.Add().DataField("VatregistrationNo").Caption("Client VAT No");
-						columns.Add().DataField("ReferenceNo").Caption("ReferenceNo");
-						columns.Add().DataField("IsLedgerObselete").Caption("IsLedgerObselete");
+								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+								.Height(200)
+								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+								.Columns(columns =>
+								{
+									// columns.Add().DataField("OpeningBalanceDrCr");
+									columns.Add().DataField("AccountId").Caption("Account Code").Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("VatregistrationNo").Caption("Client VAT No").Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("ReferenceNo").Caption("ReferenceNo").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("IsLedgerObselete").Caption("IsLedgerObselete").Alignment(HorizontalAlignment.Center);
 
 
 					})
@@ -1953,12 +1966,12 @@
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
 
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("AccountHead").Caption("Client Name");
+								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+								.Height(200)
+								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+								.Columns(columns =>
+								{
+						columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center); 
 
 					})
 					)
@@ -1995,6 +2008,38 @@
 					.OnInitialized("dataGridInitialized")
 					)
 		}
+	@using (Html.DevExtreme().NamedTemplate("ClientNameContent"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("clientname")
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetVATInvoiceMaster")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("BuyerOtherIdtype")
+        )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        .ShowColumnHeaders(false)
+        .FilterRow(f => f.Visible(false))
+        .SearchPanel(sp => sp.HighlightSearchText(false))
+        .Selection(sl => sl.Mode(SelectionMode.Single))
+        .HeaderFilter(p => p.Visible(false))
+        .ShowBorders(true)
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(200)
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .Columns(columns =>
+        {
+            columns.Add().DataField("BuyerIdtypeName").Caption("Branch Code").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("BuyerOtherIdtype").Caption("Other ID Type").Alignment(HorizontalAlignment.Center); 
+        })
+        .OnSelectionChanged("dataGridSelectionChanged")   
+        .OnInitialized("dataGridInitialized")  
+    )
+}
 		@using (Html.DevExtreme().NamedTemplate("DescriptionDropdownContentTemplate"))
 		{
 			@(
@@ -2064,8 +2109,8 @@
 		</text>)
 					.Columns(columns =>
 					{
-						columns.Add().DataField("UnitCode").Caption("Code").Width(100);
-						columns.Add().DataField("UnitDesc").Caption("Unit Rate Method").Width(300);
+						columns.Add().DataField("UnitCode").Caption("Code").Width(100).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("UnitDesc").Caption("Unit Rate Method").Width(300).Alignment(HorizontalAlignment.Center);
 					})
 					.Height(345)
 					.ShowBorders(true)
@@ -2136,34 +2181,35 @@
 												.Key("IncomeLedger")
 
 													)
-													.WordWrapEnabled(true)
-													.ShowBorders(true)
-													.SearchPanel(sp => sp.HighlightSearchText(true))
-													.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-													.OnSelectionChanged("dataGridRevenueAccountSelectionChanged")
-													.OnInitialized("dataGridRevenueAccountHeadInitialized")
-													// .HeaderFilter(p => p.Visible(true))
-													.ShowBorders(true)
-													.HoverStateEnabled(true)
-													.Paging(p => p.PageSize(15))
-													.FilterRow(f => f.Visible(true))
-													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-													.Height(345)
-													.Selection(s => s.Mode(SelectionMode.Single))
-													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-													.Columns(columns =>
-													{
-														columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('IncomeLedger')"));
-														columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')"));
-														columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')"));
-														columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
-														columns.Add().DataField("AccountGroupUnder").Caption(new JS("formatMessage('Account Group Under')"));
-														columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('IsLedgerObselete')"));
+													
+												.WordWrapEnabled(true)
+												.ShowBorders(true)
+												.SearchPanel(sp => sp.HighlightSearchText(true))
+												.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+												.OnSelectionChanged("dataGridRevenueAccountSelectionChanged")
+												.OnInitialized("dataGridRevenueAccountHeadInitialized")
+												// .HeaderFilter(p => p.Visible(true))
+												.ShowBorders(true)
+												.HoverStateEnabled(true)
+												.Paging(p => p.PageSize(15))
+												.FilterRow(f => f.Visible(true))
+												.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+												.Height(345)
+												.Selection(s => s.Mode(SelectionMode.Single))
+												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+												.Columns(columns =>
+												{
+													columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('IncomeLedger')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("AccountGroupUnder").Caption(new JS("formatMessage('Account Group Under')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('IsLedgerObselete')")).Alignment(HorizontalAlignment.Center);
 
 
-													})
+												})
 
-												)
+											)
 }
 
 @using (Html.DevExtreme().NamedTemplate("CostCenterAccountTemplate"))
@@ -2235,12 +2281,12 @@
 										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 										.Columns(columns =>
 										{
-											columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')"));
-											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')"));
-											columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')"));
-											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')"));
-											columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')"));
-											columns.Add().DataField("CurrencyCodeAr").Caption(new JS("formatMessage('CurrencyCodeAr')"));
+											columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("CurrencyCodeAr").Caption(new JS("formatMessage('CurrencyCodeAr')")).Alignment(HorizontalAlignment.Center);
 
 
 										})
@@ -2397,6 +2443,8 @@
 
 												)
 
+												
+
 }
 
 @using (Html.DevExtreme().NamedTemplate("CompanyBranchTemplate"))
@@ -2419,50 +2467,50 @@
 
 															.Key("CompanyId")
 
-													)
+													)				
 
-													.WordWrapEnabled(true)
+												.WordWrapEnabled(true)
 
-													.ShowBorders(true)
+												.ShowBorders(true)
 
-													.SearchPanel(sp => sp.HighlightSearchText(true))
+												.SearchPanel(sp => sp.HighlightSearchText(true))
 
-													.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+												.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
-													.OnSelectionChanged("dataGridCompanyBranchHeadSelectionChanged")
+												.OnSelectionChanged("dataGridCompanyBranchHeadSelectionChanged")
 
-													.OnInitialized("dataGridCompanyBranchHeadInitialized")
+												.OnInitialized("dataGridCompanyBranchHeadInitialized")
 
-													// .HeaderFilter(p => p.Visible(true))
+												// .HeaderFilter(p => p.Visible(true))
 
-													.ShowBorders(true)
+												.ShowBorders(true)
 
-													.HoverStateEnabled(true)
+												.HoverStateEnabled(true)
 
-													.Paging(p => p.PageSize(15))
+												.Paging(p => p.PageSize(15))
 
-													.FilterRow(f => f.Visible(true))
+												.FilterRow(f => f.Visible(true))
 
-													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+												.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
-													.Height(345)
+												.Height(345)
 
-													.Selection(s => s.Mode(SelectionMode.Single))
+												.Selection(s => s.Mode(SelectionMode.Single))
 
-													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 
-													.Columns(columns =>
+												.Columns(columns =>
 
-													{
+												{
 
-														columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('CompanyId')"));
+													columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('CompanyId')")).Alignment(HorizontalAlignment.Center);
 
-														columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('CompanyName')"));
+													columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('CompanyName')")).Alignment(HorizontalAlignment.Center);
 
 
-													})
+												})
 
-												)
+											)
 
 }
 @using (Html.DevExtreme().NamedTemplate("OtherIDTypeTemplate"))
@@ -2523,9 +2571,9 @@
 
 																	{
 
-																		columns.Add().DataField("SellerOtherIdtype").Caption(new JS("formatMessage('SellerOtherIdtype')"));
+																		columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
 
-																		columns.Add().DataField("SellerIdtypeName").Caption(new JS("formatMessage('SellerIdtypeName')"));
+																			columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
 
 
 																	})
@@ -2592,9 +2640,9 @@
 
 																		{
 
-																			columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')"));
+																			columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
 
-																			columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')"));
+																				columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
 
 
 																		})
@@ -2661,9 +2709,9 @@
 
 																			{
 
-																				columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')"));
+																				columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
 
-																				columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')"));
+																					columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
 
 
 																			})
@@ -2769,6 +2817,12 @@
 <!-- Modal Structure -->
 
 <script>
+
+		  function onClientCodeRowPrepared(e) {
+			if (e.rowType === "data" && e.data.IsLedgerObselete === true) {
+				e.rowElement.css("background-color", "#ffcccc"); // light red
+			}
+		}
 
 
 		function navigateToLedgerAccountForm() {
@@ -2904,466 +2958,26 @@
 
 		});
 
-		// Move the DataGrid configuration into a function for cleanliness
-		function initializeDataGrid(rowData) {
 
-			let grid = $("#B2BdataGrid").dxDataGrid({
-				dataSource: rowData,
-				keyExpr: "SNo",
-				// ✅ your columns, editing, dropdowns, and templates go here, unchanged
-				// Just make sure to close all functions properly
-				// For brevity, I'm skipping repeating all the column config here
-					columns: [{
-
-								dataField: "SNo",
-
-								caption: "#",
-
-								width: 100,
-
-								allowEditing: false // Prevent manual editing
-
-							},
-
-							{
-
-								dataField: "ItemCode",
-
-								caption: "Item Code",
-
-								width: 200
-
-							},
-
-						  {
-
-					dataField: "DetailedDescription",
-
-				caption: "Description",
-
-				width: 550,
-
-				  editCellTemplate: function (cellElement, cellInfo) {
-
-								getDropdownData().done(function (dropdownData) {
-
-									let $container = $("<div>").css({
-
-										display: "flex",
-
-										alignItems: "center",
-
-										gap: "5px",
-
-										width: "100%"
-
-									}).appendTo(cellElement);
-
-									$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-
-										dataSource: dropdownData,
-
-										valueExpr: "GSCode",
-
-										displayExpr: "GSDescrpition",
-
-										value: cellInfo.value,
-
-										dropDownOptions: { width: 800 },
-
-										onValueChanged: function (e) {
-
-											let selectedItem = dropdownData.find(item => item.GSCode === e.value);
-
-											if (selectedItem) {
-
-												cellInfo.setValue(selectedItem.GSDescrpition);
-
-												let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-
-												let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-
-												if (rowIndex !== -1) {
-
-													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-
-													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-
-												}
-
-												let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
-
-											}
-
-										},
-
-										contentTemplate: function (e) {
-
-											return $("<div>").dxDataGrid({
-
-												dataSource: dropdownData,
-
-												selection: { mode: "single" },
-
-												keyExpr: "GSCode",
-
-												height: 300, // ✅ Add fixed height to enable scrolling
-
-												scrolling: { mode: "virtual" },
-
-												columns: [
-
-													{ dataField: "GSCode", caption: "Code", width: 80 },
-
-													{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-
-													{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
-
-													{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-
-													{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-
-													{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-
-													{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-
-												],
-
-												onSelectionChanged: function (selectedItems) {
-
-													let selectedItem = selectedItems.selectedRowsData[0];
-
-													if (selectedItem) {
-
-														e.component.option("value", selectedItem.GSCode);
-
-														cellInfo.setValue(selectedItem.GSDescrpition);
-
-														let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-
-														let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-
-														if (rowIndex !== -1) {
-
-															dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-
-															dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-
-															dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-
-															dataGrid.cellValue(rowIndex, "Qty", 1);
-
-															dataGrid.cellValue(rowIndex, "VAT%", "15%");
-
-														}
-
-														e.component.close();
-
-													}
-
-												}
-
-											});
-
-										}
-
-									});
-
-									// ✅ Add icon with navigation
-
-									$("<div>").dxButton({
-
-										icon: "plus",
-
-										hint: "Add new item",
-
-										onClick: function () {
-
-										  // Replace or fetch dynamically
-
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-											window.location.href = url;
-
-										},
-
-										width: 60,
-
-										height: 30
-
-									}).appendTo($container);
-
-									// ✅ Edit icon with navigation
-
-									$("<div>").dxButton({
-
-										icon: "edit",
-
-										hint: "Edit item",
-
-										onClick: function () {
-
-										  // Replace or fetch dynamically
-
-											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-											window.location.href = url;
-
-										},
-
-										width: 60,
-
-										height: 30
-
-									}).appendTo($container);
-
-								});
-
-							}
-
+	// Move the DataGrid configuration into a function for cleanliness
+	function initializeDataGrid(rowData) {
+		
+		let grid = $("#B2BdataGrid").dxDataGrid({
+			dataSource: rowData,
+			keyExpr: "SNo",
+			// ✅ your columns, editing, dropdowns, and templates go here, unchanged
+			// Just make sure to close all functions properly
+			// For brevity, I'm skipping repeating all the column config here
+				columns: [
+					{
+
+							dataField: "InvoiceChildSLNo",
+							caption: "InvoiceChildSLNo",
+							width: 100,
+							allowEditing: false, // Prevent manual editing
+							visible: false // Hide the column
 						},
-
-						{ dataField: "Descriptions", caption: "...", width: 50 },
-
-						{
-
-									dataField: "UnitRateMethodDesc",
-
-							caption: "Unit Rate Method",
-
-							width: 200,
-
-							editCellTemplate: function (cellElement, cellInfo) {
-
-								getUnitRateMethods().done(function (unitRates) {
-
-									// Create container for dropdown + button
-
-									let $container = $("<div>").css({
-
-										display: "flex",
-
-										alignItems: "center",
-
-										gap: "5px",
-
-										width: "100%"
-
-									}).appendTo(cellElement);
-
-									// DropDownBox inside container
-
-									$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-
-										dataSource: unitRates,
-
-										valueExpr: "UnitCode",
-
-										displayExpr: "UnitDesc",
-
-										value: cellInfo.value || null,
-
-										placeholder: "Select Unit Rate Method",
-
-										dropDownOptions: { width: 600 },
-
-										contentTemplate: function (e) {
-
-											return $("<div>").dxDataGrid({
-
-												dataSource: unitRates,
-
-												keyExpr: "UnitCode",
-
-												selection: { mode: "single" },
-
-												height: 300,
-
-												scrolling: { mode: "virtual" },
-
-												columns: [
-
-														{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-													{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-													{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-													{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
-
-												],
-
-												onSelectionChanged: function (selectedItems) {
-
-													let selectedItem = selectedItems.selectedRowsData[0];
-
-													if (selectedItem) {
-
-														e.component.option("value", selectedItem.UnitDesc);
-
-														cellInfo.setValue(selectedItem.UnitDesc);
-
-														let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-														let rowIndex = grid.getRowIndexByKey(cellInfo.key);
-
-														if (rowIndex !== -1) {
-
-															grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
-
-														}
-
-														e.component.close();
-
-													}
-
-												}
-
-											});
-
-										}
-
-									});
-
-									// ✅ Add Button
-
-									$("<div>").dxButton({
-
-										icon: "plus",
-
-										hint: "Add new item",
-
-										onClick: function () {
-
-											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-											window.location.href = url;
-
-										},
-
-										width: 60,
-
-										height: 30
-
-									}).appendTo($container);
-
-								});
-
-							}
-
-						},
-
-
-						{ dataField: "UnitsToBill", caption: "Qty", width: 150 },
-
-						{ dataField: "UnitRate", caption: "Unit Price", width: 150 },
-
-							{ dataField: "CalcLineAmountBeforeDiscount", caption: "Total Before Discount", width: 150 },
-
-						{ dataField: "Discount", caption: "Discount", width: 150 },
-
-						{ dataField: "DiscountDetails", caption: "...", width: 50 },
-
-						{ dataField: "Amount", caption: "Amount", width: 150 },
-
-						//{ dataField: "VAT%", caption: "VAT%", width: 150 },
-
-						{
-			dataField: "VATPercentage",
-			caption: "VAT%",
-			width: 150,
-			editCellTemplate: function(cellElement, cellInfo) {
-				getTaxSlabData().done(function (dropdownData) {
-					$("<div>").appendTo(cellElement).dxDropDownBox({
-						dataSource: dropdownData,
-						valueExpr: "TaxSlabCode",
-						displayExpr: "TaxCodeToDisplay",
-						value: cellInfo.value,
-						dropDownOptions: { width: 400 },
-						placeholder: "Select an Item / Services",
-						onValueChanged: function(e) {
-							let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
-							if (selectedItem) {
-								cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-								let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-								let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-								let TaxSlabCode=selectedItem.TaxSlabCode;
-
-									ViewInvoiceVATPercentage(selectedItem.TaxRate, rowIndex,TaxSlabCode)
-
-							}
-						},
-						contentTemplate: function(e) {
-							return $("<div>").dxDataGrid({
-								dataSource: dropdownData,
-								selection: { mode: "single" },
-								keyExpr: "TaxSlabCode",
-								height: 300,
-								scrolling: { mode: "virtual" },
-								columns: [
-									{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-									{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
-								],
-								onSelectionChanged: function(selectedItems) {
-									let selectedItem = selectedItems.selectedRowsData[0];
-									if (selectedItem) {
-										e.component.option("value", selectedItem.TaxSlabCode);
-										cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-
-										e.component.close();
-									}
-								}
-							});
-						}
-					});
-				});
-			}
-		},
-
-						{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
-
-							{ dataField: "CalcTaxAmount", caption: "VAT", width: 150 },
-
-						{ dataField: "LineTotal", caption: "Total", width: 150 },
-
-						 { dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150 ,allowEditing: false,visible: false}
-					 ],
-				editing: {
-					mode: "cell",
-					allowUpdating: true,
-					allowAdding: false,
-					allowDeleting: true
-				},
-				onInitNewRow: function (e) {
-					e.data.SNo = rowData.length + 1;
-				},
-				columnAutoWidth: true,
-				showBorders: true
-			}).dxDataGrid("instance");
-		}
-
-
-
-
-
-
-			 var dataGridInstance;
-
-			var rowData = []; // Store the grid data
-
-			$(function () {
-
-				dataGridInstance = $("#B2BdataGrid").dxDataGrid({
-
-					dataSource: rowData,
-
-					keyExpr: "SNo",
-
-					columns: [
-
-						{
+					    {
 
 							dataField: "SNo",
 
@@ -3706,7 +3320,7 @@
 					},
 
 
-					{ dataField: "Qty", caption: "Qty", width: 150 },
+					{ dataField: "QuantityInvoiced", caption: "Qty", width: 150 },
 
 					{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
 
@@ -3806,293 +3420,86 @@
 
 			}).dxDataGrid("instance");
 
+		};
+
+
+
+
+	
+
+
+		// Fetch dropdown data (same API can be used if needed)
+
+	//  function getDropdownData() {
+
+	// 	return $.ajax({
+
+	// 		url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
+
+	// 		method: "GET",
+
+	// 		dataType: "json"
+
+	// 	}).then(function(response) {
+
+	// 		console.log("GsData",response)
+
+	// 		return response.map(item => ({
+
+	// 			GSCode: item.Gscode,
+
+	// 			GSDescrpition: item.Gsdescrpition,
+
+	// 			GsdescriptionAr:item.GsdescriptionAr,
+
+	// 			ItemPartNo: item.ItemPartNo,
+
+	// 			CostPrice: item.CostPrice,
+
+	// 			GSSellingRate: item.GssellingRate,
+
+	// 			ReorderQty:item.ReorderQty
+
+	// 		}));
+
+	// 	});
+
+	// }
+
+	function getUnitRateMethods() {
+
+		return $.ajax({
+
+			url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
+
+			method: "GET",
+
+			dataType: "json"
+
+		}).then(function (response) {
+
+			console.log("Unit Rate Data", response);
+
+			return response.map(item => ({
+
+				UnitCode: item.UnitCode,
+
+				UnitDesc: item.UnitDesc,
+
+				UnitType: item.UnitType,
+
+				UnitDescAr: item.UnitDescAr
+
+			}));
+
 		});
 
+	}
 
 
 
 
-			// Fetch dropdown data (same API can be used if needed)
-
-		 function getDropdownData() {
-
-			return $.ajax({
-
-				url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-
-				method: "GET",
-
-				dataType: "json"
-
-			}).then(function(response) {
-
-				console.log("GsData",response)
-
-				return response.map(item => ({
-
-					GSCode: item.Gscode,
-
-					GSDescrpition: item.Gsdescrpition,
-
-					GsdescriptionAr:item.GsdescriptionAr,
-
-					ItemPartNo: item.ItemPartNo,
-
-					CostPrice: item.CostPrice,
-
-					GSSellingRate: item.GssellingRate,
-
-					ReorderQty:item.ReorderQty
-
-				}));
-
-			});
-
-		}
-
-		function getUnitRateMethods() {
-
-			return $.ajax({
-
-				url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
-
-				method: "GET",
-
-				dataType: "json"
-
-			}).then(function (response) {
-
-				console.log("Unit Rate Data", response);
-
-				return response.map(item => ({
-
-					UnitCode: item.UnitCode,
-
-					UnitDesc: item.UnitDesc,
-
-					UnitType: item.UnitType,
-
-					UnitDescAr: item.UnitDescAr
-
-				}));
-
-			});
-
-		}
-
-
-
-
-	// $(function () {
-	// 	dataGridInstance = $("#B2BdataGrid").dxDataGrid({
-	// 		dataSource: rowData,
-	// 		keyExpr: "SNo",
-	// 		columns: [
-	// 			{
-	// 				dataField: "SNo",
-	// 				caption: "#",
-	// 				width: 100,
-	// 				allowEditing: false // Prevent manual editing
-	// 			},
-	// 			{
-	// 				dataField: "ItemCode",
-	// 				caption: "Item Code",
-	// 				width: 200
-	// 			},
-	// 			{
-	// 				dataField: "Description",
-	// 				caption: "Description",
-	// 				width: 550,
-	// 				editCellTemplate: function (cellElement, cellInfo) {
-	// 					getDropdownData().done(function (dropdownData) {
-	// 						$("<div>").appendTo(cellElement).dxDropDownBox({
-	// 							dataSource: dropdownData,
-	// 							valueExpr: "GSCode",
-	// 							displayExpr: "GSDescrpition",
-	// 							value: cellInfo.value,
-	// 							dropDownOptions: { width: 800 },
-	// 							placeholder: "<Select an Item / Services>",
-	// 							onValueChanged: function (e) {
-	// 								let selectedItem = dropdownData.find(item => item.GSCode === e.value);
-	// 								if (selectedItem) {
-	// 									cellInfo.setValue(selectedItem.GSDescrpition);
-
-	// 									let $container = $("<div>").css({ display: "flex", gap: "5px" });
-
-	// 									$container.appendTo(cellElement);
-
-	// 									$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-	// 										dataSource: dropdownData,
-	// 										valueExpr: "GSCode",
-	// 										displayExpr: "GSDescrpition",
-	// 										value: cellInfo.value,
-	// 										dropDownOptions: { width: 800 },
-	// 										onValueChanged: function (e) {
-	// 											let selectedItem = dropdownData.find(item => item.GSCode === e.value);
-	// 											if (selectedItem) {
-	// 												cellInfo.setValue(selectedItem.GSDescrpition);
-
-	// 												let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-	// 												let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-	// 												if (rowIndex !== -1) {
-	// 													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-	// 													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-	// 													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-	// 												}
-	// 												let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
-	// 											}
-	// 										},
-	// 										contentTemplate: function (e) {
-	// 											return $("<div>").dxDataGrid({
-	// 												dataSource: dropdownData,
-	// 												selection: { mode: "single" },
-	// 												keyExpr: "GSCode",
-	// 												height: 300,
-	// 												scrolling: { mode: "virtual" },
-	// 												columns: [
-	// 													{ dataField: "GSCode", caption: "Code", width: 80 },
-	// 													{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-	// 													{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
-	// 													{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-	// 													{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-	// 													{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-	// 													{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-	// 												],
-	// 												onSelectionChanged: function (selectedItems) {
-	// 													let selectedItem = selectedItems.selectedRowsData[0];
-	// 													if (selectedItem) {
-	// 														e.component.option("value", selectedItem.GSCode);
-	// 														cellInfo.setValue(selectedItem.GSDescrpition);
-
-	// 														let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-	// 														let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-
-	// 														if (rowIndex !== -1) {
-	// 															dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-	// 															dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-	// 															dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-	// 															dataGrid.cellValue(rowIndex, "Qty", 1);
-	// 															dataGrid.cellValue(rowIndex, "VAT%", "15%");
-	// 														}
-	// 														e.component.close();
-	// 													}
-	// 												}
-	// 											});
-	// 										}
-	// 									});
-
-	// 									$("<div>").dxButton({
-	// 										icon: "plus",
-	// 										hint: "Add new item",
-	// 										onClick: function () {
-	// 											let url = `/${tenantName}/Finance/VATGoodsandServices`;
-	// 											window.location.href = url;
-	// 										},
-	// 										width: 60,
-	// 										height: 30
-	// 									}).appendTo($container);
-
-	// 									$("<div>").dxButton({
-	// 										icon: "edit",
-	// 										hint: "Edit item",
-	// 										onClick: function () {
-	// 											let url = `/${tenantName}/Finance/VATGoodsandServices`;
-	// 											window.location.href = url;
-	// 										},
-	// 										width: 60,
-	// 										height: 30
-	// 									}).appendTo($container);
-	// 								}
-
-	// 								let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-	// 								let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-	// 								if (rowIndex !== -1) {
-	// 									dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-	// 									dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-	// 									dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-	// 									dataGrid.cellValue(rowIndex, "Qty", 1);
-	// 									dataGrid.cellValue(rowIndex, "VAT%", "15%");
-	// 								}
-	// 								e.component.close();
-	// 							}
-	// 						});
-	// 					});
-	// 				}
-	// 			},
-	// 			{ dataField: "DescriptionDetails", caption: "...", width: 50 },
-	// 			{ dataField: "DescriptionDetails", caption: "Unit Rate Method", width: 150 },
-	// 			{ dataField: "Qty", caption: "Qty", width: 150 },
-	// 			{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
-	// 			{ dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150, allowEditing: false },
-	// 			{ dataField: "Discount", caption: "Discount", width: 150 },
-	// 			{ dataField: "DiscountDetails", caption: "...", width: 50 },
-	// 			{ dataField: "Amount", caption: "Amount", width: 150, allowEditing: false },
-	// 			{
-	// 				dataField: "VATPercentage",
-	// 				caption: "VAT%",
-	// 				width: 150,
-	// 				editCellTemplate: function (cellElement, cellInfo) {
-	// 					getTaxSlabData().done(function (dropdownData) {
-	// 						$("<div>").appendTo(cellElement).dxDropDownBox({
-	// 							dataSource: dropdownData,
-	// 							valueExpr: "TaxSlabCode",
-	// 							displayExpr: "TaxCodeToDisplay",
-	// 							value: cellInfo.value,
-	// 							dropDownOptions: { width: 400 },
-	// 							placeholder: "Select an Item / Services",
-	// 							onValueChanged: function (e) {
-	// 								let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
-	// 								if (selectedItem) {
-	// 									cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-	// 									let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-	// 									let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-	// 									let TaxSlabCode = selectedItem.TaxSlabCode;
-	// 									VATPercentage(selectedItem.TaxRate, rowIndex, TaxSlabCode);
-	// 								}
-	// 							},
-	// 							contentTemplate: function (e) {
-	// 								return $("<div>").dxDataGrid({
-	// 									dataSource: dropdownData,
-	// 									selection: { mode: "single" },
-	// 									keyExpr: "TaxSlabCode",
-	// 									height: 300,
-	// 									scrolling: { mode: "virtual" },
-	// 									columns: [
-	// 										{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-	// 										{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
-	// 									],
-	// 									onSelectionChanged: function (selectedItems) {
-	// 										let selectedItem = selectedItems.selectedRowsData[0];
-	// 										if (selectedItem) {
-	// 											e.component.option("value", selectedItem.TaxSlabCode);
-	// 											cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-	// 											e.component.close();
-	// 										}
-	// 									}
-	// 								});
-	// 							}
-	// 						});
-	// 					});
-	// 				}
-	// 			},
-	// 			{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
-	// 			{ dataField: "VAT", caption: "VAT", width: 150, allowEditing: false },
-	// 			{ dataField: "Total", caption: "Total", width: 150, allowEditing: false },
-	// 			{ dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150, allowEditing: false, visible: false }
-	// 		],
-	// 		editing: {
-	// 			mode: "cell",
-	// 			allowUpdating: true,
-	// 			allowAdding: false
-	// 		},
-	// 		onInitNewRow: function (e) {
-	// 			e.data.SNo = rowData.length + 1;
-	// 		},
-	// 		columnAutoWidth: true,
-	// 		showBorders: true
-	// 	}).dxDataGrid("instance");
-	// });
-
+	
 		$("#btnAddNew").on("click", function (e) {
 				var newRow = {
 					SNo: rowData.length + 1, // Auto-generate SNo
@@ -5963,16 +5370,22 @@
 		InvoiceCheckedBy: ChkbySignatoryID|| null,
 		InvoiceApprovedBy: ApproedbySignatoryID|| null
 
-
-
-
-
-
-
 			};
 
+			// var InvoiceChildren=null;
+
+			//  if(IsCurrent!="true")
+			//  {
+			//  }
+			//  else{
+			//        InvoiceChildren = $("#B2BUpdatedataGrid").dxDataGrid("instance").option("dataSource");
+			//  }
+
+			  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
+
 			// Create JSON array for child records
-			var InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+			
 
 			// Add InvoiceNo to each item
 		let updatedDataSource = InvoiceChildren.map(item => ({

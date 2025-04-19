@@ -2519,24 +2519,50 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     foreach (var child in InvoiceChildren)
                     {
-                        if (child == null) continue;
+                        // if (child == null) continue;
 
-                        // Create a new instance for each child
-                        var aTbl20162VatinvoiceChild = new Tbl20162VatinvoiceChild
+                        if (child.InvoiceChildSlNo == null || child.InvoiceChildSlNo == 0)
                         {
-                            InvoiceNo = child.InvoiceNo,
-                            UnitRate = child.UnitPrice.GetDecimal(),
-                            DetailedDescription = child.Description.GetString(),
-                            QuantityInvoiced = child.Qty.GetDecimal(),
-                            TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
-                            UnitsToBill = 1,
-                            UnitRateMethod = 49,
-                            ItemCode= child.ItemCode,
-                            UoM = "Each"
-                            // Do NOT set the ID or primary key if it is auto-incremented
-                        };
+                            // Create a new instance for each child
+                            var aTbl20162VatinvoiceChild = new Tbl20162VatinvoiceChild
+                            {
+                                InvoiceNo = child.InvoiceNo,
+                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
+                                DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
+                                QuantityInvoiced = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                UnitsToBill = 1,
+                                UnitRateMethod = 49,
+                                ItemCode = child.ItemCode ?? string.Empty, // Null safety
+                                UoM = "Each"
+                                // Do NOT set the ID or primary key if it is auto-incremented
+                            };
 
-                        await dbContext.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
+                            await dbContext.Tbl20162VatinvoiceChildren.AddAsync(aTbl20162VatinvoiceChild);
+                        }
+                        else
+                        {
+                            // Find and update existing child (Update)
+                            var existingChild = await dbContext.Tbl20162VatinvoiceChildren
+                                .FirstOrDefaultAsync(x => x.InvoiceChildSlNo == child.InvoiceChildSlNo);
+
+                            if (existingChild != null)
+                            {
+                                existingChild.InvoiceNo = child.InvoiceNo;
+                                existingChild.UnitRate = child.UnitRate;
+                                existingChild.DetailedDescription = child.DetailedDescription;
+                                existingChild.QuantityInvoiced = child.QuantityInvoiced;
+                                existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
+                                existingChild.UnitsToBill = 1;
+                                existingChild.UnitRateMethod = 49;
+                                existingChild.ItemCode = child.ItemCode ?? string.Empty;
+                                existingChild.UoM = "Each";
+
+                                dbContext.Tbl20162VatinvoiceChildren.Update(existingChild);
+                            }
+                        }
+
+
                     }
 
                     await dbContext.SaveChangesAsync();

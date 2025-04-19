@@ -352,6 +352,12 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public dynamic VAT { get; set; }
         public decimal? TaxAmount { get; set; }
         public dynamic TaxSlabCode { get; set; }
+        public int InvoiceChildSlNo { get; set; }
+        public string DetailedDescription { get; set; }
+        public int UnitsToBill { get; set; }
+        public decimal? UnitRate { get; set; }
+        public decimal? QuantityInvoiced { get; set; }
+
     }
     public class Signatory
     {
