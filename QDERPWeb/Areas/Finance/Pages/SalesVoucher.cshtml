@@ -1193,7 +1193,7 @@
 
 
 
-		async  function addVoucherEntry() {
+	 function addVoucherEntry() {
 
 		 var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 		 var ClientName = $("#accountDropDownBox").dxDropDownBox("instance");
@@ -1394,6 +1394,8 @@
 					 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 					  var button = $("#btnSave").dxButton("instance");
 					 button.option("text", "Update");
+					var voucherNoTextBox = $("#VoucherNo").dxTextBox("instance");
+					voucherNoTextBox.option("readOnly", true);
 					 //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
 					 // Get accounthead-datagrid instance
 	 var accountGrid = $("#accounthead-datagrid").dxDataGrid("instance");
@@ -1412,7 +1414,7 @@
 
 					 // Get the latest entry from the filtered data
 					 var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
-					 console.log(latestEntry);
+					 
 					 if (accheadname) {
 
 						 const params = {
@@ -2083,41 +2085,34 @@
 			}
 		}).dxPopup("instance").show();
 	}
-		function showLedgerAccountPopup() {
+	function showLedgerAccountPopup() {
 		var popup = $("#ledgerAccountPopup").dxPopup("instance");
 		popup.show();
 
-		// Set correct URL for LedgerAccount view
+		// Correct URL to your LedgerAccount view
 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+	}
+	$(document).ready(function () {
+		$("#btntoggleGroupPanel").click();
 
-		// Refresh DropDownBox after popup closes, ensuring new entries are loaded
-		popup.option("onHidden", function () {
-			setTimeout(refreshAccountHeadDropDown, 500); // Delay allows backend update before fetching
+		$("#errorPopup").dxPopup({
+			width: 350,
+			height: 300,
+			title: "⚠ Error",
+			visible: false,
+			showCloseButton: true,
+			dragEnabled: false,
+			closeOnOutsideClick: true
 		});
-	}
 
-		function refreshAccountHeadDropDown() {
-		var dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
-
-		if (dropDownBox) {
-			var previousValue = dropDownBox.option("value"); // Store previously selected value
-
-			dropDownBox.getDataSource().reload().done(function () {
-				var dataSource = dropDownBox.getDataSource();
-				dataSource.load().done(function (data) {
-					if (data.length > 0) {
-						var latestValue = previousValue && data.some(item => item.AccountId === previousValue)
-							? previousValue // Keep previous selection if still available
-							: data[0].AccountId; // Otherwise, select the first available entry dynamically
-
-						dropDownBox.option("value", latestValue); // Set dynamically fetched value
-					}
-				});
-
-				DevExpress.ui.notify("Account Head list updated!", "success", 2000);
-			});
-		}
-	}
+		$("#errorCloseBtn").dxButton({
+			text: "Close",
+			type: "danger",
+			onClick: function () {
+				$("#errorPopup").dxPopup("instance").hide();
+			}
+		});
+	});
 
 
 	function showLedgerAccountHeadEditPopup() {

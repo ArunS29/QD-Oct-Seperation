@@ -399,14 +399,17 @@
             .OnClick("navigateToInvoiceEdit")
             )
     </div>
+  
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnPurchaseDetails")
-            .Text("Purchase Details")
-            .Icon("card")
-            .Width(150)
-          @*   .OnClick("navigateToInvoiceEdit") *@
-            )
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+                .ID("btnPurchaseDetails")
+                .Text("Purchase Details")
+                .Icon("card")
+                .Width(150)
+                .OnClick("navigateToPurchaseDetails")
+                )
+        </div>
     </div>
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
@@ -641,11 +644,15 @@
 
          function navigateToInvoiceEdit() {
            // Replace with the actual tenant name dynamically
-                var url = `/${tenantName}/Finance/VATInvoiceWithDetails`;
+                var url = `/${tenantName}/VAT/VATInvoiceWithDetails`;
             window.location.href = url; // Navigate to the page
         }
 
- 
+    function navigateToPurchaseDetails() {
+        // Replace with the actual tenant name dynamically
+        var url = `/${tenantName}/VAT/VATPurchaseInDetails`;
+        window.location.href = url; // Navigate to the page
+    }
 
 
     // function getDropdownData() {

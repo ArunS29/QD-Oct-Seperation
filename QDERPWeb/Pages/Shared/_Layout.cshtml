@@ -1070,8 +1070,8 @@
             </div>
         </div>
 
-        <div id="submenuContainer5" class="context-menu" style="display:none; width: 300px;">
-            <div class="context-menu-item1">
+        <div id="submenuContainer5" class="context-menu" style="display:none; width:300px;">
+            <div class="context-menu-item1" >
                 <div class="submenu-item" onclick="handleClick('BillsReceivableAll')">
                     <i class="fa fa-file"></i>
                     <span id="BillsReceivableAll" class="no-border-input"></span>
@@ -1116,35 +1116,35 @@
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClick('rpt201BillsPayable')">
                     <i class="fa fa-file"></i>
-                    <span>Bills Payables (With Reference No)</span>
+                    <span id="BillsPayablesWithReferenceNo" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('rpt201BillsPayableWithVchNo')">
                     <i class="fa fa-file"></i>
-                    <span>Bills Payables (With Voucher No)</span>
+                    <span id="BillsPayablesWithVoucherNo" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('AgeingToday')">
                     <i class="fa fa-file"></i>
-                    <span>Bills Payables (Ageing as on Today)</span>
+                    <span id="BillsPayablesAgeingasonToday" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('EndDate')">
                     <i class="fa fa-file"></i>
-                    <span>Bills Payables (Ageing as on End Date)</span>
+                    <span id="BillsPayablesAgeingasonEndDate" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('payableRetention')">
                     <i class="fa fa-file"></i>
-                    <span>Bills Payables (With Retention)</span>
+                    <span id="BillsPayablesWithRetention" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Payablelandscape')">
                     <i class="fa fa-file"></i>
-                    <span>Bills Payables (Landscape Format)</span>
+                    <span id="BillsPayablesLandscapeFormat" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('Balance')">
                     <i class="fa fa-file"></i>
-                    <span>Bills Payables (Ageing as per Ledger Balance)</span>
+                    <span id="BillsPayablesAgeingasperLedgerBalance" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleClick('BillsPayablePaid')">
                     <i class="fa fa-file"></i>
-                    <span>Bills Payables (All Including Paid)</span>
+                    <span id="BillsPayablesAllIncludingPaid" class="no-border-input"></span>
                 </div>
             </div>
         </div>
@@ -1152,29 +1152,29 @@
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleCstReportClick('CostAllocationReport')">
                     <i class="fa fa-file"></i>
-                    <span>Cost Allocation Report - Detailed</span>
+                    <span id="CostAllocationReportDetailed" class="no-border-input"></span>
                 </div>
 
                 <div class="submenu-item" onclick="handleCstReportClick('CostAllocationDetailedReport')">
                     <i class="fa fa-file"></i>
-                    <span>Cost Allocation Report - Summary</span>
+                    <span id="CostAllocationReportSummary" class="no-border-input"></span>
                 </div>
 
                 <div class="submenu-item" onclick="handleCstReportClick('EmpReport')">
                     <i class="fa fa-file"></i>
-                    <span>Employee Allocation Report - Detailed</span>
+                    <span id="EmployeeAllocationReportDetailed" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleCstReportClick('EmpSummaryReport')">
                     <i class="fa fa-file"></i>
-                    <span>Employee Allocation Report - Summary</span>
+                    <span id="EmployeeAllocationReportSummary" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleCstReportClick('EmpReport')">
                     <i class="fa fa-file"></i>
-                    <span>Property Cost Allocation Report - Detailed</span>
+                    <span id="PropertyCostAllocationReportDetailed" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleCstReportClick('EmpSummaryReport')">
                     <i class="fa fa-file"></i>
-                    <span>Property Cost Allocation Report - Summary</span>
+                    <span id="PropertyCostAllocationReportSummary" class="no-border-input"></span>
                 </div>
             </div>
         </div>
@@ -1182,16 +1182,16 @@
             <div class="context-menu-item1">
                 <div class="submenu-item">
 
-                    <span>Tax Summary Report</span>
+                    <span class="no-border-input">Tax Summary Report</span>
                 </div>
                 <div class="submenu-item">
 
-                    <span>Tax Report (Revenue Classified)</span>
+                    <span class="no-border-input">Tax Report (Revenue Classified)</span>
                 </div>
 
                 <div class="submenu-item">
 
-                    <span>Tax Report (Revenue Classified)in arabic </span>
+                    <span class="no-border-input">Tax Report (Revenue Classified)in arabic </span>
                 </div>
 
             </div>
@@ -1200,16 +1200,16 @@
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClick('Account Group')">
 
-                    <span>Account Group</span>
+                    <span class="no-border-input">Account Group</span>
                 </div>
                 <div class="submenu-item">
 
-                    <span>Tax Report (Revenue Classified)</span>
+                    <span class="no-border-input">Tax Report (Revenue Classified)</span>
                 </div>
 
                 <div class="submenu-item">
 
-                    <span>Tax Report (Revenue Classified)in arabic </span>
+                    <span class="no-border-input">Tax Report (Revenue Classified)in arabic </span>
                 </div>
 
             </div>
@@ -1218,11 +1218,11 @@
             <div class="context-menu-item1">
                 <div class="submenu-item">
 
-                    <span>Stock Inventory Report</span>
+                    <span class="no-border-input">Stock Inventory Report</span>
                 </div>
                 <div class="submenu-item">
 
-                    <span>Cost Posting</span>
+                    <span class="no-border-input">Cost Posting</span>
                 </div>
 
 
@@ -1459,73 +1459,177 @@
         $(function () {
             $("#BillsReceivableAll").dxTextBox({
                 text: formatMessage("Bills Receivable (All)"),
+                width:400,
+               
                 readOnly: true
             });
             $("#BillsReceivableByAccount").dxTextBox({
                 text: formatMessage("Bills Receivable (By Account)"),
+                width:400,
                 readOnly: true
             });
             $("#BillsReceivableAgeingToday").dxTextBox({
                 text: formatMessage("Bills Receivable (Ageing as on Today)"),
+                width:400,
                 readOnly: true
             });
             $("#Report4").dxTextBox({
                 text: formatMessage("Bills Receivable (Ageing By End Date)"),
+                width:400,
                 readOnly: true
             });
             $("#BillsReceivableRentation").dxTextBox({
                 text: formatMessage("Bills Receivable (With Retention)"),
+                width:400,
                 readOnly: true
             });
             $("#BillsReceivablelandscapeformat").dxTextBox({
                 text: formatMessage("BillsReceivablelandscapeformat"),
+                width:400,
                 readOnly: true
             });
             $("#BillsReceivableLedgerBalance").dxTextBox({
                 text: formatMessage("Bills Receivable (Ageing as per Ledger Balance)"),
+                width:400,
                 readOnly: true
             });
             $("#BillsReceivableFormat").dxTextBox({
                 text: formatMessage("Bills Receivable (Format 2)"),
+                width:400,
                 readOnly: true
             });
             $("#StatementOfAccountOrderByVoucherNo1").dxTextBox({
+           
                 text: formatMessage("Statement of Account Order By Voucher No"),
+                width:400,
                 readOnly: true
             });
         });
+        ////////////////
+          $(function () {
+            $("#BillsPayablesWithReferenceNo").dxTextBox({
+                text: formatMessage("Bills Payables(With Reference No)"),
+                width:400,
+                readOnly: true
+            });
+            $("#BillsPayablesWithVoucherNo").dxTextBox({
+                text: formatMessage("Bills Payables (With Voucher No)"),
+                width:400,
+                readOnly: true
+            });
+            $("#BillsPayablesAgeingasonToday").dxTextBox({
+                text: formatMessage("Bills Payables (Ageing as on Today)"),
+                width:400,
+                readOnly: true
+            });
+            $("#BillsPayablesAgeingasonEndDate").dxTextBox({
+                text: formatMessage("Bills Payables (Ageing as on End Date)"),
+                width:400,
+                readOnly: true
+            });
+            $("#BillsPayablesWithRetention").dxTextBox({
+                text: formatMessage("Bills Payables (With Retention)"),
+                width:400,
+                readOnly: true
+            });
+            $("#BillsPayablesLandscapeFormat").dxTextBox({
+                text: formatMessage("Bills Payables (Landscape Format)"),
+                width:400,
+                readOnly: true
+            });
+            $("#BillsPayablesAgeingasperLedgerBalance").dxTextBox({
+                text: formatMessage("Bills Payables (Ageing as per Ledger Balance)"),
+                width:400,
+                readOnly: true
+            });
+            $("#BillsPayablesAllIncludingPaid").dxTextBox({
+                text: formatMessage("Bills Payables (All Including Paid)"),
+                width:400,
+                readOnly: true
+            });
+           
+        });
 
+         ////////////////###############
+          $(function () {
+            $("#CostAllocationReportDetailed").dxTextBox({
+                text: formatMessage("Cost Allocation Report - Detailed"),
+                width:400,
+                readOnly: true
+            });
+            $("#CostAllocationReportSummary").dxTextBox({
+                text: formatMessage("Cost Allocation Report - Summary"),
+                width:400,
+                readOnly: true
+            });
+            $("#EmployeeAllocationReportDetailed").dxTextBox({
+                text: formatMessage("Employee Allocation Report - Detailed"),
+                width:400,
+                readOnly: true
+            });
+            $("#EmployeeAllocationReportSummary").dxTextBox({
+                text: formatMessage("Employee Allocation Report - Summary"),
+                width:400,
+                
+                readOnly: true
+            });
+            $("#PropertyCostAllocationReportDetailed").dxTextBox({
+                text: formatMessage("Property Cost Allocation Report - Detailed"),
+                width:400,
+                readOnly: true
+            });
+            $("#PropertyCostAllocationReportSummary").dxTextBox({
+                text: formatMessage("Property Cost Allocation Report - Summary"),
+                width:400,
+                readOnly: true
+            });
+           
+
+        });
         $(function () {
             $("#StatementOfAccounts").dxTextBox({
                 text: formatMessage("Statement of Accounts"),
+                width:400,
                 readOnly: true
             });
             $("#StatementOfAccountsWithNarration").dxTextBox({
                 text: formatMessage("Statement of Accounts (With Narration)"),
+                width:400,
                 readOnly: true
             });
             $("#StatementOfAccountsExportFormat").dxTextBox({
                 text: formatMessage("Statement of Accounts (Export Format)"),
+                width:400,
                 readOnly: true
             });
             $("#StatementOfAccountsExportFormat2").dxTextBox({
                 text: formatMessage("Statement of Accounts (Export Format2)"),
+                width:400,
                 readOnly: true
             });
             $("#StatementOfAccountsWithDetails").dxTextBox({
                 text: formatMessage("Statement of Accounts - With Details"),
+                width:400,
                 readOnly: true
             });
             $("#StatementOfAccountOrderByVoucherNoWithoutNarration").dxTextBox({
                 text: formatMessage("Statement of Account OrderByVocuherNo(Without Narration)"),
+                width:410,
                 readOnly: true
             });
             $("#StatementOfAccountExportFormatLandscape").dxTextBox({
                 text: formatMessage("Statement of Account Export Format(Landscape)"),
+                width:400,
                 readOnly: true
             });
             $("#StatementOfAccountOrderByVoucherNo").dxTextBox({
                 text: formatMessage("Statement of Account Order By Voucher No"),
+                width:400,
+                readOnly: true
+            });
+              $("#AccountDebtors").dxTextBox({
+                text: formatMessage("Account Debtors"),
+                width:400,
                 readOnly: true
             });
         });
@@ -1533,22 +1637,27 @@
         $(function () {
             $("#DetailedReportText").dxTextBox({
                 text: formatMessage("Detailed Report"),
+                width:400,
                 readOnly: true
             });
             $("#DetailedReportByDateText").dxTextBox({
                 text: formatMessage("Detailed Report(By Date)"),
+                width:400,
                 readOnly: true
             });
             $("#DetailedGroupReportText").dxTextBox({
                 text: formatMessage("Detailed Group Report"),
+                width:400,
                 readOnly: true
             });
             $("#DetailedGroupReportByDateText").dxTextBox({
                 text: formatMessage("Detailed Group Report(By Date)"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterMasterReportText").dxTextBox({
                 text: formatMessage("Cost Center Master Report"),
+                width:400,
                 readOnly: true
             });
         });
@@ -1556,78 +1665,95 @@
         $(function () {
             $("#SummaryReport").dxTextBox({
                 text: formatMessage("Summary Report"),
+                width:400,
                 readOnly: true
             });
             $("#SummaryReportByDate").dxTextBox({
                 text: formatMessage("Summary Report(By Date)"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterReport").dxTextBox({
                 text: formatMessage("Cost Center Report"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterReportByDate").dxTextBox({
                 text: formatMessage("Cost Center Report(By Date)"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterGroupReport").dxTextBox({
                 text: formatMessage("Cost Center Group Report"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterGroupReportByDate").dxTextBox({
                 text: formatMessage("Cost Center Group Report(By Date)"),
+                width:400,
                 readOnly: true
             });
         });
         $(function () {
             $("#SummaryReport").dxTextBox({
                 text: formatMessage("Summary Report"),
+                width:400,
                 readOnly: true
             });
             $("#SummaryReportByDate").dxTextBox({
                 text: formatMessage("Summary Report(By Date)"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterReport").dxTextBox({
                 text: formatMessage("Cost Center Report"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterReportByDate").dxTextBox({
                 text: formatMessage("Cost Center Report(By Date)"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterGroupReport").dxTextBox({
                 text: formatMessage("Cost Center Group Report"),
+                width:400,
                 readOnly: true
             });
             $("#CostCenterGroupReportByDate").dxTextBox({
                 text: formatMessage("Cost Center Group Report(By Date)"),
+                width:400,
                 readOnly: true
             });
         });
         $(function () {
             $("#ReceivablesAgeingReport").dxTextBox({
                 text: formatMessage("Receivables Ageing Report"),
+                width:400,
                 readOnly: true
 
             });
             $("#ReceivablesAgeingReportSalesPerson").dxTextBox({
                 text: formatMessage("Receivables Ageing Report (By Sales Person)"),
+                width:400,
                 readOnly: true
 
             });
             $("#ReceivablesAgeingReportCustomizable").dxTextBox({
                 text: formatMessage("Receivables Ageing Report (Customizable)"),
+                width:400,
                 readOnly: true
 
             });
             $("#ReceivablesAgeingSummary").dxTextBox({
                 text: formatMessage("Receivables Ageing Summary"),
+                width:400,
                 readOnly: true
 
             });
             $("#ReceivablesAgeingSummaryCustomizable").dxTextBox({
                 text: formatMessage("Receivables Ageing Summary (Customizable)"),
+                width:400,
                 readOnly: true
 
             });

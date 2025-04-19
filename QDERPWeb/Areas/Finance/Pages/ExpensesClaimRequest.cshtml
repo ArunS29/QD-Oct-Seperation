@@ -305,7 +305,7 @@
                     <div style="margin-left:25px" class="displayFlex">
                         Submitted On:<span id="SubmittedOn"></span>
                         @(Html.DevExtreme().TextBox()
-                            .ID("SubmittedOntext")
+                            .ID("SubmittedOnDate")
                             .Value(null)
                             .Disabled(true)
                             .Width(120))
@@ -1014,13 +1014,7 @@
         loadUrl: "/api/VoucherMaster/" + loadAction
     }));
 }
-    // Footer Filter row button click event
-    function togglesupplierFilterRow() {
-        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-        var currentVisibility = grid.option("filterRow.visible");
-
-        grid.option("filterRow.visible", !currentVisibility);
-    }
+    
          $("#btnSave").on("click", function (e) {
     e.preventDefault();
 
