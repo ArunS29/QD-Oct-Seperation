@@ -4,6 +4,8 @@
         "Employee Document": "Employee Document",
         "Reminder Days": "Reminder Days",
         "Document Type": "Document Type",
+        "Account Ledger No:": "Account Ledger No:",
+        "Account Head Name:":"Account Head Name:",
 
 
 

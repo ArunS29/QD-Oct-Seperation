@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
-    [Route("/pulse/Finance/api/[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BillsReceivableController : Controller
     {

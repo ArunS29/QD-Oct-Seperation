@@ -357,7 +357,7 @@
         if (dataGrid) {
             dataGrid.option("dataSource", {
                 load: function () {
-                    return $.getJSON(`/${tenantName}/Finance/api/BillsReceivable/Get`, { filterType: filterType });
+                    return $.getJSON(`/api/BillsReceivable/Get`, { filterType: filterType });
 
                 }
             });

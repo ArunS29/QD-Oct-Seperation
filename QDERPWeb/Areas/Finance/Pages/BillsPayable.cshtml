@@ -413,7 +413,7 @@
         if (dataGrid) {
             dataGrid.option("dataSource", {
                 load: function () {
-                    return $.getJSON(`/${tenantName}/Finance/api/BillsPayable/Get`, { filterType: filterType });
+                    return $.getJSON(`/api/BillsPayable/Get`, { filterType: filterType });
                 }
             });
             dataGrid.refresh();
