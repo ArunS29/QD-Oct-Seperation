@@ -1179,7 +1179,7 @@ $("#btnSubmit").on("click", function (e) {
     });
 
     if (!hasValidAmounts) {
-        DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Warning");
+        DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Claim Amount Invalid");
         return;
     }
     // Step 1: Check if ClaimRefNo exists in the DB
@@ -1192,9 +1192,9 @@ $("#btnSubmit").on("click", function (e) {
             if (!response.exists) {
                
 
-                // Optional delay to allow save to complete before proceeding
                 
-                    savedetails(); // Step 3: Call actual submit
+                
+                    savedetails(); 
                  // Adjust time if needed
             } else {
                 // If exists, go straight to submit
@@ -1277,14 +1277,6 @@ function proceedWithSubmit() {
         }
     });
 }
-        $(function () {
-                $("#ExpensesClaimRequest").dxTextBox({
-                    text: formatMessage("Expenses Claim Request"),
-                readOnly: true,
-                onContentReady: function (e) {
-                    $(e.element).addClass("dx-textbox-heading");
-                }
-            });
-        });
+
 
 </script>
