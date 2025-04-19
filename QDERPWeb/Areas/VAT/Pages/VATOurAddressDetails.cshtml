@@ -1,0 +1,97 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.VATOurAddressDetailsModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+<style>
+
+.address-form-table td {
+    padding: 10px;
+    vertical-align: top;
+    }
+
+.address-form-table label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    }
+</style>
+<div class="dx-viewport address-form-container">
+    <table class="address-form-table" style="width: 100%; border-collapse: collapse;">
+        <!-- Row 1 -->
+        <tr>
+            <td colspan="2"><label for="StreetName">Our Address - Street Name:*</label></td>
+            <td><label for="StreetNameArabic">Our Address - Street Name (Arabic):*</label></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="text" id="StreetName" name="StreetName" style="width: 100%;" /></td>
+            <td><input type="text" id="StreetNameArabic" name="StreetNameArabic" style="width: 100%;" /></td>
+        </tr>
+
+        <!-- Row 2 -->
+        <tr>
+            <td colspan="2"><label for="AdditionalAddress">Address - Additional Address:</label></td>
+            <td><label for="AdditionalAddressArabic">Address - Additional Address (Arabic):</label></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="text" id="AdditionalAddress" name="AdditionalAddress" style="width: 100%;" /></td>
+            <td><input type="text" id="AdditionalAddressArabic" name="AdditionalAddressArabic" style="width: 100%;" /></td>
+        </tr>
+
+        <!-- Row 3 -->
+        <tr>
+            <td><label for="BuildingNumber">Building Number:*</label></td>
+            <td><label for="ClientCity">City:*</label></td>
+            <td><label for="ClientCityArabic">City (Arabic):*</label></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="BuildingNumber" name="BuildingNumber" style="width: 100%;" /></td>
+            <td><input type="text" id="ClientCity" name="ClientCity" style="width: 100%;" /></td>
+            <td><input type="text" id="ClientCityArabic" name="ClientCityArabic" style="width: 100%;" /></td>
+        </tr>
+
+        <!-- Row 4 -->
+        <tr>
+            <td><label for="AdditionalNumber">Additional Number:*</label></td>
+            <td><label for="Province">Province / State:</label></td>
+            <td><label for="ProvinceArabic">Province / State (Arabic):</label></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="AdditionalNumber" name="AdditionalNumber" style="width: 100%;" /></td>
+            <td><input type="text" id="Province" name="Province" style="width: 100%;" /></td>
+            <td><input type="text" id="ProvinceArabic" name="ProvinceArabic" style="width: 100%;" /></td>
+        </tr>
+
+        <!-- Row 5 -->
+        <tr>
+            <td><label for="PostalCode">Postal Code:*</label></td>
+            <td><label for="District">District / Neighborhood:*</label></td>
+            <td><label for="DistrictArabic">District / Neighborhood (Arabic):*</label></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="PostalCode" name="PostalCode" style="width: 100%;" /></td>
+            <td><input type="text" id="District" name="District" style="width: 100%;" /></td>
+            <td><input type="text" id="DistrictArabic" name="DistrictArabic" style="width: 100%;" /></td>
+        </tr>
+
+        <!-- Row 6 -->
+        <tr>
+            <td ><label for="CountryCode">Country Code:*</label></td>
+        </tr>
+        <tr>
+            <td >
+                <select id="CountryCode" name="CountryCode" style="width: 100%;">
+                    <option value="US">US</option>
+                    <option value="UK">UK</option>
+                    <option value="IN" selected>IN</option>
+                    <option value="SA">SA</option>
+                    <option value="UAE">UAE</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+
