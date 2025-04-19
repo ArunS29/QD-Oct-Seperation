@@ -3407,7 +3407,7 @@
         "Signatory Name(Arabic)": "اسم الموقّع (بالعربية)",
         "Signatory Name": "اسم الموقّع",
         "Type a New Signatory & Add to the Existing List:": "اكتب موقّعًا جديدًا وأضفه إلى القائمة الحالية:",
-        "Code": "الرمز"
+        "Code": "الرمز",
 
     }
 };

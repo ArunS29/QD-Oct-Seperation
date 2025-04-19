@@ -159,7 +159,6 @@
 
 
 <script type="text/javascript">
-    let selectBox=null;
     $(function () {
         $("#TrialBalance").dxTextBox({
             text: formatMessage("Trial Balance"),
@@ -172,15 +171,9 @@
     // Function to handle changes in the Account Group selection
     function onRequestedByChanged(e) {
         var selectedValue = e.value; // Get the selected value from the SelectBox
-       // alert(selectedValue.CostAllocationUnit)
-    
 
-     //   var selectBox = $("#requestedBy").dxSelectBox("instance");
-        selectBox = selectedValue.CostAllocationUnit;
-       
-      
-
-      //  console.log("value", requestedBy);
+        var selectBox = $("#requestedBy").dxSelectBox("instance");
+        console.log("value", requestedBy);
         var dataSource = selectBox.option("dataSource");
 
         if (dataSource && dataSource.store) {

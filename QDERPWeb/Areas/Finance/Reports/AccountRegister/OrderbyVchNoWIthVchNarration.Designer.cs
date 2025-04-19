@@ -104,7 +104,7 @@
             this.xrLabel7,
             this.xrLabel18,
             this.xrLabel4});
-            this.Detail.HeightF = 47.04178F;
+            this.Detail.HeightF = 45.99998F;
             this.Detail.Name = "Detail";
             // 
             // xrLabel9
@@ -121,7 +121,6 @@
             this.xrLabel9.StylePriority.UseTextAlignment = false;
             this.xrLabel9.Text = "xrLabel9";
             this.xrLabel9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrLabel9.TextFormatString = "{0:0.00}";
             // 
             // xrLabel8
             // 
@@ -137,7 +136,6 @@
             this.xrLabel8.StylePriority.UseTextAlignment = false;
             this.xrLabel8.Text = "xrLabel8";
             this.xrLabel8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrLabel8.TextFormatString = "{0:0.00}";
             // 
             // xrLabel7
             // 
@@ -526,7 +524,7 @@
             xrSummary2.Running = DevExpress.XtraReports.UI.SummaryRunning.Page;
             this.xrLabel11.Summary = xrSummary2;
             this.xrLabel11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrLabel11.TextFormatString = "{0:0.00}";
+            this.xrLabel11.TextFormatString = "{0:N2}";
             // 
             // xrLabel10
             // 
@@ -608,7 +606,7 @@
             this.xrLabel22.StylePriority.UseTextAlignment = false;
             this.xrLabel22.Text = "Cr";
             this.xrLabel22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrLabel22.TextFormatString = "{0:0.00}";
+            this.xrLabel22.TextFormatString = "{0:N2}";
             // 
             // xrLabel21
             // 
@@ -631,7 +629,7 @@
             this.xrLabel21.StylePriority.UseFont = false;
             this.xrLabel21.StylePriority.UseTextAlignment = false;
             this.xrLabel21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel21.TextFormatString = "{0:0.00}";
+            this.xrLabel21.TextFormatString = "{0:N2}";
             // 
             // xrLabel20
             // 

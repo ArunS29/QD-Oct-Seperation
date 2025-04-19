@@ -709,18 +709,15 @@
         // Menu item click handler
     function  handleReportsClick(e) {
         alert ('click')
-        
+        debugger
         const selectedText = e.itemData.text;
 
         // Get UI control instances
-        var accountGroup = selectBox;
-        alert(accountGroup)
+        var accountGroup = $("#requestedBy").dxSelectBox("instance");
         var frmDateBox = $("#frmdateBox").dxDateBox("instance");
         var toDateBox = $("#todateBox").dxDateBox("instance");
 
-       // var accountGroup = accountGroup.option("value");
-       var accountGroup = selectBox;
-      //  alert(value)
+        var accountGroup = accountGroup.option("value");
         var frmDate = frmDateBox.option("value");
         var toDate = toDateBox.option("value");
 

@@ -15,8 +15,6 @@ namespace QD.ERP.Web.Pages
     {
         public XtraReport Report { get; private set; }
         public string ReportName { get; private set; }
-     
-     
 
         private static readonly HashSet<string> reportsRequiringParameters = new()
         {
@@ -26,7 +24,7 @@ namespace QD.ERP.Web.Pages
         private static readonly Dictionary<string, Func<string, DateTime, DateTime, XtraReport>> parameterizedReports =
             new()
             {
-             //  { "PreviewRegister", (voucherType, from, to) => new PreviewRegister(voucherType, from, to, "", "", "", null, "", "") },
+                //{ "PreviewRegister", (voucherType, from, to) => new PreviewRegister(voucherType, from, to,"","","",null,"","","") },
                 { "OrderByVchNoRegister", (voucherType, from, to) => new OrderByVchNoRegister(voucherType, from, to, "", "", "", null, "", "") },
                  { "OrderbyVchNoWIthVchNarration", (voucherType, from, to) => new OrderbyVchNoWIthVchNarration(voucherType, from, to, "", "", "", null, "", "") },
                   { "Register4line", (voucherType, from, to) => new Register4line(voucherType, from, to, "", "", "", null, "", "") },

@@ -412,7 +412,7 @@
             this.table1.Name = "table1";
             this.table1.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.tableRow1});
-            this.table1.SizeF = new System.Drawing.SizeF(868.9167F, 48.83333F);
+            this.table1.SizeF = new System.Drawing.SizeF(871F, 48.83333F);
             // 
             // tableRow1
             // 
@@ -617,7 +617,7 @@
             this.tableCell8.StylePriority.UseTextAlignment = false;
             this.tableCell8.Text = "OverDue By Days";
             this.tableCell8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.tableCell8.Weight = 0.1035885850748981D;
+            this.tableCell8.Weight = 0.10621627963758953D;
             // 
             // Detail
             // 
@@ -638,7 +638,7 @@
             this.table2.OddStyleName = "DetailData3_Odd";
             this.table2.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.tableRow2});
-            this.table2.SizeF = new System.Drawing.SizeF(868.9167F, 25F);
+            this.table2.SizeF = new System.Drawing.SizeF(871F, 25F);
             this.table2.StylePriority.UseBorderDashStyle = false;
             this.table2.StylePriority.UseBorders = false;
             this.table2.StylePriority.UseBorderWidth = false;
@@ -807,7 +807,7 @@
             this.xrTableCell2.StylePriority.UseTextAlignment = false;
             this.xrTableCell2.Text = "xrTableCell2";
             this.xrTableCell2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.xrTableCell2.Weight = 0.11565269019892561D;
+            this.xrTableCell2.Weight = 0.11851934813017929D;
             // 
             // sqlDataSource1
             // 
@@ -1046,7 +1046,7 @@
             this.xrLabel1.Multiline = true;
             this.xrLabel1.Name = "xrLabel1";
             this.xrLabel1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel1.SizeF = new System.Drawing.SizeF(868.9167F, 30.5F);
+            this.xrLabel1.SizeF = new System.Drawing.SizeF(871F, 30.5F);
             this.xrLabel1.StylePriority.UseBackColor = false;
             this.xrLabel1.StylePriority.UseBorders = false;
             // 
@@ -1079,7 +1079,7 @@
             // 
             // xrLabel29
             // 
-            this.xrLabel29.LocationFloat = new DevExpress.Utils.PointFloat(1.083151F, 53.83321F);
+            this.xrLabel29.LocationFloat = new DevExpress.Utils.PointFloat(0F, 53.83339F);
             this.xrLabel29.Multiline = true;
             this.xrLabel29.Name = "xrLabel29";
             this.xrLabel29.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -1331,7 +1331,6 @@
             xrSummary5.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel24.Summary = xrSummary5;
             this.xrLabel24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel24.TextFormatString = "{0:$0.00}";
             // 
             // xrLabel22
             // 

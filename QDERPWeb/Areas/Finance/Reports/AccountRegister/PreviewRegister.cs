@@ -42,7 +42,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
 		public PreviewRegister()
 		{
 			InitializeComponent();
-
 		}
 
 		private void SetReportParameters(string voucherType, DateTime frmDate, DateTime toDate, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
