@@ -1561,6 +1561,33 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
+		[HttpGet]
+		public async Task<IActionResult> GetSupplierInvoices(DataSourceLoadOptions loadOptions)
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var supplierInvoices = dbContext.Tbl20166VatpurchaseMasters
+						.Where(i => i.PurchaseBillNo != null)
+						.Select(i => new
+						{
+							i.PurchaseBillNo
+						});
+
+					return Json(await DataSourceLoader.LoadAsync(supplierInvoices, loadOptions));
+				}
+			}
+			catch (Exception ex)
+			{
+				// Optional: log the exception before throwing
+				throw;
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+
+
 	}
 }
 

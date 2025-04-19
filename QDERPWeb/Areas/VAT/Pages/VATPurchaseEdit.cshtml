@@ -395,16 +395,26 @@
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("SupplierInvoiceNo")
-																			.DataSource(ds => ds.Mvc().Controller("YourController").LoadAction("GetSupplierInvoices"))
-																			.DisplayExpr("InvoiceNo") // property to display
+																			.DataSource(ds => ds.WebApi().Controller("VATModule").LoadAction("GetSupplierInvoices").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceNo"))
+																			.DisplayExpr("InvoiceNo")
 																			.ValueExpr("InvoiceNo")
-																			.LabelMode(EditorLabelMode.Outside)// value to bind
-																			.Value("") // or Model.SupplierInvoiceNo
-																			.Placeholder("Select Supplier Invoice No")
-																			.Disabled(true)
-																			.Label("Supplier Invoice No") // optional: shown if form layout used
+																			.Label(new JS("formatMessage('Supplier Invoice No')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.Value("") // Or bind to Model.SupplierInvoiceNo
+																			
+																		
+																			.ShowClearButton(true)
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
+																			.HoverStateEnabled(true)
+																			.TabIndex(5)
+																			.Width("100%")
+																			.DropDownOptions(d => d.Width(400))
+																			.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))
 																			)
 								</td>
+
 
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
@@ -495,7 +505,7 @@
 																			.TabIndex(4)
 																			.DropDownOptions(o => o
 																			// .Width("100%") // Set the desired width for the dropdown content*@
-																			.Width(1000)
+																			.Width(500)
 																			)
 																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
 								</td>
@@ -543,7 +553,7 @@
 																			.TabIndex(1)
 																			.DropDownOptions(o => o
 																			//.Width("100%") // Set the desired width for the dropdown content*@
-																			.Width(1000)
+																			.Width(500)
 																			)
 																			.OnKeyDown("onKeyDown")
 																			.ContentTemplate(new TemplateName("ClientNameContentTemplate")))
@@ -585,7 +595,7 @@
 																			.DisplayExpr("BuyerIdtypeName")
 																			.Width("100%")
 																			.TabIndex(1)
-																			.DropDownOptions(o => o.Width(1000))
+																			.DropDownOptions(o => o.Width(500))
 																			.OnKeyDown("onKeyDown")
 																			.ContentTemplate(new TemplateName("ClientNameContent"))
 																			)
@@ -704,7 +714,7 @@
 															//.Width(650)
 															.TabIndex(1)
 															.DropDownOptions(o => o
-															.Width(1000)
+															.Width(500)
 															)
 															//  .OnKeyDown("onKeyDown")
 															//.OnValueChanged("dropDownBoxValueChanged")
@@ -738,7 +748,7 @@
 															//.Width(650)
 															.TabIndex(1)
 															.DropDownOptions(o => o
-															.Width(1000)
+															.Width(500)
 															)
 															//  .OnKeyDown("onKeyDown")
 															//.OnValueChanged("dropDownBoxValueChanged")
@@ -885,7 +895,7 @@
 																				.OnInput("dropDownBoxOnInput")
 																				.OnOpened("onOpened")
 																				.TabIndex(1)
-																				.DropDownOptions(o => o.Width(1000))
+																				.DropDownOptions(o => o.Width(500))
 																				.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
 																				.Width("75%"))
 										@(Html.DevExtreme().Button()
@@ -919,7 +929,7 @@
 																				.OnInput("dropDownBoxOnInput")
 																				.OnOpened("onOpened")
 																				.TabIndex(1)
-																				.DropDownOptions(o => o.Width(1000))
+																				.DropDownOptions(o => o.Width(500))
 																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
 																				.Width("75%"))
 										@(Html.DevExtreme().Button()
@@ -1154,7 +1164,7 @@
 																			.DisplayExpr("BranchName")
 																			.OnInput("dropDownBoxOnInput")
 																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
+																			.DropDownOptions(o => o.Width(500))
 																			.ContentTemplate(new TemplateName("DivisionTemplate"))
 																			.Width("150%")
 																			)
@@ -1180,7 +1190,7 @@
 																					.DisplayExpr("SalesPersonName")
 																					.OnInput("dropDownBoxOnInput")
 																					.OnOpened("onOpened")
-																					.DropDownOptions(o => o.Width(1000))
+																					.DropDownOptions(o => o.Width(500))
 																					.ContentTemplate(new TemplateName("SalesPersonTemplate"))
 																					.Width("100%")
 																					)
@@ -1327,7 +1337,7 @@
 																			//.Width(650)
 																			.TabIndex(1)
 																			.DropDownOptions(o => o
-																			.Width(1000)
+																			.Width(500)
 																			)
 																			//  .OnKeyDown("onKeyDown")
 																			//.OnValueChanged("dropDownBoxValueChanged")
@@ -1369,7 +1379,7 @@
 																			//.Width(650)
 																			.TabIndex(1)
 																			.DropDownOptions(o => o
-																			.Width(1000)
+																			.Width(500)
 																			)
 																			//  .OnKeyDown("onKeyDown")
 																			//.OnValueChanged("dropDownBoxValueChanged")
@@ -1489,7 +1499,7 @@
 																			.DisplayExpr("SignatoryName")
 																			.OnInput("dropDownBoxOnInput")
 																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
+																			.DropDownOptions(o => o.Width(500))
 																			.ContentTemplate(new TemplateName("PreparedByTemplate"))
 																			.Width("100%")
 																			)
@@ -1518,7 +1528,7 @@
 																			.DisplayExpr("SignatoryName")
 																			.OnInput("dropDownBoxOnInput")
 																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
+																			.DropDownOptions(o => o.Width(500))
 																			.ContentTemplate(new TemplateName("CheckedByTemplate"))
 																			.Width("100%")
 																			)
@@ -1547,7 +1557,7 @@
 																			.DisplayExpr("SignatoryName")
 																			.OnInput("dropDownBoxOnInput")
 																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
+																			.DropDownOptions(o => o.Width(500))
 																			.ContentTemplate(new TemplateName("ApprovedByTemplate"))
 																			.Width("100%")
 																			)
@@ -1918,6 +1928,40 @@
 					})
 					)
 		}
+
+		@using (Html.DevExtreme().NamedTemplate("SupplierInvoiceContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("supplierinvoice-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("VATModule")
+					.LoadAction("GetSupplierInvoices")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("PurchaseBillNo")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+					.ShowColumnHeaders(true)
+					.FilterRow(f => f.Visible(false))
+					.SearchPanel(sp => sp.HighlightSearchText(true))
+					.Selection(sl => sl.Mode(SelectionMode.Single))
+					.OnSelectionChanged("SupplierInvoiceDataGridSelectionChanged")
+					.OnInitialized("SupplierInvoiceDataGridInitialized")
+				
+					.HeaderFilter(p => p.Visible(false))
+					.HoverStateEnabled(true)
+				
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(200)
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("PurchaseBillNo").Caption("Purchase Bill No").Alignment(HorizontalAlignment.Center);
+					})
+					)
+		}
+
+
 		@using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -4620,7 +4664,7 @@
 	});
 	$(function () {
 		$("#InvoiceEdit").dxTextBox({
-			text: formatMessage("e-Invoice Edit Form"),
+			text: formatMessage(" Edit Form"),
 			readOnly: true,
 			onContentReady: function (e) {
 				$(e.element).addClass("dx-textbox-heading");
@@ -6585,5 +6629,28 @@
 		history.back();     // go to the previous page
 	});
 
+	function SupplierInvoiceDataGridInitialized(e) {
+		dataGrid1 = e.component;
+	}
+	function dropDownBoxOnInput(e) {
+		const ddbInstance = e.component;
+		if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+		const text = ddbInstance.option("text");
+		if (dataGrid) {
+			dataGrid.option("searchPanel.text", text);
+		}
+	}
+
+	function SupplierInvoiceDataGridSelectionChanged(e) {
+		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+		const ddbInstance = $("#SupplierInvoiceNo").dxDropDownBox("instance");
+
+		if (selectedKey) {
+			ddbInstance.option("value", selectedKey);
+			ddbInstance.close();
+		}
+	}
 </script>
 

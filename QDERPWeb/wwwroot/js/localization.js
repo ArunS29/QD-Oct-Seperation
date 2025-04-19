@@ -9,6 +9,7 @@
 
 
 
+        "Purchase Edit Form":"Purchase Edit Form",
         "Add New":"Add New",
         "Supplier Category Code:":"Supplier Category Code:",
         "Supplier Category is required":"Supplier Category is required",
@@ -372,6 +373,7 @@
         "Employee Name": "Employee Name",
         "Employee No": "Employee No",
         "Supplier Name": "Supplier Name",
+        "Supplier Invoice No":"Supplier Invoice No",
         "Discount": "Discount",
         "Account Id": "Account Id",
         "Account Head": "Account Head",
