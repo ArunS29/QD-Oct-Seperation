@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.Finance.Pages.assetModel
+@model QD.ERP.Web.Areas.IMS.Pages.ClientLeadMasterModel
 @using DevExtreme.AspNet.Mvc
 @{
     ViewData["Title"] = "Asset View";
@@ -638,7 +638,7 @@
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
-                     columns.Add().Caption(new JS("formatMessage('Client Category Code')")).DataField("CategoryCode");
+                     columns.Add().Caption(new JS("formatMessage('Category Code')")).DataField("CategoryCode");
                      columns.Add().DataField("ClientCategory");
                      columns.Add().DataField("ClientCategoryCode");
 
@@ -1069,20 +1069,7 @@ ContactRemarks:clientRemarks,
  }
 
 
- function onClientsGridContextMenu1(e) {
-        if (e.target === "content" && e.row) {
-            e.items = [{
-                text: "Client Edit",
-                onItemClick: function () {
-                    let ClientStatusNo = e.row.data.ClientStatusNo;
-                    let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
-                    let url = `/${tenantName}/IMS/ClientStatusUpdate?clientStatusNo=${ClientStatusNo}`;
-                    let title = `Edit Client - ${ClientStatusNo}`;
-                    openModal(url, title);
-                }
-            }];
-        }
-    }
+ 
     function onClientsGridContextMenu1(e) {
     if (e.target === "content" && e.row) {
         let ClientStatusNo = e.row.data.ClientStatusNo;

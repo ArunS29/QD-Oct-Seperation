@@ -1,5 +1,12 @@
 ﻿var dictionary = {
     "en": {
+        "ID": "ID",
+        "Employee Document": "Employee Document",
+        "Reminder Days": "Reminder Days",
+        "Document Type": "Document Type",
+
+
+
         "Add New":"Add New",
         "Supplier Category Code:":"Supplier Category Code:",
         "Supplier Category is required":"Supplier Category is required",

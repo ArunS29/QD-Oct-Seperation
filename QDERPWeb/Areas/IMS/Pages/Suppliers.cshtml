@@ -79,6 +79,7 @@
             .ColumnAutoWidth(true)
             .ShowColumnLines(true)
             .ShowRowLines(true)
+        .OnContextMenuPreparing("onSuppliersGridContextMenu")
             .AllowColumnResizing(true) // Enable column resizing
             .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
             .AllowColumnReordering(true) // Optional: allow dragging columns
@@ -94,12 +95,11 @@
             {
             columns.Add().DataField("SupplierCategory").Caption("Supplier Category").Visible(true).GroupIndex(0);
                 columns.Add().DataField("SupplierCode").Caption("Supplier Code").Visible(true);
-
                 columns.Add().DataField("SupplierName").Caption("Supplier Name").Visible(true);
                 columns.Add().DataField("ContactPerson").Caption("Contact Person").Visible(true);
                 columns.Add().DataField("ContactMobile1").Caption("Contact Mobile").Visible(true);
                 columns.Add().DataField("ContactPhone1").Caption("Contact Phone").Visible(true);
-            columns.Add().DataField("ContactPersonTitle").Caption("Contact Person Title").Visible(true);
+                columns.Add().DataField("ContactPersonTitle").Caption("Contact Person Title").Visible(true);
                 columns.Add().DataField("SupplierAccountLedgerNo").Caption("Supplier AccountLedger No").Visible(true);
           
 
@@ -138,6 +138,20 @@
           });
 
       });
+           function onSuppliersGridContextMenu(e) {
+            if (e.target === "content" && e.row) {
+                e.items = [{
+                    text: "Supplier Edit",
+                    onItemClick: function () {
+                        let supplierCode = e.row.data.SupplierCode;
+                        let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+                            let url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${supplierCode}`;
+                            let title = `Edit Client - ${supplierCode}`;
+                        openModal(url, title);
+                    }
+                }];
+            }
+        }
    
 </script>
 

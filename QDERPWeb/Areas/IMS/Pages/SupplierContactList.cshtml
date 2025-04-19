@@ -298,7 +298,7 @@
             .Text("Save")
             .Icon("save")
             .Type(ButtonType.Success)
-            .OnClick("saveClientList")
+            .OnClick("saveOrUpdateSupplierContact")
             .ElementAttr("class", "black-text")
             )
 
@@ -327,6 +327,54 @@
 
 
 <script>
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Extract and clean parameters safely
+        const supplierContactSlNo = (urlParams.get("SupplierContactSlNo") || "").split(/[?&]/)[0];
+        const supplierCode = (urlParams.get("supplierCode") || "").split(/[?&]/)[0];
+        const supplierName = (urlParams.get("supplierName") || "").split(/[?&]/)[0];
+
+        // Bind hidden and visible values
+        $("#txtSupplierHidden").dxTextBox("instance").option("value", supplierContactSlNo);
+        $("#txtSupplierCode").dxTextBox("instance").option("value", supplierCode);
+        $("#txtSupplierName").dxTextBox("instance").option("value", supplierName);
+
+        // If editing existing contact
+        if (supplierContactSlNo) {
+            bindSupplierContactData(supplierContactSlNo);
+            $("#btnSave").dxButton("instance").option("text", "Update");
+        }
+    });
+
+    function bindSupplierContactData(supplierContactSlNo) {
+        debugger;
+        $.ajax({
+            url: `/api/SupplierContactList/GetContactBySlNo?supplierContactSlNo=${supplierContactSlNo}`,
+            type: 'GET',
+            success: function (data) {
+                console.log("Supplier Contact Loaded:", data);
+                if (data) {
+                    $("#txtSupplierHidden").dxTextBox("instance").option("value", data.SupplierContactSlNo); // hidden field
+                    $("#txtSupplierCode").dxTextBox("instance").option("value", data.SupplierCode);
+                    $("#txtSupplierName").dxTextBox("instance").option("value", data.SupplierName);
+                    $("#contactPerson").dxTextBox("instance").option("value", data.ContactPerson);
+                    $("#title").dxTextBox("instance").option("value", data.ContactPersonTitle);
+                    $("#mobile1").dxTextBox("instance").option("value", data.ContactMobile1);
+                    $("#phone1").dxTextBox("instance").option("value", data.ContactPhone1);
+                    $("#mobile2").dxTextBox("instance").option("value", data.ContactMobile2);
+                    $("#phone2").dxTextBox("instance").option("value", data.ContactPhone2);
+                    $("#fax").dxTextBox("instance").option("value", data.ContactFaxNo);
+                    $("#email").dxTextBox("instance").option("value", data.ContactEmail);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Error loading supplier contact data", "error", 3000);
+            }
+        });
+    }
+
+
      $(function () {
         $("#SupplierContactList").dxTextBox({
             text:formatMessage("Supplier Contact List"),
@@ -337,45 +385,46 @@
         });
     });
 
-    function saveClientList() {
+    function saveOrUpdateSupplierContact() {
+        debugger;
+        const supplierContactSlNo = $("#txtSupplierHidden").dxTextBox("instance").option("value"); // hidden ID
+
         const data = {
             SupplierCode: $("#txtSupplierCode").dxTextBox("instance").option("value"),
-           // ClientContactSlNo: $("#txtSupplierHidden").dxTextBox("instance").option("value"),
             SupplierName: $("#txtSupplierName").dxTextBox("instance").option("value"),
             ContactPerson: $("#contactPerson").dxTextBox("instance").option("value"),
             ContactPersonTitle: $("#title").dxTextBox("instance").option("value"),
-             // ContactDivision: $("#division").dxTextBox("instance").option("value"),
-             // ContactLocation: $("#location").dxTextBox("instance").option("value"),
             ContactMobile1: $("#mobile1").dxTextBox("instance").option("value"),
             ContactPhone1: $("#phone1").dxTextBox("instance").option("value"),
             ContactMobile2: $("#mobile2").dxTextBox("instance").option("value"),
             ContactPhone2: $("#phone2").dxTextBox("instance").option("value"),
             ContactFaxNo: $("#fax").dxTextBox("instance").option("value"),
-            ContactEmail: $("#email").dxTextBox("instance").option("value"),
-
+            ContactEmail: $("#email").dxTextBox("instance").option("value")
         };
 
+        if (supplierContactSlNo) {
+            data.SupplierContactSlNo = supplierContactSlNo;
+        }
+
         $.ajax({
-            url: '/api/SupplierContactList/SaveSupplierContactList',
+            url: '/api/SupplierContactList/SaveOrUpdateSupplierContact',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (res) {
-        if (res.success) {
-            DevExpress.ui.notify(res.message, "success", 2000);
-            console.log("Saved with ClientStatusNo:", res.lastSupplierContactSlNo);
-
-            // Set the value to the TextBox
-            $("#txtSupplierHidden").dxTextBox("instance").option("value", res.lastSupplierContactSlNo);
-        } else {
-            DevExpress.ui.notify(res.message, "error", 3000);
-        }
-    },
+                if (res.success) {
+                    DevExpress.ui.notify(res.message, "success", 2000);
+                    $("#txtSupplierHidden").dxTextBox("instance").option("value", res.lastSupplierContactSlNo);
+                } else {
+                    DevExpress.ui.notify(res.message, "error", 3000);
+                }
+            },
             error: function (err) {
-                DevExpress.ui.notify("Save failed: " + err.responseText, "error", 3000);
+                DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
             }
         });
     }
+
     $("#btnDelete").on("click", function (e) {
         e.preventDefault();
         onDeleteButtonClick();
