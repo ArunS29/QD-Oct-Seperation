@@ -88,8 +88,8 @@
 
     .bodyContainer {
         display: flex;
-        justify-content: center;
-        background-color: aliceblue;
+        justify-content: flex-start;
+        background-color: var(--background-color);
     }
 
     .mainContainer {
@@ -277,7 +277,7 @@
                 columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
                 columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
                 columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
-                columns.Add().DataField("SignatoryEmail").Caption("Email").Width(220);
+                columns.Add().DataField("SignatoryEmail").Caption("Email").Width(150);
                 @* columns.Add().Caption("Signature Image").AllowEditing(false)
             .CellTemplate(@<text>
         function(cellElement, cellInfo) {
@@ -338,16 +338,17 @@
 
       $(function () {
             $("#DatabaseSignatories").dxTextBox({
-                text: formatMessage("Database Signatories"),
+                text: formatMessage("Database "),
                 readOnly: true,
                            
 
             });
         });
+
     $(function () {
         $("#TypeSignatory").dxTextBox({
             width: "600px",
-            text: formatMessage("Type a New Signatory & Add to the Existing List"),
+            text: formatMessage("Database Signatories"),
             readOnly: true,
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");

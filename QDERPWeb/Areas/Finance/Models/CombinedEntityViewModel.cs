@@ -343,7 +343,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public dynamic Discount { get; set; }
         public dynamic DiscountDetails { get; set; }
         public dynamic ExemptionCode { get; set; }
-        public dynamic ItemCode { get; set; }
+        public string ItemCode { get; set; }
         public dynamic Qty { get; set; }
         public dynamic SNo { get; set; }
         public dynamic Total { get; set; }
@@ -352,6 +352,12 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public dynamic VAT { get; set; }
         public decimal? TaxAmount { get; set; }
         public dynamic TaxSlabCode { get; set; }
+        public int InvoiceChildSlNo { get; set; }
+        public string DetailedDescription { get; set; }
+        public int UnitsToBill { get; set; }
+        public decimal? UnitRate { get; set; }
+        public decimal? QuantityInvoiced { get; set; }
+
     }
     public class Signatory
     {

@@ -147,10 +147,6 @@
 			color: #374151; /* neutral icon */
 		}
 
-
-	.content-container-top {
-		width: 1700px;
-	}
 	/* Custom CSS to adjust the height of tab headers */
 	.dx-tabpanel .dx-tab {
 		padding: 10px 15px; /* Adjust padding to change height */
@@ -244,12 +240,6 @@
 			color: black;
 		}
 
-	.containerLedgerAccount {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
 	.titleLedgerAccount {
 		display: flex;
 		align-items: center;
@@ -317,6 +307,34 @@
 
 	.plusbtn{
 		justify-content:center;
+	}
+
+	.container {
+        display: none !important;
+    }
+ 
+    .frame {
+        display: none !important;
+    }
+ 
+    .footerContainer {
+        display: none !important;
+    }
+ 
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+ 
+    .mainContainer {
+        margin-top: 1em;
+    }
+
+	.containerLedgerAccount {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
 	}
 
 </style>
@@ -2184,7 +2202,7 @@
 		function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
 			const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-			const title = "VATDatabase Signatories";
+			const title = "";
 			openModal(url, title); // opens in modal instead of new window
 		}
 
@@ -3274,12 +3292,12 @@
 
 		$(document).ready(function () {
 			$.ajax({
-				url: "/api/VATModule/GetVATInvoiceNo",
+			url: "/api/VATModule/GetVATCreditNoteNo",
 				type: 'GET',
 				success: function (data) {
 					console.log("Success:", data);
 
-				   $("#InvoiceNo").dxTextBox("instance").option("value", data);
+				$("#CreditNoteNo").dxTextBox("instance").option("value", data);
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);

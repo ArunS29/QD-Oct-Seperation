@@ -52,9 +52,9 @@
             width: 100%;
             height: 1000px;
         }
-        .dx-card{
+      /*   .dx-card{
             width : 1460px;
-        }
+        } */
          
         .limited-footer .btn-container:not(:has(#btnSave,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack)) {
             display: none !important;
@@ -106,7 +106,6 @@
 
         .playIcon {
             display:  none;
-
         }
 
         .heightTextArea{
@@ -133,7 +132,7 @@
         <!-- Row 1: Goods Code | Goods Group | Item Part No -->
         <div class="dx-fieldset">
             <div class="dx-field">
-                <table style="width: 1300px;">
+                <table style="width: 1000px;">
                     <tr>
                         <td>
                             <label class="field-label">Goods & Services Code:</label>
@@ -208,7 +207,7 @@
         <!-- Row 2: Description | Description (Arabic) -->
         <div class="dx-fieldset">
             <div class="dx-field">
-                <table style="width: 1300px;">
+                <table style="width: 1000px;">
                     <tr>
                         <td >
 
@@ -249,7 +248,7 @@
         
         <div class="dx-fieldset">
             <div class="dx-field">
-                <table style="width: 1300px;">
+                <table style="width: 1000px;">
                     <tr>
                             <td>
                                 <div style="display: flex; align-items: end; gap: 8px; margin-right:10px;">
@@ -347,7 +346,7 @@
         <!-- Row 4: Detailed Description | Detailed Description (Arabic) -->
         <div class="dx-fieldset">
             <div class="dx-field">
-                <table style="width: 1300px;">
+                <table style="width: 1000px;">
                     <tr>
                         <td>
                             @(Html.DevExtreme().TextArea()
@@ -471,8 +470,7 @@
 
     function redirectToVATMasterModule() {
         const url = `/${tenantName}/VAT/VATMasterModule`;
-        const title = "VAT Master Module";
-
+        const title = "";
         openModal(url, title);
     }
 

@@ -9,6 +9,8 @@
 		<Compile Remove="Areas\Finance\Controllers\VATModuleController.cs" />
 		<Compile Remove="Areas\Finance\Pages\CreditNoteEditForm.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATDatabaseSignatories.cshtml.cs" />
+		<Compile Remove="Areas\Finance\Pages\VATInvoiceWithDetails.cshtml.cs" />
+		<Compile Remove="Areas\Finance\Pages\VATOurAddressDetails.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATSalesReporting.cshtml.cs" />
 		<Compile Remove="Controllers\LoginController.cs" />
 		<Compile Remove="Pages\Dashboard.cshtml.cs" />
@@ -24,7 +26,9 @@
 		<Content Remove="Areas\Finance\Pages\VATCreditNotRegister.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATDatabaseSignatories.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATGoodsandServices.cshtml" />
+		<Content Remove="Areas\Finance\Pages\VATInvoiceWithDetails.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATMasterModule.cshtml" />
+		<Content Remove="Areas\Finance\Pages\VATOurAddressDetails.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATSalesReporting.cshtml" />
 		<Content Remove="Pages\Dashboard.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
@@ -87,6 +91,13 @@
 	  <Compile Update="Areas\Finance\Reports\Cost Analysis\summary Report\SummaryReport%28ByDate%29 .cs">
 	    <SubType>XtraReport</SubType>
 	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="Areas\VAT\Pages\VATInvoiceWithDetails.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<ProjectExtensions>

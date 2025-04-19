@@ -36,12 +36,27 @@
     .custom-modal .modal-body iframe {
         height: 500px; /* Adjust iframe height */
     }
+    .mainContainer{
+        width:97%;
+        overflow-x: hidden;
+    }
+
+    .footerform {
+       
+        margin-top: 4%; /* only works in flex layout */
+    }
+    .row{
+        margin-top: 3%; /* only works in flex layout */
+    }
 
 </style>
+<div class="title">
+    <div class="header-container">
+        <div id="JournalVoucherEdit" class="no-border-input"></div>
+    </div>
+</div>
 
-<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="card-header" style="color:black;">JournalVoucherEdit</div>
-
+    
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between flex-wrap">
             <div class="form-group me-3">
@@ -77,7 +92,7 @@
                 <label for="VoucherNarration" class="form-label">Voucher Narration</label>
                 @(Html.DevExtreme().TextArea()
                     .ID("VoucherNarration")
-                    .MaxLength(500)
+                    .Width(800)
                     )
             </div>
         </div>
@@ -101,7 +116,7 @@
                     })
                     )
                 </text>)
-                    .Width("100%")
+                    @* .Width("100%") *@
                     )
             </div>
         </div>
@@ -135,12 +150,6 @@
                     <%= row.rowIndex + 1 %>
                 </div>
             </text>);
-
-
-
-                       
-
-
                         columns.Add().DataField("AccountID").Caption("Account Ledger").Width(300).AllowEditing(true)
                     .CellTemplate(@<text>
                 <%- data.AccountHead ? data.AccountHead : " " %>
@@ -163,7 +172,7 @@
                     .ValueExpr("AccountId")
                     .DisplayExpr("AccountHead")
                     .Placeholder("Select AccountHead")
-                    .Width(350)
+                    .Width("100%")
                     .DropDownOptions(o => o.Width(800))
                     .Value(new JS("data.AccountId"))
                     .ContentTemplate(new TemplateName("ReceivingAccountDropdownContentTemplate"))
@@ -446,13 +455,22 @@
         }
 
 
-        <div>
+        <div class="footerform">
             @await Html.PartialAsync("_FormFooter1")
         </div>
     </div>
-</div>
 
 <script>
+    let selectedVoucherNo = null;
+    $(function () {
+        $("#JournalVoucherEdit").dxTextBox({
+            text: formatMessage("Journal Voucher Edit"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
     let argsledno = null;
     $(document).ready(function () {
         // const urlParams = new URLSearchParams(window.location.search);

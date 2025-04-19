@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QD.ERP.Web.Areas.IMS.Pages
+namespace QD.ERP.Web.Areas.Finance.Pages
 {
-    public class ClientLeadMasterModel : PageModel
+    public class VATInvoiceWithDetailsModel : PageModel
     {
         public void OnGet()
         {

@@ -64,9 +64,12 @@
     .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout)) {
         display: none !important;
     }
+    .mainContainer{
+        width:100%;
+    }
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
-<div class="title">
+<div class="title" >
     <div class="header-container">
         <div id="JournalRegister" class="no-border-input"></div>
     </div>
@@ -182,7 +185,6 @@
                     .Columns(columns =>
                     {
                     columns.AddFor(m => m.RequesterID).Caption(new JS("formatMessage('Requester ID')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
                     columns.AddFor(m => m.JournalRefNo).Caption(new JS("formatMessage('Journal Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
                     columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                     columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Visible(false);
@@ -234,7 +236,7 @@
             ).Visible(true);
                     columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
                 })
-                .Width("102em")
+                .Width("100%")
             .Height(440)
             .Paging(p => p.PageSize(10))
         .Selection(selection => selection.Mode(SelectionMode.Single))

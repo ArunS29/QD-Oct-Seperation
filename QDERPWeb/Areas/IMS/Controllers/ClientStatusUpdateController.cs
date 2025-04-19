@@ -69,28 +69,77 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-     
+
+        //get data for bind
+
+        [HttpGet]
+        public IActionResult GetClientStatusById(long clientStatusNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var item = dbContext.Tbl30104ClientStatuses
+                    .FirstOrDefault(x => x.ClientStatusNo == clientStatusNo);
+
+                if (item != null)
+                {
+                    return Ok(item);
+                }
+
+                return NotFound(new { success = false, message = "Client status not found" });
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
 
         [HttpPost]
-        public IActionResult SaveClientStatusUpdate([FromBody] Tbl30104ClientStatus item)
+        public IActionResult SaveOrUpdateClientStatusUpdate([FromBody] Tbl30104ClientStatus item)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    // Add new item
-                    dbContext.Tbl30104ClientStatuses.Add(item);
-                    dbContext.SaveChanges();
-
-                    // Return the auto-generated identity value (ClientStatusNo)
-                    long lastInsertedId = item.ClientStatusNo;
-
-                    return Ok(new
+                    if (item.ClientStatusNo > 0)
                     {
-                        success = true,
-                        message = "Client Category saved successfully",
-                        lastClientStatusNo = lastInsertedId
-                    });
+                        // Update logic
+                        var existing = dbContext.Tbl30104ClientStatuses
+                            .FirstOrDefault(x => x.ClientStatusNo == item.ClientStatusNo);
+
+                        if (existing != null)
+                        {
+                            existing.ClientCode = item.ClientCode;
+                            existing.ReportedBy = item.ReportedBy;
+                            existing.ReportedOn = item.ReportedOn;
+                            existing.StatusRemarks = item.StatusRemarks;
+                            existing.Status = item.Status;
+                            existing.FollowupOn = item.FollowupOn;
+
+                            dbContext.SaveChanges();
+
+                            return Ok(new
+                            {
+                                success = true,
+                                message = "Client status updated successfully",
+                                lastClientStatusNo = existing.ClientStatusNo
+                            });
+                        }
+                        else
+                        {
+                            return NotFound(new { success = false, message = "Record not found for update." });
+                        }
+                    }
+                    else
+                    {
+                        // Insert logic
+                        dbContext.Tbl30104ClientStatuses.Add(item);
+                        dbContext.SaveChanges();
+
+                        return Ok(new
+                        {
+                            success = true,
+                            message = "Client status saved successfully",
+                            lastClientStatusNo = item.ClientStatusNo
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -104,6 +153,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant." });
         }
+
 
         [HttpPost]
         public IActionResult DeleteClientStatusUpdate([FromBody] long ClientStatusNo)

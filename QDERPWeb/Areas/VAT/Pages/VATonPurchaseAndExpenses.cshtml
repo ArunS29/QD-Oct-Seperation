@@ -25,8 +25,8 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewPayment,#btnPurchaseDetails,#ddReport1)) {
-		display: none !important;
+	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser)) {
+		display: none !important
 	}
 
 	#overlay-frame {
@@ -154,30 +154,15 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="VATPurchase" class="no-border-input"></div>
+		<div id="VATPurchaseInvoiceWithDetails" class="no-border-input"></div>
 	</div>
 </div>
-
 
 <div class="Head">
 	<div class="limited-footer">
 		@await Html.PartialAsync("VATModuleFooter")
 	</div>
 </div>
-<div class="context-menu" id="contextMenu">
-	<div class="context-menu-item" onclick="viewInvoice()">
-		<i class="dx-icon-edit"></i> Edit Invoice
-	</div>
-
-	<div class="context-menu-item" onclick="cancelInvoice()">
-		<i class="dx-icon-unlocked"></i> Unlock The Bill
-	</div>
-
-	<div class="context-menu-item" onclick="cloneEInvoice()">
-		<i class="dx-icon-copy"></i> Clone e-Invoice
-	</div>
-</div>
-
 
 
 <div class="dx-fieldset horizontal-container">
@@ -229,200 +214,217 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201707vatpurchaseRegisterMainView>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201723vatonPurchaseAndExpense>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			// 🔹 PURCHASE DETAILS
-			columns.Add().Caption("Purchase Details").Columns(detail =>
+			columns.Add().Caption("Purchase Bill Details").Columns(bill =>
 			{
-				detail.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No");
-				detail.AddFor(m => m.PurchaseVoucherDate).Caption("Purchase Voucher Date");
-				detail.AddFor(m => m.AccountHead).Caption("Account Head");
-				detail.AddFor(m => m.VoucherStatus).Caption("Voucher Status");
+
+				bill.AddFor(m => m.Vatvoucher)
+			.Caption("Purchase Voucher Type")
+			.Alignment(HorizontalAlignment.Center).GroupIndex(0);
+				bill.AddFor(m => m.Vatvoucher)
+			.Caption("Purchase Voucher Type")
+			.Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseVoucherNo)
+			.Caption("Purchase Voucher No")
+			.Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseVoucherDate)
+			.Caption("Voucher Date")
+			.Format("dd-MMM-yyyy")
+			.Alignment(HorizontalAlignment.Center);
+
+				bill.AddFor(m => m.PurchaseBillNo)
+			.Caption("Bill No")
+			.Alignment(HorizontalAlignment.Center);
+
+				bill.AddFor(m => m.PurchaseBillDate)
+			.Caption("Bill Date")
+			.Format("dd-MMM-yyyy")
+			.Alignment(HorizontalAlignment.Center);
+
+				bill.AddFor(m => m.SupplierNameOrCashSupplier)
+			.Caption("Supplier")
+			.Alignment(HorizontalAlignment.Left);
+
+				bill.AddFor(m => m.SupplierVatorCashSupplierVat)
+			.Caption("VAT Number")
+			.Alignment(HorizontalAlignment.Center);
+
+				bill.AddFor(m => m.VoucherStatus)
+			.Caption("Voucher Status")
+			.Alignment(HorizontalAlignment.Center);
+
+				bill.AddFor(m => m.ReferenceNo)
+			.Caption("Reference No")
+			.Alignment(HorizontalAlignment.Center);
 			});
 
-			// 🔹 PURCHASE & TAX AMOUNT
-			columns.Add().Caption("Purchase & Tax Amount").Columns(amount =>
+			columns.Add().Caption("Purchase Summary").Columns(summary =>
 			{
-				amount.AddFor(m => m.CalcLineAmount).Caption("Amount Before Tax");
-				amount.AddFor(m => m.CalcTaxAmount).Caption("Total VAT Amount");
-				amount.AddFor(m => m.TotalPurchaseAmount).Caption("Bill Amount");
+				summary.AddFor(m => m.TotalQtyInvoiced)
+			.Caption("Total Qty Invoiced")
+			.Alignment(HorizontalAlignment.Right);
+
+				summary.AddFor(m => m.CalcLineAmount)
+			.Caption("Total Line Amount")
+			.Alignment(HorizontalAlignment.Right);
+
+				summary.AddFor(m => m.TotalPurchaseAmount)
+			.Caption("Total Purchase Amount")
+			.Alignment(HorizontalAlignment.Right);
 			});
 
-			// 🔹 PURCHASE CLASSIFIED - Domestic & Imports
-			columns.Add().Caption("Revenue Classified").Columns(pclass =>
+			columns.Add().Caption("Tax Breakdown").Columns(tax =>
 			{
-				// Domestic
-				pclass.Add().Caption("Domestic").Columns(domestic =>
-			{
-				domestic.AddFor(m => m.DomesticStandardPurchases).Caption("Domestic Purchases @5%");
-				domestic.AddFor(m => m.TotalDspurchase10Perc).Caption("Domestic Purchases @10%");
-				domestic.AddFor(m => m.TotalDspurchase15Perc).Caption("Domestic Purchases @15%");
-				domestic.AddFor(m => m.DomesticZeroTaxPurchases).Caption("Domestic Zero Rated Purchases");
-				domestic.AddFor(m => m.DomesticExemptedTaxPurchases).Caption("Domestic Exempted Purchases");
+				tax.AddFor(m => m.DomesticStandardPurchases)
+			.Caption("Domestic Standard")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.DomesticStandardPurTax)
+			.Caption("Standard VAT")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.DomesticZeroTaxPurchases)
+			.Caption("Zero-Rated Purchases")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.DomesticZeroTaxPurTax)
+			.Caption("Zero-Rated VAT")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.DomesticExemptedTaxPurchases)
+			.Caption("Exempt Purchases")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.DomesticExemptedTaxPurTax)
+			.Caption("Exempt VAT")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.ImportsVatpaidAtCustoms)
+			.Caption("Imports (VAT at Customs)")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.ImportsVatpaidAtCustomsTax)
+			.Caption("Customs VAT")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.ImportsVatthruRcm)
+			.Caption("Imports via RCM")
+			.Alignment(HorizontalAlignment.Right);
+
+				tax.AddFor(m => m.ImportsVatthruRcmtax)
+			.Caption("RCM VAT")
+			.Alignment(HorizontalAlignment.Right);
 			});
 
-				// Imports
-				pclass.Add().Caption("Imports").Columns(imports =>
+			columns.Add().Caption("Cost Allocation").Columns(cost =>
 			{
-				imports.AddFor(m => m.ImportsVatpaidAtCustoms).Caption("Imports Purchases thru Customs 5%");
-				imports.AddFor(m => m.TotalImportPurchase10Perc).Caption("Imports Purchases thru Customs 10%");
-				imports.AddFor(m => m.TotalImportPurchase15Perc).Caption("Imports Purchases thru Customs 15%");
-				imports.AddFor(m => m.ImportsVatthruRcm).Caption("Imports RCM 5%");
-				imports.AddFor(m => m.TotalRcmpurchase10Perc).Caption("Imports RCM 10%");
-				imports.AddFor(m => m.TotalRcmpurchase15Perc).Caption("Imports RCM 15%");
-			});
-			});
+				cost.AddFor(m => m.CostCenterCode)
+			.Caption("Cost Center")
+			.Alignment(HorizontalAlignment.Left);
 
-			// 🔹 VAT AMOUNT CLASSIFIED - Domestic VAT & Imports VAT
-			columns.Add().Caption("VAT Amount Classified").Columns(vat =>
-			{
-				// Domestic VAT
-				vat.Add().Caption("Domestic VAT").Columns(domesticVAT =>
-			{
-				domesticVAT.AddFor(m => m.DomesticStandardPurTax).Caption("Domestic Purchases VAT @5%");
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc).Caption("Domestic Purchases VAT @10%");
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc).Caption("Domestic Purchases VAT @15%");
-				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax).Caption("Domestic Zero Rated VAT");
-				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax).Caption("Domestic Exempted VAT");
-			});
+				cost.AddFor(m => m.CostAllocationUnit)
+			.Caption("Unit")
+			.Alignment(HorizontalAlignment.Left);
 
-				// Imports VAT
-				vat.Add().Caption("Imports VAT").Columns(importsVAT =>
-			{
-				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax).Caption("VAT Paid in Customs 5%");
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc).Caption("VAT Paid in Customs 10%");
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc).Caption("VAT Paid in Customs 15%");
-				importsVAT.AddFor(m => m.ImportsVatthruRcmtax).Caption("VAT thru RCM 5%");
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc).Caption("VAT thru RCM 10%");
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc).Caption("VAT thru RCM 15%");
-			});
+				cost.AddFor(m => m.CostAllocationGroup)
+			.Caption("Group")
+			.Alignment(HorizontalAlignment.Left);
+
+				cost.AddFor(m => m.CostAllocationMasterGroup)
+			.Caption("Master Group")
+			.Alignment(HorizontalAlignment.Left);
 			});
 		})
 
-		
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
 		)
 
-		.OnCellClick("function(e) {handleCellClick(e);}")
+		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
 		.Height(500)
-		@* .ColumnAutoWidth(true) *@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.Width("100%")
+
+
 		.Summary(summary =>
 		{
-			summary.TotalItems(totalItems =>
+			summary.GroupItems(items =>
 			{
-
-				totalItems.Add()
-			.Column("AccountHead")
+				items.Add()
+			.Column("Gsdescrpition")
 			.SummaryType(SummaryType.Count)
-			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
+			.ShowInGroupFooter(true);
+				@* .CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
 
+				@* items.Add()
+	.Column("QuantityInvoiced")
+	.SummaryType(SummaryType.Sum)
+	.ShowInGroupFooter(true)
+	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+	*@
+				items.Add()
+		.Column("Discount")
+		.SummaryType(SummaryType.Sum)
+		.ShowInGroupFooter(true)
+		.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add()
-			.Column("CalcLineAmount")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add()
+	.Column("VatAmount")
+	.SummaryType(SummaryType.Sum)
+	.ShowInGroupFooter(true)
+	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add()
-			.Column("CalcTaxAmount")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add()
+	.Column("Total")
+	.SummaryType(SummaryType.Sum)
+	.ShowInGroupFooter(true)
+	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
 
-				totalItems.Add()
-			.Column("TotalInvoiceAmount")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-				totalItems.Add()
-			.Column("DomesticStandartRatedRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			summary.TotalItems(items =>
+			{
+				items.Add()
+			.Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count);
+				@* .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
 
-				totalItems.Add()
-			.Column("TotalRevenueOf10Perc")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				@* items.Add()
+	.Column("QuantityInvoiced")
+	.SummaryType(SummaryType.Sum)
+	.CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+	*@
+				items.Add()
+		.Column("Discount")
+		.SummaryType(SummaryType.Sum)
+		.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add()
-			.Column("TotalRevenueOf15Perc")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add()
+	.Column("VatAmount")
+	.SummaryType(SummaryType.Sum)
+	.CustomizeText(@"function(e) { return   e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				totalItems.Add()
-			.Column("DomesticZeroRatedRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("DomesticExemptedRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("GccstandardRatedRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("ExportsRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-
-				totalItems.Add()
-			.Column("DomesticStandartRatedTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("TotalTaxOf10Perc")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("TotalTaxOf15Perc")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("DomesticZeroRatedTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("DomesticExemptedTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("GccstandardRatedTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
-				totalItems.Add()
-			.Column("ExportsTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add()
+	.Column("Total")
+	.SummaryType(SummaryType.Sum)
+	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 		})
 
-		.FilterRow(filterRow => filterRow.Visible(false))
-		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.ShowBorders(true)
+
 		.StateStoring(stateStoring =>
 		{
 			stateStoring
@@ -432,10 +434,8 @@
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
-
-
-
 </div>
+
 
 
 <div id="overlay" class="overlay">
@@ -448,15 +448,13 @@
 
 <script>
 
-	let invoiceNo = null;
-	// Assuming tenantName is already defined globally
-	function viewInvoice() {
-		const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}`;
-
-		//window.location.href = url;
-		title = "VAT Invoice Edit(B2B)";
-		openModal(url, title);
-	}
+	$(document).ready(function () {
+		$(".limited-footer .btn-container").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser").length) {
+				$(this).remove();
+			}
+		});
+	});
 
 
 
@@ -522,8 +520,8 @@
 	});
 	let selectedVoucherNo = null;
 	$(function () {
-		$("#VATInvoiceRegister").dxTextBox({
-			text: formatMessage("VAT Invoice Register"),
+		$("#VATInvoiceWithDetails").dxTextBox({
+			text: formatMessage("VAT InvoiceWithDetails"),
 			readOnly: true,
 			onContentReady: function (e) {
 				$(e.element).addClass("dx-textbox-heading");
@@ -552,7 +550,6 @@
 			e.preventDefault();
 			var rowIndex = $(this).index();
 			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-			invoiceNo = rowData.InvoiceNo;
 			console.log(rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
@@ -615,7 +612,7 @@
 		toDateBox.option("value", toDate);
 
 		$.ajax({
-			url: '/api/VATModule/GetVat',
+			url: '/api/VATModule/GetVatPurchase',
 			type: 'GET',
 			data: {
 				frmDate: frmDate,
@@ -630,7 +627,6 @@
 					VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
 					var firstRow = dataSource[0];
 					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
-
 				}
 			},
 			error: function () {
@@ -662,11 +658,4 @@
 
 		return [day, strmonth, year].join('-');
 	}
-	$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnAddNewPayment,#btnPurchaseDetails,#ddReport1").length) {
-				$(this).remove();
-			}
-		});
-	});
 </script>

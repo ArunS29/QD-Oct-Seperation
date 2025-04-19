@@ -35,7 +35,7 @@
 
 <div class="title">
     <div class="header-container">
-        <div id="ExpensesClaimRequest" class="no-border-title"></div>
+        <div id="PettyCashRequest" class="no-border-title"></div>
     </div>
 </div>
 
@@ -157,12 +157,30 @@
             .Caption("Claimed Amount")
             .Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }") // ✅ Fix: Prevent undefined error
-            .AllowEditing(true);
+            .AllowEditing(true).EditCellTemplate(@<text>
+            @(Html.DevExtreme().NumberBox()
+            .ID("claimedAmountEditor")
+            .Value(new JS("data.ClaimedAmount"))
+            .Min(0)
+            .ShowSpinButtons(false)
+            .OnValueChanged("onClaimedAmountChanged")
+            .Format("#,##0.00")
+            )
+        </text>);
                 columns.AddFor(m => m.ApprovedAmount)
             .Caption("Approved Amount")
             .AllowEditing(true)
             .Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); // ✅ Fix applied
+            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }").EditCellTemplate(@<text>
+            @(Html.DevExtreme().NumberBox()
+            .ID("approvedAmountEditor")
+            .Value(new JS("data.ApprovedAmount"))
+            .Min(0)
+            .ShowSpinButtons(false)
+            .OnValueChanged("onApprovedAmountChanged")
+            .Format("#,##0.00")
+            )
+        </text>); // ✅ Fix applied
                 columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
             .CellTemplate(@<text>
             <span>
@@ -287,7 +305,7 @@
                     <div style="margin-left:25px" class="displayFlex">
                         Submitted On:<span id="SubmittedOn"></span>
                         @(Html.DevExtreme().TextBox()
-                            .ID("SubmittedOntext")
+                            .ID("SubmittedOnDate")
                             .Value(null)
                             .Disabled(true)
                             .Width(120))
@@ -697,6 +715,7 @@
                             )
 }
 <script>
+    let paymentaccheadId;
         function dropDownBoxOnInput(e) {
             const ddbInstance = e.component;
             if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -996,5 +1015,275 @@
             loadUrl: "/api/VoucherMaster/" + loadAction
         }));
     }
+     $(function () {
+                $("#PettyCashRequest").dxTextBox({
+                    text: formatMessage("Petty Cash Request"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
+    $("#btnSave").on("click", function (e) {
+        e.preventDefault();
 
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount !== 0) {
+            var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+            var VM = {
+                ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
+                ProjectClaimedFor: paymentaccheadId,
+                ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+                ExpenseDetails: gridData // 🔁 Add the grid rows here
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ExpenseClaim/UpdateVoucher",
+                contentType: "application/json",
+                data: JSON.stringify(VM),
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        DevExpress.ui.dialog.alert(
+                            "Petty Cash Request Details updated Successfully.",
+                            "Update Successful"
+                        );
+                        var button = $("#btnSave").dxButton("instance");
+                        button.option("text", "Update");
+                    } else {
+                        alert("Update failed: " + response.message);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+            });
+        } else {
+            if (IsNotification === true) {
+                DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors, please clear the errors and continue.",
+                    "Clear Errors"
+                );
+            } else {
+                DevExpress.ui.dialog.alert(
+                    "Voucher has no line items to be saved, please enter transaction to save.!",
+                    "No Line Items"
+                );
+            }
+        }
+    });
+
+    $("#btnSaveAndClose").on("click", function (e) {
+        e.preventDefault();
+
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount !== 0) {
+            var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+            var VM = {
+                ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
+                ProjectClaimedFor: paymentaccheadId,
+                ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+                ExpenseDetails: gridData // 🔁 Add the grid rows here
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ExpenseClaim/UpdateVoucher",
+                contentType: "application/json",
+                data: JSON.stringify(VM),
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        DevExpress.ui.dialog.alert(
+                            "Petty Cash Request Details Updated Sucessfully.",
+                            "Data Saved Successfully"
+                        ).done(function () {
+                            history.back(); // Go back to the previous page
+                        });
+                    } else {
+                        alert("Update failed: " + response.message);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+            });
+        } else {
+            if (IsNotification === true) {
+                DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors, please clear the errors and continue.",
+                    "Clear Errors"
+                );
+            } else {
+                DevExpress.ui.dialog.alert(
+                    "Voucher has no line items to be saved, please enter transaction to save.!",
+                    "No Line Items"
+                );
+            }
+        }
+    });
+
+    function onClaimedAmountChanged(e) {
+
+        const grid = $("#dataGrid").dxDataGrid("instance");
+
+        // Find the row index of the cell being edited
+        const $rowElement = $(e.element).closest(".dx-row");
+        const rowIndex = $rowElement.index();
+
+        const rowData = grid.getVisibleRows()[rowIndex]?.data;
+        if (!rowData) return;
+
+        const claimedValue = e.value || 0;
+        rowData.ClaimedAmount = claimedValue;
+        rowData.ApprovedAmount = claimedValue;
+
+        grid.refresh();
+    }
+
+    function onApprovedAmountChanged(e) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+
+        const $rowElement = $(e.element).closest(".dx-row");
+        const rowIndex = $rowElement.index();
+
+        const rowData = grid.getVisibleRows()[rowIndex]?.data;
+        if (!rowData) return;
+
+        const approvedValue = e.value || 0;
+        const claimedValue = rowData.ClaimedAmount || 0;
+
+        if (approvedValue > claimedValue) {
+            DevExpress.ui.notify("Approved Amount Cannot be more than Claimed Amount", "error", 3000);
+            rowData.ApprovedAmount = claimedValue;
+        } else {
+            rowData.ApprovedAmount = approvedValue;
+        }
+
+        grid.refresh();
+    }
+    $("#btnSubmit").on("click", function (e) {
+        e.preventDefault();
+        const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const data = grid.getDataSource().items();
+
+        const hasValidAmounts = data.some(row => {
+            return (row.ClaimedAmount && row.ClaimedAmount > 0) || (row.ApprovedAmount && row.ApprovedAmount > 0);
+        });
+
+        if (!hasValidAmounts) {
+            DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Warning");
+            return;
+        }
+        // Step 1: Check if ClaimRefNo exists in the DB
+        $.ajax({
+            url: '/api/ExpenseClaim/CheckClaimRefNo',
+            method: 'POST',
+            data: JSON.stringify({ ClaimRefNo: voucherNo }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (!response.exists) {
+
+
+                    // Optional delay to allow save to complete before proceeding
+
+                    savedetails(); // Step 3: Call actual submit
+                    // Adjust time if needed
+                } else {
+                    // If exists, go straight to submit
+                    proceedWithSubmit();
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Error checking Voucher No.", "error", 2000);
+            }
+        });
+    });
+    function savedetails() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount !== 0) {
+            var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+            var VM = {
+                ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
+                ProjectClaimedFor: paymentaccheadId,
+                ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+                ExpenseDetails: gridData // 🔁 Add the grid rows here
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ExpenseClaim/UpdateVoucher",
+                contentType: "application/json",
+                data: JSON.stringify(VM),
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        proceedWithSubmit();
+                    } else {
+                        alert("Update failed: " + response.message);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+            });
+        } else {
+            if (IsNotification === true) {
+                DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors, please clear the errors and continue.",
+                    "Clear Errors"
+                );
+            } else {
+                DevExpress.ui.dialog.alert(
+                    "Voucher has no line items to be saved, please enter transaction to save.!",
+                    "No Line Items"
+                );
+            }
+        }
+    }
+    function proceedWithSubmit() {
+        const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        $.ajax({
+            url: '/api/ExpenseClaim/SubmitClaim',
+            method: 'POST',
+            data: JSON.stringify({ ClaimRefNo: voucherNo }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (response.success) {
+                    $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
+                    $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
+                    DevExpress.ui.notify("Claim submitted successfully.", "success", 2000);
+                } else {
+                    DevExpress.ui.notify("Submission failed.", "error", 2000);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("An error occurred while submitting the claim.", "error", 2000);
+            }
+        });
+    }
 </script>

@@ -503,10 +503,28 @@
 
 <script>
 	// // Assuming tenantName is already defined globally
-	// function viewInvoice() {
-	// 	const url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-	// 	window.location.href = url;
-	// }
+	let invoiceNoCr = null;
+		let IsEditCr = false;
+
+		// Assuming tenantName is already defined globally
+		function viewInvoice() {
+			if (!invoiceNo) {
+				alert("Invoice number is not set.");
+				return;
+			}
+
+			IsEdit = true;
+
+			const params = new URLSearchParams({
+					InvoiceNo: invoiceNoCr,
+					IsEditflagCr: IsEditCr,
+				modal: true // If you want to explicitly include modal=true
+			});
+
+			const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
+			const title = "VAT Credit Note Edit(B2B)";
+			openModal(url, title);
+		}
 
 
 
@@ -602,6 +620,7 @@
 			e.preventDefault();
 			var rowIndex = $(this).index();
 			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+			invoiceNo = rowData.InvoiceNo;
 			console.log(rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
