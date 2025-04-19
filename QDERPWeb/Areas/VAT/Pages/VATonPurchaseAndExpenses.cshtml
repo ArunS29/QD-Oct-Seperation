@@ -222,10 +222,16 @@
 		{
 			columns.Add().Caption("Purchase Bill Details").Columns(bill =>
 			{
+
+				bill.AddFor(m => m.Vatvoucher)
+			.Caption("Purchase Voucher Type")
+			.Alignment(HorizontalAlignment.Center).GroupIndex(0);
+				bill.AddFor(m => m.Vatvoucher)
+			.Caption("Purchase Voucher Type")
+			.Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseVoucherNo)
 			.Caption("Purchase Voucher No")
 			.Alignment(HorizontalAlignment.Center);
-
 				bill.AddFor(m => m.PurchaseVoucherDate)
 			.Caption("Voucher Date")
 			.Format("dd-MMM-yyyy")

@@ -367,7 +367,7 @@
             .Icon("money")
             .Width(300)
             .Text("Add New VAT Purchase Bill")
-          @*   .OnClick("addPaymentButton_click") *@
+            .OnClick("addPurchase")
             )
     </div>
     <div class="btn-containerIvoiceEdit">
@@ -400,7 +400,7 @@
             )
     </div>
   
-    <div class="btn-container">
+    
         <div class="btn-container">
             @(Html.DevExtreme().Button()
                 .ID("btnPurchaseDetails")
@@ -410,7 +410,7 @@
                 .OnClick("navigateToPurchaseDetails")
                 )
         </div>
-    </div>
+    
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
             .ID("btnPastefromExcel")
@@ -452,6 +452,25 @@
             )
     </div>
 
+@*     <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReports1")
+            .Icon("doc")
+            .Width(50)
+                .Text(new JS("formatMessage('Reports1')"))
+            .ElementAttr(new { style = "display: none;" })
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Tax Summary Report -Purchases").Icon("file");
+                items.Add().Text("Tax Summary Report-Purchases(in Arabic)").Icon("file");
+                items.Add().Text("VATPurchase & Expenses Report").Icon("file");
+            })
+       
+            .ShowArrowIcon(false)
+            )
+    </div> *@
+
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReport")
@@ -470,7 +489,24 @@
             )
     </div>
 
- 
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReport1")
+            .Icon("doc")
+            .Width(100)
+            .Text(new JS("formatMessage('Report')"))
+            .ElementAttr(new { @class = "report-button" }) // changed here
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Tax Summary Report -Purchases").Icon("file");
+                items.Add().Text("Tax Summary Report-Purchases(in Arabic)").Icon("file");
+                items.Add().Text("VATPurchase & Expenses Report").Icon("file").OnClick("navigateToPurchase");
+            })
+
+            .ShowArrowIcon(false)
+            )
+    </div>
 
         <div class="btn-containerIvoiceEdit">
             @(Html.DevExtreme().Button()
@@ -653,7 +689,16 @@
         var url = `/${tenantName}/VAT/VATPurchaseInDetails`;
         window.location.href = url; // Navigate to the page
     }
-
+    function navigateToPurchase() {
+        // Replace with the actual tenant name dynamically
+        var url = `/${tenantName}/VAT/VATonPurchaseAndExpenses`;
+        window.location.href = url; // Navigate to the page
+    }
+    function addPurchase() {
+        // Replace with the actual tenant name dynamically
+        var url = `/${tenantName}/VAT/VATPurchaseEdit`;
+        window.location.href = url; // Navigate to the page
+    }
 
     // function getDropdownData() {
     //     return [

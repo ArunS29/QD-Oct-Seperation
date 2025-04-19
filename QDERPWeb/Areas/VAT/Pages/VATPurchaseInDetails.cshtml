@@ -222,7 +222,8 @@
 		{
 			columns.Add().Caption("Purchase Bill Details").Columns(bill =>
 			{
-				bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center).GroupIndex(0);
+             	bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseVoucherDate).Caption("Voucher Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseBillNo).Caption("Bill No").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseBillDate).Caption("Bill Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
