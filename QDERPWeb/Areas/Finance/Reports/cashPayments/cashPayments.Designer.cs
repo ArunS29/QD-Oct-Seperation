@@ -234,7 +234,7 @@
             // 
             // TopMargin
             // 
-            this.TopMargin.HeightF = 34.79166F;
+            this.TopMargin.HeightF = 11.45833F;
             this.TopMargin.Name = "TopMargin";
             // 
             // BottomMargin
@@ -328,11 +328,11 @@
             | DevExpress.XtraPrinting.BorderSide.Right)));
             this.xrLabel35.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyNameAr]\n\n")});
-            this.xrLabel35.Font = new DevExpress.Drawing.DXFont("Arial", 13F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel35.LocationFloat = new DevExpress.Utils.PointFloat(0F, 12.00002F);
+            this.xrLabel35.Font = new DevExpress.Drawing.DXFont("Cambria", 16F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel35.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrLabel35.Multiline = true;
             this.xrLabel35.Name = "xrLabel35";
-            this.xrLabel35.SizeF = new System.Drawing.SizeF(810F, 93.12499F);
+            this.xrLabel35.SizeF = new System.Drawing.SizeF(810F, 106.125F);
             this.xrLabel35.StylePriority.UseBorderColor = false;
             this.xrLabel35.StylePriority.UseBorders = false;
             this.xrLabel35.StylePriority.UseFont = false;
@@ -344,10 +344,12 @@
             this.xrLabel37.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel37.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddress]")});
-            this.xrLabel37.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 72.50004F);
+            this.xrLabel37.Font = new DevExpress.Drawing.DXFont("Cambria", 14F);
+            this.xrLabel37.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 81.50003F);
             this.xrLabel37.Name = "xrLabel37";
             this.xrLabel37.SizeF = new System.Drawing.SizeF(791.9999F, 19.62497F);
             this.xrLabel37.StylePriority.UseBorders = false;
+            this.xrLabel37.StylePriority.UseFont = false;
             this.xrLabel37.StylePriority.UseTextAlignment = false;
             this.xrLabel37.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
             this.xrLabel37.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
@@ -357,10 +359,10 @@
             this.xrLabel55.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel55.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
-            this.xrLabel55.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
-            this.xrLabel55.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 51.5F);
+            this.xrLabel55.Font = new DevExpress.Drawing.DXFont("Cambria", 16F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel55.LocationFloat = new DevExpress.Utils.PointFloat(10F, 56.50001F);
             this.xrLabel55.Name = "xrLabel55";
-            this.xrLabel55.SizeF = new System.Drawing.SizeF(791.9999F, 21.00003F);
+            this.xrLabel55.SizeF = new System.Drawing.SizeF(791.9999F, 27.00002F);
             this.xrLabel55.StylePriority.UseBorders = false;
             this.xrLabel55.StylePriority.UseFont = false;
             this.xrLabel55.StylePriority.UseTextAlignment = false;
@@ -372,10 +374,12 @@
             this.xrLabel36.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel36.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddressArb]")});
-            this.xrLabel36.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 35.04168F);
+            this.xrLabel36.Font = new DevExpress.Drawing.DXFont("Cambria", 14F);
+            this.xrLabel36.LocationFloat = new DevExpress.Utils.PointFloat(10F, 35.04168F);
             this.xrLabel36.Name = "xrLabel36";
-            this.xrLabel36.SizeF = new System.Drawing.SizeF(791.9999F, 16.45832F);
+            this.xrLabel36.SizeF = new System.Drawing.SizeF(791.9999F, 25.45832F);
             this.xrLabel36.StylePriority.UseBorders = false;
+            this.xrLabel36.StylePriority.UseFont = false;
             this.xrLabel36.StylePriority.UseTextAlignment = false;
             this.xrLabel36.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
             this.xrLabel36.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
@@ -394,7 +398,7 @@
             this.xrLine5.BorderColor = System.Drawing.Color.Transparent;
             this.xrLine5.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Right)));
             this.xrLine5.LineStyle = DevExpress.Drawing.DXDashStyle.Dot;
-            this.xrLine5.LocationFloat = new DevExpress.Utils.PointFloat(2.000515F, 103.125F);
+            this.xrLine5.LocationFloat = new DevExpress.Utils.PointFloat(2.000515F, 104.125F);
             this.xrLine5.Name = "xrLine5";
             this.xrLine5.SizeF = new System.Drawing.SizeF(810.0004F, 2F);
             this.xrLine5.StylePriority.UseBorderColor = false;
@@ -589,7 +593,7 @@
             // xrLabel38
             // 
             this.xrLabel38.BorderColor = System.Drawing.Color.DarkGray;
-            this.xrLabel38.Borders = DevExpress.XtraPrinting.BorderSide.Right;
+            this.xrLabel38.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel38.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountHead]")});
             this.xrLabel38.LocationFloat = new DevExpress.Utils.PointFloat(177.8013F, 0F);
@@ -1827,7 +1831,7 @@
             this.DataMember = "qry201MainVoucherEntriesWithMaster";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(18F, 20F, 34.79166F, 90.00022F);
+            this.Margins = new DevExpress.Drawing.DXMargins(18F, 20F, 11.45833F, 90.00022F);
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
             this.Title,
             this.DetailCaption1,

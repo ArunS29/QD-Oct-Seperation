@@ -78,7 +78,7 @@ namespace QD.ERP.Web.Pages
                     Console.WriteLine("Error processing company logo: " + ex.Message);
                 }
             }
-
+           //Account Register Reports
             if (!string.IsNullOrEmpty(voucherType) && frmDate.HasValue && toDate.HasValue)
             {
                 VoucherType = voucherType;
@@ -91,24 +91,28 @@ namespace QD.ERP.Web.Pages
                         Report = new PreviewRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "OrderByVchNoRegister":
-                        Report = new OrderByVchNoRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        Report = new OrderByVchNoRegister(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "OrderbyVchNoWIthVchNarration":
-                        Report = new OrderbyVchNoWIthVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        Report = new OrderbyVchNoWIthVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "Register4line":
-                        Report = new Register4line(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        Report = new Register4line(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "RegisterLineEntryNarration":
-                        Report = new RegisterLineEntryNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        Report = new RegisterLineEntryNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "RegisterWithVchNarration":
-                        Report = new RegisterWithVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        Report = new RegisterWithVchNarration(VoucherType, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     default:
                         return NotFound("Report not found.");
                 }
             }
+
+
+            ////Cost Analysis Reports
+           
             else if (frmDate.HasValue && toDate.HasValue)
             {
                 FrmDate = frmDate.Value;
@@ -199,6 +203,8 @@ namespace QD.ERP.Web.Pages
                         return NotFound("Cost report not found.");
                 }
             }
+
+///Bills Receivable reports
             // **CASE 3: Reports using selectedValues**
             else if (selectedValues != null && selectedValues.Length > 0)
             {

@@ -1,21 +1,37 @@
 ﻿using System;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
+using DevExpress.DataAccess.ConnectionParameters;
 using System.Drawing;
+using QD.ERP.Web.Service; // For TenantDbContextHelper
 
 namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
 {
-    public partial class OrderbyVchNoWIthVchNarration : DevExpress.XtraReports.UI.XtraReport
+    public partial class OrderbyVchNoWIthVchNarration : XtraReport
     {
-        // Constructor with parameters to dynamically pass VoucherType, StartDate, EndDate, and company details
-        public OrderbyVchNoWIthVchNarration(string voucherType, DateTime frmDate, DateTime toDate, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
+        // Constructor with TenantDbContextHelper injection
+        public OrderbyVchNoWIthVchNarration(
+            string voucherType,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressArb,
+            TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
             SetReportParameters(voucherType, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
 
             try
             {
-                this.sqlDataSource1.Fill(); // Ensure data is fetched immediately
+                this.sqlDataSource1.Fill(); // Load data
             }
             catch (Exception ex)
             {
@@ -29,30 +45,21 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
             InitializeComponent();
         }
 
-        // Method to set report and SQL query parameters
         private void SetReportParameters(string voucherType, DateTime frmDate, DateTime toDate, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
         {
-            // Ensure valid parameters
             voucherType ??= "DefaultType";
             frmDate = frmDate == DateTime.MinValue ? DateTime.Today : frmDate;
             toDate = toDate == DateTime.MinValue ? DateTime.Today : toDate;
 
-            // Add or update report parameters
             AddOrUpdateParameter("VoucherType", voucherType, typeof(string), false);
             AddOrUpdateParameter("StartDate", frmDate, typeof(DateTime), false);
             AddOrUpdateParameter("EndDate", toDate, typeof(DateTime), false);
-
-            // Add company details parameters
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string), false);
 
-            // Debug: Ensure logo is captured
-            Console.WriteLine($"Company Logo: {logoImage != null}");
-
-            // Bind values to report controls
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -71,11 +78,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = companyAddressArb;
 
-            // Set parameters for the SQL query
             ConfigureSqlDataSource(voucherType, frmDate, toDate);
         }
 
-        // Helper method to add or update report parameters
         private void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
         {
             var parameter = Parameters[paramName];
@@ -96,20 +101,16 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
             }
         }
 
-        // Configure the SQL Data Source and add parameters
         private void ConfigureSqlDataSource(string voucherType, DateTime frmDate, DateTime toDate)
         {
-            // Ensure clean query setup
             sqlDataSource1.Queries.Clear();
 
-            // Define the stored procedure query
             var storedProcQuery = new StoredProcQuery
             {
                 Name = "StProAccountLedgerByVoucherType",
                 StoredProcName = "StProAccountLedgerByVoucherType"
             };
 
-            // Add parameters to stored procedure
             storedProcQuery.Parameters.AddRange(new[]
             {
                 new QueryParameter("@VoucherType", typeof(string), voucherType),
@@ -117,20 +118,16 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
                 new QueryParameter("@EndDate", typeof(DateTime), toDate)
             });
 
-            // Reassign the query to the SQL data source
             sqlDataSource1.Queries.Add(storedProcQuery);
 
-            // Ensure the correct connection string name
-            sqlDataSource1.ConnectionName = "DBConnection";
-
-            // Attempt to fill the data source
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource1.Fill();
+                var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
+                sqlDataSource1.ConnectionParameters = connectionParams;
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("Error filling data source: " + ex.Message, ex);
+                throw new Exception("Unable to retrieve tenant context. Please verify session or tenant setup.");
             }
         }
     }

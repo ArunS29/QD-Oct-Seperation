@@ -1,80 +1,109 @@
 using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http;
 using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
-using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
-using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
-using QD.ERP.Web.Reports;
+using QD.ERP.Web.Models.DAL;
+using QD.ERP.Web.DAL.Entities;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
 
 namespace QD.ERP.Web.Pages
 {
     public class RegisterDesignerModel : PageModel
     {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private ERPMasterWtDataContext _eRPMasterWtDataContext;
+
         public XtraReport Report { get; private set; }
         public string ReportName { get; private set; }
-     
-     
 
-        private static readonly HashSet<string> reportsRequiringParameters = new()
+        public RegisterDesignerModel(TenantDbContextHelper tenantDbContextHelper)
         {
-            "PreviewRegister","OrderByVchNoRegister","OrderbyVchNoWIthVchNarration","Register4line","RegisterLineEntryNarration","RegisterWithVchNarration"
-        };
-
-        private static readonly Dictionary<string, Func<string, DateTime, DateTime, XtraReport>> parameterizedReports =
-            new()
-            {
-             //  { "PreviewRegister", (voucherType, from, to) => new PreviewRegister(voucherType, from, to, "", "", "", null, "", "") },
-                { "OrderByVchNoRegister", (voucherType, from, to) => new OrderByVchNoRegister(voucherType, from, to, "", "", "", null, "", "") },
-                 { "OrderbyVchNoWIthVchNarration", (voucherType, from, to) => new OrderbyVchNoWIthVchNarration(voucherType, from, to, "", "", "", null, "", "") },
-                  { "Register4line", (voucherType, from, to) => new Register4line(voucherType, from, to, "", "", "", null, "", "") },
-                   { "RegisterLineEntryNarration", (voucherType, from, to) => new RegisterLineEntryNarration(voucherType, from, to, "", "", "", null, "", "") },
-                    { "RegisterWithVchNarration", (voucherType, from, to) => new RegisterWithVchNarration(voucherType, from, to, "", "", "", null, "", "") }
-            };
-
-        private static readonly Dictionary<string, Func<XtraReport>> simpleReports = new()
-        {
-            { "XtraReportBillsReceivableAgeingReport", () => new XtraReportBillsReceivableAgeingReport() },
-            { "XtraReportAgeingreportsummary", () => new XtraReportAgeingreportsummary() }
-        };
+            _tenantDbContextHelper = tenantDbContextHelper;
+        }
 
         public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate)
         {
-            Console.WriteLine($"Incoming Parameters: reportName={reportName}, voucherType={voucherType}, frmDate={frmDate}, toDate={toDate}");
+            if (string.IsNullOrEmpty(reportName))
+                return BadRequest("Report name is required.");
 
-            if (string.IsNullOrWhiteSpace(reportName))
-            {
-                return BadRequest("Invalid report name.");
-            }
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return StatusCode(500, "Tenant not found or DbContext could not be created.");
 
+            _eRPMasterWtDataContext = dbContext;
             ReportName = reportName;
 
-            if (reportsRequiringParameters.Contains(reportName))
-            {
-                if (string.IsNullOrWhiteSpace(voucherType) || !frmDate.HasValue || !toDate.HasValue)
-                {
-                    return BadRequest($"Missing required parameters for {reportName}.");
-                }
+            // Get Tenant Name from Session
+            var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
 
-                if (parameterizedReports.TryGetValue(reportName, out var reportGenerator))
+            // Company Info
+            var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+            string companyName = companyDetails?.CompanyName ?? string.Empty;
+            string companyAddress = companyDetails?.CompanyFullAddress ?? string.Empty;
+            string companyNameAr = companyDetails?.CompanyNameAr ?? string.Empty;
+            string companyAddressAr = companyDetails?.CompanyFullAddressAr ?? string.Empty;
+
+            Image logoImage = null;
+            if (companyDetails?.CompanyLogo != null && companyDetails.CompanyLogo.Length > 0)
+            {
+                try
                 {
-                    Report = reportGenerator(voucherType, frmDate.Value, toDate.Value);
+                    using MemoryStream ms = new(companyDetails.CompanyLogo);
+                    logoImage = Image.FromStream(ms);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Failed to load logo image: " + ex.Message);
                 }
             }
-            else if (simpleReports.TryGetValue(reportName, out var simpleReportGenerator))
-            {
-                Report = simpleReportGenerator();
-            }
 
-            if (Report == null)
+            // Instantiate reports
+            if (!string.IsNullOrEmpty(voucherType) && frmDate.HasValue && toDate.HasValue)
             {
-                return NotFound("Report not found.");
+                switch (reportName)
+                {
+                    case "PreviewRegister":
+                        Report = new PreviewRegister(voucherType, frmDate.Value, toDate.Value,
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "OrderByVchNoRegister":
+                        Report = new OrderByVchNoRegister(voucherType, frmDate.Value, toDate.Value,
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "OrderbyVchNoWIthVchNarration":
+                        Report = new OrderbyVchNoWIthVchNarration(voucherType, frmDate.Value, toDate.Value,
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "Register4line":
+                        Report = new Register4line(voucherType, frmDate.Value, toDate.Value,
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "RegisterLineEntryNarration":
+                        Report = new RegisterLineEntryNarration(voucherType, frmDate.Value, toDate.Value,
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "RegisterWithVchNarration":
+                        Report = new RegisterWithVchNarration(voucherType, frmDate.Value, toDate.Value,
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
+            else
+            {
+                return BadRequest("Missing required parameters.");
             }
 
             return Page();
         }
-
     }
 }

@@ -3,15 +3,27 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using DevExpress.XtraReports.UI;
+using QD.ERP.Web.Service;
 using Microsoft.Extensions.Configuration;
-using System.IO;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
 {
     public partial class cashPaymentformat2 : XtraReport
     {
-        public cashPaymentformat2(string voucherNo, string tenantName, string company_Name, string company_address,Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
+        public cashPaymentformat2(
+            string voucherNo,
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb,
+            TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
             LoadReportData(voucherNo);
@@ -46,29 +58,22 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
 
             if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-            {
                 tenantLabel.Text = tenantName;
-            }
+
             if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
-            {
                 companyNameLabel.Text = company_Name;
-            }
+
             if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-            {
                 addressLabel.Text = company_address;
-            }
+
             if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
-            {
                 companyNameArLabel.Text = Company_Name_Ar;
-            }
+
             if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
-            {
                 addressArbLabel.Text = company_address_arb;
-            }
+
             if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-            {
                 logoPictureBox.Image = logoImage;
-            }
         }
 
         private void LoadReportData(string voucherNo)
@@ -83,7 +88,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             else
             {
                 this.DataSource = dt;
-                this.DataMember = "";
+                this.DataMember = ""; // Not required unless binding to a specific table
             }
         }
 
@@ -93,23 +98,25 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
 
             try
             {
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .Build();
-
-                string connectionString = configuration.GetConnectionString("DbConnection");
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 {
-                    string query = "SELECT * FROM [qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    string connectionString = tenant.ConnectionString;
+
+                    using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        conn.Open();
-                        da.Fill(dt);
+                        string query = "SELECT * FROM [qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            conn.Open();
+                            da.Fill(dt);
+                        }
                     }
+                }
+                else
+                {
+                    throw new Exception("Unable to get tenant context. Please check session and cache.");
                 }
             }
             catch (Exception ex)
@@ -125,7 +132,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             XRLabel noDataLabel = new XRLabel
             {
                 Text = "No records found.",
-                BoundsF = new System.Drawing.RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
+                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
                 TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
             };
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);

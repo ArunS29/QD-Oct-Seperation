@@ -327,10 +327,12 @@
             this.xrLabel32.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel32.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddressArb]")});
-            this.xrLabel32.LocationFloat = new DevExpress.Utils.PointFloat(514.8527F, 44.70841F);
+            this.xrLabel32.Font = new DevExpress.Drawing.DXFont("Cambria", 14F);
+            this.xrLabel32.LocationFloat = new DevExpress.Utils.PointFloat(514.8527F, 59.66666F);
             this.xrLabel32.Name = "xrLabel32";
-            this.xrLabel32.SizeF = new System.Drawing.SizeF(288.1472F, 43.50001F);
+            this.xrLabel32.SizeF = new System.Drawing.SizeF(288.1472F, 28.54174F);
             this.xrLabel32.StylePriority.UseBorders = false;
+            this.xrLabel32.StylePriority.UseFont = false;
             this.xrLabel32.StylePriority.UseTextAlignment = false;
             this.xrLabel32.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
             this.xrLabel32.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
@@ -340,11 +342,11 @@
             this.xrLabel7.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel7.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyNameAr]\n\n")});
-            this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Arial", 13F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(536.0256F, 23.70838F);
+            this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Cambria", 16F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(520.2222F, 23.70838F);
             this.xrLabel7.Multiline = true;
             this.xrLabel7.Name = "xrLabel7";
-            this.xrLabel7.SizeF = new System.Drawing.SizeF(266.9742F, 21.00004F);
+            this.xrLabel7.SizeF = new System.Drawing.SizeF(282.7775F, 35.95828F);
             this.xrLabel7.StylePriority.UseBorderColor = false;
             this.xrLabel7.StylePriority.UseFont = false;
             this.xrLabel7.StylePriority.UseTextAlignment = false;
@@ -355,10 +357,12 @@
             this.xrLabel30.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel30.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddress]")});
-            this.xrLabel30.LocationFloat = new DevExpress.Utils.PointFloat(70.83334F, 44.70841F);
+            this.xrLabel30.Font = new DevExpress.Drawing.DXFont("Cambria", 14F);
+            this.xrLabel30.LocationFloat = new DevExpress.Utils.PointFloat(70.83334F, 59.66666F);
             this.xrLabel30.Name = "xrLabel30";
             this.xrLabel30.SizeF = new System.Drawing.SizeF(444.0194F, 25.83332F);
             this.xrLabel30.StylePriority.UseBorders = false;
+            this.xrLabel30.StylePriority.UseFont = false;
             this.xrLabel30.StylePriority.UseTextAlignment = false;
             this.xrLabel30.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
             this.xrLabel30.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
@@ -368,10 +372,10 @@
             this.xrLabel23.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel23.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
-            this.xrLabel23.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
+            this.xrLabel23.Font = new DevExpress.Drawing.DXFont("Cambria", 16F);
             this.xrLabel23.LocationFloat = new DevExpress.Utils.PointFloat(70.83334F, 23.70838F);
             this.xrLabel23.Name = "xrLabel23";
-            this.xrLabel23.SizeF = new System.Drawing.SizeF(444.0195F, 21.00004F);
+            this.xrLabel23.SizeF = new System.Drawing.SizeF(444.0195F, 35.95828F);
             this.xrLabel23.StylePriority.UseBorders = false;
             this.xrLabel23.StylePriority.UseFont = false;
             this.xrLabel23.StylePriority.UseTextAlignment = false;
@@ -401,7 +405,7 @@
             // 
             this.xrLabel1.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel1.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Arial", 11F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Cambria", 11F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel1.ForeColor = System.Drawing.Color.LightSkyBlue;
             this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(8.742014E-05F, 92.54153F);
             this.xrLabel1.Multiline = true;
@@ -484,11 +488,11 @@
             this.xrLabel37.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel37.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountHeadArabic]")});
-            this.xrLabel37.LocationFloat = new DevExpress.Utils.PointFloat(170.3947F, 25.45859F);
+            this.xrLabel37.LocationFloat = new DevExpress.Utils.PointFloat(170.3947F, 25.45858F);
             this.xrLabel37.Multiline = true;
             this.xrLabel37.Name = "xrLabel37";
             this.xrLabel37.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel37.SizeF = new System.Drawing.SizeF(97.91634F, 21.16691F);
+            this.xrLabel37.SizeF = new System.Drawing.SizeF(107.9164F, 18.83331F);
             this.xrLabel37.StylePriority.UseBorders = false;
             // 
             // xrLabel38

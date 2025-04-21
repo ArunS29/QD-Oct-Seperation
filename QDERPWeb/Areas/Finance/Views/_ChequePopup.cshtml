@@ -159,7 +159,7 @@
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
             .OnClick("function() { SavePopVoucherEntry(); }")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .ElementAttr(new { @class = "bold-button" }) 
             )
             @(Html.DevExtreme().Button()
             .ID("btnSaveAndClose")
@@ -182,6 +182,7 @@
             .Text(new JS("formatMessage('Print')"))
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
             @(Html.DevExtreme().Button()
             .ID("btnDelete")

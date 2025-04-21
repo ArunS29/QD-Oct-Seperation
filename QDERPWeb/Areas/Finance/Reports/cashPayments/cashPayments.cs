@@ -1,14 +1,29 @@
-﻿using DevExpress.XtraReports.UI;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using DevExpress.XtraReports.UI;
+using Microsoft.Extensions.Configuration;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.test
 {
     public partial class cashPayments : XtraReport
     {
-        public cashPayments(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
+        public cashPayments(
+            string voucherNo,
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb,
+            TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
             LoadReportData(voucherNo);
@@ -42,30 +57,23 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
 
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-            {
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
-            }
-            if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
-            {
+
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
-            }
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-            {
+
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = company_address;
-            }
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
-            {
+
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = Company_Name_Ar;
-            }
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
-            {
+
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
-            }
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-            {
+
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
-            }
         }
 
         private void LoadReportData(string voucherNo)
@@ -75,7 +83,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-                this.CreateNoDataLabel();
+                CreateNoDataLabel();
             }
             else
             {
@@ -90,12 +98,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
             try
             {
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .Build();
+                // Get multi-tenant connection string
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                    throw new Exception("Unable to retrieve tenant context. Please check session or cache.");
 
-                string connectionString = configuration.GetConnectionString("DbConnection");
+                string connectionString = tenant.ConnectionString;
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
@@ -122,7 +129,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             XRLabel noDataLabel = new XRLabel
             {
                 Text = "No records found.",
-                BoundsF = new System.Drawing.RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
+                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
                 TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
             };
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
