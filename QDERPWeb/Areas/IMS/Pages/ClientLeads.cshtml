@@ -81,7 +81,32 @@
             columns.Add().DataField("ContactPhone1").Caption(new JS("formatMessage('Contact Phone')")).Visible(true);
             columns.Add().DataField("ClientLedgerNo").Caption(new JS("formatMessage('Client Ledger No')")).Visible(true);
 
+            // Image columns with cell template
+            columns.Add().DataField("DecodedBusinessCard1")
+            .Caption(new JS("formatMessage('Business Card 1')"))
+            .CellTemplate(new JS(@"
+                function(cellElement, cellInfo) {
+                    if (cellInfo.value) {
+                        $('<img>')
+                        .attr('src', cellInfo.value)
+                        .css({ width: '100px', height: 'auto' })
+                        .appendTo(cellElement);
+                    }
+                }
+            "));
 
+            columns.Add().DataField("DecodedBusinessCard2")
+            .Caption(new JS("formatMessage('Business Card 2')"))
+            .CellTemplate(new JS(@"
+            function(cellElement, cellInfo) {
+                if (cellInfo.value) {
+                    $('<img>')
+                    .attr('src', cellInfo.value)
+                    .css({ width: '100px', height: 'auto' })
+                    .appendTo(cellElement);
+                }
+            }
+            "));
         })
 
         .Summary(s => s.TotalItems(items =>

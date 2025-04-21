@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Areas.IMS.Controllers;
+using System.Text;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -40,11 +41,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             i.ContactPhone1,
                             i.ClientLedgerNo,
                             i.Category,
-                            i.BusinessCard1,
-                           // BusinessCard1 = i.BusinessCard1 != null ? Convert.ToBase64String(i.BusinessCard1) : null,
-
-
-
+                            i.VatregistrationNo,
                             //i.ClientCategory,
                             //i.ContactPhone2,
                             //i.ClientNameAr,
@@ -62,22 +59,21 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             //i.DiscontinuedBy,
                             //i.DiscontinuedOn,
                             //i.DateVisitedFirst,
-                          
+
                             //i.ReportedBy,
                             //i.ReportedOn,
                             //i.StatusRemarks,
                             //i.FollowupOn,
                             //i.Status,
-                     
+
                             //i.SalesPersonCode,
                             //i.SalesPersonName,
                             //i.UserCode,
                             //i.VendorNo,
-                        
-                            //i.ClientLedgerName,
-                          
-                            //i.BusinessCard2,
 
+                            //i.ClientLedgerName,
+                            DecodedBusinessCard1 = i.BusinessCard1 != null ? $"data:image/png;base64,{Convert.ToBase64String(i.BusinessCard1)}": null,
+                            DecodedBusinessCard2 = i.BusinessCard2 != null ? $"data:image/png;base64,{Convert.ToBase64String(i.BusinessCard2)}": null,
                         })
                         .ToListAsync();
 
