@@ -221,21 +221,8 @@
                                     });
 									});
     function redirectToCostCenterMaster(url) {
+                window.location.href = url;
 
-        const modal = document.getElementById("customModal");
-        const modalTitle = document.getElementById("modalTitle");
-        modalTitle.innerHTML = "";
-        const iframe = document.getElementById("modalIframe");
-
-        iframe.src = url;
-
-        modal.style.display = "block";
-
-        const closeBtn = modal.querySelector(".close");
-        closeBtn.onclick = () => {
-            modal.style.display = "none";
-            refreshDataGrid(); // Refresh the DataGrid when closing
-        };
 
         window.onclick = (event) => {
             if (event.target === modal) {

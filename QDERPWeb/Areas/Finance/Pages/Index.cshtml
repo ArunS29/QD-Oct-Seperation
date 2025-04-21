@@ -69,7 +69,7 @@
     </div>
 </div>
 
-<div class="chart-row">
+<div class="chart-row1">
     <canvas id="outstandingChart" style="width:100%;max-width:700px"></canvas>
     <div id="myChart2" style="width: 70%; height: 350px;"></div>
     
@@ -619,7 +619,7 @@
                 },
                 {
                     dataField: "Balance",
-                    caption: formatMessage("Account Head"),
+                        caption: formatMessage("Balance Amount"),
                     format: { type: "fixedPoint", precision: 2 },
                     allowReordering: true,
                     headerCellTemplate: function (header, info) {
@@ -714,7 +714,7 @@
                 },
                 {
                     dataField: "Balance",
-                    caption: formatMessage("Account Head"),
+                    caption: formatMessage("Balance Amount"),
                     format: { type: "fixedPoint", precision: 2 },
                     headerCellTemplate: function (header, info) {
                         $("<div>")
