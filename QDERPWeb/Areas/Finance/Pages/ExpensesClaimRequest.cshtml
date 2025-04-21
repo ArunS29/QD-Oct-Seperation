@@ -294,7 +294,7 @@
                 <div class="row">
                     <div class="displayFlex">
                         @(Html.DevExtreme().CheckBox()
-                            .ID("IsSubmitted")
+                            .ID("IsSubmitted").Disabled(true)
                             )<span style="margin-left:5px">Submitted By:</span>
                         @(Html.DevExtreme().TextBox()
                             .ID("SubmittedBytext")
@@ -314,7 +314,7 @@
 
                 <div class="displayFlex">
                     @(Html.DevExtreme().CheckBox()
-                        .ID("IsApproved")
+                        .ID("IsApproved").Disabled(true)
                         )<span style="margin-left:5px">Approved By:</span>
                     @(Html.DevExtreme().TextBox()
                         .ID("ApprovedBytext")
@@ -410,10 +410,10 @@
                             <label for="SalesInvoiceNo"></label>
                             @(
                                 Html.DevExtreme().TextBox()
-                                .ID("VoucherNo1")
+                                .ID("GenerateVoucher")
                                 .Value(null)
-                                @* .OnValueChanged("onVoucherNoChanged") *@
-                                .Disabled(true)
+                               
+                                .ReadOnly(true)
                                 )
                         </div>
                     </div>
@@ -470,21 +470,15 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group" style="padding-top:40px;">
-                    @*  @(Html.DevExtreme().Button()
-                    .ID("btnAttachment")
-                    .Icon("fa fa-book")
-                    .Text("Pay the Claim")
-                    .Height(100)
-                    .Width(130)
-                    ) *@
+                    
                     @(Html.DevExtreme().Button()
                         .ID("btnPaytheClaim")
                         .Text("Pay the Claim")
                         .Icon("money")
                         .ElementAttr(new { @class = "bold-button" })
-                        .OnClick("addRow")
                         .Height(300)
                         .Width(170)
+                        .OnClick("generateVoucherNo")
                         )
                 </div>
             </div>
@@ -786,20 +780,7 @@
         }
 
     }
-    function addRow() {
-        Swal.fire({
-            title: 'Confirm Payment',
-            text: "Are you sure you want to pay the claim?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, pay it!',
-            cancelButtonText: 'No, cancel!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire('Paid!', 'The claim has been paid.', 'success');
-            }
-        });
-    }
+    
     function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
         if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -1170,6 +1151,7 @@ function onApprovedAmountChanged(e) {
 }
 $("#btnSubmit").on("click", function (e) {
     e.preventDefault();
+    
     const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
      const grid = $("#dataGrid").dxDataGrid("instance");
     const data = grid.getDataSource().items();
@@ -1256,6 +1238,7 @@ $("#btnSubmit").on("click", function (e) {
     }
     }
 function proceedWithSubmit() {
+
     const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
     $.ajax({
@@ -1267,6 +1250,7 @@ function proceedWithSubmit() {
             if (response.success) {
                 $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
                 $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
+                $("#IsSubmitted").dxCheckBox("instance").option("value", true);
                 DevExpress.ui.notify("Claim submitted successfully.", "success", 2000);
             } else {
                 DevExpress.ui.notify("Submission failed.", "error", 2000);
@@ -1277,6 +1261,78 @@ function proceedWithSubmit() {
         }
     });
 }
+
+function generateVoucherNo() {
+    const selectedPaymentType = $("#radioGroup").dxRadioGroup("instance").option("value");
+    const grid = $("#dataGrid").dxDataGrid("instance");
+    const data = grid.getDataSource().items();
+    const claimRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+    const hasValidAmounts = data.some(row => {
+        return (row.ClaimedAmount && row.ClaimedAmount > 0) || (row.ApprovedAmount && row.ApprovedAmount > 0);
+    });
+    const hasValidAccount = data.some(row => {
+        return (row.AccountId);
+    }); 
+    const hasValidCost = data.some(row => {
+        return (row.CostCenterCode);
+    });
+    if (!hasValidAmounts) {
+        DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Claim Amount Invalid");
+        return;
+    }
+    
+    if (!claimRefNo) {
+        DevExpress.ui.dialog.alert("Claim Reference No. is missing.", "Missing Reference");
+        return;
+    }
+
+    // Step 1: Check if IsApproved = true using API
+    $.ajax({
+        url: `/api/ExpenseClaim/IsClaimApproved?claimRefNo=${encodeURIComponent(claimRefNo)}`,
+        method: "GET",
+        success: function (isApproved) {
+            if (!isApproved) {
+                DevExpress.ui.dialog.alert("Claim is not yet Approved , Please get it approved and continue for Payment.", "Approval Required");
+                return;
+            }
+            if (!hasValidAccount) {
+        DevExpress.ui.dialog.alert("Please review the Claim, Some Ledger Account is not chosen", "Choose Ledger Accounts");
+        return;
+    }
+    if (!hasValidCost) {
+        DevExpress.ui.dialog.alert("Please review the Claim, Some Cost Center Code is not chosen", "Choose Cost Center");
+        return;
+    }
+            // Step 2: Proceed with voucher number generation
+            let apiUrl = "";
+            if (selectedPaymentType === "Cash Payment") {
+                apiUrl = "/api/ExpenseClaim/GetNewCPVoucherNo";
+            } else if (selectedPaymentType === "Bank Payment") {
+                apiUrl = "/api/ExpenseClaim/GetNewBPVoucherNo";
+            } else {
+                DevExpress.ui.notify("Please select a payment type.", "warning", 2000);
+                return;
+            }
+
+            $.ajax({
+                url: apiUrl,
+                method: "GET",
+                success: function (data) {
+                    $("#GenerateVoucher").dxTextBox("instance").option("value", data);
+
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to generate voucher number.", "error", 2000);
+                }
+            });
+        },
+        error: function () {
+            DevExpress.ui.dialog.alert("Failed to check claim approval status.", "Error");
+        }
+    });
+}
+
 
 
 </script>

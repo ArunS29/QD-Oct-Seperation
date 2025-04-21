@@ -3717,17 +3717,34 @@ function fetchUpdatedData(voucherEntryNo) {
     });
 }
     function showChequePopup() {
-        debugger;
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const totalDrAmount = dataGrid.getTotalSummaryValue("DrAmount");
+        const chequeboxNo = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value");
         if ($("#chequePopup").length === 0) {
             $.ajax({
                 url: "/api/VoucherMaster/LoadChequePopup",
                 type: 'GET',
                 success: function (data) {
                     $("#chequePopupContainer").html(data);
-                    $("#chequePopup").dxPopup("instance").show();
+                    const popupInstance = $("#chequePopup").dxPopup("instance");
+                    popupInstance.show();
 
+                    // Set the DrAmount in AmountinSAR NumberBox after popup is rendered
+                    setTimeout(() => {
+                        if ($("#AmountinSAR").length > 0) {
+                            const amountBox = $("#AmountinSAR").dxNumberBox("instance");
+                            if (amountBox) {
+                                amountBox.option("value", totalDrAmount);
+                            }
+                        }
+                    }, 500); // Delay to ensure the popup content is loaded
+                    const chequeBox = $("#ChequeNo").dxTextBox("instance");
+                    if (chequeBox) {
+                        chequeBox.option("value", chequeboxNo);
+                    }
+                    $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value", paymentaccheadname);
                     $.ajax({
-                        url: "/api/VoucherMaster/GetNewBPVoucherNo",
+                        url: "/api/VoucherMaster/GetNewCPVoucherNo",
                         type: 'GET',
                         success: function (data) {
                             $("#PopVoucherNo").dxTextBox("instance").option("value", data);
@@ -3742,7 +3759,14 @@ function fetchUpdatedData(voucherEntryNo) {
                 }
             });
         } else {
-            $("#chequePopup").dxPopup("instance").show();
+            const popupInstance = $("#chequePopup").dxPopup("instance");
+            popupInstance.show();
+
+            // Update AmountinSAR value even if popup is already loaded
+            const amountBox = $("#AmountinSAR").dxNumberBox("instance");
+            if (amountBox) {
+                amountBox.option("value", totalDrAmount);
+            }
         }
     }
      function isModal() {

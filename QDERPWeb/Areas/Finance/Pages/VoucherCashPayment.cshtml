@@ -3773,7 +3773,7 @@
     function showChequePopup() {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const totalDrAmount = dataGrid.getTotalSummaryValue("DrAmount");
-
+        const chequeboxNo = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value");
         if ($("#chequePopup").length === 0) {
             $.ajax({
                 url: "/api/VoucherMaster/LoadChequePopup",
@@ -3792,7 +3792,11 @@
                             }
                         }
                     }, 500); // Delay to ensure the popup content is loaded
-
+                    const chequeBox = $("#ChequeNo").dxTextBox("instance");
+                    if (chequeBox) {
+                        chequeBox.option("value", chequeboxNo);
+                    }
+                    $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value", paymentaccheadname);
                     $.ajax({
                         url: "/api/VoucherMaster/GetNewCPVoucherNo",
                         type: 'GET',

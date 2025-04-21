@@ -267,7 +267,11 @@
     }
     $(function () {
         const popup = $("#chequePopup").dxPopup("instance"); // Popup instance
-
+        const chequeboxNo = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value");
+        const chequeBox = $("#ChequeNo").dxTextBox("instance");
+        if (chequeBox) {
+            chequeBox.option("value", chequeboxNo);
+        }
         // Initialize event when popup is shown
         popup.on("shown", function () {
             const amountInSAR = $("#AmountinSAR").dxNumberBox("instance");

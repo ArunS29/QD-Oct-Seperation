@@ -1994,7 +1994,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 voucher.VoucherApprovedOn = DateTime.Now;
                 voucher.VoucherApprovedBy = UserName;
 
-                if (IsDirect==false)
+                if (IsDirect==true)
                 {
                     voucher.IsVerified = true;
                     voucher.VoucherVerifiedOn = DateTime.Now;

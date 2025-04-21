@@ -139,7 +139,7 @@
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
-        .ID("btnBack")
+        .ID("btnExpenceBack")
         .Text(new JS("formatMessage('Back')"))
         .Icon("arrowleft")
         .OnClick("onBackButtonClick")
@@ -154,7 +154,7 @@
         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
         )
     @(Html.DevExtreme().Button()
-        .ID("btnVerify")
+        .ID("btnExpenseVerify")
         .Text(new JS("formatMessage('Verify')"))
         .Icon("check")
         .OnClick("onVerifyButtonClick")
@@ -162,7 +162,7 @@
 
         )
     @(Html.DevExtreme().Button()
-        .ID("btnApprove")
+        .ID("btnExpenseApprove")
         .Text(new JS("formatMessage('Approve')"))
         .Icon("exportselected")
         .OnClick("onApproveButtonClick")
@@ -504,6 +504,7 @@
                 if (response.success) {
                                 $("#VerifiedOntext").dxTextBox("instance").option("value", response.verifiedBy);
                                 $("#VerifiedBytext").dxTextBox("instance").option("value", response.verifiedOn);
+                                $("#IsVerified").dxCheckBox("instance").option("value", true);
                     DevExpress.ui.notify("Claim Verified successfully.", "success", 2000);
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
@@ -543,7 +544,7 @@
 
 
 
-                        saveapprovedetails();
+                           DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Claim Amount Invalid");
                      // Adjust time if needed
                 } else {
                     // If exists, go straight to submit
@@ -616,6 +617,7 @@
                     if (response.success) {
                                             $("#ApprovedOntext").dxTextBox("instance").option("value", response.approvedBy);
                                             $("#ApprovedBytext").dxTextBox("instance").option("value", response.approvedOn);
+                                            $("#IsApproved").dxCheckBox("instance").option("value", true);
                         DevExpress.ui.notify("Claim Approved successfully.", "success", 2000);
                     } else {
                         DevExpress.ui.notify("Submission failed.", "error", 2000);
