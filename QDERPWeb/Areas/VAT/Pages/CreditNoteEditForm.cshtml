@@ -309,7 +309,7 @@
 		justify-content:center;
 	}
 
-	.container {
+	/* .container {
         display: none !important;
     }
  
@@ -329,12 +329,16 @@
  
     .mainContainer {
         margin-top: 1em;
-    }
+    } */
 
 	.containerLedgerAccount {
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
+	}
+	.content-container-top
+	{
+		width:1850px;
 	}
 
 </style>
@@ -521,35 +525,16 @@
 
 								
 									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
-																			@* .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientNames").LoadMode(DataSourceLoadMode.Raw).Key("ClientName")) *@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ddclientname"))
-																			@* .ValidationRules(rules =>
-																			{
-																				rules.AddRequired()
-																				.Message(new JS("formatMessage('Client Name should be entered')"));
-																			})
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.Value(null)
-																			.ValueExpr("AccountId")
-																			.DisplayExpr("AccountHead")
-																			.Width("100%")
-																			.TabIndex(1)
-																			.DropDownOptions(o => o
-																			//.Width("100%") // Set the desired width for the dropdown content*@
-																			@* .Width(1000)
-																			)
-																			.OnKeyDown("onKeyDown")
-																			.ContentTemplate(new TemplateName("ClientNameContentTemplate"))) *@ 
+																			
 								</td>
 							</tr>
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo").LabelMode(EditorLabelMode.Outside))</td>
+
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
+
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
@@ -1416,7 +1401,7 @@
 					})
 					)
 		}
-		@using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
+		@* @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
 					.ID("clientname-datagrid")
@@ -1448,7 +1433,7 @@
 
 					})
 					)
-		}
+		} *@
 
 		@using (Html.DevExtreme().NamedTemplate("DescriptionDropdownContentTemplate"))
 		{
@@ -3337,9 +3322,8 @@
 				 var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
 							// Get ReferenceNo from selected row
 							if (selectedRowData.length > 0) {
-								accheadid = selectedRowData[0].AccountId;
-							  let  accheadname = selectedRowData[0].AccountHead;
-								  ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
+							//	accheadid = selectedRowData[0].AccountId;
+								$("#ddclientname").dxTextBox("instance").option("value",selectedRowData[0].AccountHead)
 								  $("#GroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].ClientGroupVatnumber)
 								  $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].VatregistrationNo)
 								  $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
@@ -3394,15 +3378,6 @@
 						});
 					}
 
-						  function ClientNamedataGridSelectionChanged(e) {
-				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-				const ddbInstance = $("#ddclientname").dxDropDownBox("instance");
-
-				if (selectedKey) {
-					ddbInstance.option("value", selectedKey);
-					 ddbInstance.close();
-				}
-		   }
 
 				 function dataGridCostCenterAccountHeadSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
@@ -4978,7 +4953,7 @@
 			// InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value"),
 			// InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value"),
 			// ClientCode: $("#ClientCode").dxDropDownBox("instance").option("value"),
-			 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value"),
+			 BuyerName: $("#ddclientname").dxTextBox("instance").option("value"),
 			 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value"),
 			 SellerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value"),
 			 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value"),

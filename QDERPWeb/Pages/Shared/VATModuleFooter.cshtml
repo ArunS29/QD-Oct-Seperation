@@ -1254,7 +1254,7 @@
 
 
     function addPaymentButton_click(e) {
-    let url = "";
+   // let url = "";
     let title = "Payments";
 
     switch (e.itemData.text) {
@@ -1269,9 +1269,11 @@
         "Confirm Creating New STANDARD TAX Invoice?"
     ).done(function (dialogResult) {
         if (dialogResult) {
-            url = `/${tenantName}/VAT/frm20161VATInvoiceEdit`;
-            title = "";
-            openModal(url, title);
+            // url = `/${tenantName}/VAT/frm20161VATInvoiceEdit`;
+            // title = "";
+            const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit`;
+        window.location.href = url;
+            //openModal(url, title);
         }
     });
 
