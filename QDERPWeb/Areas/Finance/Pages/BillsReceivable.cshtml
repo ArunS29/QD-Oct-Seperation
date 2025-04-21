@@ -374,7 +374,7 @@
                     onItemClick: function () {
                         // Navigate to frm201LedgerView with the selected client details
                         const AccountHeadNo = e.row.data.AccountHeadNo; // Example: Assuming AccountHeadNo is the client identifier
-                        const url = `/${tenantName}/Finance/AccountingLedgers?AccountId=${AccountHeadNo}`;
+                        const url = `/${tenantName}/Finance/AccountingLedgers?AccountHeadNo=${AccountHeadNo}`;
                         window.open(url, '_blank'); // Opens in a new tab
                     }
                 }
