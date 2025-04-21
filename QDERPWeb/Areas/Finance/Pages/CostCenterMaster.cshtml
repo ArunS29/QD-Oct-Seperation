@@ -831,8 +831,16 @@
                 success: function (response) {
                     if (response.success) {
                         DevExpress.ui.notify(response.message, "success", 3000);
-                        $('#modalIframe').modal('hide');
-                        // $('#masterModal').modal('hide');
+                     
+                       // Refresh parent DataGrid (ensure the correct selector is used)
+                                if (window.parent && window.parent.$("#dataGrid").length) {
+                                    let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                                    if (dataGrid) {
+                                        dataGrid.refresh();
+                                    }
+                                }
+                                  //$('#modalIframe').modal('hide');
+                               setTimeout(() => window.location.reload(), 2000);
                     } else {
                         DevExpress.ui.notify(response.message, "error", 3000);
                     }
@@ -952,7 +960,7 @@
     function navigateToHome() {
      
         
-       window.parent.document.getElementById("masterModal").style.display = "none";
+       window.parent.document.getElementById("customModal").style.display = "none";
         
     }
 
