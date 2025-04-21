@@ -62,7 +62,7 @@
     <meta name="author" content="">
 
     <title>QD ERP</title>
-    <link href="~/images/dice2.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/images/erp_logo.png" rel="shortcut icon" type="image/x-icon" />
     <!-- Stylesheets -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
@@ -216,6 +216,18 @@
             /* margin-top: 45px; */
         }
 
+        .menu-item1 {
+            display: flex;
+            align-items: center;
+            padding: 0px 0px 30px 0px;
+            gap: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar.hidden .menu-item1 .text {
+            display: none; /* Hide text */
+        }
         /* Menu items */
         .menu-item {
             display: flex;
@@ -225,6 +237,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
 
         /* Hide text when sidebar is hidden */
         .sidebar.hidden .menu-item .text {
@@ -866,7 +879,7 @@
     <script src="~/js/layouticon.js"></script>
     <div class="bodyContainer">
         <div class="playIcon">
-            <a href="https://help.quickdice.net/?formName=AccountingLedger" target="_blank" rel="noopener noreferrer">
+            <a id="helpVideo" href="" target="_blank" rel="noopener noreferrer">
                 <i class="fa-solid fa-circle-play"></i>
             </a>
         </div>
@@ -1305,6 +1318,13 @@
 
 
             <div id="sidebar" class="sidebar hidden">
+                  <div class="menu-item1"
+                  @* onmouseover="toggleSidebar()"  *@
+                  @* onmouseout="toggleSidebar()" *@
+                  >
+                    <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
+                    <div id="HumanResources2" class="text no-border-input">Quick Dice</div>
+                </div>
                 <div class="menu">
                     @if (userModules.Contains("HR"))
                     {
@@ -2776,16 +2796,17 @@
                 window.open(url, '_blank');
             });
         }
+        document.addEventListener("DOMContentLoaded", function () {
+            const helpVideoLink = document.getElementById("helpVideo");
 
+            // Get the last part of the URL path
+            const pathSegments = window.location.pathname.split('/');
+            const formName = pathSegments[pathSegments.length - 1] || pathSegments[pathSegments.length - 2];
 
-
-
-
-
-
-
-
+            if (formName && helpVideoLink) {
+                helpVideoLink.href = `https://help.quickdice.net/?formName=${encodeURIComponent(formName)}`;
+            }
+        });
     </script>
-
 </body>
 </html>
