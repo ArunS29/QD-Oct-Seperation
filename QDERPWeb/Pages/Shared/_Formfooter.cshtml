@@ -698,41 +698,63 @@
     }
 
 
-    function onApproveButtonClick() {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+   function onApproveButtonClick() {
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-        // Ensure dataGrid exists
-        if (!dataGrid) {
-            console.error("DataGrid instance not found.");
-            return;
-        }
-
-        const rowCount = dataGrid.getVisibleRows().length;
-
-        // Check if DataGrid contains rows
-        if (rowCount === 0) {
-            DevExpress.ui.dialog.custom({
-                title: "Voucher approval has failed.",
-                message: "Voucher has not been Approved. Please enter transactions to proceed with approval.",
-                buttons: [{ text: "Ok", onClick: () => false }],
-                showTitle: true
-            }).show();
-        } else {
-            DevExpress.ui.dialog.custom({
-                title: "Confirm Approval",
-                message: "Are you sure want to approve this voucher?",
-                buttons: [
-                    { text: "Yes", onClick: () => true },
-                    { text: "No", onClick: () => false }
-                ],
-                showTitle: true
-            }).show().done(function (dialogResult) {
-                if (dialogResult) {
-                    proceedWithApproval(); // Proceed if user clicks Yes
-                }
-            });
-        }
+    if (!dataGrid) {
+        console.error("DataGrid instance not found.");
+        return;
     }
+
+    const rowCount = dataGrid.getVisibleRows().length;
+
+    if (rowCount === 0) {
+        DevExpress.ui.dialog.custom({
+            title: "Voucher approval has failed.",
+            message: "Voucher has not been Approved. Please enter transactions to proceed with approval.",
+            buttons: [{ text: "Ok", onClick: () => false }],
+            showTitle: true
+        }).show();
+        return;
+    }
+
+    // Assume verification status is fetched from a field or variable, update accordingly
+    const isVerified = $("#VerifiedBy").dxCheckBox("instance").option("value"); // or fetch it based on your model
+
+    if (!isVerified) {
+        DevExpress.ui.dialog.custom({
+            title: "Voucher Not Verified",
+            message: "Voucher has not been verified. Click Yes if you want to verify and approve this voucher.",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show().done(function (dialogResult) {
+            if (dialogResult) {
+                // Mark as verified
+                $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+                // Now proceed with approval
+                proceedWithApproval();
+            }
+        });
+    } else {
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Approval",
+            message: "Are you sure you want to approve this voucher?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show().done(function (dialogResult) {
+            if (dialogResult) {
+                proceedWithApproval();
+            }
+        });
+    }
+}
+
 
     //          function proceedWithApproval() {
     //     // Set VerifiedBy checkbox to true
@@ -835,7 +857,7 @@
 
                         if (IsDirect === true) {
                             $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-                            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+                            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
                             $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
                         }
                     });
