@@ -1561,6 +1561,59 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
+
+
+        [HttpGet]
+        public string GetNewCreditNoteNo(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear)
+        {
+            string strNewQuotationNo = "";
+            try
+            {
+                int int1 = 0;
+                string query;
+
+                if (isResetByYear)
+                {
+                    query = $"SELECT MAX(CAST(RIGHT(CreditNoteNo, 6) AS INT)) FROM tbl20170VATCreditNoteMaster WHERE YEAR(CreditNoteDate) = '{invoiceDate.Year}'";
+                }
+                else
+                {
+                    query = "SELECT MAX(CAST(RIGHT(CreditNoteNo, 6) AS INT)) FROM tbl20170VATCreditNoteMaster";
+                }
+
+                using (SqlConnection conn = new SqlConnection("your_connection_string"))
+                {
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    int1 = result != DBNull.Value && result != null ? Convert.ToInt32(result) : 0;
+                }
+
+                int1 += 1;
+                strNewQuotationNo = "000000" + int1.ToString();
+                strNewQuotationNo = strNewQuotationNo.Substring(strNewQuotationNo.Length - 6); // Keep only last 6 digits
+
+                if (yearInDigit == 0)
+                {
+                    yearInDigit = 0;
+                }
+
+                string strYear = invoiceDate.Year.ToString();
+                strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+
+                strNewQuotationNo = $"CRN-{strYear}-{strNewQuotationNo}";
+                return strNewQuotationNo;
+            }
+            catch (Exception ex)
+            {
+                string strYear = invoiceDate.Year.ToString();
+                strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                strNewQuotationNo = $"CRN-{strYear}-000001";
+                return strNewQuotationNo;
+            }
+        }
+
+    
 		[HttpGet]
 		public async Task<IActionResult> GetSupplierInvoices(DataSourceLoadOptions loadOptions)
 		{

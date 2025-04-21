@@ -9,7 +9,7 @@
 
 
 
-        "Purchase Edit Form":"Purchase Edit Form",
+
         "Add New":"Add New",
         "Supplier Category Code:":"Supplier Category Code:",
         "Supplier Category is required":"Supplier Category is required",

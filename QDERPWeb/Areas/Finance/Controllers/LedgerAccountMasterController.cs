@@ -116,7 +116,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             var qryListOfAccountlists = _context.Tbl201MasterGroups.Select(i => new
 
             {
-                //i.MasterGroupId,
+                i.MasterGroupId,
                 //i.MasterGroup
                 i.MasterGroupAr
                 //i.IsCalculateOpeningBalance,

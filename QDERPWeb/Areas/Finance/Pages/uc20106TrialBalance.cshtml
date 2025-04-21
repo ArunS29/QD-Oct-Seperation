@@ -74,13 +74,13 @@
             <!-- SelectBox for Account Group -->
             @(Html.DevExtreme().SelectBox()
                 .ID("requestedBy")
-                .DataSource(d => d.Mvc().Controller("UCCostAnalysis").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
+                .DataSource(d => d.Mvc().Controller("TrialBalance").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
                 .Width(300)
                 .ElementAttr("class", "button-alignment-down")
                 .Label("Select Cost Allocation Group")
                 .LabelMode(EditorLabelMode.Outside)
                 .SearchEnabled(true)
-                .DisplayExpr("CostAllocationUnit")
+                .DisplayExpr("AccountGroup")
                 .Value(null)
                 .ShowClearButton(true)
                 .OnValueChanged("onRequestedByChanged")
@@ -176,7 +176,7 @@
     
 
      //   var selectBox = $("#requestedBy").dxSelectBox("instance");
-        selectBox = selectedValue.CostAllocationUnit;
+        selectBox = selectedValue.AccountGroup;
        
       
 
@@ -189,7 +189,7 @@
             if (store instanceof DevExpress.data.DataSource) {
                 // Apply a filter to the DataSource store
                 if (selectedValue) {
-                    store.filter(["CostAllocationUnit", "=", selectedValue]);
+                    store.filter(["AccountGroup", "=", selectedValue]);
                 } else {
                     store.filter(null); // Remove the filter if no value is selected
                 }
@@ -198,7 +198,7 @@
                 store.load();
             } else if (Array.isArray(store)) {
                 // Apply filtering manually for array-based store
-                var filteredData = store.filter(item => item.CostAllocationUnit === selectedValue);
+                var filteredData = store.filter(item => item.AccountGroup === selectedValue);
                 selectBox.option("dataSource", filteredData);
             } else {
                 console.error("The store is neither a DevExpress.data.DataSource nor an array:", store);
@@ -297,7 +297,7 @@
 
         // Get the selected AccountGroup
         var getaccountGroup = $("#requestedBy").dxSelectBox("instance").option("value");
-        var accountGroup = getaccountGroup ? getaccountGroup.CostAllocationUnit : null;
+        var accountGroup = getaccountGroup ? getaccountGroup.AccountGroup : null;
 
         console.log("Fetching records with:", {
             startDate: startDate ? startDate.toISOString().split('T')[0] : "All Dates",

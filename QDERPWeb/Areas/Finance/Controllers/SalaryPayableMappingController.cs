@@ -106,29 +106,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return PartialView("Depreciation");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetLedgerMapping(DataSourceLoadOptions loadOptions, string accid)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var qryListOfAccountlists = dbContext.Qry201114accountLedgersWtAdvances
-                    .Where(i => i.AccountNoInVoucher == accid)
-                    .Select(i => new
-                    {
-                        i.AccountNoInVoucher,
-                        i.AccountHead,
-                        i.VoucherNoInVoucher,
-                        i.BalanceInVoucher,
-                        i.AmountInVoucherFormatted,
-                        i.AmountInSubLedgerFormatted,
-                        i.Mapping
-                    });
 
-                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
-            }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
+
+
+
+
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetLedgerMapping(DataSourceLoadOptions loadOptions, string accid)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        var qryListOfAccountlists = dbContext.Qry201114accountLedgersWtAdvances
+        //            .Where(i => i.AccountNoInVoucher == accid)
+        //            .Select(i => new
+        //            {
+        //                i.AccountNoInVoucher,
+        //                i.AccountHead,
+        //                i.VoucherNoInVoucher,
+        //                i.BalanceInVoucher,
+        //                i.AmountInVoucherFormatted,
+        //                i.AmountInSubLedgerFormatted,
+        //                i.Mapping
+        //            });
+
+
+
+        //        return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+        //    }
+
+        //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //}
 
         [HttpGet]
         public IActionResult GetBankReconciliation(string accid)
@@ -260,6 +270,65 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+
+        
+            /// <summary>
+            /// Loads receivable/payable with advances data from Qry201114accountLedgersWtAdvances.
+            /// </summary>
+            [HttpGet]
+            public async Task<IActionResult> GetLedgerMapping(DataSourceLoadOptions loadOptions, string accid)
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry201114accountLedgersWtAdvances
+                        .Where(x => x.AccountNoInVoucher == accid)
+                        .Select(x => new
+                        {
+                            x.AccountNoInVoucher,
+                            x.AccountHead,
+                            x.VoucherNoInVoucher,
+                            x.BalanceInVoucher,
+                            x.AmountInVoucherFormatted,
+                            x.AmountInSubLedgerFormatted,
+                            x.Mapping
+                        });
+
+                    return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+            /// <summary>
+            /// Loads subledger mapping data from qry20173SubledgersWtVoucherEntry.
+            /// </summary>
+            [HttpGet]
+            public async Task<IActionResult> GetSubledgerMapping(DataSourceLoadOptions loadOptions, string accid)
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry20173SubledgersWtVoucherEntries
+                        .Where(x => x.AccountNoInVoucher == accid)
+                        .Select(x => new
+                        {
+                            x.AccountNoInVoucher,
+                            x.AccountHead,
+                            x.VoucherNoInVoucher,
+                            x.AmountInVoucher,
+                            x.AmountInVoucherFormatted,
+                            x.AmountInSubLedgerFormatted,
+                            x.Mapping
+                        });
+
+                    return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+        
+
     }
 }
 
