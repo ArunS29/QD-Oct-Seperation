@@ -1,0 +1,46 @@
+﻿@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+@{
+    ViewBag.Title = "UnitConversion Grid";
+}
+
+
+<style>
+
+</style>
+<div style="text-align: right;">
+    @(Html.DevExtreme().Button()
+        .ID("addButton")
+        .Text("Add")
+        .Icon("plus")
+        .Type(ButtonType.Default)
+        .Width(140)
+        .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+
+        )
+</div>
+
+
+
+
+
+<div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+ 
+    @(Html.DevExtreme().DataGrid()
+        .ID("UnitConversionGrid")
+        .Height(620)
+        .ShowBorders(true)
+        .ShowColumnLines(true)
+        .ShowRowLines(true)
+        .RowAlternationEnabled(true)
+        .ColumnAutoWidth(true)
+        .Columns(columns =>
+        {
+            columns.Add().DataField("UnitCodeOfCoversion").Caption(" Unit Code Of Coversion");
+            columns.Add().DataField("UnitConverted").Caption("Unit Converted");
+            columns.Add().DataField("UnitConversionRemarks").Caption("Unit Conversion Remarks");
+          
+        })
+        
+        )
+</div>

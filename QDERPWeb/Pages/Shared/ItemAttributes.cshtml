@@ -1,0 +1,432 @@
+﻿@* @page *@
+@* @{ *@
+@* } *@
+<style>
+    .form-table {
+        width: 100%;
+     
+        border-spacing: 8px;
+        font-family: Segoe UI, sans-serif;
+    }
+
+        .form-table th {
+            text-align: left;
+           
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        .form-table td {
+            vertical-align: top;
+           
+        }
+
+    .highlight-red {
+        color: red;
+        font-weight: bold;
+    }
+
+    .muted-text {
+        color: gray;
+        font-size: 12px;
+        padding-top: 10px;
+    }
+
+    .flex-row {
+        display: flex;
+        align-items: center;
+    
+    }
+
+   .mainContainer{
+       width:100%;
+   }
+
+  
+    .maindiv{
+        display:flex;
+    }
+
+    .audit-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .audit-label {
+        width: 90px;
+        text-align: right;
+        font-style: italic;
+        font-size: 12px;
+    }
+
+    .audit-field {
+        flex: 1;
+        width:40vh;
+    }
+
+    .audit-box {
+      
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .audit-left,
+    .audit-right {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .audit{
+        gap:50px;
+        display:flex;
+    }
+    .avg-cost-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-left:50px
+
+    }
+    
+
+    .item-discontinued-label {
+        font-weight: bold;
+        color: red;
+        margin-left: 12px;
+    }
+</style>
+
+<div class="maindiv">
+                <table class="form-table">
+                    <!-- Detailed Description -->
+                    <tr>
+                        <th colspan="6">Detailed Description:</th>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            @(Html.DevExtreme().TextArea()
+                                .ID("DetailedDescription")
+                                .Height(60)
+                                .Width("100%"))
+                        </td>
+                    </tr>
+
+                    <!-- Item Size & Measurements Section -->
+                    <tr>
+                        <th colspan="6">Item Size & Measurements</th>
+                    </tr>
+        <tr>
+            <div class="flex-row">
+            <div>
+            <td>
+                <div style="display:flex;">
+                @(Html.DevExtreme().SelectBox()
+                    .ID("UnitOfMeasure")
+                    .DataSource(new[] { "Hourly", "Daily" })
+                    .Value("Hourly")
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Unit of Measure: *"))
+
+               
+                    @(Html.DevExtreme().Button()
+                        .ID("btnAddUOM")
+                        .Icon("plus")
+                        .Width(45)
+                        )
+                </div>
+            </td>
+
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("PackingUnit")
+                    .Value(1)
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Packing Unit:"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ItemSize")
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Item Size:"))
+            </td>
+         </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ItemThickness")
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Item Thickness:"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("ItemDimension")
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Item Dimension:"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ActualSize")
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Act. Size:"))
+            </td>
+
+
+        </tr>
+
+        <tr>
+            <th colspan="6">Item Cost & Price Details</th>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("OpeningBalance")
+                    .Value(0.00)
+                    .Format("#,##0.00")
+                    .Width("100p%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Opening Balance:"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("CostPrice")
+                    .Value(0)
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Cost Price:"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("ExFactoryPrice")
+                    .Value(0)
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Ex-Factory Price:"))
+            </td>
+        </tr>
+            <tr>
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("SellingPrice")
+                    .Value(0)
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Selling Price:"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("MinSellingPrice")
+                    .Value(0)
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Min Selling Price:"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                    .ID("MaxSellingPrice")
+                    .Value(0)
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Max Selling Price:"))
+            </td>
+        </tr>
+
+                    <!-- Footer Entry Info -->
+              
+                </table>
+
+
+            <table class="form-table">
+                <!-- Detailed Description Arabic -->
+                <tr>
+                    <th colspan="4">
+                        Detailed Description: (in Arabic)
+                        <button style="float: right; border: none; background: none;">
+                            <img src="arabic-icon-placeholder.png" width="22" height="22" alt="Arabic Icon" />
+                        </button>
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        @(Html.DevExtreme().TextArea()
+                            .ID("ArabicDescription")
+                            .Height(60)
+                            .Width("100%"))
+                    </td>
+                </tr>
+       
+                <!-- Item Code & Attributes -->
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("ItemPartNo")
+                    .Width("100%")
+                    .Label("Item Part No:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("ItemHSCode")
+                    .Width("100%")
+                    .Label("Item HS Code:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("Location01")
+                    .Width("100%")
+                    .Label("Location Identifier 01:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ItemColor")
+                    .DataSource(new[] { "Red", "Blue", "Green" })
+                    .Width("100%")
+                    .Label("Item Color:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+      
+
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("Location02")
+                    .Width("100%")
+                    .Label("Location Identifier 02:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ItemBrand")
+                    .DataSource(new[] { "Brand A", "Brand B" })
+                    .Width("100%")
+                    .Label("Item Brand:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("Location03")
+                    .Width("100%")
+                    .Label("Location Identifier 03:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ItemManufacturer")
+                    .DataSource(new[] { "Maker 1", "Maker 2" })
+                    .Width("100%")
+                    .Label("Item Make / Manufacturer:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+    
+
+       
+            <td colspan="2">
+                @(Html.DevExtreme().TextBox()
+                    .ID("CountryOfOrigin")
+                    .Width("100%")
+                    .Label("Country Of Origin:")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+            
+        </tr>
+
+
+            </table>
+        
+</div>
+<div style="width:100%">
+<table>
+    <tr>
+        <td colspan="4" class="audit-box">
+            <div style="display: flex; justify-content: space-between;">
+                <!-- Left Audit Info -->
+                <div class="audit">
+                        <div class="audit-left">
+                            <div class="audit-row">
+                                <div class="audit-label">Entered By:</div>
+                                <div class="audit-field">
+                                    @(Html.DevExtreme().TextArea()
+                                        .ID("EnteredBy")
+                                        .Height(40)
+                                        .Width("100%"))
+                                </div>
+                            </div>
+                            <div class="audit-row">
+                                <div class="audit-label">Entered On:</div>
+                                <div class="audit-field">
+                                    @(Html.DevExtreme().TextArea()
+                                        .ID("EnteredOn")
+                                        .Height(40)
+                                        .Width("100%"))
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Audit Info -->
+                        <div class="audit-right">
+                            <div class="audit-row">
+                                <div class="audit-label">Modified By:</div>
+                                <div class="audit-field">
+                                    @(Html.DevExtreme().TextArea()
+                                        .ID("ModifiedBy")
+                                        .Height(40)
+                                        .Width("100%"))
+                                </div>
+                            </div>
+                            <div class="audit-row">
+                                <div class="audit-label">Modified On:</div>
+                                <div class="audit-field">
+                                    @(Html.DevExtreme().TextArea()
+                                        .ID("ModifiedOn")
+                                        .Height(40)
+                                        .Width("100%"))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Rightmost Section -->
+                <div class="avg-cost-container">
+                    @(Html.DevExtreme().TextBox()
+                        .ID("AvgCostPrice")
+                        .ReadOnly(true)
+                        .Width("350px")
+                        .Placeholder("Avg Cost"))
+
+                    @(Html.DevExtreme().Button()
+                        .ID("btnSearchCost")
+                        .Icon("search")
+                        .Width("50px"))
+
+                    <label class="item-discontinued-label">Item Discontinued:</label>
+
+                    @(Html.DevExtreme().CheckBox()
+                        .ID("ItemDiscontinued")
+                        .Value(false))
+                </div>
+            </div>
+        </td>
+    </tr>
+
+</table>
+</div>

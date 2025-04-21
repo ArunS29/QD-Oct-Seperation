@@ -1,0 +1,305 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.StockDetails_StockGroupModel
+@{
+}
+
+
+
+<style>
+    .form-table {
+        width: 100%;
+        margin:30px;
+
+        border-spacing: 10px;
+        font-family: Segoe UI, sans-serif;
+    }
+
+        .form-table th {
+            text-align: left;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        .form-table td {
+            vertical-align: top;
+            width: 100%;
+        }
+
+    .highlight-red {
+        color: red;
+        font-weight: bold;
+    }
+
+    .muted-text {
+        color: gray;
+        font-size: 12px;
+        padding-top: 10px;
+    }
+
+    .flex-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .mainContainer {
+        width: 100%;
+    }
+
+
+    .maindiv {
+        display: flex;
+    }
+
+    .audit-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .audit-label {
+        width: 90px;
+        text-align: right;
+        font-style: italic;
+        font-size: 12px;
+    }
+
+    .audit-field {
+        flex: 1;
+        width: 40vh;
+    }
+
+    .audit-box {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .audit-left,
+    .audit-right {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .audit {
+        gap: 50px;
+        display: flex;
+    }
+
+    .avg-cost-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-left: 50px
+    }
+
+
+    .item-discontinued-label {
+        font-weight: bold;
+        margin: 10px;
+        padding: 10px 10px 10px 0px;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+    </style>
+
+<div class="maindiv">
+    <table class="form-table">
+       
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextArea()
+                    .ID("NewStockServicesGroups")
+                    .Label("Type a New Stock or Services Group & Add to the Eisting List : ")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+        </tr>
+
+        <tr>
+            <td style="display: flex;">
+                @(Html.DevExtreme().TextArea()
+                    .ID("StockServicesGroups")
+                    .Label("Stock / Service Group (In Arabic) : ")
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside))
+                @(Html.DevExtreme().Button()
+                    .ID("convertToArabic1")
+                    .Width(50)
+                    .Icon("fas fa-language")
+                    .ElementAttr("style", "margin-top: 25px;")
+                    )
+               
+            </td>
+        </tr>
+
+        
+        <tr class="flex-row" style="width:100%;">
+
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("GroupCode")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Group Code *"))
+            </td>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("Category")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Category"))
+            </td>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("InventoryMasterGroups")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Inventory Master Groups"))
+            </td>
+        </tr>
+        <tr class="flex-row" style="width:100%;">
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("InventoryLedgerAccount")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Inventory Ledger Account"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("CostLedgerAccount")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Label("Cost Ledger Account"))
+            </td>
+            <td style="padding: 10px; margin-top: 20px;">
+                <div  style="display: flex; width:400px;">
+                   
+
+                    @(Html.DevExtreme().CheckBox()
+                        .ID("ServicesGroup")
+                        .Value(false))
+                    <label class="item-discontinued-label">Choose the Group is Services Group ?</label>
+                </div>
+
+            </td>
+
+            <td>
+                @(Html.DevExtreme().Button()
+                    .ID("btnAdd")
+                    .Icon("plus")
+                    .Text("Add")
+                    .Width(60)
+                    .ElementAttr("style", "margin-top:23px")
+                    )
+            </td>
+            
+
+        </tr>
+
+       
+        
+       
+        <!-- Footer Entry Info -->
+
+    </table>
+
+
+    
+
+</div>
+
+
+<div class="dx-field ledgerResult" style="margin-bottom: 100px">
+    <table style="width:100%; margin-top: 15px;">
+        <tr>
+            <td>
+                @(Html.DevExtreme().DataGrid()
+                    .DataSource(new object[] { })
+                    .Height(400)
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("Code")
+                        .Caption("Code")
+                        .Alignment(HorizontalAlignment.Center);
+
+                        columns.Add().DataField("GSGroup")
+                        .Caption("GS Group")
+                        .Alignment(HorizontalAlignment.Center);
+
+                        columns.Add().DataField("GSGroupArabic")
+                        .Caption("GS Group (In Arabic)")
+                        .Alignment(HorizontalAlignment.Center);
+
+                        columns.Add().DataField("Category")
+                        .Caption("Category")
+                        .Alignment(HorizontalAlignment.Center);
+
+                        columns.Add().DataField("InventoryMasterGroup")
+                        .Caption("Inventory Master Group")
+                        .Alignment(HorizontalAlignment.Center);
+
+                            columns.Add().DataField("IsServices")
+                        .Caption("Is Services?")
+                        .Alignment(HorizontalAlignment.Center)
+                        .CellTemplate(@<text>
+                   
+                    
+                </text>);
+
+                       
+
+                    })
+
+                    .ShowColumnLines(true)
+                    .ShowRowLines(true)
+                    .RowAlternationEnabled(true)
+                    .ShowColumnHeaders(true)
+                    .ColumnAutoWidth(true)
+                    .AllowColumnReordering(true) // Enable column reordering
+                    .AllowColumnResizing(true)   // Enable column resizing
+                    .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                    .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                    .ShowBorders(true)
+                    )
+
+
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<script>
+    function printReport() {
+        alert("Print report clicked");
+    }
+
+    function viewStockMovement() {
+        alert("View stock movement clicked");
+    }
+</script>

@@ -1,0 +1,753 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.InventoryStockDetailsModel
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using QD.ERP.Web.Areas.IMS.Pages
+@using QD.ERP.Web.Pages.Shared.IMS
+@{
+}
+
+<style>
+    .form-tablee {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 6px;
+    }
+
+    .inline-icon {
+        vertical-align: bottom;
+        align-items: center;
+        justify-content: center;    
+    }
+
+    .body {
+        padding-top: 0px;
+    }
+
+    .content {
+        margin: 0px;
+    }
+
+    .content-container-top {
+        width: 100%;
+    }
+    /* Custom CSS to adjust the height of tab headers */
+    .dx-tabpanel .dx-tab {
+        padding: 10px 15px; /* Adjust padding to change height */
+        font-size: 16px; /* Adjust font size to change header height */
+    }
+
+    /* Ensuring the content area also adjusts in height */
+    .dx-tabpanel .dx-tab-content {
+        padding: 20px;
+        min-height: 200px; /* Minimum height for the tab content */
+    }
+
+    .dx-fieldset {
+        margin: 3px 3px !important;
+        padding: 0px;
+    }
+
+    .dx-datagrid-headers th {
+        text-align: center; /* Centers the text */
+    }
+
+    .columnheader {
+        text-align: center;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h3 {
+            color: #333;
+        }
+
+        .tab-content p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+    .dx-dropdownbox .dx-dropdownbox-wrapper .dx-dropdownbox-header {
+        display: none;
+    }
+
+    .button-group {
+        margin-left: 1px !important;
+    }
+
+    .button-alignment-up {
+        margin-top: 25px !important;
+    }
+
+    .button-alignment-down {
+        margin-top: 0px !important;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .imagecontainer {
+        background-color: #e0f7fa;
+        border: 1px solid #90caf9;
+        height: 300px;
+        width:40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
+   
+    .containerInventoryStock {
+       
+        align-items: center;
+        justify-content: center;
+    }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+
+
+   
+</style>
+<link rel="stylesheet" href="~/css/Site.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+<input id="formId" value="frm201LedgerAccount" type="hidden" />
+<div class="title">
+    <div class="header-container">
+        <div id="Ledgeraccount" class="no-border-title"></div>
+    </div>
+</div>
+<div class="containerInventoryStock">
+
+    <div class="content-container-top">
+        <div class="dx-fieldset horizontal-container">
+            <table class="form-tablee">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().TextBox()
+                            .ID("StockNo")
+                            .Label("Stock No / Item Code:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("90%"))
+                    </td>
+                    <td>
+                        <div style="display:flex;align-items:end;">
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("StockGroup")
+                            .Label("Stock Group")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("90%"))
+                        @(Html.DevExtreme().Button()
+                            .ID("btnAddStockGroup")
+                            .Icon("plus")
+                            .Width(32)
+                            .ElementAttr("class", "inline-icon")
+                                .OnClick("StockGroup")
+                            )
+                        </div>
+                    </td>
+                    <td colspan="2">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("ItemName")
+                            .Label("Item Name / Description")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%"))
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:end;" ;>
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("ItemStore")
+                            .Label("Item Store:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("90%"))
+                        @(Html.DevExtreme().Button()
+                            .ID("btnAddStore")
+                            .Icon("plus")
+                            .Width(32)
+                            .ElementAttr("class", "inline-icon")
+                                .OnClick("ItemStore")
+                                )
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display:flex;align-items:end;">
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("ItemClassification")
+                            .Label("Item Classification:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("90%"))
+                        @(Html.DevExtreme().Button()
+                            .ID("btnAddClassification")
+                            .Icon("plus")
+                            .Width(32)
+                            .ElementAttr("class", "inline-icon")
+                             .OnClick("ItemClassification")
+                                )
+                        </div>
+                    </td>
+                    <td colspan="2">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("ItemNameArabic")
+                            .Label("Item Name / Description (In Arabic)")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%"))
+                    </td>
+                </tr>
+            </table>
+
+
+            </div>
+
+        </div>
+     
+
+        <div class="dx-fieldset horizontal-container">
+            @(
+                Html.DevExtreme().Tabs()
+                .Items(items =>
+                {
+                // tab-content-1
+                items.Add()
+                .Icon("preferences") // better match for "Item Attributes"
+                .Text("Item Attributes");
+
+                // tab-content-2
+                items.Add()
+                .Icon("chart") // "Stock Control"
+                .Text("Stock Control");
+
+                // tab-content-3
+                items.Add()
+                .Icon("image") // "Stock Images"
+                .Text("Stock Images");
+
+                // tab-content-4
+                items.Add()
+                .Icon("money") // "Invoices"
+                .Text("Invoices");
+
+                // tab-content-5
+                items.Add()
+                .Icon("tags") // "Quotations"
+                .Text("Quotations");
+
+                // tab-content-6
+                items.Add()
+                .Icon("cart") // "Purchase Order"
+                .Text("Purchase Order");
+
+                // tab-content-7
+                items.Add()
+                .Icon("runner") // "Item Deliveries"
+                .Text("Item Deliveries");
+
+                // tab-content-8
+                items.Add()
+                .Icon("check") // "Item Received"
+                .Text("Item Received");
+
+                // tab-content-9
+                items.Add()
+                .Icon("repeat") // "Unit Conversion"
+                .Text("Unit Conversion");
+
+                // tab-content-10
+                items.Add()
+                .Icon("doc") // "Document"
+                .Text("Document");
+
+                // tab-content-11
+                items.Add()
+                .Icon("money") // "Purchases"
+                .Text("Purchases");
+
+                // tab-content-12
+                items.Add()
+                .Icon("bookmark") // "Matl.Requests"
+                .Text("Matl.Requests");
+            })
+                .SelectedIndex(0) // Default selected tab is the first one
+                .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
+                )
+        </div>
+
+
+        <!-- Tab Content -->
+        <div class="dx-fieldset">
+            <div id="tab-content-1" class="tab-content" style="display: none;">
+
+
+            <div id="tab1-content">
+                @* @await Html.PartialAsync("StockDetails_StockControl") *@
+             
+                @* @await Html.PartialAsync("~/Pages/Shared/IMS/MusFooter1.cshtml") *@
+                @await Html.PartialAsync("~/Pages/Shared/IMS/ItemAttributes.cshtml")
+            </div>
+            </div>
+
+            <div id="tab-content-2" class="tab-content" style="display: none;">
+                <div>
+                  
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_StockControl.cshtml")
+                </div>
+            </div>
+
+            <div id="tab-content-3" class="tab-content" style="display: none;">
+                <div class="background">
+                <div class="imagecontainer" id="imgBox1">
+                    <span>No image data</span>
+                </div>
+                </div>
+            </div>
+
+            <div id="tab-content-4" class="tab-content">
+                <div class="background">
+                <div>
+
+                    @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_Invoices.cshtml")
+                </div>
+                </div>
+            </div>
+            <div id="tab-content-5" class="tab-content">
+                <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_Quotations.cshtml")
+
+                </div>
+            </div>
+           
+
+            <div id="tab-content-6" class="tab-content">
+                <div class="background">
+               
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_PurchaseOrders.cshtml")
+                </div>
+            </div>
+        <div id="tab-content-7" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_ItemDelivers.cshtml")
+            </div>
+        </div>
+
+            <div id="tab-content-8" class="tab-content">
+                <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_ItemReceived.cshtml")
+
+                </div>
+            </div>
+        <div id="tab-content-9" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_UnitConversion.cshtml")
+
+            </div>
+        </div>
+        <div id="tab-content-10" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_Document.cshtml")
+
+            </div>
+        </div>
+        <div id="tab-content-11" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_purchases.cshtml")
+
+            </div>
+        </div>
+        <div id="tab-content-12" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_MaterialRequest.cshtml")
+
+            </div>
+        </div>
+        
+        </div>
+
+        
+
+        <div style="width: 500px;" class="dx-fieldset horizontal-container">
+            @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Icon("save")
+                .Text(new JS("formatMessage('Save')"))
+                .Width("100%")
+                .OnClick("onsaveLedgerAccountClick")
+                )
+
+            @(Html.DevExtreme().Button()
+                .ID("btnCLose")
+                .Icon("arrowleft")
+                .Text(new JS("formatMessage('Close')"))
+                .Width("100%")
+                .OnClick("PageClose")
+                )
+        </div>
+    </div>
+
+    @using (Html.DevExtreme().NamedTemplate("AccountGroupContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("ledgeraccount-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getAccountingLedger")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountGroupId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .SearchPanel(sp => sp.HighlightSearchText(true))
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged")
+            .OnInitialized("dataGridInitialized")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("AccountGroup");
+            })
+            )
+    }
+
+    @using (Html.DevExtreme().NamedTemplate("DrCrContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("DrCraccount-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getCreditDebit")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("OpeningBalanceDrCr")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .ShowColumnHeaders(false)
+            .FilterRow(f => f.Visible(false))
+            .SearchPanel(sp => sp.HighlightSearchText(false))
+            .Selection(sl => sl.Mode(SelectionMode.Single))
+            .OnSelectionChanged("DrCrdataGridSelectionChanged")
+            .OnInitialized("DrCrdataGridInitialized")
+            .HeaderFilter(p => p.Visible(false))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            @*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
+            .Height("auto")
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("OpeningBalanceDrCr");
+            })
+            )
+    }
+
+    @using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("branch-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getAccountBranch")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("BranchCode")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("branchdataGridSelectionChanged")
+            .OnInitialized("branchdataGridInitialized")
+            @*.HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+            .FilterRow(f => f.Visible(false))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("BranchName");
+            })
+            )
+    }
+
+    @using (Html.DevExtreme().NamedTemplate("SubGroupContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("subgroup-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getSubGroup")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("LedgerSubGroupCode")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("subgroupdataGridSelectionChanged")
+            .OnInitialized("subgroupdataGridInitialized")
+            @* .HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+            .FilterRow(f => f.Visible(false))
+            //.FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("SubGroupName");
+            })
+            )
+    }
+
+    @using (Html.DevExtreme().NamedTemplate("SalesContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("sales-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getSalesPersonList")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("SalesPersonCode")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .FilterRow(f => f.Visible(false))
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("salesdataGridSelectionChanged")
+            .OnInitialized("salesdataGridInitialized")
+            @* .HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+            // .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("SalesPersonName");
+            })
+            )
+    }
+
+    @using (Html.DevExtreme().NamedTemplate("OtherTypeContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("othertype-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getOtherIDTypes")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("BuyerOtherIdtype")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("othertypedataGridSelectionChanged")
+            .OnInitialized("othertypedataGridInitialized")
+            @* .HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("BuyerOtherIdtype").Caption("Code");
+                columns.Add().DataField("BuyerIdtypeName").Caption("Buyer ID Type");
+            })
+            )
+    }
+    @using (Html.DevExtreme().NamedTemplate("SupOtherTypeContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("Supothertype-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getOtherIDTypes")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("BuyerOtherIdtype")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("SupothertypedataGridSelectionChanged")
+            .OnInitialized("SupothertypedataGridInitialized")
+            @* .HeaderFilter(p => p.Visible(true))
+    .ShowBorders(true)
+    .HoverStateEnabled(true)
+    .Paging(p => p.PageSize(15))*@
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("BuyerOtherIdtype").Caption("Code");
+                columns.Add().DataField("BuyerIdtypeName").Caption("Buyer ID Type");
+            })
+            )
+    }
+
+
+    @using (Html.DevExtreme().NamedTemplate("BillingPaymentContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("billingpayment-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getBillingPayments")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("billingdataGridSelectionChanged")
+            .OnInitialized("billingdataGridInitialized")
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("AccountHead");
+            })
+            )
+    }
+
+    @using (Html.DevExtreme().NamedTemplate("CountryCodeContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("CountryCode-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getCountryCode")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CountryCodeAlpha2")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("CountryCodedataGridSelectionChanged")
+            .OnInitialized("CountryCodedataGridInitialized")
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("CountryName");
+            })
+            )
+    }
+    @using (Html.DevExtreme().NamedTemplate("SupCountryCodeContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("SupCountryCode-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("AccountLedgerMaster")
+            .LoadAction("getCountryCode")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CountryCodeAlpha2")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @*  .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("SupCountryCodedataGridSelectionChanged")
+            .OnInitialized("SupCountryCodedataGridInitialized")
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(200)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("CountryName");
+            })
+            )
+    }
+
+</div>
+<script>
+  function onTabSelectionChanged(e) {
+        // Hide all tab content
+        $(".tab-content").hide();
+
+        // Show the content of the selected tab
+        var selectedTabIndex = e.component.option("selectedIndex");
+        $("#tab-content-" + (selectedTabIndex + 1)).show();
+    }
+      function ItemStore(){
+                const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
+              const title = "";
+                  openModal(url, title);
+          }
+            function StockGroup(){
+                const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
+              const title = "";
+                  openModal(url, title);
+          }
+            function ItemClassification(){
+                const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
+              const title = "";
+                  openModal(url, title);
+          }
+</script>
