@@ -142,7 +142,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Register
 
         private void xrLabel8_BeforePrint(object sender, CancelEventArgs e)
         {
-            // Optional custom logic before label print
+        
         }
     }
 }
