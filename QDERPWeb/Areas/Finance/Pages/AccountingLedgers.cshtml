@@ -687,12 +687,12 @@
 	let acchedid, accheadname, refno, accgroup, IsEdit = false, accgroupid, accheadar, FromDate, ToDate, accid, firstRowBalance, lastRowBalance;
 	$(document).ready(function () {
 		const urlParams = new URLSearchParams(window.location.search);
-		const AccountId = urlParams.get('AccountId'); // Get AccountId from URL
+		const AccountHeadNo = urlParams.get('AccountHeadNo'); // Get AccountId from URL
 
-		if (AccountId) {
+		if (AccountHeadNo) {
 			let dropDownInstance = $("#accountDropDownBox").dxDropDownBox("instance");
 			if (dropDownInstance) {
-				dropDownInstance.option("value", AccountId);
+				dropDownInstance.option("value", AccountHeadNo);
 			}
 
 			// Get first and last day of the current month
@@ -713,24 +713,32 @@
 			ToDate = formatDate(lastDayCurrentMonth);
 
 			// Auto-fetch data for the current month
-			fetchAndBindData(AccountId, FromDate, ToDate);
+			fetchAndBindDatas(AccountHeadNo, FromDate, ToDate);
 		}
 	});
 
 	// Function to fetch and bind data to the DataGrid
-	function fetchAndBindData(accountId, frmDate, toDate) {
+	function fetchAndBindDatas(accountHeadNo, frmDate, toDate) {
+		alert("hi");
+		debugger;
 		$.ajax({
 			url: '/api/AccountingLedgers/GetVouchers',
 			type: 'GET',
-			data: { accountId, frmDate, toDate },
-			success: function (data) {
-				let dataGrid = $("#dataGrid").dxDataGrid("instance");
-				dataGrid.option("dataSource", data);
-
-				if (data.length > 0) {
-					firstRowBalance = data[0].VoucherAmountFormatted;
-					lastRowBalance = data[data.length - 1].VoucherAmountFormatted;
+			data: { accountHeadNo, frmDate, toDate },
+					success: function (data) {
+						console.log("NavigationIDData:",data);
+				alert("hi2");
+				// Bind the data to the DataGrid
+				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+				var dataGrid = $("#dataGrid").dxDataGrid("instance");
+				var dataSource = dataGrid.option("dataSource");
+				if (dataSource && dataSource.length > 0) {
+					var lastRow = dataSource[dataSource.length - 1]; // Get the last row
+					VoucherAmountFormatted = lastRow.VoucherAmountFormatted; // Return the value
+					var firstRow = dataSource[0]; // Get the first row
+					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted; // Return the value
 				}
+				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
@@ -1182,6 +1190,7 @@
 				toDate: toDate
 			},
 			success: function (data) {
+				
 				// Bind the data to the DataGrid
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
 				var dataGrid = $("#dataGrid").dxDataGrid("instance");
