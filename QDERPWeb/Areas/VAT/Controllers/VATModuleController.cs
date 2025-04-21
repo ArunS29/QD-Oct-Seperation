@@ -1613,7 +1613,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             }
         }
 
-    }
+    
 		[HttpGet]
 		public async Task<IActionResult> GetSupplierInvoices(DataSourceLoadOptions loadOptions)
 		{
