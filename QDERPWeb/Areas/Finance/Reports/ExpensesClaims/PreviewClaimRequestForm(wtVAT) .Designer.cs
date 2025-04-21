@@ -1378,8 +1378,8 @@
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
             this.sqlDataSource1,
             this.sqlDataSource2});
-            this.DataMember = "tbl20103ExpenseClaimChild";
-            this.DataSource = this.sqlDataSource2;
+            this.DataMember = "sp20107ExpenseClaimFom";
+            this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.Margins = new DevExpress.Drawing.DXMargins(24F, 26F, 25F, 97.37498F);
             this.PageHeight = 1169;

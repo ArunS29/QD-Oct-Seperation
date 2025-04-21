@@ -1,19 +1,28 @@
-﻿
-
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.IO;
-using Microsoft.Extensions.Configuration;
 using DevExpress.XtraReports.UI;
+using QD.ERP.Web.Service; // ✅ Required for TenantDbContextHelper
 
 namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 {
     public partial class ClaimDetailed : XtraReport
     {
-        public ClaimDetailed(string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
+        public ClaimDetailed(
+            string voucherNo,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressAr,
+            TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
             LoadReportData(voucherNo);
@@ -47,23 +56,22 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
 
-            // Bind data to report UI controls if they exist
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
-            if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = companyName;
 
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = companyAddress;
 
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = companyNameAr;
 
-            if (this.FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
+            if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
 
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
         }
 
@@ -83,33 +91,33 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
             }
         }
 
-   
         private DataTable GetReportData(string voucherNo)
         {
             DataTable dt = new DataTable();
 
             try
             {
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .Build();
-
-                string connectionString = configuration.GetConnectionString("DbConnection");
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                // Fetch dynamic connection string for tenant
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 {
-                    string query = "SELECT * FROM tbl20103ExpenseClaimChild WHERE ClaimRefNo=@ClaimRefNo";
+                    string connectionString = tenant.ConnectionString;
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        cmd.CommandType = CommandType.Text; // 👈 Fixed here
-                        cmd.Parameters.AddWithValue("@ClaimRefNo", voucherNo);
+                        using (SqlCommand cmd = new SqlCommand("sp20107ExpenseClaimFom", conn))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@ClaimRefNo", voucherNo);
 
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        conn.Open();
-                        da.Fill(dt);
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            conn.Open();
+                            da.Fill(dt);
+                        }
                     }
+                }
+                else
+                {
+                    throw new Exception("Unable to get tenant context. Please check session and cache.");
                 }
             }
             catch (Exception ex)
@@ -119,6 +127,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
             return dt;
         }
+
+
         private void CreateNoDataLabel()
         {
             XRLabel noDataLabel = new XRLabel
@@ -131,4 +141,3 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
         }
     }
 }
-

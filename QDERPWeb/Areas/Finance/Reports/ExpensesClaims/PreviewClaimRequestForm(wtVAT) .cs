@@ -1,16 +1,16 @@
-﻿
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.IO;
-using Microsoft.Extensions.Configuration;
 using DevExpress.XtraReports.UI;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 {
     public partial class PreviewClaimRequestForm_wtVAT_ : XtraReport
     {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
         public PreviewClaimRequestForm_wtVAT_(
             string voucherNo,
             string tenantName,
@@ -18,8 +18,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
             string companyAddress,
             Image logoImage,
             string companyNameAr,
-            string companyAddressAr)
+            string companyAddressAr,
+            TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
             LoadReportData(voucherNo);
@@ -94,26 +97,26 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
             try
             {
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .Build();
-
-                string connectionString = configuration.GetConnectionString("DbConnection");
-
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 {
-                    string query = "SELECT * FROM tbl20103ExpenseClaimChild WHERE ClaimRefNo=@ClaimRefNo";
+                    string connectionString = tenant.ConnectionString;
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        cmd.CommandType = CommandType.Text; // 👈 Fixed here
-                        cmd.Parameters.AddWithValue("@ClaimRefNo", voucherNo);
+                        using (SqlCommand cmd = new SqlCommand("sp20107ExpenseClaimFom", conn))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@ClaimRefNo", voucherNo);
 
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        conn.Open();
-                        da.Fill(dt);
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            conn.Open();
+                            da.Fill(dt);
+                        }
                     }
+                }
+                else
+                {
+                    throw new Exception("Unable to get tenant context. Please check session and cache.");
                 }
             }
             catch (Exception ex)
@@ -137,8 +140,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
         private void xrTableCell9_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            // Custom cell logic if needed
         }
     }
 }
-

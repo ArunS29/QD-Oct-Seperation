@@ -674,6 +674,8 @@
             // xrLabel35
             // 
             this.xrLabel35.Borders = ((DevExpress.XtraPrinting.BorderSide)((DevExpress.XtraPrinting.BorderSide.Right | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel35.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[ApprovedAmount]")});
             this.xrLabel35.LocationFloat = new DevExpress.Utils.PointFloat(1148.146F, 41.66677F);
             this.xrLabel35.Multiline = true;
             this.xrLabel35.Name = "xrLabel35";
@@ -1628,8 +1630,8 @@
             this.sqlDataSource1,
             this.sqlDataSource2,
             this.sqlDataSource3});
-            this.DataMember = "tbl20103ExpenseClaimChild";
-            this.DataSource = this.sqlDataSource3;
+            this.DataMember = "sp20107ExpenseClaimFom";
+            this.DataSource = this.sqlDataSource2;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.Landscape = true;
             this.Margins = new DevExpress.Drawing.DXMargins(24F, 24F, 25F, 62.04165F);
