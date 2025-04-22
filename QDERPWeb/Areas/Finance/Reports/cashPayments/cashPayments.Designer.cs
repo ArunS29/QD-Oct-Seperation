@@ -1781,6 +1781,8 @@
             this.xrLabel10.StylePriority.UseBorderColor = false;
             this.xrLabel10.StylePriority.UseBorders = false;
             this.xrLabel10.StylePriority.UseBorderWidth = false;
+            this.xrLabel10.StylePriority.UseTextAlignment = false;
+            this.xrLabel10.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // xrLabel9
             // 
@@ -1799,6 +1801,8 @@
             this.xrLabel9.StylePriority.UseBorderColor = false;
             this.xrLabel9.StylePriority.UseBorders = false;
             this.xrLabel9.StylePriority.UseBorderWidth = false;
+            this.xrLabel9.StylePriority.UseTextAlignment = false;
+            this.xrLabel9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
             // cashPayments
             // 
@@ -1813,7 +1817,7 @@
             this.sqlDataSource1});
             this.DataMember = "qry201MainVoucherEntriesWithMaster";
             this.DataSource = this.sqlDataSource1;
-            this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
+            this.Font = new DevExpress.Drawing.DXFont("Cambria", 11F);
             this.Margins = new DevExpress.Drawing.DXMargins(18F, 20F, 11.45833F, 90.00022F);
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
             this.Title,

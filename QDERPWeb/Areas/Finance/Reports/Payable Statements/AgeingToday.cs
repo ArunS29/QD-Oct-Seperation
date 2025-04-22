@@ -2,18 +2,15 @@
 using DevExpress.DataAccess.Sql;
 using System;
 using System.Drawing;
-using DevExpress.DataAccess.ConnectionParameters;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 {
     public partial class AgeingToday : XtraReport
     {
         private SqlDataSource sqlDataSource1;
-        private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public AgeingToday(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, TenantDbContextHelper tenantDbContextHelper)
+        public AgeingToday(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
-            _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
         }
@@ -38,33 +35,29 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                         Name = name,
                         Type = type,
                         Value = value,
-                        Visible = visible
+                        Visible = false
                     });
                 }
                 else
                 {
                     Parameters[name].Value = value;
-                    Parameters[name].Visible = visible;
+                    Parameters[name].Visible = false;
                 }
             }
 
-            // Add or update parameters
             AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
             AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
             AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
 
-            // New parameters for Tenant and Company Info
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
 
-            // Debug: Ensure logo URL is captured
             Console.WriteLine($"Company Logo: {logoImage != null}");
 
 
-            // Bind TenantName and CompanyName to labels (update with actual control names)
             if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
             {
                 tenantLabel.Text = tenantName;
@@ -113,18 +106,5 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 Parameters[paramName].Value = paramValue;
             }
         }
-
-        // Connection string logic
-//            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-//            {
-//                var connectionString = tenant.ConnectionString;
-//        var connectionParams = new CustomStringConnectionParameters(connectionString);
-//        sqlDataSource1.ConnectionParameters = connectionParams;
-//            }
-//            else
-//            {
-//                throw new Exception("Unable to get tenant context. Please check session and cache.");
-//            }
-           
     }
 }

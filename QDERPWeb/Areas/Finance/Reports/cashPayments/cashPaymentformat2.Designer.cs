@@ -1719,7 +1719,7 @@
             this.sqlDataSource1});
             this.DataMember = "qry201MainVoucherEntriesWithMaster";
             this.DataSource = this.sqlDataSource1;
-            this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
+            this.Font = new DevExpress.Drawing.DXFont("Cambria", 12F);
             this.Margins = new DevExpress.Drawing.DXMargins(18F, 26F, 31.87501F, 77.12511F);
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
             this.Title,
