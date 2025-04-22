@@ -166,17 +166,17 @@
             this.xrLabel40,
             this.xrLabel20,
             this.xrPictureBox1});
-            this.ReportHeader.HeightF = 135.3333F;
+            this.ReportHeader.HeightF = 125.3333F;
             this.ReportHeader.Name = "ReportHeader";
             // 
             // xrLabel13
             // 
             this.xrLabel13.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
-            this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(2.000093F, 105.625F);
+            this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Cambria", 12F);
+            this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(2.000097F, 92.08334F);
             this.xrLabel13.Multiline = true;
             this.xrLabel13.Name = "xrLabel13";
-            this.xrLabel13.SizeF = new System.Drawing.SizeF(953.9999F, 26.49998F);
+            this.xrLabel13.SizeF = new System.Drawing.SizeF(953.9998F, 33.24997F);
             this.xrLabel13.StylePriority.UseBorderColor = false;
             this.xrLabel13.StylePriority.UseFont = false;
             this.xrLabel13.StylePriority.UseTextAlignment = false;
@@ -192,13 +192,13 @@
             // 
             // xrLabel11
             // 
-            this.xrLabel11.Font = new DevExpress.Drawing.DXFont("Arial", 14F);
+            this.xrLabel11.Font = new DevExpress.Drawing.DXFont("Cambria", 14F);
             this.xrLabel11.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(7.152557E-05F, 49.83336F);
+            this.xrLabel11.LocationFloat = new DevExpress.Utils.PointFloat(6.993612E-05F, 60.66666F);
             this.xrLabel11.Multiline = true;
             this.xrLabel11.Name = "xrLabel11";
             this.xrLabel11.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel11.SizeF = new System.Drawing.SizeF(941.9998F, 23F);
+            this.xrLabel11.SizeF = new System.Drawing.SizeF(954.9999F, 23F);
             this.xrLabel11.StylePriority.UseFont = false;
             this.xrLabel11.StylePriority.UseForeColor = false;
             this.xrLabel11.StylePriority.UseTextAlignment = false;
@@ -210,10 +210,10 @@
             this.xrLabel40.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel40.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
-            this.xrLabel40.Font = new DevExpress.Drawing.DXFont("Arial", 13F);
-            this.xrLabel40.LocationFloat = new DevExpress.Utils.PointFloat(0F, 10.00001F);
+            this.xrLabel40.Font = new DevExpress.Drawing.DXFont("Cambria", 16F);
+            this.xrLabel40.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrLabel40.Name = "xrLabel40";
-            this.xrLabel40.SizeF = new System.Drawing.SizeF(941.9999F, 21.00004F);
+            this.xrLabel40.SizeF = new System.Drawing.SizeF(955F, 31.00006F);
             this.xrLabel40.StylePriority.UseBorders = false;
             this.xrLabel40.StylePriority.UseFont = false;
             this.xrLabel40.StylePriority.UseTextAlignment = false;
@@ -225,10 +225,12 @@
             this.xrLabel20.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel20.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddress]")});
-            this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(8.742014E-05F, 31.00004F);
+            this.xrLabel20.Font = new DevExpress.Drawing.DXFont("Cambria", 12F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(8.900961E-05F, 31.00006F);
             this.xrLabel20.Name = "xrLabel20";
-            this.xrLabel20.SizeF = new System.Drawing.SizeF(941.9999F, 18.83331F);
+            this.xrLabel20.SizeF = new System.Drawing.SizeF(954.9999F, 29.6666F);
             this.xrLabel20.StylePriority.UseBorders = false;
+            this.xrLabel20.StylePriority.UseFont = false;
             this.xrLabel20.StylePriority.UseTextAlignment = false;
             this.xrLabel20.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
             this.xrLabel20.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
