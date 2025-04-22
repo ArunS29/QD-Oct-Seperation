@@ -1476,7 +1476,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 					// Get last credit note number
 					var lastCreditNoteNumber = await dbContext.Tbl20170VatcreditNoteMasters
-						.Where(cn => cn.CreditNoteNo.StartsWith($"{creditNoteAbbrv}{yearSuffix}-"))
+						.Where(cn => cn.CreditNoteNo.StartsWith($"{creditNoteAbbrv}-{yearSuffix}-"))
 						.OrderByDescending(cn => cn.CreditNoteNo)
 						.Select(cn => cn.CreditNoteNo)
 						.FirstOrDefaultAsync();
@@ -1492,7 +1492,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 					}
 
 					// Generate new Credit Note number
-					string newCreditNoteNumber = $"{creditNoteAbbrv}{yearSuffix}-{newNumber:D5}";
+					string newCreditNoteNumber = $"{creditNoteAbbrv}-{yearSuffix}-{newNumber:D5}";
 
 					return Json(newCreditNoteNumber);
 				}
@@ -1640,8 +1640,309 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
 
+        [HttpGet]
+        public IActionResult GetStores()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var stores = dbContext.Tbl60001storeMasters
+                .Select(s => new
+                {
+                    s.StoreId,
+                    s.StoreName
+                })
+                .ToList();
 
-	}
+            return Ok(stores);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Optional: log the exception before throwing
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetVatCreditNoteDetails(string frmDate, string toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+                    // Fetch records based on the date range
+                    var vatInvoices = await dbContext.Qry201807vatcreditNoteRegisterMainViews
+                        .FromSqlRaw("SELECT * FROM qry201_807VATCreditNoteRegisterMainView WHERE CreditNoteDate BETWEEN @p0 AND @p1", from, to)
+                        .ToListAsync();
+
+                    return Json(vatInvoices);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetCreditNoteDetails(string CreditNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var result = dbContext.Tbl20170VatcreditNoteMasters
+                      .Where(x => x.CreditNoteNo == CreditNoteNo)
+                      .ToList();
+
+
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetGridCreditNoteDetails(string CreditNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var resultWithVAT = new List<ExpandoObject>();
+
+                    var result1 = dbContext.Qry201801vatcreditNoteChildren
+                        .Where(x => x.CreditNoteNo == CreditNoteNo)
+                        .ToList();
+
+                    foreach (var gridDetails in result1)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = gridDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        // Get the TaxRateInWord from the TaxSlab table
+                        var taxRateInWord = dbContext.Tbl20163VatTaxSlabs
+                            .Where(x => x.TaxSlabCode == gridDetails.TaxSlabCode)
+                            .Select(x => x.TaxRateInWord)
+                            .FirstOrDefault();
+
+                        var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
+                   .Where(x => x.UnitCode == gridDetails.UnitRateMethod)
+                   .Select(x => x.UnitDesc)
+                   .FirstOrDefault();
+
+                        //var qty = gridDetails.UnitsToBill;
+                        //var unitPrice = gridDetails.UnitRate;
+                        //var vatRate = decimal.TryParse(taxRateInWord.Replace("%", ""), out decimal rate) ? rate / 100 : 0;
+
+                        //var amount = qty * unitPrice;
+                        //var vatValue = amount * vatRate;
+                        //var totalValue = amount + vatValue;
+
+                        // Add new dynamic column
+                        dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
+                        dict["VATPercentage"] = taxRateInWord;
+
+                        //dict["VAT"] = vatValue;
+                        //dict["TotalVAT"] = totalValue;
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    return Json(resultWithVAT);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreditVerifyVoucher(string CreditNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(CreditNoteNo))
+                    {
+                        return BadRequest(new { Message = "Credit number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20170VatcreditNoteMasters.FirstOrDefault(v => v.CreditNoteNo == CreditNoteNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "Credit not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsVerified = true;
+                    voucher.VerifiedOn = DateTime.Now;
+                    voucher.VerifiedBy = UserName;
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "CreditNoteNo verified successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreditApproveVoucher(string CreditNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(CreditNoteNo))
+                    {
+                        return BadRequest(new { Message = "CreditNoteNo number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20170VatcreditNoteMasters.FirstOrDefault(v => v.CreditNoteNo == CreditNoteNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "CreditNoteNo not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsApproved = true;
+                    voucher.ApprovedOn = DateTime.Now;
+                    voucher.ApprovedBy = UserName;
+
+                    //if (IsDirect == false)
+                    //{
+                    //    voucher.IsVerified = true;
+                    //    voucher.VoucherVerifiedOn = DateTime.Now;
+                    //    voucher.VoucherVerifiedBy = UserName;
+
+                    //}
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "CreditNoteNo approved successfully.",
+                        VoucherApprovedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> CreditPostInvoice(string CreditNoteNo, bool IsDirect)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(CreditNoteNo))
+                    {
+                        return BadRequest(new { Message = "Credit number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20170VatcreditNoteMasters.FirstOrDefault(v => v.CreditNoteNo == CreditNoteNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "CreditNoteNo not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsPosted = true;
+                    voucher.PostedOn = DateTime.Now;
+                    voucher.PostedBy = UserName;
+
+                    int JustAddedVoucherEntryNoSubLedger = 0;
+                    int JustAddedVoucherEntryNoCostAlloc = 0;
+
+                    // 🔁 Call the stored procedure sp201_62InsertVATtoVoucher
+                   // var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+
+                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2", CreditNoteNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc);
+
+
+                    //   var result1 = dbContext.Database.ExecuteSqlRaw("EXEC  sp201_82InsertVATCreditNotetoVoucher_BHD @p0,@p1,@p2,@p3", InvoiceNo, JustAddedVoucherEntryNoSubLedger, JustAddedVoucherEntryNoCostAlloc, IsCashOrBankAccount);
+
+
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Invoice posted successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+
+    }
 }
 
 

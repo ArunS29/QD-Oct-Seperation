@@ -503,27 +503,27 @@
 
 <script>
 	// // Assuming tenantName is already defined globally
-	let invoiceNoCr = null;
-		let IsEditCr = false;
+	let CreditNoteNo = null;
+		let IsEdit = false;
 
 		// Assuming tenantName is already defined globally
 		function viewInvoice() {
-			if (!invoiceNo) {
-				alert("Invoice number is not set.");
+			if (!CreditNoteNo) {
+					alert("CreditNoteNo is not set.");
 				return;
 			}
 
 			IsEdit = true;
 
 			const params = new URLSearchParams({
-					InvoiceNo: invoiceNoCr,
-					IsEditflagCr: IsEditCr,
+				CreditNoteNo: CreditNoteNo,
+			    IsEditflag: IsEdit,
 				modal: true // If you want to explicitly include modal=true
 			});
 
 			const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
-			const title = "VAT Credit Note Edit(B2B)";
-			openModal(url, title);
+		    window.location.href = url;
+		//	openModal(url, title);
 		}
 
 
@@ -620,7 +620,7 @@
 			e.preventDefault();
 			var rowIndex = $(this).index();
 			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-			invoiceNo = rowData.InvoiceNo;
+					CreditNoteNo = rowData.CreditNoteNo;
 			console.log(rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
@@ -683,7 +683,7 @@
 		toDateBox.option("value", toDate);
 
 		$.ajax({
-			url: '/api/VATModule/GetVatInvoice',
+				url: '/api/VATModule/GetVatCreditNoteDetails',
 			type: 'GET',
 			data: {
 				frmDate: frmDate,

@@ -497,6 +497,41 @@
 
 
 
+    function validateAndNotify() {
+        let missingFields = [];
+
+        // Check if Sales Person Name is empty
+        const salesPersonName = $("#txtSalesPersonName").dxTextBox("instance").option("value");
+        if (!salesPersonName) {
+            missingFields.push("Sales Person Name");
+        }
+
+        // Check if User Code is empty
+        const userCode = $("#DDlUserId").dxDropDownBox("instance").option("value");
+        if (!userCode) {
+            missingFields.push("User Code");
+        }
+
+        // Check if Email Address is empty
+        const emailAddress = $("#txtEmailAddress").dxTextBox("instance").option("value");
+        if (!emailAddress) {
+            missingFields.push("Email Address");
+        }
+
+        // Check if Sales Person Code is empty
+        const salesPersonCode = $("#txtSalesPersonCode").dxTextBox("instance").option("value");
+        if (!salesPersonCode) {
+            missingFields.push("Sales Person Code");
+        }
+
+        // If there are missing fields, show a notification
+        if (missingFields.length > 0) {
+            const message = `Please fill the following required fields: ${missingFields.join(", ")}`;
+            DevExpress.ui.notify(message, "error", 2000);
+        } else {
+            DevExpress.ui.notify("All fields are valid!", "success", 2000);
+        }
+    }
 
 
        // Function to handle adding a new salesperson
@@ -526,7 +561,7 @@
                var SalesPersonCodevalidator = $("#txtSalesPersonCode").dxValidator("instance");
             var SalesPersonCodevalidation = SalesPersonCodevalidator.validate();
 
-
+        
             if (ddluservalidation.isValid && Salespersonuservalidation.isValid && emailAddressvalidation.isValid && SalesPersonCodevalidation.isValid) {
 
                 // If all fields are valid, proceed with sending the data
@@ -571,8 +606,8 @@
                     }
                 });
             } else {
-                DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
-            }
+            validateAndNotify()
+        }
 
 
 

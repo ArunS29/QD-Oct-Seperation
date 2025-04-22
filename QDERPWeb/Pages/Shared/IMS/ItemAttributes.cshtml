@@ -51,7 +51,7 @@
     }
 
     .audit-label {
-        width: 90px;
+        
         text-align: right;
         font-style: italic;
         font-size: 12px;
@@ -96,15 +96,22 @@
     }
 </style>
 
+
+<div class="title">
+    <div class="header-container">
+        <div id="ItemAttributes" class="no-border-input"></div>
+    </div>
+</div>
+
 <div class="maindiv">
     <table class="form-table">
         <!-- Detailed Description -->
         <tr>
-            <th colspan="6" style="padding-bottom: 30px; padding-top: 25px;">Detailed Description:</th>
+            <th colspan="6" style="padding-bottom: 23px; padding-top: 30px;" id="DetailedDescriptionLabel"></th>
         </tr>
         <tr>
             <td colspan="6">
-                @(Html.DevExtreme().TextArea()
+                @(Html.DevExtreme().TextArea()  
                     .ID("DetailedDescription")
                     .LabelMode(EditorLabelMode.Outside)
                     .Width("100%"))
@@ -113,7 +120,7 @@
 
         <!-- Item Size & Measurements Section -->
         <tr>
-            <th colspan="6">Item Size & Measurements</th>
+            <th colspan="6" id="ItemSizeMeasurements"></th>
         </tr>
         <tr class="flex-row">
             
@@ -125,7 +132,7 @@
                                 .Value("Hourly")
                                 .Width("140")
                                 .LabelMode(EditorLabelMode.Outside)
-                                .Label("Unit of Measure: *"))
+                                .Label(new JS("formatMessage('Unit of Measure : *')")))
 
 
                             @(Html.DevExtreme().Button()
@@ -142,14 +149,14 @@
                             .ID("PackingUnit")
                             .Value(1)
                             .LabelMode(EditorLabelMode.Outside)
-                            .Label("Packing Unit:"))
+                            .Label(new JS("formatMessage('Packing Unit : ')")))
             </td>
 
             <td>
                         @(Html.DevExtreme().SelectBox()
                             .ID("ItemSize")
                             .LabelMode(EditorLabelMode.Outside)
-                            .Label("Item Size:"))
+                            .Label(new JS("formatMessage('Item Size : ')")))
             </td>
         </tr>
         <tr class="flex-row">
@@ -157,28 +164,29 @@
                 @(Html.DevExtreme().SelectBox()
                     .ID("ItemThickness")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Item Thickness:"))
+                    .Label(new JS("formatMessage('Item Thickness : ')")))
             </td>
 
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("ItemDimension")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Item Dimension:"))
+                    .Label(new JS("formatMessage('Item Dimension : ')")))
             </td>
 
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("ActualSize")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Act. Size:"))
+                    .Label(new JS("formatMessage('Act. Size : ')")))  
+                    
             </td>
 
 
         </tr>
 
         <tr>
-            <th colspan="6">Item Cost & Price Details</th>
+            <th colspan="6" id="ItemCostPriceDetails"></th>
         </tr>
 
         <tr class="flex-row">
@@ -188,7 +196,7 @@
                     .Value(0.00)
                     .Format("#,##0.00")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Opening Balance:"))
+                    .Label(new JS("formatMessage('Opening Balance : ')")))
             </td>
 
             <td>
@@ -196,7 +204,7 @@
                     .ID("CostPrice")
                     .Value(0)
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Cost Price:"))
+                    .Label(new JS("formatMessage('Cost Price : ')")))
             </td>
 
             <td>
@@ -204,7 +212,7 @@
                     .ID("ExFactoryPrice")
                     .Value(0)
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Ex-Factory Price:"))
+                    .Label(new JS("formatMessage('Ex-Factory Price : ')")))
             </td>
         </tr>
         <tr class="flex-row">
@@ -213,7 +221,7 @@
                     .ID("SellingPrice")
                     .Value(0)
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Selling Price:"))
+                    .Label(new JS("formatMessage('Selling Price : ')")))
             </td>
 
             <td>
@@ -221,7 +229,7 @@
                     .ID("MinSellingPrice")
                     .Value(0)
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Min Selling Price:"))
+                    .Label(new JS("formatMessage('Min Selling Price : ')")))
             </td>
 
             <td>
@@ -229,7 +237,7 @@
                     .ID("MaxSellingPrice")
                     .Value(0)
                   .LabelMode(EditorLabelMode.Outside)
-                    .Label("Max Selling Price:"))
+                    .Label(new JS("formatMessage('Max Selling Price : ')")))
             </td>
         </tr>
 
@@ -241,19 +249,20 @@
     <table class="form-table">
 
         <!-- Detailed Description Arabic -->
-        <tr>
-            <th colspan="6" style="padding-bottom: 4px;" class="flex-row">
-          Detailed Description: (in Arabic)
-                <div >
-                    @(Html.DevExtreme().Button()
-                        .ID("convertToArabic1")
-                        .Width(50)
-                        .Icon("fas fa-language")
-                        .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
-                        )
-                </div>
+        <tr class="flex-row" style="padding-bottom: 0px;">
+            <th colspan="6"  class="flex-row" id="DetailedDescriptionInArabic"></th>
+            <th>
+                @(Html.DevExtreme().Button()
+                    .ID("convertToArabic1")
+                    .Width(50)
+                    .Icon("fas fa-language")
+                    .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                    )
+            </th>   
+           
+            
                
-            </th>
+            
         </tr>
 
         <tr>
@@ -273,19 +282,19 @@
             <td >
                 @(Html.DevExtreme().TextBox()
                     .ID("ItemPartNo")
-                    .Label("Item Part No:")
+                    .Label(new JS("formatMessage('Item Part No : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("ItemHSCode")
-                    .Label("Item HS Code:")
+                    .Label(new JS("formatMessage('Item HS Code : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("Location01")
-                    .Label("Location Identifier 01:")
+                    .Label(new JS("formatMessage('Location Identifier 01 : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
         </tr>
@@ -294,7 +303,7 @@
                 @(Html.DevExtreme().SelectBox()
                     .ID("ItemColor")
                     .DataSource(new[] { "Red", "Blue", "Green" })
-                    .Label("Item Color:")
+                    .Label(new JS("formatMessage('Item Color : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
 
@@ -302,14 +311,14 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("Location02")
-                    .Label("Location Identifier 02:")
+                    .Label(new JS("formatMessage('Location Identifier 02 : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("ItemBrand")
                     .DataSource(new[] { "Brand A", "Brand B" })
-                    .Label("Item Brand:")
+                    .Label(new JS("formatMessage('Item Brand : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
         </tr>
@@ -317,14 +326,14 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("Location03")
-                    .Label("Location Identifier 03:")
+                    .Label(new JS("formatMessage('Location Identifier 03 : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("ItemManufacturer")
                     .DataSource(new[] { "Maker 1", "Maker 2" })
-                    .Label("Item Make / Manufacturer:")
+                    .Label(new JS("formatMessage('Item Make / Manufacturer : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
 
@@ -333,7 +342,7 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("CountryOfOrigin")
-                    .Label("Country Of Origin:")
+                    .Label(new JS("formatMessage('Country Of Origin : ')"))
                     .LabelMode(EditorLabelMode.Outside))
             </td>
 
@@ -352,7 +361,7 @@
                     <div class="audit">
                         <div class="audit-left">
                             <div class="audit-row">
-                                <div class="audit-label">Entered By:</div>
+                                <div class="audit-label" id="EnteredByLabel"></div>
                                 <div class="audit-field">
                                     @(Html.DevExtreme().TextArea()
                                         .ID("EnteredBy")
@@ -361,7 +370,7 @@
                                 </div>
                             </div>
                             <div class="audit-row">
-                                <div class="audit-label">Entered On:</div>
+                                <div class="audit-label" id="EnteredOnLabel"></div>
                                 <div class="audit-field">
                                     @(Html.DevExtreme().TextArea()
                                         .ID("EnteredOn")
@@ -374,7 +383,7 @@
                         <!-- Right Audit Info -->
                         <div class="audit-right">
                             <div class="audit-row">
-                                <div class="audit-label">Modified By:</div>
+                                <div class="audit-label" id="ModifiedByLabel"></div>
                                 <div class="audit-field">
                                     @(Html.DevExtreme().TextArea()
                                         .ID("ModifiedBy")
@@ -383,7 +392,7 @@
                                 </div>
                             </div>
                             <div class="audit-row">
-                                <div class="audit-label">Modified On:</div>
+                                <div class="audit-label" id="ModifiedOnLabel"></div>
                                 <div class="audit-field">
                                     @(Html.DevExtreme().TextArea()
                                         .ID("ModifiedOn")
@@ -396,13 +405,13 @@
 
                     <div class="audit-right">
                         <div class="audit-row">
-                            <div class="audit-label">Avg Cost Price:</div>
+                            <div class="audit-label" id="AvgCostPriceLabel"></div>
                             <div class="audit-field flex-row">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("AvgCostPrice")
                                     .ReadOnly(true)
-                                    .Width("90%")
-                                    .Placeholder("Avg Cost"))
+                                    .Width("100%")
+                                    .Placeholder(new JS("formatMessage('Avg Cost')")))
                                 @(Html.DevExtreme().Button()
                                     .ID("btnSearchCost")
                                     .Icon("search")
@@ -410,7 +419,7 @@
                             </div>
                         </div>
                            <div class="flex-row" style="width: 100%">
-                            <label class="item-discontinued-label">Item Discontinued:</label>
+                            <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
 
                             @(Html.DevExtreme().CheckBox()
                                 .ID("ItemDiscontinued")
@@ -419,9 +428,38 @@
                         </div>
                        
                     </div>
+                </div>
               
             </td>
         </tr>
 
     </table>
 </div>
+
+
+<script>
+
+        $(function () {
+            $("#DetailedDescriptionLabel").text(formatMessage("Detailed Description : "));
+            $("#ItemSizeMeasurements").text(formatMessage("Item Size & Measurements : "));
+            $("#ItemCostPriceDetails").text(formatMessage("Item Cost & Price Details : "));
+            $("#DetailedDescriptionInArabic").text(formatMessage("Detailed Description: (in Arabic) "));
+            $("#EnteredByLabel").text(formatMessage("Entered By : "));
+            $("#ModifiedByLabel").text(formatMessage("Modified By : "));
+            $("#ModifiedOnLabel").text(formatMessage("Modified On : "));
+            $("#AvgCostPriceLabel").text(formatMessage("Avg Cost Price :"));
+            $("#EnteredOnLabel").text(formatMessage("Entered On : "));
+            $("#ItemDiscontinuedLabel").text(formatMessage("Item Discontinued : "));
+    });
+
+      $(function () {
+     $("#ItemAttributes").dxTextBox({
+     text: formatMessage("Item Attributes"),
+         readOnly: true,
+         onContentReady: function (e) {
+         $(e.element).addClass("dx-textbox-heading");
+         }
+         });
+     });
+
+</script>

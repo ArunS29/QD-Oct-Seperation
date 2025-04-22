@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.ConnectionParameters;
@@ -8,31 +7,39 @@ using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 {
-	public partial class balnceSheet : DevExpress.XtraReports.UI.XtraReport
-	{
+    public partial class balnceSheet : DevExpress.XtraReports.UI.XtraReport
+    {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        public balnceSheet(string accountGroup,
-                DateTime frmDate,
-                DateTime toDate,
-                string tenantName,
-                string company_Name,
-                string company_address,
-                Image logoImage,
-                string Company_Name_Ar,
-                string company_address_arb,
-                TenantDbContextHelper tenantDbContextHelper)
+
+        public balnceSheet(
+            string accountGroup,
+            DateTime toDate,
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb,
+            TenantDbContextHelper tenantDbContextHelper,
+            bool isUseEffectiveDate = true)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
-            SetReportParameters(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(accountGroup, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, isUseEffectiveDate);
 
             try
             {
                 sqlDataSource1.Fill();
+
+                if (!string.IsNullOrEmpty(accountGroup))
+                {
+                    this.FilterString = $"[AccountGroup] = '{accountGroup.Replace("'", "''")}'";
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error loading data: " + ex.Message, ex);
+                throw new Exception($"Error loading data for Balance Sheet report: {ex.Message}", ex);
             }
         }
 
@@ -41,10 +48,19 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             InitializeComponent();
         }
 
-        private void SetReportParameters(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(
+            string accountGroup,
+            DateTime toDate,
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb,
+            bool isUseEffectiveDate)
         {
             AddReportParameter("AccountGroup", typeof(string), accountGroup ?? "");
-            AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
+            AddReportParameter("IsUseEffectiveDate", typeof(bool), isUseEffectiveDate);
             AddReportParameter("EndDate", typeof(DateTime), toDate == DateTime.MinValue ? DateTime.Today : toDate);
             AddReportParameter("TenantName", typeof(string), tenantName ?? "");
             AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
@@ -52,52 +68,67 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
             AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
 
-            ApplyReportControls(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            ApplyReportControls(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            ConfigureSqlQuery();
         }
 
-        private void ApplyReportControls(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void ApplyReportControls(
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb)
         {
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
-            if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
 
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = company_address;
 
             if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-                logoPictureBox.Image = logoImage;
+                logoPictureBox.Image = logoImage ?? null;
 
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = Company_Name_Ar;
 
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
-
-            ConfigureSqlQuery(accountGroup, frmDate, toDate);
         }
 
-        private void ConfigureSqlQuery(string accountGroup, DateTime frmDate, DateTime toDate)
+        private void ConfigureSqlQuery()
         {
             var storedProcQuery = new StoredProcQuery
             {
-                Name = "StProTrialbalance",
+                Name = "sp20113BalanceSheet",
                 StoredProcName = "sp20113BalanceSheet"
             };
 
             storedProcQuery.Parameters.AddRange(new[]
             {
-                new QueryParameter { Name = "@ParamAccountGroup", Type = typeof(string), ValueInfo = accountGroup ?? "L00567" },
-                new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd") },
-                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd") }
-                });
+                new QueryParameter
+                {
+                    Name = "@EndDate",
+                    Type = typeof(DateTime),
+                    Value = Parameters["EndDate"].Value
+                },
+                new QueryParameter
+                {
+                    Name = "@IsUseEffectiveDate",
+                    Type = typeof(bool),
+                    Value = Parameters["IsUseEffectiveDate"].Value
+                }
+            });
 
             sqlDataSource1.Queries.Clear();
             sqlDataSource1.Queries.Add(storedProcQuery);
             sqlDataSource1.Name = "sqlDataSource1";
 
-            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            if (_tenantDbContextHelper != null &&
+                _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
                 sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
             }
@@ -125,7 +156,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
                 Parameters[paramName].Visible = false;
             }
         }
+
         private void xrLabel12_BeforePrint(object sender, CancelEventArgs e)
-        {}
+        {
+            // Optional: Add dynamic logic here
+        }
     }
 }

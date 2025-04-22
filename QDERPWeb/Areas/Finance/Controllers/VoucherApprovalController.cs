@@ -263,6 +263,26 @@ namespace QDWEB.Areas.Finance.Controllers
 
             return Json(new { success = true, message = "Selected vouchers have been deleted successfully." });
         }
+        [HttpPost]
+        public IActionResult UpdateAuditVerification(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            var userName = HttpContext.Session.GetString("UserName");
+            var now = DateTime.Now;
+
+            var voucher = dbContext.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+            if (voucher == null) return NotFound();
+
+            voucher.IsAuditVerified = true;
+            voucher.AuditVerifiedBy = userName;
+            voucher.AuditVerifiedOn = now;
+
+            dbContext.SaveChanges();
+            return Ok();
+        }
 
 
     }

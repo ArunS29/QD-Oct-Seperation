@@ -82,14 +82,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
         {
             var storedProcQuery = new StoredProcQuery
             {
-                Name = "StProBillsPayable",
-                StoredProcName = "sp20101TrialBalanceReport" // replace with your actual stored proc name
+                Name = "",
+                StoredProcName = "" // replace with your actual stored proc name
             };
 
             storedProcQuery.Parameters.AddRange(new[]
             {
-                new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = frmDate.ToString("yyyy-MM-dd") },
-                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = toDate.ToString("yyyy-MM-dd") }
+                 new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value },
+
             });
 
             sqlDataSource1.Queries.Clear();
