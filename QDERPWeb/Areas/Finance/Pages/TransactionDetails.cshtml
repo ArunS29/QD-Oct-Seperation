@@ -49,7 +49,21 @@
         font-weight: bold;
         color: black;
     }
+
+    .playIcon {
+        display: none;
+    }
 </style>
+
+<div class="title">
+    <div class="header-container" style="text-align:center;">
+        <div id="TransactionDetails" class="no-border-input"></div>
+    </div>
+</div>
+
+<div>
+    @await Html.PartialAsync("TransactionDetailsFooter")
+</div>
 
 
     <div class="dx-field ledgerResult">
@@ -74,10 +88,6 @@
 @* <div class="finance-container"> *@
         @*    <div class="pivot-title">Cash Inflow & Outflow</div> *@
     <div id="pivotGridContainer"></div>
-     <div>
-            @await Html.PartialAsync("TransactionDetailsFooter")
-        </div>
-
 
 <!-- Include DevExtreme Scripts & Styles -->
 <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2/css/dx.light.css">
@@ -295,6 +305,14 @@ function loadPivotGridData() {
                }, 500); // Small delay to ensure the textbox is ready
            }
        });
-
+       $(function () {
+            $("#TransactionDetails").dxTextBox({
+            text: formatMessage("Detailed Transaction Report"),
+            readOnly: true,
+            onContentReady: function (e) {
+            $(e.element).addClass("dx-textbox-heading");
+            }
+            });
+        });
 
 </script>
