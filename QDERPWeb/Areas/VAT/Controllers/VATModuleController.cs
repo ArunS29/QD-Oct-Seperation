@@ -1940,9 +1940,65 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
+		[HttpGet]
+		public async Task<IActionResult> GetSupplierCode(DataSourceLoadOptions loadOptions)
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+
+					var qrySupplierCodeList = dbContext.Qry201710vatsundryCreditorsAndCashAccs
+					  .Where(x => x.RecordStatus == "Record Complete" && (x.IsLedgerObselete == null || x.IsLedgerObselete == false))
+						 .Select(i => new
+						 {
+							 i.AccountId,
+							 i.AccountHead,
+							 i.AccountHeadArabic,
+							 i.AccountGroup,
+							 i.SupplierName,
+							 i.SupplierNameAr,
+							 i.SupplierAddress,
+							 i.SupplierAddressAr,
+							 i.SupplierVatno,
+							 i.AccountGroupId,
+							 i.RecordStatus,
+							 i.MasterGroupId,
+							 i.MasterGroup,
+							 i.SupplierGroupVatnumber,
+							 i.SupplierOtherIdtype,
+							 i.SupplierOtherId,
+							 i.SupplierAddressStreet,
+							 i.SupplierAddressStreetAr,
+							 i.SupplierAdditionalStreet,
+							 i.SupplierAdditionalStreetAr,
+							 i.SupplierBuildingNumber,
+							 i.SupplierAdditionalNumber,
+							 i.SupplierCity,
+							 i.SupplierCityAr,
+							 i.SupplierPostalCode,
+							 i.SupplierProvince,
+							 i.SupplierProvinceAr,
+							 i.SupplierNeighborhood,
+							 i.SupplierNeighborhoodAr,
+							 i.SupplierCountryCode
+						 });
+
+					return Json(await DataSourceLoader.LoadAsync(qrySupplierCodeList, loadOptions));
+				}
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
 
 
-    }
+
+
+	}
 }
 
 
