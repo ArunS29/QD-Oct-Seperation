@@ -144,7 +144,10 @@
 <input id="formId" value="frm201LedgerAccount" type="hidden" />
 <div class="title">
     <div class="header-container">
-        <div id="Ledgeraccount" class="no-border-title"></div>
+        <div id="InventoryStockDetails" class="no-border-title" style="
+    border: none !important;
+    box-shadow: none !important;
+"></div>
     </div>
 </div>
 <div class="containerInventoryStock">
@@ -155,8 +158,8 @@
                 <tr>
                     <td>
                         @(Html.DevExtreme().TextBox()
-                            .ID("StockNo")
-                            .Label("Stock No / Item Code:")
+                            .ID("StockNoItemCode")
+                            .Label(new JS("formatMessage('Stock No / Item Code')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("90%"))
                     </td>
@@ -164,7 +167,7 @@
                         <div style="display:flex;align-items:end;">
                         @(Html.DevExtreme().SelectBox()
                             .ID("StockGroup")
-                            .Label("Stock Group")
+                            .Label(new JS("formatMessage('Stock Group')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("90%"))
                         @(Html.DevExtreme().Button()
@@ -179,7 +182,7 @@
                     <td colspan="2">
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemName")
-                            .Label("Item Name / Description")
+                            .Label(new JS("formatMessage('Item Name / Description')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
                     </td>
@@ -189,7 +192,7 @@
                         <div style="display:flex;align-items:end;" ;>
                         @(Html.DevExtreme().SelectBox()
                             .ID("ItemStore")
-                            .Label("Item Store:")
+                            .Label(new JS("formatMessage('Item Store')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("90%"))
                         @(Html.DevExtreme().Button()
@@ -205,7 +208,7 @@
                         <div style="display:flex;align-items:end;">
                         @(Html.DevExtreme().SelectBox()
                             .ID("ItemClassification")
-                            .Label("Item Classification:")
+                            .Label(new JS("formatMessage('Item Classification')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("90%"))
                         @(Html.DevExtreme().Button()
@@ -220,7 +223,7 @@
                     <td colspan="2">
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemNameArabic")
-                            .Label("Item Name / Description (In Arabic)")
+                            .Label(new JS("formatMessage('Item Name / Description (In Arabic)')"))
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
                     </td>
@@ -241,62 +244,62 @@
                 // tab-content-1
                 items.Add()
                 .Icon("preferences") // better match for "Item Attributes"
-                .Text("Item Attributes");
+                .Text(new JS("formatMessage('Item Attributes')"));
 
                 // tab-content-2
                 items.Add()
                 .Icon("chart") // "Stock Control"
-                .Text("Stock Control");
+                .Text(new JS("formatMessage('Stock Control')"));
 
                 // tab-content-3
                 items.Add()
                 .Icon("image") // "Stock Images"
-                .Text("Stock Images");
+                .Text(new JS("formatMessage('Stock Images')"));
 
                 // tab-content-4
                 items.Add()
                 .Icon("money") // "Invoices"
-                .Text("Invoices");
+                .Text(new JS("formatMessage('Invoices')"));
 
                 // tab-content-5
                 items.Add()
                 .Icon("tags") // "Quotations"
-                .Text("Quotations");
+                .Text(new JS("formatMessage('Quotations')"));
 
                 // tab-content-6
                 items.Add()
                 .Icon("cart") // "Purchase Order"
-                .Text("Purchase Order");
+                .Text(new JS("formatMessage('Purchase Order')"));
 
                 // tab-content-7
                 items.Add()
                 .Icon("runner") // "Item Deliveries"
-                .Text("Item Deliveries");
+                .Text(new JS("formatMessage('Item Deliveries')"));
 
                 // tab-content-8
                 items.Add()
                 .Icon("check") // "Item Received"
-                .Text("Item Received");
+                .Text(new JS("formatMessage('Item Received')"));
 
                 // tab-content-9
                 items.Add()
                 .Icon("repeat") // "Unit Conversion"
-                .Text("Unit Conversion");
+                .Text(new JS("formatMessage('Unit Conversion')"));
 
                 // tab-content-10
                 items.Add()
                 .Icon("doc") // "Document"
-                .Text("Document");
+                .Text(new JS("formatMessage('Document')"));
 
                 // tab-content-11
                 items.Add()
                 .Icon("money") // "Purchases"
-                .Text("Purchases");
+                .Text(new JS("formatMessage('Purchases')"));
 
                 // tab-content-12
                 items.Add()
                 .Icon("bookmark") // "Matl.Requests"
-                .Text("Matl.Requests");
+                .Text(new JS("formatMessage('Matl. Requests')"));
             })
                 .SelectedIndex(0) // Default selected tab is the first one
                 .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
@@ -407,6 +410,8 @@
 
     
 <script>
+
+
   function onTabSelectionChanged(e) {
         // Hide all tab content
         $(".tab-content").hide();
@@ -438,4 +443,18 @@
           // Show the corresponding content
           $("#tab-content-" + (selectedTabIndex + 1)).show();
       });
+
+        
+         $(function () {
+            $("#InventoryStockDetails").dxTextBox({
+                text: formatMessage("Inventory Stock Details"),
+              readOnly: true,
+              onContentReady: function(e) {
+                          $(e.element).addClass("dx-textbox-heading");
+                  }
+
+          });
+      });
+
+      
 </script>
