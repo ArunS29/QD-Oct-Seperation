@@ -1828,6 +1828,10 @@
         "Ex-Factory Price : ": "Ex-Factory Price : ",
         "Unit Of Measure": "Unit Of Measure",
 
+        "CompanyId": "CompanyId",
+        "CompanyName": "CompanyName",
+        "Store ID": "Store ID",
+        "Store Name":"Store Name"
     },
     "ar": {
 
@@ -3483,7 +3487,12 @@
         "Signatory Name(Arabic)": "اسم الموقّع (بالعربية)",
         "Signatory Name": "اسم الموقّع",
         "Type a New Signatory & Add to the Existing List:": "اكتب موقّعًا جديدًا وأضفه إلى القائمة الحالية:",
-        "Code": "الرمز"
+        "Code": "الرمز",
+        "CompanyId": "معرّف الشركة",
+        "CompanyName": "اسم الشركة",
+        "Store ID": "معرّف المتجر",
+        "Store Name": "اسم المتجر"
+
 
     }
 };
