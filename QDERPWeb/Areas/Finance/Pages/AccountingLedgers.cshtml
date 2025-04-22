@@ -374,8 +374,6 @@
 
 	<div class="dx-field ledgerResult">
 		<!-- Toolbar for Column Chooser and Filter -->
-	
-
 		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.StProAccountLedgerResult>()
 					.ID("dataGrid")
 					.RemoteOperations(false)
@@ -546,39 +544,39 @@
 @using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
-										.ID("ledgeraccount-datagrid")
-										.DataSource(d => d.WebApi()
-										.Controller("AccountingLedgers")
-										.LoadAction("GetLedgerAccounts")
-										.LoadMode(DataSourceLoadMode.Raw)
-										.Key("AccountId")
-										)
-									.WordWrapEnabled(false)
-										.ShowBorders(true)
-										.SearchPanel(sp => sp.HighlightSearchText(true))
-										.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-										.OnSelectionChanged("dataGridSelectionChanged")
-										.OnInitialized("dataGridInitialized")
-									.HeaderFilter(p => p.Visible(false))
-										.ShowBorders(true)
-										.HoverStateEnabled(true)
-										//.Paging(p => p.PageSize(15))
-										.FilterRow(f => f.Visible(true))
-										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-									.Height(400)
-							     	.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
-										.Selection(s => s.Mode(SelectionMode.Single))
-										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-										.Columns(columns =>
-										{
-											columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
-											columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width(400);
-											columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
-											columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')"));
-											columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
-											columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
-														columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
-									.CellTemplate(@<text>
+								.ID("ledgeraccount-datagrid")
+								.DataSource(d => d.WebApi()
+								.Controller("AccountingLedgers")
+								.LoadAction("GetLedgerAccounts")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("AccountId")
+								)
+							.WordWrapEnabled(false)
+								.ShowBorders(true)
+								.SearchPanel(sp => sp.HighlightSearchText(true))
+								.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+								.OnSelectionChanged("dataGridSelectionChanged")
+								.OnInitialized("dataGridInitialized")
+							.HeaderFilter(p => p.Visible(false))
+								.ShowBorders(true)
+								.HoverStateEnabled(true)
+								//.Paging(p => p.PageSize(15))
+								.FilterRow(f => f.Visible(true))
+								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+							.Height(400)
+								.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+								.Selection(s => s.Mode(SelectionMode.Single))
+								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+								.Columns(columns =>
+								{
+									columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+									columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width(400);
+									columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+									columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')"));
+									columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
+									columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
+									columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
+							.CellTemplate(@<text>
 	<div class="dx-icon">
 		<%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
 	</div>
@@ -592,8 +590,8 @@
 									columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).Alignment(HorizontalAlignment.Left).Visible(false);
 									columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Is Salary Payable')")).Alignment(HorizontalAlignment.Left).Visible(false);
 									columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
-										})
-									)
+								})
+										)
 }
 
 <script>
@@ -725,8 +723,8 @@
 			url: '/api/AccountingLedgers/GetVouchers',
 			type: 'GET',
 			data: { accountHeadNo, frmDate, toDate },
-					success: function (data) {
-						console.log("NavigationIDData:",data);
+			success: function (data) {
+				console.log("NavigationIDData:", data);
 				alert("hi2");
 				// Bind the data to the DataGrid
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
@@ -1043,7 +1041,7 @@
 
 		// Add an event to refresh the page when the popup is closed
 		popupInstance.option("onHidden", function () {
-			location.reload(); // Reloads the page after closing the popup
+			//location.reload(); // Reloads the page after closing the popup
 		});
 
 		popupInstance.show();
@@ -1190,7 +1188,7 @@
 				toDate: toDate
 			},
 			success: function (data) {
-				
+
 				// Bind the data to the DataGrid
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
 				var dataGrid = $("#dataGrid").dxDataGrid("instance");

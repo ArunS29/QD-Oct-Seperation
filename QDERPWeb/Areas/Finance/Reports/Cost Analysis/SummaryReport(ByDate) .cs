@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Drawing;
 using DevExpress.DataAccess.Sql;
+using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.XtraReports.UI;
+using QD.ERP.Web.Service; // Make sure the namespace for TenantDbContextHelper is included
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
 {
     public partial class SummaryReport_ByDate_ : XtraReport
     {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
         public SummaryReport_ByDate_(
             string requestedBy,
             DateTime frmDate,
@@ -16,8 +20,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             string companyAddress,
             Image logoImage,
             string companyNameAr,
-            string companyAddressAr)
+            string companyAddressAr,
+            TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
             SetReportParameters(requestedBy, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
         }
@@ -53,8 +59,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             }
 
             AddOrUpdateParameter("RequestedBy", string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy, typeof(string), !string.IsNullOrEmpty(requestedBy));
-            AddOrUpdateParameter("FrmDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
-            AddOrUpdateParameter("ToDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
+            AddOrUpdateParameter("StartDate", frmDate, typeof(DateTime), false);
+            AddOrUpdateParameter("EndDate", toDate, typeof(DateTime), false);
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
@@ -70,7 +76,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = companyAddress;
 
-            if (FindControl("xrPictureBoxLogo", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
@@ -85,43 +91,56 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 requestedByLabel.Visible = !string.IsNullOrEmpty(requestedBy);
             }
 
-            AddSqlQueryParameters(requestedBy, frmDate, toDate);
+            ConfigureSqlDataSource(requestedBy, frmDate, toDate);
         }
 
-        private void AddSqlQueryParameters(string requestedBy, DateTime frmDate, DateTime toDate)
+        private void ConfigureSqlDataSource(string requestedBy, DateTime frmDate, DateTime toDate)
         {
-            CustomSqlQuery selectQuery = new CustomSqlQuery()
+            var selectQuery = new CustomSqlQuery()
             {
-                Name = "qry20151CostAnalysisReport", 
+                Name = "qry20151CostAnalysisReport",
                 Sql = @"SELECT * FROM qry20151CostAnalysisReport
-        WHERE 
-        (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy) 
-        AND VoucherDate BETWEEN @StartDate AND @EndDate"
+                        WHERE 
+                        (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy) 
+                        AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 
-            selectQuery.Parameters.Add(new QueryParameter()
+            selectQuery.Parameters.AddRange(new[]
             {
-                Name = "@RequestedBy",
-                Type = typeof(string),
-                ValueInfo = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
-            });
-
-            selectQuery.Parameters.Add(new QueryParameter()
-            {
-                Name = "@StartDate",
-                Type = typeof(DateTime),
-                ValueInfo = frmDate.ToString("yyyy-MM-dd")
-            });
-
-            selectQuery.Parameters.Add(new QueryParameter()
-            {
-                Name = "@EndDate",
-                Type = typeof(DateTime),
-                ValueInfo = toDate.ToString("yyyy-MM-dd")
+                new QueryParameter()
+                {
+                    Name = "@RequestedBy",
+                    Type = typeof(string),
+                    ValueInfo = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
+                },
+                new QueryParameter()
+                {
+                    Name = "@StartDate",
+                    Type = typeof(DateTime),
+                    ValueInfo = frmDate.ToString("yyyy-MM-dd")
+                },
+                new QueryParameter()
+                {
+                    Name = "@EndDate",
+                    Type = typeof(DateTime),
+                    ValueInfo = toDate.ToString("yyyy-MM-dd")
+                }
             });
 
             this.sqlDataSource1.Queries.Clear();
             this.sqlDataSource1.Queries.Add(selectQuery);
+
+            // Multitenant connection string logic
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            {
+                var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
+                this.sqlDataSource1.ConnectionParameters = connectionParams;
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+
             this.sqlDataSource1.Fill();
         }
     }

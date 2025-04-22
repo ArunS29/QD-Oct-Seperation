@@ -857,7 +857,7 @@
 
                         if (IsDirect === true) {
                             $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-                            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
+                            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
                             $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
                         }
                     });
