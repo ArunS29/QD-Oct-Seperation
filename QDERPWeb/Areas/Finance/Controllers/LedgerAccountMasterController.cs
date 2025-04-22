@@ -215,34 +215,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAccountMasterAR(string MasterGroup)
         {
-            string val = "";
             try
             {
                 if (string.IsNullOrEmpty(MasterGroup))
-                {
                     return BadRequest("MasterGroup parameter is required.");
-                }
 
                 var result = await _context.Tbl201MasterGroups
                     .Where(x => x.MasterGroup == MasterGroup)
-                    .Select(x => x.MasterGroupAr)
+                    .Select(x => new {
+                        x.MasterGroupId,
+                        x.MasterGroupAr
+                    })
                     .FirstOrDefaultAsync();
-                val = result.ToString();
-            }
-            catch (ArgumentException argEx)
-            {
-                // Log the detailed exception for debugging
-                Console.WriteLine($"ArgumentException: {argEx.Message}, ParamName: {argEx.ParamName}");
-                return BadRequest($"Invalid argument: {argEx.ParamName}");
+
+                if (result == null)
+                    return NotFound("No matching record found.");
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                // Log the general exception
                 Console.WriteLine($"Exception: {ex.Message}");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
-            return Json(val);
         }
+
 
         [HttpGet]
         public async Task<ActionResult> GetDocumentType(DataSourceLoadOptions loadOptions)
