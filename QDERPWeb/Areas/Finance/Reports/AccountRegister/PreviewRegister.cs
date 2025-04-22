@@ -91,13 +91,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
 					Name = paramName,
 					Type = paramType,
 					Value = paramValue,
-					Visible = visible
+					Visible = false
 				});
 			}
 			else
 			{
 				parameter.Value = paramValue;
-				parameter.Visible = visible;
+				parameter.Visible = false;
 			}
 		}
 

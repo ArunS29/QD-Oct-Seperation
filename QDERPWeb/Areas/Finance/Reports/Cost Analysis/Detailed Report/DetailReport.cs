@@ -4,12 +4,16 @@ using System.Collections;
 using System.ComponentModel;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.Sql;
+using DevExpress.DataAccess.ConnectionParameters;
+using QD.ERP.Web.Service; // Make sure this is the correct namespace for TenantDbContextHelper
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report
 {
-	public partial class DetailReport : DevExpress.XtraReports.UI.XtraReport
-	{	
-		public DetailReport(string requestedBy,
+    public partial class DetailReport : XtraReport
+    {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
+        public DetailReport(string requestedBy,
             DateTime frmDate,
             DateTime toDate,
             string tenantName,
@@ -17,17 +21,20 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report
             string companyAddress,
             Image logoImage,
             string companyNameAr,
-            string companyAddressAr)
-		{
-			InitializeComponent();
-
+            string companyAddressAr,
+            TenantDbContextHelper tenantDbContextHelper)
+        {
+            _tenantDbContextHelper = tenantDbContextHelper;
+            InitializeComponent();
             SetReportParameters(requestedBy, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
         }
+
         public DetailReport()
         {
             InitializeComponent();
             SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
         }
+
         private void SetReportParameters(
            string requestedBy, DateTime frmDate, DateTime toDate,
            string tenantName, string companyName, string companyAddress,
@@ -72,7 +79,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = companyAddress;
 
-            if (FindControl("xrPictureBoxLogo", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
@@ -87,19 +94,19 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report
                 requestedByLabel.Visible = !string.IsNullOrEmpty(requestedBy);
             }
 
-            // Set up SQL if needed
-            AddSqlQueryParameters(requestedBy, frmDate, toDate);
+            // Configure SQL source
+            ConfigureSqlDataSource(requestedBy, frmDate, toDate);
         }
 
-        private void AddSqlQueryParameters(string requestedBy, DateTime frmDate, DateTime toDate)
+        private void ConfigureSqlDataSource(string requestedBy, DateTime frmDate, DateTime toDate)
         {
             CustomSqlQuery selectQuery = new CustomSqlQuery()
             {
-                Name = "qry20151CostAnalysisReport", // Update name
+                Name = "qry20151CostAnalysisReport",
                 Sql = @"SELECT * FROM qry20151CostAnalysisReport
-    WHERE 
-    (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy) 
-    AND VoucherDate BETWEEN @StartDate AND @EndDate"
+                        WHERE 
+                        (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy) 
+                        AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 
             selectQuery.Parameters.Add(new QueryParameter()
@@ -125,8 +132,19 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report
 
             this.sqlDataSource1.Queries.Clear();
             this.sqlDataSource1.Queries.Add(selectQuery);
+
+            // Apply multi-tenant logic for connection string
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            {
+                var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
+                this.sqlDataSource1.ConnectionParameters = connectionParams;
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+
             this.sqlDataSource1.Fill();
         }
-
     }
 }
