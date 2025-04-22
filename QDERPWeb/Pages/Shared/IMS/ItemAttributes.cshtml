@@ -140,7 +140,8 @@
                                 .Icon("plus")
                                 .Width("45")
                                 .ElementAttr("style", "margin-top:23px")
-                                )
+                                .OnClick("UnitOfMeasure")
+                                 )
                 </div>
             </td>
 
@@ -461,5 +462,9 @@
          }
          });
      });
-
+      function UnitOfMeasure(){
+                const url = `/${tenantName}/IMS/UnitOfMeasure`;
+              const title = "";
+                  openModal(url, title);
+          }
 </script>
