@@ -84,15 +84,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
         {
             var storedProcQuery = new StoredProcQuery
             {
-                Name = "StProTrialbalance",
-                StoredProcName = "sp20101TrialBalanceReport"
+                Name = "",
+                StoredProcName = ""
             };
 
             storedProcQuery.Parameters.AddRange(new[]
             {
-                new QueryParameter { Name = "@ParamAccountGroup", Type = typeof(string), ValueInfo = accountGroup ?? "L00567" },
-                new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd") },
-                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd") }
+                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value },
+
                 });
 
             sqlDataSource1.Queries.Clear();

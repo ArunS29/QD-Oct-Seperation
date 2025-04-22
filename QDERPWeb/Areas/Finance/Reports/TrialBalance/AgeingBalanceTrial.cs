@@ -8,19 +8,21 @@ using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 {
-	public partial class AgeingBalanceTrial : DevExpress.XtraReports.UI.XtraReport
-	{
+    public partial class AgeingBalanceTrial : DevExpress.XtraReports.UI.XtraReport
+    {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        public AgeingBalanceTrial(string accountGroup,
-                DateTime frmDate,
-                DateTime toDate,
-                string tenantName,
-                string company_Name,
-                string company_address,
-                Image logoImage,
-                string Company_Name_Ar,
-                string company_address_arb,
-                TenantDbContextHelper tenantDbContextHelper)
+
+        public AgeingBalanceTrial(
+            string accountGroup,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb,
+            TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
@@ -36,10 +38,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
                 throw new Exception("Error loading data: " + ex.Message, ex);
             }
         }
+
         public AgeingBalanceTrial()
-		{
-			InitializeComponent();
-		}
+        {
+            InitializeComponent();
+        }
 
         private void SetReportParameters(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
@@ -75,23 +78,21 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
 
-            ConfigureSqlQuery(accountGroup, frmDate, toDate);
+            ConfigureSqlQuery(frmDate);
         }
 
-        private void ConfigureSqlQuery(string accountGroup, DateTime frmDate, DateTime toDate)
+        private void ConfigureSqlQuery(DateTime toDate)
         {
             var storedProcQuery = new StoredProcQuery
             {
-                Name = "StProTrialbalance",
-                StoredProcName = "sp20101TrialBalanceReport"
+                Name = "sp20124AgeingReports",
+                StoredProcName = "sp20124AgeingReports"
             };
 
             storedProcQuery.Parameters.AddRange(new[]
             {
-                new QueryParameter { Name = "@ParamAccountGroup", Type = typeof(string), ValueInfo = accountGroup ?? "L00567" },
-                new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd") },
-                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd") }
-                });
+                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value }
+            });
 
             sqlDataSource1.Queries.Clear();
             sqlDataSource1.Queries.Add(storedProcQuery);

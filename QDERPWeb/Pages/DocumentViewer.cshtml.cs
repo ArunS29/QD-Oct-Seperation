@@ -1656,7 +1656,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new balnceSheet(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    AccountGroup,  ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
 
