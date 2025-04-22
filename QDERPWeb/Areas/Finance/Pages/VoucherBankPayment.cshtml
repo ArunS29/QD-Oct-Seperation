@@ -406,11 +406,7 @@
 
                             columns.AddFor(m => m.DrCr)
                         .Caption(new JS("formatMessage('Dr/Cr')"))
-                        .DataType(GridColumnDataType.String).Lookup(lookup => lookup
-                        .DataSource(new[] { "Dr", "Cr" }) // Data source for dropdown
-                        .ValueExpr("this")
-                        .DisplayExpr("this")
-                        );
+                        .DataType(GridColumnDataType.String).AllowEditing(false);
 
 
 
