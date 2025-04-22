@@ -3833,10 +3833,10 @@ function fetchUpdatedData(voucherEntryNo) {
                      $("#VerifiedBytext").dxTextBox("instance").option("value", data.VoucherVerifiedBy || "");
                      $("#ApprovedBy").dxCheckBox("instance").option("value", data.IsApproved || false);
                      $("#ApprovedBytext").dxTextBox("instance").option("value", data.VoucherApprovedBy || "");
-                    $("#ddCurrency").dxDropDownBox("instance").option("value", data.currencyid || "").option("disabled", true);
+                   
 
                     var ddCurrency = $("#ddCurrency").dxDropDownBox("instance");
-                    ddCurrency.option("value", data.currencyid || "").option("disabled", true);
+                    ddCurrency.option("value", data.currencyid || "");
 
                      var verifiedDate = data.VoucherVerifiedOn ? new Date(data.VoucherVerifiedOn) : null;
                     var formattedDate = verifiedDate
