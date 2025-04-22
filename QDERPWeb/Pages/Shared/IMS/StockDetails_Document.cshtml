@@ -142,45 +142,14 @@
 		color: black;
 	}
 
-	.card {
-		flex: 1;
-		border: 1px solid #ddd;
-		border-radius: 5px;
-		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-		padding: 1% 1% 1% 1%;
-	}
-
-	.card1 {
-		flex: 1;
-		border: 1px solid #ddd;
-		border-radius: 5px;
-		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-	}
-
 	.toolbar-container {
 		display: flex;
 		gap: 10px;
-		margin-bottom: 10px;
-		background-color: #eaf0f6;
-		padding: 10px;
-		border-radius: 6px;
-		box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+		padding: 1% 1% 1% 1%;
 	}
 
-	.grid-container {
-		border: 1px solid #ccc;
-		border-radius: 5px;
-		padding: 10px;
-		box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-		background-color: #fff;
-	}
+	
 </style>
-
-<div class="title">
-	<div class="header-container">
-		<div id="ItemClassification" class="no-border-title"></div>
-	</div>
-</div>
 <!-- Filter/Info Section -->
 <div class="toolbar-container">
 	@(Html.DevExtreme().Button()
@@ -205,7 +174,7 @@
 
 	<br />
 	<!-- Grid Section -->
-	<div class="grid-container">
+	<div >
 	@(Html.DevExtreme().DataGrid()
 			.ID("documentGrid")
 			.Height(500)
@@ -236,14 +205,3 @@
 			)
 			)
 			</div>
-<script>
-	//  $(function () {
-	// $("#ItemClassification").dxTextBox({
-	// text: formatMessage("SItem Classification"),
-	// 	readOnly: true,
-	// 	onContentReady: function (e) {
-	// 	$(e.element).addClass("dx-textbox-heading");
-	// 	}
-	// 	});
-	// });
-</script>

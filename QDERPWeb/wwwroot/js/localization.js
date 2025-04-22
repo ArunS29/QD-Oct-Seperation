@@ -1791,8 +1791,12 @@
         "Employee Allocation Report - Summary": "Employee Allocation Report - Summary",
         "Property Cost Allocation Report - Detailed": "Property Cost Allocation Report - Detailed",
         "Property Cost Allocation Report - Summary": "Property Cost Allocation Report - Summary",
+        "Item Classification": "Item Classification",
+        "Item Store":"Item Store"
     },
     "ar": {
+        "Item Store":"متجر العناصر",
+        "Item Classification": "تصنيف العنصر",
         "Property Cost Allocation Report - Summary": "تقرير تخصيص تكلفة العقار - ملخص",
         "Property Cost Allocation Report - Detailed": "تقرير تخصيص تكلفة العقار - مفصل",
         "Employee Allocation Report - Summary": "تقرير تخصيص الموظفين - ملخص",

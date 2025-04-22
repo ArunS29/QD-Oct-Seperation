@@ -146,23 +146,6 @@
 	.dx-button-mode-contained.dx-button-success {
 		color: black;
 	}
-
-	.card {
-		flex: 1;
-		border: 1px solid #ddd;
-		border-radius: 5px;
-		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-		padding: 1% 1% 1% 1%;
-	}
-
-	.card1 {
-		flex: 1;
-		border: 1px solid #ddd;
-		border-radius: 5px;
-		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-
-	}
-
 	.container {
 		display: none !important;
 	}
@@ -196,7 +179,7 @@
 
 <div class="title"> 
  	<div class="header-container"> 
-		<div id="ItemClassification" class="no-border-title"></div> 
+		<div id="ItemClassification" class="no-border-input"></div> 
  	</div> 
  </div>
 <!-- Filter/Info Section -->
@@ -205,7 +188,7 @@
 <div class="dx-fieldset" style="padding: 20px;">
 	<div class="store-master-container">
 		<!-- Store Name Input -->
-		<div class="card">
+		<div>
 				<div>
 					<label class="form-label">Type new Stock Classification By & Add to the Existing List</label>
 					<div style="display:flex;">
@@ -234,7 +217,7 @@
 
 		<!-- Data Grid -->
 		<br />
-		<div class="card1">
+		<div>
 			@(Html.DevExtreme().DataGrid()
 						.ID("storeGrid")
 						.Height(540)
@@ -283,13 +266,13 @@
 		</div>
 	</div>
 <script>
-	//  $(function () {
-	// $("#ItemClassification").dxTextBox({
-	// text: formatMessage("SItem Classification"),
-	// 	readOnly: true,
-	// 	onContentReady: function (e) {
-	// 	$(e.element).addClass("dx-textbox-heading");
-	// 	}
-	// 	});
-	// });
+	 $(function () {
+	$("#ItemClassification").dxTextBox({
+	text: formatMessage("Item Classification"),
+		readOnly: true,
+		onContentReady: function (e) {
+		$(e.element).addClass("dx-textbox-heading");
+		}
+		});
+	});
 </script>
