@@ -189,7 +189,7 @@ namespace QDWEB.Areas.Finance.Controllers
                 {
                     string currentDate = DateTime.Now.ToString("dd");
                     string currentMonth = DateTime.Now.ToString("MM");
-
+                    string currentYear = DateTime.Now.ToString("yy");
                     // Get last used VoucherNo for the same date
                     var lastVoucher = await _context.Tbl201VoucherEntries
                         .Where(v => v.VoucherNo.StartsWith($"JV-{currentDate}-{currentMonth}-"))
@@ -206,12 +206,12 @@ namespace QDWEB.Areas.Finance.Controllers
                         }
                     }
 
-                    string newVoucherNo = $"JV-{currentDate}-{currentMonth}-{nextSequence:D3}";
+                    string newVoucherNo = $"JV-{currentYear}-{currentMonth}-{nextSequence:D3}";
 
                     while (await _context.Tbl201VoucherEntries.AnyAsync(v => v.VoucherNo == newVoucherNo))
                     {
                         nextSequence++;
-                        newVoucherNo = $"JV-{currentDate}-{currentMonth}-{nextSequence:D3}";
+                        newVoucherNo = $"JV-{currentYear}-{currentMonth}-{nextSequence:D3}";
                     }
 
                     // Assign `VoucherNo` and fetch `AccountId`
