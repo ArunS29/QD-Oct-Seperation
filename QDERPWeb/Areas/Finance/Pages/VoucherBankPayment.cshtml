@@ -1,6 +1,9 @@
 ﻿@page
 @using QD.ERP.Web.DAL.Entities
+@using QD.ERP.Web.Service
+@inject CurrencyService CurrencyService
 @{
+    var currencies = CurrencyService.GetCurrencies();
     ViewData["Title"] = "Payment Voucher Details";
     var popvno = "";
 }
@@ -299,10 +302,24 @@
                         )
 
             </div>
-
             <div class="form-group">
                 @(Html.DevExtreme().DropDownBox()
-                    .Label("Currency")
+                    .Label("Base Currency")
+                    .ID("currencySelectvoucher")
+                    .DataSource(currencies)
+                    .DisplayExpr("CurrencyName") // Display the currency name
+                    .ValueExpr("CurrencyID")     // Use CurrencyID as the value
+                    .Label(new JS("formatMessage('Base Currency')"))
+                    .LabelMode(EditorLabelMode.Outside)
+                    .Value(currencies.Any() ? currencies.FirstOrDefault()?.CurrencyID : null) // Ensure a default value is set
+                    .Placeholder("Select a currency") // Optional: Add a placeholder
+                    .ShowClearButton(true) // Optional: Allow clearing the selection
+                    )
+
+            </div>
+            <div class="form-group">
+                @(Html.DevExtreme().DropDownBox()
+                    .Label("Exchange Currency")
                     .DataSource(d => d.WebApi()
                     .Controller("Utility") // Adjust if needed
                     .LoadAction("GetCurrencyList")
@@ -330,6 +347,16 @@
                     .OnKeyDown("onKeyDown")
                     //.OnValueChanged("dropDownBoxValueChanged")
                     .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
+                    )
+            </div>
+            <div class="form-group">
+                @(Html.DevExtreme().TextBox()
+                    .Label("Currency Rate")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("txtCurrencyRate")
+                    .Value("")
+                  //  .ReadOnly(true) // Make it read-only
+                    .Width(160)
                     )
             </div>
             @using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
@@ -1206,7 +1233,9 @@
 
                         "VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 
+                "basecurrencyid": $("#currencySelectvoucher").dxDropDownBox("instance").option("value"),
                 "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
+                "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
 
                         // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
 
@@ -1312,7 +1341,9 @@
 
                         "VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 
+                "basecurrencyid": $("#currencySelectvoucher").dxselectbox("instance").option("value"),
                 "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
+                "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
 
                         // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
 

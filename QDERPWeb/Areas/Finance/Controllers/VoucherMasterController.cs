@@ -2194,6 +2194,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
+        public IActionResult TargetAction(int defaultCurrencyID)
+        {
+            ViewData["DefaultCurrencyID"] = defaultCurrencyID;
+            return View();
+        }
 
         [HttpPost]
         public async Task<ActionResult> UpdateVoucher([FromBody] Tbl201VoucherMaster VM)
