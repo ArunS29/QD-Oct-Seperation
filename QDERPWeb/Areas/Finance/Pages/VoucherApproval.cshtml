@@ -212,8 +212,8 @@
         <div class="headerBolder">Voucher No</div>
     </text>);
 
-                columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(100)
-            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy").Visible(true)
+                columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(120)
+            .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Visible(true)
             .HeaderCellTemplate(@<text>
         <div class="headerBolder">Voucher Date</div>
     </text>);
@@ -313,22 +313,22 @@
             .HeaderCellTemplate(@<text><div style="text-align: center;">Voucher Ref No</div></text>);
 
                 columns.Add().DataField("VoucherEnteredOn").Caption("Entered On").Width(120)
-            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
             .HeaderCellTemplate(@<text><div style="text-align: center;">Entered On</div></text>);
 
                 columns.Add().DataField("VoucherVerifiedOn").Caption("Verified On").Width(120)
-            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
             .HeaderCellTemplate(@<text><div style="text-align: center;">Verified On</div></text>);
 
                 columns.Add().DataField("VoucherApprovedOn").Caption("Approved On").Width(120)
-            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
             .HeaderCellTemplate(@<text><div style="text-align: center;">Approved On</div></text>);
 
                 columns.Add().DataField("VoucherEffectiveDate").Caption("Effective Date").Width(120)
-            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
             .HeaderCellTemplate(@<text><div style="text-align: center;">Effective Date</div></text>);
 
@@ -337,7 +337,7 @@
             .HeaderCellTemplate(@<text><div style="text-align: center;">Modified By</div></text>);
 
                 columns.Add().DataField("VoucherModifiedOn").Caption("Modified On").Width(120)
-            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
             .HeaderCellTemplate(@<text><div style="text-align: center;">Modified On</div></text>);
 
@@ -391,8 +391,7 @@
 
     <script>
 
-    var rightClickedVoucherNo = null;
-    var rightClickedVoucherType = null;
+   
 
 
             function updateApprovalStatus(element, field, rowData) {
@@ -635,12 +634,11 @@
         });
 
         function editVoucher() {
-            if (!rightClickedVoucherNo || !rightClickedVoucherType) {
-                alert("Please right-click on a valid voucher row.");
+            if (selectedVoucherNos.length !== 1) {
+                DevExpress.ui.notify("Please select exactly one voucher to edit.", 2000);
                 return;
             }
-
-            navigateToVoucherPage(rightClickedVoucherNo, rightClickedVoucherType);
+            navigateToVoucherPage(selectedVoucherNos[0], selectedVoucherTypes[0]);
         }
 
 
