@@ -10,7 +10,10 @@
     }
 
 
-
+.mainContainer{
+    width:100%;
+        overflow-x: hidden;
+}
 
     .button-alignment-down {
         margin-bottom: 10px
@@ -58,12 +61,9 @@
     }
 
     #DepreciationModal .modal-content {
-        height: 600px;
         display: flex;
         flex-direction: column;
-        width:1200px;
-        margin-top:130px;
-        margin-left:160px;
+        width:100%;
     }
 
     #DepreciationModal .modal-body {
@@ -86,9 +86,11 @@
                 <div id="AssetView" class="no-border-input"></div>
             </div>
         </div>
-        <div>
+        <div style="padding:10px;">
             @await Html.PartialAsync("GridforAssetView")
         </div>
+
+
         <div class="dx-field ledgerResult">
             @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20157AssetRegisterViewResult>()
                 .ID("dataGrid")
@@ -96,6 +98,7 @@
                 .RemoteOperations(false)
                 .DataSource(ds => ds.Mvc()
                 .Controller("AssetView")
+
                 .LoadAction("GetAssetView"))
                 .Columns(columns =>
                 {
@@ -316,13 +319,16 @@
                 .AllowColumnResizing(true)
                 .ColumnFixing(fixing => fixing.Enabled(true))
                 .HeaderFilter(filter => filter.Visible(true))
-                .Height(500)
+                .Height(680)
                 .ColumnAutoWidth(true)
+              .Paging(p => p.Enabled(false))
+        .Pager(pager => pager.Visible(false))
+
                 .FilterRow(filterRow => filterRow.Visible(false))
                 .Grouping(grouping => grouping.AutoExpandAll(true))
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
                 .ShowBorders(true)
-                .Width("1425")
+                .Width("100%")
                 )
         </div>
         <!-- Modal for Depreciation -->
@@ -330,11 +336,8 @@
             <div class="modal-dialog fullscreen" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Depreciation Schedule</h5>
                         <!-- Close Button -->
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <div class="close">&times;</div>
                     </div>
                     <div class="modal-body">
                         <!-- Content will be loaded dynamically -->

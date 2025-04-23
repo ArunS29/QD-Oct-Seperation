@@ -606,13 +606,13 @@
     .Alignment(HorizontalAlignment.Left)
 
     .Visible(false);
-
+     
             })
         .Editing(editing => editing
         .Mode(GridEditMode.Cell) // ✅ Ensure inline cell editing is enabled
         .AllowUpdating(true) // ✅ Enable editing
         )
-        .Height(500)
+        .Height(665)
         // .Paging(p => p.PageSize(10))
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
@@ -632,10 +632,6 @@
         )
         )
 </div>
-
-</div>
-
-
 <!-- Context Menu (hidden initially) -->
 <div id="contextMenu" class="context-menu">
     <div class="context-menu-item" onclick="editLedger()">

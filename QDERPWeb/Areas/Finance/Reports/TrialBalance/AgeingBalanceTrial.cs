@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using DevExpress.XtraReports.UI;
 using DevExpress.DataAccess.ConnectionParameters;
@@ -8,7 +7,7 @@ using DevExpress.DataAccess.Sql;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 {
-    public partial class AgeingBalanceTrial : DevExpress.XtraReports.UI.XtraReport
+    public partial class AgeingBalanceTrial : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
@@ -22,7 +21,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             Image logoImage,
             string Company_Name_Ar,
             string company_address_arb,
-            TenantDbContextHelper tenantDbContextHelper)
+            TenantDbContextHelper tenantDbContextHelper
+          )
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
@@ -32,10 +32,16 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             try
             {
                 sqlDataSource1.Fill();
+
+                // Apply filter after data load
+                if (!string.IsNullOrEmpty(accountGroup))
+                {
+                    this.FilterString = $"[AccountGroup] = '{accountGroup}'";
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error loading data: " + ex.Message, ex);
+                throw new Exception($"Error loading data for Ageing Balance Trial report: {ex.Message}", ex);
             }
         }
 
@@ -44,7 +50,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             InitializeComponent();
         }
 
-        private void SetReportParameters(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(
+            string accountGroup,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb
+            )
         {
             AddReportParameter("AccountGroup", typeof(string), accountGroup ?? "");
             AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
@@ -55,43 +71,55 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
             AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
 
-            ApplyReportControls(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            ApplyReportControls(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            ConfigureSqlQuery();
         }
 
-        private void ApplyReportControls(string accountGroup, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void ApplyReportControls(
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb)
         {
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
-            if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
 
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = company_address;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (logoImage != null && FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
+            else
+            {
+                // Handle the case when logoImage is null (use a default image or set an empty picture)
+                if (FindControl("xrPictureBox1", true) is XRPictureBox defaultLogoPictureBox)
+                    defaultLogoPictureBox.Image = null; // Or assign a default image
+            }
 
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = Company_Name_Ar;
 
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
-
-            ConfigureSqlQuery(frmDate);
         }
 
-        private void ConfigureSqlQuery(DateTime toDate)
+        private void ConfigureSqlQuery()
         {
             var storedProcQuery = new StoredProcQuery
             {
-                Name = "sp20124AgeingReports",
-                StoredProcName = "sp20124AgeingReports"
+                Name = "sp20125AgeingPayableReports",  // Adjusted for correct stored procedure
+                StoredProcName = "sp20125AgeingPayableReports"
             };
 
             storedProcQuery.Parameters.AddRange(new[]
             {
-                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value }
+                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value },
+              
             });
 
             sqlDataSource1.Queries.Clear();
@@ -100,7 +128,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                // Ensure the connection string corresponds to the "ERP-MasterWtData" database
+                var connectionString = tenant.ConnectionString;
+                connectionString = connectionString.Replace("Initial Catalog=YourOldDatabaseName", "Initial Catalog=ERP-MasterWtData");
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(connectionString);
             }
             else
             {

@@ -105,7 +105,8 @@
     }
     
     .mainContainer{
-        width:95%;
+        width:100%;
+        overflow-x: hidden;
     }
 
 </style>
@@ -861,7 +862,7 @@
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
                         .ID("btnAddScheduledTypes")
-                        .Text("Add Scheduled Types")
+                        .Text("Add Scheduled Maintainance")
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("plus")
@@ -916,10 +917,10 @@
                     @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
                     </div> *@
                     <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").OnClick("DeleteAsset"))
+        @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").Icon("save").OnClick("onSaveAndClose"))
                     </div>
                     <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("function() { window.location.href = '/Home/Dashboard'; }"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("goBackToAssetView"))
                     </div>
                 </div>
             </div>
@@ -1069,30 +1070,38 @@
             }
         });
     }
-    function DeleteAsset(e) {
-        const assetLedgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
-      //  alert(assetLedgerNo);
-        if (!assetLedgerNo) {
-            DevExpress.ui.notify("Please provide an Asset Ledger No.", "error", 2000);
-            return;
-        }
+    function goBackToAssetView(){
+           window.location.href = `/${tenantName}/Finance/AssetView`;
 
-        DevExpress.ui.dialog.confirm("Are you sure you want to delete this asset?", "Confirm Deletion").done(function (dialogResult) {
-            if (dialogResult) {
-                $.ajax({
-                    url: "/api/assetview/DeleteAsset", // Replace with your controller's route
-                    type: "POST",
-                    data: { assetLedgerNo: assetLedgerNo },
-                    success: function (response) {
-                        DevExpress.ui.notify(response, "success", 2000);
-                    },
-                    error: function (xhr) {
-                        DevExpress.ui.notify(xhr.responseText || "An error occurred.", "error", 2000);
-                    }
-                });
-            }
-        });
     }
+      function onSaveAndClose() {
+        updateAsset();
+        window.location.href = `/${tenantName}/Finance/AssetView`;
+    }
+    @* function DeleteAsset(e) { *@
+    @*     const assetLedgerNo = $("#txtacctledno").dxTextBox("instance").option("value"); *@
+    @*   //  alert(assetLedgerNo); *@
+    @*     if (!assetLedgerNo) { *@
+    @*         DevExpress.ui.notify("Please provide an Asset Ledger No.", "error", 2000); *@
+    @*         return; *@
+    @*     } *@
+
+    @*     DevExpress.ui.dialog.confirm("Are you sure you want to delete this asset?", "Confirm Deletion").done(function (dialogResult) { *@
+    @*         if (dialogResult) { *@
+    @*             $.ajax({ *@
+    @*                 url: "/api/assetview/DeleteAsset", // Replace with your controller's route *@
+    @*                 type: "POST", *@
+    @*                 data: { assetLedgerNo: assetLedgerNo }, *@
+    @*                 success: function (response) { *@
+    @*                     DevExpress.ui.notify(response, "success", 2000); *@
+    @*                 }, *@
+    @*                 error: function (xhr) { *@
+    @*                     DevExpress.ui.notify(xhr.responseText || "An error occurred.", "error", 2000); *@
+    @*                 } *@
+    @*             }); *@
+    @*         } *@
+    @*     }); *@
+    @* } *@
 
 
 

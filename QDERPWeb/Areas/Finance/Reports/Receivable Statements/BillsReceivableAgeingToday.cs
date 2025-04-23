@@ -1,34 +1,50 @@
-﻿using System.Drawing;
-using DevExpress.DataAccess.ConnectionParameters;
-using DevExpress.DataAccess.Sql;
-using DevExpress.XtraReports.UI;
-using System;
+﻿using System;
 using System.Drawing;
-using DevExpress.XtraReports.UI;
-using DevExpress.DataAccess.Sql;
 using DevExpress.DataAccess.ConnectionParameters;
-using QD.ERP.Web.Service; // Needed for TenantDbContextHelper
-
+using DevExpress.DataAccess.Sql;
+using DevExpress.XtraReports.UI;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
     public partial class BillsReceivableAgeingToday : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        public BillsReceivableAgeingToday(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string companyNameAr, string companyAddressArb, TenantDbContextHelper tenantDbContextHelper)
+
+        public BillsReceivableAgeingToday(
+            string accountId,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressArb,
+            TenantDbContextHelper tenantDbContextHelper
+        )
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, companyNameAr, companyAddressArb);
+            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
         }
 
-        public BillsReceivableAgeingToday()
+        public BillsReceivableAgeingToday ()
         {
             InitializeComponent();
             SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
         }
 
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string companyNameAr, string companyAddressArb)
+        private void SetReportParameters(
+            string accountId,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressArb)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -49,70 +65,63 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 }
             }
 
-            // Add report parameters
             AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
             AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
             AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string));
 
-            // Bind parameters to UI controls
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
-                companyNameLabel.Text = company_Name;
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
+                companyNameLabel.Text = companyName;
 
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-                addressLabel.Text = company_address;
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+                addressLabel.Text = companyAddress;
 
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox && logoImage != null)
                 logoPictureBox.Image = logoImage;
 
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = companyNameAr;
 
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = companyAddressArb;
 
-            // Set up SQL query
-            AddSqlQueryParameters(accountId, frmDate, toDate);
+            ConfigureDataSource(accountId, frmDate, toDate);
         }
 
-        private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
+        private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime toDate)
         {
-            CustomSqlQuery selectQuery = new CustomSqlQuery()
+            if (_tenantDbContextHelper == null || !_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+
+            var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
+            sqlDataSource1 = new SqlDataSource(connectionParams);
+
+            var query = new CustomSqlQuery
             {
-                Name = "qry20105BillsReceivableAgeingView",
-                Sql = @"SELECT * FROM qry20105BillsReceivableAgeingView
-                        WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID) 
+                Name = "qry201SubLedgerReceivablesMaster ",
+                Sql = @"SELECT * FROM qry201SubLedgerReceivablesMaster 
+                        WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
                         AND VoucherDate BETWEEN @StartDate AND @EndDate"
             };
 
-            selectQuery.Parameters.Add(new QueryParameter() { Name = "@AccountID", Type = typeof(string), ValueInfo = accountId });
-            selectQuery.Parameters.Add(new QueryParameter() { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = frmDate.ToString("yyyy-MM-dd") });
-            selectQuery.Parameters.Add(new QueryParameter() { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = toDate.ToString("yyyy-MM-dd") });
+            query.Parameters.Add(new QueryParameter { Name = "@AccountID", Type = typeof(string), ValueInfo = accountId ?? "" });
+            query.Parameters.Add(new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), ValueInfo = frmDate.ToString("yyyy-MM-dd") });
+            query.Parameters.Add(new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), ValueInfo = toDate.ToString("yyyy-MM-dd") });
 
-            this.sqlDataSource1.Queries.Clear();
-            this.sqlDataSource1.Queries.Add(selectQuery);
-            this.sqlDataSource1.Fill();
+            sqlDataSource1.Queries.Clear();
+            sqlDataSource1.Queries.Add(query);
+            sqlDataSource1.RebuildResultSchema(); // optional but recommended
+            sqlDataSource1.Fill();
 
-            // Connection string logic
-            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-            {
-                var connectionString = tenant.ConnectionString;
-                var connectionParams = new CustomStringConnectionParameters(connectionString);
-                sqlDataSource1.ConnectionParameters = connectionParams;
-            }
-            else
-            {
-                throw new Exception("Unable to get tenant context. Please check session and cache.");
-            }
+            this.DataSource = sqlDataSource1;
+            this.DataMember = "qry201SubLedgerReceivablesMaster ";
         }
-
-
     }
 }

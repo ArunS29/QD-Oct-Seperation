@@ -309,13 +309,13 @@
 		.AllowUpdating(true)
 		)
 
-		.OnCellClick("function(e) {handleCellClick(e);}")
+		.OnCellClick("function(e) {handleCellClick(e);}")		
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Height(500)
+		.Height(630)
 		@* .ColumnAutoWidth(true) *@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))

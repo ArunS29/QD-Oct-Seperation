@@ -73,39 +73,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBankAccounts(DataSourceLoadOptions loadOptions)
+        public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
                     var data = dbContext.Qry201MainVoucherEntriesWithMasters
-                        .GroupBy(v => new { v.AccountHead, v.AccountHeadName, v.MasterGroupId, v.AccountGroup })
-                        .Select(g => new sp20103GetBankAccountsResult
+                        .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND") // Filter by AccountGroup
+                        .GroupBy(v => new { v.AccountHeadName, v.AccountGroup }) // Group by AccountHeadName and AccountGroup
+                        .Select(g => new
                         {
-                            AccountHead = g.Key.AccountHead,
                             AccountHeadName = g.Key.AccountHeadName,
-                            MasterGroupID = g.Key.MasterGroupId,
-                            Amount = g.Sum(v => v.CrAmount - v.DrAmount),
-                            AccountGroup = g.Key.AccountGroup
+                            AccountGroup = g.Key.AccountGroup,
+                            TotalBalance = g.Sum(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Calculate total balance
                         })
-                        .OrderByDescending(g => g.Amount) // Highest amount first
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHeadName)) // Null/empty names last
-                        .ThenBy(g => g.AccountHeadName) // Alphabetical order
-                        .Take(5)
+                        .OrderByDescending(g => g.TotalBalance) // Order by TotalBalance in descending order
+                        .Take(5) // Take the top 5 results
                         .AsQueryable();
 
-                    return Json(await DataSourceLoader.LoadAsync<sp20103GetBankAccountsResult>(data, loadOptions));
+                    return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetBankAccounts: {ex.Message}");
+                    _logger.LogError($"Error in GetAccountSummary: {ex.Message}");
                     return StatusCode(500, "Internal server error");
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetTotalBillsOutstanding()

@@ -223,7 +223,7 @@
             this.xrLabel18.StylePriority.UseTextAlignment = false;
             this.xrLabel18.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
             this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            this.xrLabel18.BeforePrint += new DevExpress.XtraReports.UI.BeforePrintEventHandler(this.xrLabel18_BeforePrint);
+            //this.xrLabel18.BeforePrint += new DevExpress.XtraReports.UI.BeforePrintEventHandler(this.xrLabel18_BeforePrint);
             // 
             // xrPictureBox1
             // 
