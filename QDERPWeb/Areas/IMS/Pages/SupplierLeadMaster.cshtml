@@ -490,34 +490,45 @@
 
 
 
-                <div style="padding:10px;">
-                    @(Html.DevExtreme().DataGrid()
-                    .ID("MaintenanceGrid")
-                    .Columns(columns =>
-                    {
-                    columns.Add()
-                    .Type(GridCommandColumnType.Selection).Width(50); // This adds a checkbox column
+               <div class="dx-field ledgerResult">
+                @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20116LedgerDocument>()
+                        .ID("dataGrid")
+                        .RemoteOperations(false)
+                        .Columns(columns =>
+                        {
+                            columns.AddFor(m => m.DocumentNo).Caption(new JS("formatMessage('DocumentNo')"))
+                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
+                            columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')"));
+                            columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref No')"));
+                            columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formatMessage('Document Remarks')"));
 
+                            columns.AddFor(m => m.DocumentExpDate)
+                        .Caption(new JS("formatMessage('Expiry On')"))
+                        .Format("dd-MMM-yyyy"); // Format date as DD-MM-YYYY
 
-                    columns.Add().Caption("#").DataField("#").DataType(GridColumnDataType.Number).Alignment(HorizontalAlignment.Center);
+                            columns.AddFor(m => m.DocumentExpDateAr)
+                        .Caption(new JS("formatMessage('Expiry Arabic')"))
+                        .Format("dd-MMM-yyyy");  // Format date as DD-MM-YYYY
 
-                    columns.Add().Caption("Document Type").DataField("Document Type").DataType(GridColumnDataType.Date).Alignment(HorizontalAlignment.Center);
-                    columns.Add().Caption("Ref.No").DataField("Ref.No").DataType(GridColumnDataType.Date).Alignment(HorizontalAlignment.Center);
-                    columns.Add().Caption("Expiry On").DataField("Expiry On").DataType(GridColumnDataType.Boolean).Alignment(HorizontalAlignment.Center);
-                    columns.Add().Caption("Modify On").DataField("Modify On").DataType(GridColumnDataType.String).Alignment(HorizontalAlignment.Center);
-
-                    })
+                            columns.AddFor(m => m.NotifiedOn)
+                        .Caption(new JS("formatMessage('Notify On')"))
+                        .Format("dd-MMM-yyyy");  // Format date as DD-MM-YYYY
+                        })
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnFixing(fixing => fixing.Enabled(true))
                     .HeaderFilter(filter => filter.Visible(true))
                     .Height(250)
+                    .ColumnAutoWidth(true)
+                    .FilterRow(filterRow => filterRow.Visible(false))
+                    .GroupPanel(groupPanel => groupPanel.Visible(false))
+                    .ShowBorders(true)
                     .Width("100%")
-                    .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
-
-                    .DataSource(new object[0])
-                    .RemoteOperations(false)
+         @*            .OnCellClick("onDocumentNoClick") // Add the click event *@
                     )
-
-                </div>
+            </div>
 
 
 

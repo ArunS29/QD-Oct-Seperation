@@ -30,6 +30,12 @@
     .displayFlex{
         display:flex;
     }
+
+    .card-button .dx-icon {
+        color: white; /* Bootstrap primary blue */
+        background-color: #007BFF;
+        border: 1px solid #007BFF; /* optional: add a border for visibility */
+    }
 </style>
 
 <div class="title">
@@ -180,6 +186,20 @@
             .Format("#,##0.00")
         )
     </text>); // ✅ Fix applied
+                columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
+            <div class="text-center">
+                @(Html.DevExtreme().Button()
+
+                .Type(ButtonType.Default)
+                .Icon("card")
+                .ElementAttr("class", "card-button")
+                )
+            </div>
+        </text>)
+            .HeaderCellTemplate(@<text>
+            <div class="headerBolder">...</div>
+        </text>);
+
                 columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
             .CellTemplate(@<text>
             <span>

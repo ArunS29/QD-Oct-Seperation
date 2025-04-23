@@ -330,7 +330,7 @@
 		padding: 20px;
 	}
 
-	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
 		display: none !important;
 	}
 
@@ -756,7 +756,7 @@
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("ddlGoodsGroup1")
 															.ShowClearButton(true)
-
+															.Value("Common Overheads")
 															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
@@ -801,6 +801,18 @@
 							</td>
 
 							<td>
+								
+
+									@(
+																			Html.DevExtreme().Button()
+																			.ID("InvoiceNotesconvertToArabic")
+																			.Width(75)
+																			.Height(33)
+																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
+																			.ElementAttr(new { @class = "input-button" })
+																			.OnClick("function() { convertToArabic(); }")
+																			)
+							
 								@(Html.DevExtreme().TextArea()
 															.Label(new JS("formatMessage('Notes in Arabic')"))
 															.LabelMode(EditorLabelMode.Outside)
@@ -950,6 +962,7 @@
 																				.OnOpened("onOpened")
 																				.TabIndex(1)
 																				.DropDownOptions(o => o.Width(1000))
+																				.Disabled(true)
 																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
 																				.Width("75%"))
 										@(Html.DevExtreme().Button()
@@ -1005,7 +1018,7 @@
 																			.Height(0)
 																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
 																			.ElementAttr(new { @class = "input-button" })
-																			///.OnClick("function() { convertToArabic(); }")
+																			.OnClick("function() { AdvanceconvertToArabic(); }")
 																			)
 									@* </span> *@
 								</td>
@@ -1014,7 +1027,7 @@
 																			Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("AccountGroup1")
+																			.ID("LessAdvanceAr")
 																			.Value(null)
 																			.Width("175%")
 																			.RtlEnabled(true)
@@ -1049,7 +1062,7 @@
 																				.Height(30)
 																				.Icon("fas fa-language") // Ensure Font Awesome class is correct
 																				.ElementAttr(new { @class = "input-button" })
-																				///.OnClick("function() { convertToArabic(); }")
+																				.OnClick("function() { OtherDeductionsconvertToArabic(); }")
 																				)
 									</span>
 								</td>
@@ -1058,7 +1071,7 @@
 																			Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("AccountGroup2")
+																			.ID("LessAdvanceAr1")
 																			.Value(null)
 																			.Width("175%")
 																			.RtlEnabled(true)
@@ -1092,7 +1105,7 @@
 																				.Height(30)
 																				.Icon("fas fa-language") // Ensure Font Awesome class is correct
 																				.ElementAttr(new { @class = "input-button" })
-																				///.OnClick("function() { convertToArabic(); }")
+																				.OnClick("function() { RetentionconvertToArabic(); }")
 																				)
 									</span>
 								</td>
@@ -1101,7 +1114,7 @@
 																			Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("AccountGroup3")
+																			.ID("LessAdvanceAr2")
 																			.Value(null)
 																			.Width("175%")
 																			.RtlEnabled(true)
@@ -2025,9 +2038,9 @@
         )
         .WordWrapEnabled(true)
         .ShowBorders(true)
-        .ShowColumnHeaders(false)
-        .FilterRow(f => f.Visible(false))
-        .SearchPanel(sp => sp.HighlightSearchText(false))
+        .ShowColumnHeaders(true)
+        .FilterRow(f => f.Visible(true))
+        .SearchPanel(sp => sp.HighlightSearchText(true))
         .Selection(sl => sl.Mode(SelectionMode.Single))
         .HeaderFilter(p => p.Visible(false))
         .ShowBorders(true)
@@ -2038,9 +2051,9 @@
         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
         .Columns(columns =>
         {
-            columns.Add().DataField("BuyerIdtypeName").Caption("Branch Code").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("BuyerOtherIdtype").Caption("Other ID Type").Alignment(HorizontalAlignment.Center); 
-        })
+						columns.Add().DataField("BuyerIdtypeName").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("BuyerOtherIdtype").Caption(new JS("formatMessage('Buyer ID Type')")).Alignment(HorizontalAlignment.Center);
+					})
         .OnSelectionChanged("dataGridSelectionChanged")   
         .OnInitialized("dataGridInitialized")  
     )
@@ -2204,12 +2217,9 @@
 												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 												.Columns(columns =>
 												{
-													columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('IncomeLedger')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("AccountGroupUnder").Caption(new JS("formatMessage('Account Group Under')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('IsLedgerObselete')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('Revenue Ledger')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center);
 
 
 												})
@@ -2247,8 +2257,8 @@
 									.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 									.Columns(columns =>
 									{
-										columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('CostAllocationUnit')"));
-										columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('CostAllocationUnit')"));
+										columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Center);
+									    columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')")).Alignment(HorizontalAlignment.Center);
 
 
 									})
@@ -2819,6 +2829,8 @@
 
 }
 
+<input type="file" id="fileInput" style="display: none;" />
+
 <!-- Modal Structure -->
 
 <script>
@@ -2844,7 +2856,7 @@
 
 			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-				if (!$(this).find("#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
+				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
 
 					$(this).remove();
 
@@ -2924,7 +2936,8 @@
 											{
 												disableEditing();
 											}
-
+											 var button = $("#btnSave").dxButton("instance");
+						                     button.option("text", "Update");
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -5778,13 +5791,13 @@
 			ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 			AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
 			AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
-			AdvanceTextAr:$("#AccountGroup1").dxTextBox("instance").option("value")|| null,
+			AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
 			OtherDeductionText:$("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
 			OtherDeductionAmount:$("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
-			OtherDeductionTextAr:$("#AccountGroup2").dxTextBox("instance").option("value")|| null,
+			OtherDeductionTextAr:$("#LessAdvanceAr1").dxTextBox("instance").option("value")|| null,
 			RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
 			RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
-			RetentionTextAr:$("#AccountGroup3").dxTextBox("instance").option("value")|| null,
+			RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
 
 			//Branch/DivisionDetails
 			BranchCode: branchcode|| null,
@@ -6634,7 +6647,256 @@
 		});
 
 
+
+		 //english text convert to arabic
+
+	async function translateToArabic(text) {
+
+		try {
+
+
+			const response = await fetch(
+
+				`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+			);
+
+			const data = await response.json();
+			console.log(data);
+			return data.responseData.translatedText;
+
+		} catch (error) {
+
+			console.error("Translation failed:", error);
+
+			return "Translation Error";
+
+		}
+
+	}
+
+
+	 async function convertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#txtInvoiceNotes").dxTextArea("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#txtNotesinArabic").dxTextArea("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
 		
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		alert(englishText)
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
+
+	 async function AdvanceconvertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#LessAdvance").dxTextBox("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#LessAdvanceAr").dxTextBox("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
+		
+
+	 async function OtherDeductionsconvertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#LessOtherDeductions").dxTextBox("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#LessAdvanceAr1").dxTextBox("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
+
+	 async function RetentionconvertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#LessRetention").dxTextBox("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#LessAdvanceAr2").dxTextBox("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
+
+		$(document).ready(function () {
+		var button = $("#btnSave").dxButton("instance");
+		button.option("text", "Update");
+	});
+
+		$("#btnAttach").on("click", function (e) {
+		const dialog = DevExpress.ui.dialog.custom({
+			title: "Attach File",
+			messageHtml: "Click OK to select file(s)",
+			buttons: [
+				{
+					text: "OK",
+					onClick: function () {
+						handleFileSelection();
+					}
+				},
+				{
+					text: "Cancel"
+				}
+			]
+		});
+
+		dialog.show(); // Show the dialog
+	});
+
+	function handleFileSelection() {
+		const fileInput = document.getElementById("fileInput");
+
+		const isMultiple = true; // or false based on your requirement
+
+		if (fileInput) {
+			fileInput.multiple = isMultiple;
+			fileInput.click();
+		} else {
+			console.error("fileInput element not found");
+		}
+	}
+
 
 </script>
 

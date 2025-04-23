@@ -3770,6 +3770,10 @@
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const totalDrAmount = dataGrid.getTotalSummaryValue("DrAmount");
         const chequeboxNo = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value");
+        const currencyInstance = $("#ddCurrency").dxDropDownBox("instance");
+        const currencyId = currencyInstance.option("value"); // Current CurrencyID
+        const currencyName = currencyInstance.option("displayValue"); // Current CurrencyName
+        
         if ($("#chequePopup").length === 0) {
             $.ajax({
                 url: "/api/VoucherMaster/LoadChequePopup",
@@ -3792,6 +3796,19 @@
                     if (chequeBox) {
                         chequeBox.option("value", chequeboxNo);
                     }
+                    // Get the dxSelectBox instance
+                    const currencyname = $("#txtcurrency").dxSelectBox("instance");
+
+                    // Check if the instance exists
+                    if (currencyname) {
+                    
+                        const selectedValue = currencyname.option("value");
+                        const selectedText = currencyname.option("text");
+                      
+                    }
+
+
+
                     $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value", paymentaccheadname);
                     $.ajax({
                         url: "/api/VoucherMaster/GetNewCPVoucherNo",
