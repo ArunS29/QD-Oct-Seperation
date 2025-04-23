@@ -1,76 +1,16 @@
 ﻿
 
 <style type="text/css">
-    #DepreciationdataGrid .dx-datagrid-headers .dx-datagrid-action {
-        text-align: center !important;
-    }
-
-    #DepreciationdataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-        text-align: center !important;
-    }
-
-    .dx-button {
-        background-color: whitesmoke;
-    }
-
-
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
-    }
-
-    .button-alignment-down {
-        margin-top: 23px;
-    }
-
-    .button-group {
-        margin-left: -10px !important;
-    }
-
-    .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; /* Border between rows */
-    }
-    /* Custom styles for context menu */
-    .context-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-    }
-
-    .context-menu-item {
-        padding: 0px, 15px,10px 15px;
-        cursor: pointer;
-    }
-
-    .ledgerResult {
-        margin: 15px !important;
-    }
-
-    #rowHeightMenu {
-        position: absolute;
-        top: 100px; /* Adjust positioning as per your design */
-        left: 300px; /* Adjust positioning as per your design */
-        display: none; /* Keep it hidden until needed */
-    }
-
-    .custom-button-icon .dx-icon {
-        color: #ff5733; /* Set the color of the icon (you can use any color) */
-    }
 
 </style>
 <div class="dx-fieldset horizontal-container">
 
+
+
+
     @* <div id="ddButtonLayout"></div> *@
     @(Html.DevExtreme().Button()
-        .ID("btnRefresh")
+        .ID("btn1Refresh")
         .Text(new JS("formatMessage('Refresh')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
@@ -81,7 +21,7 @@
 
 
     @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonLayout")
+        .ID("ddButtonLayout1")
         .Text(new JS("formatMessage('Layout')"))
         .Icon("smalliconslayout")
         .Width(180)
@@ -100,7 +40,7 @@
 
         )
     @(Html.DevExtreme().Button()
-        .ID("btnPrint")
+        .ID("btn1Print")
         .Text(new JS("formatMessage('Print')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
@@ -109,7 +49,7 @@
         .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
         )
     @(Html.DevExtreme().Button()
-        .ID("btnToggleSearch")
+        .ID("btn1ToggleSearch")
         .Text(new JS("formatMessage('Search')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
@@ -127,7 +67,7 @@
         .OnClick("toggledepreciationGroupPanel")
         )
     @*     @(Html.DevExtreme().Button()
-    .ID("btnChooseVoucher")
+    .ID("btn1ChooseVoucher")
     .Text("Choose Voucher")
     .Type(ButtonType.Normal)
     .StylingMode(ButtonStylingMode.Outlined)
@@ -136,7 +76,7 @@
     .OnClick("function() { chooseVoucher(); }")
     ) *@
     @*   @(Html.DevExtreme().Button()
-    .ID("btnDepreciationSchedule") // Unique ID for the new button
+    .ID("btn1DepreciationSchedule") // Unique ID for the new button
     .Text("Depreciation Schedule") // Text for the button
     .Type(ButtonType.Normal)
     .StylingMode(ButtonStylingMode.Outlined)
