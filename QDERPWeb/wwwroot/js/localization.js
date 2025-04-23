@@ -1943,6 +1943,11 @@
         "Document": "Document",
         "Purchases": "Purchases",
         "Matl. Requests": "Matl. Requests",
+        "Store Name": "Store Name",
+        "Account Code": "Account Code",
+        "Revenue Ledger": "Revenue Ledger",
+        "Cost Center": "Cost Center",
+        "Buyer ID Type":"Buyer ID Type"
     },
    
     "ar": {
@@ -3700,7 +3705,11 @@
         "CompanyId": "معرّف الشركة",
         "CompanyName": "اسم الشركة",
         "Store ID": "معرّف المتجر",
-        "Store Name": "اسم المتجر"
+        "Store Name": "اسم المتجر",
+        "Account Code": "رمز الحساب",
+        "Revenue Ledger": "دفتر الإيرادات",
+        "Cost Center": "مركز التكلفة",
+        "Buyer ID Type":"نوع هوية المشتري"
 
 
     }
