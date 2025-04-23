@@ -65,7 +65,7 @@
     <!-- Bank Account Details Section -->
     <div class="grid-section">
         <div id="BankAccountDetails" class="no-border-title"></div>
-        <div id="bankAccountGrid"></div>
+        <div id="accountSummaryGrid"></div>
     </div>
 </div>
 
@@ -785,69 +785,84 @@
 
 
 
-        // Bank Account Details DataGrid
-        $("#bankAccountGrid").dxDataGrid({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AccountHead",
-                loadUrl: "/api/Dashboard/GetBankAccounts"
-            }),
-            remoteOperations: true,
-            columns: [
-                { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
-                { dataField: "Amount", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
-                { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: false, allowHiding: true },
-                { dataField: "MasterGroupID", caption: formatMessage("Master Group"), visible: false, allowHiding: true }
-            ],
-            columnAutoWidth: true,
-            showBorders: true,
-            filterRow: { visible: false },
-            paging: { enabled: false }, // Show all data
+            $(document).ready(function () {
+                // Fetch data using AJAX
+                $.ajax({
+                    url: "/api/Dashboard/GetAccountSummary", // API endpoint
+                    type: "GET",
+                    dataType: "json",
+                    success: function (response) {
+                        // Check if the response contains data
+                        if (response && response.data) {
+                            // Initialize the DataGrid with the fetched data
+                            $("#accountSummaryGrid").dxDataGrid({
+                                dataSource: response.data, // Use the data from the response
+                                columns: [
+                                    { dataField: "AccountHeadName", caption: "Account Head", width: 200, allowReordering: true },
+                                        { dataField: "TotalBalance", caption: "Balance Amount", format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
+                                    { dataField: "AccountGroup", caption: "Account Group", visible: true, allowHiding: true }
+                                ],
+                                columnAutoWidth: true, // Automatically adjust column widths
+                                showBorders: true, // Show grid borders
+                                filterRow: { visible: true }, // Enable filter row
+                                paging: { enabled: false }, // Disable paging to show all data
 
-            // Enable vertical scrolling
-            height: 400, // Adjust grid height as needed
-            scrolling: {
-                mode: "virtual" // Enables virtual scrolling for large data
-            },
+                                // Enable vertical scrolling
+                                height: 400, // Adjust grid height as needed
+                                scrolling: {
+                                    mode: "virtual" // Enable virtual scrolling for large datasets
+                                },
 
-            searchPanel: { visible: false }, // Hide search panel by default
+                                searchPanel: { visible: false }, // Enable search panel
 
-            // Enable column reordering
-            allowColumnReordering: true,
-            allowColumnResizing: true,
+                                // Enable column reordering and resizing
+                                allowColumnReordering: true,
+                                allowColumnResizing: true,
 
-            // Enable column chooser
-            columnChooser: {
-                enabled: true,
-                mode: "select"
-            },
+                                // Enable column chooser
+                                columnChooser: {
+                                    enabled: true,
+                                    mode: "select"
+                                },
 
-            // Add Column Chooser button in toolbar
-            toolbar: {
-                items: [
-                    {
-                        location: "after",
-                        widget: "dxButton",
-                        options: {
-                            icon: "columnchooser",
-                            text: formatMessage("Column Chooser"),
-                            onClick: function () {
-                                $("#bankAccountGrid").dxDataGrid("instance").showColumnChooser();
-                            }
+                                // Add Column Chooser button in toolbar
+                                toolbar: {
+                                    items: [
+                                        {
+                                            location: "after",
+                                            widget: "dxButton",
+                                            options: {
+                                                icon: "columnchooser",
+                                                text: "Column Chooser",
+                                                onClick: function () {
+                                                    $("#accountSummaryGrid").dxDataGrid("instance").showColumnChooser();
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+
+                                // Add summary row
+                                summary: {
+                                    totalItems: [
+                                        {
+                                            column: "Amount",
+                                            summaryType: "sum",
+                                            valueFormat: { type: "fixedPoint", precision: 2 },
+                                            displayFormat: "Total: {0}"
+                                        }
+                                    ]
+                                }
+                            });
+                        } else {
+                            console.error("No data found in the response.");
                         }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching data:", error);
                     }
-                ]
-            },
-            summary: {
-                totalItems: [
-                    {
-                        column: "Amount",
-                        summaryType: "sum",
-                        valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat: "Total: {0}"
-                    }
-                ]
-            }
-        });
+                });
+            });
 
         // // Bills Outstanding Aging Chart
         // $(document).ready(function () {
