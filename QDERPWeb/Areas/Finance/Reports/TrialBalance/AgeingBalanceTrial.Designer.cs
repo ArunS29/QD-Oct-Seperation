@@ -580,7 +580,7 @@
             this.xrLabel41.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountHeadNo]")});
             this.xrLabel41.Font = new DevExpress.Drawing.DXFont("Calibri", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel41.LocationFloat = new DevExpress.Utils.PointFloat(556.8763F, 0F);
+            this.xrLabel41.LocationFloat = new DevExpress.Utils.PointFloat(556.8763F, 2F);
             this.xrLabel41.Name = "xrLabel41";
             this.xrLabel41.SizeF = new System.Drawing.SizeF(124.061F, 25F);
             this.xrLabel41.StylePriority.UseBackColor = false;
@@ -1717,7 +1717,8 @@
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
             this.sqlDataSource1,
             this.sqlDataSource2});
-            this.DataSource = this.sqlDataSource2;
+            this.DataMember = "Query";
+            this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.Landscape = true;
             this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 118.8333F, 38.62025F);

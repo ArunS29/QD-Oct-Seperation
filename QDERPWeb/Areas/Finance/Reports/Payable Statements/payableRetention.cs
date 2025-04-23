@@ -1,36 +1,81 @@
-﻿using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using DevExpress.XtraReports.UI;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
-using DevExpress.DataAccess.ConnectionParameters;
+using DevExpress.XtraReports.UI;
+using QD.ERP.Web.Service;
+using System;
+using System.Drawing;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 {
     public partial class payableRetention : XtraReport
     {
-        private const string QueryName = "qry201SubLedgerPayablesMaster";
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public payableRetention(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, TenantDbContextHelper tenantDbContextHelper)
+        public payableRetention(
+            string accountId,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressArb,
+            TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
-
+            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+            ConfigureDataSource(accountId);
         }
 
         public payableRetention()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
-
         }
 
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void ConfigureDataSource(string accountId)
         {
-            // Helper method to add or update a parameter
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+
+            var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
+            sqlDataSource1 = new SqlDataSource(connectionParams);
+
+            var query = new CustomSqlQuery
+            {
+                Name = "qry201SubLedgerPayablesMaster ",
+                Sql = "SELECT * FROM qry201SubLedgerPayablesMaster  WHERE AccountHeadNo = @AccountID"
+            };
+
+            query.Parameters.Add(new QueryParameter
+            {
+                Name = "AccountID",
+                Type = typeof(string),
+                Value = accountId ?? ""
+            });
+
+            sqlDataSource1.Queries.Clear();
+            sqlDataSource1.Queries.Add(query);
+
+            sqlDataSource1.RebuildResultSchema();
+            sqlDataSource1.Fill();
+
+            this.DataSource = sqlDataSource1;
+            this.DataMember = "qry201SubLedgerPayablesMaster ";
+        }
+
+        private void SetReportParameters(
+            string accountId,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressArb)
+        {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
                 if (Parameters[name] == null)
@@ -50,128 +95,32 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 }
             }
 
-            // Add or update parameters
             AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
             AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
             AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
-
-            // New parameters for Tenant and Company Info
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string), false);
 
-            // Debug: Ensure logo URL is captured
-            Console.WriteLine($"Company Logo: {logoImage != null}");
-
-
-            // Bind TenantName and CompanyName to labels (update with actual control names)
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-            {
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
-            }
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
-            {
-                companyNameLabel.Text = company_Name;
-            }
 
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-            {
-                addressLabel.Text = company_address;
-            }
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
+                companyNameLabel.Text = companyName;
 
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-            {
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+                addressLabel.Text = companyAddress;
+
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+                companyNameArLabel.Text = companyNameAr;
+
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+                addressArbLabel.Text = companyAddressArb;
+
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox && logoImage != null)
                 logoPictureBox.Image = logoImage;
-            }
-
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
-            {
-                companyNameArLabel.Text = Company_Name_Ar;
-            }
-
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
-            {
-                addressArbLabel.Text = company_address_arb;
-            }
-
-            // Set up SQL query
-            AddSqlQueryParameters(accountId, frmDate, toDate);
-
-
         }
-
-        private void AddReportParameter(string paramName, Type paramType, object paramValue)
-        {
-            if (Parameters[paramName] == null)
-            {
-                Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
-                {
-                    Name = paramName,
-                    Type = paramType,
-                    Value = paramValue ?? DBNull.Value,
-                    Visible = false
-                });
-            }
-            else
-            {
-                Parameters[paramName].Value = paramValue ?? DBNull.Value;
-                Parameters[paramName].Visible = false;
-            }
-        }
-
-        private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
-        {
-            // Define the SQL query
-            CustomSqlQuery selectQuery = new CustomSqlQuery()
-            {
-                Name = QueryName,
-                Sql = @"SELECT * FROM qry201SubLedgerPayablesMaster
-                        WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
-                        AND VoucherDate BETWEEN @StartDate AND @EndDate"
-            };
-
-            // Add query parameters (use DBNull.Value for null values)
-            selectQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId ?? (object)DBNull.Value));
-            selectQuery.Parameters.Add(new QueryParameter("@StartDate", typeof(string), frmDate.ToString("yyyy-MM-dd")));
-            selectQuery.Parameters.Add(new QueryParameter("@EndDate", typeof(string), toDate.ToString("yyyy-MM-dd")));
-
-            // Attach query to SqlDataSource and fetch data
-            sqlDataSource1.Queries.Clear();
-            sqlDataSource1.Queries.Add(selectQuery);
-            sqlDataSource1.Fill();
-
-            CheckForEmptyData();
-            // Connection string logic
-            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-            {
-                var connectionString = tenant.ConnectionString;
-                var connectionParams = new CustomStringConnectionParameters(connectionString);
-                sqlDataSource1.ConnectionParameters = connectionParams;
-            }
-            else
-            {
-                throw new Exception("Unable to get tenant context. Please check session and cache.");
-            }
-        }
-
-        private void CheckForEmptyData()
-        {
-            if (sqlDataSource1.Result[QueryName] is IList result && result.Count == 0)
-            {
-                XRLabel noDataLabel = new XRLabel()
-                {
-                    Text = "No records found to display.",
-                    BoundsF = new RectangleF(0, 0, 650, 50),
-                    TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
-                    Font = new Font("Arial", 14, FontStyle.Bold)
-                };
-
-                this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
-            }
-        }
-
-
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Reports
+﻿namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 {
     partial class BillsReceivablelandscapeformat
     {
