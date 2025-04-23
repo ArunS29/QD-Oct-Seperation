@@ -14,7 +14,6 @@
         .ShowCloseButton(true) // Display close button
         .Width(1000)
         .Height(450)
-
         .ContentTemplate(@<div class="background" style="padding: 10px;">
         <div class="row">
             <div class="col-md-3">
@@ -129,7 +128,7 @@
                     )
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="form-group">
                     @(Html.DevExtreme().NumberBox()
                     .Label(new JS("formatMessage('AmountinSAR')"))
@@ -144,6 +143,26 @@
                     .Step(1))
                 </div>
             </div>
+         <div class="col-md-3">
+   <div class="form-group">
+@(Html.DevExtreme().SelectBox()
+    .ID("txtcurrency")
+    .DataSource(d => d.WebApi()
+        .Controller("Utility")
+        .LoadAction("GetCurrencyList")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("CurrencyID")
+    )
+    .Value("SAR")
+    .ValueExpr("CurrencyID")
+    .DisplayExpr("CurrencyName")
+    .Placeholder("Select Currency")
+    .Width(200)
+)
+
+   </div>
+   
+</div>
 
 
         </div>
@@ -210,6 +229,7 @@
 
     function SavePopVoucherEntry() {
         var chequeNo = $("#ChequeNo").dxTextBox("instance").option("value");
+
         var voucherNo = $("#PopVoucherNo").dxTextBox("instance").option("value"); // Get VoucherNo
 
         if (!chequeNo) {
@@ -238,12 +258,14 @@
 
     // Function to save cheque details
     function saveChequeDetails(chequeNo, voucherNo) {
-        var data = {
-            "ChequeNo": chequeNo,
-            "VoucherNo": voucherNo,
-            "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
-            "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
-        };
+      var data = {
+    "ChequeNo": chequeNo,
+    "VoucherNo": voucherNo,
+    "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
+    "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
+    "currencyid": $("#txtcurrency").dxSelectBox("instance").option("value"), // Corrected here
+};
+
 
         $.ajax({
             type: "POST",

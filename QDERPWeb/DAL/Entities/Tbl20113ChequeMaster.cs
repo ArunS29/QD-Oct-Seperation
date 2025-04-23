@@ -32,4 +32,6 @@ public partial class Tbl20113ChequeMaster
     public string ModifiedBy { get; set; }
 
     public DateTime? ModifiedOn { get; set; }
+
+    public int currencyid  {get;set;}
 }
