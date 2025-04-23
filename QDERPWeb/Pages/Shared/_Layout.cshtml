@@ -1197,24 +1197,22 @@
                 </div>
             </div>
         </div>
-        <div id="submenuContainer8" class="context-menu" style="display:none; width: 300px;">
+        <div id="submenuContainer8" class="context-menu" style="display: none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item">
-
+                <div class="submenu-item" onclick="handleVATClick('TaxSummaryReport')">
                     <span class="no-border-input">Tax Summary Report</span>
                 </div>
-                <div class="submenu-item">
 
+                <div class="submenu-item" onclick="handleVATClick('TaxVATReport')">
                     <span class="no-border-input">Tax Report (Revenue Classified)</span>
                 </div>
 
-                <div class="submenu-item">
-
-                    <span class="no-border-input">Tax Report (Revenue Classified)in arabic </span>
+                <div class="submenu-item" onclick="handleVATClick('TaxReportRevenueClassifiedArabic')">
+                    <span class="no-border-input">Tax Report (Revenue Classified) in Arabic</span>
                 </div>
-
             </div>
         </div>
+
         <div id="submenuContainer10" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClick('Account Group')">
@@ -2809,6 +2807,79 @@
                 helpVideoLink.href = `https://help.quickdice.net/?formName=${encodeURIComponent(formName)}`;
             }
         });
+
+
+               function handleVATClick(selectedText) {
+            console.log("handleVATClick triggered with:", selectedText);
+            alert('VAT');
+
+            try {
+                // Get the DateBox instances
+                var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+                var toDateBox = $("#todateBox").dxDateBox("instance");
+
+                if (!frmDateBox || !toDateBox) {
+                    console.error("DateBox instances not found.");
+                    alert("Date selection components are missing.");
+                    return;
+                }
+
+                // Get the date values
+                var frmDate = frmDateBox.option("value");
+                var toDate = toDateBox.option("value");
+
+                // Function to format date as D-MMM-YYYY
+                function formatDate(date) {
+                    if (!date) return "";
+                    let dateObj = new Date(date);
+                    let day = dateObj.getDate();
+                    let month = dateObj.toLocaleString('en-US', { month: 'short' });
+                    let year = dateObj.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+
+                // Format dates
+                var frmDateStr = formatDate(frmDate);
+                var toDateStr = formatDate(toDate);
+
+                // Validate dates
+                if (!frmDateStr || !toDateStr) {
+                    alert("Please select valid From and To dates.");
+                    return;
+                }
+
+                // Extract tenant name from URL
+                let pathParts = window.location.pathname.split('/');
+                let tenantName = pathParts[1] || "defaultTenant";
+
+                // Mapping report names to actual report IDs
+                const reportMappings = {
+                    "TaxSummaryReport": "TaxSummaryReport",
+                    "TaxVATReport": "TaxVATReport",
+                    "Tax Report (Revenue Classified)in arabic": "TaxReportRevenueClassifiedArabic"
+                };
+
+                // Check if selectedText matches any report
+                if (reportMappings[selectedText]) {
+                    let reportName = reportMappings[selectedText];
+                    console.log(`Redirecting to ${reportName}`);
+
+                    window.open(
+                        `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
+                        '_blank',
+                        'width=1200,height=800,scrollbars=yes,resizable=yes'
+                    );
+                } else {
+                    console.warn("No matching report found for:", selectedText);
+                    alert("No matching report found.");
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
+                alert("Something went wrong. Check console for details.");
+            }
+        }
+
+
     </script>
 </body>
 </html>

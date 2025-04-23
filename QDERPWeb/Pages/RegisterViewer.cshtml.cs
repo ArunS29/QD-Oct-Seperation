@@ -8,6 +8,7 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
+using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using System;
@@ -78,7 +79,7 @@ namespace QD.ERP.Web.Pages
                     Console.WriteLine("Error processing company logo: " + ex.Message);
                 }
             }
-           //Account Register Reports
+            //Account Register Reports
             if (!string.IsNullOrEmpty(voucherType) && frmDate.HasValue && toDate.HasValue)
             {
                 VoucherType = voucherType;
@@ -112,7 +113,7 @@ namespace QD.ERP.Web.Pages
 
 
             ////Cost Analysis Reports
-           
+
             else if (frmDate.HasValue && toDate.HasValue)
             {
                 FrmDate = frmDate.Value;
@@ -199,12 +200,18 @@ namespace QD.ERP.Web.Pages
                             FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper
                         );
                         break;
+                    case "TaxSummaryReport":
+                        Report = new TaxSummaryReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "TaxVATReport":
+                        Report = new TaxVATReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
                     default:
                         return NotFound("Cost report not found.");
                 }
             }
 
-///Bills Receivable reports
+            ///Bills Receivable reports
             // **CASE 3: Reports using selectedValues**
             else if (selectedValues != null && selectedValues.Length > 0)
             {
@@ -246,12 +253,13 @@ namespace QD.ERP.Web.Pages
                     case "ReceivableReport(EffectiveDate)":
                         Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
                         break;
-                  
-          
+
+
                     default:
                         return NotFound("Report not found.");
                 }
             }
+
             else
             {
                 return BadRequest("Missing required parameters.");

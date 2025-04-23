@@ -161,7 +161,7 @@
             this.xrLabel26,
             this.pageInfo1,
             this.pageInfo2});
-            this.BottomMargin.HeightF = 90F;
+            this.BottomMargin.HeightF = 51.66661F;
             this.BottomMargin.Name = "BottomMargin";
             // 
             // xrLabel14
@@ -777,6 +777,7 @@
             this.tableCell23.StylePriority.UseBorders = false;
             this.tableCell23.StylePriority.UseBorderWidth = false;
             this.tableCell23.StylePriority.UseFont = false;
+            this.tableCell23.TextFormatString = "{0:dd-MMM-yyyy}";
             this.tableCell23.Weight = 0.055633769609889576D;
             // 
             // tableCell24
@@ -872,7 +873,7 @@
             this.tableCell28.StylePriority.UseFont = false;
             this.tableCell28.StylePriority.UseTextAlignment = false;
             this.tableCell28.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.tableCell28.TextFormatString = "{0:0.00}";
+            this.tableCell28.TextFormatString = "{0}";
             this.tableCell28.Weight = 0.055761616004049691D;
             // 
             // tableCell29
@@ -1174,7 +1175,7 @@
             this.xrLabel3,
             this.xrLabel2,
             this.xrLabel1});
-            this.GroupFooter1.HeightF = 109.1667F;
+            this.GroupFooter1.HeightF = 125.8334F;
             this.GroupFooter1.Name = "GroupFooter1";
             // 
             // xrLabel9
@@ -1379,7 +1380,7 @@
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(22F, 24F, 25F, 90F);
+            this.Margins = new DevExpress.Drawing.DXMargins(22F, 24F, 25F, 51.66661F);
             this.PageHeight = 850;
             this.PageWidth = 1450;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;

@@ -7,11 +7,11 @@ using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
 {
-    public partial class TaxSummaryReport : DevExpress.XtraReports.UI.XtraReport
+    public partial class TaxVATReport : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public TaxSummaryReport(
+        public TaxVATReport(
             DateTime frmDate,
             DateTime toDate,
             string tenantName,
@@ -27,7 +27,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
             SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
         }
 
-        public TaxSummaryReport()
+        public TaxVATReport()
         {
             InitializeComponent();
         }
@@ -94,7 +94,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
         {
             var selectQuery = new CustomSqlQuery()
             {
-                Name = "qry201_610VATSalesSummary",
+                Name = "qry201_607VATInvoiceRegisterMainView", // Change this if the VAT report uses a different query/table
                 Sql = @"SELECT * FROM qry201_610VATSalesSummary 
                         WHERE InvoiceDate BETWEEN @StartDate AND @EndDate"
             };
