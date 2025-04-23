@@ -211,6 +211,7 @@
                         .ID("ddAccountHead")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
+                        .AcceptCustomValue(false)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
@@ -2470,7 +2471,7 @@
             confirmDeleteAll(function () {
                 // User clicked "Yes", proceed with deletion
                 $.ajax({
-                    url: `/api/VoucherMaster/DeleteAllVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}&PaymentAccoutHeadName=${encodeURIComponent(paymentaccheadname)}`,
+                url: `/api/VoucherMaster/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}`,
                     type: "POST",
                     success: function (response) {
                         if (response.data) {

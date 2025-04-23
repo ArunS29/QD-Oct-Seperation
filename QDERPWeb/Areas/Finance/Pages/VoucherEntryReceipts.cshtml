@@ -261,6 +261,7 @@
                         .ID("AccountHeadDropDown")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
+                .AcceptCustomValue(false)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
@@ -2367,16 +2368,14 @@
         function onAllRowRemoving() {
             var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-
             // Retrieve the unique identifier for the row
             var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        
 
             // **Ask for confirmation before proceeding**
             confirmDeleteAll(function () {
                 // User clicked "Yes", proceed with deletion
                 $.ajax({
-                    url: `/api/VoucherEntryCashReceipts/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}`,
+                url: `/api/VoucherMaster/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}`,
                     type: "POST",
                     success: function (response) {
                         if (response.data) {
