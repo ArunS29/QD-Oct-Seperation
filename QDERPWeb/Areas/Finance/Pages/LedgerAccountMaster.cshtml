@@ -337,7 +337,7 @@
                     .Controller("LedgerAccountMaster")
                     .LoadAction("GetAccountMasterArabic")
                     .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("MasterGroupAr")
+                    .Key("MasterGroup")
                     )
                     .LabelMode(EditorLabelMode.Outside)
                     .ID("accountDropDownBoxArabic")
@@ -346,7 +346,7 @@
                     .OpenOnFieldClick(false)
                     .ValueChangeEvent("input")
                     .HoverStateEnabled(true)
-                    .ValueExpr("MasterGroupAr")
+                    .ValueExpr("MasterGroup")
                     .DisplayExpr("MasterGroupAr")
                     .OnInput("dropDownBoxOnInput")
                     .OnOpened("onOpened")
@@ -597,10 +597,10 @@
             //    .ShowColumnHeaders(false)
             .Columns(columns =>
             {
-                columns.Add().DataField("MasterGroup")
-                .Caption(new JS("formatMessage('Master Group')"))
-                .AllowSorting(false)
-                ; // This removes the header name
+                
+                columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')"))
+;
+                columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).AllowSorting(false); // This removes the header name
 
             })
             )
@@ -735,13 +735,26 @@
                 dataType: "json",
                 success: function (response) {
                     if (response) {
+                        function formatDate(date) {
+                            if (date) {
+                                const dateObj = new Date(date);
+                                const day = String(dateObj.getDate()).padStart(2, '0');
+                                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                const month = monthNames[dateObj.getMonth()];
+                                const year = dateObj.getFullYear();
+                                return `${day}-${month}-${year}`;
+                            }
+                            return '';
+                        }
                         console.log("Account Group Data:", response);
                         $("#AMbtnSave").dxButton("instance").option("text", "Update");
                         // Assign values to DevExtreme textboxes
                         $("#AccountGroupID").dxTextBox("instance").option("value", response.AccountGroupId);
                         $("#AccountGroup").dxTextBox("instance").option("value", response.AccountGroup);
+                         $("#accountDropDownBoxArabic").dxDropDownBox("instance").option("value", response.AccountGroupAr);
                         $("#AccountGroupID1").dxTextBox("instance").option("value", response.AccountGroupId);
-                        $("#AccountGroup1").dxTextBox("instance").option("value", response.AccountGroupAr);
+                        $("#AccountGroup1").dxTextBox("instance").option("value", response.AccountGroupAr); 
                         $("#CreatedBy").dxTextBox("instance").option("value", response.RecordCreatedBy);
                         CreatedBys = response.RecordCreatedBy;
                             console.log("getres:", CreatedBys);
@@ -752,13 +765,8 @@
                     
                         $("#ModifiedOn").dxTextBox("instance").option("value", formatDate(new Date()));
                         // Change button text to "Update"
-                        function formatDate(date) {
-                            if (date) {
-                                const dateObj = new Date(date);
-                                return dateObj.toISOString().split("T")[0]; // Extracts only the YYYY-MM-DD part
-                            }
-                            return '';
-                        }
+                  
+
                     } else {
                         console.warn("No data received for the provided AccountGroupId.");
                     }
@@ -886,7 +894,9 @@
                 "AccountGroupIDAr": $("#AccountGroupID1").dxTextBox("instance").option("value"),
                 "AccountGroupAr": $("#AccountGroup1").dxTextBox("instance").option("value"),
                 "AccountMasterAr": $("#accountDropDownBoxArabic").dxDropDownBox("instance").option("value"),
-                "AccountGroupUnder": mARresponse,
+               "AccountGroupUnder": mARresponse,
+              // "AccountGroupUnder": mARresponseMasterGroupId,
+
 
             };
 
@@ -1035,47 +1045,45 @@
     }
 
 
-
-
     function dataGridAccountMasterSelectionChanged(e) {
-        const selectedKey = e.selectedRowKeys[0];
-        const ddbInstance = $("#accountMasterDropDownBox").dxDropDownBox("instance");
+    const selectedKey = e.selectedRowKeys[0];
+    const ddbInstance = $("#accountMasterDropDownBox").dxDropDownBox("instance");
 
-        if (selectedKey) {
-            ddbInstance.option("value", selectedKey);
-            if (ddbInstance.option("opened")) {
-                ddbInstance.close();
-            }
-        }
-
-        var selectedValue = selectedKey;
-        if (IsArabic == true) {
-            $.ajax({
-
-                type: "GET",
-                url: `/api/LedgerAccountMaster/GetAccountMasterAR?MasterGroup=${encodeURIComponent(selectedValue)}`, // Pass value as a query parameter
-                contentType: "application/json",
-                dataType: "json",
-                success: function (response) {
-                    if (response) {
-
-                        mARresponse = response;
-                        // Update the second dropdown's DataGrid instance with the data
-                        // $("#accountDropDownBoxArabic").dxDataGrid("instance").option("dataSource", [response]); // Ensure response is array
-                        //const responseKey = response[0]?.key || response.key; // Adjust based on response structure
-                        dataGridAccountMasterSelectionChangedAr({ selectedRowKeys: [mARresponse] });
-
-                    } else {
-                        alert("No data found for the selected value.");
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error occurred while fetching data:", error);
-                    alert("Error occurred while updating data: " + error);
-                },
-            });
+    if (selectedKey) {
+        ddbInstance.option("value", selectedKey);
+        if (ddbInstance.option("opened")) {
+            ddbInstance.close();
         }
     }
+
+    if (IsArabic === true) {
+        $.ajax({
+            type: "GET",
+            url: `/api/LedgerAccountMaster/GetAccountMasterAR?MasterGroup=${encodeURIComponent(selectedKey)}`,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                if (response) {
+                    mARresponse = response.MasterGroupId;  // <<< This stores the ID now!
+                    const arabicDDB = $("#accountDropDownBoxArabic").dxDropDownBox("instance");
+                    arabicDDB.option("value", response.MasterGroupAr);
+
+                    // Optional: auto-close Arabic drop-down
+                    if (arabicDDB.option("opened")) {
+                        arabicDDB.close();
+                    }
+                } else {
+                    alert("No data found for the selected value.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error occurred while fetching data:", error);
+                alert("Error occurred while updating data: " + error);
+            },
+        });
+    }
+}
+
 
 
 

@@ -182,7 +182,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="VATInvoiceRegister" class="no-border-input"></div>
+		<div id="PurchaseDebitNoteregister" class="no-border-input" style="width:400px;"></div>
 	</div>
 </div>
 
@@ -260,159 +260,168 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201807vatcreditNoteRegisterMainView>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201907vatdebitNoteRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Credit Note Details").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Debit Note Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceZatcaStatus)
-			.Caption("Invoice Zatca Status")
-			.Alignment(HorizontalAlignment.Center)
-			
-			.Width(135).MinWidth(23);
-
-				subColumns.AddFor(m => m.CreditNoteNo)
-			.Caption("Credit Note No")
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Debit Note No')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
 
-				subColumns.AddFor(m => m.CreditNoteDate)
-			.Caption("Credit Note Date")
+				subColumns.AddFor(m => m.CalcLineAmount)
+			.Caption(new JS("formatMessage('Debit Note Date')"))
 			.Alignment(HorizontalAlignment.Center)
-			.Format("dd-MMM-yyyy")
 			.Width(135).MinWidth(23);
+
+				
 
 				subColumns.AddFor(m => m.AccountHead)
-			.Caption("Account Head")
+			.Caption(new JS("formatMessage('Account Head')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(341).MinWidth(23);
 
-				subColumns.AddFor(m => m.InvoiceStatus)
-			.Caption("Credit Note Status")
+				subColumns.AddFor(m => m.CalcLineAmount)
+			.Caption(new JS("formatMessage('Debit Note Status')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(87).MinWidth(23);
 			});
 
-			columns.Add().Caption("Credit Note & Tax Amount").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Debit Note & Tax Amount')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.CalcLineAmount)
-			.Caption("Amount Before Tax")
+			.Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Right)
 			;
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
-			.Caption("Total VAT Amount")
+			.Caption(new JS("formatMessage('Total VAT Amount')"))
 			.Alignment(HorizontalAlignment.Right)
 		;
 
-				subColumns.AddFor(m => m.TotalCreditNoteAmount)
-			.Caption("Total Amount")
+				subColumns.AddFor(m => m.CalcLineAmount)
+			.Caption(new JS("formatMessage('Total Amount')"))			
 			.Alignment(HorizontalAlignment.Right)
 			;
 			});
 
-			columns.Add().Caption("Credit Not Classified").Columns(revenueColumns =>
+			columns.Add().Caption(new JS("formatMessage('Credit Not Classified')")).Columns(revenueColumns =>
 			{
-				revenueColumns.Add().Caption("Domestic").Columns(subColumns =>
+				revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
-			.Caption("Domestic Revenue @5%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Domestic 5% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
-			.Caption("Domestic Revenue @10%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Domestic 10% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
-			.Caption("Domestic Revenue @15%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Domestic 15% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
-			.Caption("Domestic Zero Rated Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Domestic Zero Rated Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DomesticExemptedRevenue)
-			.Caption("Domestic Exempted Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Domestic Exempted Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
 			});
 
-				revenueColumns.Add().Caption("Imports").Columns(subColumns =>
+				revenueColumns.Add().Caption(new JS("formatMessage('Imports')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedRevenue)
-			.Caption("GCC Revenue")
-			.Alignment(HorizontalAlignment.Right)
-		;
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Imports 5% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Imports 10% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('Imports 15% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('RCM 5% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('RCM 10% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('RCM 15% Purchase')"))
+			.Alignment(HorizontalAlignment.Right);
+			});
 			});
 
-				revenueColumns.Add().Caption("Exports").Columns(subColumns =>
+
+		columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
 			{
-				subColumns.AddFor(m => m.ExportsRevenue)
-			.Caption("Exports Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
-			});
-			});
-
-			columns.Add().Caption("VAT Amount Classified").Columns(vatColumns =>
+		vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
 			{
-				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('Domestic VAT 5%')"))
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('Domestic VAT 10%')"))
+		.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('Domestic VAT 15%')"))
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
+			.Alignment(HorizontalAlignment.Right);
+			});
+
+		vatColumns.Add().Caption(new JS("formatMessage('Imports VAT')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DomesticStandartRatedTax)
-			.Caption("Domestic VAT @5%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('Imports 5% VAT')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalTaxOf10Perc)
-			.Caption("Domestic VAT @10%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('Imports 10% VAT')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalTaxOf15Perc)
-			.Caption("Domestic VAT @15%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('Imports 15% VAT')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DomesticZeroRatedTax)
-			.Caption("Domestic Zero Rated VAT")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption(new JS("formatMessage('RCM 5% VAT')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DomesticExemptedTax)
-			.Caption("Domestic Exempted VAT")
-			.Alignment(HorizontalAlignment.Right)
-			;
-			});
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('RCM 10% VAT')"))
+			.Alignment(HorizontalAlignment.Right);
 
-				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.GccstandardRatedTax)
-			.Caption("GCC Tax")
-			.Alignment(HorizontalAlignment.Right)
-			;
-			});
-
-				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsTax)
-			.Caption("Exports Tax")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DebitNoteNo)
+		.Caption(new JS("formatMessage('RCM 15% VAT')"))
+			.Alignment(HorizontalAlignment.Right);
 			});
 			});
+
 
 		})
 
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
-		.AllowUpdating(true)
+		
 		)
 
 		.OnCellClick("function(e) { handleCellClick(e); }")
@@ -486,8 +495,7 @@
 				totalItems.Add().Column("ExportsTax").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
-		})
-		)
+		}))
 </div>
 
 <ul id="submenu" class="custom-submenu">
@@ -502,35 +510,49 @@
 
 
 <script>
-	// // Assuming tenantName is already defined globally
-	let CreditNoteNo = null;
-		let IsEdit = false;
-
-		// Assuming tenantName is already defined globally
-		function viewInvoice() {
-			if (!CreditNoteNo) {
-					alert("CreditNoteNo is not set.");
-				return;
+	$(document).ready(function () {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReports").length) {
+				$(this).remove();
 			}
+		});
+	});
+	$(function () {
+					$("#PurchaseDebitNoteregister").dxTextBox({
+						text: formatMessage("Purchase Debit Note Register"),
+						readOnly: true,
+									onContentReady: function(e) {
+									$(e.element).addClass("dx-textbox-heading");
+							}
 
-			IsEdit = true;
+					});
+				});
+	// Assuming tenantName is already defined globally
+	let invoiceNoCr = null;
+	let IsEditCr = false;
 
-			const params = new URLSearchParams({
-				CreditNoteNo: CreditNoteNo,
-			    IsEditflag: IsEdit,
-				modal: true // If you want to explicitly include modal=true
-			});
-
-			const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
-		    window.location.href = url;
-		//	openModal(url, title);
+	function viewInvoice() {
+		if (!invoiceNoCr) {
+			alert("Invoice number is not set.");
+			return;
 		}
 
+		IsEditCr = true;
 
+		const params = new URLSearchParams({
+			InvoiceNo: invoiceNoCr,
+			IsEditflagCr: IsEditCr,
+			modal: true // If you want to explicitly include modal=true
+		});
+
+		const url = `/${tenantName}/VAT/CreditNoteEditForm?${params.toString()}`;
+		const title = "VAT Credit Note Edit(B2B)";
+		openModal(url, title);
+	}
 
 	$(document).ready(function () {
 		console.log('Start permission handling AccountingLedgers');
-		var formId = "frm201LedgerView";
+		const formId = "frm201LedgerView";
 		$.ajax({
 			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
 			type: 'GET',
@@ -539,11 +561,11 @@
 				console.log("API Response:", response);
 
 				if (response.success && response.permissions) {
-					var controlStates = {
+					const controlStates = {
 						"ddBtnShowRecords": { "Visible": false, "Enabled": false },
-
 					};
-					var fullAccess = response.permissions.find(p =>
+
+					const fullAccess = response.permissions.find(p =>
 						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
 					);
 
@@ -553,7 +575,7 @@
 						});
 					} else {
 						Object.keys(controlStates).forEach(key => {
-							var controlPermission = response.permissions.find(p =>
+							const controlPermission = response.permissions.find(p =>
 								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
 							);
 							if (controlPermission) {
@@ -564,15 +586,14 @@
 							}
 						});
 					}
+
 					console.log("Control States:", controlStates);
 					Object.keys(controlStates).forEach(key => {
-						var button = document.getElementById(key);
+						const button = document.getElementById(key);
 						if (button) {
-
 							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-
 							button.disabled = !controlStates[key].Enabled;
-							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`);
 						} else {
 							console.warn(`Button with ID "${key}" not found in the DOM.`);
 						}
@@ -588,63 +609,26 @@
 		});
 		console.log('End permission handling');
 	});
-	let selectedVoucherNo = null;
-	$(function () {
-		$("#VATInvoiceRegister").dxTextBox({
-			text: formatMessage("VAT Invoice Register"),
-			readOnly: true,
-			onContentReady: function (e) {
-				$(e.element).addClass("dx-textbox-heading");
-			}
-		});
-	});
-	$(function () {
-		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
-			width: 600,
-			height: 400,
-			showTitle: true,
-			title: "Details",
-			visible: false,
-			dragEnabled: true,
-			closeOnOutsideClick: true,
-			contentTemplate: function () {
-				return $("<div>").attr("id", "popupFormContent");
-			}
-		}).dxPopup("instance");
-		var contextMenu = $("#contextMenu");
-		$(document).on("click", function () {
-			contextMenu.hide();
-		});
-		$("#dataGrid").customizeGridContextMenu();
-		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-			e.preventDefault();
-			var rowIndex = $(this).index();
-			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-					CreditNoteNo = rowData.CreditNoteNo;
-			console.log(rowData);
-			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-		});
-	});
 
 	function ddBtnShowRecords_click(duration) {
-		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-		var toDateBox = $("#todateBox").dxDateBox("instance");
-		var frmDate = new Date(frmDateBox.option("value"));
-		var toDate = new Date(toDateBox.option("value"));
-		var currentDate = new Date();
+		const frmDateBox = $("#frmdateBox").dxDateBox("instance");
+		const toDateBox = $("#todateBox").dxDateBox("instance");
+		let frmDate = new Date(frmDateBox.option("value"));
+		let toDate = new Date(toDateBox.option("value"));
+		const currentDate = new Date();
 
 		switch (duration) {
 			case 'today':
 				frmDate = toDate = currentDate;
 				break;
 			case 'yesterday':
-				var dateObj = new Date();
+				const dateObj = new Date();
 				dateObj.setDate(dateObj.getDate() - 1);
 				frmDate = toDate = dateObj;
 				break;
 			case 'week':
-				var dayOfWeek = currentDate.getDay();
-				var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
+				const dayOfWeek = currentDate.getDay();
+				const startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
 				frmDate = new Date(currentDate.setDate(startOfWeek));
 				toDate = new Date(currentDate.setDate(startOfWeek + 6));
 				break;
@@ -676,14 +660,12 @@
 
 		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-		FromDate = frmDate;
-		ToDate = toDate;
 
 		frmDateBox.option("value", frmDate);
 		toDateBox.option("value", toDate);
 
 		$.ajax({
-				url: '/api/VATModule/GetVatCreditNoteDetails',
+			url: '/api/VATModule/GetVatInvoice',
 			type: 'GET',
 			data: {
 				frmDate: frmDate,
@@ -691,67 +673,10 @@
 			},
 			success: function (data) {
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-				var dataGrid = $("#dataGrid").dxDataGrid("instance");
-				var dataSource = dataGrid.option("dataSource");
-				if (dataSource && dataSource.length > 0) {
-					var lastRow = dataSource[dataSource.length - 1];
-					VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
-					var firstRow = dataSource[0];
-					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
-				}
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
 		});
 	}
-	function formatDate(date) {
-		var d = new Date(date),
-			month = '' + (d.getMonth() + 1),
-			day = '' + d.getDate(),
-			year = d.getFullYear();
-
-		var strmonth = d.toLocaleString('default', { month: 'short' });
-		if (day.length < 2)
-			day = '0' + day;
-
-		return [day, strmonth, year].join('-');
-	}
-	function formatDate(date) {
-		var d = new Date(date),
-			month = '' + (d.getMonth() + 1),
-			day = '' + d.getDate(),
-			year = d.getFullYear();
-
-		var strmonth = d.toLocaleString('default', { month: 'short' });
-		if (day.length < 2)
-			day = '0' + day;
-
-		return [day, strmonth, year].join('-');
-	}
-	$(document).ready(function () {
-		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReports").length) {
-				$(this).remove();
-			}
-		});
-	});
-	$(document).ready(function () {
-    $('#btnAddNew1').on('click', function (e) {
-        e.stopPropagation(); // prevent click from bubbling up
-        $('#submenu').toggle(); // toggle visibility
-        const offset = $(this).offset();
-        $('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
-    });
-
-    // Hide submenu when clicking outside
-    $(document).on('click', function () {
-        $('#submenu').hide();
-    });
-	$(document).on('click', '#addCreditNote', function (e) {
-    e.stopPropagation();
-			const url = `/${tenantName}/VAT/CreditNoteEditForm`;
-    window.location.href = url;
-});
-});
 </script>

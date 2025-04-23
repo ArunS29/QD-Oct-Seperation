@@ -272,11 +272,11 @@
     function addReportsButton_click(e) {
 
         let url = "";
-        let title = "Detailed Transaction Report";
+        let title = "";
         switch (e.itemData.text) {
             case (formatMessage('Detailed Transaction Report')):
                 url = `/${tenantName}/Finance/TransactionDetails`;
-                title = "Detailed Transaction Report";
+                title = "";
                 break;
             case (formatMessage('Ledger to Salary Payable Mapping')):
             if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {

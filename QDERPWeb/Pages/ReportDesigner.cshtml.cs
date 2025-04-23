@@ -86,7 +86,7 @@ namespace QD.ERP.Web.Pages
 				{ "Report4", (id, from, to) => new Report4(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
 				{ "rpt201BillsPayable", (id, from, to) => new rpt201BillsPayable(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
 				{ "rpt201BillsPayableWithVchNo", (id, from, to) => new rpt201BillsPayableWithVchNo(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
-				{ "AgeingToday", (id, from, to) => new AgeingToday(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
+				//{ "AgeingToday", (id, from, to) => new AgeingToday(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
 				{ "EndDate", (id, from, to) => new EndDate(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
 				{ "Payablelandscape",( id, from, to)=> new Payablelandscape(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
 				{ "payableRetention",(id,from,to )=>new payableRetention(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
