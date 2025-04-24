@@ -6,40 +6,48 @@
         return;
     }
 
-    // Load all data (not just the visible page)
     grid.getDataSource().load().done(function (fullData) {
         const { jsPDF } = window.jspdf;
 
         var columns = grid.getVisibleColumns();
         var columnCount = columns.length;
 
-        // Dynamically set orientation
-        var orientation = columnCount > 10 ? "landscape" : "portrait";  // Landscape for more columns
+        var orientation = columnCount > 10 ? "landscape" : "portrait";
 
         var doc = new jsPDF({
             orientation: orientation,
             unit: "mm",
-            format: "a3"  // Always use A3 for more space
+            format: "a3"
         });
 
-        // Adjust column width dynamically based on content
+        // ✅ Arabic font setup (required before using setFont)
+        doc.addFileToVFS("Amiri Regular-normal.ttf", Amiri_Regular);
+        doc.addFont("Amiri Regular-normal.ttf", "Amiri", "normal");
+        doc.setFont("Amiri");
+        doc.setFontSize(9);
+
         var columnStyles = {};
         columns.forEach((col, index) => {
-            columnStyles[index] = { cellWidth: "wrap", minCellWidth: 20 }; // Ensures data does not shrink
+            columnStyles[index] = { cellWidth: "wrap", minCellWidth: 20 };
         });
 
         DevExpress.pdfExporter.exportDataGrid({
             jsPDFDocument: doc,
             component: grid,
             autoTableOptions: {
-                styles: { fontSize: 9, cellPadding: 3 },
-                tableWidth: "wrap", // Ensures table wraps instead of shrinking columns
-                columnStyles: columnStyles
+                styles: { font: "Amiri", fontSize: 9, cellPadding: 3 },
+                tableWidth: "wrap",
+                columnStyles: columnStyles,
+                didDrawCell: function (data) {
+                    const txt = data.cell.text;
+                    if (typeof txt === "string" && /[\u0600-\u06FF]/.test(txt)) {
+                        data.cell.text = txt.split(" ").reverse().join(" ");
+                    }
+                }
             }
         }).then(() => {
             var pdfBlob = doc.output("blob");
 
-            // Open a new window
             var newWindow = window.open("", "_blank", "width=1200,height=800");
             newWindow.document.write(`
                 <html>

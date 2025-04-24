@@ -677,7 +677,7 @@
             // tableCell12
             // 
             this.tableCell12.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "-([Balance])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif([Balance] < 0, Iif([OverdueDays] < 0, \'–\', [OverdueDays]), \'–\')\n")});
             this.tableCell12.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell12.Name = "tableCell12";
             this.tableCell12.StyleName = "DetailData1";
