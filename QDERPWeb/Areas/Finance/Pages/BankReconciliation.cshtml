@@ -309,7 +309,7 @@ function formatDate(date) {
 
     return `${day}-${month}-${year}`;
 }
-    $(document).ready(function () {
+       $(document).ready(function () {
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
@@ -321,57 +321,55 @@ function formatDate(date) {
         const FromDate = getQueryParam("FromDate");
         const ToDate = getQueryParam("ToDate");
         const lastRowBalance = getQueryParam("lastRowBalance") || "0";
-        const cleanedBalanceLR = lastRowBalance.replace(/[^0-9.-]/g, ""); // Remove commas and non-numeric characters
+        const cleanedBalanceLR = lastRowBalance.replace(/[^0-9.-]/g, "");
         const lastRowBalanceVal = parseFloat(cleanedBalanceLR) || 0;
 
         const firstRowBalance = getQueryParam("firstRowBalance") || "0";
-        const cleanedBalanceFR = firstRowBalance.replace(/[^0-9.-]/g, ""); // Remove commas and non-numeric characters
+        const cleanedBalanceFR = firstRowBalance.replace(/[^0-9.-]/g, "");
         const firstRowBalanceVal = parseFloat(cleanedBalanceFR) || 0;
 
+        const balanceOurBooksInstance = $("#BalanceAsPerOurBooks").dxTextBox("instance");
+        const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
+        const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
 
-        
+        let LastAmt = 0;
+        let FirstAmt = 0;
 
-        // Ensure the textboxes are properly initialized before setting values
-        // const balanceOurBooksInstance = $("#BalanceAsPerOurBooks").dxTextBox("instance");
-        // const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
-        // const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
+        if (balanceOurBooksInstance) {
+            LastAmt = Math.abs(lastRowBalanceVal);
+            balanceOurBooksInstance.option("value", LastAmt);
+        }
 
-        // if (balanceOurBooksInstance) {
-        //     const LastAmt = Math.abs(lastRowBalanceVal);
-        //     //alert(lastRowBalance);
-        //     balanceOurBooksInstance.option("value", LastAmt);
+        if (balanceBankStatementInstance) {
+            FirstAmt = Math.abs(firstRowBalanceVal);
+            balanceBankStatementInstance.option("value", FirstAmt);
+        }
+
+        // const TotalVal = LastAmt - FirstAmt;
+        // const TotalAmtNotReflectedInBank = Math.abs(TotalVal);
+
+        // if (amountNotReflectedInstance) {
+        //     amountNotReflectedInstance.option("value", TotalAmtNotReflectedInBank);
         // }
-        // if (balanceBankStatementInstance) {
-        //     const FirstAmt = Math.abs(firstRowBalanceVal);
-        //     balanceBankStatementInstance.option("value", FirstAmt);
-        // }
 
-
- 
-    if (accheadname && ToDate) {
-        $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
-    }
-       
         if (accheadname && ToDate) {
             $("#titleHeader").text(`${accheadname} as on ${ToDate}`);
         }
- 
-    
+
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
-dataGrid.option("dataSource", {
-    store: DevExpress.data.AspNet.createStore({
-        // key: "AccountHeadNo",
-        loadUrl: "/api/SalaryPayableMapping/GetBankReconciliation", // Absolute URL (Fixes the issue)
-        loadParams: { accid: accid }
-    })
-});
+        if (dataGrid) {
+            dataGrid.option("dataSource", {
+                store: DevExpress.data.AspNet.createStore({
+                    loadUrl: "/api/SalaryPayableMapping/GetBankReconciliation",
+                    loadParams: { accid: accid }
+                })
+            });
 
-// Optionally, if you want to log the load parameters:
-console.log({ accid: accid });
-
-    
-        dataGrid.refresh();
+            console.log({ accid: accid });
+            dataGrid.refresh();
+        }
     });
+
 
 
 

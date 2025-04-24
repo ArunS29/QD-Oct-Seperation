@@ -16,6 +16,8 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.TrialBalance;
 using QD.ERP.Web.Areas.Finance.Reports.Register;
 using QD.ERP.Web.Areas.Finance.Reports.AccountStatement;
+using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReport;
+using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReports;
 
 namespace QD.ERP.Web.Pages
 {
@@ -342,7 +344,50 @@ namespace QD.ERP.Web.Pages
 
                 //Report = new AccountOrderbyVchNoWONarrationReport(AccountId, FrmDate, ToDate);
             }
+            else if (reportName == "AccountDebtorsReport")
+            {
+                if (accountId == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for AccountExportLandscapeReport.");
+                }
 
+                AccountId = accountId;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new AccountDebtorsReport(
+                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+
+
+            }
             else if (reportName == "AccountOrderByVoucherNo")
             {
                 if (accountId == null || frmDate == null || toDate == null)
@@ -1706,7 +1751,8 @@ namespace QD.ERP.Web.Pages
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "BillsReceivableAgeingEnddate")
+            //Financial Ageing Reports
+            else if (reportName == "BillsPayablesAgeingasperLedgerBalanceByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1746,13 +1792,13 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new AgeingBalanceTrial(
+                Report = new BillsPayablesAgeingasperLedgerBalanceByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
 
-            else if (reportName == "BillsSummaryLedgerBalance")
+            else if (reportName == "BillsPayablesAgeingByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1792,12 +1838,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsSummaryLedgerBalance(
+                Report = new BillsPayablesAgeingByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "BillsReceivableReportEnddate")
+            else if (reportName == "BillsReceivableEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1837,12 +1883,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsReceivableReportEnddate(
+                Report = new BillsReceivableEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "BillsPayableEndDate")
+            else if (reportName == "BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1882,12 +1928,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsPayableEndDate(
+                Report = new BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "billsPayableLedgerBalanceEnddate")
+            else if (reportName == "BillsReceivableledgerBalance")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1927,12 +1973,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new billsPayableLedgerBalanceEnddate(
+                Report = new BillsReceivableledgerBalance(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "billsPayableSummaryLedgerBalance")
+            else if (reportName == "BillsReceivablesReportByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1972,12 +2018,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new billsPayableSummaryLedgerBalance(
+                Report = new BillsReceivablesReportByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "BillsPayableReportEnddate")
+            else if (reportName == "BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -2017,7 +2063,7 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsPayableReportEnddate(AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                Report = new BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate(AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper);
 
 

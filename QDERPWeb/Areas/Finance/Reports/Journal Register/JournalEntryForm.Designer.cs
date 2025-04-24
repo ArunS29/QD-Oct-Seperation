@@ -214,7 +214,6 @@
             this.xrLabel40.StylePriority.UseFont = false;
             this.xrLabel40.StylePriority.UseForeColor = false;
             this.xrLabel40.StylePriority.UseTextAlignment = false;
-            this.xrLabel40.Text = "Al  Injaz  Contracting  Company ";
             this.xrLabel40.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
             // 
             // BottomMargin
@@ -306,7 +305,7 @@
             this.xrLabel19.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel19.Font = new DevExpress.Drawing.DXFont("Cambria", 18F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel19.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.xrLabel19.LocationFloat = new DevExpress.Utils.PointFloat(26.38719F, 0F);
+            this.xrLabel19.LocationFloat = new DevExpress.Utils.PointFloat(5.722046E-05F, 0F);
             this.xrLabel19.Multiline = true;
             this.xrLabel19.Name = "xrLabel19";
             this.xrLabel19.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);

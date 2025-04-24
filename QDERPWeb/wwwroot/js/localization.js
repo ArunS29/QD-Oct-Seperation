@@ -5,7 +5,7 @@
         "Remarks/Notes:": "Remarks/Notes:",
         "Upload Attachment": "Upload Attachment",
         "Expiry Date:":"Expiry Date:",
-
+        "AccountConfirmationLetter": "Account Confirmation Letter",
         "ID": "ID",
         "Employee Document": "Employee Document",
         "Reminder Days": "Reminder Days",
@@ -78,7 +78,6 @@
         "Business Card 2": "Business Card 2",
         "Business Card": "Business Card",
         "AccountDebtors":"AccountDebtors",
-
         "Client Category Code": "Client Category Code",
         "Client Category": "Client Category",
         "Category Code": "Category Code",
@@ -1950,7 +1949,17 @@
         "Account Code": "Account Code",
         "Revenue Ledger": "Revenue Ledger",
         "Cost Center": "Cost Center",
-        "Buyer ID Type":"Buyer ID Type"
+        "Buyer ID Type": "Buyer ID Type",
+        "Sales Order No": "Sales Order No",
+        "Client POno": "Client POno",
+        "Total Order Value": "Total Order Value",
+        "Total Invoiced Value": "Total Invoiced Value",
+        "Balance To Invoice Value": "Balance To Invoice Value",
+        "Balance To Invoice Without Tax": "Balance To Invoice Without Tax",
+        "PO Value Without Tax": "PO Value Without Tax",
+        "Total": "Total"
+
+
     },
    
     "ar": {
@@ -2223,6 +2232,7 @@
         "Cost Center Master:": "رئيس مركز التكلفة:",
         "Cost Center Incharge:": "المسؤول عن مركز التكلفة:",
         "Project:": "المشروع:",
+        "Account Confirmation Letter":"خطاب تأكيد الحساب",
         "Division/Branch:": "القسم / الفرع:",
         "Discontinued:": "تم الإيقاف:",
         "Cost Center Remarks:": "ملاحظات مركز التكلفة:",
@@ -3712,7 +3722,15 @@
         "Account Code": "رمز الحساب",
         "Revenue Ledger": "دفتر الإيرادات",
         "Cost Center": "مركز التكلفة",
-        "Buyer ID Type":"نوع هوية المشتري"
+        "Buyer ID Type": "نوع هوية المشتري",
+        "Sales Order No": "رقم أمر البيع",
+        "Client POno": "رقم أمر الشراء للعميل",
+        "Total Order Value": "إجمالي قيمة الطلب",
+        "Total Invoiced Value": "إجمالي القيمة المفوترة",
+        "Balance To Invoice Value": "الرصيد المتبقي للفوترة",
+        "Balance To Invoice Without Tax": "الرصيد المتبقي للفوترة بدون ضريبة",
+        "PO Value Without Tax": "قيمة أمر الشراء بدون ضريبة",
+        "Total":"الإجمالي"
 
 
     }

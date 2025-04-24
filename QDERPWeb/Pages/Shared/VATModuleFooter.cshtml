@@ -1281,8 +1281,9 @@
 
         case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
             url = `/${tenantName}/VAT/frmVATInvoiceEditB2C`;
-                title = "";
-            openModal(url, title);
+            //     title = "";
+            // openModal(url, title);
+                    window.location.href = url;
             break;
 
         default:
