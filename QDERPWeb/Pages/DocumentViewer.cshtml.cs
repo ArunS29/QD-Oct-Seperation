@@ -16,6 +16,8 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.TrialBalance;
 using QD.ERP.Web.Areas.Finance.Reports.Register;
 using QD.ERP.Web.Areas.Finance.Reports.AccountStatement;
+using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReport;
+using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReports;
 
 namespace QD.ERP.Web.Pages
 {
@@ -1706,7 +1708,8 @@ namespace QD.ERP.Web.Pages
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "BillsReceivableAgeingEnddate")
+            //Financial Ageing Reports
+            else if (reportName == "BillsPayablesAgeingasperLedgerBalanceByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1746,13 +1749,13 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new AgeingBalanceTrial(
+                Report = new BillsPayablesAgeingasperLedgerBalanceByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
 
-            else if (reportName == "BillsSummaryLedgerBalance")
+            else if (reportName == "BillsPayablesAgeingByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1792,12 +1795,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsSummaryLedgerBalance(
+                Report = new BillsPayablesAgeingByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "BillsReceivableReportEnddate")
+            else if (reportName == "BillsReceivableEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1837,12 +1840,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsReceivableReportEnddate(
+                Report = new BillsReceivableEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "BillsPayableEndDate")
+            else if (reportName == "BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1882,12 +1885,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsPayableEndDate(
+                Report = new BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "billsPayableLedgerBalanceEnddate")
+            else if (reportName == "BillsReceivableledgerBalance")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1927,12 +1930,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new billsPayableLedgerBalanceEnddate(
+                Report = new BillsReceivableledgerBalance(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "billsPayableSummaryLedgerBalance")
+            else if (reportName == "BillsReceivablesReportByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -1972,12 +1975,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new billsPayableSummaryLedgerBalance(
+                Report = new BillsReceivablesReportByEndDate(
                     AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-            else if (reportName == "BillsPayableReportEnddate")
+            else if (reportName == "BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
                 {
@@ -2017,7 +2020,7 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new BillsPayableReportEnddate(AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                Report = new BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate(AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper);
 
 

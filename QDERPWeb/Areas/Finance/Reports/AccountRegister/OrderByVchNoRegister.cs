@@ -11,7 +11,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        // Constructor with TenantDbContextHelper for multitenancy
+        // Constructor with TenantDbContextHelper for multitenancya
         public OrderByVchNoRegister(
             string voucherType,
             DateTime frmDate,
