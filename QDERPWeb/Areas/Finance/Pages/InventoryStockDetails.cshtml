@@ -1,0 +1,399 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.InventoryStockDetailsModel
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using QD.ERP.Web.Areas.Finance.Pages
+@using QD.ERP.Web.Pages.Shared.Finance
+@{
+}
+
+<style>
+    .form-tablee {
+        width: 50%;
+        border-collapse: separate;
+        border-spacing: 6px;
+    }
+
+    .inline-icon {
+        vertical-align: bottom;
+        align-items: center;
+        justify-content: center;    
+    }
+
+    .body {
+        padding-top: 0px;
+    }
+
+    .content {
+        margin: 0px;
+    }
+
+    .content-container-top {
+        width: 100%;
+    }
+    /* Custom CSS to adjust the height of tab headers */
+    .dx-tabpanel .dx-tab {
+        padding: 10px 15px; /* Adjust padding to change height */
+        font-size: 16px; /* Adjust font size to change header height */
+    }
+
+    /* Ensuring the content area also adjusts in height */
+    .dx-tabpanel .dx-tab-content {
+        padding: 20px;
+        min-height: 200px; /* Minimum height for the tab content */
+    }
+
+    .dx-fieldset {
+        margin: 3px 3px !important;
+        padding: 0px;
+    }
+
+    .dx-datagrid-headers th {
+        text-align: center; /* Centers the text */
+    }
+
+    .columnheader {
+        text-align: center;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h3 {
+            color: #333;
+        }
+
+        .tab-content p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+    .dx-dropdownbox .dx-dropdownbox-wrapper .dx-dropdownbox-header {
+        display: none;
+    }
+
+    .button-group {
+        margin-left: 1px !important;
+    }
+
+    .button-alignment-up {
+        margin-top: 25px !important;
+    }
+
+    .button-alignment-down {
+        margin-top: 0px !important;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .imagecontainer {
+        background-color: #e0f7fa;
+        border: 1px solid #90caf9;
+        height: 300px;
+        width:40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
+   
+    .containerInventoryStock {
+       
+        align-items: center;
+        justify-content: center;
+    }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+
+    .access-btn {
+        font-weight: bold;
+        font-size: 14px;
+        text-align: left;
+        padding-left: 10px;
+        margin-right: 10px;
+    }
+
+    .generate-btn .dx-button-content::before {
+        content: "\f234"; /* FontAwesome user icon or replace with image */
+    }
+
+    .replicate-btn .dx-button-content::before {
+        content: "\f0c0"; /* FontAwesome group icon or replace with image */
+    }
+
+   
+</style>
+<link rel="stylesheet" href="~/css/Site.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+<input id="formId" value="frm201LedgerAccount" type="hidden" />
+<div class="title">
+    <div class="header-container">
+        <div id="" class="no-border-title" style="border: none !important;box-shadow: none !important;">Musharaf</div>
+    </div>
+</div>
+<div class="containerInventoryStock">
+
+    <div class="content-container-top">
+        <div class="dx-fieldset horizontal-container">
+            <table class="form-tablee">
+                <tr>
+                    <td>
+                        @(Html.DevExtreme().Button()
+                            .ID("btnGenerateAccessList")
+                            .Text("Generate Access List")
+                            .Icon("key")
+                            .Width("100%")
+                            .ElementAttr("class", "inline-icon")
+                            .OnClick("StockGroup")
+                            )
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().Button()
+                            .ID("btnReplicateUserAccess")
+                            .Text("Replicate User Access")
+                            .Icon("group")
+                            .Width("100%")
+                            .ElementAttr("class", "inline-icon")
+                                .OnClick("StockGroup")
+                            )
+                    </td>
+                        </tr>
+            </table>
+
+
+            </div>
+
+        </div>
+     
+
+        <div class="dx-fieldset horizontal-container">
+            @(
+                Html.DevExtreme().Tabs()
+                .Items(items =>
+                {
+                // tab-content-1
+                items.Add()
+                .Icon("preferences") // better match for "Item Attributes"
+                .Text("Master Module");
+
+                // tab-content-2
+                items.Add()
+                .Icon("chart") // "Stock Control"
+                .Text("Finance");
+
+                // tab-content-3
+                items.Add()
+                .Icon("image") // "Stock Images"
+                .Text("VAT");
+
+                // tab-content-4
+                items.Add()
+                .Icon("money") // "Invoices"
+                .Text("Human Resources");
+
+                    items.Add()
+                    .Icon("repeat") // "Unit Conversion"
+                    .Text("Equipment Rental");
+                // tab-content-5
+                items.Add()
+                .Icon("tags") // "Quotations"
+                .Text("Inventory Management");
+
+                // tab-content-6
+                items.Add()
+                .Icon("cart") // "Purchase Order"
+                .Text("Camp Management");
+
+                // tab-content-7
+                items.Add()
+                .Icon("runner") // "Item Deliveries"
+                .Text("Project Control");
+
+                // tab-content-8
+                items.Add()
+                .Icon("check") // "Item Received"
+                .Text("Scaffolding Rental Solution");
+
+                // tab-content-9
+                items.Add()
+                .Icon("repeat") // "Unit Conversion"
+                .Text("Alert Notification");
+
+                // tab-content-10
+                items.Add()
+                .Icon("doc") // "Document"
+                .Text("Finance Ledger Access");
+            })
+                .SelectedIndex(0) // Default selected tab is the first one
+                .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
+                )
+        </div>
+
+
+        <!-- Tab Content -->
+        <div class="dx-fieldset">
+        <div id="tab-content-1" class="tab-content" style="display: none;">
+
+
+            <div id="tab1-content">
+                @await Html.PartialAsync("~/Pages/Shared/Finance/MasterModules.cshtml")
+            </div>
+            </div>
+
+            <div id="tab-content-2" class="tab-content" style="display: none;">
+                <div>
+                  
+                @await Html.PartialAsync("~/Pages/Shared/Finance/Finance.cshtml")
+                </div>
+            </div>
+
+            <div id="tab-content-3" class="tab-content" style="display: none;">
+            @await Html.PartialAsync("~/Pages/Shared/Finance/VAT.cshtml")
+            </div>
+
+            <div id="tab-content-4" class="tab-content">
+                <div class="background">
+                <div>
+
+                    @await Html.PartialAsync("~/Pages/Shared/Finance/HumanResources.cshtml")
+                </div>
+                </div>
+            </div>
+            <div id="tab-content-5" class="tab-content">
+                <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/Finance/EquipmentRental.cshtml")
+
+                </div>
+            </div>
+           
+
+            <div id="tab-content-6" class="tab-content">
+                <div class="background">
+               
+                @await Html.PartialAsync("~/Pages/Shared/Finance/EquipmentRental.cshtml")
+                </div>
+            </div>
+        <div id="tab-content-7" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/Finance/CampManagement.cshtml")
+            </div>
+        </div>
+
+            <div id="tab-content-8" class="tab-content">
+                <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/Finance/ProjectControls.cshtml")
+
+                </div>
+            </div>
+        <div id="tab-content-9" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/Finance/ScaffoldingRentalSolutions.cshtml")
+
+            </div>
+        </div>
+        <div id="tab-content-10" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/Finance/AlertNotification.cshtml")
+
+            </div>
+        </div>
+        <div id="tab-content-11" class="tab-content">
+            <div class="background">
+
+                @await Html.PartialAsync("~/Pages/Shared/Finance/FinanceLedgerAccess.cshtml")
+
+            </div>
+        </div>
+        </div>
+
+        
+
+       
+    </div>
+
+    
+<script>
+
+
+  function onTabSelectionChanged(e) {
+        // Hide all tab content
+        $(".tab-content").hide();
+
+        // Show the content of the selected tab
+        var selectedTabIndex = e.component.option("selectedIndex");
+        $("#tab-content-" + (selectedTabIndex + 1)).show();
+    }
+      function ItemStore(){
+                const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
+              const title = "";
+                  openModal(url, title);
+          }
+            function StockGroup(){
+                const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
+              const title = "";
+                  openModal(url, title);
+          }
+            function ItemClassification(){
+                const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
+              const title = "";
+                  openModal(url, title);
+          }
+            $(document).ready(function () {
+          // Ensure dxTabs has loaded, then get the selected index
+          const tabsInstance = DevExpress.ui.dxTabs.getInstance($(".dx-tabs")[0]);
+          const selectedTabIndex = tabsInstance.option("selectedIndex");
+
+          // Show the corresponding content
+          $("#tab-content-" + (selectedTabIndex + 1)).show();
+      });
+
+        
+         $(function () {
+            $("#InventoryStockDetails").dxTextBox({
+                text: formatMessage("Inventory Stock Details"),
+              readOnly: true,
+              onContentReady: function(e) {
+                          $(e.element).addClass("dx-textbox-heading");
+                  }
+
+          });
+      });
+
+      
+</script>

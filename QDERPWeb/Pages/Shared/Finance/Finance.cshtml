@@ -1,0 +1,207 @@
+﻿
+<style type="text/css">
+
+
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5); /* Transparent background */
+		z-index: 1000;
+	}
+	/* Ensure word wrap and center alignment for grid headers */
+	.header-wrap {
+		white-space: normal !important; /* Enable word wrap */
+		text-align: center !important; /* Center align text */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+	}
+
+	/* Ensure text in grid headers is always centered */
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		white-space: normal !important;
+		text-align: center !important;
+	}
+
+	/* Ensure column headers text aligns to center */
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+		text-align: center !important;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.Maincontainer.Maincontainer {
+		background-color: white;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+
+
+
+	/* Toolbar Styling */
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	/* Text Editor Styling */
+	.dx-texteditor {
+		background-color: #909ead00 !important; /* Light background */
+		border: 1px solid #d6e4f0 !important; /* Soft border */
+		border-radius: 4px !important; /* Smaller rounded corners */
+
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+		font-size: 14px !important; /* Slightly smaller font */
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important; /* Fixed height */
+	}
+
+		/* Hover and Focus States */
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+			border-color: #86b7fe !important; /* Highlight border */
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+			border-color: #508ae1 !important;
+		}
+
+	#dataGrid .dx-header-row .dx-datagrid-text-content {
+		font-weight: bold;
+		color: black;
+	}
+
+
+	.dx-datagrid-header-panel {
+		background-color: #909ead00;
+		/* display:none; */
+	}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none; /* Prevents hover and click effects */
+	}
+
+	.dx-button-mode-contained.dx-button-default {
+		color: black;
+	}
+
+	.dx-button-mode-contained.dx-button-success {
+		color: black;
+	}
+
+	.toolbar-container {
+		display: flex;
+		gap: 10px;
+		padding: 1% 1% 1% 1%;
+	}
+
+	
+</style>
+<!-- Filter/Info Section -->
+<div class="toolbar-container">
+	@(Html.DevExtreme().Button()
+			.Text("Add & Attach Files")
+			.Icon("attach")
+			.Type(ButtonType.Default)
+			.Width(250)
+			)
+	@(Html.DevExtreme().Button()
+			.Text("Merge Selected Files")
+			.Icon("fas fa-file-pdf") // Font Awesome icon can be used with customization
+			.Type(ButtonType.Default)
+			.Width(250)
+			)
+	@(Html.DevExtreme().Button()
+			.Text("Save Separated PDF Files")
+			.Icon("save")
+			.Type(ButtonType.Default)
+			.Width(280)
+			)
+</div>
+
+	<br />
+	<!-- Grid Section -->
+	<div >
+	@(Html.DevExtreme().DataGrid()
+			.ID("documentGrid")
+			.Height(500)
+			.Width("100%")
+			.ShowBorders(true)
+			.ShowColumnLines(true)
+			.ShowRowLines(true)
+			.RowAlternationEnabled(true)
+			.ColumnAutoWidth(true)
+			.ShowColumnHeaders(true)
+			.AllowColumnReordering(true)
+			.AllowColumnResizing(true)
+			.ColumnFixing(c => c.Enabled(true))
+			.GroupPanel(p => p.Visible(false))
+			.Columns(columns =>
+			{
+				columns.Add().DataField("Total").Caption("Total").Alignment(HorizontalAlignment.Center).Width(100);
+				columns.Add().DataField("DocumentType").Caption("Document Type").Alignment(HorizontalAlignment.Center).Width(200);
+				columns.Add().DataField("DocumentRefNo").Caption("Document Ref No").Alignment(HorizontalAlignment.Center).Width(200);
+				columns.Add().DataField("ExpiryOn").Caption("Expiry On").Alignment(HorizontalAlignment.Center).Width(150);
+				columns.Add().DataField("NotifyOn").Caption("Notify On").Alignment(HorizontalAlignment.Center).Width(150);
+			})
+			.Summary(s => s
+			.TotalItems(items =>
+			{
+				items.Add().SummaryType(SummaryType.Count).Column("Total").DisplayFormat("Total: {0}");
+			})
+			)
+			)
+			</div>
