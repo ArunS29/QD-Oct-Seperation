@@ -720,8 +720,8 @@
 						</tr>
 						<tr>
 							
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
 </tr>
 
 						<tr>
@@ -739,13 +739,14 @@
 
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("ddlGoodsGroup2")
+															.Value("Income - Trading")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
 															.ValueExpr("IncomeLedger")
-															.DisplayExpr("AccountGroup")
+															.DisplayExpr("IncomeLedger")
 															.OnInput("dropDownBoxOnInput")
 															.OnOpened("onOpened")
 															//.Width(650)
@@ -900,7 +901,7 @@
 							</tr>
 							<tr>
 
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 
 
@@ -965,6 +966,7 @@
 																				.LabelMode(EditorLabelMode.Outside)
 																				.ID("ddlGoodsGroup3")
 																				.ShowClearButton(true)
+																				.Value("Saudi Arabian Riyals")
 																				.AcceptCustomValue(true)
 																				.OpenOnFieldClick(false)
 																				.ValueChangeEvent("input")
@@ -999,6 +1001,7 @@
 																				.LabelMode(EditorLabelMode.Outside)
 																				.ID("ddlGoodsGroup4")
 																				.ShowClearButton(true)
+																				.Value("Saudi Arabian Riyals")
 																				.AcceptCustomValue(true)
 																				.OpenOnFieldClick(false)
 																				.ValueChangeEvent("input")
@@ -1030,7 +1033,9 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("50%"))
+																			.Value(1)
+																			.Width("50%")
+                                     )
 								</td>
 							</tr>
 						</table>
@@ -1075,7 +1080,7 @@
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("LessAdvanceAr")
-																			.Value(null)
+																			.Value("اقب المسبق")
 																			.Width("175%")
 																			.RtlEnabled(true)
 																			)
@@ -1119,7 +1124,7 @@
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("LessAdvanceAr1")
-																			.Value(null)
+																			.Value("ناقص قيمة الخصومات الأخرى")
 																			.Width("175%")
 																			.RtlEnabled(true)
 																			)
@@ -1162,7 +1167,7 @@
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("LessAdvanceAr2")
-																			.Value(null)
+																			.Value("احتفاظ أقل")
 																			.Width("175%")
 																			.RtlEnabled(true)
 																			)
@@ -1183,6 +1188,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			.Width("95%")
 																			)
 
@@ -1191,6 +1197,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("VerifiedOnDate")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			.Width("95%")
 																			)
 								</td>
@@ -1206,6 +1213,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			.Width("95%")
 																			@* .Disabled(true) *@
 																			)
@@ -1214,6 +1222,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ApprovedOntext")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			.Width("95%")
 																			)
 								</td>
@@ -3084,7 +3093,7 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false";
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -4325,14 +4334,30 @@
 									
 								  let  accheadname = selectedRowData[0].AccountHead;
 									  ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
-									  $("#GroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].ClientGroupVatnumber)
-									  $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].VatregistrationNo)
-									  $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
-									  $("#OtherIDType").dxDropDownBox("instance").option("value",selectedRowData[0].ClientOtherIdtype)
+										  // DevExtreme widgets
+	$("#GroupVATNo").dxTextBox("instance").option("value", selectedRowData[0].ClientGroupVatnumber);
+	$("#ClientVATNo").dxTextBox("instance").option("value", selectedRowData[0].VatregistrationNo);
+	$("#ClientOtherID").dxTextBox("instance").option("value", selectedRowData[0].ClientOtherId);
+	$("#OtherIDType").dxDropDownBox("instance").option("value", selectedRowData[0].ClientOtherIdtype);
+
+	// Assuming these are standard inputs
+	$("#StreetName").val(selectedRowData[0].ClientAddressStreet);
+	$("#StreetNameArabic").val(selectedRowData[0].ClientAddressStreetAr);
+	$("#AdditionalAddress").val(selectedRowData[0].ClientAdditionalStreet);
+	$("#AdditionalAddressArabic").val(selectedRowData[0].ClientAdditionalStreetAr);
+	$("#BuildingNumber").val(selectedRowData[0].ClientBuildingNumber);
+	$("#ClientCity").val(selectedRowData[0].ClientCity);
+	$("#ClientCityArabic").val(selectedRowData[0].ClientCityAr);
+	$("#AdditionalNumber").val(selectedRowData[0].ClientAdditionalNumber);
+	$("#Province").val(selectedRowData[0].ClientProvince);
+	$("#ProvinceArabic").val(selectedRowData[0].ClientProvinceAr);
+	$("#PostalCode").val(selectedRowData[0].ClientPostalCode);
+
+	// Fix incorrect value assignments
+	$("#District").val(selectedRowData[0].ClientNeighborhood); // was incorrectly using Arabic version key
+	$("#DistrictArabic").val(selectedRowData[0].ClientNeighborhoodAr); // was incorrectly using country code key
 
 
-									// refno=selectedRowData[0].ReferenceNo;
-									// accIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
 
 								} else {
 									DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -4543,8 +4568,9 @@
 				// Get ReferenceNo from selected row
 				if (selectedRowData.length > 0) {
 								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId;
-
-
+								ExchangeRate=selectedRowData[0].ExchangeRate;
+								$("#currencyexchangerate").dxNumberBox("instance").option("value", ExchangeRate);
+								
 
 				} else {
 					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);

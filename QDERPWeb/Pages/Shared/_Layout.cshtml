@@ -1089,9 +1089,9 @@
                     <i class="fa fa-th-list"></i>
                     <span id="AccountDebtors" class="no-border-input"></span>
                 </div>
-                <div class="submenu-item" onclick="handleClick('AccountDebtors1')">
+                <div class="submenu-item" onclick="handleClick('AccountConfirmationLetter')">
                     <i class="fa fa-th-list"></i>
-                    <span id="AccountDebtors1" class="no-border-input"></span>
+                    <span id="AccountConfirmationLetter" class="no-border-input"></span>
                 </div>
             </div>
         </div>
@@ -1663,8 +1663,8 @@
                 width:400,
                 readOnly: true
             });
-            $("#AccountDebtors1").dxTextBox({
-                text: formatMessage("Account Confirmation Letter"),
+            $("#AccountConfirmationLetter").dxTextBox({
+                text: formatMessage("AccountConfirmationLetter"),
                 width:400,
                 readOnly: true
             });
@@ -2487,7 +2487,7 @@
                 "XtraReportBillsReceivableAgeingReport": "XtraReportBillsReceivableAgeingReport",
                 "XtraReportAgeingreportsummary": "XtraReportAgeingreportsummary",
                 "AccountDebtors": "AccountDebtors",
-                "AccountDebtors1": "AccountDebtors1"
+                "AccountConfirmationLetter": "AccountDebtorsReport"
             };
 
             // Check if selectedText matches any report name

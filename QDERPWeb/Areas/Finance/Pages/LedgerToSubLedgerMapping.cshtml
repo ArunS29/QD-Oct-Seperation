@@ -157,6 +157,7 @@
         .Grouping(grouping => grouping.AutoExpandAll(true))
         .GroupPanel(groupPanel => groupPanel.Visible(false))
         .ShowBorders(true)
+        .OnContextMenuPreparing("onContextMenuPreparing")
         .ColumnAutoWidth(true)
         .DataSource(ds => ds.WebApi()
         .RouteName("DefaultApi")
@@ -172,6 +173,7 @@
            // columns.Add().DataField("AccountHead").Caption("Ledger Name");
             columns.Add().DataField("AccountHead").Caption("Ledger Name").GroupIndex(0);
             columns.Add().DataField("VoucherNoInVoucher").Caption("Voucher No");
+            columns.Add().DataField("VoucherType").Caption("Voucher Type").Visible(false);
             columns.Add().DataField("AmountInVoucherFormatted").Caption("Voucher Amount");
             columns.Add().DataField("AmountInSubLedgerFormatted").Caption("Adjusted/Mapped");
             columns.Add().DataField("BalanceInVoucher").Caption("Balance Amount");
@@ -191,6 +193,7 @@
         .Height(550)
         .ShowBorders(true)
         .ColumnAutoWidth(true)
+        .OnContextMenuPreparing("onContextMenuPreparing1")
         .DataSource(ds => ds.WebApi()
         .RouteName("DefaultApi")
         .Controller("SalaryPayableMapping")
@@ -199,10 +202,12 @@
         )
         .Columns(columns =>
         {
-            columns.Add().DataField("AccountNoInVoucher").Caption("Voucher No In Voucher");
+            columns.Add().DataField("VoucherNoInVoucher").Caption("Voucher No In Voucher");
+            columns.Add().DataField("VoucherNoInSubLedger").Caption("VoucherNo InSubLedger");
             columns.Add().DataField("VoucherRefNo").Caption("Voucher RefNo");
             columns.Add().DataField("AccountNoInVoucher").Caption("AccountNo In Voucher");
             columns.Add().DataField("AccountNoInSubLedger").Caption("AccountNo In SubLedger");
+            columns.Add().DataField("VoucherType").Caption("Voucher Type").Visible(false);
             columns.Add().DataField("ReferenceNoInSubLedger").Caption("ReferenceNo In SubLedger");
             columns.Add().DataField("AmountInVoucherFormatted").Caption("AmountIn Voucher Formatted");
             columns.Add().DataField("AmountInSubLedgerFormatted").Caption("AmountIn SubLedger Formatted");
@@ -252,20 +257,20 @@
 
     // ✅ On DOM Ready
     $(document).ready(function () {
-        // Function to get URL parameters
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
 
-        // Read parameters
+        // Get URL params
         const acchedid = getQueryParam("acchedid");
         const accheadname = getQueryParam("accheadname");
         const accid = getQueryParam("accid");
         const FromDate = getQueryParam("FromDate");
         const ToDate = getQueryParam("ToDate");
+        const drCrFilter = getQueryParam("drCrFilter"); // Optional
 
-        // Set values in TextBoxes
+        // Set TextBoxes
         if (acchedid) {
             $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);
         }
@@ -273,23 +278,34 @@
             $("#AccountHeadName").dxTextBox("instance").option("value", accheadname);
         }
 
-        // Load ledger grid if accid is present
+        // Load ledgerGrid by default
+        const ledgerGrid = $("#ledgerGrid").dxDataGrid("instance");
+
         if (accid) {
-            const ledgerGrid = $("#ledgerGrid").dxDataGrid("instance");
             ledgerGrid.option("dataSource", {
                 load: () => $.getJSON("/api/SalaryPayableMapping/GetLedgerMapping", {
                     accid: accid,
                     FromDate: FromDate,
-                    ToDate: ToDate
+                    ToDate: ToDate,
+                    drCrFilter: drCrFilter // Optional
                 })
             });
             ledgerGrid.refresh();
         }
 
-        // Clear both grid data on first load to avoid auto-loading
-        $("#ledgerGrid").dxDataGrid("instance").option("dataSource", []);
+        // Ensure visibility
+        $("#ledgerGridContainer").show();
+        $("#subledgerGridContainer").hide();
+
+        // Clear subledger data source
         $("#subledgerGrid").dxDataGrid("instance").option("dataSource", []);
     });
+
+
+
+
+
+
 
     function handleReportClick(e) {
         const selected = e.itemData.text;
@@ -324,6 +340,77 @@
         grid.refresh();
         DevExpress.ui.notify("Showing All Creditors", "info", 1500);
     }
+
+    //EditVoucher
+    function onContextMenuPreparing(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Edit Voucher",
+                    onItemClick: function () {
+                        const voucherType = e.row.data.VoucherType;
+                        const voucherNo = e.row.data.VoucherNoInVoucher;
+
+                        // Map voucher types to pages
+                        const voucherPageMap = {
+                            "Cash Payment": "VoucherCashPayment",
+                            "Bank Payment": "VoucherBankPayment",
+                            "Cash Receipts": "VoucherEntryCashReceipts",
+                            "Bank Receipts": "VoucherEntryReceipts",
+                            "Sales": "SalesVoucher",
+                            "Purchases": "PurchaseVoucher",
+                            "Journal": "VoucherJournal"
+                        };
+
+                        const pageName = voucherPageMap[voucherType];
+
+                        if (!pageName) {
+                            DevExpress.ui.notify("Unknown voucher type: " + voucherType, "error", 2000);
+                            return;
+                        }
+
+                        const url = `/${tenantName}/Finance/${pageName}?argsledno=${voucherNo}&vouchertype=${voucherType}`;
+                        window.open(url, "_blank");
+                    }
+                }
+            ];
+        }
+    }
+    function onContextMenuPreparing1(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Edit Voucher",
+                    onItemClick: function () {
+                        const voucherType = e.row.data.VoucherType;
+                        const voucherNo = e.row.data.VoucherNoInVoucher;
+
+                        // Map voucher types to pages
+                        const voucherPageMap = {
+                            "Cash Payment": "VoucherCashPayment",
+                            "Bank Payment": "VoucherBankPayment",
+                            "Cash Receipts": "VoucherEntryCashReceipts",
+                            "Bank Receipts": "VoucherEntryReceipts",
+                            "Sales": "SalesVoucher",
+                            "Purchases": "PurchaseVoucher",
+                            "Journal": "VoucherJournal"
+                        };
+
+                        const pageName = voucherPageMap[voucherType];
+
+                        if (!pageName) {
+                            DevExpress.ui.notify("Unknown voucher type: " + voucherType, "error", 2000);
+                            return;
+                        }
+
+                        const url = `/${tenantName}/Finance/${pageName}?argsledno=${voucherNo}&vouchertype=${voucherType}`;
+                        window.open(url, "_blank");
+                    }
+                }
+            ];
+        }
+    }
+
 
 </script>
 

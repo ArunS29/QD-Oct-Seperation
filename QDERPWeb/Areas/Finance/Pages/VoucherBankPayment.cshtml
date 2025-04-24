@@ -303,21 +303,69 @@
                         )
 
             </div>
-            <div class="form-group">
-                @(Html.DevExtreme().DropDownBox()
-                    .Label("Base Currency")
-                    .ID("currencySelectvoucher")
-                    .DataSource(currencies)
-                    .DisplayExpr("CurrencyName") // Display the currency name
-                    .ValueExpr("CurrencyID")     // Use CurrencyID as the value
-                    .Label(new JS("formatMessage('Base Currency')"))
-                    .LabelMode(EditorLabelMode.Outside)
-                    .Value(currencies.Any() ? currencies.FirstOrDefault()?.CurrencyID : null) // Ensure a default value is set
-                    .Placeholder("Select a currency") // Optional: Add a placeholder
-                    .ShowClearButton(true) // Optional: Allow clearing the selection
-                    )
+           
+          <div class="form-group">
+    @(Html.DevExtreme().DropDownBox()
+        .Label("Base Currency")
+        .DataSource(d => d.WebApi()
+            .Controller("Utility") // Use same controller or change if needed
+            .LoadAction("GetCurrencyList")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CurrencyID")
+        )
+        .ValidationRules(rules =>
+        {
+            rules.AddRequired()
+                .Message("Please select a base currency.");
+        })
+        .LabelMode(EditorLabelMode.Outside)
+        .ID("ddlBaseCurrency")
+        .ShowClearButton(true)
+        .AcceptCustomValue(false)
+        .OpenOnFieldClick(true)
+        .Value(1) // Change default value if needed
+        .ValueExpr("CurrencyID")
+        .DisplayExpr("CurrencyName")
+        .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
+        .OnOpened("onOpened")
+        .Width(160)
+        .TabIndex(2) // Different tabindex to separate from the first
+        .DropDownOptions(o => o.Width(700))
+        .OnKeyDown("onKeyDown")
+        //.OnValueChanged("dropDownBoxValueChanged") // Optional
+        .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
+    )
+</div>
 
-            </div>
+@using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("basecurrency-datagrid")
+        .DataSource(d => d.WebApi()
+            .Controller("Utility")
+            .LoadAction("GetCurrencyList")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CurrencyID")
+        )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        .Selection(sl => sl.Mode(SelectionMode.Single))
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+        .OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
+        .Paging(p => p.PageSize(10))
+        .Height(300)
+        .Columns(columns =>
+        {
+            columns.Add().DataField("CurrencyID").Caption("ID").Visible(false);
+            columns.Add().DataField("CurrencyName").Caption("Currency Name");
+            columns.Add().DataField("CurrencySymbol").Caption("Symbol");
+            columns.Add().DataField("CurrencyUnicode").Caption("Unicode");
+            columns.Add().DataField("IsDefault").Caption("Default").DataType(GridColumnDataType.Boolean);
+        })
+    )
+}
+
             <div class="form-group">
                 @(Html.DevExtreme().DropDownBox()
                     .Label("Exchange Currency")
@@ -356,7 +404,7 @@
                     .LabelMode(EditorLabelMode.Outside)
                     .ID("txtCurrencyRate")
                     .Value("")
-                  //  .ReadOnly(true) // Make it read-only
+                    //  .ReadOnly(true) // Make it read-only
                     .Width(160)
                     )
             </div>
@@ -388,8 +436,9 @@
                     })
                     )
             }
-        </div>
 
+
+        </div>
         <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:10px;">
             <div class="form-group">
             </div>
@@ -1234,7 +1283,7 @@
 
                         "VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 
-                "basecurrencyid": $("#currencySelectvoucher").dxDropDownBox("instance").option("value"),
+                    "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                 "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
                 "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
 
@@ -1342,9 +1391,10 @@
 
                         "VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 
-                "basecurrencyid": $("#currencySelectvoucher").dxselectbox("instance").option("value"),
+                 "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                 "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
                 "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
+
 
                         // "PaymentAccount": $("#accountDropDownBox").dxSelectBox("instance").option("value"),
 
@@ -3955,7 +4005,22 @@ function fetchUpdatedData(voucherEntryNo) {
             DevExpress.ui.notify("Please select a currency", "warning", 2000);
         }
     }
+            function onBaseCurrencySelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const dropDown = $("#ddlBaseCurrency").dxDropDownBox("instance");
 
+        if (selectedKey) {
+            dropDown.option("value", selectedKey); // This should bind the selected CurrencyID to the DropDownBox
+            if (dropDown.option("opened")) {
+                dropDown.close();
+            }
+
+            const selectedRow = e.selectedRowsData[0];
+            console.log("Selected Currency:", selectedRow.CurrencyName);
+        } else {
+            DevExpress.ui.notify("Please select a currency", "warning", 2000);
+        }
+    }
  function onRowRemoving(e) {
     // Show confirmation dialog before deleting
     // let isConfirmed = confirm("Are you sure you want to delete this record?");

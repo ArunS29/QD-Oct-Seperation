@@ -143,10 +143,14 @@
                     .Step(1))
                 </div>
             </div>
-         <div class="col-md-3">
+      
+            <div class="row">
+                 <div class="col-md-3">
    <div class="form-group">
 @(Html.DevExtreme().SelectBox()
-    .ID("txtcurrency")
+    .ID("txtbasecurrency")
+    .Label("Base Currency")
+    .LabelMode(EditorLabelMode.Outside)
     .DataSource(d => d.WebApi()
         .Controller("Utility")
         .LoadAction("GetCurrencyList")
@@ -156,18 +160,47 @@
     .Value("SAR")
     .ValueExpr("CurrencyID")
     .DisplayExpr("CurrencyName")
-    .Placeholder("Select Currency")
+    .Placeholder("Select Base Currency")
     .Width(200)
 )
 
    </div>
-   
+   </div>
+    <div class="col-md-3">
+      <div class="form-group">
+@(Html.DevExtreme().SelectBox()
+    .ID("txttxcurrency")
+    .Label("Convertion Currency")
+    .LabelMode(EditorLabelMode.Outside)
+    .DataSource(d => d.WebApi()
+        .Controller("Utility")
+        .LoadAction("GetCurrencyList")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("CurrencyID")
+    )
+    .Value("SAR")
+    .ValueExpr("CurrencyID")
+    .DisplayExpr("CurrencyName")
+    .Placeholder("Select To Currency")
+    .Width(200)
+)
 </div>
-
-
+   </div>
+    <div class="col-md-3">
+        <div class="form-group">
+                @(Html.DevExtreme().TextBox()
+                    .Label("Currency Rate")
+                    .LabelMode(EditorLabelMode.Outside)
+                    .ID("txtchequeCurrencyRate")
+                    .Value("")
+                    .Placeholder("Enter convertion Rate")
+                    .Width(160)
+                    )
+            </div>
+            </div>
         </div>
-
-        
+        </div>
+   
 
         <div class="dx-fieldset horizontal-container mt-2">
 
@@ -258,13 +291,20 @@
 
     // Function to save cheque details
     function saveChequeDetails(chequeNo, voucherNo) {
-      var data = {
-    "ChequeNo": chequeNo,
-    "VoucherNo": voucherNo,
-    "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
-    "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
-    "currencyid": $("#txtcurrency").dxSelectBox("instance").option("value"), // Corrected here
-};
+           var baseCurrency = $("#txtbasecurrency").dxSelectBox("instance");
+    if (!baseCurrency) {
+        DevExpress.ui.notify("Base Currency dropdown is not initialized.", "error", 2000);
+        return;
+    }
+     var data = {
+        "ChequeNo": chequeNo,
+        "VoucherNo": voucherNo,
+        "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
+        "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
+        "currencyid": $("#txttxcurrency").dxSelectBox("instance").option("value"),
+        "Currencyrate": $("#txtchequeCurrencyRate").dxTextBox("instance").option("value"),
+        "basecurrencyid": baseCurrency.option("value")
+    };
 
 
         $.ajax({
@@ -390,12 +430,22 @@
     }
 
     function saveCloseChequeDetails(chequeNo, voucherNo) {
-        var data = {
-            "ChequeNo": chequeNo,
-            "VoucherNo": voucherNo,
-            "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
-            "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
-        };
+           var baseCurrency = $("#txtbasecurrency").dxSelectBox("instance");
+    if (!baseCurrency) {
+        DevExpress.ui.notify("Base Currency dropdown is not initialized.", "error", 2000);
+        return;
+    }
+         var data = {
+        "ChequeNo": chequeNo,
+        "VoucherNo": voucherNo,
+        "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
+        "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
+        "currencyid": $("#txttxcurrency").dxSelectBox("instance").option("value"),
+        "Currencyrate": $("#txtchequeCurrencyRate").dxTextBox("instance").option("value"),
+        "basecurrencyid": baseCurrency.option("value")
+    };
+        alert(data);
+        console.log(data);
 
         $.ajax({
             type: "POST",

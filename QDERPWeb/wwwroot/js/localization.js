@@ -5,7 +5,7 @@
         "Remarks/Notes:": "Remarks/Notes:",
         "Upload Attachment": "Upload Attachment",
         "Expiry Date:":"Expiry Date:",
-        "Account Confirmation Letter": "Account Confirmation Letter",
+        "AccountConfirmationLetter": "Account Confirmation Letter",
         "ID": "ID",
         "Employee Document": "Employee Document",
         "Reminder Days": "Reminder Days",
@@ -16,14 +16,17 @@
         "Supplier Invoice Received On": "Supplier Invoice Received On",
         "Invoice Received By": "Invoice Received By",
         "Purchase Account":"Purchase Account",
-        "Deductions":"Deductions",
+        "Deductions": "Deductions",
+        "Company Division":"Company Division",
         "Due Date": "Due Date",
         "Inventory Effective Date:":"Inventory Effective Date:",
         "Approvals": "Approvals",
         "Obselete Data":"Obselete Data",
         "Deductions:Advances/Retentions":"Deductions:Advances/Retentions",
         "Supplier Code":"Supplier Code",
-        "Add New":"Add New",
+        "Add New": "Add New",
+        "Expenses Ledger": "Expenses Ledger",
+        "Expenses Ledger (Arabic)":"Expenses Ledger (Arabic)",
         "Supplier Category Code:":"Supplier Category Code:",
         "Supplier Category is required":"Supplier Category is required",
         "Client Category is required": "Client Category is required",
@@ -1953,7 +1956,8 @@
         "Total Invoiced Value": "Total Invoiced Value",
         "Balance To Invoice Value": "Balance To Invoice Value",
         "Balance To Invoice Without Tax": "Balance To Invoice Without Tax",
-        "PO Value Without Tax":"PO Value Without Tax"
+        "PO Value Without Tax": "PO Value Without Tax",
+        "Total": "Total"
 
 
     },
@@ -3725,7 +3729,8 @@
         "Total Invoiced Value": "إجمالي القيمة المفوترة",
         "Balance To Invoice Value": "الرصيد المتبقي للفوترة",
         "Balance To Invoice Without Tax": "الرصيد المتبقي للفوترة بدون ضريبة",
-        "PO Value Without Tax": "قيمة أمر الشراء بدون ضريبة"
+        "PO Value Without Tax": "قيمة أمر الشراء بدون ضريبة",
+        "Total":"الإجمالي"
 
 
     }

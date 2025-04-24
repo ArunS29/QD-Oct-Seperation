@@ -33,5 +33,8 @@ public partial class Tbl20113ChequeMaster
 
     public DateTime? ModifiedOn { get; set; }
 
-    public int currencyid  {get;set;}
+    public int currencyid { get; set; }
+    public int basecurrencyid { get; set; }
+    public Decimal currencyrate { get; set; }
+
 }

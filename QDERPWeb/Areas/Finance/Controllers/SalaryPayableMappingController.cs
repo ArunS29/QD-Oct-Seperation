@@ -301,7 +301,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     x.AmountInSubLedgerFormatted,
                     x.BalanceInVoucher,
                     x.Mapping,
-                    x.DrCr
+                    x.DrCr,
+                    x.VoucherType
                 });
 
                 return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
@@ -332,7 +333,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             x.AmountInVoucherFormatted,
                             x.AmountInSubLedgerFormatted,
                             x.TotalAmount,
-                            x.Mapping
+                            x.Mapping,
+                            x.VoucherType
 
                         });
 
@@ -356,7 +358,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     x.AmountInVoucher,
                     x.AmountInVoucherFormatted,
                     x.AmountInSubLedgerFormatted,
-                    x.Mapping
+                    x.Mapping,
+
                 });
 
                 return Ok(DataSourceLoader.Load(query, loadOptions));

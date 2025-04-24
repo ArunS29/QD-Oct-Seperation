@@ -762,7 +762,7 @@
 																						.Label(new JS("formatMessage('Revenue Account')"))
 																						.DataSource(d => d.WebApi()
 																						.Controller("VATModule")
-																						.LoadAction("GetRevenueAccount")
+																						.LoadAction("GetRevenueAccounts")
 																						.LoadMode(DataSourceLoadMode.Raw)
 																						.Key("IncomeLedger")
 																						)
@@ -848,6 +848,16 @@
 							</td>
 
 							<td>
+
+								@(
+															Html.DevExtreme().Button()
+															.ID("InvoiceNotesconvertToArabic")
+															.Width(50)
+															.Height(30)
+															.Icon("fas fa-language") // Ensure Font Awesome class is correct
+															.ElementAttr(new { @class = "input-button" })
+															.OnClick("function() { convertToArabic(); }")
+															)
 								@(Html.DevExtreme().TextArea()
 																						.Label(new JS("formatMessage('Notes in Arabic')"))
 																						.LabelMode(EditorLabelMode.Outside)
@@ -956,23 +966,26 @@
 							<tr>
 								<td>
 									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Company Division')"))
-																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
-																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("CompanyDivision")
+																			.Label(new JS("formatMessage('Company Division')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetCompanyList") // Make sure backend returns CompanyID + CompanyName
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("CompanyId"))
+																			.ValueExpr("CompanyId")
+																			.DisplayExpr("CompanyName")
 																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
+																			.AcceptCustomValue(false)
+																			.OpenOnFieldClick(true)
 																			.HoverStateEnabled(true)
-																			.ValueExpr("BranchCode")
-																			.DisplayExpr("BranchName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
+																			.DropDownOptions(o => o.Width(800))
 																			.Width("100%")
+																			.ContentTemplate(new TemplateName("CompanyDivisionTemplate")) // attach named template here
 																			)
 								</td>
+
 							</tr>
 
 							<tr>
@@ -1020,58 +1033,47 @@
 				</div>
 			</div>
 
-			<div id="tab-content-6" class="tab-content">
+			<div id="tab-content-6" class="tab-content" dir="rtl">
 				<div class="card">
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr style="height: 60px;">
 							<td colspan="3">
-								<div style="display: flex; align-items: center; gap: 2px; padding: 10px 0;">
-									<!-- Add Button -->
-									<button type="button" class="icon-btn-sm green" onclick="onAddSupplierArabicClick()">
-										<i class="fa fa-plus"></i>
-									</button>
+								<div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 10px 0;">
+								@* 	<button type="button" class="icon-btn-sm green" >
+							<i class="fa fa-plus"></i>
+						</button>
 
-									<!-- Edit Button -->
-									<button type="button" class="icon-btn-sm yellow" onclick="onEditSupplierArabicClick()">
-										<i class="fa fa-pencil"></i>
-									</button>
+						<!-- Edit Button (aligned left) -->
+						<button type="button" class="icon-btn-sm yellow" >
+							<i class="fa fa-pencil"></i>
+						</button> *@
 
-									<!-- DropDownBox -->
+									<!-- Supplier Arabic Name DropDownBox -->
 									@(Html.DevExtreme().DropDownBox()
+																			.ID("ddlSupplierArabicName")
 																			.Label(new JS("formatMessage('Supplier Name in Arabic')"))
+																			.LabelMode(EditorLabelMode.Outside)
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
 																			.LoadAction("GetAllSuppliers")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("SupplierCode"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("ddlSupplierArabicName")
+																			.ValueExpr("SupplierCode")
+																			.DisplayExpr("SupplierNameArabic")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
-																			.ValueExpr("SupplierCode")
-																			.DisplayExpr("SupplierNameArabic")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(300))
+																			.DropDownOptions(o => o.Width(600))
 																			.ContentTemplate(new TemplateName("SupplierArabicTemplate"))
-																			.Width("20%")
-																			)
+																			.Width("40%"))
 								</div>
 							</td>
 						</tr>
-
-
-
-
-
-
 					</table>
 				</div>
 			</div>
-		</div>
 
 
 
@@ -1619,6 +1621,36 @@
 	</div>
 
 </div>
+@using (Html.DevExtreme().NamedTemplate("CompanyDivisionTemplate"))
+{
+	@(
+			Html.DevExtreme().DataGrid()
+				.ID("CompanyDivisionGrid")
+				.DataSource(d => d.WebApi()
+					.Controller("VATModule")
+					.LoadAction("GetCompanyList") // ✅ Make sure this exists and returns CompanyID & CompanyName
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("CompanyId"))
+				.Selection(s => s.Mode(SelectionMode.Single))
+				.HoverStateEnabled(true)
+				.Paging(p => p.PageSize(10))
+				.Height(300)
+				.Columns(columns =>
+				{
+					columns.Add().DataField("CompanyId").Visible(false); // ✅ Hide key field
+					columns.Add().DataField("CompanyName").Caption("Company Name");
+				})
+				.OnSelectionChanged(@<text>
+	function(e) {
+	var selected = e.selectedRowsData[0];
+	if (selected) {
+	$("#CompanyDivision").dxDropDownBox("instance").option("value", selected.CompanyId);
+	}
+	}
+</text>)
+		)
+}
+
 @using (Html.DevExtreme().NamedTemplate("RevenueAccountTemplate"))
 {
 	@(
@@ -1627,7 +1659,7 @@
 														.ID("accounthead-datagrid1")
 														.DataSource(d => d.WebApi()
 														.Controller("VATModule")
-															.LoadAction("GetRevenueAccount")
+															.LoadAction("GetRevenueAccounts")
 														.LoadMode(DataSourceLoadMode.Raw)
 													///   .Key("AccountHead") //salary paid entry
 													.Key("IncomeLedger")
@@ -1650,12 +1682,12 @@
 													.Selection(s => s.Mode(SelectionMode.Single))
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
-													{
-														columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('IncomeLedger')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("AccountGroupUnder").Caption(new JS("formatMessage('Account Group Under')")).Alignment(HorizontalAlignment.Center);
+														{
+															columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("IncomeLedger").Caption(new JS("formatMessage('Expenses Ledger')")).Alignment(HorizontalAlignment.Center);
+														
+													
+																columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Expenses Ledger (Arabic)')")).Alignment(HorizontalAlignment.Center);
 														columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('IsLedgerObselete')")).Alignment(HorizontalAlignment.Center);
 
 
@@ -1792,41 +1824,40 @@
 @using (Html.DevExtreme().NamedTemplate("DivisionTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
-
-														.ID("division-datagrid")
-													.DataSource(d => d.WebApi()
-													.Controller("VATModule")
-															.LoadAction("GetDivision")
-													.LoadMode(DataSourceLoadMode.Raw)
-															///   .Key("AccountHead") //salary paid entry
-															.Key("BranchCode")
-
-													)
-													.WordWrapEnabled(true)
-													.ShowBorders(true)
-													.SearchPanel(sp => sp.HighlightSearchText(true))
-													.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-													.OnSelectionChanged("dataGridDivisionHeadSelectionChanged")
-													.OnInitialized("dataGridDivisionHeadInitialized")
-													// .HeaderFilter(p => p.Visible(true))
-													.ShowBorders(true)
-													.HoverStateEnabled(true)
-													.Paging(p => p.PageSize(15))
-													.FilterRow(f => f.Visible(true))
-													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-													.Height(345)
-													.Selection(s => s.Mode(SelectionMode.Single))
-													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-													.Columns(columns =>
-													{
-														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')"));
-														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')"));
-														columns.Add().DataField("BranchNameAr").Caption(new JS("formatMessage('BranchNameAr')"));
-													})
-
-												)
-
+			.ID("division-datagrid")
+			.DataSource(d => d.WebApi()
+				.Controller("VATModule")
+				.LoadAction("GetDivision")
+				.LoadMode(DataSourceLoadMode.Raw)
+				.Key("BranchCode"))
+			.WordWrapEnabled(true)
+			.ShowBorders(true)
+			.SearchPanel(sp => sp.HighlightSearchText(true))
+			.Selection(sl => sl.Mode(SelectionMode.Single))
+			.OnSelectionChanged(@<text>
+	function(e) {
+	var selected = e.selectedRowsData[0];
+	if (selected) {
+	$("#ddlDivision").dxDropDownBox("instance").option("value", selected.BranchCode);
+	}
+	}
+</text>)
+			.OnInitialized("dataGridDivisionHeadInitialized")
+			.HoverStateEnabled(true)
+			.Paging(p => p.PageSize(15))
+			.FilterRow(f => f.Visible(true))
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Height(345)
+			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+			.Columns(columns =>
+			{
+				columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')"));
+				columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')"));
+				columns.Add().DataField("BranchNameAr").Caption(new JS("formatMessage('BranchNameAr')"));
+			})
+		)
 }
+
 @using (Html.DevExtreme().NamedTemplate("SalesPersonTemplate"))
 
 {
@@ -2196,6 +2227,33 @@
 </text>)
 								)
 }
+
+	@using (Html.DevExtreme().NamedTemplate("SupplierArabicTemplate"))
+	{
+		@(Html.DevExtreme().DataGrid()
+			.ID("supplier-arabic-datagrid")
+			.DataSource(d => d.WebApi()
+			.Controller("VATModule")
+			.LoadAction("GetAllSuppliers")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("SupplierCode"))
+			.RtlEnabled(true) // Enable Right-to-Left layout
+			.Selection(s => s.Mode(SelectionMode.Single))
+			.OnSelectionChanged("onSupplierArabicSelected")
+			.Paging(p => p.PageSize(10))
+			.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+			.FilterRow(f => f.Visible(true))
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.WordWrapEnabled(true)
+			.Height(300)
+			.Columns(columns =>
+			{
+				columns.Add().DataField("SupplierCode").Caption("كود المورد"); // Arabic Caption
+				columns.Add().DataField("SupplierNameArabic").Caption("اسم المورد بالعربية");
+				columns.Add().DataField("SupplierName").Caption("الاسم الإنجليزي");
+			})
+			)
+	}
 
 @using (Html.DevExtreme().NamedTemplate("ApprovedByTemplate"))
 
@@ -3462,7 +3520,7 @@
 		$(document).ready(function () {
 			if (IsCurrent !== "true") {
 				$.ajax({
-					url: "/api/VATModule/GetVATInvoiceNo",
+				url: "/api/VATModule/GetNewPurchaseVoucherNo",
 					type: "GET",
 					success: function (data) {
 						console.log("Success:", data);
@@ -6099,6 +6157,86 @@
 		if (selectedKey) {
 			ddbInstance.option("value", selectedKey);
 			ddbInstance.close();
+		}
+	}
+
+	async function convertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#txtInvoiceNotes").dxTextArea("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#txtNotesinArabic").dxTextArea("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
+
+	async function translateToArabic(text) {
+
+		try {
+
+
+			const response = await fetch(
+
+				`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+			);
+
+			const data = await response.json();
+			console.log(data);
+			return data.responseData.translatedText;
+
+		} catch (error) {
+
+			console.error("Translation failed:", error);
+
+			return "Translation Error";
+
+		}
+
+	}
+
+	function onSupplierArabicSelected(e) {
+		const selected = e.selectedRowsData[0];
+		if (selected) {
+			const dropDownBox = $("#ddlSupplierArabicName").dxDropDownBox("instance");
+			dropDownBox.option("value", selected.SupplierCode);
+			dropDownBox.close(); // Optional: auto-close the dropdown after selection
 		}
 	}
 
