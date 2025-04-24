@@ -1,6 +1,8 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
+using DevExtreme.AspNet.Data.ResponseModel;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -72,38 +74,122 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+       [HttpGet]
+
+public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOptions)
+
+{
+
+     if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+
+     {
+
+         try
+
+         {
+
+             var data = dbContext.Qry201MainVoucherEntriesWithMasters
+
+                 .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND") // Filter by AccountGroup
+
+                 .GroupBy(v => new { v.AccountHeadName, v.AccountGroup }) // Group by AccountHeadName and AccountGroup
+
+                 .Select(g => new
+
+                 {
+
+                     AccountHeadName = g.Key.AccountHeadName,
+
+                     AccountGroup = g.Key.AccountGroup,
+
+                     TotalBalance = g.Sum(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Calculate total balance
+
+                 })
+
+                 .OrderByDescending(g => g.TotalBalance) // Order by TotalBalance in descending order
+
+                 .Take(5) // Take the top 5 results
+
+                 .AsQueryable();
+ 
+             return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
+
+         }
+
+         catch (Exception ex)
+
+         {
+
+             _logger.LogError($"Error in GetAccountSummary: {ex.Message}");
+
+             return StatusCode(500, "Internal server error");
+
+         }
+
+     }
+ 
+     return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+}
+
+
         [HttpGet]
-        public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOptions)
+
+        public async Task<IActionResult> GetAccountSummaryBank(DataSourceLoadOptions loadOptions)
+
         {
+
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+
             {
+
                 try
+
                 {
+
                     var data = dbContext.Qry201MainVoucherEntriesWithMasters
+
                         .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND") // Filter by AccountGroup
+
                         .GroupBy(v => new { v.AccountHeadName, v.AccountGroup }) // Group by AccountHeadName and AccountGroup
+
                         .Select(g => new
+
                         {
+
                             AccountHeadName = g.Key.AccountHeadName,
+
                             AccountGroup = g.Key.AccountGroup,
+
                             TotalBalance = g.Sum(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Calculate total balance
+
                         })
+
                         .OrderByDescending(g => g.TotalBalance) // Order by TotalBalance in descending order
-                        .Take(5) // Take the top 5 results
+
+                 
+
                         .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
+
                 }
+
                 catch (Exception ex)
+
                 {
+
                     _logger.LogError($"Error in GetAccountSummary: {ex.Message}");
+
                     return StatusCode(500, "Internal server error");
+
                 }
+
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
 
+        }
 
 
 
@@ -164,6 +250,42 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBillsPayableOutstandingSupplier(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var data = dbContext.Qry20115BillsPayableOutStandings
+                        .Where(b => b.Balance > 0) // Only bills with outstanding balance
+                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Group by fields
+                        .Select(g => new
+                        {
+                            AccountHeadNo = g.Key.AccountHeadNo,
+                            AccountHead = g.Key.AccountHead,
+                            Balance = g.Key.Balance,
+                            OverdueDays = g.Key.OverdueDays
+                        })
+                        .OrderByDescending(g => g.Balance)
+                        .ThenByDescending(g => g.OverdueDays)
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead))
+                        .ThenBy(g => g.AccountHead)
+                        .AsQueryable(); // Removed .Take(5)
+
+                    return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetBillsPayableOutstanding: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetOutstandingChartData()
@@ -258,6 +380,49 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetBillsOutstandingAgingForChartSupplier()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Define overdue day ranges with labels
+                    var overdueRanges = new[]
+                    {
+                new { Min = 0, Max = 30, Label = "0-30 Days" },
+                new { Min = 31, Max = 60, Label = "31-60 Days" },
+                new { Min = 61, Max = 90, Label = "61-90 Days" },
+                new { Min = 91, Max = int.MaxValue, Label = "91+ Days" }
+            };
+
+                    // Group and project data into labeled overdue buckets
+                    var overdueData = overdueRanges.SelectMany(range =>
+                        dbContext.Qry20115BillsPayableOutStandings
+                            .Where(b => b.Balance > 0 && b.OverdueDays >= range.Min && b.OverdueDays <= range.Max)
+                            .Select(b => new
+                            {
+                                OverdueRange = range.Label,
+                                b.Balance,
+                                b.OverdueDays,
+                                b.AccountHead
+                            }))
+                        .OrderByDescending(b => b.Balance)
+                        .ThenByDescending(b => b.OverdueDays)
+                        .ToList(); // Removed .Take(5) to return all records
+
+                    return Ok(new { success = true, data = overdueData });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetBillsOutstandingAgingForChartSupplier: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetClientOutstandingAgingForChart(DataSourceLoadOptions loadOptions)
@@ -348,6 +513,44 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetClientOutstandingGrid(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var data = dbContext.Qry20115BillsOutStandings
+                        .Where(b => b.Balance > 0) // Only bills with outstanding balance
+                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Match grouping with Payables
+                        .Select(g => new
+                        {
+                            AccountHeadNo = g.Key.AccountHeadNo,
+                            AccountHead = g.Key.AccountHead,
+                            Balance = g.Key.Balance,
+                            OverdueDays = g.Key.OverdueDays
+                        })
+                        .OrderByDescending(g => g.Balance)
+                        .ThenByDescending(g => g.OverdueDays)
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead)) // Optional: push nulls last
+                        .ThenBy(g => g.AccountHead)
+                        .AsQueryable(); // Removed .Take(5)
+
+                    return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientOutstanding: {ex.Message}");
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetBankAccountsFrequency()
@@ -440,5 +643,36 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Task.FromResult<IActionResult>(Unauthorized(new { message = "Invalid tenant.", success = false }));
         }
+        [HttpGet]
+        public Task<IActionResult> GetClientOutstandingByAccountHead()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var groupedData = dbContext.Qry20115BillsOutStandings
+                        .Where(b => b.Balance > 0)
+                        .GroupBy(b => b.AccountHead)
+                        .Select(g => new
+                        {
+                            AccountHead = g.Key,
+                            TotalBalance = g.Sum(b => b.Balance ?? 0)
+                        })
+                        .OrderByDescending(g => g.TotalBalance)
+                        .ToList();
+
+                    return Task.FromResult<IActionResult>(Json(new { success = true, data = groupedData }));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientOutstandingByAccountHead: {ex.Message}");
+                    return Task.FromResult<IActionResult>(StatusCode(500, "Internal server error"));
+                }
+            }
+
+            return Task.FromResult<IActionResult>(Unauthorized(new { message = "Invalid tenant.", success = false }));
+        }
+
+
     }
 }
