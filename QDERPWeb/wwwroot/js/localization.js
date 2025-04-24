@@ -1947,7 +1947,16 @@
         "Account Code": "Account Code",
         "Revenue Ledger": "Revenue Ledger",
         "Cost Center": "Cost Center",
-        "Buyer ID Type":"Buyer ID Type"
+        "Buyer ID Type": "Buyer ID Type",
+        "Sales Order No": "Sales Order No",
+        "Client POno": "Client POno",
+        "Total Order Value": "Total Order Value",
+        "Total Invoiced Value": "Total Invoiced Value",
+        "Balance To Invoice Value": "Balance To Invoice Value",
+        "Balance To Invoice Without Tax": "Balance To Invoice Without Tax",
+        "PO Value Without Tax":"PO Value Without Tax"
+
+
     },
    
     "ar": {
@@ -3709,7 +3718,14 @@
         "Account Code": "رمز الحساب",
         "Revenue Ledger": "دفتر الإيرادات",
         "Cost Center": "مركز التكلفة",
-        "Buyer ID Type":"نوع هوية المشتري"
+        "Buyer ID Type": "نوع هوية المشتري",
+        "Sales Order No": "رقم أمر البيع",
+        "Client POno": "رقم أمر الشراء للعميل",
+        "Total Order Value": "إجمالي قيمة الطلب",
+        "Total Invoiced Value": "إجمالي القيمة المفوترة",
+        "Balance To Invoice Value": "الرصيد المتبقي للفوترة",
+        "Balance To Invoice Without Tax": "الرصيد المتبقي للفوترة بدون ضريبة",
+        "PO Value Without Tax": "قيمة أمر الشراء بدون ضريبة"
 
 
     }
