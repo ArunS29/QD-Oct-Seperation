@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using DevExpress.CodeParser;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
@@ -273,38 +274,48 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
-        
-            /// <summary>
-            /// Loads receivable/payable with advances data from Qry201114accountLedgersWtAdvances.
-            /// </summary>
-            [HttpGet]
-            public async Task<IActionResult> GetLedgerMapping(DataSourceLoadOptions loadOptions, string accid)
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var query = dbContext.Qry201114accountLedgersWtAdvances
-                        .Where(x => x.AccountNoInVoucher == accid)
-                        .Select(x => new
-                        {
-                            x.AccountNoInVoucher,
-                            x.AccountHead,
-                            x.VoucherNoInVoucher,
-                            x.BalanceInVoucher,
-                            x.AmountInVoucherFormatted,
-                            x.AmountInSubLedgerFormatted,
-                            x.Mapping
-                        });
 
-                    return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+        /// <summary>
+        /// Loads receivable/payable with advances data from Qry201114accountLedgersWtAdvances.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> GetLedgerMapping(DataSourceLoadOptions loadOptions, string accid, string drCrFilter = null)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var query = dbContext.Qry201114accountLedgersWtAdvances
+                    .Where(x => x.AccountNoInVoucher == accid);
+
+                // Apply DrCr filter if provided
+                if (!string.IsNullOrEmpty(drCrFilter))
+                {
+                    query = query.Where(x => x.DrCr == drCrFilter);  // Filter by Dr or Cr
                 }
 
-                return Unauthorized(new { message = "Invalid tenant.", success = false });
+                var data = query.Select(x => new
+                {
+                    x.AccountNoInVoucher,
+                    x.AccountHead,
+                    x.VoucherNoInVoucher,
+                    x.AmountInVoucherFormatted,
+                    x.AmountInSubLedgerFormatted,
+                    x.BalanceInVoucher,
+                    x.Mapping,
+                    x.DrCr,
+                    x.VoucherType
+                });
+
+                return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
             }
 
-            /// <summary>
-            /// Loads subledger mapping data from qry20173SubledgersWtVoucherEntry.
-            /// </summary>
-            [HttpGet]
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        /// <summary>
+        /// Loads subledger mapping data from qry20173SubledgersWtVoucherEntry.
+        /// </summary>
+        [HttpGet]
             public async Task<IActionResult> GetSubledgerMapping(DataSourceLoadOptions loadOptions, string accid)
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -313,13 +324,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         .Where(x => x.AccountNoInVoucher == accid)
                         .Select(x => new
                         {
-                            x.AccountNoInVoucher,
-                            x.AccountHead,
+                            x.VoucherNoInSubLedger,
                             x.VoucherNoInVoucher,
-                            x.AmountInVoucher,
+                            x.VoucherRefNo,
+                            x.AccountNoInVoucher,
+                            x.AccountNoInSubLedger,
+                            x.ReferenceNoInSubLedger,
                             x.AmountInVoucherFormatted,
                             x.AmountInSubLedgerFormatted,
-                            x.Mapping
+                            x.TotalAmount,
+                            x.Mapping,
+                            x.VoucherType
+
                         });
 
                     return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
@@ -327,7 +343,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
+
+        [HttpGet]
+        public IActionResult GetSubledgerMappings(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // Just return all records from the table
+                var query = dbContext.Qry20173SubledgersWtVoucherEntries.Select(x => new
+                {
+                    x.AccountNoInVoucher,
+                    x.AccountHead,
+                    x.VoucherNoInVoucher,
+                    x.AmountInVoucher,
+                    x.AmountInVoucherFormatted,
+                    x.AmountInSubLedgerFormatted,
+                    x.Mapping,
+
+                });
+
+                return Ok(DataSourceLoader.Load(query, loadOptions));
+        }
         
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+    }
+
+
+
+
+
+
+
+
+
+
 
     }
 }

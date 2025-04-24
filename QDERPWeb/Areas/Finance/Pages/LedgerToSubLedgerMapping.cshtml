@@ -104,6 +104,7 @@
 <div>
     @await Html.PartialAsync("SalaryPayableMappingFooter")
 </div>
+</br>
         <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
 
             <div>
@@ -128,82 +129,148 @@
 
 
 
-    <div style="margin-top:20px">
+
+    <div style="margin-bottom: 20px;">
         @(Html.DevExtreme().Button()
-            .ID("btnShowRecords")
-            .Text("Show Mapping Details") // <-- You want to toggle this
+            .ID("btnToggleGrids")
             .Icon("smalliconslayout")
             .Width(300)
             .TabIndex(4)
-            .OnClick("onBtnShowRecordsClick") // <-- attach click handler here
+            .Text("Show Mapping Details")
+            .OnClick("toggleGrids")
             )
     </div>
 
         </div>
-        <div class="dx-field ledgerResult">
-            @(
-                Html.DevExtreme().DataGrid()
-                .ID("dataGrid")
-                // .KeyExpr("AccountHeadNo")
-                .RemoteOperations(false)
+<!-- Ledger Mapping Grid -->
+<div class="dx-field ledgerResult" id="ledgerGridContainer">
+    @(Html.DevExtreme().DataGrid()
+        .ID("ledgerGrid")
+        .KeyExpr("VoucherNoInVoucher")
+        .RemoteOperations(ops => ops
+        .Filtering(true)
+        .Sorting(true)
+        .Paging(true)
+        .Grouping(false) // 👈 disable server-side grouping
+        )
+        .Height(550)
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+        .OnContextMenuPreparing("onContextMenuPreparing")
+        .ColumnAutoWidth(true)
+        .DataSource(ds => ds.WebApi()
+        .RouteName("DefaultApi")
+        .Controller("SalaryPayableMapping")
+        .LoadAction("GetLedgerMapping")
+        .LoadParams(new { accid = "" }).LoadParams(new { accid = "", drCrFilter = "" })  // Include drCrFilter as a parameter
+
+       
+        )
+        .Columns(columns =>
+        {
+            columns.Add().DataField("AccountNoInVoucher").Caption("Account No");
+           // columns.Add().DataField("AccountHead").Caption("Ledger Name");
+            columns.Add().DataField("AccountHead").Caption("Ledger Name").GroupIndex(0);
+            columns.Add().DataField("VoucherNoInVoucher").Caption("Voucher No");
+            columns.Add().DataField("VoucherType").Caption("Voucher Type").Visible(false);
+            columns.Add().DataField("AmountInVoucherFormatted").Caption("Voucher Amount");
+            columns.Add().DataField("AmountInSubLedgerFormatted").Caption("Adjusted/Mapped");
+            columns.Add().DataField("BalanceInVoucher").Caption("Balance Amount");
+            columns.Add().DataField("Mapping").Caption("Mapping Status");
+            columns.Add().DataField("DrCr").Caption("DrCr");
+        })
+        )
+  
+</div>
+
+<!-- Subledger Mapping Grid -->
+<div class="dx-field ledgerResult" id="subledgerGridContainer" style="display: none;">
+    @(Html.DevExtreme().DataGrid()
+        .ID("subledgerGrid")
         .KeyExpr("VoucherNoInVoucher")
         .RemoteOperations(true)
         .Height(550)
         .ShowBorders(true)
         .ColumnAutoWidth(true)
+        .OnContextMenuPreparing("onContextMenuPreparing1")
         .DataSource(ds => ds.WebApi()
-        .RouteName("DefaultApi") // Or your route name
+        .RouteName("DefaultApi")
         .Controller("SalaryPayableMapping")
-        .LoadAction("GetLedgerMapping") // Initial API
-        .LoadParams(new { accid = "" }) // Will be updated dynamically
+        .LoadAction("GetSubledgerMapping")
+        .LoadParams(new { accid = "" })
         )
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("AccountNoInVoucher").Caption(new JS("formatMessage('Account No')"));
-                    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('LegerName')"));
+        .Columns(columns =>
+        {
+            columns.Add().DataField("VoucherNoInVoucher").Caption("Voucher No In Voucher");
+            columns.Add().DataField("VoucherNoInSubLedger").Caption("VoucherNo InSubLedger");
+            columns.Add().DataField("VoucherRefNo").Caption("Voucher RefNo");
+            columns.Add().DataField("AccountNoInVoucher").Caption("AccountNo In Voucher");
+            columns.Add().DataField("AccountNoInSubLedger").Caption("AccountNo In SubLedger");
+            columns.Add().DataField("VoucherType").Caption("Voucher Type").Visible(false);
+            columns.Add().DataField("ReferenceNoInSubLedger").Caption("ReferenceNo In SubLedger");
+            columns.Add().DataField("AmountInVoucherFormatted").Caption("AmountIn Voucher Formatted");
+            columns.Add().DataField("AmountInSubLedgerFormatted").Caption("AmountIn SubLedger Formatted");
+            columns.Add().DataField("TotalAmount").Caption("TotalAmount");
+            columns.Add().DataField("Mapping").Caption("Mapping");
+        })
+        )
+</div>
 
-                    columns.Add().DataField("VoucherNoInVoucher").Caption(new JS("formatMessage('Voucher No')"));
 
-                    columns.Add().DataField("AmountInVoucherFormatted").Caption(new JS("formatMessage('Voucher Amount')"));
-                    columns.Add().DataField("AmountInSubLedgerFormatted").Caption(new JS("formatMessage('Adjusted/Mapped')"));
-                    columns.Add().DataField("BalanceInVoucher").Caption(new JS("formatMessage('Balance Amount')"));
-                    columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping Status')"));
-
-                })
-                .AllowColumnReordering(true)
-                .AllowColumnResizing(true)
-                .ColumnFixing(fixing => fixing.Enabled(true))
-                .HeaderFilter(filter => filter.Visible(true))
-                .Height(550)
-                .ElementAttr("style", "min-height: 500px;")
-                .ColumnAutoWidth(true)
-                .FilterRow(filterRow => filterRow.Visible(false))
-                .GroupPanel(groupPanel => groupPanel.Visible(false))
-                .ShowBorders(true)
-                .Width("100%")
-                )
-        </div>
 
 <script>
-    $(function () {
-        // Header TextBox Initialization
-        $("#LedgerToSubLedgerMapping").dxTextBox({
-            text: formatMessage("Ledger To SubLedger Mapping"),
-            readOnly: true,
-            width: "510px",
-            onContentReady: function (e) {
-                $(e.element).addClass("dx-textbox-heading");
-            }
-        });
+    // ✅ Globally available toggleGrids function
+    function toggleGrids() {
+        const btn = $("#btnToggleGrids").dxButton("instance");
+        const accid = $("#AccountLedgerNo").dxTextBox("instance").option("value");
 
-        // Set button initial text
-        $("#btnShowRecords").dxButton("instance").option("text", "Show Mapping Details");
+        if (!accid) {
+            DevExpress.ui.notify("Please enter Account Ledger No", "warning", 2000);
+            return;
+        }
 
-        // Set query string parameters if present
-        const urlParams = new URLSearchParams(window.location.search);
-        const acchedid = urlParams.get("acchedid");
-        const accheadname = urlParams.get("accheadname");
+        const currentText = btn.option("text");
 
+        if (currentText === "Show Mapping Details") {
+            $("#ledgerGridContainer").hide();
+            $("#subledgerGridContainer").show();
+            btn.option("text", "Show Receivable/Payables with Advance");
+
+            const subGrid = $("#subledgerGrid").dxDataGrid("instance");
+            subGrid.option("dataSource", {
+                load: () => $.getJSON("/api/SalaryPayableMapping/GetSubledgerMapping", { accid })
+            });
+            subGrid.refresh();
+        } else {
+            $("#subledgerGridContainer").hide();
+            $("#ledgerGridContainer").show();
+            btn.option("text", "Show Mapping Details");
+
+            const ledgerGrid = $("#ledgerGrid").dxDataGrid("instance");
+            ledgerGrid.option("dataSource", {
+                load: () => $.getJSON("/api/SalaryPayableMapping/GetLedgerMapping", { accid })
+            });
+            ledgerGrid.refresh();
+        }
+    }
+
+    // ✅ On DOM Ready
+    $(document).ready(function () {
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Get URL params
+        const acchedid = getQueryParam("acchedid");
+        const accheadname = getQueryParam("accheadname");
+        const accid = getQueryParam("accid");
+        const FromDate = getQueryParam("FromDate");
+        const ToDate = getQueryParam("ToDate");
+        const drCrFilter = getQueryParam("drCrFilter"); // Optional
+
+        // Set TextBoxes
         if (acchedid) {
             $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);
         }
@@ -211,47 +278,143 @@
             $("#AccountHeadName").dxTextBox("instance").option("value", accheadname);
         }
 
-        // Don't load data on page load — just initialize empty grid
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        dataGrid.option("dataSource", []);
+        // Load ledgerGrid by default
+        const ledgerGrid = $("#ledgerGrid").dxDataGrid("instance");
+
+        if (accid) {
+            ledgerGrid.option("dataSource", {
+                load: () => $.getJSON("/api/SalaryPayableMapping/GetLedgerMapping", {
+                    accid: accid,
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    drCrFilter: drCrFilter // Optional
+                })
+            });
+            ledgerGrid.refresh();
+        }
+
+        // Ensure visibility
+        $("#ledgerGridContainer").show();
+        $("#subledgerGridContainer").hide();
+
+        // Clear subledger data source
+        $("#subledgerGrid").dxDataGrid("instance").option("dataSource", []);
     });
 
-    // On button click: toggle API and load data
-    function onBtnShowRecordsClick() {
-        const btn = $("#btnShowRecords").dxButton("instance");
-        const currentText = btn.option("text");
 
-        const accLedgerNo = $("#AccountLedgerNo").dxTextBox("instance").option("value");
 
-        if (!accLedgerNo) {
-            DevExpress.ui.notify("Please enter Account Ledger No", "warning", 2000);
-            return;
+
+
+
+
+    function handleReportClick(e) {
+        const selected = e.itemData.text;
+        if (selected === "ShowAllDebtors") {
+            ShowAllDebtors();
+        } else if (selected === "ShowAllCreditors") {
+            ShowAllCreditors();
         }
-
-        let apiUrl = "";
-        if (currentText === "Show Mapping Details") {
-            // User wants to see Subledger Mapping
-            btn.option("text", "Show Receivable/Payables with Advance");
-            apiUrl = "/api/SalaryPayableMapping/GetSubledgerMapping";
-        } else {
-            // User wants to go back to Ledger Mapping
-            btn.option("text", "Show Mapping Details");
-            apiUrl = "/api/SalaryPayableMapping/GetLedgerMapping";
-        }
-
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-        dataGrid.option("dataSource", {
-            load: function () {
-                return $.getJSON(apiUrl, {
-                    accid: accLedgerNo
-                });
-            }
-        });
-
-        dataGrid.refresh();
     }
+    function ShowAllDebtors() {
+        const grid = $("#ledgerGrid").dxDataGrid("instance");
+        grid.clearFilter(); // Clear any previous filters
+        grid.option("dataSource", {
+            load: () => $.getJSON("/api/SalaryPayableMapping/GetLedgerMapping", {
+                accid: $("#AccountLedgerNo").dxTextBox("instance").option("value"),
+                drCrFilter: "Dr"  // Passing filter to show only Dr
+            })
+        });
+        grid.refresh();
+        DevExpress.ui.notify("Showing All Debtors", "info", 1500);
+    }
+
+    function ShowAllCreditors() {
+        const grid = $("#ledgerGrid").dxDataGrid("instance");
+        grid.clearFilter();
+        grid.option("dataSource", {
+            load: () => $.getJSON("/api/SalaryPayableMapping/GetLedgerMapping", {
+                accid: $("#AccountLedgerNo").dxTextBox("instance").option("value"),
+                drCrFilter: "Cr"  // Passing filter to show only Cr
+            })
+        });
+        grid.refresh();
+        DevExpress.ui.notify("Showing All Creditors", "info", 1500);
+    }
+
+    //EditVoucher
+    function onContextMenuPreparing(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Edit Voucher",
+                    onItemClick: function () {
+                        const voucherType = e.row.data.VoucherType;
+                        const voucherNo = e.row.data.VoucherNoInVoucher;
+
+                        // Map voucher types to pages
+                        const voucherPageMap = {
+                            "Cash Payment": "VoucherCashPayment",
+                            "Bank Payment": "VoucherBankPayment",
+                            "Cash Receipts": "VoucherEntryCashReceipts",
+                            "Bank Receipts": "VoucherEntryReceipts",
+                            "Sales": "SalesVoucher",
+                            "Purchases": "PurchaseVoucher",
+                            "Journal": "VoucherJournal"
+                        };
+
+                        const pageName = voucherPageMap[voucherType];
+
+                        if (!pageName) {
+                            DevExpress.ui.notify("Unknown voucher type: " + voucherType, "error", 2000);
+                            return;
+                        }
+
+                        const url = `/${tenantName}/Finance/${pageName}?argsledno=${voucherNo}&vouchertype=${voucherType}`;
+                        window.open(url, "_blank");
+                    }
+                }
+            ];
+        }
+    }
+    function onContextMenuPreparing1(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Edit Voucher",
+                    onItemClick: function () {
+                        const voucherType = e.row.data.VoucherType;
+                        const voucherNo = e.row.data.VoucherNoInVoucher;
+
+                        // Map voucher types to pages
+                        const voucherPageMap = {
+                            "Cash Payment": "VoucherCashPayment",
+                            "Bank Payment": "VoucherBankPayment",
+                            "Cash Receipts": "VoucherEntryCashReceipts",
+                            "Bank Receipts": "VoucherEntryReceipts",
+                            "Sales": "SalesVoucher",
+                            "Purchases": "PurchaseVoucher",
+                            "Journal": "VoucherJournal"
+                        };
+
+                        const pageName = voucherPageMap[voucherType];
+
+                        if (!pageName) {
+                            DevExpress.ui.notify("Unknown voucher type: " + voucherType, "error", 2000);
+                            return;
+                        }
+
+                        const url = `/${tenantName}/Finance/${pageName}?argsledno=${voucherNo}&vouchertype=${voucherType}`;
+                        window.open(url, "_blank");
+                    }
+                }
+            ];
+        }
+    }
+
+
 </script>
+
+
 
 
 

@@ -359,6 +359,7 @@
             onContentReady: function(e) {
                 $(e.element).addClass("dx-textbox-heading");
             }
+        
         });
 
         let selectedVoucherId = null;
@@ -466,14 +467,22 @@
                 }
             },
         });
+    $(document).on("contextmenu", ".dx-data-row", function (e) {
+        e.preventDefault(); // Prevent default right-click menu
 
-        $(document).on("contextmenu", ".dx-data-row", function (e) {
-            e.preventDefault(); // Prevent default right-click behavior
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowIndex = $(this).index(); // Get the row index from DOM
+        const rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
 
-            const popup = $("#voucherPopup").dxPopup("instance");
-            popup.option("position", { my: "left top", at: "left bottom", of: e });
-            popup.show();
-        });
+        if (rowData) {
+            selectedVoucherId = rowData.AssetLedgerNo; // Set selected ID manually
+            dataGrid.selectRowsByIndexes([rowIndex]); // Visually select the row
+        }
+
+        const popup = $("#voucherPopup").dxPopup("instance");
+        popup.option("position", { my: "left top", at: "left bottom", of: e });
+        popup.show();
+    });
 
         $(document).on("click", function (e) {
             if (!$(e.target).closest("#voucherPopup").length && !$(e.target).closest(".dx-data-row").length) {

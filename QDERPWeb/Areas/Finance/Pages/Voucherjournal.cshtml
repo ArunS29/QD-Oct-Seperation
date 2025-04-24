@@ -57,7 +57,7 @@
             .Value("")
             .Placeholder(new JS("formatMessage('Generating...')"))
             .OnValueChanged("updateTemporaryNo")
-            .ReadOnly(true)
+          
             )
     </div>
     <div class="form-group">
@@ -261,7 +261,7 @@
             {
                 columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Visible(false);
                 columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Visible(false);
-                columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')"));
+                columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')")).AllowEditing(false);
 
                 columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')"))
             .CellTemplate(@<text>
@@ -443,11 +443,11 @@
     <div class="row">
         <div class="col-md-6">
             <div>
-                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-                    .ID("VerifiedBy").ReadOnly(true)
-
-
-                    )
+                @(Html.DevExtreme().CheckBox()
+                .Text(new JS("formatMessage('Verified By')"))
+                    .ID("VerifiedBy") 
+                    .Disabled(true)
+                   )
                 @(Html.DevExtreme().TextBox()
                     @* .Label(new JS("formatMessage('Verified By')")) *@
                     @* .LabelMode(EditorLabelMode.Outside) *@
@@ -467,8 +467,8 @@
         <div class="col-md-6">
             <div>
                 @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                    .ID("ApprovedBy").ReadOnly(true)
-
+                    .ID("ApprovedBy")
+                     .Disabled(true)
                     )
                 @(Html.DevExtreme().TextBox()
                     @* .Label(new JS("formatMessage('Approved By')")) *@
@@ -885,12 +885,31 @@
             dataType: "json",
             success: function (response) {
                 console.log(response.data);
+                
+                  $("#txtEntryNarration").dxTextArea("instance").option("value","");
                 // Update the data grid with the new data
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
                 // Clear Account Head and Amount fields after submission
                 $("#ddAccountHead").dxDropDownBox("instance").option("value", null);
                // $("#txtVoucherAmount").dxNumberBox("instance").option("value", null);
+
+
+                // Calculate total Dr and Cr amounts IsEqual clear Amount field 
+    let totalDr = 0;
+    let totalCr = 0;
+    response.data.forEach(entry => {
+        if (entry.DrCr === "Dr") {
+            totalDr += entry.VoucherAmount || 0;
+        } else if (entry.DrCr === "Cr") {
+            totalCr += entry.VoucherAmount || 0;
+        }
+    });
+
+    // If Dr == Cr, clear amount box
+    if (totalDr === totalCr) {
+        $("#txtVoucherAmount").dxNumberBox("instance").option("value", null);
+    }
 
                 // Toggle DrCr for next entry and update the dropdown value
                 lastDrCr = (lastDrCr === "Dr") ? "Cr" : "Dr"; // Toggle Dr and Cr
@@ -1053,7 +1072,11 @@
                         ? "Voucher saved successfully with matching Debit and Credit amounts."
                         : "Voucher updated successfully!";
                     DevExpress.ui.notify(successMessage, "success", 2000);
-
+                    $("#TemporaryNo").dxTextBox("instance").option("value",""); 
+                     disableFields();
+                     // Enable after save
+                  $("#btnPrint").dxButton("instance").option("disabled", false);
+                   $("#btnPreview1").dxDropDownButton("instance").option("disabled", false);
                     // Change button text to "Update" after saving
                     if (action === "SaveVoucher") {
                         button.option("text", "Update");
@@ -1071,6 +1094,14 @@
             }
         });
     };
+    function disableFields() {
+    $("#TemporaryNo").dxTextBox("instance").option("disabled", true);
+    $("#sbDrCr").dxSelectBox("instance").option("disabled", true);
+    $("#ddAccountHead").dxDropDownBox("instance").option("disabled", true);
+    $("#txtVoucherAmount").dxNumberBox("instance").option("disabled", true);
+    $("#txtEntryNarration").dxTextArea("instance").option("disabled", true);
+    $("#btnVoucherEntry").dxButton("instance").option("disabled", true);
+}
 
 
     $("#btnSaveAndClose").on("click", function (e) {
@@ -1322,6 +1353,8 @@
 
     $(document).ready(function () {
         debugger;
+        $("#btnPrint").dxButton("instance").option("disabled", true);
+       $("#btnPreview1").dxDropDownButton("instance").option("disabled", true);
 
         const urlParams = new URLSearchParams(window.location.search);
         argsledno = urlParams.get("argsledno"); // Get the argsledno query parameter

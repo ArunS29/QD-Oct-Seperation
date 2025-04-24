@@ -251,17 +251,23 @@
             .OnClick("toggleGroupPanel")
             )
     </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnCreatePaymentRequest")
-            .Text("Create Payment Request")
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("money")
-            .Width(220)
-            )
-    </div>
+    <div>
+    @(Html.DevExtreme().DropDownButton()
+        .ID("btnReport")
+        .Text("Report")
+        .Icon("report")
+        .Width(180)
+        .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("ShowAllCreditors").Icon("search");
+                items.Add().Text("ShowAllDebtors").Icon("search");
+            })
+            .OnItemClick("handleReportClick")
+        .ShowArrowIcon(true)
+            
+        )
+</div>
 </div>
 
 

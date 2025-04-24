@@ -43,6 +43,14 @@
 			border-radius: 50%;
 		}
 
+	input:checked + .slider {
+		background-color: #4CAF50;
+	}
+
+		input:checked + .slider:before {
+			transform: translateX(20px);
+		}
+
 	.toggle-switch input:checked + .slider {
 		background-color: #4CAF50; /* GREEN = ON */
 		transform: scale(0.95);
@@ -476,15 +484,20 @@
 																			.Disabled(true))
 								</td>
 								<td>
+
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("InvoiceTransactionsCode")
 																			.Label("Invoice Transaction Type")
-																			.Value(new[] { 1 }) // Default selected value
+																			.Value("0100000") // Default selected value
 																			.ValueExpr("ID")
+																			.DisplayExpr("ID")
 																			.LabelMode(EditorLabelMode.Outside)
-																			.DisplayExpr("Name")
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
 																			.Placeholder("Choose VAT Transaction Types")
-																			.ContentTemplate(new JS("VATTransactionTemplate"))
+																		     .HoverStateEnabled(true)
+																			.ContentTemplate(new JS("VATTransactionTemplate")) // Reference the NamedTemplate
 																			.DataSource(new[] {
 									new { ID = 1, Name = "3rd Party Tax Invoice" },
 									new { ID = 2, Name = "Nominal Tax Invoice" },
@@ -492,7 +505,11 @@
 									new { ID = 4, Name = "Summary Tax Invoice" },
 									new { ID = 5, Name = "Self Billed Tax Invoice" }
 									})
+																			.OnInitialized("onDropDownInitialized")
 																			)
+
+																			
+
 								</td>
 							</tr>
 						</table>
@@ -703,8 +720,8 @@
 						</tr>
 						<tr>
 							
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
 </tr>
 
 						<tr>
@@ -722,13 +739,14 @@
 
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("ddlGoodsGroup2")
+															.Value("Income - Trading")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
 															.ValueExpr("IncomeLedger")
-															.DisplayExpr("AccountGroup")
+															.DisplayExpr("IncomeLedger")
 															.OnInput("dropDownBoxOnInput")
 															.OnOpened("onOpened")
 															//.Width(650)
@@ -841,8 +859,38 @@
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Sales Order No')")).ID("OurSalesOrderNo")
-																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")).LabelMode(EditorLabelMode.Outside))
+								@* 	@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Sales Order No')")).ID("OurSalesOrderNo")
+																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")).LabelMode(EditorLabelMode.Outside)) *@
+
+									@(Html.DevExtreme().DropDownBox()
+																			.Label(new JS("formatMessage('Our Sales Order No')"))
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetSalesOrderNo")
+																			.LoadParams(new { accheadid = new JS("accheadid") }) // Fix: ensure `accheadid` is a proper parameter key																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("ClientCode")
+																			)
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("OurSalesOrderNo")
+																			.ShowClearButton(true)
+																			.AcceptCustomValue(true)
+																			.OpenOnFieldClick(false)
+																			.ValueChangeEvent("input")
+																			.HoverStateEnabled(true)
+																			.ValueExpr("ClientCode")
+																			.DisplayExpr("SalesOrderNo")
+																			.OnInput("dropDownBoxOnInput")
+																			.OnOpened("onOpened")
+																			//.Width(650)
+																			.TabIndex(1)
+																			.DropDownOptions(o => o
+																			.Width(1000)
+																			)
+																			//  .OnKeyDown("onKeyDown")
+																			//.OnValueChanged("dropDownBoxValueChanged")
+																			.ContentTemplate(new TemplateName("SalesOrderNoTemplate"))
+																			.Width("100%")
+																			)
 								</td>
 							</tr>
 							<tr>
@@ -853,7 +901,7 @@
 							</tr>
 							<tr>
 
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 
 
@@ -918,6 +966,7 @@
 																				.LabelMode(EditorLabelMode.Outside)
 																				.ID("ddlGoodsGroup3")
 																				.ShowClearButton(true)
+																				.Value("Saudi Arabian Riyals")
 																				.AcceptCustomValue(true)
 																				.OpenOnFieldClick(false)
 																				.ValueChangeEvent("input")
@@ -952,6 +1001,7 @@
 																				.LabelMode(EditorLabelMode.Outside)
 																				.ID("ddlGoodsGroup4")
 																				.ShowClearButton(true)
+																				.Value("Saudi Arabian Riyals")
 																				.AcceptCustomValue(true)
 																				.OpenOnFieldClick(false)
 																				.ValueChangeEvent("input")
@@ -983,7 +1033,9 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("50%"))
+																			.Value(1)
+																			.Width("50%")
+                                     )
 								</td>
 							</tr>
 						</table>
@@ -1028,7 +1080,7 @@
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("LessAdvanceAr")
-																			.Value(null)
+																			.Value("اقب المسبق")
 																			.Width("175%")
 																			.RtlEnabled(true)
 																			)
@@ -1072,7 +1124,7 @@
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("LessAdvanceAr1")
-																			.Value(null)
+																			.Value("ناقص قيمة الخصومات الأخرى")
 																			.Width("175%")
 																			.RtlEnabled(true)
 																			)
@@ -1115,7 +1167,7 @@
 																			.Label(new JS("formatMessage('')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("LessAdvanceAr2")
-																			.Value(null)
+																			.Value("احتفاظ أقل")
 																			.Width("175%")
 																			.RtlEnabled(true)
 																			)
@@ -1136,6 +1188,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			.Width("95%")
 																			)
 
@@ -1144,6 +1197,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("VerifiedOnDate")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			.Width("95%")
 																			)
 								</td>
@@ -1159,6 +1213,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			.Width("95%")
 																			@* .Disabled(true) *@
 																			)
@@ -1167,6 +1222,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ApprovedOntext")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			.Width("95%")
 																			)
 								</td>
@@ -1364,7 +1420,7 @@
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
 																			.ValueExpr("CompanyId")
-																			.DisplayExpr("CompanyName")
+																			.DisplayExpr("CompanyId")
 																			.OnInput("dropDownBoxOnInput")
 																			.OnOpened("onOpened")
 																			//.Width(650)
@@ -1422,8 +1478,95 @@
 								</td>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID')")).ID("OtherID1").LabelMode(EditorLabelMode.Outside))</td>
 								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Our Address Details')")).ID("OurAddressDetails")
-																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")).LabelMode(EditorLabelMode.Outside))
+									@(Html.DevExtreme().DropDownBox()
+																			.Label(new JS("formatMessage('Our Address Details')"))
+																			.ID("OurAddressDetails")
+																			.DataSource(d => d.WebApi()
+																			.Controller("AccountLedgerMaster")
+																			.LoadAction("getVATInvoiceTypes")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("InvoiceType"))
+																			.DropDownOptions(o => o.Width(900).Height(600))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ContentTemplate(@<text>
+										<div class="dx-viewport address-form-container">
+											<table class="address-form-table" style="width: 100%; border-collapse: collapse;">
+												<!-- Row 1 -->
+												<tr>
+													<td colspan="2"><label for="StreetName">Our Address - Street Name:*</label></td>
+													<td><label for="StreetNameArabic">Our Address - Street Name(Arabic):*</label></td>
+												</tr>
+												<tr>
+													<td colspan="2"><input type="text" id="StreetName" name="StreetName" style="width: 100%;" /></td>
+													<td><input type="text" id="StreetNameArabic" name="StreetNameArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 2 -->
+												<tr>
+													<td colspan="2"><label for="AdditionalAddress">Address - Additional Address:</label></td>
+													<td><label for="AdditionalAddressArabic">Address - Additional Address(Arabic):</label></td>
+												</tr>
+												<tr>
+													<td colspan="2"><input type="text" id="AdditionalAddress" name="AdditionalAddress" style="width: 100%;" /></td>
+													<td><input type="text" id="AdditionalAddressArabic" name="AdditionalAddressArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 3 -->
+												<tr>
+													<td><label for="BuildingNumber">Building Number:*</label></td>
+													<td><label for="ClientCity">City:*</label></td>
+													<td><label for="ClientCityArabic">City(Arabic):*</label></td>
+												</tr>
+												<tr>
+													<td><input type="text" id="BuildingNumber" name="BuildingNumber" style="width: 100%;" /></td>
+													<td><input type="text" id="ClientCity" name="ClientCity" style="width: 100%;" /></td>
+													<td><input type="text" id="ClientCityArabic" name="ClientCityArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 4 -->
+												<tr>
+													<td><label for="AdditionalNumber">Additional Number:*</label></td>
+													<td><label for="Province">Province / State:</label></td>
+													<td><label for="ProvinceArabic">Province / State(Arabic):</label></td>
+												</tr>
+												<tr>
+													<td><input type="text" id="AdditionalNumber" name="AdditionalNumber" style="width: 100%;" /></td>
+													<td><input type="text" id="Province" name="Province" style="width: 100%;" /></td>
+													<td><input type="text" id="ProvinceArabic" name="ProvinceArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 5 -->
+												<tr>
+													<td><label for="PostalCode">Postal Code:*</label></td>
+													<td><label for="District">District / Neighborhood:*</label></td>
+													<td><label for="DistrictArabic">District / Neighborhood(Arabic):*</label></td>
+												</tr>
+												<tr>
+													<td><input type="text" id="PostalCode" name="PostalCode" style="width: 100%;" /></td>
+													<td><input type="text" id="District" name="District" style="width: 100%;" /></td>
+													<td><input type="text" id="DistrictArabic" name="DistrictArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 6 -->
+												<tr>
+													<td><label for="CountryCode">Country Code:*</label></td>
+												</tr>
+												<tr>
+													<td>
+														<select id="CountryCode" name="CountryCode" style="width: 100%;">
+															<option value="US">US</option>
+															<option value="UK">UK</option>
+															<option value="IN" selected>IN</option>
+															<option value="SA">SA</option>
+															<option value="UAE">UAE</option>
+														</select>
+													</td>
+												</tr>
+											</table>
+										</div>
+									</text>)
+																			)
+
 								</td>
 							</tr>
 
@@ -2734,7 +2877,7 @@
 																		)
 
 }
-@using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
+@* @using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
 {
 	@(Html.DevExtreme().List()
 							.ID("vatTransactionList")
@@ -2758,7 +2901,36 @@
 	</div>
 </text>)
 							)
+} *@
+
+@using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
+{
+	@(Html.DevExtreme().List()
+			.ID("vatTransactionList")
+			.DataSource(new[] {
+			new { ID = 1, Name = "3rd Party Tax Invoice" },
+			new { ID = 2, Name = "Nominal Tax Invoice" },
+			new { ID = 3, Name = "Export Tax Invoice" },
+			new { ID = 4, Name = "Summary Tax Invoice" },
+			new { ID = 5, Name = "Self Billed Tax Invoice" }
+		})
+				.DisplayExpr("ID")
+			.KeyExpr("ID")
+			.SelectionMode(ListSelectionMode.Multiple)
+			.SelectedItemKeys(new[] { 1 }) // Default selected
+			.OnSelectionChanged("onVatTransactionSelectionChanged")
+			.ItemTemplate(@<text>
+	<div class="vat-item">
+		<label class="toggle-switch">
+			<input type="checkbox" name="vatOption" value="<%- ID %>" />
+			<span class="slider"></span>
+		</label>
+		<label class="vat-label"><%- Name %></label>
+	</div>
+</text>)
+		)
 }
+
 
 @using (Html.DevExtreme().NamedTemplate("ApprovedByTemplate"))
 
@@ -2829,6 +3001,77 @@
 
 }
 
+@using (Html.DevExtreme().NamedTemplate("SalesOrderNoTemplate"))
+
+{
+
+	@(Html.DevExtreme().DataGrid()
+
+															.ID("salesorderno-datagrid")
+
+														.DataSource(d => d.WebApi()
+
+														.Controller("VATModule")
+
+																	.LoadAction("GetSalesOrderNo")
+
+														.LoadMode(DataSourceLoadMode.Raw)
+
+																///   .Key("AccountHead") //salary paid entry
+
+																		.Key("ClientCode")
+
+														)
+
+													.WordWrapEnabled(true)
+
+													.ShowBorders(true)
+
+													.SearchPanel(sp => sp.HighlightSearchText(true))
+
+													.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+														.OnSelectionChanged("ClientSalesOrderNodataGridSelectionChanged")
+
+														.OnInitialized("ClientSalesOrderNodataGridInitialized")
+
+														// .HeaderFilter(p => p.Visible(true))
+
+													.ShowBorders(true)
+
+													.HoverStateEnabled(true)
+
+													.Paging(p => p.PageSize(15))
+
+													.FilterRow(f => f.Visible(true))
+
+													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+
+													.Height(345)
+
+													.Selection(s => s.Mode(SelectionMode.Single))
+
+													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+
+													.Columns(columns =>
+
+													{
+
+													     	columns.Add().DataField("SalesOrderNo").Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("ClientPono").Caption(new JS("formatMessage('Client POno')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("TotalOrderValue").Caption(new JS("formatMessage('Total Order Value')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("TotalInvoicedValue").Caption(new JS("formatMessage('Total Invoiced Value')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("BalanceToInvoiceValue").Caption(new JS("formatMessage('Balance To Invoice Value')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("BalanceToInvoiceWoTax").Caption(new JS("formatMessage('Balance To Invoice Without Tax')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("OrderValueWoTax").Caption(new JS("formatMessage('PO Value Without Tax')")).Alignment(HorizontalAlignment.Center);
+
+
+													})
+
+												)
+
+}
+
 <input type="file" id="fileInput" style="display: none;" />
 
 <!-- Modal Structure -->
@@ -2850,7 +3093,9 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false";
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
+			  let dropDownInstance;
+			  let vatListInstance;
 
 			$(document).ready(function () {
 
@@ -3010,7 +3255,7 @@
 
 								dataField: "ItemCode",
 
-								caption: "Item Code",
+								caption: formatMessage('Item Code'),
 
 								width: 200
 
@@ -3020,7 +3265,7 @@
 
 				dataField: "DetailedDescription",
 
-				caption: "Description",
+				caption: formatMessage('Description'),
 
 				width: 550,
 
@@ -3212,7 +3457,7 @@
 
 							dataField: "UnitRateMethod",
 
-							caption: "Unit Rate Method",
+							caption: formatMessage('Unit Rate Method'),
 
 							width: 200,
 
@@ -3337,23 +3582,23 @@
 						},
 
 
-						{ dataField: "QuantityInvoiced", caption: "Qty", width: 150 },
+						{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
 
-						{ dataField: "UnitRate", caption: "Unit Price", width: 150 },
+						{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
 
-						{ dataField: "CalcLineAmountBeforeDiscount", caption: "Total Before Discount", width: 150 },
+						{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
 
-						{ dataField: "Discount", caption: "Discount", width: 150 },
+						{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
 						{ dataField: "DiscountDetails", caption: "...", width: 50 },
 
-						{ dataField: "CalcLineAmount", caption: "Amount", width: 150 },
+						{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
 
 						//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 						{
 			dataField: "VATPercentage",
-			caption: "VAT%",
+			caption: formatMessage('VAT%'),
 			width: 150,
 			editCellTemplate: function(cellElement, cellInfo) {
 				getTaxSlabData().done(function (dropdownData) {
@@ -3403,13 +3648,13 @@
 			}
 		},
 
-						{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
+						{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
 
-						{ dataField: "CalcTaxAmount", caption: "VAT", width: 150 },
+						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150 },
 
-						{ dataField: "LineTotal", caption: "Total", width: 150 },
+						{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
 
-						 { dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150 ,allowEditing: false,visible: false}
+						 { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150 ,allowEditing: false,visible: false}
 
 					],
 
@@ -3513,7 +3758,7 @@
 
 					dataField: "ItemCode",
 
-					caption: "Item Code",
+					caption: formatMessage('Item Code'),
 
 					width: 200
 
@@ -3523,7 +3768,7 @@
 
 					dataField: "Description",
 
-					caption: "Description",
+					caption: formatMessage('Description'),
 
 					width: 550,
 
@@ -3715,7 +3960,7 @@
 
 					dataField: "DescriptionDetails",
 
-					caption: "Unit Rate Method",
+					caption: formatMessage('Unit Rate Method'),
 
 					width: 200,
 
@@ -3840,23 +4085,23 @@
 				},
 
 
-				{ dataField: "Qty", caption: "Qty", width: 150 },
+				{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
 
-				{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
+				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 
-				{ dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
+				{ dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
 
-				{ dataField: "Discount", caption: "Discount", width: 150 },
+				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
 				{ dataField: "DiscountDetails", caption: "...", width: 50 },
 
-				{ dataField: "Amount", caption: "Amount", width: 150 },
+				{ dataField: "Amount", caption: formatMessage('Amount'), width: 150 },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 				{
 					dataField: "VATPercentage",
-					caption: "VAT%",
+					caption: formatMessage('VAT%'),
 					width: 150,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
@@ -3906,13 +4151,13 @@
 					}
 				},
 
-				{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
+				{ dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150 },
 
-				{ dataField: "VAT", caption: "VAT", width: 150 },
+				{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
 
-				{ dataField: "Total", caption: "Total", width: 150 },
+				{ dataField: "Total", caption: formatMessage('Total'), width: 150 },
 
-				{ dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150, allowEditing: false, visible: false }
+				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
 			],
 
@@ -4086,13 +4331,57 @@
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
 									accheadid = selectedRowData[0].AccountId;
-
+									
 								  let  accheadname = selectedRowData[0].AccountHead;
 									  ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
-									  $("#GroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].ClientGroupVatnumber)
-									  $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].VatregistrationNo)
-									  $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
-									  $("#OtherIDType").dxDropDownBox("instance").option("value",selectedRowData[0].ClientOtherIdtype)
+										  // DevExtreme widgets
+	$("#GroupVATNo").dxTextBox("instance").option("value", selectedRowData[0].ClientGroupVatnumber);
+	$("#ClientVATNo").dxTextBox("instance").option("value", selectedRowData[0].VatregistrationNo);
+	$("#ClientOtherID").dxTextBox("instance").option("value", selectedRowData[0].ClientOtherId);
+	$("#OtherIDType").dxDropDownBox("instance").option("value", selectedRowData[0].ClientOtherIdtype);
+
+	// Assuming these are standard inputs
+	$("#StreetName").val(selectedRowData[0].ClientAddressStreet);
+	$("#StreetNameArabic").val(selectedRowData[0].ClientAddressStreetAr);
+	$("#AdditionalAddress").val(selectedRowData[0].ClientAdditionalStreet);
+	$("#AdditionalAddressArabic").val(selectedRowData[0].ClientAdditionalStreetAr);
+	$("#BuildingNumber").val(selectedRowData[0].ClientBuildingNumber);
+	$("#ClientCity").val(selectedRowData[0].ClientCity);
+	$("#ClientCityArabic").val(selectedRowData[0].ClientCityAr);
+	$("#AdditionalNumber").val(selectedRowData[0].ClientAdditionalNumber);
+	$("#Province").val(selectedRowData[0].ClientProvince);
+	$("#ProvinceArabic").val(selectedRowData[0].ClientProvinceAr);
+	$("#PostalCode").val(selectedRowData[0].ClientPostalCode);
+
+	// Fix incorrect value assignments
+	$("#District").val(selectedRowData[0].ClientNeighborhood); // was incorrectly using Arabic version key
+	$("#DistrictArabic").val(selectedRowData[0].ClientNeighborhoodAr); // was incorrectly using country code key
+
+
+
+								} else {
+									DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+									return;
+								}
+				}
+
+			}
+
+
+			  function ClientSalesOrderNodataGridSelectionChanged(e) {
+				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+				const ddbInstance = $("#OurSalesOrderNo").dxDropDownBox("instance");
+
+				if (selectedKey) {
+					ddbInstance.option("value", selectedKey);
+					 ddbInstance.close();
+				}
+				if(IsCurrent!="true")
+				{
+		 var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
+								// Get ReferenceNo from selected row
+								if (selectedRowData.length > 0) {
+									accheadid = selectedRowData[0].AccountId;
 
 
 									// refno=selectedRowData[0].ReferenceNo;
@@ -4112,6 +4401,9 @@
 			}
 
 			function ClientCodedataGridInitialized(e) {
+				dataGrid1 = e.component;
+			}
+				function ClientSalesOrderNodataGridInitialized(e) {
 				dataGrid1 = e.component;
 			}
 			 function dropDownBoxOnInput(e) {
@@ -4276,8 +4568,9 @@
 				// Get ReferenceNo from selected row
 				if (selectedRowData.length > 0) {
 								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId;
-
-
+								ExchangeRate=selectedRowData[0].ExchangeRate;
+								$("#currencyexchangerate").dxNumberBox("instance").option("value", ExchangeRate);
+								
 
 				} else {
 					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -4457,6 +4750,14 @@
 				if (selectedRowData.length > 0) {
 
 						companyid = selectedRowData[0].CompanyId;
+						alert(selectedRowData[0].SellerOtherIdtype)
+									  $("#OurGroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].SellerGroupVatnumber)
+									  $("#OurVATNo").dxTextBox("instance").option("value",selectedRowData[0].CompanyVatno)
+									   $("#OurCompanyRegisteredName").dxTextBox("instance").option("value",selectedRowData[0].CompanyName)
+									//  $("#OurClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
+									  $("#OurCompanyNameinArabic").dxDropDownBox("instance").option("value",selectedRowData[0].CompanyNameAr)
+									  $("#OtherID1").dxTextBox("instance").option("value",selectedRowData[0].SellerOtherSellerId)
+									  dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [selectedRowData[0].SellerOtherIdtype]});
 
 				} else {
 
@@ -5752,7 +6053,7 @@
 				//PaymentMeansTypeCode: paymentmeanstypecode,
 				 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
 				 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-				 // InvoiceTransactionCode: $("#InvoiceTransactionsCode     ").dxDropDownBox("instance").option("value")|| null,
+				 // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
 
 				 ClientCode: accheadid|| null,
 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
@@ -6896,6 +7197,124 @@
 			console.error("fileInput element not found");
 		}
 	}
+
+	// function onDropDownInitialized(e) {
+	// 	   dropDownInstance = e.component;
+
+	// 	   $("#tagBoxContainer").dxTagBox({
+	// 		   dataSource: [
+	// 			   { ID: 1, Name: "3rd Party Tax Invoice" },
+	// 			   { ID: 2, Name: "Nominal Tax Invoice" },
+	// 			   { ID: 3, Name: "Export Tax Invoice" },
+	// 			   { ID: 4, Name: "Summary Tax Invoice" },
+	// 			   { ID: 5, Name: "Self Billed Tax Invoice" }
+	// 		   ],
+	// 		   valueExpr: "ID",
+	// 		   displayExpr: "Name",
+	// 		   onValueChanged: function(data) {
+	// 			   dropDownInstance.option("value", data.value);
+	// 		   },
+	// 		   showSelectionControls: true,
+	// 		   applyValueMode: "useButtons",
+	// 		   multiline: false
+	// 	   });
+	//    }
+
+	//    function setInvoiceTransactionCode() {
+	// 	   let strTransactionCode = "";
+	// 	 //  let subtype = document.getElementById("txtInvoiceSubTypeCode").value; // Adjust based on your input
+
+		 
+	// 		   strTransactionCode = "01";
+
+	// 		   let selectedIds = dropDownInstance.option("value") || [];
+
+	// 		   for (let i = 1; i <= 5; i++) {
+	// 			   strTransactionCode += selectedIds.includes(i) ? "1" : "0";
+	// 		   }
+		   
+
+	// 	   return strTransactionCode;
+	//    }
+
+
+		$("#InvoiceTransactionsCode").dxDropDownBox({
+		dataSource: [],
+		valueExpr: "code",
+		displayExpr: "code",
+		value: ""
+	});
+
+
+
+	function onDropDownInitialized(e) {
+    dropDownInstance = e.component;
+}
+			function onVatTransactionSelectionChanged(e) {
+		const selectedIds = e.component.option("selectedItemKeys");
+		const transactionCode = setInvoiceTransactionCode(selectedIds);
+
+		const ddbInstance = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+
+		// Get the dataSource and ensure we deal with an array
+		let dataSource = ddbInstance.option("dataSource");
+		let currentData = [];
+
+		if (Array.isArray(dataSource)) {
+			currentData = dataSource;
+		} else if (dataSource && typeof dataSource.items === "function") {
+			currentData = dataSource.items();
+		}
+
+		// Check if transactionCode already exists
+		const found = currentData.find(item => item.code === transactionCode);
+
+		// If not, add it
+		if (!found) {
+			currentData.push({ code: transactionCode });
+
+			// Reassign the updated array as the new data source
+			ddbInstance.option("dataSource", currentData);
+		}
+
+		// Set the value
+		ddbInstance.option("value", transactionCode);
+
+		console.log("Transaction Code: " + transactionCode);
+	}
+
+
+
+	// Generates the transaction code like "010110"
+	function setInvoiceTransactionCode(selectedIds) {
+		// Initialize the transaction code with a prefix
+		let strTransactionCode = "01";
+
+		// Dynamically generate the binary string based on selections (1 for selected, 0 for unselected)
+		for (let i = 1; i <= 5; i++) {
+			strTransactionCode += selectedIds.includes(i) ? "1" : "0";
+		}
+
+		return strTransactionCode;
+	}
+
+
+
+
+
+	// // To get the final transaction code like "010110"
+	// function setInvoiceTransactionCode() {
+	// 	let strTransactionCode = "01"; // or get this dynamically
+	// 	const selected = dropDownInstance.option("value") || [];
+	// 	alert(selected)
+	// 	for (let i = 1; i <= 5; i++) {
+	// 		strTransactionCode += selected.includes(i) ? "1" : "0";
+	// 	}
+	//    $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value",strTransactionCode)
+
+	// 	return strTransactionCode;
+	// }
+
 
 
 </script>

@@ -114,7 +114,7 @@
 		pointer-events: none;
 	}
 
-	.context-menu {
+	.context-menuInvoice {
 		position: absolute;
 		background: #fff;
 		border-radius: 8px;
@@ -126,7 +126,7 @@
 		z-index: 1000;
 	}
 
-	.context-menu-item {
+	.context-menu-itemInvoice {
 		display: flex;
 		align-items: center;
 		padding: 10px 15px;
@@ -136,17 +136,17 @@
 		color: #333;
 	}
 
-		.context-menu-item i {
+		.context-menu-itemInvoice i {
 			margin-right: 10px;
 			font-size: 16px;
 			color: #007bff;
 		}
 
-		.context-menu-item:hover {
+		.context-menu-itemInvoice:hover {
 			background: #f0f0f0;
 		}
 
-		.context-menu-item:not(:last-child) {
+		.context-menu-itemInvoice:not(:last-child) {
 			border-bottom: 1px solid #e0e0e0;
 		}
 </style>
@@ -165,19 +165,19 @@
 	</div>
 </div>
 
-<div class="context-menu" id="contextMenu">
-	<div class="context-menu-item" onclick="viewInvoice()">
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice" onclick="viewInvoice()">
 		<i class="dx-icon-search"></i> View e-Invoice
 	</div>
 
-	<div class="context-menu-item" onclick="cancelInvoice()">
+	<div class="context-menu-itemInvoice" onclick="cancelInvoice()">
 		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
 	</div>
-	<div class="context-menu-item">
+	<div class="context-menu-itemInvoice">
 		<i class="dx-icon-file"></i> VAT Invoices (Obselete)
 	</div>
 
-	<div class="context-menu-item" onclick="cloneEInvoice()">
+	<div class="context-menu-itemInvoice" onclick="cloneEInvoice()">
 		<i class="dx-icon-copy"></i> Clone e-Invoice
 	</div>
 </div>
@@ -459,7 +459,9 @@
 
 		const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?${params.toString()}`;
 		const title = "VAT Invoice Edit(B2B)";
-		openModal(url, title);
+		//openModal(url, title);
+		 window.location.href = url; // Navigate to the page
+
 	}
 
 

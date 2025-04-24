@@ -469,7 +469,7 @@
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true).Width(162).MinWidth(23);
 					})
 				.OnCellClick("function(e) {handleCellClick(e);}")
-				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+				.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 				.WordWrapEnabled(true)
 				.AllowColumnReordering(true) // Enable column reordering
 				.AllowColumnResizing(true)   // Enable column resizing
@@ -564,6 +564,7 @@
 								.FilterRow(f => f.Visible(true))
 								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 							.Height(400)
+
 								.ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 								.Selection(s => s.Mode(SelectionMode.Single))
 								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
