@@ -33,6 +33,10 @@
         .limited-footer .btn-container:has(#ddButtonLayout, #btnShowFields, #btnShowRowTotals, #btnPrint,#menuReports,#btnDifferences) {
             display: block !important;
         }
+
+    .mainContainer{
+        width:100%;
+    }
 </style>
 
 
@@ -214,7 +218,7 @@
 
     $(document).ready(function () {
         // Load all records on page load (ignore default date values)
-        //loadAllRecords();
+            initializePivotGrid([]);
     });
 
     function loadAllRecords() {
@@ -339,7 +343,7 @@
                 store: data
             },
 
-            width: "100%",
+            width: "98%",
             height: $(window).height() - 50,
             allowSortingBySummary: true,
             allowSorting: true,
