@@ -859,7 +859,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     .Select(g => new
                     {
                         g.CompanyId,
-                        g.CompanyName
+                        g.CompanyName,
+                        g.SellerGroupVatnumber,
+                        g.CompanyVatno,
+                        g.CompanyNameAr,
+                        g.SellerOtherIdtype,
+                        g.SellerOtherSellerId
 
                     })
                     .ToListAsync();
@@ -1996,9 +2001,41 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 		}
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetSalesOrderNo(string accheadid)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = dbContext.Qry60210ordersBalanceToInvoices
+     .Where(o => o.ClientAccountLedgerNo == accheadid)
+     .Select(o => new
+     {
+         o.SalesOrderNo,
+         o.TotalOrderValue,
+         o.TotalInvoicedValue,
+         o.BalanceToInvoiceValue,
+         o.ClientPono,
+         o.ClientPodate,
+         o.ClientCode,
+         o.ClientAccountLedgerNo,
+         o.AccountHead,
+         o.OrderValueWoTax,
+         o.BalanceToInvoiceWoTax
+     })
+     .ToList();
 
 
-	}
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+    }
 }
 
 

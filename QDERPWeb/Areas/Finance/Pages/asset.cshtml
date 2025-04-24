@@ -819,7 +819,7 @@
 
                         <label for="" class="button-alignment-down">Latest Meter Reading:</label>
                         @(Html.DevExtreme().NumberBox()
-                        .ID("txtMaintenanceScarpValue")
+                        .ID("txtMaintenanceReading")
                       //  .Width(350)
                         .Value(0)
                         .ShowSpinButtons(true)
@@ -1023,7 +1023,6 @@
             alert("Please select a maintenance type and enter a valid reading.");
             return;
         }
-
         // Prepare data
         var today = new Date();
         var formattedDate = today.toLocaleDateString("en-GB", {
@@ -1034,21 +1033,18 @@
 
         // Add row to grid
         var grid = $("#MaintenanceGrid").dxDataGrid("instance");
-        var dataSource = grid.option("dataSource") || [];
-        dataSource.push({
+        var store = grid.getDataSource().store();
+        store.insert({
             MaintenanceType: maintenanceType,
             MaintenanceReading: maintenanceReading,
             ScheduledOn: formattedDate,
             ReminderDate: formattedDate,
             MaintenanceDone: false,
             Remarks: "",
+        }).then(() => {
+            grid.getDataSource().reload();
         });
-
-        // Update grid
-        grid.option("dataSource", dataSource);
-        grid.refresh();
     }
-
 
 
     function fetchAssetData(assetLedgerNo) {
