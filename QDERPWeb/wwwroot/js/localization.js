@@ -1953,7 +1953,8 @@
         "Total Invoiced Value": "Total Invoiced Value",
         "Balance To Invoice Value": "Balance To Invoice Value",
         "Balance To Invoice Without Tax": "Balance To Invoice Without Tax",
-        "PO Value Without Tax":"PO Value Without Tax"
+        "PO Value Without Tax": "PO Value Without Tax",
+        "Total": "Total"
 
 
     },
@@ -3725,7 +3726,8 @@
         "Total Invoiced Value": "إجمالي القيمة المفوترة",
         "Balance To Invoice Value": "الرصيد المتبقي للفوترة",
         "Balance To Invoice Without Tax": "الرصيد المتبقي للفوترة بدون ضريبة",
-        "PO Value Without Tax": "قيمة أمر الشراء بدون ضريبة"
+        "PO Value Without Tax": "قيمة أمر الشراء بدون ضريبة",
+        "Total":"الإجمالي"
 
 
     }

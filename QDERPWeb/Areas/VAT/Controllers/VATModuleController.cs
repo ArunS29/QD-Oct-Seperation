@@ -206,7 +206,20 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         i.ClientGroupVatnumber,
                         i.ClientVendorNo,
                         i.ClientOtherId,
-                        i.ClientOtherIdtype
+                        i.ClientOtherIdtype,
+                        i.ClientAddressStreet,
+                        i.ClientAddressStreetAr,
+                        i.ClientAdditionalStreet,
+                        i.ClientAdditionalStreetAr,
+                        i.ClientBuildingNumber,
+                        i.ClientCity,
+                        i.ClientCityAr,
+                        i.ClientAdditionalNumber,
+                        i.ClientProvince,
+                        i.ClientProvinceAr,
+                        i.ClientPostalCode,
+                        i.ClientNeighborhoodAr,
+                        i.ClientCountryCode
 
                     });
 
