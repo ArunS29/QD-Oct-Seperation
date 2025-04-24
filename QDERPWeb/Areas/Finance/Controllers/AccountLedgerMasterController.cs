@@ -216,7 +216,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         success = true,
                         UserName = userName,
-                        UserId=userId
+                        UserId = userId
 
                     });
                 }
@@ -506,7 +506,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 // Remove the 'SYS-OP-' prefix from both DebitAccount and CreditAccount if they have it
                 string debitAccount = accountID.Replace("SYS-OP-", "");
                 string creditAccount = "L00503";
-                    //accountID.Replace("SYS-OP-", "");  // Remove 'SYS-OP-' from CreditAccount as well
+                //accountID.Replace("SYS-OP-", "");  // Remove 'SYS-OP-' from CreditAccount as well
 
                 // Get today's date
                 var todayDate = DateTime.Now;
@@ -681,7 +681,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     }
                     else
                     {
-                     
+
                         var newAccount = new Tbl201ChartOfAccount
                         {
                             AccountId = chartAccount.AccountId,
@@ -797,7 +797,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         return BadRequest(new { Message = "AccountID cannot be null or empty." });
                     }
-                    
+
                     var accountDetails = await dbContext.Tbl201ChartOfAccounts
                         .Where(p => p.AccountId == accountID)
                         .Select(i => new
@@ -886,7 +886,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.ClientCountryCode,
                             i.RecordCreatedBy,
                             i.RecordCreatedOn,
-                           i.RecordModifiedBy,
+                            i.RecordModifiedBy,
                             i.RecordModifiedOn
 
 
@@ -909,32 +909,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-		[HttpGet("GetCreditPeriod")]
-		public IActionResult GetCreditPeriod(string accountId)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        [HttpGet("GetCreditPeriod")]
+        public IActionResult GetCreditPeriod(string accountId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 
             {
                 try
                 {
-					var creditPeriod = dbContext.Tbl201ChartOfAccounts
-				.Where(a => a.AccountId == accountId)
-				.Select(a => a.NoOfDaysCreditPeriod)
-				.FirstOrDefault();
+                    var creditPeriod = dbContext.Tbl201ChartOfAccounts
+                .Where(a => a.AccountId == accountId)
+                .Select(a => a.NoOfDaysCreditPeriod)
+                .FirstOrDefault();
 
-					return Json(new { noOfDays = creditPeriod });
+                    return Json(new { noOfDays = creditPeriod });
                 }
                 catch (Exception ex)
                 {
-					return StatusCode(500, new { Message = "An unexpected error occurred.", Error = ex.Message });
-				}
-				
-			}
+                    return StatusCode(500, new { Message = "An unexpected error occurred.", Error = ex.Message });
+                }
+
+            }
 
 
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-	}
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+    }
 }
 
 
