@@ -1,0 +1,76 @@
+﻿@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+@{
+    ViewBag.Title = "PurchaseOrder Grid";
+}
+@{
+    var dummyData = new[] {
+    new { PONo = "INV001", PODate = DateTime.Now.AddDays(-3), SupplierName = "John Doe", Qty = 3, UnitPrice=200, Discount = 10m, VatAmount = 5m, Total = 295m },
+     new { PONo = "INV002", PODate = DateTime.Now.AddDays(-2), SupplierName = "Jane Smith", Qty = 2, UnitPrice=200, Discount = 20m, VatAmount = 10m, Total = 390m },
+     new { PONo = "INV003", PODate = DateTime.Now.AddDays(-1), SupplierName = "Acme Corp", Qty = 5, UnitPrice=200, Discount = 15m, VatAmount = 7.5m, Total = 732.5m }
+ }; 
+}  
+
+
+<style>
+
+</style>
+@(Html.DevExtreme().DropDownButton()
+    .ID("PurchaseOrderDropdown")
+    .Text("Print")
+    .Icon("print")
+  .ElementAttr("style", "padding:10px")
+    .DisplayExpr("Text")
+    .KeyExpr("Text")
+    .ItemTemplate(@<text>
+    <div style="display: flex; align-items: center;">
+        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
+        <span><%- Text %></span>
+    </div>
+</text>)
+
+)
+
+
+<div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+    <div class="">
+        @(Html.DevExtreme().TextBox()
+                .ID("StockNo")
+                .Label("Stock No / Item Code:")
+                .LabelMode(EditorLabelMode.Outside)
+                .Width("90%"))
+    </div>   
+
+    @(Html.DevExtreme().DataGrid()
+            .ID("PurchaseOrderGrid")
+            .Height(620)
+            .DataSource(dummyData)
+            .ShowBorders(true)
+            .ShowColumnLines(true)
+            .ShowRowLines(true)
+            .RowAlternationEnabled(true)
+            .ColumnAutoWidth(true)
+            .Columns(columns =>
+            {
+                columns.Add().DataField("PONo").Caption("PO No");
+                columns.Add().DataField("PODate").Caption("PO Date").DataType(GridColumnDataType.Date);
+                columns.Add().DataField("SupplierName").Caption("Supplier Name");
+                columns.Add().DataField("Qty").Caption("Qty").DataType(GridColumnDataType.Number);
+                columns.Add().DataField("UnitPrice").Caption("Unit Price");
+                columns.Add().DataField("Discount").Caption("Discount").Format("##,##0.00");
+                columns.Add().DataField("VatAmount").Caption("VAT Amount").Format("##,##0.00");
+                columns.Add().DataField("Total").Caption("Total").Format("##,##0.00");
+            })
+            .Summary(summary =>
+            {
+                summary.TotalItems(items =>
+                {
+                    items.Add().Column("PONo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
+                    items.Add().Column("Qty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+                    items.Add().Column("Discount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                    items.Add().Column("VatAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                    items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                });
+            })
+            )
+</div>
