@@ -2047,7 +2047,158 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 
 		}
+		[HttpGet]
+		public async Task<IActionResult> GetCompanyBranch(DataSourceLoadOptions loadOptions)
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var supplierInvoices = dbContext.Tbl20166VatpurchaseMasters
+						.Where(i => i.PurchaseBillNo != null)
+						.Select(i => new
+						{
+							i.PurchaseBillNo
+						});
 
+					return Json(await DataSourceLoader.LoadAsync(supplierInvoices, loadOptions));
+				}
+			}
+			catch (Exception ex)
+			{
+				// Optional: log the exception before throwing
+				throw;
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetCompanyList(DataSourceLoadOptions loadOptions)
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var companyList = dbContext.Tbl901CompanyDetails
+						.Select(c => new
+						{
+							c.CompanyId,
+							c.CompanyName
+						});
+
+					return Json(await DataSourceLoader.LoadAsync(companyList, loadOptions));
+				}
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetAllSuppliers(DataSourceLoadOptions loadOptions)
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var query = dbContext.Tbl20166VatpurchaseMasters
+						.Select(s => new
+						{
+							s.SupplierCode,
+							s.SupplierNameAr,
+							s.SupplierName
+						});
+
+					return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+				}
+			}
+			catch (Exception ex)
+			{
+				// Optional: log the error
+				return StatusCode(500, new { message = "Internal Server Error", detail = ex.Message });
+			}
+
+			return Unauthorized(new { message = "Invalid tenant", success = false });
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetRevenueAccounts()
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var result = await dbContext.Qry201709vatexpensesLedgers
+						.Select(g => new
+						{
+							g.AccountId,           // Value member for GridLookUpEdit
+							g.IncomeLedger,        // Display member
+							g.AccountGroup,
+							g.AccountGroupId,
+							g.AccountGroupUnder,
+							g.IsLedgerObselete,
+							g.AccountHeadArabic    // Optional: For multilingual support
+						})
+						.ToListAsync();
+
+					return Ok(result);
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+		[HttpGet]
+		public async Task<ActionResult> GetNewPurchaseVoucherNo()
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					string invoiceAbbr = "PUR"; // Fixed abbreviation
+					DateTime invoiceDate = DateTime.Now;
+					string yearDigits = invoiceDate.ToString("yy");
+
+					// Format: PUR-YY-
+					string invoicePrefix = $"{invoiceAbbr}-{yearDigits}-";
+
+					// Get last voucher number matching current year
+					var lastInvoiceNumber = await dbContext.Tbl20166VatpurchaseMasters
+						.Where(i => i.PurchaseVoucherNo.StartsWith(invoicePrefix))
+						.OrderByDescending(i => i.PurchaseVoucherNo)
+						.Select(i => i.PurchaseVoucherNo)
+						.FirstOrDefaultAsync();
+
+			
+					int newNumber = 1;
+					if (!string.IsNullOrEmpty(lastInvoiceNumber))
+					{
+						// Extract numeric part after last hyphen
+						var match = Regex.Match(lastInvoiceNumber, @"(\d{6})$");
+						if (match.Success)
+						{
+							newNumber = int.Parse(match.Groups[1].Value) + 1;
+						}
+					}
+
+					// Build new voucher number: PUR-YY-000001
+					string newPurchaseVoucherNo = $"{invoiceAbbr}-{yearDigits}-{newNumber:D6}";
+
+					return Json(newPurchaseVoucherNo);
+				}
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+
+			return BadRequest("Failed to retrieve tenant and database context.");
+		}
 	}
 }
 
