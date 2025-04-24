@@ -5,7 +5,7 @@
         "Remarks/Notes:": "Remarks/Notes:",
         "Upload Attachment": "Upload Attachment",
         "Expiry Date:":"Expiry Date:",
-        "Account Confirmation Letter": "Account Confirmation Letter",
+        "AccountConfirmationLetter": "Account Confirmation Letter",
         "ID": "ID",
         "Employee Document": "Employee Document",
         "Reminder Days": "Reminder Days",
