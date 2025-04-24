@@ -5,7 +5,7 @@
         "Remarks/Notes:": "Remarks/Notes:",
         "Upload Attachment": "Upload Attachment",
         "Expiry Date:":"Expiry Date:",
-
+        "Account Confirmation Letter": "Account Confirmation Letter",
         "ID": "ID",
         "Employee Document": "Employee Document",
         "Reminder Days": "Reminder Days",
@@ -75,7 +75,6 @@
         "Business Card 2": "Business Card 2",
         "Business Card": "Business Card",
         "AccountDebtors":"AccountDebtors",
-
         "Client Category Code": "Client Category Code",
         "Client Category": "Client Category",
         "Category Code": "Category Code",
@@ -2229,6 +2228,7 @@
         "Cost Center Master:": "رئيس مركز التكلفة:",
         "Cost Center Incharge:": "المسؤول عن مركز التكلفة:",
         "Project:": "المشروع:",
+        "Account Confirmation Letter":"خطاب تأكيد الحساب",
         "Division/Branch:": "القسم / الفرع:",
         "Discontinued:": "تم الإيقاف:",
         "Cost Center Remarks:": "ملاحظات مركز التكلفة:",
