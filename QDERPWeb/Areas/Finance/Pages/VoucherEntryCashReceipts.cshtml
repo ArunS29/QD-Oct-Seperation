@@ -2808,7 +2808,7 @@
             function fetchVoucherEntries(voucherNo) {
                 $.ajax({
                     type: "GET",
-                    url: "/api/VoucherMaster/LoadVoucherEntries",
+                    url: "/api/VoucherMaster/LoadreceiptEntries",
                     contentType: "application/json",
                     data: { voucherNo: voucherNo },
                     success: function (response) {

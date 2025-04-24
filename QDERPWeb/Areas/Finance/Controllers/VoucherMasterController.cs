@@ -492,8 +492,63 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+		[HttpGet]
+		public async Task<ActionResult> LoadreceiptEntries(DataSourceLoadOptions loadOptions, string voucherNo)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					if (string.IsNullOrEmpty(voucherNo))
+					{
+						return BadRequest(new { success = false, message = "Invalid Voucher Number." });
+					}
 
-        [HttpPost]
+					var qryListOfAccountlists = dbContext.Qry201VoucherEntryScreenDisplays
+						.Where(p => p.VoucherNo == voucherNo)
+						.OrderBy(i => i.DrCr == "Dr" ? 1 : 0) // Ensures "Dr" entries come first
+						.Select(i => new
+						{
+							i.VoucherNo,
+							i.VoucherEntryNo,
+							i.DrCr,
+							i.DrAmount,
+							i.CrAmount,
+							i.EntryNarration,
+							i.AccountHead,
+							i.SysRemarks
+						})
+						.ToList();
+
+					// Fetch AccountHead names for mapping
+					var accountIds = qryListOfAccountlists.Select(i => i.AccountHead).Distinct().ToList();
+					var accountHeadMap = dbContext.Qry201ListOfAccounts
+						.Where(a => accountIds.Contains(a.AccountId))
+						.ToDictionary(a => a.AccountId, a => a.AccountHead);
+
+					// Map AccountId to AccountHead
+					var resultList = qryListOfAccountlists.Select(i => new VoucherEntryDisplayDTO
+					{
+						VoucherNo = i.VoucherNo,
+						VoucherEntryNo = i.VoucherEntryNo,
+						DrCr = i.DrCr,
+						DrAmount = i.DrAmount,
+						CrAmount = i.CrAmount,
+						EntryNarration = i.EntryNarration,
+						AccountHead = accountHeadMap.ContainsKey(i.AccountHead) ? accountHeadMap[i.AccountHead] : i.AccountHead,
+						SysRemarks = i.SysRemarks
+					}).ToList();
+
+					return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+				}
+			}
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+		[HttpPost]
         public async Task<ActionResult> AddBPVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName, int Gridcount)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -2218,8 +2273,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 if (existingVoucher != null)
                 {
-                    // Update existing record
-                    dbContext.Entry(existingVoucher).CurrentValues.SetValues(VM);
+						dbContext.Entry(existingVoucher).State = EntityState.Detached;
+						dbContext.Entry(VM).State = EntityState.Modified;
+						// Update existing record
+						dbContext.Entry(existingVoucher).CurrentValues.SetValues(VM);
                 }
                 else
                 {

@@ -1019,7 +1019,7 @@
 					"InvoiceDueDate": $("#InvoiceDueDate").dxDateBox("instance").option("value"),
 					"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),
 					"VoucherRefNo": $("#VoucherRefNo").dxTextBox("instance").option("value"),
-					"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
+					"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value") || null,
 					"VoucherType": $("#VoucherType").dxSelectBox("instance").option("value"),
 					"BillRemarks": $("#BillRemarks").dxTextBox("instance").option("value"),
 					"UseSubmittedDate": $("#UseSubmittedDate").dxCheckBox("instance").option("value"),
@@ -1148,7 +1148,23 @@
 					  $("#ApprovedOntext").dxTextBox("instance").option("value", data.VoucherApprovedOn || "");
 					$("#UseSubmittedDate").dxCheckBox("instance").option("value", data.UseSubmittedDate || false);
 
-					DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
+					var verifiedDate = data.VoucherVerifiedOn ? new Date(data.VoucherVerifiedOn) : null;
+					var formattedDate = verifiedDate
+						? verifiedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+						: "";
+
+					$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
+					var approvedDate = data.VoucherApprovedOn ? new Date(data.VoucherApprovedOn) : null;
+					var formattedApprovedDate = approvedDate
+						? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+						: "";
+
+					$("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
+
+					// Check if both VerifiedOnDate and ApprovedOntext have values
+					if (formattedDate && formattedApprovedDate) {
+						disableEditing();
+					}
 				}
 			},
 			error: function () {
@@ -1160,25 +1176,64 @@
 	function fetchVoucherEntries(voucherNo) {
 		$.ajax({
 			type: "GET",
-			url: "/api/SalesVoucher/GetVoucherEntries",
+			url: "/api/VoucherMaster/LoadreceiptEntries",
 			contentType: "application/json",
 			data: { voucherNo: voucherNo },
 			success: function (response) {
-				if (!response || !response.data) {
-					DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
-					//return;
+				if (!response || !response.data || response.data.length === 0) {
+					// DevExpress.ui.notify("No voucher entries found.", "warning", 2000);
+					return;
 				}
-
-
-				$("#dataGrid").dxDataGrid({
-					dataSource: response.data,
-					keyExpr: "VoucherNo",
-					repaintChangesOnly: true
-				});
-
-				DevExpress.ui.notify("Voucher entries fetched successfully.", "success", 2000);
+				var voucherTextBox = $("#VoucherNo").dxTextBox("instance");
+				if (voucherTextBox) {
+					voucherTextBox.option("readOnly", true);
+				}
+				var dataGrid = $("#dataGrid").dxDataGrid("instance");
+				if (dataGrid) {
+					dataGrid.option("dataSource", response.data);
+					var button = $("#btnSave").dxButton("instance");
+					button.option("text", "Update");
+				} else {
+					$("#dataGrid").dxDataGrid({
+						dataSource: response.data,
+						keyExpr: "VoucherEntryNo",
+						repaintChangesOnly: true,
+						editing: {
+							mode: "cell",
+							allowUpdating: true, // Enable editing
+						},
+						onRowUpdated: function (e) {
+							saveUpdatedVoucherEntry(e.data);
+						},
+						columns: [
+							{ dataField: "VoucherEntryNo", caption: "Entry No", allowEditing: false },
+							{ dataField: "DrCr", caption: "Dr/Cr", allowEditing: false },
+							{
+								dataField: "AccountHead",
+								caption: "Account Head",
+								allowEditing: true, // Make this column editable
+								lookup: {
+									dataSource: new DevExpress.data.CustomStore({
+										loadMode: "raw",
+										key: "AccountId",
+										load: function () {
+											return $.getJSON("/api/VoucherMaster/GetEditAccountHead");
+										}
+									}),
+									valueExpr: "AccountId",
+									displayExpr: "AccountHead"
+								}
+							},
+							{ dataField: "DrAmount", caption: "Debit Amount", dataType: "number", allowEditing: false },
+							{ dataField: "CrAmount", caption: "Credit Amount", dataType: "number", allowEditing: false },
+							{ dataField: "EntryNarration", caption: "Narration", allowEditing: false },
+							{ dataField: "SysRemarks", caption: "Remarks", allowEditing: false }
+						]
+					});
+				}
 			},
-			error: function () {
+			error: function (xhr, status, error) {
+				console.error("Error fetching voucher entries:", error);
 				DevExpress.ui.notify("Error fetching voucher entries.", "error", 2000);
 			}
 		});
@@ -1376,7 +1431,7 @@
 
 				 success: function (response) {
 
-
+					
 
 					  $("#txtEntryNarration").dxTextArea("instance").option("value", "");
 					  var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
@@ -1407,7 +1462,7 @@
 
 					 // Get the latest entry from the filtered data
 					 var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
-					 
+					Savevoucherdatas();
 					 if (accheadname) {
 
 						 const params = {
@@ -1468,7 +1523,7 @@
 				 }
 
 			 });
-
+			
 		} else {
 			IsNotification = true;
 			// Append the stored value back when the user clicks Add again
@@ -2646,6 +2701,79 @@
 				);
 			}
 		});
+	}
+	function Savevoucherdatas() {
+		var isValid = true;
+		var requiredFields = [
+			{ id: "#VoucherNo", type: "dxTextBox" },
+			{ id: "#VoucherDate", type: "dxDateBox" },
+			{ id: "#VoucherEffectiveDate", type: "dxDateBox" },
+			// { id: "#VoucherRefNo", type: "dxTextBox" },
+			{ id: "#VoucherType", type: "dxSelectBox" }
+			// Removed #VoucharNarration and #BillRemarks
+		];
+		requiredFields.forEach(function (field) {
+			var instance = $(field.id)[field.type]("instance");
+			var value = instance.option("value");
+
+			if (!value) {
+				isValid = false;
+
+				// Highlight the field with an error (optional)
+				instance.option("validationError", { message: "This field is required." });
+				instance.option("isValid", false);
+			} else {
+				instance.option("isValid", true); // Clear any existing errors
+			}
+		});
+
+		if (!isValid) {
+			DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "error", 3000);
+			return; // Exit the function without saving
+		}
+
+		var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+		var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
+
+		
+			var VM = {
+				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
+				"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
+				"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
+				"InvoiceSubmittedDate": $("#InvoiceSubmittedDate").dxDateBox("instance").option("value"),
+				"InvoiceDueDate": $("#InvoiceDueDate").dxDateBox("instance").option("value"),
+				"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),
+				"VoucherRefNo": $("#VoucherRefNo").dxTextBox("instance").option("value"),
+				"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
+				"VoucherType": $("#VoucherType").dxSelectBox("instance").option("value"),
+				"BillRemarks": $("#BillRemarks").dxTextBox("instance").option("value"),
+				"UseSubmittedDate": $("#UseSubmittedDate").dxCheckBox("instance").option("value"),
+				"IsVerified": $("#VerifiedBy").dxCheckBox("instance").option("value"),
+				"IsApproved": $("#ApprovedBy").dxCheckBox("instance").option("value"),
+				"VoucherVerifiedOn": null,
+				"VoucherApprovedOn": null
+			};
+
+			$.ajax({
+				type: "POST",
+				url: "/api/VoucherMaster/UpdateVoucher",
+				contentType: "application/json",
+				data: JSON.stringify(VM),
+				dataType: "json",
+				success: function (response) {
+					if (response.success) {
+						DevExpress.ui.notify("Voucher details saved successfully!", "success", 2000);
+
+					} else {
+						//DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
+					}
+				},
+				error: function (xhr, status, error) {
+					//DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
+				}
+			});
+		
+	
 	}
 	
 </script>

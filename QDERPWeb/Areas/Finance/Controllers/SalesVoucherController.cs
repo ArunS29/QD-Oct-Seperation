@@ -86,10 +86,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 		public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName, int Gridcount)
 		{
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant." });
-			}
-			if (voucherEntries == null || !voucherEntries.Any())
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+				if (voucherEntries == null || !voucherEntries.Any())
 			{
 				return BadRequest(new { success = false, message = "Invalid data received." });
 			}
@@ -590,10 +590,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+		
 
 
 
 
-
-    }
+	}
 }
