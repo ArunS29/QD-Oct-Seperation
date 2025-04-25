@@ -1958,11 +1958,9 @@
         "Balance To Invoice Value": "Balance To Invoice Value",
         "Balance To Invoice Without Tax": "Balance To Invoice Without Tax",
         "PO Value Without Tax": "PO Value Without Tax",
-        "Total": "Total",
         "Client Outstanding Details": "Client Outstanding Details",
         "Supplier Outstanding Details": "Supplier Outstanding Details",
-        "Bank Account Outstanding Details": "Bank Account Outstanding Details"
-
+        "Bank Account Outstanding Details": "Bank Account Outstanding Details",
         "Total": "Total",
         "VAT on Sales":"VAT on Sales"
 
