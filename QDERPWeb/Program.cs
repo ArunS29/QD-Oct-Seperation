@@ -70,6 +70,7 @@ builder.Services.AddScoped<CurrencyService>();
 builder.Services.AddScoped<LanguageService>();
 builder.Services.AddScoped<TenantDbContextHelper>();
 builder.Services.AddHttpClient();
+builder.Services.AddHostedService<AttachmentCleanupService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 var excludedAreas = new[] { "Security", "Help" };

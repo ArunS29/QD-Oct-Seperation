@@ -7,6 +7,7 @@ using System.Linq;
 using QD.ERP.Web.Areas.Finance.Reports.test;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
+using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
 
 namespace QD.ERP.Web.Controllers
 {
@@ -95,6 +96,9 @@ namespace QD.ERP.Web.Controllers
                 case "cashPayments":
                     report = new cashPayments(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
+                case "cashPaymentformat2":
+                    report = new cashPaymentformat2(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
 
                 default:
                     throw new ArgumentException("Invalid report name.");
@@ -105,6 +109,7 @@ namespace QD.ERP.Web.Controllers
             report.CreateDocument();
             return report;
         }
+
     }
 
     public class ReportAttachmentRequest
