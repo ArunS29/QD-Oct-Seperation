@@ -35,42 +35,53 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             var attachments = new List<IFormFile>();
 
-            // Only use server-generated attachments
-            if (!string.IsNullOrEmpty(emailRequest.ServerGeneratedAttachment))
+            // Use server-generated attachment from session (path set during report generation)
+            var serverFilePath = HttpContext.Session.GetString("EmailAttachmentPath");
+
+            if (!string.IsNullOrEmpty(serverFilePath) && System.IO.File.Exists(serverFilePath))
             {
-                var safeFileName = Path.GetFileName(emailRequest.ServerGeneratedAttachment); // prevent directory traversal
-                var baseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "attachments"); // adjust this path
-                var serverFilePath = Path.Combine(baseDirectory, safeFileName);
+                _logger.LogInformation($"Using session-stored attachment path: {serverFilePath}");
 
-                _logger.LogInformation($"Looking for server-generated attachment at: {serverFilePath}");
+                IFormFile fileAttachment;
 
-                if (System.IO.File.Exists(serverFilePath))
+                await using (var fileStream = new FileStream(serverFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    await using var fileStream = new FileStream(serverFilePath, FileMode.Open, FileAccess.Read);
                     var memoryStream = new MemoryStream();
                     await fileStream.CopyToAsync(memoryStream);
                     memoryStream.Position = 0;
 
-                    var file = new FormFile(memoryStream, 0, memoryStream.Length, "ServerGeneratedAttachment", safeFileName)
+                    fileAttachment = new FormFile(memoryStream, 0, memoryStream.Length, "ServerGeneratedAttachment", Path.GetFileName(serverFilePath))
                     {
                         Headers = new HeaderDictionary(),
-                        ContentType = "application/octet-stream"
+                        ContentType = "application/pdf"
                     };
+                }
 
-                    attachments.Add(file);
-                }
-                else
+                attachments.Add(fileAttachment);
+
+                // Now it's safe to delete the file — all streams are closed
+                try
                 {
-                    _logger.LogWarning($"Server-generated attachment not found at: {serverFilePath}");
+                    System.IO.File.Delete(serverFilePath);
+                    _logger.LogInformation($"Deleted temp file: {serverFilePath}");
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Failed to delete temp file: {ex.Message}");
+                }
+
+            }
+            else
+            {
+                _logger.LogWarning("Attachment file path is missing from session or file not found.");
             }
 
-            // Send email
+            // Send email using your helper
             bool success = await EmailHelper.SendEmailAsync(
                 emailRequest.To,
                 emailRequest.Subject,
                 emailRequest.Body,
-                null, // No OTP
+                null, // OTP not used here
                 attachments
             );
 
@@ -84,8 +95,8 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 return StatusCode(500, new { success = false, message = "Failed to send email." });
             }
         }
-    }
 
+    }
     public class EmailRequest
     {
         public string To { get; set; }
