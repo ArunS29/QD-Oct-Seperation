@@ -11,6 +11,7 @@
         margin: 10px;
         padding: 0;
         background-color: transparent;
+        width:100%;
     }
 
     .content-container-top {
@@ -114,7 +115,7 @@
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 
-<input id="formId" value="frm201LedgerAccount1" type="hidden" />
+@* <input id="formId" value="frm201LedgerAccount1" type="hidden" /> *@
 
 <div class="title">
     <div class="header-container">
@@ -195,47 +196,47 @@
                 <div id="vatOnSalesForm" style="display: flex; flex-direction: column; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">1 - Standard rated Sales 5%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssCreditNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssSalesTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">1a - Standard rated Sales 15%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15Revenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15CreditNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15SalesTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">Sales to customers in VAT Implementing GCC</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("GccRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("GccCreditNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">3 - Zero rated Domestic Sales</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DzrRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DzrCreditNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">4 - Exports</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("ExpRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("ExpCreditNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">5 - Exempt Sales</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DexRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DexCreditNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">6 - Total Sales</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RevenueTotal"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("CreditNoteTotal"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DSSTotalSalesTax"))
                     </div>
                 </div>
 
@@ -243,61 +244,65 @@
                 <div id="vatOnPurchaseForm" style="display: none; flex-direction: column; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">7 - Standard rated Domestic Purchase 5%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">7a - Standard rated Domestic Purchase 15%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssPurchases15Perc"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15PerDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15PerPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">8 - Imports subject to VAT paid at Customer 5%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPCPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPCDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPCPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">8a - Imports subject to VAT paid at Customer 15%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPCPurchases15Perc"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPC15PerDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPC15PerPurTaxAfterAdj"))
+
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">9 - Imports subject to VAT - thru RCM 5%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCMPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCMDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCMPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">9a - Imports subject to VAT - thru RCM 15%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCMPurchases15Perc"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCM15PerDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCM15PerPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">10 - Zero rate Purchase</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DZRPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DZRDebitNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">11 - Exempt Purchase</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                    </div>
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DEXPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DEXDebitNote"))
+@*                         @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssRevenue"))
+ *@                    </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">12 - Total Purchase</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("PurchaseTotal"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DebitNoteTotal"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("TotalPurchaseTax"))
                     </div>
                 </div>
 
@@ -356,5 +361,135 @@
             document.getElementById("vatOnSalesForm").style.display = "none";
             document.getElementById("vatOnPurchaseForm").style.display = "flex";
         }
+    }
+
+
+    function ddBtnShowRecords_click(duration) {
+        
+        var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+        var toDateBox = $("#todateBox").dxDateBox("instance");
+        var frmDate = new Date(frmDateBox.option("value"));
+        var toDate = new Date(toDateBox.option("value"));
+        var currentDate = new Date();
+        switch (duration) {
+            case 'today':
+                frmDate = toDate = currentDate;
+                break;
+            case 'yesterday':
+                var dateObj = new Date();
+                // Subtract one day from current time
+                dateObj.setDate(dateObj.getDate() - 1);
+                frmDate = toDate = dateObj;
+                break;
+            case 'week':
+                var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+
+                // Calculate the start of the week (Saturday)
+                var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+
+                // Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+                frmDate = new Date(currentDate.setDate(startOfWeek));
+                toDate = new Date(currentDate.setDate(startOfWeek + 6));
+                break;
+            case 'tillmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+                toDate = currentDate; //Today
+                break;
+            case 'fullmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                break;
+            case 'tillyear':
+                // Get the first and last day of the current year
+                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+                toDate = currentDate;// Today
+                break;
+            case 'fullyear':
+                // Get the first and last day of the current year
+                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+                toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
+                break;
+            case 'lastyear':
+                // Get the first and last day of the last year
+                frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
+                toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
+                break;
+            case 'lastmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+                break;
+        }
+        frmDate = frmDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        toDate = toDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        FromDate = frmDate;
+        ToDate = toDate;
+        //alert(FromDate)
+
+        frmDateBox.option("value", frmDate);  // Set frmDateBox value
+        toDateBox.option("value", toDate);    // Set toDateBox value
+        $.ajax({
+            url: '/api/VATModule/GetVATRetursSalesandPurchase',  // API endpoint
+            type: 'GET',
+            data: {
+                frmDate: frmDate,
+                toDate: toDate
+            },
+            success: function (data) {
+          
+              $("#DssRevenue").dxNumberBox("instance").option("value", data[0].DSS_Revenue);
+              $("#DssCreditNote").dxNumberBox("instance").option("value", data[0].DSS_CreditNote);
+              $("#DssSalesTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_Sales_TaxAfterAdj);
+              $("#Dss15CreditNote").dxNumberBox("instance").option("value", data[0].DSS_15_CreditNote);
+              $("#Dss15SalesTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_15_Sales_TaxAfterAdj);
+              $("#GccRevenue").dxNumberBox("instance").option("value", data[0].GCC_Revenue);
+              $("#GccCreditNote").dxNumberBox("instance").option("value", data[0].GCC_CreditNote);
+              $("#DzrRevenue").dxNumberBox("instance").option("value", data[0].DZR_Revenue);
+              $("#DzrCreditNote").dxNumberBox("instance").option("value", data[0].DZR_CreditNote);
+              $("#ExpRevenue").dxNumberBox("instance").option("value", data[0].EXP_Revenue);
+              $("#ExpCreditNote").dxNumberBox("instance").option("value", data[0].EXP_CreditNote);
+              $("#DexCreditNote").dxNumberBox("instance").option("value", data[0].DEX_CreditNote);
+              $("#RevenueTotal").dxNumberBox("instance").option("value", data[0].RevenueTotal);
+              $("#CreditNoteTotal").dxNumberBox("instance").option("value", data[0].CreditNoteTotal);
+              $("#DSSTotalSalesTax").dxNumberBox("instance").option("value", data[0].DSS_Total_SalesTax_BH);
+              $("#DssPurchases").dxNumberBox("instance").option("value", data[0].DSS_Purchases);
+              $("#DssDebitNote").dxNumberBox("instance").option("value", data[0].DSS_CreditNote);
+              $("#DssPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_Pur_TaxAfterAdj);
+              $("#DssPurchases15Perc").dxNumberBox("instance").option("value", data[0].DSS_Purchases15Perc);
+              $("#Dss15PerDebitNote").dxNumberBox("instance").option("value", data[0].DSS_DebitNote);
+              $("#Dss15PerPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_15Per_Pur_TaxAfterAdj);
+              $("#IPCPurchases").dxNumberBox("instance").option("value", data[0].IPC_Purchases);
+              $("#IPCDebitNote").dxNumberBox("instance").option("value", data[0].IPC_DebitNote);
+              $("#IPCPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].IPC_Pur_TaxAfterAdj);
+              $("#IPCPurchases15Perc").dxNumberBox("instance").option("value", data[0].IPC_Purchases15Perc);
+              $("#IPC15PerDebitNote").dxNumberBox("instance").option("value", data[0].IPC_15Per_DebitNote);
+              $("#IPC15PerPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].IPC_15Per_Pur_TaxAfterAdj);
+              $("#RCMPurchases").dxNumberBox("instance").option("value", data[0].RCM_Purchases);
+              $("#RCMDebitNote").dxNumberBox("instance").option("value", data[0].RCM_DebitNote);
+              $("#RCMPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].RCM_Pur_TaxAfterAdj);
+              $("#RCMPurchases15Perc").dxNumberBox("instance").option("value", data[0].RCM_Purchases15Perc);
+              $("#RCM15PerDebitNote").dxNumberBox("instance").option("value", data[0].RCM_15Per_DebitNote);
+              $("#RCM15PerPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].RCM_15Per_Pur_TaxAfterAdj);
+              $("#DZRPurchases").dxNumberBox("instance").option("value", data[0].DZR_Purchases);
+              $("#DZRDebitNote").dxNumberBox("instance").option("value", data[0].DZR_CreditNote);
+              $("#DEXPurchases").dxNumberBox("instance").option("value", data[0].DEX_Purchases);
+              $("#DEXDebitNote").dxNumberBox("instance").option("value", data[0].DEX_DebitNote);
+              $("#TotalPurchaseTax").dxNumberBox("instance").option("value", data[0].TotalPurchaseTax);
+
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
     }
 </script>

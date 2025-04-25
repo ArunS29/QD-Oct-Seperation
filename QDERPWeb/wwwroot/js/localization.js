@@ -1963,6 +1963,8 @@
         "Supplier Outstanding Details": "Supplier Outstanding Details",
         "Bank Account Outstanding Details": "Bank Account Outstanding Details"
 
+        "Total": "Total",
+        "VAT on Sales":"VAT on Sales"
 
 
     },
