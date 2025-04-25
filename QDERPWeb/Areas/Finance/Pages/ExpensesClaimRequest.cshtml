@@ -7,6 +7,48 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
+    .dropdown-box {
+        position: absolute;
+        background-color: #ffffff;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        width: 450px;
+        z-index: 9999;
+    }
+
+    .dropdown-content {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+    .col {
+        flex: 1;
+        padding: 0 8px;
+        min-width: 180px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .actions {
+        justify-content: flex-end;
+    }
+
+        .actions .col {
+            text-align: right;
+        }
+
     .overlay {
         display: none;
         position: fixed;
@@ -185,19 +227,15 @@
             .OnValueChanged("onApprovedAmountChanged")
             .Format("#,##0.00")
         )
-    </text>); // ✅ Fix applied
-                columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
-            <div class="text-center">
+        </text>); 
+                columns.Add().Caption("Action").Width(120)
+    .CellTemplate(@<text>
+            <div class="dropdown-wrapper">
                 @(Html.DevExtreme().Button()
-
-                .Type(ButtonType.Default)
                 .Icon("card")
-                .ElementAttr("class", "card-button")
-                )
+                .Type(ButtonType.Default)
+                .OnClick("onCardClick"))
             </div>
-        </text>)
-            .HeaderCellTemplate(@<text>
-            <div class="headerBolder">...</div>
         </text>);
 
                 columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
@@ -727,7 +765,85 @@
                            
                         )
 }
+<div id = "floatingDropdownForm" class="dropdown-box" style="display: none;">
+<div class="dropdown-content">
+    <div class="row">
+        <div class="col">
+            <label>Tax %</label>
+                @(Html.DevExtreme().TextBox().ID("txtTax"))
+        </div>
+        <div class="col">
+            <label>Amount</label>
+                @(Html.DevExtreme().TextBox().ID("txtAmount"))
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>Supplier</label>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ddlSupplier")
+                    .DataSource(new[] { "Supplier A", "Supplier B", "Supplier C" })
+                    .SearchEnabled(true))
+        </div>
+        <div class="col">
+            <label>Narration</label>
+                @(Html.DevExtreme().TextArea().ID("txtNarration").Height(60))
+        </div>
+    </div>
+    <div class="row actions">
+        <div class="col">
+                @(Html.DevExtreme().Button()
+                    .Text("Submit")
+                    .Type(ButtonType.Success)
+                    .OnClick("submitForm"))
+        </div>
+        <div class="col">
+                @(Html.DevExtreme().Button()
+                    .Text("Cancel")
+                    .Type(ButtonType.Normal)
+                    .OnClick("closeDropdownForm"))
+        </div>
+    </div>
+</div>
+</div>
+
 <script>
+        function onCardClick(e) {
+                const $dropdown = $("#floatingDropdownForm");
+
+                const buttonOffset = $(e.element).offset();
+                const buttonHeight = $(e.element).outerHeight();
+
+                $dropdown.css({
+                    top: buttonOffset.top + buttonHeight + 5,
+                    left: buttonOffset.left
+                });
+
+                $(".dropdown-box").not($dropdown).hide(); // hide other dropdowns
+                $dropdown.show();
+            }
+
+            function closeDropdownForm() {
+                $("#floatingDropdownForm").hide();
+            }
+
+            function submitForm() {
+                const tax = $("#txtTax").dxTextBox("instance").option("value");
+                const amount = $("#txtAmount").dxTextBox("instance").option("value");
+                const supplier = $("#ddlSupplier").dxSelectBox("instance").option("value");
+                const narration = $("#txtNarration").dxTextArea("instance").option("value");
+
+                console.log("Form submitted:", { tax, amount, supplier, narration });
+
+                DevExpress.ui.notify("Submitted successfully!", "success", 2000);
+                closeDropdownForm();
+            }
+
+            $(document).on("click", function (e) {
+                if (!$(e.target).closest(".dropdown-box, .dx-button").length) {
+                    closeDropdownForm();
+                }
+            });
     let paymentaccheadId;
     function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
