@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Data.SqlClient;
 using System.Dynamic;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
+using System.Numerics;
 
 
 namespace QD.ERP.Web.Areas.VAT.Controllers
@@ -860,24 +861,39 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			catch (Exception ex) { throw ex; }
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 
-		}
-		[HttpGet]
-		public async Task<IActionResult> GetCompanyBranch()
-		{
-			try
-			{
-				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					var result = await dbContext.Tbl901CompanyDetails
-					.Select(g => new
-					{
-						g.CompanyId,
-						g.CompanyName,
-						g.SellerGroupVatnumber,
-						g.CompanyVatno,
-						g.CompanyNameAr,
-						g.SellerOtherIdtype,
-						g.SellerOtherSellerId
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetCompanyBranch()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl901CompanyDetails
+                    .Select(g => new
+                    {
+                        g.CompanyId,
+                        g.CompanyName,
+                        g.SellerGroupVatnumber,
+                        g.CompanyVatno,
+                        g.CompanyNameAr,
+                        g.SellerOtherIdtype,
+                        g.SellerOtherSellerId,
+                        g.SellerAddressStreet,
+                        g.SellerAddressStreetAr,
+                        g.SellerAdditionalStreet,
+                        g.SellerAdditionalStreetAr,
+                        g.SellerBuildingNumber,
+                        g.SellerCity,
+                        g.SellerCityAr,
+                        g.SellerAdditionalNumber,
+                        g.SellerProvince,
+                        g.SellerProvinceAr,
+                        g.SellerPostalCode,
+                        g.SellerNeighborhood,
+                        g.SellerNeighborhoodAr,
+                        g.SellerCountryCode
+
 
 					})
 					.ToListAsync();
@@ -2199,7 +2215,151 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return BadRequest("Failed to retrieve tenant and database context.");
 		}
-	}
+	
+
+        [HttpPost]
+        public async Task<ActionResult> InsertCloneEInvoice(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var invoice = await dbContext.Tbl20161VatinvoiceMasters
+                                                 .FirstOrDefaultAsync(i => i.InvoiceNo == InvoiceNo);
+
+                    if (invoice == null)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
+
+                    string yearSuffix = DateTime.Now.ToString("yy"); // Get last two digits of the year
+
+                    // Get invoice abbreviation
+                    var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
+                        .Select(c => c.EinvoiceAbbrv)
+                        .FirstOrDefaultAsync();
+
+                    if (string.IsNullOrEmpty(invoiceAbbrv))
+                        return BadRequest("Invoice abbreviation not found.");
+
+                    // Get last invoice number
+                    var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
+                        .Where(i => i.InvoiceNo.StartsWith($"{invoiceAbbrv}{yearSuffix}-"))
+                        .OrderByDescending(i => i.InvoiceNo)
+                        .Select(i => i.InvoiceNo)
+                        .FirstOrDefaultAsync();
+
+                    int newNumber = 1; // Default if no previous invoices exist
+                    if (!string.IsNullOrEmpty(lastInvoiceNumber))
+                    {
+                        var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
+                        if (match.Success)
+                        {
+                            newNumber = int.Parse(match.Groups[1].Value) + 1;
+                        }
+                    }
+
+                    // Generate new invoice number
+                    string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
+
+                    // Extract values from the fetched invoice
+                    string ToInvoiceNo = newInvoiceNumber; // You can generate or assign this as needed
+                    DateTime InvoiceDate = invoice.InvoiceDate ?? DateTime.Now;
+                    string AddedBy = invoice.AddedBy ?? "System"; // Fallback if null
+                    DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
+                    string InvoiceUUID = invoice.InvoiceUuid ?? Guid.NewGuid().ToString();
+                    long? InvoiceCounterValue = invoice.InvoiceCounterValue;
+
+                    // Execute the stored procedure
+                    var result = dbContext.Database.ExecuteSqlRaw(
+                        "EXEC sp201_67InsertClone_EInvoice @p0,@p1,@p2,@p3,@p4,@p5,@p6",
+                        InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn, InvoiceUUID, InvoiceCounterValue);
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Invoice cloned successfully.",
+                        VoucherVerifiedBy = User.Identity?.Name ?? "System"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> InsertAmendEInvoice(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string yearSuffix = DateTime.Now.ToString("yy"); // e.g., "25"
+                    string creditNoteAbbrv = "CRN"; // Hardcoded abbreviation
+
+                    // Get last credit note number
+                    var lastCreditNoteNumber = await dbContext.Tbl20170VatcreditNoteMasters
+                        .Where(cn => cn.CreditNoteNo.StartsWith($"{creditNoteAbbrv}-{yearSuffix}-"))
+                        .OrderByDescending(cn => cn.CreditNoteNo)
+                        .Select(cn => cn.CreditNoteNo)
+                        .FirstOrDefaultAsync();
+
+                    int newNumber = 1; // Default if no previous credit notes exist
+                    if (!string.IsNullOrEmpty(lastCreditNoteNumber))
+                    {
+                        var match = Regex.Match(lastCreditNoteNumber, @"-(\d+)$");
+                        if (match.Success)
+                        {
+                            newNumber = int.Parse(match.Groups[1].Value) + 1;
+                        }
+                    }
+
+                    // Generate new Credit Note number
+                    string newCreditNoteNumber = $"{creditNoteAbbrv}-{yearSuffix}-{newNumber:D5}";
+
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var invoice = await dbContext.Tbl20161VatinvoiceMasters
+                                                 .FirstOrDefaultAsync(i => i.InvoiceNo == InvoiceNo);
+
+                    // Extract values from the fetched invoice
+                    string CreditNoteNo = newCreditNoteNumber; // You can generate or assign this as needed
+                    DateTime InvoiceDate = invoice.InvoiceDate ?? DateTime.Now;
+                    string AddedBy = invoice.AddedBy ?? "System"; // Fallback if null
+                    DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
+                    string CreditNoteUUID = invoice.InvoiceUuid ?? Guid.NewGuid().ToString();
+                    long? InvoiceCounterValue = invoice.InvoiceCounterValue;
+
+                    // Execute the stored procedure
+                    var result = dbContext.Database.ExecuteSqlRaw(
+                        "EXEC sp201_66InsertCreditNoteFromInvoice @p0,@p1,@p2,@p3,@p4,@p5,@p6",
+                        InvoiceNo, CreditNoteNo, AddedBy, AddedOn, CreditNoteUUID, InvoiceCounterValue);
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Invoice Amended successfully.",
+                        VoucherVerifiedBy = User.Identity?.Name ?? "System"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+    }
 }
 
 

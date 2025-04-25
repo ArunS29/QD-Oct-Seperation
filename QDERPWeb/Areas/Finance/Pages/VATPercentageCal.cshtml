@@ -1,71 +1,117 @@
 ﻿@page
+@using DevExtreme.AspNet.Mvc
 @model QD.ERP.Web.Areas.Finance.Pages.VATPercentageCalModel
 @{
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VAT Calculator</title>
+<style>
+    .dx-card {
+        background-color: var(--title-background-color);
+        padding: 20px;
+        width: 520px;
+        font-family: "Segoe UI", sans-serif;
+    }
 
-</head>
-<body>
+    .white-box .dx-texteditor-input {
+        background-color: white !important;
+    }
 
-    <div id="vatCalculator" style="width: 300px; margin: 50px auto;">
-        <h3>VAT Calculator</h3>
+    .white-button .dx-button-content {
+        background-color: white !important;
+        color: black !important;
+    }
 
-        <div id="amountBox"></div>
-        <div id="vatBox"></div>
-        <div id="vatAmountBox"></div>
-        <div id="totalAmountBox"></div>
+    
+    .percentage-button .dx-button {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc;
+    }
+
+
+    .ok-button .dx-button {
+        height: 38px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc;
+    }
+
+
+    .percentage-grid {
+        margin-top: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: 550px;
+    }
+
+        .percentage-grid .white-button {
+            width: 90px;
+        }
+</style>
+
+<div class="dx-card">
+    <!-- Total Amount -->
+    <div class="white-box">
+        @(Html.DevExtreme().NumberBox()
+            .Label("Total Amount")
+            .LabelMode(EditorLabelMode.Outside)
+            .ID("totalAmount")
+            .Min(0)
+            .Format("#,##0.00")
+            .Value(0)
+            )
     </div>
 
-    <script>
-        $(function () {
-            let amount = 0, vatPercent = 5, vatAmount = 0, totalAmount = 0;
+    <!-- Discount and OK side by side -->
+    <div style="margin-top: 10px; display: flex; align-items: baseline;">
+        <div class="white-box" style="flex: 1;">
+            @(Html.DevExtreme().NumberBox()
+                .Label("Discount")
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("discount")
+                .Min(0)
+                .Format("#,##0.00")
+                .Value(0)
+                )
+        </div>
+        <div class="btn ok-button">
+            @(Html.DevExtreme().Button()
+                .ID("okButton")
+                .Text("OK")
+                .OnClick("applyDiscount")
+                .Width(70)
+                )
+        </div>
 
-            $("#amountBox").dxNumberBox({
-                value: amount,
-                showSpinButtons: true,
-                label: "Amount",
-                onValueChanged: function (e) {
-                    amount = e.value;
-                    calculateVAT();
-                }
-            });
+    </div>
 
-            $("#vatBox").dxNumberBox({
-                value: vatPercent,
-                showSpinButtons: true,
-                label: "VAT %",
-                onValueChanged: function (e) {
-                    vatPercent = e.value;
-                    calculateVAT();
-                }
-            });
+    <!-- Percentage Buttons Grid -->
+    <div class="percentage-grid">
+        @foreach (var percent in new[] { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 })
+        {
+            <div class="white-button percentage-button">
+                @(Html.DevExtreme().Button()
+                    .Text(percent + " %")
+                    .OnClick($"function() {{ setDiscount({percent}) }}")
+                    )
+            </div>
+        }
+    </div>
 
-            let vatAmountBox = $("#vatAmountBox").dxTextBox({
-                value: vatAmount.toFixed(2),
-                readOnly: true,
-                label: "VAT Amount"
-            }).dxTextBox("instance");
+</div>
+<script>
+    function setDiscount(percent) {
+        const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+        const discountValue = total * (percent / 100);
+        $("#discount").dxNumberBox("instance").option("value", discountValue.toFixed(2));
+    }
 
-            let totalAmountBox = $("#totalAmountBox").dxTextBox({
-                value: totalAmount.toFixed(2),
-                readOnly: true,
-                label: "Total Amount (Incl. VAT)"
-            }).dxTextBox("instance");
-
-            function calculateVAT() {
-                vatAmount = (amount * vatPercent) / 100;
-                totalAmount = amount + vatAmount;
-
-                vatAmountBox.option("value", vatAmount.toFixed(2));
-                totalAmountBox.option("value", totalAmount.toFixed(2));
-            }
-        });
-    </script>
-
-</body>
-</html>
+    function applyDiscount() {
+        const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+        const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+        const finalAmount = total - discount;
+        DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+    }
+</script>
