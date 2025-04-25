@@ -1222,6 +1222,43 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
          return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpPost]
+        public async Task<ActionResult> DeleteCheque([FromBody] string chequeNo)
+        {
+            if (string.IsNullOrWhiteSpace(chequeNo))
+            {
+                return BadRequest(new { message = "Cheque No is required.", success = false });
+            }
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Retrieve the cheque record by ChequeNo
+                    var cheque = await dbContext.Tbl20113ChequeMasters
+                        .FirstOrDefaultAsync(c => c.ChequeNo == chequeNo);
+
+                    if (cheque == null)
+                    {
+                        return NotFound(new { message = "Cheque not found.", success = false });
+                    }
+
+                    // Remove the cheque record
+                    dbContext.Tbl20113ChequeMasters.Remove(cheque);
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { message = "Cheque deleted successfully.", success = true });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error deleting cheque with ChequeNo: {ChequeNo}", chequeNo);
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while deleting the cheque.", success = false });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> SaveChequeDetails([FromBody] Tbl20113ChequeMaster CM)

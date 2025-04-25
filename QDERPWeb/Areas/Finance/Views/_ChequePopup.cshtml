@@ -241,7 +241,9 @@
             .Text(new JS("formatMessage('Delete')"))
             .Icon("close")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .OnClick("function() { onDeleteButtonClick(); }") // Trigger the onClick event
             )
+
             @(Html.DevExtreme().Button()
             .ID("btnBack")
             .Text(new JS("formatMessage('Back')"))
@@ -428,6 +430,44 @@
             }
         });
     }
+    function onDeleteButtonClick() {
+        var chequeNo = $("#ChequeNo").dxTextBox("instance").option("value");
+
+        if (!chequeNo) {
+            DevExpress.ui.notify("Cheque No is required to delete.", "error", 2000);
+            return;
+        }
+        
+        // Confirm deletion
+        DevExpress.ui.dialog.confirm("Are you sure you want to delete this cheque?", "Delete Cheque").done(function (dialogResult) {
+            
+            if (dialogResult) {
+                // Perform the delete operation
+                
+                $.ajax({
+        
+                    type: "POST",
+                    url: "/api/VoucherMaster/DeleteCheque",
+                    contentType: "application/json",
+                    
+                    data: JSON.stringify(chequeNo), // Send chequeNo as a plain string
+                    success: function (response) {
+                        if (response.success) {
+                            DevExpress.ui.notify(response.message, "success", 2000);
+                            closeChequePopup(); // Close the popup after deletion
+                        } else {
+                            DevExpress.ui.notify(response.message, "error", 2000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        DevExpress.ui.notify("Error occurred while deleting the cheque: " + error, "error", 2000);
+                    }
+                });
+            }
+        });
+    }
+
+
 
     function saveCloseChequeDetails(chequeNo, voucherNo) {
            var baseCurrency = $("#txtbasecurrency").dxSelectBox("instance");
