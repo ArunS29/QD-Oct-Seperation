@@ -65,26 +65,25 @@ namespace QD.ERP.Web.Controllers
                 }
             }
 
-            // Generate report
+            // Generate the report
             XtraReport report = GenerateReport(request.ReportName, request.VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
 
-            // Define path to save the report in wwwroot/attachments/
-            string attachmentsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "attachments");
-            if (!Directory.Exists(attachmentsDirectory))
-                Directory.CreateDirectory(attachmentsDirectory);
-
+            // Save to Azure-safe path (temp path)
             string fileName = $"{request.VoucherNo}_{Guid.NewGuid():N}.pdf";
-            string fullPath = Path.Combine(attachmentsDirectory, fileName);
+            string tempDirectory = Path.GetTempPath(); // this works fine in Azure
+            string fullPath = Path.Combine(tempDirectory, fileName);
 
             using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 report.ExportToPdf(stream);
             }
 
+            // Store full path for later retrieval when attaching the file in the email
             HttpContext.Session.SetString("EmailAttachmentPath", fullPath);
 
-            return Ok(new { success = true, fileName });
+            return Ok(new { success = true, fileName }); // Only send fileName, not full path
         }
+
 
 
         private XtraReport GenerateReport(string reportName, string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
