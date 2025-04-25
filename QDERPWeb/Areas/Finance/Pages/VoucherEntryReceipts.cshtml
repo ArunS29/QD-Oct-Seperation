@@ -354,7 +354,68 @@
         </div>
         <div class="form-group">
             @(Html.DevExtreme().DropDownBox()
-                .Label("Currency")
+                .Label("Base Currency")
+                .DataSource(d => d.WebApi()
+                .Controller("Utility") // Use same controller or change if needed
+                .LoadAction("GetCurrencyList")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CurrencyID")
+                )
+                .ValidationRules(rules =>
+                {
+                    rules.AddRequired()
+                    .Message("Please select a base currency.");
+                })
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("ddlBaseCurrency")
+                .ShowClearButton(true)
+                .AcceptCustomValue(false)
+                .OpenOnFieldClick(true)
+                .Value(1) // Change default value if needed
+                .ValueExpr("CurrencyID")
+                .DisplayExpr("CurrencyName")
+                .OnInput("dropDownBoxOnInput") // Reuse or define separate handler if needed
+                .OnOpened("onOpened")
+                .Width(160)
+                .TabIndex(2) // Different tabindex to separate from the first
+                .DropDownOptions(o => o.Width(700))
+                .OnKeyDown("onKeyDown")
+                //.OnValueChanged("dropDownBoxValueChanged") // Optional
+                .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
+                )
+        </div>
+
+        @using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+                .ID("basecurrency-datagrid")
+                .DataSource(d => d.WebApi()
+                .Controller("Utility")
+                .LoadAction("GetCurrencyList")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CurrencyID")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .Selection(sl => sl.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+                .OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
+                .Paging(p => p.PageSize(10))
+                .Height(300)
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("CurrencyID").Caption("ID").Visible(false);
+                    columns.Add().DataField("CurrencyName").Caption("Currency Name");
+                    columns.Add().DataField("CurrencySymbol").Caption("Symbol");
+                    columns.Add().DataField("CurrencyUnicode").Caption("Unicode");
+                    columns.Add().DataField("IsDefault").Caption("Default").DataType(GridColumnDataType.Boolean);
+                })
+                )
+        }
+        <div class="form-group">
+            @(Html.DevExtreme().DropDownBox()
+                .Label("Exchange Currency")
                 .DataSource(d => d.WebApi()
                 .Controller("Utility") // Adjust if needed
                 .LoadAction("GetCurrencyList")
@@ -376,12 +437,22 @@
                 .DisplayExpr("CurrencyName")
                 .OnInput("dropDownBoxOnInput")
                 .OnOpened("onOpened")
-                .Width(200)
+                .Width(160)
                 .TabIndex(1)
                 .DropDownOptions(o => o.Width(700))
                 .OnKeyDown("onKeyDown")
                 //.OnValueChanged("dropDownBoxValueChanged")
                 .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
+                )
+        </div>
+        <div class="form-group">
+            @(Html.DevExtreme().TextBox()
+                .Label("Currency Rate")
+                .LabelMode(EditorLabelMode.Outside)
+                .ID("txtCurrencyRate")
+                .Value("")
+                //  .ReadOnly(true) // Make it read-only
+                .Width(160)
                 )
         </div>
         @using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
@@ -412,6 +483,7 @@
                 })
                 )
         }
+
     </div>
 
     <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px;">
@@ -1612,7 +1684,9 @@
                  var VM = {
 
                 // alert($("#VoucherNo").dxTextBox("instance").option("value"));
-
+                     "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
+                    "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
+                    "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
                 "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 
                 "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
@@ -1720,7 +1794,9 @@
               var VM = {
 
                 // alert($("#VoucherNo").dxTextBox("instance").option("value"));
-
+                     "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
+                    "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
+                    "currencyrate": $("#txtCurrencyRate").dxTextBox("instance").option("value"),
                 "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 
                 "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
