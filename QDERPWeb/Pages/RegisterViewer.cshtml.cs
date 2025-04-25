@@ -9,6 +9,7 @@ using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
 using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using System;
@@ -205,6 +206,12 @@ namespace QD.ERP.Web.Pages
                         break;
                     case "TaxVATReport":
                         Report = new TaxVATReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "TaxReportRevenueInArabic":
+                        Report =new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "CreditSummary":
+                        Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     default:
                         return NotFound("Cost report not found.");

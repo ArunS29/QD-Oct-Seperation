@@ -1962,7 +1962,10 @@
         "Supplier Outstanding Details": "Supplier Outstanding Details",
         "Bank Account Outstanding Details": "Bank Account Outstanding Details",
         "Total": "Total",
-        "VAT on Sales":"VAT on Sales"
+        "VAT on Sales": "VAT on Sales",
+        "Tax Summary Report-Credit Notes": "Tax Summary Report-Credit Notes",
+       
+
 
 
     },
@@ -3738,7 +3741,8 @@
         "Balance To Invoice Value": "الرصيد المتبقي للفوترة",
         "Balance To Invoice Without Tax": "الرصيد المتبقي للفوترة بدون ضريبة",
         "PO Value Without Tax": "قيمة أمر الشراء بدون ضريبة",
-        "Total":"الإجمالي"
+        "Total": "الإجمالي",
+        "Tax Summary Report-Credit Notes": "تقرير ملخص الضريبة - إشعارات الدائن"
 
 
     }
