@@ -1236,12 +1236,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             try
             {
                 var existingVoucher = await dbContext.Tbl20113ChequeMasters
-                                                    .FirstOrDefaultAsync(v => v.VoucherNo == CM.VoucherNo);
+                                                    .FirstOrDefaultAsync(v => v.ChequeNo == CM.ChequeNo);
 
                 if (existingVoucher != null)
                 {
-                        dbContext.Entry(existingVoucher).State = EntityState.Detached;
-                        dbContext.Entry(CM).State = EntityState.Modified;
+                    
                         // Update existing record
                         dbContext.Entry(existingVoucher).CurrentValues.SetValues(CM);
                     await dbContext.SaveChangesAsync();
