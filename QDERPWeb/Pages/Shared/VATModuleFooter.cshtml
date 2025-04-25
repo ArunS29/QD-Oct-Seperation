@@ -264,7 +264,7 @@
             )
     </div>
 
-    <div class="btn-container">
+ @*    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Icon("print")
@@ -273,6 +273,27 @@
             .Width(50)
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
+    </div>
+ *@
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint")
+            .Text("Print") // Using string directly
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Print Regular TAX Invoice").Icon("print");
+                items.Add().Text("Print Simplified TAX Invoice").Icon("file");
+         
+            })
+         @*    .OnItemClick("addPrintButton_click") *@
+            )
+
+
+
     </div>
 
     <div class="btn-container">
@@ -452,6 +473,44 @@
             )
     </div>
 
+     <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReports")
+            .Icon("doc")
+            .Width(50)
+            .Text(new JS("formatMessage('Report')"))
+            .ElementAttr(new { style = "display: none;" })
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Tax Report").Icon("file").OnClick("showSubmenu8");
+                items.Add().Text("Inventory Report").Icon("file").OnClick("showSubmenu9");
+             
+            })
+            .OnItemClick("addReportsButton_click")
+            .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReport123")
+            .Icon("doc")
+            .Width(50)
+            .Text(new JS("formatMessage('Report')"))
+          @*   .ElementAttr(new { style = "display: none;" }) *@
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+@*                 items.Add().Text("Tax Summary Report-Credit Notes").Icon("file");
+ *@             
+               items.Add().Text(new JS("formatMessage('Tax Summary Report-Credit Notes')")).Icon("search");
+         
+
+            })
+            .OnItemClick("handleReportClick")
+            .ShowArrowIcon(false)
+            )
+    </div>
 @*     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReports1")
@@ -699,7 +758,7 @@
         var url = `/${tenantName}/VAT/VATPurchaseEdit`;
         window.location.href = url; // Navigate to the page
     }
-
+        
     // function getDropdownData() {
     //     return [
     //         { id: 1, name: "Item A" },
@@ -1313,7 +1372,7 @@
         if (event.target === modal) {
             closeModal();
         }
-    };
+    }
 
 
 
@@ -1426,7 +1485,7 @@
             }
         });
     }
-
+      
     function showSubmenu9(e) {
         e.event.stopPropagation();
         hideAllSubmenus(); // Hide all submenus before showing the selected one
@@ -1548,8 +1607,154 @@
         $('#submenuContainer6').hide();
         $('#submenuContainer7').hide();
     }
+        const reportMappings = {
+                    "Tax Summary Report-Credit Notes":"CreditSummary"
+     }
 
 
+     //  function handleReportClick(e){
+     //      const selectedText = e.itemData.text;
+     //     const reportName = reportMappings[selectedText];
+        
+     //     if (reportName) {
+     //         console.log(`Opening report: ${reportName}`);
+
+     //         // Ensure tenantName is defined before using
+     //         if (typeof tenantName === "undefined") {
+     //             console.error("tenantName is not defined.");
+     //             return;
+     //         }
+                 
+     //          window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+     //     } else {
+     //         console.warn('No report mapping found for:', selectedText);
+     //     }
+
+     // }
+
+            //      function handleReportClick(selectedText) {
+            //     console.log("handleVATClick triggered with:", selectedText);
+            //     alert('VAT');
+
+            //     try {
+            //         Get the DateBox instances
+            //             var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+            //         var toDateBox = $("#todateBox").dxDateBox("instance");
+
+            //         if (!frmDateBox || !toDateBox) {
+            //             console.error("DateBox instances not found.");
+            //             alert("Date selection components are missing.");
+            //             return;
+            //         }
+
+            //         Get the date values
+            //         var frmDate = frmDateBox.option("value");
+            //         var toDate = toDateBox.option("value");
+
+            //         Function to format date as D-MMM-YYYY
+            //         function formatDate(date) {
+            //             if (!date) return "";
+            //             let dateObj = new Date(date);
+            //             let day = dateObj.getDate();
+            //             let month = dateObj.toLocaleString('en-US', { month: 'short' });
+            //             let year = dateObj.getFullYear();
+            //             return `${day}-${month}-${year}`;
+            //         }
+
+            //         Format dates
+            //         var frmDateStr = formatDate(frmDate);
+            //         var toDateStr = formatDate(toDate);
+
+            //         Validate dates
+            //         if (!frmDateStr || !toDateStr) {
+            //             alert("Please select valid From and To dates.");
+            //             return;
+            //         }
+
+            //         Extract tenant name from URL
+            //         let pathParts = window.location.pathname.split('/');
+            //         let tenantName = pathParts[1] || "defaultTenant";
+
+                  
+
+            //         Check if selectedText matches any report
+            //         if (reportMappings[selectedText]) {
+            //             let reportName = reportMappings[selectedText];
+            //             console.log(`Redirecting to ${reportName}`);
+
+            //             window.open(
+            //                 `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
+            //                 '_blank',
+            //                 'width=1200,height=800,scrollbars=yes,resizable=yes'
+            //             );
+            //         } else {
+            //             console.warn("No matching report found for:", selectedText);
+            //             alert("No matching report found.");
+            //         }
+            //     } catch (error) {
+            //         console.error("An error occurred:", error);
+            //         alert("Something went wrong. Check console for details.");
+            //     }
+            // }
+
+
+                function handleReportClick(e) {
+        const selectedText = e.itemData.text;
+        const reportName = reportMappings[selectedText];
+
+        if (!reportName) {
+            console.warn('No report mapping found for:', selectedText);
+            return;
+        }
+
+        // Extract tenant name from URL
+        let pathParts = window.location.pathname.split('/');
+        let tenantName = pathParts[1] || "defaultTenant";
+
+        if (!tenantName) {
+            console.error("tenantName is not defined.");
+            return;
+        }
+
+        // Get the DateBox instances
+        var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+        var toDateBox = $("#todateBox").dxDateBox("instance");
+
+        if (!frmDateBox || !toDateBox) {
+            console.error("DateBox instances not found.");
+            alert("Date selection components are missing.");
+            return;
+        }
+
+        // Get and format the date values
+        var frmDate = frmDateBox.option("value");
+        var toDate = toDateBox.option("value");
+
+        function formatDate(date) {
+            if (!date) return "";
+            let dateObj = new Date(date);
+            let day = dateObj.getDate();
+            let month = dateObj.toLocaleString('en-US', { month: 'short' });
+            let year = dateObj.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        var frmDateStr = formatDate(frmDate);
+        var toDateStr = formatDate(toDate);
+
+        if (!frmDateStr || !toDateStr) {
+            alert("Please select valid From and To dates.");
+            return;
+        }
+
+        // Open report in new tab with date parameters
+        const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
+        window.open(reportUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
+
+
+
+  
 
 
 </script>

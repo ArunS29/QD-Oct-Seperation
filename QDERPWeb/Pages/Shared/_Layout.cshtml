@@ -1222,13 +1222,21 @@
                     <span class="no-border-input">Tax Report (Revenue Classified)</span>
                 </div>
 
-                <div class="submenu-item" onclick="handleVATClick('TaxReportRevenueClassifiedArabic')">
+                <div class="submenu-item" onclick="handleVATClick('TaxReportRevenueInArabic')">
                     <span class="no-border-input">Tax Report (Revenue Classified) in Arabic</span>
                 </div>
             </div>
         </div>
+        <div id="" class="context-menu" style="display: none; width: 300px;">
+            <div class="context-menu-item1">
+                <div class="submenu-item" onclick="handleVATClick('CreditSummary')">
+                    <span class="no-border-input">Tax Summary Report-Credit Notes</span>
+                </div>
 
-        <div id="submenuContainer10" class="context-menu" style="display:none; width: 300px;">
+               
+            </div>
+        </div>
+        <div id="submenuContainer" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleClick('Account Group')">
 
@@ -2880,7 +2888,9 @@
                 const reportMappings = {
                     "TaxSummaryReport": "TaxSummaryReport",
                     "TaxVATReport": "TaxVATReport",
-                    "Tax Report (Revenue Classified)in arabic": "TaxReportRevenueClassifiedArabic"
+                    "TaxReportRevenueInArabic": "TaxReportRevenueInArabic",
+                  
+                 
                 };
 
                 // Check if selectedText matches any report
