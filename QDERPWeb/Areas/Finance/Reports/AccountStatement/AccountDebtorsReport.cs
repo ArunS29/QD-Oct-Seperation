@@ -1,7 +1,6 @@
 ﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Areas.Finance.Reports.AccountStatement;
 using QD.ERP.Web.Service;
 using System;
 using System.Drawing;
@@ -15,12 +14,20 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
         public AccountDebtorsReport(
             string accountId, DateTime frmDate, DateTime toDate,
             string tenantName, string company_Name, string company_address,
-            Image logoImage, string Company_Name_Ar, string company_address_arb,
-            TenantDbContextHelper tenantDbContextHelper)
+            Image logoImage, Image sealImage,
+            string Company_Name_Ar, string company_address_arb,
+            TenantDbContextHelper tenantDbContextHelper,
+            string auditorName = "", string auditorAddress = "", string auditorEmail = "")
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+
+            SetReportParameters(
+                accountId, frmDate, toDate, tenantName,
+                company_Name, company_address, logoImage, sealImage,
+                Company_Name_Ar, company_address_arb,
+                auditorName, auditorAddress, auditorEmail
+            );
 
             try
             {
@@ -35,12 +42,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
         public AccountDebtorsReport()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, null, "", "", "", "", "");
         }
 
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate,
             string tenantName, string company_Name, string company_address,
-            Image logoImage, string Company_Name_Ar, string company_address_arb)
+            Image logoImage, Image sealImage,
+            string Company_Name_Ar, string company_address_arb,
+            string auditorName, string auditorAddress, string auditorEmail)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -61,6 +70,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
                 }
             }
 
+            // Existing parameters
             AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
             AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
             AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
@@ -70,8 +80,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
 
-            Console.WriteLine($"Company Logo: {logoImage != null}");
+            // New Parameters
+            AddOrUpdateParameter("AuditorName", auditorName ?? "", typeof(string));
+            AddOrUpdateParameter("AuditorAddress", auditorAddress ?? "", typeof(string));
+            AddOrUpdateParameter("AuditorEmail", auditorEmail ?? "", typeof(string));
 
+            // Assign controls (if they exist in .repx)
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -84,11 +98,23 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
             if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
+            if (FindControl("xrPictureBox3", true) is XRPictureBox sealPictureBox)
+                sealPictureBox.Image = sealImage;
+
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = Company_Name_Ar;
 
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
+
+            if (FindControl("xrLabel13", true) is XRLabel auditorNameLabel)
+                auditorNameLabel.Text = auditorName;
+
+            if (FindControl("xrLabel21", true) is XRLabel auditorAddressLabel)
+                auditorAddressLabel.Text = auditorAddress;
+
+            if (FindControl("xrLabel22", true) is XRLabel auditorEmailLabel)
+                auditorEmailLabel.Text = auditorEmail;
 
             AddSqlQueryParameters(accountId);
         }

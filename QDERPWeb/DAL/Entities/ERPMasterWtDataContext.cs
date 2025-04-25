@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
+using QD.ERP.Web.Areas.VAT.Models;
 
 namespace QD.ERP.Web.DAL.Entities;
 
@@ -3395,6 +3396,9 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<XxxuploadingSalesInvoiceSubLedger> XxxuploadingSalesInvoiceSubLedgers { get; set; }
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
+
+    public virtual DbSet<VATFinalReturnsSummary> VATFinalReturnsSummarys { get; set; }
+
     public virtual DbSet<TrialBalanceResult> TrialBalanceResults { get; set; }
     public virtual DbSet<AssetRegisterViews> AssetRegisterViews { get; set; }
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
@@ -3424,6 +3428,8 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<AssetRegisterViews>().HasNoKey();
         modelBuilder.Entity<ExpenseClaimViews>().HasNoKey();
         modelBuilder.Entity<DashBoardBankAccount>().HasNoKey();// Mark as keyless
+        modelBuilder.Entity<VATFinalReturnsSummary>().HasNoKey();// Mark as keyless
+
 
         modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
         {

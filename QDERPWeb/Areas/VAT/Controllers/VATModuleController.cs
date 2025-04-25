@@ -6,13 +6,16 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using DevExtreme.AspNet.Mvc;
 using DevExtreme.AspNet.Data;
-
+using QD.ERP.Web.Areas.VAT.Models;
 using QD.ERP.Web.Areas.Finance.Models;
 using System.Text.RegularExpressions;
 using System.Data.SqlClient;
 using System.Dynamic;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
 using System.Numerics;
+using System.Data;
+
+
 
 
 namespace QD.ERP.Web.Areas.VAT.Controllers
@@ -2357,6 +2360,38 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetVATRetursSalesandPurchase(string frmDate, string toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+               
+                    var allLedgerData = await dbContext.VATFinalReturnsSummarys
+        .FromSqlRaw("EXEC sp201_999VATFinalReturns @p0, @p1", from, to)
+        .ToListAsync(); 
+
+                    return Json(allLedgerData);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
 
     }

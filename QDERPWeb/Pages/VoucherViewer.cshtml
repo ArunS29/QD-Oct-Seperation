@@ -13,13 +13,13 @@
     }
 
     function openEmailPopup() {
-        alert('Hi'); // This shows that the function is being called
+        alert('Hi');
 
-        var voucherNo = '@Model.VoucherNo'; // Ensure this value is properly passed from the Razor view
-        var currentReportName = 'cashPayments'; // Ensure currentReportName is set correctly
+        var voucherNo = '@Model.VoucherNo'; 
+        var currentReportName = 'cashPayments'; 
 
-        console.log("Voucher No:", voucherNo); // Check if voucherNo is correctly set
-        console.log("Current Report Name:", currentReportName); // Check if report name is correct
+        console.log("Voucher No:", voucherNo); 
+        console.log("Current Report Name:", currentReportName); 
 
         fetch('/api/ReportAttachment/Prepare', {
             method: 'POST',
