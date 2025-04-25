@@ -30,50 +30,44 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                DateTime currentDate = DateTime.Now;
-                string currentYear = currentDate.Year.ToString();
-                string currentMonth = currentDate.Month.ToString("00");
-                string voucherString = "PUR-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+				DateTime currentDate = DateTime.Now;
+				string currentYear = currentDate.Year.ToString();
+				string currentMonth = currentDate.Month.ToString("00");
+				string voucherString = "PUR-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+				string strNewReceiptNo;
 
-                string strNewReceiptNo;
-                string likePattern = voucherString + "%";
+				// SQL query with interpolated string
+				string likePattern = voucherString + "%";
 
-                try
-                {
-                    using (var transaction = await dbContext.Database.BeginTransactionAsync())
-                    {
-                        var result = await dbContext.VoucherResults
-                            .FromSqlInterpolated($@"
-                            SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                            FROM Tbl201VoucherEntry
-                            WHERE VoucherNo LIKE {likePattern}")
-                            .ToListAsync();
+				try
+				{
+					// Use raw SQL query to fetch the maximum voucher number
+					var result = await dbContext.VoucherResults
+						.FromSqlInterpolated($@"
+                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
+                FROM Tbl201VoucherEntry
+                WHERE VoucherNo LIKE {likePattern}")
+						.ToListAsync();
 
-                        int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-                        int newVoucherNo = maxVoucherNo + 1;
+					int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
 
-                        strNewReceiptNo = "000" + newVoucherNo.ToString();
-                        strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
-                        strNewReceiptNo = voucherString + strNewReceiptNo;
+					int newVoucherNo = maxVoucherNo + 1;
 
-                        var newVoucher = new Tbl201VoucherEntry
-                        {
-                            VoucherNo = strNewReceiptNo,
-                        };
+					// Format the new voucher number with leading zeros
+					strNewReceiptNo = "000" + newVoucherNo.ToString();
+					strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
 
-                        dbContext.Tbl201VoucherEntries.Add(newVoucher);
-                        await dbContext.SaveChangesAsync();
+					// Concatenate with the voucher string
+					strNewReceiptNo = voucherString + strNewReceiptNo;
+				}
+				catch (Exception)
+				{
+					// Handle cases where there's no existing voucher number
+					strNewReceiptNo = voucherString + "001";
+				}
 
-                        await transaction.CommitAsync();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in GetNewVoucherNo: {ex.Message}");
-                    strNewReceiptNo = voucherString + "001";
-                }
-
-                return Json(strNewReceiptNo);
+				return Json(strNewReceiptNo);
+				
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
