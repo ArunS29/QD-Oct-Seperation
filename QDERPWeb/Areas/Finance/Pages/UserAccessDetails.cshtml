@@ -1,5 +1,4 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.InventoryStockDetailsModel
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using QD.ERP.Web.Areas.Finance.Pages
@@ -195,152 +194,148 @@
             </div>
 
         </div>
-     
-
-        <div class="dx-fieldset horizontal-container">
-            @(
-                Html.DevExtreme().Tabs()
-                .Items(items =>
-                {
+    <div class="dx-fieldset horizontal-container">
+        @(
+            Html.DevExtreme().Tabs()
+            .Items(items =>
+            {
                 // tab-content-1
                 items.Add()
-                .Icon("preferences") // better match for "Item Attributes"
+                .Icon("preferences") // Master Module
                 .Text("Master Module");
 
                 // tab-content-2
                 items.Add()
-                .Icon("chart") // "Stock Control"
+                .Icon("chart") // Finance
                 .Text("Finance");
 
                 // tab-content-3
                 items.Add()
-                .Icon("image") // "Stock Images"
+                .Icon("image") // VAT
                 .Text("VAT");
 
                 // tab-content-4
                 items.Add()
-                .Icon("money") // "Invoices"
+                .Icon("money") // Human Resources
                 .Text("Human Resources");
 
-                    items.Add()
-                    .Icon("repeat") // "Unit Conversion"
-                    .Text("Equipment Rental");
                 // tab-content-5
                 items.Add()
-                .Icon("tags") // "Quotations"
-                .Text("Inventory Management");
+                .Icon("repeat") // Equipment Rental
+                .Text("Equipment Rental");
 
                 // tab-content-6
                 items.Add()
-                .Icon("cart") // "Purchase Order"
-                .Text("Camp Management");
+                .Icon("tags") // Inventory Management
+                .Text("Inventory Management");
 
                 // tab-content-7
                 items.Add()
-                .Icon("runner") // "Item Deliveries"
-                .Text("Project Control");
+                .Icon("cart") // Camp Management
+                .Text("Camp Management");
 
                 // tab-content-8
                 items.Add()
-                .Icon("check") // "Item Received"
-                .Text("Scaffolding Rental Solution");
+                .Icon("runner") // Project Control
+                .Text("Project Control");
 
                 // tab-content-9
                 items.Add()
-                .Icon("repeat") // "Unit Conversion"
-                .Text("Alert Notification");
+                .Icon("check") // Scaffolding Rental Solution
+                .Text("Scaffolding Rental Solution");
 
                 // tab-content-10
                 items.Add()
-                .Icon("doc") // "Document"
+                .Icon("repeat") // Alert Notification
+                .Text("Alert Notification");
+
+                // tab-content-11
+                items.Add()
+                .Icon("doc") // Finance Ledger Access
                 .Text("Finance Ledger Access");
             })
-                .SelectedIndex(0) // Default selected tab is the first one
-                .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
-                )
-        </div>
+            .SelectedIndex(0) // Default selected tab is the first one
+            .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
+            )
+    </div>
 
-
-        <!-- Tab Content -->
-        <div class="dx-fieldset">
+    <!-- Tab Content -->
+    <div class="dx-fieldset">
+        <!-- Tab 1: Master Module -->
         <div id="tab-content-1" class="tab-content" style="display: none;">
-
-
             <div id="tab1-content">
                 @await Html.PartialAsync("~/Pages/Shared/Finance/MasterModules.cshtml")
             </div>
-            </div>
+        </div>
 
-            <div id="tab-content-2" class="tab-content" style="display: none;">
-                <div>
-                  
+        <!-- Tab 2: Finance -->
+        <div id="tab-content-2" class="tab-content" style="display: none;">
+            <div>
                 @await Html.PartialAsync("~/Pages/Shared/Finance/Finance.cshtml")
-                </div>
             </div>
+        </div>
 
-            <div id="tab-content-3" class="tab-content" style="display: none;">
+        <!-- Tab 3: VAT -->
+        <div id="tab-content-3" class="tab-content" style="display: none;">
             @await Html.PartialAsync("~/Pages/Shared/Finance/VAT.cshtml")
-            </div>
+        </div>
 
-            <div id="tab-content-4" class="tab-content">
-                <div class="background">
-                <div>
-
-                    @await Html.PartialAsync("~/Pages/Shared/Finance/HumanResources.cshtml")
-                </div>
-                </div>
-            </div>
-            <div id="tab-content-5" class="tab-content">
-                <div class="background">
-
-                @await Html.PartialAsync("~/Pages/Shared/Finance/EquipmentRental.cshtml")
-
-                </div>
-            </div>
-           
-
-            <div id="tab-content-6" class="tab-content">
-                <div class="background">
-               
-                @await Html.PartialAsync("~/Pages/Shared/Finance/EquipmentRental.cshtml")
-                </div>
-            </div>
-        <div id="tab-content-7" class="tab-content">
+        <!-- Tab 4: Human Resources -->
+        <div id="tab-content-4" class="tab-content" style="display: none;">
             <div class="background">
+                @await Html.PartialAsync("~/Pages/Shared/Finance/HumanResources.cshtml")
+            </div>
+        </div>
 
+        <!-- Tab 5: Equipment Rental -->
+        <div id="tab-content-5" class="tab-content" style="display: none;">
+            <div class="background">
+                @await Html.PartialAsync("~/Pages/Shared/Finance/EquipmentRental.cshtml")
+            </div>
+        </div>
+
+        <!-- Tab 6: Inventory Management -->
+        <div id="tab-content-6" class="tab-content" style="display: none;">
+            <div class="background">
+                @await Html.PartialAsync("~/Pages/Shared/Finance/InventoryManagement.cshtml")
+            </div>
+        </div>
+
+        <!-- Tab 7: Camp Management -->
+        <div id="tab-content-7" class="tab-content" style="display: none;">
+            <div class="background">
                 @await Html.PartialAsync("~/Pages/Shared/Finance/CampManagement.cshtml")
             </div>
         </div>
 
-            <div id="tab-content-8" class="tab-content">
-                <div class="background">
-
+        <!-- Tab 8: Project Control -->
+        <div id="tab-content-8" class="tab-content" style="display: none;">
+            <div class="background">
                 @await Html.PartialAsync("~/Pages/Shared/Finance/ProjectControls.cshtml")
-
-                </div>
             </div>
-        <div id="tab-content-9" class="tab-content">
-            <div class="background">
+        </div>
 
+        <!-- Tab 9: Scaffolding Rental Solution -->
+        <div id="tab-content-9" class="tab-content" style="display: none;">
+            <div class="background">
                 @await Html.PartialAsync("~/Pages/Shared/Finance/ScaffoldingRentalSolutions.cshtml")
-
             </div>
         </div>
-        <div id="tab-content-10" class="tab-content">
-            <div class="background">
 
+        <!-- Tab 10: Alert Notification -->
+        <div id="tab-content-10" class="tab-content" style="display: none;">
+            <div class="background">
                 @await Html.PartialAsync("~/Pages/Shared/Finance/AlertNotification.cshtml")
-
             </div>
         </div>
-        <div id="tab-content-11" class="tab-content">
+
+        <!-- Tab 11: Finance Ledger Access -->
+        <div id="tab-content-11" class="tab-content" style="display: none;">
             <div class="background">
-
                 @await Html.PartialAsync("~/Pages/Shared/Finance/FinanceLedgerAccess.cshtml")
-
             </div>
         </div>
-        </div>
+    </div>
 
         
 

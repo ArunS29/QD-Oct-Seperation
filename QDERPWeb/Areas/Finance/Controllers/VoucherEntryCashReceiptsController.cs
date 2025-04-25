@@ -1,10 +1,12 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Form.Areas.Finance.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -12,17 +14,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     [ApiController]
     public class VoucherEntryCashReceiptsController : Controller
     {
-        private ERPMasterWtDataContext _context;
+		private readonly TenantDbContextHelper _tenantDbContextHelper;
+		private readonly ILogger<VoucherEntryCashReceiptsController> _logger;
 
-        public VoucherEntryCashReceiptsController(ERPMasterWtDataContext context)
-        {
-            _context = context;
-        }
+		public VoucherEntryCashReceiptsController(ILogger<VoucherEntryCashReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper)
+		{
+			_tenantDbContextHelper = tenantDbContextHelper;
+			_logger = logger;
+		}
 
-        [HttpGet]
+		[HttpGet]
         public async Task<IActionResult> GetReceivingAccount(DataSourceLoadOptions loadOptions)
         {
-            var tbl20101salespersonmasters = _context.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A012").Select(i => new
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			var tbl20101salespersonmasters = dbContext.Qry201ListOfAccounts.Where(p => p.AccountGroupId == "A012").Select(i => new
             {
 
                 i.AccountId,
@@ -37,7 +45,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         public async Task<IActionResult> GetDefaultReceivingAccount()
         {
-            var defaultAccount = await _context.Tbl201ChartOfAccounts
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			var defaultAccount = await dbContext.Tbl201ChartOfAccounts
                 .Where(a => a.IsDefaultForCash == true && a.AccountGroupId == "A012")
                 .OrderByDescending(a => a.RecordModifiedOn) // Get the latest default account
                 .Select(a => new { a.AccountId, a.AccountHead })
@@ -50,7 +62,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAccountHead(DataSourceLoadOptions loadOptions, string SelectedPaymentAccount)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
                 .Where(i => i.AccountId != SelectedPaymentAccount) // Exclude the Receiving Account value
                 .Select(i => new
                 {
@@ -70,7 +86,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         public async Task<ActionResult> GetVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
         {
-            var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays.Where(p => p.VoucherNo == voucherNo).Select(i => new
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			var qryListOfAccountlists = dbContext.Qry201VoucherEntryScreenDisplays.Where(p => p.VoucherNo == voucherNo).Select(i => new
             {
                 i.VoucherNo,
                 i.DrCr,
@@ -148,8 +168,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName, int Gridcount)
 
         {
-
-            if (voucherEntries == null || !voucherEntries.Any())
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			if (voucherEntries == null || !voucherEntries.Any())
 
             {
 
@@ -165,25 +188,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 // Add entries to the database
                 Tbl201VoucherMaster voucherMaster = new();
 
-                bool isVoucherExists = _context.Tbl201VoucherMasters
+                bool isVoucherExists = dbContext.Tbl201VoucherMasters
                .Any(v => v.VoucherNo == voucherEntries[0].VoucherNo);
 
                 if (!isVoucherExists)
                 {
                     voucherMaster.VoucherNo = voucherEntries[0].VoucherNo;
                     voucherMaster.VoucherDate = DateTime.Now;
-                    _context.Tbl201VoucherMasters.AddRange(voucherMaster);
+					dbContext.Tbl201VoucherMasters.AddRange(voucherMaster);
                 }
 
-                _context.Tbl201VoucherEntries.AddRange(voucherEntries);
+				dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
 
-                await _context.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
 
 
 
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
 
-                var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+                var qryListOfAccountlists = dbContext.Qry201VoucherEntryScreenDisplays
 
                     .Where(p => voucherNos.Contains(p.VoucherNo))
 
@@ -234,7 +257,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     {
 
-                        var accountHead = _context.Qry201ListOfAccounts
+                        var accountHead = dbContext.Qry201ListOfAccounts
 
                                                   .Where(a => a.AccountId == entry.AccountHead)
 
@@ -260,7 +283,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                                 // Check if an existing entry matches
 
-                                var existingEntry = _context.Tbl201VoucherEntries
+                                var existingEntry = dbContext.Tbl201VoucherEntries
 
                                                             .FirstOrDefault(v => v.AccountHead == entry.AccountHead
        && v.DrCr == "Dr"
@@ -278,9 +301,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                                     existingEntry.VoucherAmount = entry.CrAmount;
 
-                                    _context.Tbl201VoucherEntries.Update(existingEntry);
+                                    dbContext.Tbl201VoucherEntries.Update(existingEntry);
 
-                                    _context.SaveChanges();
+                                    dbContext.SaveChanges();
 
                                 }
 
@@ -323,8 +346,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         public async Task<ActionResult> GetNewBRVoucherNo(DataSourceLoadOptions loadOptions)
 
         {
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
 
-            DateTime currentDate = DateTime.Now;
+			DateTime currentDate = DateTime.Now;
 
             string currentYear = currentDate.Year.ToString();
 
@@ -344,7 +371,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 // Use raw SQL query to fetch the maximum voucher number
 
-                var result = await _context.VoucherResults
+                var result = await dbContext.VoucherResults
 
                     .FromSqlInterpolated($@"
 
@@ -390,15 +417,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveVoucher([FromBody] Tbl201VoucherMaster VM)
         {
-            if (VM == null)
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			if (VM == null)
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
             try
             {
-                _context.Tbl201VoucherMasters.Add(VM);
-                await _context.SaveChangesAsync();
+				dbContext.Tbl201VoucherMasters.Add(VM);
+                await dbContext.SaveChangesAsync();
                 //return Json(new { VoucherEntryNo = VE.VoucherNo });
                 return Ok(new { success = true, message = "Data inserted successfully!" });
             }
@@ -651,9 +682,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEditAccountHead(DataSourceLoadOptions loadOptions)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
-                var qryListOfAccountlists = _context.Qry201ListOfAccounts
+                var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
 
                 .Select(i => new
                 {
@@ -678,9 +713,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckPropertyAllocation(string AccountHead, string AccountID)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
-                var allocation = await _context.Tbl201ChartOfAccounts
+                var allocation = await dbContext.Tbl201ChartOfAccounts
                     .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsPropertyAllocated == true)
                     .FirstOrDefaultAsync();
 
@@ -702,9 +741,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> CheckEmployeeAllocation(string AccountHead, string AccountID)
         {
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
-                var allocation = await _context.Tbl201ChartOfAccounts
+                var allocation = await dbContext.Tbl201ChartOfAccounts
                     .Where(x => x.AccountHead == AccountHead && x.AccountId == AccountID && x.IsEmployeeAllocated == true)
                     .FirstOrDefaultAsync();
 
@@ -760,7 +803,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> AddCRDrVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName, int Gridcount)
         {
-            if (voucherEntries == null || !voucherEntries.Any())
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			if (voucherEntries == null || !voucherEntries.Any())
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
@@ -775,7 +822,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 //var matchingEntries;
                 List<VoucherEntryDisplayDTO> matchingEntries = new();
                 var voucherNos1 = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
-                var qryListOfAccountlists1 = _context.Qry201VoucherEntryScreenDisplays
+                var qryListOfAccountlists1 = dbContext.Qry201VoucherEntryScreenDisplays
                     .Where(p => voucherNos1.Contains(p.VoucherNo))
                     .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
                     .Select(i => new VoucherEntryDisplayDTO
@@ -804,25 +851,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 }
 
-                bool isVoucherExists = _context.Tbl201VoucherMasters
+                bool isVoucherExists = dbContext.Tbl201VoucherMasters
                .Any(v => v.VoucherNo == voucherEntries[0].VoucherNo);
 
                 if (!isVoucherExists)
                 {
                     voucherMaster.VoucherNo = voucherEntries[0].VoucherNo;
                     voucherMaster.VoucherDate = DateTime.Now;
-                    _context.Tbl201VoucherMasters.AddRange(voucherMaster);
+					dbContext.Tbl201VoucherMasters.AddRange(voucherMaster);
                 }
 
-                // Add entries to the database
-                _context.Tbl201VoucherEntries.AddRange(voucherEntries);
-                await _context.SaveChangesAsync();
+				// Add entries to the database
+				dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
+                await dbContext.SaveChangesAsync();
 
                 //SaveVoucher(voucherEntries);
 
 
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
-                var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+                var qryListOfAccountlists = dbContext.Qry201VoucherEntryScreenDisplays
                     .Where(p => voucherNos.Contains(p.VoucherNo))
                     .OrderBy(i => i.DrCr == "Dr" ? 1 : 0) // Ensures "Dr" entries come first
                     .Select(i => new VoucherEntryDisplayDTO
@@ -878,7 +925,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             CrMinusAmt = NewCrMinusAmt + ExistingCrMinusAmt;
 
 
-                            var existingEntry = _context.Tbl201VoucherEntries
+                            var existingEntry = dbContext.Tbl201VoucherEntries
                                       .FirstOrDefault(v => v.AccountHead == entry.AccountHead
                                                         && v.DrCr == "Dr"
                                                         && v.VoucherNo == entry.VoucherNo);
@@ -886,8 +933,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             // Optionally update the existing entry in the database
                             existingEntry.VoucherAmount = CrMinusAmt;
                             entry.DrAmount = -CrMinusAmt;
-                            _context.Tbl201VoucherEntries.Update(existingEntry);
-                            _context.SaveChanges();
+							dbContext.Tbl201VoucherEntries.Update(existingEntry);
+							dbContext.SaveChanges();
 
                         }
                     }
@@ -896,7 +943,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     if (!string.IsNullOrEmpty(entry.AccountHead))
                     {
 
-                        var accountHead = _context.Qry201ListOfAccounts
+                        var accountHead = dbContext.Qry201ListOfAccounts
                                                   .Where(a => a.AccountId == entry.AccountHead)
                                                   .Select(a => a.AccountHead)
                                                   .FirstOrDefault();
@@ -919,8 +966,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         public async Task<ActionResult> DeleteVoucherEntry(DataSourceLoadOptions loadOptions, long voucherEntryNo, string VoucherNo, string PaymentAccoutHeadName, int Gridcount)
         {
 
-
-            try
+			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				return Unauthorized(new { success = false, message = "Invalid tenant." });
+			}
+			try
             {
                 Tbl201VoucherMaster voucherMaster = new();
                 int aEntryAmount = 0;
@@ -933,14 +983,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
                 // Get the list of updated vouchers
-                var voucherEntries1 = _context.Tbl201VoucherEntries
+                var voucherEntries1 = dbContext.Tbl201VoucherEntries
                                               .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
                                               .ToList();
 
                 var voucherNos1 = voucherEntries1.Select(ve => ve.VoucherNo).Distinct();
 
 
-                var qryListOfAccountlists1 = _context.Qry201VoucherEntryScreenDisplays
+                var qryListOfAccountlists1 = dbContext.Qry201VoucherEntryScreenDisplays
                     .Where(p => voucherNos1.Contains(p.VoucherNo))
                     .OrderBy(i => i.DrCr == "Dr" ? 1 : 0) // Ensures "Dr" entries come first
                     .Select(i => new VoucherEntryDisplayDTO
@@ -963,22 +1013,22 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     IsMatchingEntry = true;
                 }
 
-                bool isVoucherExists = _context.Tbl201VoucherMasters
+                bool isVoucherExists = dbContext.Tbl201VoucherMasters
                .Any(v => v.VoucherNo == voucherEntries1[0].VoucherNo);
-                var record = await _context.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var record = await dbContext.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
                 var voucherNo = voucherEntries1[0].VoucherNo;
-                var masterrecord = _context.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
-                var SubLedgerRecord = await _context.Tbl201SubLedgerMasters.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
-                var PropertyAllocationRecord = await _context.Tbl20122PropertyAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
-                var CostAllocationRecord = await _context.Tbl201CostAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
-                var SalaryPayableRecord = await _context.Tbl20114SalaryPayableMasters.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
-                var EmpAllocationRecord = await _context.Tbl20104EmployeeAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+                var masterrecord = dbContext.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+                var SubLedgerRecord = await dbContext.Tbl201SubLedgerMasters.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var PropertyAllocationRecord = await dbContext.Tbl20122PropertyAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+                var CostAllocationRecord = await dbContext.Tbl201CostAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
+                var SalaryPayableRecord = await dbContext.Tbl20114SalaryPayableMasters.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
+                var EmpAllocationRecord = await dbContext.Tbl20104EmployeeAllocationMasters.FirstOrDefaultAsync(v => v.VoucherEntryId == voucherEntryNo);
 
                 if (!isVoucherExists)
                 {
                     voucherMaster.VoucherNo = voucherEntries1[0].VoucherNo;
                     voucherMaster.VoucherDate = DateTime.Now;
-                    _context.Tbl201VoucherMasters.Remove(masterrecord);
+					dbContext.Tbl201VoucherMasters.Remove(masterrecord);
                 }
 
                 // Add entries to the database
@@ -995,28 +1045,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     if (record != null)
                     {
-                        _context.Tbl201VoucherEntries.Remove(record);
+						dbContext.Tbl201VoucherEntries.Remove(record);
                     }
                     else if (SubLedgerRecord != null)
                     {
-                        _context.Tbl201SubLedgerMasters.Remove(SubLedgerRecord);
+						dbContext.Tbl201SubLedgerMasters.Remove(SubLedgerRecord);
 
                     }
                     else if (PropertyAllocationRecord != null)
                     {
-                        _context.Tbl20122PropertyAllocationMasters.Remove(PropertyAllocationRecord);
+						dbContext.Tbl20122PropertyAllocationMasters.Remove(PropertyAllocationRecord);
                     }
                     else if (SubLedgerRecord != null)
                     {
-                        _context.Tbl201CostAllocationMasters.Remove(CostAllocationRecord);
+						dbContext.Tbl201CostAllocationMasters.Remove(CostAllocationRecord);
                     }
                     else if (SubLedgerRecord != null)
                     {
-                        _context.Tbl20104EmployeeAllocationMasters.Remove(EmpAllocationRecord);
+						dbContext.Tbl20104EmployeeAllocationMasters.Remove(EmpAllocationRecord);
                     }
 
                     //  _context.Tbl201VoucherMasters.Remove(masterrecord);
-                    await _context.SaveChangesAsync();
+                    await dbContext.SaveChangesAsync();
 
 
                 }
@@ -1025,13 +1075,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 //SaveVoucher(voucherEntries);
 
                 // Get the list of updated vouchers
-                var voucherEntries = _context.Tbl201VoucherEntries
+                var voucherEntries = dbContext.Tbl201VoucherEntries
                                               .Where(ve => ve.VoucherNo == VoucherNo) // Filter by the provided VoucherNo
                                               .ToList();
 
 
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
-                var qryListOfAccountlists = _context.Qry201VoucherEntryScreenDisplays
+                var qryListOfAccountlists = dbContext.Qry201VoucherEntryScreenDisplays
                     .Where(p => voucherNos.Contains(p.VoucherNo))
                     .OrderBy(i => i.DrCr == "Dr" ? 1 : 0) // Ensures "Dr" entries come first
                     .Select(i => new VoucherEntryDisplayDTO
@@ -1076,7 +1126,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     if (!string.IsNullOrEmpty(entry.AccountHead))
                     {
 
-                        var accountHead = _context.Qry201ListOfAccounts
+                        var accountHead = dbContext.Qry201ListOfAccounts
                                                   .Where(a => a.AccountId == entry.AccountHead)
                                                   .Select(a => a.AccountHead)
                                                   .FirstOrDefault();
@@ -1094,7 +1144,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             // if (crCount==1)
                             {
                                 // Check if an existing entry matches
-                                var existingEntry = _context.Tbl201VoucherEntries
+                                var existingEntry = dbContext.Tbl201VoucherEntries
                                                             .FirstOrDefault(v => v.AccountHead == entry.AccountHead
                                                                               && v.DrCr == "Dr"
                                                                               && v.VoucherNo == entry.VoucherNo);
@@ -1110,8 +1160,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                     // Optionally update the existing entry in the database
                                     existingEntry.VoucherAmount = entry.DrAmount;
                                     existingEntry.SysRemarks = entry.SysRemarks;
-                                    _context.Tbl201VoucherEntries.Update(existingEntry);
-                                    _context.SaveChanges();
+									dbContext.Tbl201VoucherEntries.Update(existingEntry);
+									dbContext.SaveChanges();
 
                                 }
                                 else
@@ -1150,7 +1200,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                         }
 
                                         // Check if an existing entry matches
-                                        var existingEntry = _context.Tbl201VoucherEntries
+                                        var existingEntry = dbContext.Tbl201VoucherEntries
                                                                     .FirstOrDefault(v => v.AccountHead == entry.AccountHead
                                                                                       && v.DrCr == "Dr"
                                                                                       && v.VoucherNo == entry.VoucherNo);
@@ -1163,8 +1213,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                             // Optionally update the existing entry in the database
                                             existingEntry.VoucherAmount = entry.DrAmount;
                                             existingEntry.SysRemarks = entry.SysRemarks;
-                                            _context.Tbl201VoucherEntries.Update(existingEntry);
-                                            _context.SaveChanges();
+											dbContext.Tbl201VoucherEntries.Update(existingEntry);
+											dbContext.SaveChanges();
 
                                         }
                                         else

@@ -865,7 +865,12 @@
             height: calc(100% - 50px); /* Adjusted for header height */
             border: none;
         }
-   
+        .dropdownLang{
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -902,6 +907,7 @@
                     @tenantName
                 </div>
             </div>
+            <div class="dropdownLang">
             <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("currencySelect")
@@ -909,6 +915,7 @@
                     .DisplayExpr("CurrencyName")
                     .ValueExpr("CurrencyID")
                     .Label(new JS("formatMessage('Currency')"))
+                    .Width("10em")
                     .LabelMode(EditorLabelMode.Outside)
                     .Value(currencies.FirstOrDefault()?.CurrencyID)
                     )
@@ -931,6 +938,7 @@
                     </div>
                 </text>)
                     )
+            </div>
             </div>
             @* <button id="themeToggle">Toggle Dark Mode</button> *@
             <button id="fullscreenToggle">

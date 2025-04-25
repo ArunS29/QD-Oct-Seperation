@@ -1,9 +1,9 @@
 ﻿@page
 @using QD.ERP.Web.DAL.Entities
 @using QD.ERP.Web.Service
-@inject CurrencyService CurrencyService
+
 @{
-    var currencies = CurrencyService.GetCurrencies();
+  
     ViewData["Title"] = "Payment Voucher Details";
     var popvno = "";
 }

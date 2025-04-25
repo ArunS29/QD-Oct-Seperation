@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace QD.ERP.Web.Areas.Finance.Pages
 {
-    public class InventoryStockDetailsModel : PageModel
+    public class UserAccessDetailsModel : PageModel
     {
         public void OnGet()
         {

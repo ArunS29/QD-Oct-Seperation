@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Edit Bills Payable/ Bills Receivables":"Edit Bills Payable/ Bills Receivables",
         "DocumentNo:": "DocumentNo:",
         "Reference NO:": "Reference NO:",
         "Remarks/Notes:": "Remarks/Notes:",
@@ -1957,12 +1958,19 @@
         "Balance To Invoice Value": "Balance To Invoice Value",
         "Balance To Invoice Without Tax": "Balance To Invoice Without Tax",
         "PO Value Without Tax": "PO Value Without Tax",
-        "Total": "Total"
+        "Total": "Total",
+        "Client Outstanding Details": "Client Outstanding Details",
+        "Supplier Outstanding Details": "Supplier Outstanding Details",
+        "Bank Account Outstanding Details": "Bank Account Outstanding Details"
+
 
 
     },
-   
+
     "ar": {
+        "Bank Account Outstanding Details": "تفاصيل الحساب البنكي المستحق",
+        "Supplier Outstanding Details": "تفاصيل المورد المعلقة",
+        "Client Outstanding Details": "تفاصيل العميل المعلقة",
         "Matl. Requests": "طلبات المواد",
         "Purchases": "المشتريات",
         "Document": "مستند",

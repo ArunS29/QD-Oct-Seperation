@@ -6,6 +6,8 @@ using QD.ERP.Web.DAL.Entities;
 
 using Microsoft.EntityFrameworkCore;
 using DevExpress.Emf;
+using QD.ERP.Web.Areas.Finance.Controllers;
+using QD.ERP.Web.Service;
 //using SkiaSharp;
 
 
@@ -16,21 +18,27 @@ namespace QDWEB.Areas.Finance.Controllers
     [ApiController]
     public class VoucherJournalController : Controller
     {
-        private ERPMasterWtDataContext _context;
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<VoucherJournalController> _logger;
 
-        public VoucherJournalController(ERPMasterWtDataContext context)
+        public VoucherJournalController(ILogger<VoucherJournalController> logger, TenantDbContextHelper tenantDbContextHelper)
         {
-            _context = context;
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _logger = logger;
         }
+
         [HttpGet]
         public async Task<ActionResult> GetNewVoucherNo()
         {
-            string voucherPrefix = "JV-NEW-";
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+
+                string voucherPrefix = "JV-NEW-";
             string strNewVoucherNo;
 
             try
             {
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await dbContext.Database.BeginTransactionAsync())
                 {
                     string sql = @"
                 SELECT MAX(CAST(RIGHT(TempVoucherNo, 6) AS INT)) AS MaxVoucherNo
@@ -38,7 +46,7 @@ namespace QDWEB.Areas.Finance.Controllers
                 WHERE TempVoucherNo LIKE {0}";
 
                     // Fix: Use FromSqlRaw instead of SqlQueryAsync
-                    var result = await _context.VoucherResults
+                    var result = await dbContext.VoucherResults
                         .FromSqlRaw(sql, voucherPrefix + "%")
                         .ToListAsync();
 
@@ -52,8 +60,8 @@ namespace QDWEB.Areas.Finance.Controllers
                         TempVoucherNo = strNewVoucherNo
                     };
 
-                    _context.Tbl201VoucherMasterTemps.Add(newVoucherEntry);
-                    await _context.SaveChangesAsync();
+                        dbContext.Tbl201VoucherMasterTemps.Add(newVoucherEntry);
+                    await dbContext.SaveChangesAsync();
 
                     await transaction.CommitAsync();
                 }
@@ -63,7 +71,11 @@ namespace QDWEB.Areas.Finance.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
 
+
             return Json(strNewVoucherNo);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
 
@@ -71,21 +83,28 @@ namespace QDWEB.Areas.Finance.Controllers
         [HttpGet]
         public IActionResult Delete(long VoucherEntryNo)
         {
-            var item = _context.Tbl201VoucherEntryTemps.Where(p => p.VoucherEntryNo == VoucherEntryNo).FirstOrDefault();
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var item = dbContext.Tbl201VoucherEntryTemps.Where(p => p.VoucherEntryNo == VoucherEntryNo).FirstOrDefault();
             if (item != null)
             {
-                _context.Tbl201VoucherEntryTemps.Remove(item);
-                _context.SaveChanges();
+                    dbContext.Tbl201VoucherEntryTemps.Remove(item);
+                    dbContext.SaveChanges();
                 return Ok(new { success = true });
             }
             return NotFound();
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
 
         [HttpGet]
         public async Task<ActionResult> GetSupplierName(DataSourceLoadOptions loadOptions)
         {
-            var qryListOfAccountlists = _context.Qry201ListOfAccounts.Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var qryListOfAccountlists = dbContext.Qry201ListOfAccounts.Select(i => new
             {
                 i.MasterGroupId,
                 i.MasterGroup,
@@ -110,11 +129,16 @@ namespace QDWEB.Areas.Finance.Controllers
             });
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
         public async Task<ActionResult> GetVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
         {
-            var qryListOfAccountlists = _context.Tbl201VoucherEntryTemps.Where(p => p.VoucherNo == voucherNo).Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var qryListOfAccountlists = dbContext.Tbl201VoucherEntryTemps.Where(p => p.VoucherNo == voucherNo).Select(i => new
             {
                 i.VoucherNo,
                 i.DrCr,
@@ -122,8 +146,6 @@ namespace QDWEB.Areas.Finance.Controllers
                 i.EntryNarration,
                 i.AccountHead,
                 i.SysRemarks,
-
-
                 i.VoucherEntryNo,
                 i.AddedBy,
                 i.AddedOn
@@ -131,23 +153,28 @@ namespace QDWEB.Areas.Finance.Controllers
 
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
         public async Task<ActionResult> AddVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] Tbl201VoucherEntryTemp VE)
         {
-            if (VE == null)
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (VE == null)
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
             try
             {
-                // Add the new voucher entry to the table
-                _context.Tbl201VoucherEntryTemps.Add(VE);
-                await _context.SaveChangesAsync();
+                    // Add the new voucher entry to the table
+                    dbContext.Tbl201VoucherEntryTemps.Add(VE);
+                await dbContext.SaveChangesAsync();
 
                 // Fetch voucher entries and join with account names
-                var qryListOfAccountlists = await _context.Tbl201VoucherEntryTemps
+                var qryListOfAccountlists = await dbContext.Tbl201VoucherEntryTemps
                     .Where(p => p.VoucherNo == VE.VoucherNo) // Fix comparison operator
                     .OrderBy(i => i.DrCr == "Dr" ? 0 : 1) // "Dr" entries first
                     .Select(i => new VoucherEntryDisplayDTO
@@ -157,7 +184,7 @@ namespace QDWEB.Areas.Finance.Controllers
                         DrCr = i.DrCr,
                         VoucherAmount = i.VoucherAmount,
                         EntryNarration = i.EntryNarration,
-                        AccountHead = _context.Qry201ListOfAccounts
+                        AccountHead = dbContext.Qry201ListOfAccounts
                                               .Where(a => a.AccountId == i.AccountHead)
                                               .Select(a => a.AccountHead)
                                               .FirstOrDefault(), // Get AccountHead from ChartOfAccounts
@@ -173,25 +200,30 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpPost]
         public async Task<ActionResult> SaveVoucher([FromBody] VoucherViewModel VM)
         {
-            if (VM == null || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (VM == null || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
             {
                 return BadRequest(new { success = false, message = "Invalid data received." });
             }
 
             try
             {
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await dbContext.Database.BeginTransactionAsync())
                 {
                     string currentDate = DateTime.Now.ToString("dd");
                     string currentMonth = DateTime.Now.ToString("MM");
                     string currentYear = DateTime.Now.ToString("yy");
                     // Get last used VoucherNo for the same date
-                    var lastVoucher = await _context.Tbl201VoucherEntries
+                    var lastVoucher = await dbContext.Tbl201VoucherEntries
                         .Where(v => v.VoucherNo.StartsWith($"JV-{currentDate}-{currentMonth}-"))
                         .OrderByDescending(v => v.VoucherNo)
                         .FirstOrDefaultAsync();
@@ -208,7 +240,7 @@ namespace QDWEB.Areas.Finance.Controllers
 
                     string newVoucherNo = $"JV-{currentYear}-{currentMonth}-{nextSequence:D3}";
 
-                    while (await _context.Tbl201VoucherEntries.AnyAsync(v => v.VoucherNo == newVoucherNo))
+                    while (await dbContext.Tbl201VoucherEntries.AnyAsync(v => v.VoucherNo == newVoucherNo))
                     {
                         nextSequence++;
                         newVoucherNo = $"JV-{currentYear}-{currentMonth}-{nextSequence:D3}";
@@ -221,7 +253,7 @@ namespace QDWEB.Areas.Finance.Controllers
                         entry.VoucherEntryNo = 0;
 
                         // Fetch AccountId based on AccountHead
-                        entry.AccountHead = await _context.Tbl201ChartOfAccounts
+                        entry.AccountHead = await dbContext.Tbl201ChartOfAccounts
                             .Where(a => a.AccountHead == entry.AccountHead)
                             .Select(a => a.AccountId)
                             .FirstOrDefaultAsync();
@@ -244,9 +276,9 @@ namespace QDWEB.Areas.Finance.Controllers
                         VoucherApprovedOn = DateTime.Now
                     };
 
-                    _context.Tbl201VoucherMasters.Add(voucherMaster);
-                    await _context.Tbl201VoucherEntries.AddRangeAsync(VM.VoucherEntries);
-                    await _context.SaveChangesAsync();
+                        dbContext.Tbl201VoucherMasters.Add(voucherMaster);
+                    await dbContext.Tbl201VoucherEntries.AddRangeAsync(VM.VoucherEntries);
+                    await dbContext.SaveChangesAsync();
                     await transaction.CommitAsync();
 
                     return Ok(new { success = true, message = "Voucher saved successfully!", voucherNo = newVoucherNo });
@@ -256,6 +288,9 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
 
@@ -265,18 +300,20 @@ namespace QDWEB.Areas.Finance.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateVoucher([FromBody] VoucherViewModel VM)
         {
-            // **Validate Incoming Data**
-            if (VM == null || VM.VoucherMaster == null || string.IsNullOrEmpty(VM.VoucherMaster.VoucherNo) || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // **Validate Incoming Data**
+                if (VM == null || VM.VoucherMaster == null || string.IsNullOrEmpty(VM.VoucherMaster.VoucherNo) || VM.VoucherEntries == null || !VM.VoucherEntries.Any())
             {
                 return BadRequest(new { success = false, message = "Invalid data received or missing voucher number." });
             }
 
             try
             {
-                using (var transaction = await _context.Database.BeginTransactionAsync())
+                using (var transaction = await dbContext.Database.BeginTransactionAsync())
                 {
                     // **Find Existing Voucher Master**
-                    var voucherMaster = await _context.Tbl201VoucherMasters
+                    var voucherMaster = await dbContext.Tbl201VoucherMasters
                         .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherMaster.VoucherNo);
 
                     if (voucherMaster == null)
@@ -291,12 +328,12 @@ namespace QDWEB.Areas.Finance.Controllers
                     voucherMaster.BillRemarks = VM.VoucherMaster.BillRemarks;
 
                     // **Delete Old Entries First**
-                    var existingEntries = await _context.Tbl201VoucherEntries
+                    var existingEntries = await dbContext.Tbl201VoucherEntries
                         .Where(e => e.VoucherNo == VM.VoucherMaster.VoucherNo)
                         .ToListAsync();
 
-                    _context.Tbl201VoucherEntries.RemoveRange(existingEntries);
-                    await _context.SaveChangesAsync(); // Ensure old records are removed first
+                        dbContext.Tbl201VoucherEntries.RemoveRange(existingEntries);
+                    await dbContext.SaveChangesAsync(); // Ensure old records are removed first
 
                     // **Fetch Account IDs and Add New Entries**
                     var newEntries = new List<Tbl201VoucherEntry>();
@@ -328,7 +365,7 @@ namespace QDWEB.Areas.Finance.Controllers
                             DrCr = entry.DrCr,
                             VoucherAmount = entry.VoucherAmount,
                             EntryNarration = entry.EntryNarration,
-                            AccountHead = await _context.Tbl201ChartOfAccounts
+                            AccountHead = await dbContext.Tbl201ChartOfAccounts
                                              .Where(a => a.AccountHead == entry.AccountHead)
                                              .Select(a => a.AccountId) // Convert to nullable int to avoid null exceptions
                                              .FirstOrDefaultAsync(),
@@ -336,8 +373,8 @@ namespace QDWEB.Areas.Finance.Controllers
                     }
 
                     // **Insert New Entries**
-                    await _context.Tbl201VoucherEntries.AddRangeAsync(newEntries);
-                    await _context.SaveChangesAsync();
+                    await dbContext.Tbl201VoucherEntries.AddRangeAsync(newEntries);
+                    await dbContext.SaveChangesAsync();
                     await transaction.CommitAsync();
 
                     return Ok(new { success = true, message = "Voucher updated successfully!" });
@@ -347,6 +384,9 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
 
@@ -404,14 +444,16 @@ namespace QDWEB.Areas.Finance.Controllers
         [HttpGet]
         public async Task<ActionResult> LoadVoucherEntries(DataSourceLoadOptions loadOptions, string voucherNo)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
             {
                 if (string.IsNullOrEmpty(voucherNo))
                 {
                     return BadRequest(new { success = false, message = "Invalid Voucher Number." });
                 }
 
-                var qryListOfAccountlists = _context.Tbl201VoucherEntries
+                var qryListOfAccountlists = dbContext.Tbl201VoucherEntries
               .Where(p => p.VoucherNo == voucherNo)
               .OrderBy(i => i.DrCr == "Dr" ? 0 : 1) // Ensures "Dr" entries come first
               .Select(i => new VoucherEntryDisplayDTO
@@ -428,7 +470,7 @@ namespace QDWEB.Areas.Finance.Controllers
 
                 foreach (var entry in qryListOfAccountlists)
                 {
-                    string accountHead = _context.Qry201ListOfAccounts
+                    string accountHead = dbContext.Qry201ListOfAccounts
                                                  .Where(a => a.AccountId == entry.AccountHead)
                                                  .Select(a => a.AccountHead)
                                                  .FirstOrDefault();
@@ -444,12 +486,17 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
             }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
         [HttpGet]
         public async Task<ActionResult> GetVoucherMasterEntries(DataSourceLoadOptions loadOptions, string voucherNo)
         {
-            var qryListOfAccountlists = _context.Tbl201VoucherMasters.Where(p => p.VoucherNo == voucherNo).Select(i => new
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var qryListOfAccountlists = dbContext.Tbl201VoucherMasters.Where(p => p.VoucherNo == voucherNo).Select(i => new
             {
                 i.VoucherNo,
 
@@ -467,6 +514,10 @@ namespace QDWEB.Areas.Finance.Controllers
             });
 
             return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
 
@@ -476,49 +527,51 @@ namespace QDWEB.Areas.Finance.Controllers
 
         public IActionResult DeleteAllVoucherEntry(string VoucherNo, string TemporaryNo)
         {
-            if (string.IsNullOrEmpty(VoucherNo) || string.IsNullOrEmpty(TemporaryNo))
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (string.IsNullOrEmpty(VoucherNo) || string.IsNullOrEmpty(TemporaryNo))
             {
                 return BadRequest("Invalid parameters. Both VoucherNo and TemporaryNo are required.");
             }
 
             try
             {
-                using (var transaction = _context.Database.BeginTransaction()) // Start transaction
+                using (var transaction = dbContext.Database.BeginTransaction()) // Start transaction
                 {
                     // 1. Delete from tbl201VoucherEntryTemp where VoucherNo = TemporaryNo
-                    var tempEntries = _context.Tbl201VoucherEntryTemps
+                    var tempEntries = dbContext.Tbl201VoucherEntryTemps
                                                 .Where(e => e.VoucherNo == TemporaryNo)
                                                 .ToList();
                     if (tempEntries.Any())
                     {
-                        _context.Tbl201VoucherEntryTemps.RemoveRange(tempEntries);
-                        _context.SaveChanges();
+                            dbContext.Tbl201VoucherEntryTemps.RemoveRange(tempEntries);
+                            dbContext.SaveChanges();
                     }
 
                     // 2. Delete from tbl201VoucherEntry where VoucherNo = VoucherNo
-                    var entryRecords = _context.Tbl201VoucherEntries
+                    var entryRecords = dbContext.Tbl201VoucherEntries
                                                  .Where(e => e.VoucherNo == VoucherNo)
                                                  .ToList();
                     if (entryRecords.Any())
                     {
-                        _context.Tbl201VoucherEntries.RemoveRange(entryRecords);
-                        _context.SaveChanges();
+                            dbContext.Tbl201VoucherEntries.RemoveRange(entryRecords);
+                            dbContext.SaveChanges();
                     }
 
                     // 3. Delete from tbl201VoucherMaster where VoucherNo = VoucherNo
-                    var masterEntries = _context.Tbl201VoucherMasters
+                    var masterEntries = dbContext.Tbl201VoucherMasters
                                                   .Where(m => m.VoucherNo == VoucherNo)
                                                   .ToList();
                     if (masterEntries.Any())
                     {
-                        _context.Tbl201VoucherMasters.RemoveRange(masterEntries);
-                        _context.SaveChanges();
+                            dbContext.Tbl201VoucherMasters.RemoveRange(masterEntries);
+                            dbContext.SaveChanges();
                     }
 
                     transaction.Commit(); // Commit only if all deletions succeed
 
                     // Fetch updated data after deletion
-                    var updatedData = _context.Tbl201VoucherMasters.ToList();
+                    var updatedData = dbContext.Tbl201VoucherMasters.ToList();
 
                     return Ok(new { data = updatedData, message = "Voucher deleted successfully" });
                 }
@@ -527,15 +580,20 @@ namespace QDWEB.Areas.Finance.Controllers
             {
                 return StatusCode(500, $"Error deleting voucher: {ex.Message}");
             }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
         public async Task<ActionResult> DeleteAllEntries(DataSourceLoadOptions loadOptions, string VoucherNo)
         {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
 
-            try
+                try
             {
                 // Find all records matching the given VoucherNo
-                var records = await _context.Tbl201VoucherEntries
+                var records = await dbContext.Tbl201VoucherEntries
                                             .Where(v => v.VoucherNo == VoucherNo)
                                             .ToListAsync();
 
@@ -544,19 +602,19 @@ namespace QDWEB.Areas.Finance.Controllers
                     return NotFound(new { message = "No records found for the provided VoucherNo!" });
                 }
 
-                // Remove all matching records
-                _context.Tbl201VoucherEntries.RemoveRange(records);
-                await _context.SaveChangesAsync();
+                    // Remove all matching records
+                    dbContext.Tbl201VoucherEntries.RemoveRange(records);
+                await dbContext.SaveChangesAsync();
 
                 // Fetch updated voucher list
-                var voucherEntries = await _context.Tbl201VoucherEntries
+                var voucherEntries = await dbContext.Tbl201VoucherEntries
                                                    .Where(ve => ve.VoucherNo == VoucherNo)
                                                    .ToListAsync();
 
                 var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct().ToList();
 
                 // Query the updated display list
-                var qryListOfAccountLists = _context.Qry201VoucherEntryScreenDisplays
+                var qryListOfAccountLists = dbContext.Qry201VoucherEntryScreenDisplays
                                                     .Where(p => voucherNos.Contains(p.VoucherNo))
                                                     .OrderBy(i => i.DrCr == "Dr")
                                                     .Select(i => new VoucherEntryDisplayDTO
@@ -581,6 +639,9 @@ namespace QDWEB.Areas.Finance.Controllers
                 // Return a detailed error response
                 return StatusCode(500, new { message = "An error occurred while deleting the records.", error = ex.Message });
             }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
 

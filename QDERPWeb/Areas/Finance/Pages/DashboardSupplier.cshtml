@@ -61,7 +61,7 @@
     </div>
     <div class="chart-container">
         <div id="SupplierOutstandingAgingChart" class="no-border-title"></div>
-        <canvas id="billsOutstandingChart" style="width:100%; height:100% "></canvas>
+        <canvas id="billsOutstandingChart" ></canvas>
 
     </div>
 
@@ -701,98 +701,109 @@
         // Bills Payable Outstanding DataGrid
 
             // Bills Payable Outstanding DataGrid
-    $("#billsPayableGrid").dxDataGrid({
-        dataSource: DevExpress.data.AspNet.createStore({
-            key: "AccountHeadNo",
-                loadUrl: "/api/Dashboard/GetBillsPayableOutstandingSupplier"
-        }),
-        remoteOperations: true,
-        columns: [
-            {
-                dataField: "AccountHead",
-                caption: formatMessage("Account Head"),
-                width: 200,
-                headerCellTemplate: function (header, info) {
-                    $("<div>")
-                        .text(info.column.caption)
-                        .css({
-                            "text-align": "center",
-                            "font-weight": "bold"
-                        })
-                        .appendTo(header);
-                }
-            },
-            {
-                dataField: "Balance",
-                caption: formatMessage("Balance Amount"),
-                format: { type: "fixedPoint", precision: 2 },
-                headerCellTemplate: function (header, info) {
-                    $("<div>")
-                        .text(info.column.caption)
-                        .css({
-                            "text-align": "center",
-                            "font-weight": "bold"
-                        })
-                        .appendTo(header);
-                }
-            },
-            {
-                dataField: "OverdueDays",
-                caption: formatMessage("Overdue Days"),
-                visible: false, // hidden by default
-                allowHiding: true // optional, ensures it's available in the chooser
-            },
-            { dataField: "AccountHeadNo", caption: formatMessage("Account Head No"), visible: false, allowHiding: true }
-        ],
-        columnAutoWidth: true,
-        showBorders: true,
-        filterRow: { visible: false },
-        paging: { enabled: false },
-
-        // Enable vertical scrolling
-            height: 600,
-              width:800,
-        scrolling: {
-            mode: "virtual"
-        },
-
-        searchPanel: { visible: false },
-
-        allowColumnReordering: true,
-        allowColumnResizing: true,
-
-        columnChooser: {
-            enabled: true,
-            mode: "select"
-        },
-
-        toolbar: {
-            items: [
-                {
-                    location: "after",
-                    widget: "dxButton",
-                    options: {
-                        icon: "columnchooser",
-                        text: formatMessage("Column Chooser"),
-                        onClick: function () {
-                            $("#billsPayableGrid").dxDataGrid("instance").showColumnChooser();
+      $(document).ready(function () {
+        $.ajax({
+            url: "/api/Dashboard/GetBillsPayableOutstandingSupplier",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response && response.data) {
+                    $("#billsPayableGrid").dxDataGrid({
+                        dataSource: response.data,
+                        columns: [
+                            {
+                                dataField: "AccountHead",
+                                caption: formatMessage("Account Head"),
+                                width: 200,
+                                headerCellTemplate: function (header, info) {
+                                    $("<div>")
+                                        .text(info.column.caption)
+                                        .css({
+                                            "text-align": "center",
+                                            "font-weight": "bold"
+                                        })
+                                        .appendTo(header);
+                                }
+                            },
+                            {
+                                dataField: "Balance",
+                                caption: formatMessage("Balance Amount"),
+                                format: { type: "fixedPoint", precision: 2 },
+                                headerCellTemplate: function (header, info) {
+                                    $("<div>")
+                                        .text(info.column.caption)
+                                        .css({
+                                            "text-align": "center",
+                                            "font-weight": "bold"
+                                        })
+                                        .appendTo(header);
+                                }
+                            },
+                            {
+                                dataField: "OverdueDays",
+                                caption: formatMessage("Overdue Days"),
+                                visible: false,
+                                allowHiding: true
+                            },
+                            {
+                                dataField: "AccountHeadNo",
+                                caption: formatMessage("Account Head No"),
+                                visible: false,
+                                allowHiding: true
+                            }
+                        ],
+                        columnAutoWidth: true,
+                        showBorders: true,
+                        filterRow: { visible: false },
+                        paging: { enabled: false },
+                        height: 500,
+                        width: 580,
+                        scrolling: {
+                            mode: "virtual"
+                        },
+                        searchPanel: { visible: false },
+                        allowColumnReordering: true,
+                        allowColumnResizing: true,
+                        columnChooser: {
+                            enabled: true,
+                            mode: "select"
+                        },
+                        toolbar: {
+                            items: [
+                                {
+                                    location: "after",
+                                    widget: "dxButton",
+                                    options: {
+                                        icon: "columnchooser",
+                                        text: formatMessage("Column Chooser"),
+                                        onClick: function () {
+                                            $("#billsPayableGrid").dxDataGrid("instance").showColumnChooser();
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        summary: {
+                            totalItems: [
+                                {
+                                    column: "Balance",
+                                    summaryType: "sum",
+                                    valueFormat: { type: "fixedPoint", precision: 2 },
+                                    displayFormat: "Total: {0}"
+                                }
+                            ]
                         }
-                    }
+                    });
+                } else {
+                    console.error("No data found in the response.");
                 }
-            ]
-        },
-
-        summary: {
-            totalItems: [
-                {
-                    column: "Balance",
-                    summaryType: "sum",
-                    valueFormat: { type: "fixedPoint", precision: 2 },
-                    displayFormat: "Total: {0}"
-                }
-            ]
-        }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data:", error);
+            }
+        });
     });
+
         // Bank Account Details DataGrid
         $("#bankAccountGrid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
@@ -869,6 +880,12 @@
                         const balances = response.data.map(item => item.Balance);
 
                         const ctx = document.getElementById("billsOutstandingChart").getContext("2d");
+
+                       
+
+                   
+
+
                         new Chart(ctx, {
                             type: "bar",
                             data: {
@@ -882,7 +899,7 @@
                                 }]
                             },
                             options: {
-                                responsive: true,
+                                responsive: false,
                                 plugins: {
                                     legend: {
                                         display: true,
@@ -1089,8 +1106,21 @@
         text-align: center;
     }
 
+    .dx-card-header {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+  
+    #billsOutstandingChart {
+        width: 800px !important;
+        height: 500px !important;
+    }
+
     .mainContainer {
         overflow-x: hidden;
+        width: 100%;
     }
     .dx-card-header {
         font-size: 24px;
@@ -1104,7 +1134,10 @@
         font-weight: bold;
         color: #007acc;
     }
-
+    
+    .dx-texteditor-container {
+        width: 125%;
+    }
     .grid-container {
         display: flex;
         padding: 15px;
@@ -1112,7 +1145,7 @@
     }
 
     .grid-section {
-        width: 50%;
+        width: 40%;
         text-align: center;
     }
 
@@ -1124,21 +1157,19 @@
     }
 
     .chart-container {
-        width: 32%;
+        /* width: 32%; */
         text-align: center;
     }
 
-    #clientOutstandingChart,
-    #billsOutstandingChart,
-    #bankAccountsChart {
-        width: 100%;
-        height: 400px;
-        margin: 0 auto;
-    }
+   
     .mainContainer{
         width:100%;
     }
 
+    .billsOutstandingChart{
+        width: 800px;
+        height: 600px;
+    }
     .dx-card {
         padding: 20px;
         background: #f5f5f5;

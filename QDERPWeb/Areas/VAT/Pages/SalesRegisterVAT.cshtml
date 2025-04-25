@@ -465,6 +465,54 @@
 	}
 
 
+	 function cloneEInvoice() {
+		if (!invoiceNo) {
+			alert("InvoiceNo is required.");
+			return;
+		}
+
+		$.ajax({
+			url: `/api/VATModule/InsertCloneEInvoice?InvoiceNo=${encodeURIComponent(invoiceNo)}`, // Change this to match your actual controller route
+			type: 'POST',
+			data: { InvoiceNo: invoiceNo },
+			success: function (response) {
+				console.log("Clone success:", response);
+				
+			},
+			error: function (xhr) {
+				let message = xhr.responseJSON?.message || "Unknown error";
+				console.error("Clone error:", message);
+				alert("Error: " + message);
+			}
+		});
+	}
+
+
+	 function cancelInvoice() {
+		if (!invoiceNo) {
+			alert("InvoiceNo is required.");
+			return;
+		}
+
+		$.ajax({
+			url: `/api/VATModule/InsertAmendEInvoice?InvoiceNo=${encodeURIComponent(invoiceNo)}`, // Change this to match your actual controller route
+			type: 'POST',
+			data: { InvoiceNo: invoiceNo },
+			success: function (response) {
+				console.log("Clone success:", response);
+				
+			},
+			error: function (xhr) {
+				let message = xhr.responseJSON?.message || "Unknown error";
+				console.error("Clone error:", message);
+				alert("Error: " + message);
+			}
+		});
+	}
+
+	
+
+
 
 
 
