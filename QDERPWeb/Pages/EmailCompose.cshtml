@@ -3,6 +3,12 @@
 @{
     Layout = null;
 }
+@{
+
+    var fileName = HttpContext.Request.Query["fileName"];
+}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,8 +96,16 @@
             </div>
             <div class="mb-3">
                 <label>Attachment:</label>
-                <input type="file" class="form-control" id="attachment" multiple>
+                <!-- Removed the manual file input -->
+                <input type="hidden" id="serverAttachment" value="@fileName" />
             </div>
+
+            <!-- Optional: show the generated attachment link -->
+            <div id="attachmentDisplay" class="mt-2 text-muted">
+                <span>Attachment: @fileName</span>
+            </div>
+
+
             <button type="button" class="btn btn-primary" id="sendButton">Send</button>
             <div id="statusMessage" class="mt-3"></div>
         </form>
@@ -109,19 +123,16 @@
 
     <script>
         $(document).ready(function () {
-            // Load Categories with Templates
+            // Load categories with templates
             $.ajax({
                 url: '/api/EmailTemplate/categories',
                 type: 'GET',
                 success: function (categories) {
                     let categoryDropdown = $("#templateCategory");
                     categoryDropdown.empty().append('<option value="">-- Select Category --</option>');
-
                     $.each(categories, function (index, category) {
                         categoryDropdown.append(`<option value="${category}">${category}</option>`);
                     });
-
-                    // Ensure "Insert Template" option is always present
                     categoryDropdown.append('<option value="insert">Insert Template</option>');
                 },
                 error: function () {
@@ -129,7 +140,7 @@
                 }
             });
 
-            // On Selecting a Category, Load Template Details
+            // Load template details when category changes
             $("#templateCategory").change(function () {
                 let selectedCategory = $(this).val();
 
@@ -141,29 +152,15 @@
                 }
 
                 if (selectedCategory) {
-                    debugger;
                     $.ajax({
                         url: '/api/EmailTemplate/templateByCategory?category=' + encodeURIComponent(selectedCategory),
                         type: 'GET',
-                        dataType: 'json',
                         success: function (response) {
-                            console.log("API Response:", response); // Debugging
-
-                            if (response) {
-                                console.log("Subject:", response.Subject); // Debugging
-                                console.log("Body:", response.Body); // Debugging
-
-                                $("#Subject").val(response.Subject || "No Subject Available");
-                                $("#emailBody").val(response.Body || "No Content Available");
-                            } else {
-                                $("#subject").val("No Template Found");
-                                $("#emailBody").val("");
-                            }
+                            $("#Subject").val(response.Subject || "No Subject Available");
+                            $("#emailBody").val(response.Body || "No Content Available");
                         },
-
-                        error: function (xhr, status, error) {
-                            console.error("Error Fetching Template:", error);
-                            alert("Failed to load template details. See console for details.");
+                        error: function () {
+                            alert("Failed to load template details.");
                         }
                     });
                 } else {
@@ -172,7 +169,7 @@
                 }
             });
 
-
+            // Handle Send button click
             $("#sendButton").click(function () {
                 showConfirmationPopup();
             });
@@ -185,26 +182,30 @@
         }
 
         function sendEmail() {
-            // Show the popup with the loader
+            // Show sending popup
             $("#overlay").fadeIn();
             $("#emailPopup").fadeIn();
             $("#popupTitle").text("Sending Email...");
             $("#emailLoader").show();
             $("#emailStatusGif").hide();
 
+            // Build FormData with required values
             var formData = new FormData();
             formData.append("To", $("#toEmail").val());
             formData.append("Subject", $("#Subject").val());
             formData.append("Body", $("#emailBody").val());
 
-            // Handle Attachments
-            var files = $("#attachment")[0].files;
-            if (files.length > 0) {
-                for (var i = 0; i < files.length; i++) {
-                    formData.append("Attachments", files[i]);
-                }
+            // Only include server-generated attachment
+            var serverAttachment = $("#serverAttachment").val();
+            if (serverAttachment) {
+                formData.append("ServerGeneratedAttachment", serverAttachment);
             }
 
+            // Send AJAX call
+            sendFinalEmail(formData);
+        }
+
+        function sendFinalEmail(formData) {
             $.ajax({
                 url: "/api/Email/send",
                 type: "POST",
@@ -215,25 +216,25 @@
                     $("#popupTitle").text("Email Sent!");
                     $("#emailLoader").hide();
                     $("#emailStatusGif").attr("src", "/images/Successful.gif").show();
-                    $("#statusMessage").html("<div class='alert alert-success'>" + response.message + "</div>");
+                    $("#statusMessage").html(`<div class='alert alert-success'>${response.message}</div>`);
                 },
                 error: function (xhr) {
-                    let errorMessage = xhr.responseJSON && xhr.responseJSON.message
-                        ? xhr.responseJSON.message
-                        : "An unexpected error occurred.";
+                    let errorMessage = xhr.responseJSON?.message || "An unexpected error occurred.";
                     $("#popupTitle").text("Failed to Send Email!");
                     $("#emailLoader").hide();
                     $("#emailStatusGif").attr("src", "/images/Fail.gif").show();
-                    $("#statusMessage").html("<div class='alert alert-danger'>" + errorMessage + "</div>");
+                    $("#statusMessage").html(`<div class='alert alert-danger'>${errorMessage}</div>`);
                 },
                 complete: function () {
-                    setTimeout(function () {
-                        $("#emailPopup, #overlay").fadeOut(); // Hide popup after 3 seconds
+                    setTimeout(() => {
+                        $("#emailPopup, #overlay").fadeOut();
                     }, 3000);
                 }
             });
         }
     </script>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

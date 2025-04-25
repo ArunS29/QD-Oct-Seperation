@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Models.DAL;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,11 +11,11 @@ using System.Threading.Tasks;
 [ApiController]
 public class EmailTemplateController : ControllerBase
 {
-    private readonly ERPMasterWtDataContext _context;
+    private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-    public EmailTemplateController(ERPMasterWtDataContext context)
+    public EmailTemplateController(TenantDbContextHelper tenantDbContextHelper)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _tenantDbContextHelper = tenantDbContextHelper ?? throw new ArgumentNullException(nameof(tenantDbContextHelper));
     }
 
     // ✅ GET: api/email/categories - Fetch Unique Categories
@@ -22,17 +24,22 @@ public class EmailTemplateController : ControllerBase
     {
         try
         {
-            if (_context.EmailTemplates == null)
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                return StatusCode(500, new { success = false, message = "Tenant not found or DbContext could not be created." });
+            }
+
+            if (dbContext.EmailTemplates == null)
             {
                 return NotFound(new { success = false, message = "Email templates table not found in the database." });
             }
 
-            var categories = await _context.EmailTemplates
+            var categories = await dbContext.EmailTemplates
                 .Where(t => !string.IsNullOrEmpty(t.Category))
                 .Select(t => t.Category)
                 .Distinct()
                 .OrderBy(c => c)
-                .ToListAsync(); // ✅ Direct async DB call
+                .ToListAsync();
 
             return categories.Any()
                 ? Ok(categories)
@@ -44,8 +51,7 @@ public class EmailTemplateController : ControllerBase
         }
     }
 
-
-    // ✅ NEW: GET api/email/templateByCategory?category=Finance - Fetch a Single Template
+    // ✅ GET: api/email/templateByCategory?category=Finance - Fetch a Single Template
     [HttpGet("templateByCategory")]
     public async Task<IActionResult> GetTemplateByCategory([FromQuery] string category)
     {
@@ -56,14 +62,19 @@ public class EmailTemplateController : ControllerBase
                 return BadRequest(new { success = false, message = "Category is required." });
             }
 
-            var template = await _context.EmailTemplates
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                return StatusCode(500, new { success = false, message = "Tenant not found or DbContext could not be created." });
+            }
+
+            var template = await dbContext.EmailTemplates
                 .Where(t => t.Category == category)
                 .Select(t => new
                 {
                     t.Subject,
                     t.Body
                 })
-                .FirstOrDefaultAsync(); // ✅ Fetch only 1 record
+                .FirstOrDefaultAsync();
 
             if (template == null)
             {
@@ -77,5 +88,4 @@ public class EmailTemplateController : ControllerBase
             return StatusCode(500, new { success = false, message = "Internal Server Error.", error = ex.Message });
         }
     }
-
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Utility.Controllers
@@ -11,10 +13,12 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
     public class EmailController : ControllerBase
     {
         private readonly ILogger<EmailController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public EmailController(ILogger<EmailController> logger)
+        public EmailController(ILogger<EmailController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         [HttpPost("send")]
@@ -29,20 +33,45 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             _logger.LogInformation($"Sending email to {emailRequest.To} with subject {emailRequest.Subject}");
 
-            // Extract file attachments
             var attachments = new List<IFormFile>();
-            if (emailRequest.Attachments != null)
+
+            // Only use server-generated attachments
+            if (!string.IsNullOrEmpty(emailRequest.ServerGeneratedAttachment))
             {
-                attachments.AddRange(emailRequest.Attachments);
+                var safeFileName = Path.GetFileName(emailRequest.ServerGeneratedAttachment); // prevent directory traversal
+                var baseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "attachments"); // adjust this path
+                var serverFilePath = Path.Combine(baseDirectory, safeFileName);
+
+                _logger.LogInformation($"Looking for server-generated attachment at: {serverFilePath}");
+
+                if (System.IO.File.Exists(serverFilePath))
+                {
+                    await using var fileStream = new FileStream(serverFilePath, FileMode.Open, FileAccess.Read);
+                    var memoryStream = new MemoryStream();
+                    await fileStream.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
+
+                    var file = new FormFile(memoryStream, 0, memoryStream.Length, "ServerGeneratedAttachment", safeFileName)
+                    {
+                        Headers = new HeaderDictionary(),
+                        ContentType = "application/octet-stream"
+                    };
+
+                    attachments.Add(file);
+                }
+                else
+                {
+                    _logger.LogWarning($"Server-generated attachment not found at: {serverFilePath}");
+                }
             }
 
-            // ✅ Fixed: Explicitly passing 'null' for OTP
+            // Send email
             bool success = await EmailHelper.SendEmailAsync(
                 emailRequest.To,
                 emailRequest.Subject,
                 emailRequest.Body,
-                null, // ✅ OTP explicitly set to null
-                attachments // ✅ Attachments passed in correct order
+                null, // No OTP
+                attachments
             );
 
             if (success)
@@ -62,6 +91,6 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
         public string To { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
-        public List<IFormFile> Attachments { get; set; }
+        public string ServerGeneratedAttachment { get; set; } // Only this is used
     }
 }
