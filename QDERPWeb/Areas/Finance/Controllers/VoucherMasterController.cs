@@ -1223,7 +1223,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
-[HttpPost]
+        [HttpPost]
         public async Task<ActionResult> SaveChequeDetails([FromBody] Tbl20113ChequeMaster CM)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1240,8 +1240,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 if (existingVoucher != null)
                 {
-                    // Update existing record
-                    dbContext.Entry(existingVoucher).CurrentValues.SetValues(CM);
+                        dbContext.Entry(existingVoucher).State = EntityState.Detached;
+                        dbContext.Entry(CM).State = EntityState.Modified;
+                        // Update existing record
+                        dbContext.Entry(existingVoucher).CurrentValues.SetValues(CM);
                     await dbContext.SaveChangesAsync();
                     return Ok(new { success = true, message = "Cheque Information Updated sucessfully!" });
                 }
