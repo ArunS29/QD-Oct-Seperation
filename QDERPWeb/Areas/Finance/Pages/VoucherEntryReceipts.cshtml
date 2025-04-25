@@ -1865,7 +1865,22 @@
 
 
 
-    
+    function onBaseCurrencySelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const dropDown = $("#ddlBaseCurrency").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            dropDown.option("value", selectedKey); // This should bind the selected CurrencyID to the DropDownBox
+            if (dropDown.option("opened")) {
+                dropDown.close();
+            }
+
+            const selectedRow = e.selectedRowsData[0];
+            console.log("Selected Currency:", selectedRow.CurrencyName);
+        } else {
+            DevExpress.ui.notify("Please select a currency", "warning", 2000);
+        }
+    }
 
     function showPopup() {
         var popup = $("#ledgerAccountPopup").dxPopup("instance");
