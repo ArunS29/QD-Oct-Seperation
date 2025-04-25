@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "Edit Bills Payable/ Bills Receivables":"Edit Bills Payable/ Bills Receivables",
         "DocumentNo:": "DocumentNo:",
         "Reference NO:": "Reference NO:",
         "Remarks/Notes:": "Remarks/Notes:",
