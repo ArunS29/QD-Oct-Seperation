@@ -348,7 +348,7 @@ namespace QD.ERP.Web.Pages
             {
                 if (accountId == null || frmDate == null || toDate == null)
                 {
-                    return BadRequest("Missing required parameters for AccountExportLandscapeReport.");
+                    return BadRequest("Missing required parameters for AccountOrderByVoucherNo.");
                 }
 
                 AccountId = accountId;
@@ -356,6 +356,7 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -364,29 +365,42 @@ namespace QD.ERP.Web.Pages
                 var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
                 var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
-                string logoBase64 = string.Empty;
-                Image logoImage = null;
+                var auditorName = ERPCompany_details?.AuditorName ?? string.Empty;
+                var auditorAddress = ERPCompany_details?.AuditorAddress ?? string.Empty;
+                var auditorEmail = ERPCompany_details?.AuditorEmail ?? string.Empty;
 
-                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                Image logoImage = null;
+                Image companySealImage = null;
+
+                try
                 {
-                    try
+                    if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                     {
                         using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
                         {
                             logoImage = Image.FromStream(ms);
                         }
                     }
-                    catch (Exception ex)
+
+                    if (ERPCompany_details?.CompanySeal != null && ERPCompany_details.CompanySeal.Length > 0)
                     {
-                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanySeal))
+                        {
+                            companySealImage = Image.FromStream(ms);
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error processing company images: " + ex.Message);
+                }
+
                 Report = new AccountDebtorsReport(
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    AccountId, FrmDate, ToDate, tenantName,
+                    companyName, companyAddress, logoImage, companySealImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,
+                    auditorName, auditorAddress, auditorEmail
                 );
-
-
             }
             else if (reportName == "AccountOrderByVoucherNo")
             {
@@ -497,6 +511,7 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -505,29 +520,45 @@ namespace QD.ERP.Web.Pages
                 var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
                 var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
 
-                string logoBase64 = string.Empty;
-                Image logoImage = null;
+                var auditorName = ERPCompany_details?.AuditorName ?? string.Empty;
+                var auditorAddress = ERPCompany_details?.AuditorAddress ?? string.Empty;
+                var auditorEmail = ERPCompany_details?.AuditorEmail ?? string.Empty;
 
-                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                Image logoImage = null;
+                Image companySealImage = null;
+
+                try
                 {
-                    try
+                    if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
                     {
                         using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
                         {
                             logoImage = Image.FromStream(ms);
                         }
                     }
-                    catch (Exception ex)
+
+                    if (ERPCompany_details?.CompanySeal != null && ERPCompany_details.CompanySeal.Length > 0)
                     {
-                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanySeal))
+                        {
+                            companySealImage = Image.FromStream(ms);
+                        }
                     }
                 }
-                Report = new AccountDebtors(
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
-                );
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error processing company images: " + ex.Message);
+                }
 
+                Report = new AccountDebtors(
+                    AccountId, FrmDate, ToDate, tenantName,
+                    companyName, companyAddress, logoImage, companySealImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper,
+                    auditorName, auditorAddress, auditorEmail
+                );
             }
+
+
 
 
             ///(Receivable Statements)
