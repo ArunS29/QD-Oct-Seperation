@@ -608,193 +608,220 @@
         });
 
         // Client Outstanding DataGrid
-        $("#clientOutstandingGrid").dxDataGrid({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AccountHeadNo",
-                loadUrl: "/api/Dashboard/GetClientOutstanding"
-            }),
-            remoteOperations: true,
-            columns: [
-                {
-                    dataField: "AccountHead",
-                    caption: formatMessage("Account Head"),
-                    width: 200,
-                    allowReordering: true,
-                    headerCellTemplate: function (header, info) {
-                        $("<div>")
-                            .text(info.column.caption)
-                            .css({
-                                "text-align": "center",
-                                "font-weight": "bold"
-                            })
-                            .appendTo(header);
-                    }
-                },
-                {
-                    dataField: "Balance",
-                        caption: formatMessage("Balance Amount"),
-                    format: { type: "fixedPoint", precision: 2 },
-                    allowReordering: true,
-                    headerCellTemplate: function (header, info) {
-                        $("<div>")
-                            .text(info.column.caption)
-                            .css({
-                                "text-align": "center",
-                                "font-weight": "bold"
-                            })
-                            .appendTo(header);
-                    }
-                },
-                {
-                    dataField: "OverdueDays",
-                    caption: formatMessage("Overdue Days"),
-                    visible: false,
-                    allowHiding: true
-                },
-                { dataField: "AccountGroupId", caption: formatMessage("Account Group"), visible: false, allowHiding: true },
-                { dataField: "AccountHeadNo", caption: formatMessage("Account Head No"), visible: false, allowHiding: true }
-            ],
-            columnAutoWidth: true,
-            showBorders: true,
-            filterRow: { visible: false },
-            paging: { enabled: false },
-
-            // Enable vertical scrolling
-            height: 400,
-            scrolling: {
-                mode: "virtual"
-            },
-
-            searchPanel: { visible: false },
-
-            allowColumnReordering: true,
-            allowColumnResizing: true,
-
-            columnChooser: {
-                enabled: true,
-                mode: "select"
-            },
-
-            toolbar: {
-                items: [
-                    {
-                        location: "after",
-                        widget: "dxButton",
-                        options: {
-                            icon: "columnchooser",
-                            text: formatMessage("Column Chooser"),
-                            onClick: function () {
-                                $("#clientOutstandingGrid").dxDataGrid("instance").showColumnChooser();
+          $(document).ready(function () {
+        $.ajax({
+            url: "/api/Dashboard/GetClientOutstanding",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response && response.data) {
+                    $("#clientOutstandingGrid").dxDataGrid({
+                        dataSource: response.data,
+                        columns: [
+                            {
+                                dataField: "AccountHead",
+                                caption: formatMessage("Account Head"),
+                                width: 200,
+                                allowReordering: true,
+                                headerCellTemplate: function (header, info) {
+                                    $("<div>")
+                                        .text(info.column.caption)
+                                        .css({
+                                            "text-align": "center",
+                                            "font-weight": "bold"
+                                        })
+                                        .appendTo(header);
+                                }
+                            },
+                            {
+                                dataField: "Balance",
+                                caption: formatMessage("Balance Amount"),
+                                format: { type: "fixedPoint", precision: 2 },
+                                allowReordering: true,
+                                headerCellTemplate: function (header, info) {
+                                    $("<div>")
+                                        .text(info.column.caption)
+                                        .css({
+                                            "text-align": "center",
+                                            "font-weight": "bold"
+                                        })
+                                        .appendTo(header);
+                                }
+                            },
+                            {
+                                dataField: "OverdueDays",
+                                caption: formatMessage("Overdue Days"),
+                                visible: false,
+                                allowHiding: true
+                            },
+                            {
+                                dataField: "AccountGroupId",
+                                caption: formatMessage("Account Group"),
+                                visible: false,
+                                allowHiding: true
+                            },
+                            {
+                                dataField: "AccountHeadNo",
+                                caption: formatMessage("Account Head No"),
+                                visible: false,
+                                allowHiding: true
                             }
+                        ],
+                        columnAutoWidth: true,
+                        showBorders: true,
+                        filterRow: { visible: false },
+                        paging: { enabled: false },
+                        height: 400,
+                        scrolling: {
+                            mode: "virtual"
+                        },
+                        searchPanel: { visible: false },
+                        allowColumnReordering: true,
+                        allowColumnResizing: true,
+                        columnChooser: {
+                            enabled: true,
+                            mode: "select"
+                        },
+                        toolbar: {
+                            items: [
+                                {
+                                    location: "after",
+                                    widget: "dxButton",
+                                    options: {
+                                        icon: "columnchooser",
+                                        text: formatMessage("Column Chooser"),
+                                        onClick: function () {
+                                            $("#clientOutstandingGrid").dxDataGrid("instance").showColumnChooser();
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        summary: {
+                            totalItems: [
+                                {
+                                    column: "Balance",
+                                    summaryType: "sum",
+                                    valueFormat: { type: "fixedPoint", precision: 2 },
+                                    displayFormat: "Total: {0}"
+                                }
+                            ]
                         }
-                    }
-                ]
+                    });
+                } else {
+                    console.error("No data found in the response.");
+                }
             },
-            summary: {
-                totalItems: [
-                    {
-                        column: "Balance",
-                        summaryType: "sum",
-                        valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat: "Total: {0}"
-                    }
-                ]
+            error: function (xhr, status, error) {
+                console.error("Error fetching data:", error);
             }
         });
+    });
 
 
         // Bills Payable Outstanding DataGrid
-        $("#billsPayableGrid").dxDataGrid({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AccountHeadNo",
-                loadUrl: "/api/Dashboard/GetBillsPayableOutstanding"
-            }),
-            remoteOperations: true,
-            columns: [
-                {
-                    dataField: "AccountHead",
-                    caption: formatMessage("Account Head"),
-                    width: 200,
-                    headerCellTemplate: function (header, info) {
-                        $("<div>")
-                            .text(info.column.caption)
-                            .css({
-                                "text-align": "center",
-                                "font-weight": "bold"
-                            })
-                            .appendTo(header);
-                    }
-                },
-                {
-                    dataField: "Balance",
-                    caption: formatMessage("Balance Amount"),
-                    format: { type: "fixedPoint", precision: 2 },
-                    headerCellTemplate: function (header, info) {
-                        $("<div>")
-                            .text(info.column.caption)
-                            .css({
-                                "text-align": "center",
-                                "font-weight": "bold"
-                            })
-                            .appendTo(header);
-                    }
-                },
-                {
-                    dataField: "OverdueDays",
-                    caption: formatMessage("Overdue Days"),
-                    visible: false, // hidden by default
-                    allowHiding: true // optional, ensures it's available in the chooser
-                },
-                { dataField: "AccountHeadNo", caption: formatMessage("Account Head No"), visible: false, allowHiding: true }
-            ],
-            columnAutoWidth: true,
-            showBorders: true,
-            filterRow: { visible: false },
-            paging: { enabled: false },
-
-            // Enable vertical scrolling
-            height: 400,
-            scrolling: {
-                mode: "virtual"
-            },
-
-            searchPanel: { visible: false },
-
-            allowColumnReordering: true,
-            allowColumnResizing: true,
-
-            columnChooser: {
-                enabled: true,
-                mode: "select"
-            },
-
-            toolbar: {
-                items: [
-                    {
-                        location: "after",
-                        widget: "dxButton",
-                        options: {
-                            icon: "columnchooser",
-                            text: formatMessage("Column Chooser"),
-                            onClick: function () {
-                                $("#billsPayableGrid").dxDataGrid("instance").showColumnChooser();
+          $(document).ready(function () {
+        $.ajax({
+            url: "/api/Dashboard/GetBillsPayableOutstanding",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                if (response && response.data) {
+                    $("#billsPayableGrid").dxDataGrid({
+                        dataSource: response.data,
+                        columns: [
+                            {
+                                dataField: "AccountHead",
+                                caption: formatMessage("Account Head"),
+                                width: 200,
+                                headerCellTemplate: function (header, info) {
+                                    $("<div>")
+                                        .text(info.column.caption)
+                                        .css({
+                                            "text-align": "center",
+                                            "font-weight": "bold"
+                                        })
+                                        .appendTo(header);
+                                }
+                            },
+                            {
+                                dataField: "Balance",
+                                caption: formatMessage("Balance Amount"),
+                                format: { type: "fixedPoint", precision: 2 },
+                                headerCellTemplate: function (header, info) {
+                                    $("<div>")
+                                        .text(info.column.caption)
+                                        .css({
+                                            "text-align": "center",
+                                            "font-weight": "bold"
+                                        })
+                                        .appendTo(header);
+                                }
+                            },
+                            {
+                                dataField: "OverdueDays",
+                                caption: formatMessage("Overdue Days"),
+                                visible: false,
+                                allowHiding: true
+                            },
+                            {
+                                dataField: "AccountHeadNo",
+                                caption: formatMessage("Account Head No"),
+                                visible: false,
+                                allowHiding: true
                             }
+                        ],
+                        columnAutoWidth: true,
+                        showBorders: true,
+                        filterRow: { visible: false },
+                        paging: { enabled: false },
+                        height: 400,
+                        scrolling: {
+                            mode: "virtual"
+                        },
+                        searchPanel: { visible: false },
+                        allowColumnReordering: true,
+                        allowColumnResizing: true,
+                        columnChooser: {
+                            enabled: true,
+                            mode: "select"
+                        },
+                        toolbar: {
+                            items: [
+                                {
+                                    location: "after",
+                                    widget: "dxButton",
+                                    options: {
+                                        icon: "columnchooser",
+                                        text: formatMessage("Column Chooser"),
+                                        onClick: function () {
+                                            $("#billsPayableGrid").dxDataGrid("instance").showColumnChooser();
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        summary: {
+                            totalItems: [
+                                {
+                                    column: "Balance",
+                                    summaryType: "sum",
+                                    valueFormat: { type: "fixedPoint", precision: 2 },
+                                    displayFormat: "Total: {0}"
+                                }
+                            ]
                         }
-                    }
-                ]
+                    });
+                } else {
+                    console.error("No data found in the response.");
+                }
             },
-
-            summary: {
-                totalItems: [
-                    {
-                        column: "Balance",
-                        summaryType: "sum",
-                        valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat: "Total: {0}"
-                    }
-                ]
+            error: function (xhr, status, error) {
+                console.error("Error fetching data:", error);
             }
         });
+    });
+
 
 
 

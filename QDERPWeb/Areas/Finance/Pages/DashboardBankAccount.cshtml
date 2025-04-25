@@ -68,7 +68,7 @@
     </div>
     <div class="chart-container">
         <div id="BankAccountsChart" class="no-border-title"></div>
-        <div id="bankAccountsChart" style="width:100%; height:100%;"></div>
+        <div id="bankAccountsChart" ></div>
     </div>
 </div>
 
@@ -348,70 +348,74 @@
             // });
 
          $(document).ready(function () {
-        $.ajax({
-              url: '/api/Dashboard/GetAccountSummaryBank', // Replace with your actual route
-          type: 'GET',
-          dataType: 'json',
-          success: function (result) {
-            if (result && result.data) {
-              // Inject a canvas element into the chart container div
-              $('#bankAccountsChart').html('<canvas id="bankSummaryChartCanvas"></canvas>');
+            $.ajax({
+            url: '/api/Dashboard/GetAccountSummaryBank',
+            type: 'GET',
+            dataType: 'json',
+            success: function (result) {
+                if (result && result.data) {
+                    // Add canvas dynamically
+                    $('#bankAccountsChart').html('<canvas id="bankSummaryChartCanvas"></canvas>');
 
-              var labels = result.data.map(function (item) {
-                return item.AccountHeadName;
-              });
+                    // Wait for DOM to update
+                    setTimeout(() => {
+                        const canvas = document.getElementById('bankSummaryChartCanvas');
 
-              var dataValues = result.data.map(function (item) {
-                return item.TotalBalance;
-              });
+                        // Set canvas dimensions to match the container
+                        canvas.width = canvas.offsetWidth;
+                        canvas.height = canvas.offsetHeight;
 
-              var ctx = document.getElementById('bankSummaryChartCanvas').getContext('2d');
+                        const ctx = canvas.getContext('2d');
 
-              new Chart(ctx, {
-                type: 'bar',
-                data: {
-                  labels: labels,
-                  datasets: [{
-                    label: 'Total Balance',
-                    data: dataValues,
-                        backgroundColor:  '#007acc',
-                        borderColor:  '#007acc',
-                    borderWidth: 1
-                  }]
-                },
-                options: {
-                  responsive: true,
-                  plugins: {
-                    title: {
-                      display: true,
-                      text: 'Bank / Cash Account Summary'
-                    }
-                  },
-                  scales: {
-                    y: {
-                      beginAtZero: true,
-                      title: {
-                        display: true,
-                        text: 'Balance'
-                      }
-                    },
-                    x: {
-                      title: {
-                        display: true,
-                        text: 'Account Head Name'
-                      }
-                    }
-                  }
+                        const labels = result.data.map(item => item.AccountHeadName);
+                        const dataValues = result.data.map(item => item.TotalBalance);
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Total Balance',
+                                    data: dataValues,
+                                    backgroundColor: '#007acc',
+                                    borderColor: '#007acc',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true, // use manual sizing
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: 'Bank / Cash Account Summary'
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Balance'
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Account Head Name'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }, 0); // wait for canvas to be in DOM
+                } else {
+                    $('#bankAccountsChart').html('<p>No data available to display.</p>');
                 }
-              });
-            } else {
-              $('#bankAccountsChart').html('<p>No data available to display.</p>');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading data:', error);
+                $('#bankAccountsChart').html('<p>Error loading chart.</p>');
             }
-          },
-          error: function (xhr, status, error) {
-            console.error('Error loading data:', error);
-            $('#bankAccountsChart').html('<p>Error loading chart.</p>');
-          }
         });
       });
             // Fetch Client Outstanding Aging Data
@@ -890,7 +894,8 @@
                                 paging: { enabled: false }, // Disable paging to show all data
 
                                 // Enable vertical scrolling
-                                height: 400, // Adjust grid height as needed
+                                    height: 500,
+                                    width:580, // Adjust grid height as needed
                                 scrolling: {
                                     mode: "virtual" // Enable virtual scrolling for large datasets
                                 },
@@ -1154,7 +1159,11 @@
         align-items: center;
     }
 
-        .chart-row1 rect {
+    .chart-canvas {
+       
+        height: 400px !important;
+    }
+     .chart-row1 rect {
             fill: transparent;
         }
 
@@ -1169,6 +1178,14 @@
         padding: 1em;
     }
 
+    .dx-texteditor-container{
+        width: 125%;
+    }
+
+    #bankSummaryChartCanvas{
+        height:500px !important;
+        width:750px !important;
+    }
     .dx-card {
         display: inline-block;
         padding: 20px;
@@ -1191,6 +1208,10 @@
         color: #007acc;
     }
 
+    #bankAccountsChart {
+        width: 800px !important;
+        height: 600px !important;
+    }
     .grid-container {
         display: flex;
         padding: 15px;
@@ -1199,11 +1220,12 @@
 
     .grid-section {
         text-align: center;
-        width:50%;
+        width:40%;
     }
 
     .mainContainer {
         overflow-x: hidden;
+        width: 100%;
     }
 
     .chart-row {
@@ -1214,32 +1236,12 @@
     }
 
     .chart-container {
-        width: 32%;
+        /* width: 32%; */
         text-align: center;
     }
 
-    #clientOutstandingChart,
-    #billsOutstandingChart,
-    #bankAccountsChart {
-        width: 100%;
-        height: 400px;
-        margin: 0 auto;
-    }
 
-    .dx-card {
-        padding: 20px;
-        background: #f5f5f5;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        width: 600px;
-    }
-
-    .dx-card-header {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
+  
 
     .dx-card-content .total-value {
         font-size: 24px;
