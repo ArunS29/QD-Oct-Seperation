@@ -273,7 +273,11 @@ namespace QDWEB.Areas.Finance.Controllers
                         VoucherVerifiedBy = VM.VoucherMaster.VoucherVerifiedBy,
                         VoucherApprovedBy = VM.VoucherMaster.VoucherApprovedBy,
                         VoucherVerifiedOn = DateTime.Now,
-                        VoucherApprovedOn = DateTime.Now
+                        VoucherApprovedOn = DateTime.Now,
+                        basecurrencyid = VM.VoucherMaster.basecurrencyid,
+                        currencyid = VM.VoucherMaster.currencyid,
+                        currencyrate = VM.VoucherMaster.currencyrate
+
                     };
 
                         dbContext.Tbl201VoucherMasters.Add(voucherMaster);

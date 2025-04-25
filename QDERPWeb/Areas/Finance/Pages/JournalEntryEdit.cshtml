@@ -227,7 +227,7 @@
                 <div class="headerBolder">...</div>
             </text>);
                         // ✅ Additional columns from entity
-                        columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(true);
+                        columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(false);
                         columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
                         columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120).Visible(false);
                         columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
@@ -289,7 +289,7 @@
 
                         )
                     @(Html.DevExtreme().TextBox()
-                        .Label(new JS("formatMessage('Submitted By')"))
+                        
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("SubmittedBytext")
                         .Value(null) // Default value
@@ -315,7 +315,7 @@
 
                         )
                     @(Html.DevExtreme().TextBox()
-                        .Label(new JS("formatMessage('Verified By')"))
+                        
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("VerifiedBytext")
                         .Value(null) // Default value
@@ -339,7 +339,7 @@
                         .Value(null) // Default value
                         )
                     @(Html.DevExtreme().TextBox()
-                        .Label(new JS("formatMessage('Approved By')"))
+                        
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("ApprovedBytext")
                         .Value(null) // Default value
@@ -367,7 +367,7 @@
 
                         )
                     @(Html.DevExtreme().TextBox()
-                        .Label(new JS("formatMessage('Posted By')"))
+                        
                         .LabelMode(EditorLabelMode.Outside)
                         .ID("PostedBytext")
                         .Value(null) // Default value
