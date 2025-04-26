@@ -258,7 +258,7 @@ namespace QD.ERP.Web.Pages
                         Report = new BillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "ReceivableReport(EffectiveDate)":
-                        Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+                        Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
 
 
