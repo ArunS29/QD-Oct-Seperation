@@ -408,7 +408,7 @@
 						</tr>
 						<tr>
 							<td>
-								@(Html.DevExtreme().NumberBox()
+								@(Html.DevExtreme().SelectBox()
 															.Label(new JS("formatMessage('PO No:')"))
 															.ID("VATInvoiceType")
 															.DataSource(d => d.WebApi()
@@ -418,16 +418,16 @@
 															.Key("InvoiceType"))
 															.AcceptCustomValue(true)
 															.LabelMode(EditorLabelMode.Outside)
-															.OpenOnFieldClick(false)
+															.OpenOnFieldClick(true)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
-															.Value("Tax Invoice") // Ensure this matches an actual key value
-															.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
-															.DisplayExpr("InvoiceType") // Set display value if needed
+															.Value("Tax Invoice") // Set the default value (must match a valid item in your data)
+															.ValueExpr("InvoiceType")
+															.DisplayExpr("InvoiceType")
 															.Disabled(true)
 															)
-
 							</td>
+
 							<td>
 
 								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')"))
