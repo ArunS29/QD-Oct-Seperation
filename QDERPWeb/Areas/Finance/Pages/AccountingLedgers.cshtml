@@ -469,7 +469,7 @@
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true).Width(162).MinWidth(23);
 					})
 				.OnCellClick("function(e) {handleCellClick(e);}")
-				.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 				.WordWrapEnabled(true)
 				.AllowColumnReordering(true) // Enable column reordering
 				.AllowColumnResizing(true)   // Enable column resizing
@@ -600,6 +600,9 @@
 
 
 	$(document).ready(function () {
+		
+   $("#btnCreateNew").css("display", "none");
+
 		console.log('Start permission handling AccountingLedgers');
 		// Form ID
 		var formId = "frm201LedgerView";
