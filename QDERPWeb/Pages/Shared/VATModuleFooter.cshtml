@@ -278,7 +278,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint")
-            .Text("Print") // Using string directly
+            .Text(new JS("formatMessage('Print')"))// Using string directly
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             .DropDownOptions(options => options.Width(230))
@@ -368,7 +368,7 @@
             .ID("ddButtonPayment")
             .Icon("money")
             .Width(50)
-            .Text("Add New")
+            .Text(new JS("formatMessage('Add New')"))
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(500))
             .Items(items =>
@@ -414,7 +414,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnInvoiceDetails")
-            .Text("Invoice Details")
+            .Text(new JS("formatMessage('Invoice Details')"))
             .Icon("card")
             .Width(150)
             .OnClick("navigateToInvoiceEdit")

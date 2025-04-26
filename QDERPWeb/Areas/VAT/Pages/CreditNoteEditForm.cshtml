@@ -770,7 +770,7 @@
 					<div> 
 					<table style="width:500px; font-size:14px; margin:5px;" cellpadding="5">
 							<tr>
-								<th>Foreign Currency Billing</th>
+								<th id="foreigncurrencybilling">Foreign Currency Billing</th>
 							</tr>
 							<tr>
 								<td>
@@ -863,7 +863,7 @@
 					<div style="margin-right: 30%" >
 						<table width="900px" style="font-size:14px; margin:5px;" cellpadding="2">
 							<tr>
-								<th>Deductions:Advance / Retention</th>
+								<th id="deducationadvance">Deductions:Advance / Retention</th>
 							</tr>
 							<tr>
 
@@ -6253,6 +6253,15 @@
 				}
 			});
 		}
+		$(function () {
+		$("#foreigncurrencybilling").text(
+			 formatMessage("Foreign Currency Billing"));
+	});
+
+	$(function () {
+		$("#deducationadvance").text(
+			 formatMessage("Deductions:Advance / Retention"));
+	});
 
 
 </script>

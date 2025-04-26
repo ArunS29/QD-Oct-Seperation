@@ -2092,13 +2092,12 @@
 								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 								.Columns(columns =>
 								{
-									// columns.Add().DataField("OpeningBalanceDrCr");
-									columns.Add().DataField("AccountId").Caption("Account Code").Alignment(HorizontalAlignment.Center);
-									columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
-									columns.Add().DataField("VatregistrationNo").Caption("Client VAT No").Alignment(HorizontalAlignment.Center);
-									columns.Add().DataField("ReferenceNo").Caption("ReferenceNo").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("IsLedgerObselete").Caption("IsLedgerObselete").Alignment(HorizontalAlignment.Center);
-
+								// columns.Add().DataField("OpeningBalanceDrCr");
+						columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("VatregistrationNo").Caption(new JS("formatMessage('Client VAT No')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('IsLedgerObselete')")).Alignment(HorizontalAlignment.Center);
 
 					})
 					)
