@@ -2450,6 +2450,172 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetVATInvoiceReporting(DateTime? startDate, DateTime? endDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Qry201620salesReportings.AsQueryable();
+
+                    // Removed accountGroup check
+
+                    if (startDate.HasValue)
+                        query = query.Where(x => x.InvoiceDate >= startDate.Value);
+
+                    if (endDate.HasValue)
+                        query = query.Where(x => x.InvoiceDate <= endDate.Value);
+
+                    var result = await query.Select(item => new
+                    {
+                        item.InvoiceNo,
+                        item.InvoiceDate,
+                        item.InvoiceEffectiveDate,
+                        item.AccountHead,
+                        item.SalesPersonName,
+                        item.CostAllocationUnit,
+                        item.CostAllocationGroup,
+                        item.CostAllocationMasterGroup,
+                        item.CompanyBranch,
+                        item.TotalInvoiceAmountBeforeDiscount,
+                        item.TotalDiscount,
+                        item.TotalInvoiceAmount,
+                        item.CalcTaxAmount,
+                        item.InvoiceStatus,
+                        item.AdvanceAmount,
+                        item.RetentionAmount,
+                        item.InvMonth,
+                        item.InvEffectiveMonth,
+                        item.TotalRevenue,
+                        item.MonthNumber,
+                        item.InvoiceMonth,
+                        item.InvoiceEffectiveMonth,
+                        item.CreditNoteNo,
+                        item.CreditNoteDate,
+                        item.CreditNoteAmount,
+                        item.CreditNoteTaxAmount,
+                        item.TotalCreditNoteAmount,
+                        item.TotalAmountCredited,
+                        item.InvoiceBalance,
+                        item.ReceivedMonth,
+                        item.RevenueLedgerNo,
+                        item.RevenueLedgerName,
+                        item.Pono,
+                        item.Podate,
+                        item.PaymentTerms,
+                        item.BranchName,
+                        item.BranchCode,
+                        item.AccountId,
+                        item.InvoicePeriod,
+                        item.CostCenterCode,
+                        item.InvoiceStartDate,
+                        item.InvoiceEndDate,
+                        item.InvoiceDueDate,
+                        item.SalesOrderNo,
+                        item.TypeOfInvoice,
+                        item.BuyerNeighborhood,
+                        item.CostAllocationUnitId
+                    }).ToListAsync();
+
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetTrialBalances: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetVATInvoiceReportingInDetails(DateTime? startDate, DateTime? endDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Qry201620salesReportingInDetails.AsQueryable();
+
+                    // Removed accountGroup check
+
+                    if (startDate.HasValue)
+                        query = query.Where(x => x.InvoiceDate >= startDate.Value);
+
+                    if (endDate.HasValue)
+                        query = query.Where(x => x.InvoiceDate <= endDate.Value);
+
+                    var result = await query.Select(item => new
+                    {
+                        ClientName = item.ClientName,
+                        InvoiceMonth = item.InvoiceMonth,
+                        AmountAfterDiscount = item.AmountAfterDiscount,
+                        VatAmount = item.VatAmount,
+                        Total = item.Total
+                    }).ToListAsync();
+
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetVATInvoiceReportingInDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDebtorsCollection(DateTime? startDate, DateTime? endDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Qry201621debtorsWithCollectionReports.AsQueryable();
+
+                    if (startDate.HasValue)
+                        query = query.Where(x => x.VoucherDate >= startDate.Value);
+
+                    if (endDate.HasValue)
+                        query = query.Where(x => x.VoucherDate <= endDate.Value);
+
+                    var result = await query.Select(item => new
+                    {
+                        AccountHead = item.AccountHead,
+                        DrAmount = item.DrAmount,
+                        CrAmount = item.CrAmount,
+                        VoucherMonth = item.VoucherMonth,
+                        ReferenceNo = item.ReferenceNo,
+                        AccountNo = item.AccountNo,
+                        Amount = item.Amount,
+                        DrCr = item.DrCr,
+                        VoucherAmountFormatted = item.VoucherAmountFormatted,
+                        AccountGroup = item.AccountGroup,
+                        MasterGroup = item.MasterGroup,
+                        AccountHeadNo = item.AccountHeadNo,
+                        EntryNarration = item.EntryNarration,
+                        SysRemarks = item.SysRemarks,
+                        VoucherDate = item.VoucherDate,
+                        VoucherEffectiveDate = item.VoucherEffectiveDate,
+                        EffectiveMonth = item.EffectiveMonth,
+                        InvoiceSalesPersonCode = item.InvoiceSalesPersonCode,
+                        InvoiceSalesPersonName = item.InvoiceSalesPersonName,
+                        VoucherNo = item.VoucherNo
+                    }).ToListAsync();
+
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetDebtorsCollection: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
 
 

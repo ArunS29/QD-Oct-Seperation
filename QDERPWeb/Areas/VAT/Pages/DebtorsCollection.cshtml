@@ -1,0 +1,353 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Trial Balance";
+}
+<style>
+    .limited-footer .btn-container {
+        display: none !important;
+    }
+
+
+    .dx-fieldset.horizontal-container {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Reduce spacing between controls */
+    }
+
+    .dx-field {
+        margin: 0; /* Remove default margins */
+        padding: 5px; /* Reduce spacing */
+    }
+
+    .dx-field-4 {
+        display: flex;
+        flex-direction: column;
+        gap: 5px; /* Reduce space between checkboxes and dropdown */
+        align-content: center;
+    }
+
+    #pivotGridContainer {
+        flex-grow: 1;
+        width: 100%;
+        min-height: 400px;
+        max-height: 600px;
+        overflow: auto;
+        padding: 5px; /* Reduce padding */
+    }
+
+    .dx-pivotgrid-container {
+        font-size: 13px; /* Slightly reduce font size */
+        border-radius: 6px; /* Adjust border-radius */
+    }
+
+    .dx-pivotgrid-row, .dx-pivotgrid-column {
+        padding: 5px; /* Reduce padding */
+        border-bottom: 1px solid #ddd;
+    }
+
+    .dx-pivotgrid-cell {
+        padding: 6px; /* Reduce cell padding */
+    }
+
+        .dx-pivotgrid-cell:hover {
+            background-color: #f5f5f5;
+        }
+
+    .mainContainer {
+        width: 100%;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="DebtorsCollection" class="no-border-input"></div>
+    </div>
+</div>
+
+
+<div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
+
+    <div class="Head">
+        <div>
+            @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
+        </div>
+    </div>
+
+    <!-- Input Controls in One Line -->
+    <div class="dx-fieldset horizontal-container">
+
+
+        <div class="dx-field">
+            <!-- Start Date Picker -->
+            @(Html.DevExtreme().DateBox()
+                .ID("frmdateBox")
+              
+                .LabelMode(EditorLabelMode.Outside)
+                .InputAttr("aria-label", "Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                .DisplayFormat("dd-MMM-yyyy")
+                .TabIndex(2)
+                )
+        </div>
+
+        <div class="dx-field">
+            <!-- End Date Picker -->
+            @(Html.DevExtreme().DateBox()
+                .ID("todateBox")
+         
+                .LabelMode(EditorLabelMode.Outside)
+                .InputAttr("aria-label", "Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+                .DisplayFormat("dd-MMM-yyyy")
+                .TabIndex(3)
+                )
+        </div>
+        <!-- Dropdown Button to Show Records -->
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddBtnShowRecords")
+            .Text("Show Records")
+            .Icon("smalliconslayout")
+            .Width(180)
+            .ElementAttr("class", "button-alignment-down")
+            .TabIndex(4)
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text("Today").Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text("Yesterday").Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text("This Month (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text("This Year (Full)").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+            })
+            )
+       
+    </div>
+
+    <!-- Pivot Grid (Will Always Appear Below Filters) -->
+    <div id="pivotGridContainer" style="width: 100%;"></div>
+
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#DebtorsCollection").dxTextBox({
+            text: formatMessage("DebtorsCollection"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        loadDefaultRecords();
+    });
+
+    function loadDefaultRecords() {
+        let today = new Date();
+        let firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+        let lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+        fetchRecords(firstDay, lastDay);
+    }
+
+    function ddBtnShowRecords_click(option) {
+        let today = new Date();
+        let startDate = null;
+        let endDate = null;
+
+        switch (option) {
+            case 'today':
+                startDate = today;
+                endDate = today;
+                break;
+            case 'yesterday':
+                startDate = new Date();
+                startDate.setDate(today.getDate() - 1);
+                endDate = startDate;
+                break;
+            case 'week':
+                startDate = new Date();
+                startDate.setDate(today.getDate() - today.getDay());
+                endDate = today;
+                break;
+            case 'tillmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = today;
+                break;
+            case 'fullmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                break;
+            case 'tillyear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = today;
+                break;
+            case 'fullyear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = new Date(today.getFullYear(), 11, 31);
+                break;
+            case 'lastmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+                break;
+            case 'lastyear':
+                startDate = new Date(today.getFullYear() - 1, 0, 1);
+                endDate = new Date(today.getFullYear() - 1, 11, 31);
+                break;
+            case 'range':
+            default:
+                startDate = $("#frmdateBox").dxDateBox("instance").option("value");
+                endDate = $("#todateBox").dxDateBox("instance").option("value");
+
+                if (!startDate || !endDate) {
+                    DevExpress.ui.notify("Please select both From Date and To Date.", "warning", 3000);
+                    return;
+                }
+                break;
+        }
+
+        // Set the DateBoxes with selected dates
+        $("#frmdateBox").dxDateBox("instance").option("value", startDate);
+        $("#todateBox").dxDateBox("instance").option("value", endDate);
+
+        fetchRecords(startDate, endDate);
+    }
+
+    function fetchRecords(startDate, endDate) {
+        console.log("Fetching records between:", formatDate(startDate), "and", formatDate(endDate));
+
+        $.ajax({
+            url: '/api/VATModule/GetDebtorsCollection',
+            type: 'GET',
+            data: {
+                startDate: formatDate(startDate),
+                endDate: formatDate(endDate)
+            },
+            success: function (data) {
+                initializePivotGrid(data);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching records:", error);
+            }
+        });
+    }
+
+    function initializePivotGrid(data) {
+        var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
+            dataSource: {
+                store: {
+                    type: "array",
+                    data: data
+                },
+                fields: [
+                    { dataField: "AccountHead", area: "row", caption: "Client Name" },
+                    { dataField: "DrAmount", area: "data", caption: "Invoiced Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "CrAmount", area: "data", caption: "Received/ Credited Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "VoucherMonth", area: "column", caption: "Transaction Month", dataType: "date", format: "MMM-yyyy" },
+
+                    // Remaining fields without area specified (for detail expansion or binding)
+                    { dataField: "ReferenceNo", caption: "Reference No" },
+                    { dataField: "AccountNo", caption: "Ledger No" },
+                    { dataField: "Amount", caption: "Amount" },
+                    { dataField: "DrCr", caption: "Dr Cr" },
+                    { dataField: "VoucherAmountFormatted", caption: "Voucher Amount Formatted", format: { type: "fixedPoint", precision: 2 } },
+                    { dataField: "AccountGroup", caption: "Account Group" },
+                    { dataField: "MasterGroup", caption: "Master Group" },
+                    { dataField: "AccountHeadNo", caption: "Account Head No" },
+                    { dataField: "EntryNarration", caption: "Entry Narration" },
+                    { dataField: "SysRemarks", caption: "Sys Remarks" },
+                    { dataField: "VoucherDate", caption: "Voucher Date", dataType: "date" },
+                    { dataField: "VoucherEffectiveDate", caption: "Effective Date", dataType: "date" },
+                    { dataField: "EffectiveMonth", caption: "Effective Month" },
+                    { dataField: "InvoiceSalesPersonCode", caption: "Invoice Sales Person Code" },
+                    { dataField: "InvoiceSalesPersonName", caption: "Invoice Sales Person Name" },
+                    { dataField: "VoucherNo", caption: "Voucher No" }
+                ]
+
+            },
+            width: "100%",
+            height: $(window).height() - 50,
+            allowSortingBySummary: true,
+            allowSorting: true,
+            allowFiltering: true,
+            allowExpandAll: true,
+            showBorders: true,
+            showColumnHeaders: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            rowHeaderLayout: "standard",
+            wordWrapEnabled: true,
+            fieldChooser: {
+                enabled: true,
+                allowSearch: true
+            },
+            fieldPanel: {
+                visible: true,
+                allowFieldDragging: true,
+                showRowFields: true,
+                showColumnFields: true,
+                showDataFields: true,
+                showFilterFields: true
+            },
+            showColumnTotals: true,
+            showColumnGrandTotals: true,
+            showDataHeaders: true,
+            showRowTotals: true,
+            showRowGrandTotals: true
+        }).dxPivotGrid("instance");
+
+        // Expand rows initially
+        setTimeout(function () {
+            var dataSource = pivotGrid.getDataSource();
+            var rows = dataSource.getData().rows;
+            rows.forEach(function (row) {
+                if (row.text) {
+                    dataSource.expandHeaderItem("row", [row.text]);
+                }
+            });
+        }, 100);
+
+        // Resize pivot on window resize
+        $(window).resize(function () {
+            pivotGrid.option("height", $(window).height() - 50);
+        });
+
+        // Some style tweaks
+        $(".dx-pivotgrid-container").css({
+            "font-size": "14px",
+            "border-radius": "8px"
+        });
+
+        $(".dx-pivotgrid-row, .dx-pivotgrid-column").css({
+            "padding": "10px",
+            "border-bottom": "1px solid #ddd"
+        });
+
+        $(".dx-pivotgrid-cell").hover(
+            function () {
+                $(this).css("background-color", "#f5f5f5");
+            },
+            function () {
+                $(this).css("background-color", "");
+            }
+        );
+    }
+
+    function formatDate(date) {
+        if (!date) return null;
+        if (typeof date === 'string') date = new Date(date);
+        return date.toISOString().split('T')[0];
+    }
+</script>
+
+
+

@@ -1,5 +1,6 @@
 ﻿var dictionary = {
     "en": {
+        "VATInvoiceReporting":"VATInvoiceReporting",
         "Edit Bills Payable/ Bills Receivables":"Edit Bills Payable/ Bills Receivables",
         "DocumentNo:": "DocumentNo:",
         "Reference NO:": "Reference NO:",
@@ -8,6 +9,8 @@
         "Expiry Date:":"Expiry Date:",
         "AccountConfirmationLetter": "Account Confirmation Letter",
         "ID": "ID",
+        "DebtorsCollection":"DebtorsCollection",
+        "SalesReportingInDetails":"SalesReportingInDetails",
         "Employee Document": "Employee Document",
         "Reminder Days": "Reminder Days",
         "Document Type": "Document Type",
