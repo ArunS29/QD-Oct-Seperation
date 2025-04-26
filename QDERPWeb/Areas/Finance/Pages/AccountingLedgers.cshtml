@@ -469,8 +469,9 @@
 						columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true).Width(162).MinWidth(23);
 					})
 				.OnCellClick("function(e) {handleCellClick(e);}")
-				.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
-				.WordWrapEnabled(true)
+				.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+				.OnToolbarPreparing("onToolbarPreparing")
+                     .WordWrapEnabled(true)
 				.AllowColumnReordering(true) // Enable column reordering
 				.AllowColumnResizing(true)   // Enable column resizing
 				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
@@ -525,8 +526,10 @@
 					.Type(StateStoringType.LocalStorage)  // Store in localStorage (or use SessionStorage or Custom)
 					.StorageKey("gridContainerState");    // Set a unique key to identify the state in storage
 				})
-				.OnInitialized("function(e) { loadGridState(); }")
+				//.OnInitialized("function(e) { loadGridState(); }")
+				.OnContentReady("function(e) { handleGridContentReady(e); }")
 				)
+
 
 
 
@@ -595,11 +598,21 @@
 										)
 }
 
-<script>
+<script>function onToolbarPreparing(e) {
+    // Remove/hide the column chooser button on initial load
+    e.toolbarOptions.items = e.toolbarOptions.items.filter(function(item) {
+        return item.name !== "columnChooserButton";
+    });
+}
+
+
 
 
 
 	$(document).ready(function () {
+		
+   $("#btnCreateNew").css("display", "none");
+
 		console.log('Start permission handling AccountingLedgers');
 		// Form ID
 		var formId = "frm201LedgerView";
@@ -1391,69 +1404,65 @@
 
 
 
-	function handleGridContentReady(e) {
 
-		let gridInstance = $('#dataGrid').dxDataGrid('instance');
+			function handleGridContentReady(e) {
+		let gridElement = $('#dataGrid');
+		let gridInstance = gridElement.dxDataGrid('instance');
 
-		if (!gridInstance) return;
+		if (gridInstance) {
+			// Check if already calculated to prevent re-entry
+			if (gridElement.data('balanceCalculated')) {
+				return;
+			}
 
-		let dataSource = gridInstance.option('dataSource');
+			let dataSource = gridInstance.option('dataSource');
 
-		if (!dataSource || !Array.isArray(dataSource)) return;
+			if (dataSource && Array.isArray(dataSource)) {
+				if (dataSource.length > 0 && dataSource[0].CalculatedBalance === undefined) {
 
-		// Check if balance is already calculated to avoid redundant updates
+					gridElement.data('balanceCalculated', true); // Set flag before making changes
 
-		if (dataSource.length > 0 && dataSource[0].CalculatedBalance !== undefined) {
+					//gridInstance.beginCustomLoading("Calculating...");
 
-			return; // Prevent infinite loop
+					let balance = 0;
 
+					dataSource.forEach((item) => {
+						let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);
+						balance += voucherAmount;
+
+						item.CalculatedBalance = Math.abs(balance).toLocaleString(undefined, {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+						}) + " " + (balance >= 0 ? "Dr" : "Cr");
+					});
+
+					//gridInstance.endCustomLoading();
+
+					// No refresh/repaint here to avoid stack overflow
+
+					// Optionally trigger repaint of a specific row/cell later if needed
+
+					let visibleRows = gridInstance.getVisibleRows();
+
+					if (visibleRows && visibleRows.length > 0) {
+						let firstRow = visibleRows[0].data;
+						let lastRow = visibleRows[visibleRows.length - 1].data;
+
+						 firstRowBalance = firstRow ? firstRow.CalculatedBalance : null;
+						 lastRowBalance = lastRow ? lastRow.CalculatedBalance : null;
+
+						console.log("First Row Balance: ", firstRowBalance);
+						console.log("Last Row Balance: ", lastRowBalance);
+					}
+				}
+			}
 		}
-
-		let balance = 0;
-
-		dataSource.forEach((item) => {
-
-			let voucherAmount = parseFloat(item.VoucherAmountFormatted ? item.VoucherAmountFormatted.toString().replace(/,/g, '') : 0);
-
-			balance += voucherAmount;
-
-			// Assign balance to a new property in the data source
-
-			item.CalculatedBalance = Math.abs(balance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + (balance >= 0 ? "Dr" : "Cr");
-
-		});
-
-		// Refresh grid without resetting dataSource to avoid infinite loop
-
-		gridInstance.refresh();
-
-		// Get the visible rows
-
-		let visibleRows = gridInstance.getVisibleRows();
-
-		if (visibleRows && visibleRows.length > 0) {
-
-			let firstRow = visibleRows[0].data;
-
-			let lastRow = visibleRows[visibleRows.length - 1].data;
-
-			firstRowBalance = firstRow ? firstRow.CalculatedBalance : null;
-
-			lastRowBalance = lastRow ? lastRow.CalculatedBalance : null;
-
-			// alert(lastRowBalance)
-
-			console.log("First Row Balance: ", firstRowBalance);
-
-			console.log("Last Row Balance: ", lastRowBalance);
-
-		} else {
-
-			console.log("No visible rows available.");
-
-		}
-
 	}
+
+
+
+
+
 	function navigateToVoucherPage(voucherNo, voucherType) {
 		console.log("Original VoucherNo:", voucherNo, "VoucherType:", voucherType); // Debugging
 

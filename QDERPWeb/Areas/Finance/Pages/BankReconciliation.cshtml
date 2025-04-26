@@ -223,6 +223,9 @@
       
 <script>
 
+            let LastAmt = 0;
+            let FirstAmt = 0;
+
 
       function formatVoucherDate(data) {
         if (!data.VoucherDate) return "";
@@ -331,9 +334,6 @@ function formatDate(date) {
         const balanceOurBooksInstance = $("#BalanceAsPerOurBooks").dxTextBox("instance");
         const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
         const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
-
-        let LastAmt = 0;
-        let FirstAmt = 0;
 
         if (balanceOurBooksInstance) {
             LastAmt = Math.abs(lastRowBalanceVal);
