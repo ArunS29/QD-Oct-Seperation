@@ -495,8 +495,12 @@
         .AllowUpdating(true)   // Enable editing of existing rows
         .AllowDeleting(true)   // Enable deleting rows
         .UseIcons(true)
-
-        )
+         )
+         .OnRowPrepared(@"function(e) {
+		if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
+		$(e.rowElement).css('background-color', 'lightgray');
+		}
+		}")
         .OnEditorPreparing("onEditorPreparing")
         // ✅ Add Total Summary for Debit & Credit Fields
         .Summary(summary =>
@@ -882,7 +886,7 @@
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("SalaryPaidEntryPopup")
-        .Title("Finance Module: Receivables / Payables")
+        .Title("Finance Module: Employee Salary Payables")
         .Width("90%")
         .Height(500)
         .Visible(false)

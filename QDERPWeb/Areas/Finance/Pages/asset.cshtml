@@ -826,7 +826,7 @@
                         .Min(0)//                        .Max(1000)
                         .Step(1))
                     </div>
-                    <div class="form-group">
+                   @*  <div class="form-group">
                         <label for="maintenanceTypes" class="button-alignment-down">Select Maintenance Type:</label>
                         @(Html.DevExtreme().SelectBox()
                         .ID("ddlMaintenanceTypes")
@@ -844,7 +844,7 @@
                         .Placeholder("Select Maintenance Type")
                       //  .Width(400)
                         )
-                    </div>
+                    </div> *@
 
 
                     <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
@@ -1169,6 +1169,7 @@
 
     function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
+        //const ddbInstance = e.component;
         if (!ddbInstance.option("opened")) ddbInstance.open();
 
 
@@ -1318,6 +1319,8 @@
             $("#txtModel").dxTextBox("instance").option("value", assetData.Model);
             $("#txtFMV").dxNumberBox("instance").option("value", assetData.Fmv);
             $("#txtBMV").dxNumberBox("instance").option("value", assetData.Bmv);
+            $("#txtMaintenanceReading").dxNumberBox("instance").option("value",assetData.CurrentReading);
+          
     @*                 if (assetData.FMV !== undefined) {
                 var fmvValue = assetData.FMV || 0; // Default to 0 if null/undefined
                 var fmvInstance = $("#txtFMV").dxNumberBox("instance");
@@ -1437,7 +1440,7 @@
             // $("#txtScarpValue").dxNumberBox("instance").option("value", assetData.ScrapValueOfProperty || 0);
             $("#txtLifeinyears").dxNumberBox("instance").option("value", assetData.LifeSpanOfProperty);
             $("#txtDepPercentage").dxNumberBox("instance").option("value", assetData.DepPercentage);
-            $("#txtMaintenanceScarpValue").dxNumberBox("instance").option("value", assetData.CurrentReading);
+            $("#txtMaintenanceReading").dxNumberBox("instance").option("value", assetData.CurrentReading);
 
             $("#txtenteredby").dxTextBox("instance").option("value", assetData.AddedBy);
             $("#txtenteredon").dxDateBox("instance").option("value", assetData.AddedOn);
@@ -1466,66 +1469,28 @@
             $("#finalInstallment").val(assetData.FinalInstallment)
 
         }
-
+           function formatDate(input) {
+    if (!input) return null;
+    const date = input instanceof Date ? input : new Date(input);
+    if (!isNaN(date)) {
+        return date.toISOString().split('T')[0]; // returns yyyy-MM-dd
+    }
+    return null;
+}
     function updateAsset() {
+        debugger;
+    const purchaseDateRaw = $("#txtPurchasedDate").dxDateBox("instance").option("value");
+    const formattedpurchaseDate = formatDate(purchaseDateRaw);
+    console.log("Formatted Purchase Date:", formattedpurchaseDate);
 
-        var purchaseDate = $("#txtPurchasedDate").dxDateBox("instance").option("value");
-      //  alert(purchaseDate);
-        if (purchaseDate) {
-            var dateParts = purchaseDate.split("/");
-            if (dateParts.length === 3) {
-                var validDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+    const startDateRaw = $("#txtStartDate").dxDateBox("instance").option("value");
+    const formattedStartDate = formatDate(startDateRaw);
+    console.log("Formatted Start Date:", formattedStartDate);
 
-                if (!isNaN(validDate.getTime())) {
-                    var formattedpurchaseDate = validDate.toLocaleDateString('en-CA');
-
-                } else {
-                    console.log("Invalid date");
-                }
-            } else {
-                console.log("Invalid date format");
-            }
-        } else {
-            console.log("No date selected");
-        }
-        var StartDate = $("#txtStartDate").dxDateBox("instance").option("value");
-        console.log(StartDate);
-        if (StartDate) {
-            // Ensure StartDate is a Date object
-            var validDate = new Date(StartDate);
-
-            if (!isNaN(validDate.getTime())) {
-                // Format the date as yyyy-mm-dd
-                var formattedStartDate = validDate.getFullYear() + '-' +
-                    ('0' + (validDate.getMonth() + 1)).slice(-2) + '-' +
-                    ('0' + validDate.getDate()).slice(-2);
-
-                console.log(formattedStartDate);  // Example output: 2025-01-02
-            } else {
-                console.log("Invalid date");
-            }
-        } else {
-            console.log("No date selected");
-        }
-        var EndDate = $("#txtEndDate").dxDateBox("instance").option("value");
-
-        if (EndDate) {
-            // Ensure EndDate is a Date object
-            var validEndDate = new Date(EndDate);
-
-            if (!isNaN(validEndDate.getTime())) {
-                // Format the date as yyyy-mm-dd
-                var formattedEndDate = validEndDate.getFullYear() + '-' +
-                    ('0' + (validEndDate.getMonth() + 1)).slice(-2) + '-' +
-                    ('0' + validEndDate.getDate()).slice(-2);
-
-                console.log(formattedEndDate);  // Example output: 2025-01-02
-            } else {
-                console.log("Invalid date");
-            }
-        } else {
-            console.log("No date selected");
-        }
+    const endDateRaw = $("#txtEndDate").dxDateBox("instance").option("value");
+    const formattedEndDate = formatDate(endDateRaw);
+    console.log("Formatted End Date:", formattedEndDate);
+    
 
 
         var updatedAsset = {
@@ -1557,7 +1522,10 @@
             "IsFinanced": $("#Ispropertychk").dxCheckBox("instance")?.option("value") || false,
             "ScrapValueOfProperty": $("#txtScarpValue").dxNumberBox("instance")?.option("value") || 0,
             "DepreciationMethod": $("#txtDepreciationMethod").dxSelectBox("instance").option("value"),
-            "DepPercentage": $("#txtDepPercentage").dxNumberBox("instance").option("value")
+            "DepPercentage": $("#txtDepPercentage").dxNumberBox("instance").option("value"),
+        "CurrentReading": String($("#txtMaintenanceReading").dxNumberBox("instance").option("value") || ""),
+        "LifeSpanOfProperty":$("#txtLifeinyears").dxNumberBox("instance").option("value")
+          
         };
 
         console.log("Updated Asset Data:", updatedAsset);
@@ -1569,6 +1537,7 @@
             contentType: "application/json",
             data: JSON.stringify(updatedAsset),
             success: function (response) {
+
                 alert(response.message || "Asset updated successfully!");
             },
             error: function (xhr) {
@@ -1578,12 +1547,7 @@
         });
     }
 
-    function formatDate(date) {
-        if (date instanceof Date && !isNaN(date)) {
-            return date.toISOString().split('T')[0]; // returns the date part in yyyy-MM-dd format
-        }
-        return null; // If the date is invalid, return null
-    }
+
 
     $(function () {
         $("#assetregister").dxTextBox({
