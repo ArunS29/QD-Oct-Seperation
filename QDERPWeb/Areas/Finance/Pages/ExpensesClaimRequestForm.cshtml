@@ -1,0 +1,249 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.ExpensesClaimRequestFormModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VAT Entry Form</title>
+
+    <!-- DevExtreme CSS -->
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.4/css/dx.light.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f0ff;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #3b6cc2;
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 10px;
+        }
+
+        td, th {
+            vertical-align: top;
+            padding: 5px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 6px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            color: black;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        .btn {
+            background-color: #d4e6fb;
+            color: #000;
+            padding: 8px 16px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background-color: #d4e6fb;
+            color: #000;
+            padding: 5px 12px;
+            border: none;
+           
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            vertical-align: top;
+        }
+
+        .narration-cell {
+            position: relative;
+        }
+
+            .narration-cell a {
+                position: absolute;
+                right: 70px;
+                top: 8px;
+                color: white;
+                text-decoration: underline;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+        .highlight {
+            background-color: #ffffb3;
+        }
+
+        /* New styles for labels above inputs */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .input-group label {
+                margin-bottom: 4px;
+                font-weight: bold;
+                color: white;
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-container">
+        <table>
+            <tr>
+                <td colspan="2">
+                    <button class="btn">Calculate VAT</button>
+                    <button class="btn">Save Entry</button>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Tax Percentage</label>
+                        <div id="taxPercentage"></div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Taxable Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>VAT Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Round Off</label>
+                        <input type="text" class="highlight" />
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Bill Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="1">
+                    <div class="input-group">
+                        <label>Supplier Name</label>
+                        <div id="supplierName"></div>
+                    </div>
+                </td>
+                <td colspan="3">
+                    <div class="input-group">
+                        <label>Supplier Name In Arabic</label>
+                        <input type="text" />
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Supplier VAT No</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Purchaser Name</label>
+                        <div id="purchaserName"></div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="4" class="narration-cell">
+                    <div class="input-group">
+                        <label>Line Narration</label>
+                        <textarea rows="3"></textarea>
+                    </div>
+                    <a href="#">Use Expense Description</a>
+                    <button class="add-btn">+</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Cost Allocation for Employees</label>
+                        <div id="costEmployees"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Cost Allocation for Property/Equipments</label>
+                        <div id="costProperty"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- DevExtreme JS -->
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/jquery.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/jszip.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
+
+    <script>
+        $(function() {
+            $("#taxPercentage").dxSelectBox({
+                dataSource: ["5%", "10%", "15%"],
+                showClearButton: true
+            });
+
+            $("#supplierName").dxSelectBox({
+                dataSource: ["Supplier A", "Supplier B", "Supplier C"],
+                searchEnabled: true,
+                showClearButton: true
+            });
+
+            $("#purchaserName").dxSelectBox({
+                dataSource: ["Purchaser X", "Purchaser Y"],
+                searchEnabled: true,
+                showClearButton: true
+            });
+
+            $("#costEmployees").dxSelectBox({
+                dataSource: ["Employee 1", "Employee 2"],
+                searchEnabled: true,
+                showClearButton: true
+            });
+
+            $("#costProperty").dxSelectBox({
+                dataSource: ["Equipment A", "Equipment B"],
+                searchEnabled: true,
+                showClearButton: true
+            });
+        });
+    </script>
+
+</body>
+</html>
