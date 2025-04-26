@@ -310,7 +310,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
-
+        [HttpGet]
+        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.VoucherEntryNo = voucherEntryNo;
+            return PartialView("~/Areas/Finance/Views/_JournalEntryCostAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+        [HttpGet]
+        public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.VoucherEntryNo = voucherEntryNo;
+            ViewBag.AccountID = accountId;
+            return PartialView("~/Areas/Finance/Views/_JournalEntryPropetyAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
+        [HttpGet]
+        public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        {
+            // Log or debug the incoming parameters
+            ViewBag.VoucherNo = voucherNo;
+            ViewBag.AccountHead = accountHead;
+            ViewBag.VoucherAmount = voucherAmount;
+            ViewBag.DrCr = drCr;
+            ViewBag.VoucherEntryNo = voucherEntryNo;
+            ViewBag.AccountID = accountId;
+            return PartialView("~/Areas/Finance/Views/_JournalEntryEmployeeAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
+        }
     }
 }
 

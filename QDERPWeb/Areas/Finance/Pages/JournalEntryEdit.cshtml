@@ -857,12 +857,13 @@
         dataGrid.option("onContextMenuPreparing", function (e) {
             if (e.row && e.row.rowType === "data") {
                 e.event.preventDefault();
-
+                debugger;
                 // Get selected row data
                 let rowData = e.row.data;
                 let selectedAccountHead = rowData.AccountHead;
                 let selectedAccountId = rowData.AccountId;
                 let selectedDrCr = rowData.DrCr;
+                let SelectedEntryNo = rowData.LineOrderNo;
                 let selectedAmount = selectedDrCr === "Dr" ? rowData.DrAmount : rowData.CrAmount;
                 selectedAmount = parseFloat(selectedAmount).toFixed(2); // Ensuring numeric format
                 var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
@@ -876,28 +877,36 @@
 
                 } // Fetch from input field
                 let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                const params = {
+                           VoucherNo: voucherNo,
+    VoucherEntryNo: SelectedEntryNo,
+    AccountId: selectedAccountId,
+    AccountHead: selectedAccountHead,
+    VoucherAmount: selectedAmount,
+    DrCr: selectedDrCr
+        };
                 // Define context menu options
                 let menuItems = [
-                    {
-                        text: "Cost Allocation",
-                        onItemClick: function () {
-                            openModalPopup(`/${tenantName}/Finance/JournalEntryCostAllocation?DrCr=${selectedDrCr}&Amount=${selectedAmount}&AccountId=${selectedAccountId}&AccountHead=${selectedAccountHead}&EffectiveDate=${effectiveDate}&VoucherNo=${voucherNo}`);
-                        }
-                    },
-                    {
-                        text: "Property Allocation",
-                        onItemClick: function () {
-                            openModalPopup(`/${tenantName}/Finance/JournalEntryPropertyAllocation?DrCr=${selectedDrCr}&Amount=${selectedAmount}&AccountId=${selectedAccountId}&AccountHead=${selectedAccountHead}&EffectiveDate=${effectiveDate}&VoucherNo=${voucherNo}`);
-                        }
-                    },
-                    {
-                        text: "Employee Allocation",
-                        onItemClick: function () {
-                            openModalPopup(`/${tenantName}/Finance/JournalEntryEmployeeAllocation?DrCr=${selectedDrCr}&Amount=${selectedAmount}&AccountId=${selectedAccountId}&AccountHead=${selectedAccountHead}&EffectiveDate=${effectiveDate}&VoucherNo=${voucherNo}`);
-                        }
-                    }
-                ];
-                debugger;
+    {
+        text: "Cost Allocation",
+        onItemClick: function () {
+            openAllocationPopup("Cost",params);
+        }
+    },
+    {
+        text: "Property Allocation",
+        onItemClick: function () {
+            openAllocationPopup("Property",params);
+        }
+    },
+    {
+        text: "Employee Allocation",
+        onItemClick: function () {
+            openAllocationPopup("Employee",params);
+        }
+    }
+];
+
                 // Create context menu and attach it to the clicked cell
                 let contextMenu = $("<div>").appendTo("body").dxContextMenu({
                     dataSource: menuItems,
@@ -1142,5 +1151,99 @@
             e.newData.CrAmount = e.oldData.DrAmount;
         }
     }
+
+    //     function openDevExtremePopup(actionUrl, params, popupTitle) {
+    //     let popupContentId = "popupContent_" + Math.floor(Math.random() * 10000);
+
+    //     $("<div>")
+    //         .appendTo("body")
+    //         .attr("id", popupContentId)
+    //         .dxPopup({
+    //             title: popupTitle,
+    //             width: "80%",
+    //             height: "80%",
+    //             contentTemplate: function (contentElement) {
+    //                 $.ajax({
+    //                     type: "POST",
+    //                     url: actionUrl,
+    //                     data: params,
+    //                     success: function (data) {
+    //                         contentElement.append(data);
+    //                     },
+    //                     error: function (xhr, status, error) {
+    //                         contentElement.append(`<div style="color:red;">Error loading popup: ${error}</div>`);
+    //                     }
+    //                 });
+    //             },
+    //             showCloseButton: true,
+    //             showTitle: true,
+    //             visible: true,
+    //             dragEnabled: true,
+    //             closeOnOutsideClick: true,
+    //             onHidden: function (e) {
+    //                 $("#" + popupContentId).remove(); // Clean up
+    //             }
+    //         });
+    // }
+
+    function openAllocationPopup(allocationType, params) {
+    const queryString = Object.keys(params)
+        .map(key => `${key}=${encodeURIComponent(params[key])}`)
+        .join('&');
+
+    const popupContentId = "popupContent_" + Math.floor(Math.random() * 10000);
+
+    let title = "";
+    let url = "";
+
+    switch (allocationType) {
+        case "Cost":
+            title = "Cost Allocation";
+            url = `/api/JournalEntryEdit/CostAllocation?${queryString}`;
+            break;
+        case "Property":
+            title = "Property Allocation";
+            url = `/api/JournalEntryEdit/PropertyAllocation?${queryString}`;
+            break;
+        case "Employee":
+            title = "Employee Allocation";
+            url = `/api/JournalEntryEdit/EmployeeAllocation?${queryString}`;
+            break;
+        default:
+            console.error("Unknown allocation type");
+            return;
+    }
+
+    $("<div>")
+        .appendTo("body")
+        .attr("id", popupContentId)
+        .dxPopup({
+            title: title,
+            width: "80%",
+            height: "80%",
+            contentTemplate: function (contentElement) {
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    dataType: "html",
+                    success: function (data) {
+                        contentElement.append(data);
+                    },
+                    error: function (xhr, status, error) {
+                        contentElement.append(`<div style="color:red;">Error loading popup: ${error}</div>`);
+                    }
+                });
+            },
+            showCloseButton: true,
+            showTitle: true,
+            visible: true,
+            dragEnabled: true,
+            closeOnOutsideClick: true,
+            onHidden: function () {
+                $("#" + popupContentId).remove(); // Clean up popup div after closed
+            }
+        });
+}
+
 
 </script>
