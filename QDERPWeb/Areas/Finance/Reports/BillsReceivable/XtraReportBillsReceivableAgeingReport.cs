@@ -1,29 +1,62 @@
-﻿using DevExpress.XtraReports.UI;
+﻿using DevExpress.DataAccess.ConnectionParameters;
+using DevExpress.DataAccess.Sql;
+using DevExpress.XtraReports.UI;
 using System;
+using System.Collections;
+using System.ComponentModel;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.Finance.Reports
+namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
 {
-    public partial class XtraReportBillsReceivableAgeingReport : DevExpress.XtraReports.UI.XtraReport
+    public partial class XtraReportBillsReceivableAgeingReport : XtraReport
     {
-        public XtraReportBillsReceivableAgeingReport(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+
+        public XtraReportBillsReceivableAgeingReport(
+
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressArb,
+            TenantDbContextHelper tenantDbContextHelper)
         {
+            _tenantDbContextHelper = tenantDbContextHelper;
+
             InitializeComponent();
-            SetReportParameters(tenantName,company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+
+            try
+            {
+                this.sqlDataSource1.Fill();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error loading data: " + ex.Message, ex);
+            }
         }
+
         public XtraReportBillsReceivableAgeingReport()
         {
             InitializeComponent();
-            SetReportParameters("", "","", null, "", "");
+            SetReportParameters("", "", "", null, "", "");
         }
-        private void SetReportParameters(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+
+        private void SetReportParameters(
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressArb
+          )
         {
-            // Helper method to add or update a parameter
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
                 if (Parameters[name] == null)
                 {
-                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter
                     {
                         Name = name,
                         Type = type,
@@ -38,41 +71,53 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 }
             }
 
-            // Add or update company details parameters
-            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
+            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string));
 
-            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
-            AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
 
-            // Debug: Ensure logo URL is captured
-            Console.WriteLine($"Company Logo: {logoImage != null}");
-
-            // Bind Company details to labels (update with actual control names)
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-            {
                 tenantLabel.Text = tenantName;
-            }
-            if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
-            {
-                companyNameLabel.Text = company_Name;
-            }
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-            {
-                addressLabel.Text = company_address;
-            }
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-            {
+
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
+                companyNameLabel.Text = companyName;
+
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+                addressLabel.Text = companyAddress;
+
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
-            }
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+                companyNameArLabel.Text = companyNameAr;
+
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+                addressArbLabel.Text = companyAddressArb;
+
+            ConfigureSqlDataSource();
+        }
+
+        private void ConfigureSqlDataSource()
+        {
+            sqlDataSource1.Queries.Clear();
+
+            var customQuery = new CustomSqlQuery
             {
-                companyNameArLabel.Text = Company_Name_Ar;
-            }
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+                Name = "qry205_027AgeingBillsReceivableWtColumns",
+                Sql = "SELECT * FROM qry205_027AgeingBillsReceivableWtColumns"
+            };
+
+            sqlDataSource1.Queries.Add(customQuery);
+
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                addressArbLabel.Text = company_address_arb;
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
             }
         }
     }

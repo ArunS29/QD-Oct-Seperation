@@ -8,12 +8,12 @@ using System.Drawing;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
 {
-    public partial class XtraReportAgeingreportsummary : XtraReport
+    public partial class BillsReceivableAgeingReport : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public XtraReportAgeingreportsummary(
-
+        public BillsReceivableAgeingReport(
+        
             string tenantName,
             string companyName,
             string companyAddress,
@@ -25,7 +25,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+            SetReportParameters(tenantName,  companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
 
             try
             {
@@ -37,10 +37,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
             }
         }
 
-        public XtraReportAgeingreportsummary()
+        public BillsReceivableAgeingReport()
         {
             InitializeComponent();
-            SetReportParameters("", "", "", null, "", "");
+            SetReportParameters("", "",  "", null, "", "");
         }
 
         private void SetReportParameters(
@@ -76,7 +76,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string));
-
+          
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;

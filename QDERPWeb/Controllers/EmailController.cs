@@ -59,7 +59,6 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
                 attachments.Add(fileAttachment);
 
-                // Now it's safe to delete the file — all streams are closed
                 try
                 {
                     System.IO.File.Delete(serverFilePath);
@@ -76,12 +75,11 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 _logger.LogWarning("Attachment file path is missing from session or file not found.");
             }
 
-            // Send email using your helper
             bool success = await EmailHelper.SendEmailAsync(
                 emailRequest.To,
                 emailRequest.Subject,
                 emailRequest.Body,
-                null, // OTP not used here
+                null,
                 attachments
             );
 
