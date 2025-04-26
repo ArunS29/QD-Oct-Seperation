@@ -1964,6 +1964,8 @@
         "Total": "Total",
         "VAT on Sales": "VAT on Sales",
         "Tax Summary Report-Credit Notes": "Tax Summary Report-Credit Notes",
+        "Sales Reporting": "Sales Reporting",
+        "Proforma Invoices": "Proforma Invoices"
        
 
 
@@ -3742,7 +3744,9 @@
         "Balance To Invoice Without Tax": "الرصيد المتبقي للفوترة بدون ضريبة",
         "PO Value Without Tax": "قيمة أمر الشراء بدون ضريبة",
         "Total": "الإجمالي",
-        "Tax Summary Report-Credit Notes": "تقرير ملخص الضريبة - إشعارات الدائن"
+        "Tax Summary Report-Credit Notes": "تقرير ملخص الضريبة - إشعارات الدائن",
+        "Sales Reporting": "تقارير المبيعات",
+        "Proforma Invoices":"الفواتير المبدئية"
 
 
     }

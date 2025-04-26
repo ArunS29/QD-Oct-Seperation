@@ -2391,6 +2391,65 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetVatDebitNoteDetails(string frmDate, string toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+                    // Fetch records based on the date range
+                    var vatInvoices = await dbContext.Qry201907vatdebitNoteRegisterMainViews
+                        .FromSqlRaw("SELECT * FROM qry201_907VATDebitNoteRegisterMainView WHERE DebitNoteDate BETWEEN @p0 AND @p1", from, to)
+                        .ToListAsync();
+
+                    return Json(vatInvoices);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetVatProformaDetails(string frmDate, string toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+                    // Fetch records based on the date range
+                    var vatInvoices = await dbContext.Qry201657proformaInvoiceRegisterMainViews
+                        .FromSqlRaw("SELECT * FROM qry201_657ProformaInvoiceRegisterMainView WHERE  BETWEEN @p0 AND @p1", from, to)
+                        .ToListAsync();
+
+                    return Json(vatInvoices);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
 
 

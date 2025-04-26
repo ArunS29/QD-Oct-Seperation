@@ -263,7 +263,7 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201907vatdebitNoteRegisterMainView>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
@@ -271,17 +271,17 @@
 		{
 			columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.ProformaInvoiceNo)
 			.Caption(new JS("formatMessage('Proforma Invoice No')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
 
-				subColumns.AddFor(m => m.CalcLineAmount)
+				subColumns.AddFor(m => m.ProformaInvoiceDate)
 			.Caption(new JS("formatMessage('Proforma Invoice Date')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
 
-				subColumns.AddFor(m => m.CalcLineAmount)
+				subColumns.AddFor(m => m.InvoiceEffectiveDate)
 			.Caption(new JS("formatMessage('Invoice Effective Date')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
@@ -291,7 +291,7 @@
 			.Alignment(HorizontalAlignment.Center)
 			.Width(341).MinWidth(23);
 
-				subColumns.AddFor(m => m.CalcLineAmount)
+				subColumns.AddFor(m => m.InvoiceStatus)
 			.Caption(new JS("formatMessage('Invoice Status')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(87).MinWidth(23);
@@ -299,7 +299,7 @@
 
 			columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.CalcLineAmount)
+				subColumns.AddFor(m => m.InvoiceStatus)
 			.Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 
@@ -316,29 +316,29 @@
 			{
 				revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Standard Rated Revenue')"))
 			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
 			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.DomesticExemptedRevenue)
 			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
 			.Alignment(HorizontalAlignment.Right);
 			});
 
 				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.InvoiceStatus)
 			.Caption(new JS("formatMessage('GCC Revenue')"))
 			.Alignment(HorizontalAlignment.Right);
 			});
 
 				revenueColumns.Add().Caption(new JS("formatMessage('Others Countries')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.ExportsRevenue)
 			.Caption(new JS("formatMessage('Exports Revenue')"))
 			.Alignment(HorizontalAlignment.Right);
 			});
@@ -348,29 +348,29 @@
 			{
 				vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.DomesticStandartRatedTax)
 			.Caption(new JS("formatMessage('Domestic Standard Rated Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.DomesticZeroRatedTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.DomesticExemptedTax)
 			.Caption(new JS("formatMessage('Domestic Exempted Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 			});
 
 				vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.InvoiceStatus)
 			.Caption(new JS("formatMessage('GCC Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 			});
 
 				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DebitNoteNo)
+				subColumns.AddFor(m => m.ExportsTax)
 			.Caption(new JS("formatMessage('Exports Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 			});
@@ -620,7 +620,7 @@
 		toDateBox.option("value", toDate);
 
 		$.ajax({
-			url: '/api/VATModule/GetVatInvoice',
+			url: '/api/VATModule/GetVatProformaDetails',
 			type: 'GET',
 			data: {
 				frmDate: frmDate,

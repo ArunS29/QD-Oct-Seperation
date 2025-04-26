@@ -1936,6 +1936,14 @@
 					.Caption(new JS("formatMessage('Discount')"))
 					.Width(200);
 
+							@* 	columns.Add()
+						.DataField("Discount")
+						.Caption(new JS("formatMessage('Discount')"))
+						.Width(200)
+						.CellTemplate(@<text>
+				<a href="javascript:void(0);" onclick="openVATPage(#= Discount #)">#= Discount #</a>
+			</text>); *@
+
 								columns.Add().DataField("Amount")
 					.Caption(new JS("formatMessage('Amount')"))
 					.Width(200);
@@ -4084,7 +4092,94 @@
 
 				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
-				{ dataField: "DiscountDetails", caption: "...", width: 50 },
+				//{ dataField: "DiscountDetails", caption: "...", width: 50 },
+				{
+    dataField: "DiscountDetails",
+    caption: "...",
+    width: 100,
+    editCellTemplate: function (cellElement, cellInfo) {
+        
+        // Create Popup content
+        let $popupContent = $("<div>").css({
+            padding: "20px",
+            fontFamily: "Segoe UI, sans-serif",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            width: "100%"  // Full width inside popup
+        });
+
+        // Total Amount (read-only)
+        $("<div>").appendTo($popupContent).dxNumberBox({
+            label: "Total Amount",
+            labelMode: "outside",
+            min: 0,
+            format: "#,##0.00",
+            value: cellInfo.row.data.Amount || 0,
+            readOnly: true
+        });
+
+        // Discount input + OK button row
+        let $discountRow = $("<div>").css({
+            display: "flex",
+            gap: "10px",
+            alignItems: "center"
+        }).appendTo($popupContent);
+
+        let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
+            label: "Discount",
+            labelMode: "outside",
+            min: 0,
+            format: "#,##0.00",
+            value: cellInfo.value || 0
+        }).dxNumberBox("instance");
+
+        $("<div>").appendTo($discountRow).dxButton({
+            text: "OK",
+            width: 70,
+            onClick: function () {
+                let discountValue = discountEditor.option("value") || 0;
+                cellInfo.setValue(discountValue.toFixed(2));
+                popup.hide();
+            }
+        });
+
+        // Percentage buttons
+        let $grid = $("<div>").css({
+            marginTop: "10px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px"
+        }).appendTo($popupContent);
+
+        [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100].forEach(function (percent) {
+            $("<div>").appendTo($grid).dxButton({
+                text: percent + " %",
+                width: 80,
+                onClick: function () {
+                    let totalAmount = cellInfo.row.data.Amount || 0;
+                    let discount = (totalAmount * percent) / 100;
+                    discountEditor.option("value", discount);
+                }
+            });
+        });
+
+        // Create Popup
+        let popup = $("<div>").appendTo(cellElement).dxPopup({
+            contentTemplate: function () {
+                return $popupContent;
+            },
+            width: 550,     // ✅ set nice width
+            height: "auto",
+            showTitle: true,
+            title: "Set Discount Details",
+            visible: true,
+            dragEnabled: true,
+            closeOnOutsideClick: true
+        }).dxPopup("instance");
+
+    }
+},
 
 				{ dataField: "Amount", caption: formatMessage('Amount'), width: 150 },
 
@@ -7320,7 +7415,13 @@
 		dropDownBox.close(); // Forces it to open on load
 	});
 
+		// function openVATPage(discountValue) {
+		// 	// You can use modal, or open in a new tab/window
+		// 	window.open('/Path/To/VATPercentageCal', '_blank');
 
+		// 	// Or open a modal and load content via AJAX
+		// 	// $("#vatModal").modal("show").find(".modal-body").load('/Path/To/VATPercentageCal');
+		// }
 
 		
 
