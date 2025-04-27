@@ -66,159 +66,159 @@
 
                     <div class="form-group">
                         <label>Company Branch :</label>
-                        @(Html.DevExtreme().DropDownBox()
-                        .ID("ddCompany")
-                        .DataSource(d => d.WebApi()
-                        .Controller("utility")
-                        .LoadAction("GetCompanies")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("CompanyID")
-                        )
-                        .DisplayExpr("Company Name")
-                        .ValueExpr("CompanyID")
-                        .ShowClearButton(true)
-                        .Placeholder("Select Company")
-                        .AcceptCustomValue(false)
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        .DropDownOptions(d => d.Width("100%"))
-                        .ContentTemplate(new TemplateName("CompanyContentTemplate"))
-                        .ValidationRules(rules =>
-                        {
-                        rules.AddRequired().Message("Please select a company.");
-                        })
-                        )
+                            @(Html.DevExtreme().DropDownBox()
+                            .ID("ddCompany")
+                            .DataSource(d => d.WebApi()
+                            .Controller("utility") 
+                            .LoadAction("GetCompanies")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CompanyID")
+                            )
+                            .DisplayExpr("Company Name")
+                            .ValueExpr("CompanyID")
+                            .ShowClearButton(true)
+                            .Placeholder("Select Company")
+                            .AcceptCustomValue(false)
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            .DropDownOptions(d => d.Width("100%"))
+                            .ContentTemplate(new TemplateName("CompanyContentTemplate"))
+                            .ValidationRules(rules =>
+                            {
+                            rules.AddRequired().Message("Please select a company.");
+                            })
+                            )
                     </div>
 
                     <div class="form-group">
                         <label>Company Division :</label>
-                        @(Html.DevExtreme().DropDownBox()
-                        .ID("ddBranch")
-                        .DataSource(d => d.WebApi()
-                        .Controller("utility")
-                        .LoadAction("GetBranches")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("BranchCode")
-                        )
-                        .DisplayExpr("BranchName")
-                        .ValueExpr("BranchCode")
-                        .ShowClearButton(true)
-                        .Placeholder("Select Branch")
-                        .AcceptCustomValue(false)
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        .DropDownOptions(d => d.Width("100%"))
-                        .ContentTemplate(new TemplateName("BranchContentTemplate"))
-                        .ValidationRules(rules =>
-                        {
-                        rules.AddRequired().Message("Please select a Division.");
-                        })
-                        )
+                            @(Html.DevExtreme().DropDownBox()
+                            .ID("ddBranch")
+                            .DataSource(d => d.WebApi()
+                            .Controller("utility")
+                            .LoadAction("GetBranches") 
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("BranchCode")
+                            )
+                            .DisplayExpr("BranchName")
+                            .ValueExpr("BranchCode")
+                            .ShowClearButton(true)
+                            .Placeholder("Select Branch")
+                            .AcceptCustomValue(false)
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            .DropDownOptions(d => d.Width("100%"))
+                            .ContentTemplate(new TemplateName("BranchContentTemplate"))
+                            .ValidationRules(rules =>
+                            {
+                            rules.AddRequired().Message("Please select a Division.");
+                            })
+                            )
                     </div>
 
                     <div class="form-group">
                         <label>User Level :</label>
-                        @(Html.DevExtreme().DropDownBox()
-                        .ID("ddUserLevel")
-                        .DataSource(d => d.WebApi()
-                        .Controller("utility")
-                        .LoadAction("GetUserLevels")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("UserLevelID")
-                        )
-                        .DisplayExpr("UserLevelDesc")
-                        .ValueExpr("UserLevelID")
-                        .ShowClearButton(true)
-                        .Placeholder("Select User Level")
-                        .AcceptCustomValue(false)
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        .DropDownOptions(d => d.Width("100%"))
-                        .ContentTemplate(new TemplateName("UserLevelContentTemplate"))
-                        .ValidationRules(rules =>
-                        {
-                        rules.AddRequired().Message("Please select a user level.");
-                        })
-                        )
+                                @(Html.DevExtreme().DropDownBox()
+                                .ID("ddUserLevel")
+                                .DataSource(d => d.WebApi()
+                                .Controller("utility")
+                                .LoadAction("GetUserLevels")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("UserLevelID")
+                                )
+                                .DisplayExpr("UserLevelDesc")
+                                .ValueExpr("UserLevelID")
+                                .ShowClearButton(true)
+                                .Placeholder("Select User Level")
+                                .AcceptCustomValue(false)
+                                .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            .DropDownOptions(d => d.Width("100%"))
+                                .ContentTemplate(new TemplateName("UserLevelContentTemplate"))
+                                .ValidationRules(rules =>
+                                {
+                                rules.AddRequired().Message("Please select a user level.");
+                                })
+                                )
                     </div>
 
                     <div class="form-group">
                         <label>Employee File Access Group :</label>
-                        @(Html.DevExtreme().DropDownBox()
-                        .ID("ddEmployeeGroup")
-                        .DataSource(d => d.WebApi()
-                        .Controller("utility")
-                        .LoadAction("GetEmployeeGroups")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("EmpGroupID")
-                        )
-                        .DisplayExpr("EmployeeGroup")
-                        .ValueExpr("EmpGroupID")
-                        .ShowClearButton(true)
-                        .Placeholder("Select Employee Group")
-                        .AcceptCustomValue(false)
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        .DropDownOptions(d => d.Width("100%"))
-                        .ContentTemplate(new TemplateName("EmployeeGroupContentTemplate"))
-                        .ValidationRules(rules =>
-                        {
-                        rules.AddRequired().Message("Please select an employee group.");
-                        })
-                        )
+                                @(Html.DevExtreme().DropDownBox()
+                                .ID("ddEmployeeGroup")
+                                .DataSource(d => d.WebApi()
+                                .Controller("utility")
+                                .LoadAction("GetEmployeeGroups") 
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("EmpGroupID")
+                                )
+                                .DisplayExpr("EmployeeGroup")
+                                .ValueExpr("EmpGroupID")
+                                .ShowClearButton(true)
+                                .Placeholder("Select Employee Group")
+                                .AcceptCustomValue(false)
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%")
+                                .DropDownOptions(d => d.Width("100%"))
+                                .ContentTemplate(new TemplateName("EmployeeGroupContentTemplate"))
+                                .ValidationRules(rules =>
+                                {
+                                rules.AddRequired().Message("Please select an employee group.");
+                                })
+                                )
                     </div>
 
                     <div class="form-group">
                         <label>Inventory Master Access:</label>
-                        @(Html.DevExtreme().DropDownBox()
-                        .ID("ddInventoryMasterGroup")
-                        .DataSource(d => d.WebApi()
-                        .Controller("utility")
-                        .LoadAction("GetInventoryGroups")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("InventoryMasterGroupID")
-                        )
-                        .DisplayExpr("InventoryMasterGroup")
-                        .ValueExpr("InventoryMasterGroupID")
-                        .ShowClearButton(true)
-                        .Placeholder("Select Inventory Group")
-                        .AcceptCustomValue(false)
-                        .LabelMode(EditorLabelMode.Outside)
+                            @(Html.DevExtreme().DropDownBox()
+                            .ID("ddInventoryMasterGroup")
+                            .DataSource(d => d.WebApi()
+                            .Controller("utility")
+                            .LoadAction("GetInventoryGroups") 
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("InventoryMasterGroupID")
+                            )
+                            .DisplayExpr("InventoryMasterGroup")
+                            .ValueExpr("InventoryMasterGroupID")
+                            .ShowClearButton(true)
+                            .Placeholder("Select Inventory Group")
+                            .AcceptCustomValue(false)
+                            .LabelMode(EditorLabelMode.Outside)
                         .Width("100%")
                         .DropDownOptions(d => d.Width("100%"))
-                        .ContentTemplate(new TemplateName("InventoryGroupContentTemplate"))
-                        .ValidationRules(rules =>
-                        {
-                        rules.AddRequired().Message("Please select an inventory group.");
-                        })
-                        )
+                            .ContentTemplate(new TemplateName("InventoryGroupContentTemplate"))
+                            .ValidationRules(rules =>
+                            {
+                            rules.AddRequired().Message("Please select an inventory group.");
+                            })
+                            )
                     </div>
 
                     <div class="form-group">
                         <label>Petty Cash Account(Finance Module) :</label>
-                        @(Html.DevExtreme().DropDownBox()
-                        .ID("ddFilteredAccountHead")
-                        .DataSource(d => d.WebApi()
-                        .Controller("utility")
-                        .LoadAction("GetFilteredAccountHead")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("AccountId")
-                        )
-                        .ValueExpr("AccountId")
-                        .DisplayExpr("AccountHead")
-                        .ShowClearButton(true)
-                        .Placeholder("Select FilteredAccount Head")
-                        .AcceptCustomValue(false)
-                        .LabelMode(EditorLabelMode.Outside)
-                        .Width("100%")
-                        .DropDownOptions(o => o.Width("100%"))
-                        .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate"))
-                        .ValidationRules(rules => {
-                        rules.AddRequired().Message("Ledger Account should be entered");
-                        })
-
-                        )
-                    </div>
+                            @(Html.DevExtreme().DropDownBox()
+                            .ID("ddFilteredAccountHead")
+                            .DataSource(d => d.WebApi()
+                            .Controller("utility")
+                            .LoadAction("GetFilteredAccountHead") 
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("AccountId")
+                            )
+                            .ValueExpr("AccountId")
+                            .DisplayExpr("AccountHead")
+                            .ShowClearButton(true)
+                            .Placeholder("Select FilteredAccount Head")
+                            .AcceptCustomValue(false)
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%")
+                            .DropDownOptions(o => o.Width("100%"))
+                            .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate"))
+                            .ValidationRules(rules => {
+                            rules.AddRequired().Message("Ledger Account should be entered");
+                            })
+                            
+                            )
+                        </div>
 
                     <div class="form-group">
                         <label>Equipment Sales Person Access :</label>
@@ -226,8 +226,8 @@
                         .Label(new JS("formatMessage('User Level')"))
                         .ID("ddHRUserLevel")
                         .DataSource(d => d.WebApi()
-                        .Controller("Utility")
-                        .LoadAction("GetHRUserLevels")
+                        .Controller("Utility") 
+                        .LoadAction("GetHRUserLevels") 
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("HruserLevelId")
                         )
@@ -321,7 +321,7 @@
                 <div id="userProfileContainer" style="margin-top: 30px;"></div>
 
                 <div class="form-actions">
-
+                   
                     <button type="button" id="btnSave" class="btn btn-success" onclick="saveUserDetails()">Save</button>
                     @* <button type="button" id="btnResetPassword" class="btn btn-warning" onclick="resetPassword()">Reset Password</button> *@
                 </div>
@@ -344,257 +344,257 @@
 @using (Html.DevExtreme().NamedTemplate("DepartmentContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("department-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("utility")
-                    .LoadAction("GetDepartments")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("DepartmentCode"))
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .ShowBorders(true)
-                .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-                .Paging(p => p.PageSize(10))
-                .FilterRow(f => f.Visible(true))
-                .Height(300)
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .OnSelectionChanged("onDepartmentSelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("DepartmentCode").Caption("Code").Width(100);
-                    columns.Add().DataField("Department").Caption("Department Name");
-                }))
+            .ID("department-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("utility")
+                .LoadAction("GetDepartments")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("DepartmentCode"))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+            .Paging(p => p.PageSize(10))
+            .FilterRow(f => f.Visible(true))
+            .Height(300)
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .OnSelectionChanged("onDepartmentSelectionChanged")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("DepartmentCode").Caption("Code").Width(100);
+                columns.Add().DataField("Department").Caption("Department Name");
+            }))
 }
 @using (Html.DevExtreme().NamedTemplate("CompanyContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("company-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("utility")
-                    .LoadAction("GetCompanies")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("CompanyID")
-                )
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .ShowBorders(true)
-                .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-                .Paging(p => p.PageSize(10))
-                .FilterRow(f => f.Visible(true))
-                .Height(300)
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .OnSelectionChanged("onCompanySelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("CompanyID").Caption("ID").Width(100);
-                    columns.Add().DataField("CompanyName").Caption("Company Name");
-                })
+            .ID("company-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("utility")
+                .LoadAction("GetCompanies")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CompanyID")
             )
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+            .Paging(p => p.PageSize(10))
+            .FilterRow(f => f.Visible(true))
+            .Height(300)
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .OnSelectionChanged("onCompanySelectionChanged")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("CompanyID").Caption("ID").Width(100);
+                columns.Add().DataField("CompanyName").Caption("Company Name");
+            })
+        )
 }
 @using (Html.DevExtreme().NamedTemplate("BranchContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("branch-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("utility")
-                    .LoadAction("GetBranches")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("BranchCode")
-                )
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .ShowBorders(true)
-                .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-                .Paging(p => p.PageSize(10))
-                .FilterRow(f => f.Visible(true))
-                .Height(300)
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .OnSelectionChanged("onBranchSelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("BranchCode").Caption("Code").Width(100);
-                    columns.Add().DataField("BranchName").Caption("Branch Name");
-                })
+            .ID("branch-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("utility")
+                .LoadAction("GetBranches") 
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("BranchCode")
             )
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+            .Paging(p => p.PageSize(10))
+            .FilterRow(f => f.Visible(true))
+            .Height(300)
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .OnSelectionChanged("onBranchSelectionChanged")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("BranchCode").Caption("Code").Width(100);
+                columns.Add().DataField("BranchName").Caption("Branch Name");
+            })
+        )
 }
 @using (Html.DevExtreme().NamedTemplate("UserLevelContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("userlevel-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("utility")
-                    .LoadAction("GetUserLevels")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("UserLevelID")
-                )
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .ShowBorders(true)
-                .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-                .Paging(p => p.PageSize(10))
-                .FilterRow(f => f.Visible(true))
-                .Height(300)
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .OnSelectionChanged("onUserLevelSelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("UserLevelID").Caption("ID").Width(100);
-                    columns.Add().DataField("UserLevelDesc").Caption("Description");
-                })
+            .ID("userlevel-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("utility")
+                .LoadAction("GetUserLevels")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("UserLevelID")
             )
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+            .Paging(p => p.PageSize(10))
+            .FilterRow(f => f.Visible(true))
+            .Height(300)
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .OnSelectionChanged("onUserLevelSelectionChanged")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("UserLevelID").Caption("ID").Width(100);
+                columns.Add().DataField("UserLevelDesc").Caption("Description");
+            })
+        )
 }
 @using (Html.DevExtreme().NamedTemplate("EmployeeGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("employee-group-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("utility")
-                    .LoadAction("GetEmployeeGroups")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("EmpGroupID")
-                )
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .ShowBorders(true)
-                .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-                .Paging(p => p.PageSize(10))
-                .FilterRow(f => f.Visible(true))
-                .Height(300)
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .OnSelectionChanged("onEmployeeGroupSelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("EmpGroupID").Caption("Group ID").Width(100);
-                    columns.Add().DataField("EmployeeGroup").Caption("Group Name");
-                })
+            .ID("employee-group-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("utility")
+                .LoadAction("GetEmployeeGroups")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("EmpGroupID")
             )
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+            .Paging(p => p.PageSize(10))
+            .FilterRow(f => f.Visible(true))
+            .Height(300)
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .OnSelectionChanged("onEmployeeGroupSelectionChanged")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("EmpGroupID").Caption("Group ID").Width(100);
+                columns.Add().DataField("EmployeeGroup").Caption("Group Name");
+            })
+        )
 }
 @using (Html.DevExtreme().NamedTemplate("InventoryGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("inventory-group-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("utility")
-                        .LoadAction("GetInventoryGroups")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("InventoryMasterGroupID")
-                )
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .ShowBorders(true)
-                .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
-                .Paging(p => p.PageSize(10))
-                .FilterRow(f => f.Visible(true))
-                .Height(300)
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .OnSelectionChanged("onInventoryGroupSelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("InventoryMasterGroupID").Caption("Group ID").Width(100);
-                    columns.Add().DataField("InventoryMasterGroup").Caption("Group Name");
-                })
+            .ID("inventory-group-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("utility")
+                    .LoadAction("GetInventoryGroups")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("InventoryMasterGroupID")
             )
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .SearchPanel(s => s.Visible(true).HighlightSearchText(true))
+            .Paging(p => p.PageSize(10))
+            .FilterRow(f => f.Visible(true))
+            .Height(300)
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .OnSelectionChanged("onInventoryGroupSelectionChanged")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("InventoryMasterGroupID").Caption("Group ID").Width(100);
+                columns.Add().DataField("InventoryMasterGroup").Caption("Group Name");
+            })
+        )
 }
 
 @using (Html.DevExtreme().NamedTemplate("FilteredAccountHeadContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("filtered-accounthead-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("Utility")
-                        .LoadAction("GetFilteredAccountHead") // Again, use the filtered endpoint
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("AccountId")
-                )
-                .Selection(sl => sl.Mode(SelectionMode.Single))
-                .OnSelectionChanged("onFilteredAccountSelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("AccountId").Caption("Account ID").Visible(true);
-                    columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                    columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(true);
-                    columns.Add().DataField("IsRestricted").Caption("Restricted").DataType(GridColumnDataType.Boolean);
-                    columns.Add().DataField("MasterGroup").Caption("Master Group");
-                    columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic");
-                })
-                .Paging(p => p.PageSize(15))
-                .FilterRow(f => f.Visible(true))
-                .SearchPanel(s => s.Visible(true))
-                .Height(350)
-                .ShowBorders(true)
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .ID("filtered-accounthead-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("Utility")
+                    .LoadAction("GetFilteredAccountHead") // Again, use the filtered endpoint
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("AccountId")
             )
+            .Selection(sl => sl.Mode(SelectionMode.Single))
+            .OnSelectionChanged("onFilteredAccountSelectionChanged")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("AccountId").Caption("Account ID").Visible(true);
+                columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
+                columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(true);
+                columns.Add().DataField("IsRestricted").Caption("Restricted").DataType(GridColumnDataType.Boolean);
+                columns.Add().DataField("MasterGroup").Caption("Master Group");
+                columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic");
+            })
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(true))
+            .SearchPanel(s => s.Visible(true))
+            .Height(350)
+            .ShowBorders(true)
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        )
 }
 @using (Html.DevExtreme().NamedTemplate("HRUserLevelContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("hruserlevel-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("Utility")
-                    .LoadAction("GetHRUserLevels")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("HruserLevelId")
-                )
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .OnSelectionChanged("onHRUserLevelSelectionChanged")
-                .Columns(columns =>
-                {
+            .ID("hruserlevel-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("Utility")
+                .LoadAction("GetHRUserLevels")
+                .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("HruserLevelId")
+            )
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .OnSelectionChanged("onHRUserLevelSelectionChanged")
+            .Columns(columns =>
+            {
                     columns.Add().DataField("HruserLevelId").Caption("ID").Visible(true);
                     columns.Add().DataField("HruserLevelDesc").Caption("Description").Visible(true);
-                })
-                .Paging(p => p.PageSize(10))
-                .Height(300)
-                .ShowBorders(true)
-            )
+            })
+            .Paging(p => p.PageSize(10))
+            .Height(300)
+            .ShowBorders(true)
+        )
 }
 @using (Html.DevExtreme().NamedTemplate("SalesPersonDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("salesPersonGrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("Utility")
-                        .LoadAction("GetSalesPersonAccessLevels")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("SalesPersonAccessLevelId")
-                )
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .OnSelectionChanged("onSalesPersonGridSelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("SalesPersonAccessLevelId").Caption("Sales Person");
-                    columns.Add().DataField("SalesPersonAccessDesc").Caption("Access Level");
-                })
-                .Height(300)
-                .Paging(p => p.PageSize(10))
-                .SearchPanel(sp => sp.Visible(true))
+            .ID("salesPersonGrid")
+            .DataSource(d => d.WebApi()
+                .Controller("Utility")
+                    .LoadAction("GetSalesPersonAccessLevels")
+                .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SalesPersonAccessLevelId")
             )
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .OnSelectionChanged("onSalesPersonGridSelectionChanged")
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("SalesPersonAccessLevelId").Caption("Sales Person");
+                columns.Add().DataField("SalesPersonAccessDesc").Caption("Access Level");
+            })
+            .Height(300)
+            .Paging(p => p.PageSize(10))
+            .SearchPanel(sp => sp.Visible(true))
+        )
 }
 
 @using (Html.DevExtreme().NamedTemplate("ProjectGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                .ID("projectgroup-datagrid")
-                .DataSource(d => d.WebApi()
-                    .Controller("Utility")
-                        .LoadAction("GetProjectGroups")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("ProjectGroupID")
-                )
-                .ShowBorders(true)
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
-                .Paging(p => p.PageSize(10))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .HoverStateEnabled(true)
-                .Height(300)
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .OnSelectionChanged("projectGroupSelectionChanged")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("ProjectGroupID").Caption("Project Group ID").Visible(true).Width(120);
-                    columns.Add().DataField("ProjectGroupName").Caption("Project Group Name").Visible(true);
-                })
+            .ID("projectgroup-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("Utility")
+                    .LoadAction("GetProjectGroups")
+                .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("ProjectGroupID")
             )
+            .ShowBorders(true)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+            .Paging(p => p.PageSize(10))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .HoverStateEnabled(true)
+            .Height(300)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .OnSelectionChanged("projectGroupSelectionChanged")
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("ProjectGroupID").Caption("Project Group ID").Visible(true).Width(120);
+                columns.Add().DataField("ProjectGroupName").Caption("Project Group Name").Visible(true);
+            })
+        )
 }
 
 
@@ -615,7 +615,7 @@
 
         function loadUserDetails(userId) {
             $.ajax({
-                url: "/api/Utility/GetUserID",
+                url: "/api/Utility/GetUserID", 
                 method: "GET",
                 data: { userId: userId },
                 success: function (response) {
@@ -682,7 +682,7 @@
                 const selectedRowData = e.selectedRowsData[0];
                 if (selectedRowData) {
                     console.log("Selected company:", selectedRowData.CompanyName);
-
+                   
                 }
             }
         }
@@ -829,7 +829,7 @@
             }
         }
 
-
+        
 
         function saveUserDetails() {
             const user = {
@@ -853,7 +853,7 @@
             };
 
             $.ajax({
-                url: "/api/Utility/SaveUserDetails",
+                url: "/api/Utility/SaveUserDetails", 
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(user),
@@ -889,7 +889,7 @@
     }
 
     .form-group {
-        flex: 1 1 calc(33.333% - 20px);
+        flex: 1 1 calc(33.333% - 20px); 
         min-width: 250px;
     }
 
