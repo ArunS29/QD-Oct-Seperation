@@ -4,10 +4,10 @@
     ViewData["Title"] = "Trial Balance";
 }
 <style>
-
-    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnShowRowTotals,#btnShowFields)) {
+    .limited-footer .btn-container {
         display: none !important;
     }
+
 
     .dx-fieldset.horizontal-container {
         display: flex;
@@ -68,10 +68,11 @@
 <div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
 
     <div class="Head">
-        <div class="limited-footer">
-            @await Html.PartialAsync("VATModuleFooter")
+        <div>
+            @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
         </div>
     </div>
+
     <!-- Input Controls in One Line -->
     <div class="dx-fieldset horizontal-container">
 
@@ -346,13 +347,6 @@
         if (typeof date === 'string') date = new Date(date);
         return date.toISOString().split('T')[0];
     }
-    $(document).ready(function () {
-        $(".limited-footer .btn-container").each(function () {
-            if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#btnShowRowTotals,#btnShowFields").length) {
-                $(this).remove();
-            }
-        });
-    });
 </script>
 
 
