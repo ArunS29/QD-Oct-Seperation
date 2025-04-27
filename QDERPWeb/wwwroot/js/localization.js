@@ -983,6 +983,8 @@
         "Modified By:": "Modified By:",
         "Created On:": "Created On:",
         "Created By:": "Created By:",
+        "Proforma Invoices": "Proforma Invoices",
+        "Sales Reporting":"Sales Reporting",
         "Bank Reconciliation": "Bank Reconciliation",
         "Salary Payable Group": "Salary Payable Group",
         "Purchase Group": "Purchase Group",

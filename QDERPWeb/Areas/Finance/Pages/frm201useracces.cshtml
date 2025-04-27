@@ -2,15 +2,83 @@
 @model QD.ERP.Web.Areas.Finance.Pages.frm201useraccesModel
 @using DevExtreme.AspNet.Data
 @using DevExtreme.AspNet.Mvc
+<style>
+
+    .dx-datagrid .text-link {
+        color: lightblue;
+        cursor: pointer;
+        text-decoration: underline;
+        position: relative;
+    }
+
+        /* Optional: change color or add underline on hover for more emphasis */
+        .dx-datagrid .text-link:hover {
+            color: darkblue;
+            text-decoration: none;
+        }
+
+        /* Tooltip style on hover */
+        .dx-datagrid .text-link::after {
+            content: "Click to view details";
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+        }
+
+        .dx-datagrid .text-link:hover::after {
+            display: block;
+        }
+
+    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout)) {
+        display: none !important;
+    }
+</style>
+
 
 <div class="title">
     <div class="header-container">
         <h2>Access Management</h2>
     </div>
 </div>
+<div style="display: flex; gap: 10px; margin: 20px;">
+    <!-- ERP User Database box -->
+    <div style=" background-color: #27ae60; color: white; padding: 20px; border-radius: 5px;">
+        <h5 style="margin: 0; font-weight: bold;">QuickDice ERP Solutions</h5>
+        <h4 style="margin-top: 5px;">ERP User Database</h4>
+        <div style="font-size: 40px; margin-top: 10px;">👥</div>
+    </div>
+
+    <!-- Active Users box -->
+    <div style="width: 120px; background-color: #c0392b; color: white; padding: 20px; border-radius: 5px; text-align: center;">
+        <div style="font-size: 10px; font-weight: bold;">1</div>
+        <div style="margin-top: 10px;">Active Users</div>
+        <div style="font-size: 24px;">🧑‍💻</div>
+    </div>
+</div>
+
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("_GridFooter")
+    </div>
+</div>
 
 <!-- DevExtreme Tab Panel -->
 <div id="tabPanelContainer">
+    @* <div style="margin-bottom: 10px;">
+        <button id="btnToggleSearch" class="btn btn-primary">Toggle Search</button>
+        <button id="btnToggleFilter" class="btn btn-secondary">Toggle Filter</button>
+    </div> *@
+
     @(Html.DevExtreme().TabPanel()
             .ID("accessTabPanel")
             // .OnSelectionChanged("onTabSelectionChanged")
@@ -19,7 +87,46 @@
                 items.Add()
             .Title("Welcome")
             .Template(@<text>
-        <div id="userInfoGrid"></div>
+
+        @(Html.DevExtreme().DataGrid()
+        .ID("userDataGrid")
+        .DataSource(d => d.WebApi()
+        .Controller("utility")
+        .LoadAction("GetUsers")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("UserId")
+        )
+        .ShowBorders(true)
+        .SearchPanel(s => s.Visible(false).HighlightSearchText(true))
+        .Paging(p => p.PageSize(10))
+        .FilterRow(f => f.Visible(false))
+        .HeaderFilter(h => h.Visible(false))
+        .ColumnAutoWidth(true)
+        .OnCellClick("onUserIdCellClick")
+        .Columns(columns =>
+        {
+        columns.Add().DataField("IsDisabled").Caption("Is Disabled").DataType(GridColumnDataType.Boolean).Width(100);
+        columns.Add().DataField("UserId").Caption("User ID").CssClass("text-link").Width(100);
+        columns.Add().DataField("UserName").Caption("User Name");
+        columns.Add().DataField("Password").Caption("Password");
+        columns.Add().DataField("DeptCode").Caption("Department");
+        columns.Add().DataField("CompanyId").Caption("Company");
+        columns.Add().DataField("BranchCode").Caption("BranchCode");
+        columns.Add().DataField("UserLevel").Caption("UserLevel");
+        columns.Add().DataField("HrlevelCode").Caption("HrlevelCode");
+        columns.Add().DataField("InventoryAccess").Caption("InventoryAccess");
+        columns.Add().DataField("PettyCashAccount").Caption("PettyCashAccount");
+        columns.Add().DataField("EqptQuotationAccess").Caption("EqptQuotationAccess");
+        columns.Add().DataField("InventoryMpraccess").Caption("InventoryMpraccess");
+        columns.Add().DataField("HrtimeSheetProjectGroup").Caption("HrtimeSheetProjectGroup");
+        columns.Add().DataField("EmailAddress").Caption("EmailAddress");
+        columns.Add().DataField("MobileNo").Caption("UserMobileNo");
+        columns.Add().DataField("LastLogOnTime").Caption("UserLastLoggedInTime");
+        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime");
+        // Add more fields as per TblUserMasters
+        })
+        )
+
     </text>);
                 items.Add()
             .Title("Module")
@@ -127,12 +234,28 @@
 
 @section Scripts {
     <script>
+
+
         $(document).ready(function () {
             loadWelcomeGrid();
 
             $("#loadGridButton").on("click", function () {
                 loadGrid();
             });
+
+             const dataGrid = $("#userDataGrid").dxDataGrid("instance");
+
+        // Toggle Search Panel
+        $("#btnToggleSearch").on("click", function () {
+            const isVisible = dataGrid.option("searchPanel.visible");
+            dataGrid.option("searchPanel.visible", !isVisible);
+        });
+
+        // Toggle Filter Row
+        $("#btnToggleFilter").on("click", function () {
+            const isVisible = dataGrid.option("filterRow.visible");
+            dataGrid.option("filterRow.visible", !isVisible);
+        });
         });
 
         function onModuleChanged(e) {
@@ -336,5 +459,34 @@
                 }
             });
         }
+
+                  function onUserIdCellClick(e) {
+                    //  alert('Openeing the UserAccountDetails')
+            if (e.column && e.column.dataField === "UserId") {
+                const userId = e.data.UserId;
+
+                const tenantName = sessionStorage.getItem('tenantName');
+
+                   // alert(tenantName);
+
+                if (!tenantName) {
+                   // alert('Tenant name not found in session storage.');
+                    return;
+                }
+
+                const encodedTenant = encodeURIComponent(tenantName);
+                const url = `/${encodedTenant}/Finance/UserAccountDetails?userId=${userId}`;
+
+                window.location.href = url;
+            }
+        }
+
+        //       $(document).ready(function () {
+        //     $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+        //         if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout").length) {
+        //             $(this).remove();
+        //         }
+        //     });
+        // });
     </script>
 }
