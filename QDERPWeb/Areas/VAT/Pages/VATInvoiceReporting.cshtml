@@ -4,10 +4,10 @@
     ViewData["Title"] = "Trial Balance";
 }
 <style>
-  .limited-footer .btn-container:not(:has(#btnSave,#btnSaveAndClose,#btnPrint1,#btnDelete,#btnBack)) {
-            display: none !important;
-        }
 
+    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0)) {
+        display: none !important;
+    }
     .dx-fieldset.horizontal-container {
         display: flex;
         align-items: center;
@@ -67,8 +67,8 @@
 <div class="container" style="display: flex; flex-direction: column; gap: 20px;width:100%;">
 
     <div class="Head">
-        <div>
-            @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
+        <div class="limited-footer">
+            @await Html.PartialAsync("VATModuleFooter")
         </div>
     </div>
 
@@ -338,7 +338,11 @@
         if (typeof date === 'string') date = new Date(date);
         return date.toISOString().split('T')[0];
     }
+    	$(document).ready(function () {
+		$(".limited-footer .btn-container").each(function () {
+			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0").length) {
+				$(this).remove();
+			}
+		});
+	});
 </script>
-
-
-

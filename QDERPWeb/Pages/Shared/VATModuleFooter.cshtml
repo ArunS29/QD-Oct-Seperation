@@ -566,6 +566,23 @@
             .ShowArrowIcon(false)
             )
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReport0")
+            .Icon("doc")
+            .Width(100)
+            .Text(new JS("formatMessage('Report')"))
+            .ElementAttr(new { @class = "report-button" }) // changed here
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Invoice Collection Report").Icon("file").OnClick("navigateToDebtorsCollection");
+                items.Add().Text("Sales Reporting with Line Details").Icon("file").OnClick("navigateToReportingInDetails");
+            })
+
+            .ShowArrowIcon(false)
+            )
+    </div>
 
         <div class="btn-containerIvoiceEdit">
             @(Html.DevExtreme().Button()
@@ -756,6 +773,16 @@
     function addPurchase() {
         // Replace with the actual tenant name dynamically
         var url = `/${tenantName}/VAT/VATPurchaseEdit`;
+        window.location.href = url; // Navigate to the page
+    }
+    function navigateToReportingInDetails() {
+        // Replace with the actual tenant name dynamically
+        var url = `/${tenantName}/VAT/VATInvoiceReportingInDetails`;
+        window.location.href = url; // Navigate to the page
+    }
+    function navigateToDebtorsCollection() {
+        // Replace with the actual tenant name dynamically
+        var url = `/${tenantName}/VAT/DebtorsCollection`;
         window.location.href = url; // Navigate to the page
     }
         
