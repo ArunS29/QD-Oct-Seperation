@@ -1,7 +1,6 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.frm201useraccesModel
-@using DevExtreme.AspNet.Data
-@using DevExtreme.AspNet.Mvc
+
 <style>
 
     .dx-datagrid .text-link {
@@ -39,9 +38,6 @@
             display: block;
         }
 
-    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout)) {
-        display: none !important;
-    }
 </style>
 
 
@@ -68,7 +64,7 @@
 
 <div class="Head">
     <div class="limited-footer">
-        @await Html.PartialAsync("_GridFooter")
+        <div class="footer">@await Html.PartialAsync("userfooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
     </div>
 </div>
 
@@ -89,7 +85,7 @@
             .Template(@<text>
 
         @(Html.DevExtreme().DataGrid()
-        .ID("userDataGrid")
+        .ID("DataGrid")
         .DataSource(d => d.WebApi()
         .Controller("utility")
         .LoadAction("GetUsers")
@@ -102,6 +98,7 @@
         .FilterRow(f => f.Visible(false))
         .HeaderFilter(h => h.Visible(false))
         .ColumnAutoWidth(true)
+        .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
         .OnCellClick("onUserIdCellClick")
         .Columns(columns =>
         {
@@ -146,6 +143,7 @@
             .ShowClearButton(true)
             .Placeholder("Select User")
             .Label("User")
+
             .LabelMode(EditorLabelMode.Outside)
             .Width(400)
             .OnValueChanged("onUserChanged")
