@@ -27,20 +27,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
             InitializeComponent();
             SetReportParameters(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
 
-            try
-            {
-                ConfigureSqlQuery();
-                sqlDataSource1.Fill();
-
-                if (!string.IsNullOrEmpty(accountGroup))
-                {
-                    this.FilterString = $"[AccountGroup] = '{accountGroup.Replace("'", "''")}'";
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error loading data for Group report: {ex.Message}", ex);
-            }
         }
 
         public BalanceSheetHorizondalFormat()
@@ -98,44 +84,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
                 addressArbLabel.Text = company_address_arb;
         }
 
-        private void ConfigureSqlQuery()
-        {
-            var storedProcQuery = new StoredProcQuery
-            {
-                Name = "sp20113BalanceSheet",
-                StoredProcName = "sp20113BalanceSheet"
-            };
 
-            storedProcQuery.Parameters.AddRange(new[]
-            {
-                new QueryParameter
-                {
-                    Name = "@StartDate",
-                    Type = typeof(DateTime),
-                    Value = Parameters["StartDate"].Value
-                },
-                new QueryParameter
-                {
-                    Name = "@EndDate",
-                    Type = typeof(DateTime),
-                    Value = Parameters["EndDate"].Value
-                }
-            });
-
-            sqlDataSource1.Queries.Clear();
-            sqlDataSource1.Queries.Add(storedProcQuery);
-            sqlDataSource1.Name = "sqlDataSource1";
-
-            if (_tenantDbContextHelper != null &&
-                _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-            {
-                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
-            }
-            else
-            {
-                throw new Exception("Unable to get tenant context. Please check session and cache.");
-            }
-        }
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
         {

@@ -292,7 +292,7 @@
             this.DataMember = "sp20113BalanceSheet";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(24F, 10F, 29.58334F, 25F);
+            this.Margins = new DevExpress.Drawing.DXMargins(16F, 2F, 29.58334F, 25F);
             this.PageWidth = 1500;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;
             this.Version = "24.1";
