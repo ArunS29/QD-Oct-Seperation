@@ -17,9 +17,9 @@
 </style>
 @(Html.DevExtreme().DropDownButton()
     .ID("PurchaseOrderDropdown")
-    .Text(new JS("formatMessage('Print')"))
+    .Text("Print")
     .Icon("print")
-    .ElementAttr("style", "padding:10px")
+  .ElementAttr("style", "padding:10px")
     .DisplayExpr("Text")
     .KeyExpr("Text")
     .ItemTemplate(@<text>
@@ -35,8 +35,8 @@
 <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
     <div class="">
         @(Html.DevExtreme().TextBox()
-                .ID("Stocknoo2")
-                .Label(new JS("formatMessage('Stock No / Item Code')"))
+                .ID("StockNo")
+                .Label("Stock No / Item Code:")
                 .LabelMode(EditorLabelMode.Outside)
                 .Width("90%"))
     </div>   
@@ -52,15 +52,14 @@
             .ColumnAutoWidth(true)
             .Columns(columns =>
             {
-            columns.Add().DataField("PONo").Caption(new JS("formatMessage('PO No')"));
-            columns.Add().DataField("PODate").Caption(new JS("formatMessage('PO Date')")).DataType(GridColumnDataType.Date);
-            columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
-            columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
-            columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')"));
-            columns.Add().DataField("Discount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
-            columns.Add().DataField("VatAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
-            columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
-
+                columns.Add().DataField("PONo").Caption("PO No");
+                columns.Add().DataField("PODate").Caption("PO Date").DataType(GridColumnDataType.Date);
+                columns.Add().DataField("SupplierName").Caption("Supplier Name");
+                columns.Add().DataField("Qty").Caption("Qty").DataType(GridColumnDataType.Number);
+                columns.Add().DataField("UnitPrice").Caption("Unit Price");
+                columns.Add().DataField("Discount").Caption("Discount").Format("##,##0.00");
+                columns.Add().DataField("VatAmount").Caption("VAT Amount").Format("##,##0.00");
+                columns.Add().DataField("Total").Caption("Total").Format("##,##0.00");
             })
             .Summary(summary =>
             {

@@ -145,7 +145,7 @@
 			<td>
 				@(Html.DevExtreme()
 								.NumberBox()
-								.Label(new JS("formatMessage('Minimum Quantity')"))
+								.Label("Minimum Quantity")
 								.LabelMode(EditorLabelMode.Outside)
 								.Width(200)
 								.ShowSpinButtons(true))
@@ -153,7 +153,7 @@
 			<td>
 				@(Html.DevExtreme()
 								.NumberBox()
-								.Label(new JS("formatMessage('Maximum Quantity')"))
+								.Label("Maximum Quantity")
 								.LabelMode(EditorLabelMode.Outside)
 								.Width(200)
 								.ShowSpinButtons(true))
@@ -161,7 +161,7 @@
 			<td>
 				@(Html.DevExtreme()
 								.NumberBox()
-								.Label(new JS("formatMessage('Reorder Level')"))
+								.Label("Reorder Level")
 								.LabelMode(EditorLabelMode.Outside)
 								.Width(200)
 								.ShowSpinButtons(true))
@@ -169,7 +169,7 @@
 			<td>
 				@(Html.DevExtreme()
 								.NumberBox()
-								.Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
+								.Label("Reorder Quantity/EOQ")
 								.LabelMode(EditorLabelMode.Outside)
 								.Width(200)
 								.ShowSpinButtons(true))
@@ -177,7 +177,7 @@
 			<td>
 				@(Html.DevExtreme()
 								.NumberBox()
-								.Label(new JS("formatMessage('Reorder Lead Time')"))
+								.Label("Reorder Lead Time")
 								.LabelMode(EditorLabelMode.Outside)
 								.Width(200)
 								.ShowSpinButtons(true))
@@ -193,7 +193,7 @@
 
 			@(Html.DevExtreme().Button()
 						.ID("btnPrint")
-						.Text(new JS("formatMessage('Print')"))
+						.Text("Print")
 						.Icon("print") // DevExtreme built-in icon
 						.Width(160)
 						@* .OnClick("function() { printStockReport(); }") *@
@@ -202,7 +202,7 @@
 		</td>
 		<td>
 			@(Html.DevExtreme().DropDownButton()
-						.Text(new JS("formatMessage('View Stock Movement Report')"))
+						.Text("View Stock Movement Report")
 						.Icon("cart") // You can change to your preferred icon
 						.Width(290)
 						.DisplayExpr("text")
@@ -225,45 +225,44 @@
 								.Columns(columns =>
 								{
 									columns.Add().DataField("DocumentNo")
-									.Caption(new JS("formatMessage('Document No')"))
+									.Caption("Document No")
 									.Alignment(HorizontalAlignment.Center);
 
 									columns.Add().DataField("TransactionType")
-									.Caption(new JS("formatMessage('Transaction Type')"))
+									.Caption("Transaction Type")
 									.Alignment(HorizontalAlignment.Center);
 
 									columns.Add().DataField("TransactionDate")
-									.Caption(new JS("formatMessage('Transaction Date')"))
+									.Caption("Transaction Date")
 									.Alignment(HorizontalAlignment.Center);
 
 									columns.Add().DataField("InventoryEffectiveDate")
-									.Caption(new JS("formatMessage('Inventory Effective Date')"))
+									.Caption("Inventory Effective Date")
 									.Alignment(HorizontalAlignment.Center)
 									.DataType(GridColumnDataType.Date)
 									.Format("dd-MMM-yyyy");
 
 									columns.Add().DataField("OpeningBalance")
-									.Caption(new JS("formatMessage('Opening Balance')"))
+									.Caption("Opening Balance")
 									.Alignment(HorizontalAlignment.Center)
 									.Format("fixedPoint");
 
 									columns.Add().DataField("Received")
-									.Caption(new JS("formatMessage('Received')"))
+									.Caption("Received")
 									.Alignment(HorizontalAlignment.Center)
 									.Format("fixedPoint");
 
 									columns.Add().DataField("Issued")
-									.Caption(new JS("formatMessage('Issued')"))
+									.Caption("Issued")
 									.Alignment(HorizontalAlignment.Center)
 									.Format("fixedPoint");
 
 									columns.Add().DataField("Balance")
-									.Caption(new JS("formatMessage('Balance')"))
+									.Caption("Balance")
 									.Alignment(HorizontalAlignment.Center)
 									.Format("fixedPoint");
-								})
-								
 
+								})
 								.Summary(summary =>
 								{
 									summary.TotalItems(totalItems =>

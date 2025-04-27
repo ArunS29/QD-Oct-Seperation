@@ -17,7 +17,7 @@
 </style>
 @(Html.DevExtreme().DropDownButton()
     .ID("purchaseDropdown")
-    .Text(new JS("formatMessage('Print')"))
+    .Text("Print")
     .Icon("print")
   .ElementAttr("style", "padding:10px")
     .DisplayExpr("Text")
@@ -46,43 +46,18 @@
             .ColumnAutoWidth(true)
             .Columns(columns =>
             {
-            columns.Add().DataField("ItemCode")
-            .Caption(new JS("formatMessage('Item Code')"));
+            columns.Add().DataField("ItemCode").Caption("Item Code");
+            columns.Add().DataField("PurchaseVoucherNo").Caption("Purchase Voucher No ");
+            columns.Add().DataField("PurchaseVoucherDate").Caption("Purchase Voucher  Date");
+            columns.Add().DataField("InventoryEffectiveDate").Caption("Inventory Effective Date");
+            columns.Add().DataField("QuantityInvoiced").Caption("Quantity Invoiced");
 
-            columns.Add().DataField("PurchaseVoucherNo")
-            .Caption(new JS("formatMessage('Purchase Voucher No')"));
-
-            columns.Add().DataField("PurchaseVoucherDate")
-            .Caption(new JS("formatMessage('Purchase Voucher Date')"));
-
-            columns.Add().DataField("InventoryEffectiveDate")
-            .Caption(new JS("formatMessage('Inventory Effective Date')"));
-
-            columns.Add().DataField("QuantityInvoiced")
-            .Caption(new JS("formatMessage('Quantity Invoiced')"));
-
-            columns.Add().DataField("UnitDesc")
-            .Caption(new JS("formatMessage('Unit Desc')"));
-
-            columns.Add().DataField("UnitRate")
-            .Caption(new JS("formatMessage('Unit Rate')"));
-
-            columns.Add().DataField("Discount")
-            .Caption(new JS("formatMessage('Discount')"))
-            .Format("##,##0.00");
-
-            columns.Add().DataField("TotalAfterDisc")
-            .Caption(new JS("formatMessage('Total After Disc')"))
-            .Format("##,##0.00");
-
-            columns.Add().DataField("TaxAmount")
-            .Caption(new JS("formatMessage('Tax Amount')"))
-            .Format("##,##0.00");
-
-            columns.Add().DataField("TotalWithTax")
-            .Caption(new JS("formatMessage('Total With Tax')"))
-            .Format("##,##0.00");
-
+                columns.Add().DataField("UnitDesc").Caption("Unit Desc");
+                columns.Add().DataField("UnitRate").Caption("Unit Rate");
+                columns.Add().DataField("Discount").Caption("Discount").Format("##,##0.00");
+            columns.Add().DataField("TotalAfterDisc").Caption("Total After Disc").Format("##,##0.00");
+                columns.Add().DataField("TaxAmount").Caption("Tax Amount").Format("##,##0.00");
+            columns.Add().DataField("TotalWithTax").Caption("Total With Tax").Format("##,##0.00");
 
             })
             .Summary(summary =>

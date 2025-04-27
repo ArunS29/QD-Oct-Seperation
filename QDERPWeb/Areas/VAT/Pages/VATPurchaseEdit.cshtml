@@ -533,7 +533,7 @@
 								<!-- ✅ Supply Date (DateBox) -->
 								<td>
 									@(Html.DevExtreme().DateBox()
-																			.ID("SupplyDates")	
+																			.ID("SupplyDates")
 																			.Label(new JS("formatMessage('Supply Date')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.Type(DateBoxType.Date)
@@ -554,7 +554,7 @@
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ddclientcode")
-																			.Label(new JS("formatMessage('Supplier Code')"))
+																			.Label("Supplier Code")
 																			.LabelMode(EditorLabelMode.Outside)
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
@@ -885,7 +885,7 @@
 
 
 					<div class="card" style="padding:20px;" id="rightcard1">
-						<h5 id="deducationadvance">Deductions:Advance / Retention</h5>
+						<h5>Deductions:Advance / Retention</h5>
 						<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="2">
 							<tr>
 
@@ -945,8 +945,8 @@
 					<div style="display: flex; justify-content: space-between; padding: 20px 10px;">
 						<!-- Verified Section -->
 						<div>
-							<label  id="verifiedby"  style="font-weight: bold;">Verified By:</label><br />
-							<span id="verifiedOn" style="font-style: italic;">Verified On:</span>
+							<label style="font-weight: bold;">Verified By:</label><br />
+							<span id="verifiedBy" style="font-style: italic;">Verified On:</span>
 						</div>
 
 						<!-- Approved Section -->
@@ -6240,19 +6240,6 @@
 		}
 	}
 
-		$(function () {
-			$("#deducationadvance").text(
-				 formatMessage("Deductions:Advance / Retention"));
-		});
-
-		$(function () {
-			$("#verifiedby").text(
-				 formatMessage("Verified By"));
-	});
-			$(function () {
-					$("#verifiedOn").text(
-						 formatMessage("Verified On"));
-		});
 
 </script>
 

@@ -17,7 +17,7 @@
 </style>
 @(Html.DevExtreme().DropDownButton()
     .ID("Dropdown")
-    .Text(new JS("formatMessage('Print')"))
+    .Text("Print")
     .Icon("print")
   .ElementAttr("style", "padding:10px")
     .DisplayExpr("Text")
@@ -46,14 +46,13 @@
             .ColumnAutoWidth(true)
             .Columns(columns =>
             {
-            columns.Add().DataField("QuoteNo").Caption(new JS("formatMessage('Quote No')"));
-            columns.Add().DataField("QuoteDate").Caption(new JS("formatMessage('Quote Date')")).DataType(GridColumnDataType.Date);
-            columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
-            columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
-            columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')"));
-            columns.Add().DataField("Discount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
-            columns.Add().DataField("VatAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
-
+                columns.Add().DataField("QuoteNo").Caption("Quote No");
+            columns.Add().DataField("QuoteDate").Caption("Quote Date").DataType(GridColumnDataType.Date);
+                columns.Add().DataField("ClientName").Caption("Client Name");
+                columns.Add().DataField("Qty").Caption("Qty").DataType(GridColumnDataType.Number);
+                columns.Add().DataField("UnitPrice").Caption("Unit Price");
+                columns.Add().DataField("Discount").Caption("Discount").Format("##,##0.00");
+                columns.Add().DataField("VatAmount").Caption("VAT Amount").Format("##,##0.00");
             })
             .Summary(summary =>
             {

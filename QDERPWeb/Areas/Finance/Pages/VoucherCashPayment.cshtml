@@ -306,8 +306,8 @@
             </div>
           <div class="form-group">
     @(Html.DevExtreme().DropDownBox()
-            .Label(new JS("formatMessage('Base Currency')"))
-            .DataSource(d => d.WebApi()
+        .Label("Base Currency")
+        .DataSource(d => d.WebApi()
             .Controller("Utility") // Use same controller or change if needed
             .LoadAction("GetCurrencyList")
             .LoadMode(DataSourceLoadMode.Raw)
@@ -368,7 +368,7 @@
 
             <div class="form-group">
                 @(Html.DevExtreme().DropDownBox()
-                    .Label(new JS("formatMessage('Exchange Currency')"))
+                    .Label("Exchange Currency")
                     .DataSource(d => d.WebApi()
                     .Controller("Utility") // Adjust if needed
                     .LoadAction("GetCurrencyList")
@@ -400,7 +400,7 @@
             </div>
             <div class="form-group">
                 @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Currency Rate')"))
+                    .Label("Currency Rate")
                     .LabelMode(EditorLabelMode.Outside)
                     .ID("txtCurrencyRate")
                     .Value("")

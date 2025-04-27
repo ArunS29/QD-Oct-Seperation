@@ -11,7 +11,7 @@
 </style>
 @(Html.DevExtreme().DropDownButton()
     .ID("MaterialRequestDropdown")
-    .Text(new JS("formatMessage('Print')"))
+    .Text("Print")
     .Icon("print")
   .ElementAttr("style", "padding:10px")
     .DisplayExpr("Text")
@@ -39,15 +39,14 @@
                 .ColumnAutoWidth(true)
                 .Columns(columns =>
                 {
-            columns.Add().DataField("MRPNo").Caption(new JS("formatMessage('PO No')"));
-            columns.Add().DataField("RequstedNamedRef").Caption(new JS("formatMessage('Requsted Named Ref')")).DataType(GridColumnDataType.Date);
-            columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
-            columns.Add().DataField("QtyRequested").Caption(new JS("formatMessage('Qty Requested')")).DataType(GridColumnDataType.Number);
-            columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
-            columns.Add().DataField("ExpectedUnitRate").Caption(new JS("formatMessage('Expected Unit Rate')"));
-            columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Sub Unit Name')"));
-            columns.Add().DataField("PurchaseRequestStatus").Caption(new JS("formatMessage('Purchase Request Status')"));
-
+                    columns.Add().DataField("MRPNo").Caption("PO No");
+            columns.Add().DataField("RequstedNamedRef").Caption("Requsted Named Ref").DataType(GridColumnDataType.Date);
+                    columns.Add().DataField("SupplierName").Caption("Supplier Name");
+            columns.Add().DataField("QtyRequested").Caption("Qty Requested").DataType(GridColumnDataType.Number);
+            columns.Add().DataField("UnitDesc").Caption("Unit Desc");
+            columns.Add().DataField("ExpectedUnitRate").Caption("Expected Unit Rate");
+            columns.Add().DataField("ProjectSubUnitName").Caption("Project Sub Unit Name");
+            columns.Add().DataField("PurchaseRequestStatus").Caption("Purchase Request Status");
                 })
             
               
