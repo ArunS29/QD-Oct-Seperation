@@ -5,7 +5,7 @@
 }
 <style>
 
-    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0)) {
+    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields)) {
         display: none !important;
     }
     .dx-fieldset.horizontal-container {
@@ -340,7 +340,7 @@
     }
     	$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0").length) {
+            if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#ddButtonLayout,#btntoggleGroupPanel,#btnColumnChooser,#ddReport0,#btnShowRowTotals,#btnShowFields").length) {
 				$(this).remove();
 			}
 		});
