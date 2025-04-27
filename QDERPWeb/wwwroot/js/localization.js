@@ -1,6 +1,29 @@
 ﻿var dictionary = {
     "en": {
+
         "VATInvoiceReporting":"VATInvoiceReporting",
+
+        "Debit Note No:": "Debit Note No:",
+        "Debit Note Date:": "Debit Note Date:",
+        "Supplier Invoice No": "Supplier Invoice No",
+        "Invoice Date:": "Invoice Date:",
+        "Supplier Name Arabic:": "Supplier Name Arabic:",
+        "Reference No": "Reference No",
+        "Invoice Period": "Invoice Period",
+        "Items Returned from Store:": "Items Returned from Store:",
+        "Supplier Name:": "Supplier Name:",
+        "Purchase Voucher No:": "Purchase Voucher No:",
+        "Purchase Account": "Purchase Account",
+        "Invoice Notes:": "Invoice Notes:",
+        "Company Branch / Division": "Company Branch / Division",
+        "VAT Desc": "VAT Desc",
+        "Units Till Bill":"Units Till Bill",
+     
+
+
+        "Create New": "Create New",
+        "Request/Enquiry Details":"Request/Enquiry Details",
+
         "Edit Bills Payable/ Bills Receivables":"Edit Bills Payable/ Bills Receivables",
         "DocumentNo:": "DocumentNo:",
         "Reference NO:": "Reference NO:",
