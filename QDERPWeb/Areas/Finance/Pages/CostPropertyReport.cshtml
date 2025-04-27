@@ -1,0 +1,193 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.CostPropertyReportModel
+@{
+    ViewData["Title"] = "Cost Property Report";
+}
+
+<h2>Cost Allocation Details for Property</h2>
+
+<div class="toolbar custom-toolbar">
+    <div class="toolbar-item">
+        @(Html.DevExtreme().DateBox()
+            .ID("frmdateBox")
+            .Label("Start Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .InputAttr("aria-label", "Start Date")
+            .Type(DateBoxType.Date)
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+            .DisplayFormat("dd-MMM-yyyy")
+            .TabIndex(1)
+        )
+    </div>
+
+    <div class="toolbar-item">
+        @(Html.DevExtreme().DateBox()
+            .ID("todateBox")
+            .Label("End Date")
+            .LabelMode(EditorLabelMode.Outside)
+            .InputAttr("aria-label", "End Date")
+            .Type(DateBoxType.Date)
+            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+            .DisplayFormat("dd-MMM-yyyy")
+            .TabIndex(2)
+        )
+    </div>
+</div>
+
+<div id="propertyDataGrid" style="margin-top: 15px;"></div>
+
+<div class="limited-footer">
+    @await Html.PartialAsync("_GridFooter")
+</div>
+
+<script>
+    $(function () {
+        loadCostPropertyGrid();
+    });
+
+    function loadCostPropertyGrid() {
+        $("#propertyDataGrid").dxDataGrid({
+            dataSource: {
+                load: function () {
+                    const fromDate = $("#frmdateBox").dxDateBox("instance").option("value");
+                    const toDate = $("#todateBox").dxDateBox("instance").option("value");
+
+                    const params = new URLSearchParams();
+                    if (fromDate) params.append("fromDate", fromDate.toISOString());
+                    if (toDate) params.append("toDate", toDate.toISOString());
+
+                    return fetch(`/api/UCCostAnalysis/GetCostPropertyReport?${params}`)
+                        .then(res => res.json());
+                }
+            },
+            remoteOperations: true,
+            paging: { pageSize: 20 },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [10, 20, 50],
+                showInfo: true
+            },
+            allowColumnResizing: true,
+            columnAutoWidth: true,
+            showBorders: true,
+            filterRow: { visible: true },
+            searchPanel: { visible: true },
+            grouping: { autoExpandAll: true },
+            columns: [
+                { dataField: "VoucherNo", caption: "Voucher No" },
+                { dataField: "VoucherDate", caption: "Voucher Date", dataType: "date", format: "dd-MMM-yyyy" },
+                { dataField: "PropertyNo", caption: "Property No" },
+                { dataField: "AmountAllocated", caption: "Amount Allocated", format: { type: "currency" } },
+                { dataField: "VoucherRefNo", caption: "Voucher Ref No" },
+                { dataField: "VoucherNarration", caption: "Voucher Narration" },
+                { dataField: "VoucherEntryNo", caption: "Voucher Entry No" },
+                { dataField: "AccountHead", caption: "Account Head" },
+                { dataField: "AccountHeadName", caption: "Account Head Name" },
+                { dataField: "EntryNarration", caption: "Entry Narration" },
+                { dataField: "AccountGroup", caption: "Account Group" },
+                { dataField: "MasterGroup", caption: "Master Group" },
+                { dataField: "VoucherType", caption: "Voucher Type" },
+                { dataField: "PlateNo", caption: "Plate No" },
+                { dataField: "DoorNo", caption: "Door No" },
+                { dataField: "ChassisNo", caption: "Chassis No" },
+                { dataField: "PropertyCategoryName", caption: "Property Category" },
+                { dataField: "PropertyDescription", caption: "Property Description" },
+                { dataField: "PropertyGroup", caption: "Property Group" },
+                { dataField: "PropertyType", caption: "Property Type" },
+                { dataField: "ExpenseAmount", caption: "Expense Amount", format: { type: "currency" } },
+                { dataField: "RevenueAmount", caption: "Revenue Amount", format: { type: "currency" } },
+                { dataField: "CostAndRevenueClubbed", caption: "Cost & Revenue Clubbed" },
+                { dataField: "CostCenterCode", caption: "Cost Center Code" },
+                { dataField: "CostCenterUnit", caption: "Cost Center Unit" }
+            ]
+        });
+    }
+
+    function reloadGrid() {
+        $("#propertyDataGrid").dxDataGrid("instance").refresh();
+    }
+
+    $(document).ready(function () {
+        $("#frmdateBox, #todateBox").dxDateBox("instance").on("valueChanged", function () {
+            reloadGrid();
+        });
+    });
+</script>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f9fbfd;
+        color: #2c3e50;
+    }
+
+    h2 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #2f3e46;
+        border-bottom: 2px solid #d1e3f8;
+        padding-bottom: 10px;
+    }
+
+    .custom-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-end;
+        margin-bottom: 25px;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .toolbar-item {
+        min-width: 260px;
+        flex: 1;
+    }
+
+    .dx-field-label,
+    .dx-texteditor-label {
+        font-weight: 600 !important;
+        font-size: 14px;
+        color: #34495e;
+        margin-bottom: 5px;
+    }
+
+    .dx-texteditor,
+    .dx-dropdownbutton {
+        border-radius: 8px !important;
+    }
+
+    #propertyDataGrid {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .limited-footer {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #ffffff;
+        border-top: 1px solid #e0e0e0;
+        border-radius: 0 0 12px 12px;
+    }
+
+    /* Responsive Tweaks */
+    @@media screen and (max-width: 768px) {
+        .toolbar-item {
+            min-width: 100%;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        #propertyDataGrid {
+            padding: 10px;
+        }
+    }
+</style>
