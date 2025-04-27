@@ -451,86 +451,101 @@
 
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
-        <div id="tab-content-1" class="tab-content">
+			<div id="tab-content-1" class="tab-content">
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
 					<div class="card">
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Purchase Voucher No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Voucher Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<!-- 1. Purchase Voucher No (TextEdit) -->
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("InvoiceNo")
+																			.Label(new JS("formatMessage('Purchase Voucher No')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.Disabled(true))
+								</td>
+
+								<!-- 2. Voucher Date (DateEdit) -->
+								<td>
+									@(Html.DevExtreme().DateBox()
+																			.ID("InvoiceDate")
+																			.Type(DateBoxType.Date)
+																			.DisplayFormat("dd-MMM-yyyy")
+																			.Value(DateTime.Now)
+																			.Disabled(true)
+																			.Label(new JS("formatMessage('Voucher Date')"))
+																			.LabelMode(EditorLabelMode.Outside))
+								</td>
 							</tr>
+
 							<tr>
+								<!-- 3. Supplier Invoice No (DropDownBox / ComboBoxEdit) -->
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("SupplierInvoiceNo")
-																			.DataSource(ds => ds.WebApi().Controller("VATModule").LoadAction("GetSupplierInvoices").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceNo"))
+																			.DataSource(ds => ds.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetSupplierInvoices")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("InvoiceNo"))
 																			.DisplayExpr("InvoiceNo")
 																			.ValueExpr("InvoiceNo")
 																			.Label(new JS("formatMessage('Supplier Invoice No')"))
 																			.LabelMode(EditorLabelMode.Outside)
-																			.Value("") // Or bind to Model.SupplierInvoiceNo
-
-
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.TabIndex(5)
-																			.Width("100%")
 																			.DropDownOptions(d => d.Width(400))
-																			.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))
-																			)
+																			.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate")))
 								</td>
 
-
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+								<!-- 5. Invoice Date (DateEdit) -->
+								<td>
+									@(Html.DevExtreme().DateBox()
+																			.ID("SupplyDate")
+																			.Type(DateBoxType.Date)
+																			.DisplayFormat("dd-MMM-yyyy")
+																			.Value(DateTime.Now)
+																			.Label(new JS("formatMessage('Invoice Date')"))
+																			.LabelMode(EditorLabelMode.Outside))
+								</td>
 							</tr>
+
 							<tr>
+								<!-- 4. Order No (TextEdit) -->
 								<td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("VATInvoiceType")
 																			.Label(new JS("formatMessage('Order No')"))
 																			.LabelMode(EditorLabelMode.Outside)
-																			.Value("Tax Invoice") // Or bind to Model.VATInvoiceType
-																			.HoverStateEnabled(true)
-																			.Disabled(true)
-																			)
+																			.Value("Tax Invoice")
+																			.Disabled(true))
 								</td>
 
+								<!-- 6. Order Date (DateEdit) -->
 								<td>
 									@(Html.DevExtreme().DateBox()
 																			.ID("OrderDate")
 																			.Label(new JS("formatMessage('Order Date')"))
 																			.LabelMode(EditorLabelMode.Outside)
-																			.Type(DateBoxType.Date) // Use DateBoxType.DateTime if you need time as well
-																			.Value(DateTime.Now)    // Or bind to Model.OrderDate if applicable
-																			.DisplayFormat("dd-MMM-yyyy") // Customize as needed
-																			.HoverStateEnabled(true)
-																			.Disabled(false) // Set to true if it's just for display
-																			.Width("100%")
-																			.TabIndex(1)
-																			)
+																			.Type(DateBoxType.Date)
+																			.DisplayFormat("dd-MMM-yyyy")
+																			.Value(DateTime.Now))
 								</td>
-
 							</tr>
-							<tr>
 
-								<!-- ✅ Material Receipt (TextBox) -->
+							<tr>
+								<!-- 7. Material Receipt (TextEdit) -->
 								<td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("MaterialReceipt")
 																			.Label(new JS("formatMessage('Material Receipt')"))
 																			.LabelMode(EditorLabelMode.Outside)
-																			.Value("") // You can bind from model: Model.MaterialReceipt
-																			.Placeholder("Enter material receipt details")
-																			.HoverStateEnabled(true)
-																			.Width("100%")
-																			)
+																			.Placeholder("Enter material receipt details"))
 								</td>
 
-								<!-- ✅ Supply Date (DateBox) -->
+								<!-- 8. Supply Date (DateEdit) -->
 								<td>
 									@(Html.DevExtreme().DateBox()
 																			.ID("SupplyDates")
@@ -538,10 +553,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.Type(DateBoxType.Date)
 																			.DisplayFormat("dd-MMM-yyyy")
-																			.Value(DateTime.Now) // Or bind from Model.SupplyDate
-																			.HoverStateEnabled(true)
-																			.Width("100%")
-																			)
+																			.Value(DateTime.Now))
 								</td>
 							</tr>
 						</table>
@@ -551,58 +563,43 @@
 					<div class="card">
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
+								<!-- 9. Supplier Code (GridLookUpEdit) -->
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ddclientcode")
-																			.Label("Supplier Code")
+																			.Label(new JS("formatMessage('Supplier Code')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
 																			.LoadAction("GetSupplierCode")
 																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("AccountId") // <-- Use the actual key field
-																			)
-																			.ValueExpr("AccountId") // or "SupplierName" if that's your key
-																			.DisplayExpr("SupplierName")  // <-- what is shown in the textbox
+																			.Key("AccountId"))
+																			.ValueExpr("AccountId")
+																			.DisplayExpr("AccountId")
 																			.ShowClearButton(true)
-																			.AcceptCustomValue(false)
-																			.OpenOnFieldClick(true)
-																			.ValidationRules(rules =>
-																			{
-																				rules.AddRequired().Message("Supplier Code is required.");
-																			})
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
-																			)
-
+																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
 								</td>
+
 								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
 									<div style="display:flex; gap:5px;">
-										@(Html.DevExtreme().Button()
-																				.ID("AddClient")
-																				.Icon("plus")
-																				.Hint("Add Description")
-																				.Width(35)
-																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-
-
-																				)
-										@(Html.DevExtreme().Button()
-																				.ID("EditClient")
-																				.Icon("edit")
-																				.Hint("Edit Description")
-																				.Width(35)
-																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-
-
-																				)
+										@(Html.DevExtreme().Button().ID("AddClient").Icon("plus").Hint("Add Description").Width(35))
+										@(Html.DevExtreme().Button().ID("EditClient").Icon("edit").Hint("Edit Description").Width(35))
 									</div>
 								</td>
+
+								<!-- 10. Supplier Name (ComboBoxEdit) -->
 								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Supplier Name')"))//.ID("ClientName")
-																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetSupplierCode").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
-																			.LabelMode(EditorLabelMode.Outside)
+									@(Html.DevExtreme().DropDownBox()
 																			.ID("ddclientname")
+																			.Label(new JS("formatMessage('Supplier Name')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetSupplierCode")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("AccountId"))
+																			.ValueExpr("AccountId")
+																			.DisplayExpr("SupplierName")
 																			.ValidationRules(rules =>
 																			{
 																				rules.AddRequired()
@@ -610,64 +607,67 @@
 																			})
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.Value(null)
-																			.ValueExpr("AccountId") // or "SupplierName" if that's your key
-																			.DisplayExpr("SupplierName")
-																			.Width("100%")
-																			.TabIndex(1)
-																			.DropDownOptions(o => o
-																			//.Width("100%") // Set the desired width for the dropdown content*@
-																			.Width(500)
-																			)
-																			.OnKeyDown("onKeyDown")
 																			.ContentTemplate(new TemplateName("ClientNameContentTemplate")))
 								</td>
 							</tr>
+
 							<tr>
-								@* 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo")	.LabelMode(EditorLabelMode.Outside))</td>
-								*@
+								<!-- 11. Group VAT No (TextEdit) -->
 								<td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("GroupVATNo")
 																			.Label(new JS("formatMessage('Group VAT No')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.MaxLength(15)
-																			.Mask("000000000000000") // 15 digits
-																			.MaskChar(" ") // Optional: makes it more readable
-																						//.ShowClearButton(true) // Optional: adds a clear (X) button
-																			)
+																			.Mask("000000000000000")
+																			.MaskChar(" "))
 								</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supplier VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supplier Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
 
+								<!-- 12. Supplier VAT No (TextEdit) -->
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("ClientVATNo")
+																			.Label(new JS("formatMessage('Supplier VAT No')"))
+																			.LabelMode(EditorLabelMode.Outside))
+								</td>
+
+								<!-- 13. Supplier Name in Arabic (TextEdit) -->
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("ClientNameArabic")
+																			.Label(new JS("formatMessage('Supplier Name in Arabic')"))
+																			.LabelMode(EditorLabelMode.Outside))
+								</td>
 							</tr>
-							<tr>
 
+							<tr>
+								<!-- 14. Other ID Type (GridLookUpEdit) -->
 								<td>
 									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Other ID Type')"))
-																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerIdtypeName"))
-																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("OtherIDType")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.Value(null)
+																			.Label(new JS("formatMessage('Other ID Type')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.DataSource(d => d.WebApi()
+																			.Controller("VATModule")
+																			.LoadAction("GetVATInvoiceMaster")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("BuyerIdtypeName"))
 																			.ValueExpr("BuyerIdtypeName")
 																			.DisplayExpr("BuyerIdtypeName")
-																			.Width("100%")
-																			.TabIndex(1)
-																			.DropDownOptions(o => o.Width(500))
-																			.OnKeyDown("onKeyDown")
-																			.ContentTemplate(new TemplateName("ClientNameContent"))
-																			)
+																			.ShowClearButton(true)
+																			.AcceptCustomValue(true)
+																			.ContentTemplate(new TemplateName("ClientNameContent")))
 								</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supplier Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside))</td>
+
+								<!-- 15. Supplier Other ID (TextEdit) -->
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("ClientOtherID")
+																			.Label(new JS("formatMessage('Supplier Other ID')"))
+																			.LabelMode(EditorLabelMode.Outside))
+								</td>
+
+								<!-- 16. Supplier Address Details (PopContainerEdit) -->
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ClientAddressDetails")
@@ -728,11 +728,28 @@
 									</text>)
 																			)
 								</td>
-
 							</tr>
+
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Period')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reference No')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+								<!-- 17. Invoice Period (TextEdit) -->
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("InvoiceCounterValue")
+																			.Label(new JS("formatMessage('Invoice Period')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																		)
+								</td>
+
+								<!-- 18. Reference No (TextEdit) -->
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("UUID")
+																			.Label(new JS("formatMessage('Reference No')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			)
+								</td>
+
+								<td></td>
 							</tr>
 						</table>
 					</div>
@@ -1079,12 +1096,12 @@
 
 		<div class="dx-field ledgerResult">
 			@(
-										Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+									Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201701vatpurchaseChild>()
 										.ID("B2BdataGrid")
 										.RemoteOperations(false)
 										.Columns(columns =>
 										{
-											columns.AddFor(m => m.VoucherEntryNo)
+										columns.AddFor(m => m.PurchaseVoucherNo)
 										.Caption(new JS("formatMessage('Voucher Entry No')"))
 										.Visible(false);
 
@@ -5230,33 +5247,39 @@
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 
-		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
+		  //InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 
-
+		  debugger
 			if(clientnameValidation.isValid)
 			{
-		// Create JSON object for master invoice
-			let InVoiceNo=$('#InvoiceNo').dxTextBox("instance").option("value");
+	     	// Create JSON object for master invoice
+				let PurchaseVoucherNo = $('#InvoiceNo').dxTextBox("instance").option("value");
 			var InvoiceMaster = {
-				InvoiceNo: $('#InvoiceNo').dxTextBox("instance").option("value") || null,
-				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
-				// InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
-				//PaymentMeansTypeCode: paymentmeanstypecode,
-				 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
-				 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-				 // InvoiceTransactionCode: $("#InvoiceTransactionsCode     ").dxDropDownBox("instance").option("value")|| null,
+					// First Card (Left side)
+					PurchaseVoucherNo: $("#InvoiceNo").dxTextBox("instance").option("value") || null,          // Matches PurchaseVoucherNo
+					PurchaseVoucherDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,        // Matches PurchaseVoucherDate
+					PurchaseBillNo: $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value") || null,   // Matches PurchaseBillNo
+					PurchaseEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,       // Matches PurchaseEffectiveDate
+					PurchaseTaxCategoryCode: $("#VATInvoiceType").dxTextBox("instance").option("value") || null, // Matches PurchaseTaxCategoryCode
+					PurchaseOrderDate: $("#OrderDate").dxDateBox("instance").option("value") || null,            // Matches PurchaseOrderDate
+					MaterialReceiptNo: $("#MaterialReceipt").dxTextBox("instance").option("value") || null,      // Matches MaterialReceiptNo
+					PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null,       // Matches PurchaseDeliveryDate
 
-				 ClientCode: accheadid|| null,
-				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
-				 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
-					 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
-				 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
-					 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
-				BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
-				InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
-				InvoiceUuid: $("#UUID").dxTextBox("instance").option("value")|| null,
+					// Second Card (Right side)
+					SupplierCode: accheadid || null,                                                            // Matches SupplierCode
+					SupplierName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,          // Matches SupplierName
+					SupplierGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,      // Matches SupplierGroupVatnumber
+					SupplierVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value") || null,          // Matches SupplierVatnumber
+					SupplierNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,        // Matches SupplierNameAr
+					SupplierOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value") || null,    // Matches SupplierOtherIdtype
+					SupplierOtherId: $("#ClientOtherID").dxTextBox("instance").option("value") || null,          // Matches SupplierOtherId
+					SupplierAddressStreet: $("#ClientAddressDetails").dxDropDownBox("instance").option("value") || null, // Matches SupplierAddressStreet
+					PurchasePeriod: $("#InvoiceCounterValue").dxTextBox("instance").option("value") || null,     // Matches PurchasePeriod
+					ReferenceNo: $("#UUID").dxTextBox("instance").option("value") || null
 
-		// 	//OtherDetails
+
+
+					// 	//OtherDetails
 		// 	//InvoiceDueDate:("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
 		// 	InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 		// 	InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
@@ -5328,7 +5351,7 @@
 			// Add InvoiceNo to each item
 		let updatedDataSource = InvoiceChildren.map(item => ({
 			...item,
-			InvoiceNo: InVoiceNo,
+					InvoiceNo: PurchaseVoucherNo,
 			TaxAmount:amt
 		}));
 
@@ -5341,18 +5364,18 @@
 				DevExpress.ui.notify("No child records found.", "error", 3000);
 				return;  // Exit if there are no child records
 			}
-
+			
 			// Send AJAX request to update the invoice master details
 			$.ajax({
 				type: "POST",
-				url: `/api/VoucherMaster/UpdateInvoiceMasterDetails`,
+					url: `/api/VoucherMaster/UpdatePurchaseMasterDetails`,
 				contentType: "application/json",
 				data: JSON.stringify(InvoiceMaster),
 				success: function (response) {
 					// Send AJAX request to update the invoice child details after master is updated
 					$.ajax({
 						type: "POST",
-						url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+							url: `/api/VoucherMaster/UpdatePurchaseChildDetails`,
 						contentType: "application/json",
 						data: JSON.stringify(updatedDataSource),
 						success: function (response) {
@@ -5498,7 +5521,7 @@
 				// Send AJAX request to update the invoice master details
 				$.ajax({
 					type: "POST",
-					url: `/api/VoucherMaster/UpdateInvoiceMasterDetails`,
+					url: `/api/VoucherMaster/UpdatePurchaseMasterDetails`,
 					contentType: "application/json",
 					data: JSON.stringify(InvoiceMaster),
 					success: function (response) {
@@ -5554,21 +5577,21 @@
 		});
 
 
-		 $(document).ready(function () {
-			$.ajax({
-				url: "/api/VATModule/GenerateGuid",
-				type: 'POST',
-				success: function (data) {
-					console.log("Success:", data);
+		//  $(document).ready(function () {
+		// 	$.ajax({
+		// 		url: "/api/VATModule/GenerateGuid",
+		// 		type: 'POST',
+		// 		success: function (data) {
+		// 			console.log("Success:", data);
 
-				   $("#UUID").dxTextBox("instance").option("value", data);
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-				}
-			});
-		});
+		// 		   $("#UUID").dxTextBox("instance").option("value", data);
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			console.error("Error loading Payment Accounts:", error);
+		// 			DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+		// 		}
+		// 	});
+		// });
 
 
 		function VATPercentage(newValue, rowIndex,TaxSlabCode) {
