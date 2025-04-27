@@ -745,8 +745,29 @@
                                 )
                        </div>
 
-  
-    
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnShowFields")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("hierarchy")
+            .Text("Show Fields")
+            )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnShowRowTotals")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("hierarchy")
+            .Text("Show Row Totals")
+
+            )
+
+    </div>
+
 
 </div>
 
