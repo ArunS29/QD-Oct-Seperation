@@ -995,6 +995,7 @@
 																				.Key("CurrencyExchangeId"))
 																				.LabelMode(EditorLabelMode.Outside)
 																				.ID("ddlGoodsGroup4")
+																				.Disabled(true)
 																				.ShowClearButton(true)
 																				.Value("Saudi Arabian Riyals")
 																				.AcceptCustomValue(true)
@@ -2092,12 +2093,13 @@
 								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 								.Columns(columns =>
 								{
-								// columns.Add().DataField("OpeningBalanceDrCr");
-						columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("VatregistrationNo").Caption(new JS("formatMessage('Client VAT No')")).Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')")).Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('IsLedgerObselete')")).Alignment(HorizontalAlignment.Center);
+									// columns.Add().DataField("OpeningBalanceDrCr");
+									columns.Add().DataField("AccountId").Caption("Account Code").Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("VatregistrationNo").Caption("Client VAT No").Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("ReferenceNo").Caption("ReferenceNo").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("IsLedgerObselete").Caption("IsLedgerObselete").Alignment(HorizontalAlignment.Center);
+
 
 					})
 					)
@@ -3408,8 +3410,9 @@
 										  // Replace or fetch dynamically
 
 											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-											window.location.href = url;
+											let title = "Goods and Services";
+												openModal(url, title);
+											//window.location.href = url;
 
 										},
 
@@ -3432,8 +3435,9 @@
 										  // Replace or fetch dynamically
 
 											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-											window.location.href = url;
+											let title = "Goods and Services";
+												openModal(url, title);
+											//window.location.href = url;
 
 										},
 
@@ -3562,8 +3566,10 @@
 										onClick: function () {
 
 											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+												 let title = "Unit of Measure";
+										openModal(url, title);
 
-											window.location.href = url;
+											//window.location.href = url;
 
 										},
 
@@ -3911,8 +3917,9 @@
 									// Replace or fetch dynamically
 
 									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-									window.location.href = url;
+											let title = "Goods and Services";
+													openModal(url, title);
+									//window.location.href = url;
 
 								},
 
@@ -3935,8 +3942,9 @@
 									// Replace or fetch dynamically
 
 									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-									window.location.href = url;
+											let title = "Goods and Services";
+													openModal(url, title);
+									//window.location.href = url;
 
 								},
 
@@ -4065,8 +4073,9 @@
 								onClick: function () {
 
 									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									window.location.href = url;
+									 let title = "Unit of Measure";
+									openModal(url, title);
+									//window.location.href = url;
 
 								},
 

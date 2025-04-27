@@ -220,49 +220,54 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption(new JS("formatMessage('Purchase Bill Details')")).Columns(bill =>
+			columns.Add().Caption("Purchase Bill Details").Columns(bill =>
 			{
-				bill.AddFor(m => m.PurchaseVoucherNo).Caption(new JS("formatMessage('Purchase Voucher No')")).Alignment(HorizontalAlignment.Center).GroupIndex(0);
-				bill.AddFor(m => m.PurchaseVoucherNo).Caption(new JS("formatMessage('Purchase Voucher No')")).Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.PurchaseVoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.PurchaseBillNo).Caption(new JS("formatMessage('Bill No')")).Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.PurchaseBillDate).Caption(new JS("formatMessage('Bill Date')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier')")).Alignment(HorizontalAlignment.Left);
-				bill.AddFor(m => m.SupplierVatnumber).Caption(new JS("formatMessage('VAT Number')")).Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center).GroupIndex(0);
+             	bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseVoucherDate).Caption("Voucher Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseBillNo).Caption("Bill No").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseBillDate).Caption("Bill Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.SupplierName).Caption("Supplier").Alignment(HorizontalAlignment.Left);
+				bill.AddFor(m => m.SupplierVatnumber).Caption("VAT Number").Alignment(HorizontalAlignment.Center);
 			});
 
-			columns.Add().Caption(new JS("formatMessage('Item Details')")).Columns(item =>
+			columns.Add().Caption("Item Details").Columns(item =>
 			{
-				item.AddFor(m => m.ItemCode).Caption(new JS("formatMessage('Item Code')")).Alignment(HorizontalAlignment.Center);
-				item.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Description')")).Alignment(HorizontalAlignment.Left);
-				item.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit')")).Alignment(HorizontalAlignment.Center);
-				item.AddFor(m => m.QuantityInvoiced).Caption(new JS("formatMessage('Qty')")).Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.UnitRate).Caption(new JS("formatMessage('Unit Rate')")).Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.LineDiscount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.LineAmountBeforeDiscount).Caption(new JS("formatMessage('Amount Before Discount')")).Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.TaxAmount).Caption(new JS("formatMessage('VAT Amount')")).Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.CalcLineWithTax).Caption(new JS("formatMessage('Total Amount')")).Alignment(HorizontalAlignment.Right);
+				item.AddFor(m => m.ItemCode).Caption("Item Code").Alignment(HorizontalAlignment.Center);
+				item.AddFor(m => m.Gsdescrpition).Caption("Description").Alignment(HorizontalAlignment.Left);
+				item.AddFor(m => m.UnitDesc).Caption("Unit").Alignment(HorizontalAlignment.Center);
+				item.AddFor(m => m.QuantityInvoiced).Caption("Qty").Alignment(HorizontalAlignment.Right);
+				item.AddFor(m => m.UnitRate).Caption("Unit Rate").Alignment(HorizontalAlignment.Right);
+				item.AddFor(m => m.LineDiscount).Caption("Discount").Alignment(HorizontalAlignment.Right);
+				item.AddFor(m => m.LineAmountBeforeDiscount).Caption("Amount Before Discount").Alignment(HorizontalAlignment.Right);
+				item.AddFor(m => m.TaxAmount).Caption("VAT Amount").Alignment(HorizontalAlignment.Right);
+				item.AddFor(m => m.CalcLineWithTax).Caption("Total Amount").Alignment(HorizontalAlignment.Right);
 			});
 
-			columns.Add().Caption(new JS("formatMessage('Goods In Transit')")).Columns(transit =>
+			columns.Add().Caption("Goods In Transit").Columns(transit =>
 			{
+				// You can include this if you plan to add GoodsInTransitAmount to your model
+				// transit.AddFor(m => m.GoodsInTransitAmount)
+				//        .Caption("Additional Cost")
+				//        .Alignment(HorizontalAlignment.Right)
+				//        .Format(Format.Currency);
+
 				transit.AddFor(m => m.IsGoodsInTransitAccount)
-			.Caption(new JS("formatMessage('GIT Applicable')"))
+			.Caption("GIT Applicable")
 			.Alignment(HorizontalAlignment.Center);
 
 				transit.AddFor(m => m.GoodsInTransitAccountNo)
-			.Caption(new JS("formatMessage('GIT Account No')"))
+			.Caption("GIT Account No")
 			.Alignment(HorizontalAlignment.Left);
 
 				transit.AddFor(m => m.GoodsInTransitAccountLedger)
-			.Caption(new JS("formatMessage('GIT Ledger')"))
+			.Caption("GIT Ledger")
 			.Alignment(HorizontalAlignment.Left);
 
 				transit.AddFor(m => m.GoodsInTransitPurchaseVoucherNo)
-			.Caption(new JS("formatMessage('Linked Purchase Voucher')"))
+			.Caption("Linked Purchase Voucher")
 			.Alignment(HorizontalAlignment.Center);
 			});
-
 
 
 		})

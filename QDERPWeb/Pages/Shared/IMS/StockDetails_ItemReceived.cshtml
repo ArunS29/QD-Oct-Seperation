@@ -17,7 +17,7 @@
 </style>
 @(Html.DevExtreme().DropDownButton()
     .ID("ItemReceivedDropdown")
-    .Text(new JS("formatMessage('Print')"))
+    .Text("Print")
     .Icon("print")
   .ElementAttr("style", "padding:10px")
     .DisplayExpr("Text")
@@ -46,16 +46,15 @@
         .ColumnAutoWidth(true)
         .Columns(columns =>
         {
-            columns.Add().DataField("ReceiptNo").Caption(new JS("formatMessage('Receipt No')"));
-            columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date);
-            columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
-            columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
-            columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
-            columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')"));
-            columns.Add().DataField("Discount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
-            columns.Add().DataField("VatAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
-            columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
-
+            columns.Add().DataField("ReceiptNo").Caption("Receipt No");
+            columns.Add().DataField("ReceiptDate").Caption("Receipt Date").DataType(GridColumnDataType.Date);
+            columns.Add().DataField("SupplierName").Caption("Supplier Name");
+            columns.Add().DataField("Qty").Caption("Qty").DataType(GridColumnDataType.Number);
+            columns.Add().DataField("UnitDesc").Caption("Unit Desc");
+            columns.Add().DataField("UnitPrice").Caption("Unit Price");
+            columns.Add().DataField("Discount").Caption("Discount").Format("##,##0.00");
+            columns.Add().DataField("VatAmount").Caption("VAT Amount").Format("##,##0.00");
+            columns.Add().DataField("Total").Caption("Total").Format("##,##0.00");
         })
         .Summary(summary =>
         {

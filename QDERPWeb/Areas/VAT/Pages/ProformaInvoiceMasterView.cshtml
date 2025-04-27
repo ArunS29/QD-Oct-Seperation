@@ -299,7 +299,7 @@
 
 			columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceStatus)
+				subColumns.AddFor(m => m.CalcLineAmount)
 			.Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 
@@ -363,14 +363,14 @@
 
 				vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceStatus)
+				subColumns.AddFor(m => m.GccstandardRatedRevenue)
 			.Caption(new JS("formatMessage('GCC Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 			});
 
 				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.ExportsTax)
+				subColumns.AddFor(m => m.GccstandardRatedTax)
 			.Caption(new JS("formatMessage('Exports Tax')"))
 			.Alignment(HorizontalAlignment.Right);
 			});
@@ -634,4 +634,15 @@
 			}
 		});
 	}
+
+
+		$("#btnAddNew1").on("click", function (e) {
+			 var button = $("#btnAddNew1").dxButton("instance");
+			 button.option("text", "Add New Proforma Invoice");
+			const  url = `/${tenantName}/VAT/ProformaInvoiceEditForm`;
+			window.location.href = url;
+			});
+
+
+	
 </script>

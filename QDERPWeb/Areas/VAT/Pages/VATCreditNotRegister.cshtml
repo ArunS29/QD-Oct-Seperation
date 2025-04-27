@@ -266,130 +266,145 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add()
-			.Caption(new JS("formatMessage('Credit Note Details')"))
-			.Columns(subColumns =>
+			columns.Add().Caption("Credit Note Details").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.InvoiceZatcaStatus)
-			.Caption(new JS("formatMessage('Invoice Zatca Status')"))
+			.Caption("Invoice Zatca Status")
 			.Alignment(HorizontalAlignment.Center)
+			
 			.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.CreditNoteNo)
-			.Caption(new JS("formatMessage('Credit Note No')"))
+			.Caption("Credit Note No")
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.CreditNoteDate)
-			.Caption(new JS("formatMessage('Credit Note Date')"))
+			.Caption("Credit Note Date")
 			.Alignment(HorizontalAlignment.Center)
 			.Format("dd-MMM-yyyy")
 			.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.AccountHead)
-			.Caption(new JS("formatMessage('Account Head')"))
+			.Caption("Account Head")
 			.Alignment(HorizontalAlignment.Center)
 			.Width(341).MinWidth(23);
 
 				subColumns.AddFor(m => m.InvoiceStatus)
-			.Caption(new JS("formatMessage('Credit Note Status')"))
+			.Caption("Credit Note Status")
 			.Alignment(HorizontalAlignment.Center)
 			.Width(87).MinWidth(23);
 			});
 
-			columns.Add().Caption(new JS("formatMessage('Credit Note & Tax Amount')")).Columns(subColumns =>
+			columns.Add().Caption("Credit Note & Tax Amount").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.CalcLineAmount)
-			.Caption(new JS("formatMessage('Amount Before Tax')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Amount Before Tax")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
-			.Caption(new JS("formatMessage('Total VAT Amount')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Total VAT Amount")
+			.Alignment(HorizontalAlignment.Right)
+		;
 
 				subColumns.AddFor(m => m.TotalCreditNoteAmount)
-			.Caption(new JS("formatMessage('Total Amount')"))
-			.Alignment(HorizontalAlignment.Right);
-			
+			.Caption("Total Amount")
+			.Alignment(HorizontalAlignment.Right)
+			;
 			});
 
-			columns.Add().Caption(new JS("formatMessage('Credit Not Classified')")).Columns(revenueColumns =>
+			columns.Add().Caption("Credit Not Classified").Columns(revenueColumns =>
 			{
-				revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
+				revenueColumns.Add().Caption("Domestic").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
-			.Caption(new JS("formatMessage('Domestic Revenue @5%')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic Revenue @5%")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
-			.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic Revenue @10%")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
-			.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic Revenue @15%")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
-			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic Zero Rated Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
-			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic Exempted Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			;
 			});
 
-				revenueColumns.Add().Caption(new JS("formatMessage('Imports')")).Columns(subColumns =>
+				revenueColumns.Add().Caption("Imports").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.GccstandardRatedRevenue)
-			.Caption(new JS("formatMessage('GCC Revenue')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("GCC Revenue")
+			.Alignment(HorizontalAlignment.Right)
+		;
 			});
 
-				revenueColumns.Add().Caption(new JS("formatMessage('Exports')")).Columns(subColumns =>
+				revenueColumns.Add().Caption("Exports").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ExportsRevenue)
-			.Caption(new JS("formatMessage('Exports Revenue')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Exports Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			;
 			});
 			});
 
-			columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
+			columns.Add().Caption("VAT Amount Classified").Columns(vatColumns =>
 			{
-				vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
+				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.DomesticStandartRatedTax)
-			.Caption(new JS("formatMessage('Domestic VAT @5%')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic VAT @5%")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.TotalTaxOf10Perc)
-			.Caption(new JS("formatMessage('Domestic VAT @10%')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic VAT @10%")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.TotalTaxOf15Perc)
-			.Caption(new JS("formatMessage('Domestic VAT @15%')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic VAT @15%")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
-			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic Zero Rated VAT")
+			.Alignment(HorizontalAlignment.Right)
+			;
 
 				subColumns.AddFor(m => m.DomesticExemptedTax)
-			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Domestic Exempted VAT")
+			.Alignment(HorizontalAlignment.Right)
+			;
 			});
 
-				vatColumns.Add().Caption(new JS("formatMessage('Imports VAT')")).Columns(subColumns =>
+				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.GccstandardRatedTax)
-			.Caption(new JS("formatMessage('GCC Tax')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("GCC Tax")
+			.Alignment(HorizontalAlignment.Right)
+			;
 			});
 
-				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
+				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ExportsTax)
-			.Caption(new JS("formatMessage('Exports Tax')"))
-			.Alignment(HorizontalAlignment.Right);
+			.Caption("Exports Tax")
+			.Alignment(HorizontalAlignment.Right)
+			;
 			});
 			});
 

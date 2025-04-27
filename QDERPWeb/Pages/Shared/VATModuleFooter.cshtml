@@ -278,7 +278,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint")
-            .Text(new JS("formatMessage('Print')"))// Using string directly
+            .Text("Print") // Using string directly
             .Icon("print")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             .DropDownOptions(options => options.Width(230))
@@ -368,7 +368,7 @@
             .ID("ddButtonPayment")
             .Icon("money")
             .Width(50)
-            .Text(new JS("formatMessage('Add New')"))
+            .Text("Add New")
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(500))
             .Items(items =>
@@ -414,7 +414,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnInvoiceDetails")
-            .Text(new JS("formatMessage('Invoice Details')"))
+            .Text("Invoice Details")
             .Icon("card")
             .Width(150)
             .OnClick("navigateToInvoiceEdit")
@@ -561,6 +561,23 @@
                 items.Add().Text("Tax Summary Report -Purchases").Icon("file");
                 items.Add().Text("Tax Summary Report-Purchases(in Arabic)").Icon("file");
                 items.Add().Text("VATPurchase & Expenses Report").Icon("file").OnClick("navigateToPurchase");
+            })
+
+            .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReport0")
+            .Icon("doc")
+            .Width(100)
+            .Text(new JS("formatMessage('Report')"))
+            .ElementAttr(new { @class = "report-button" }) // changed here
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Invoice Collection Report").Icon("file").OnClick("navigateToDebtorsCollection");
+                items.Add().Text("Sales Reporting with Line Details").Icon("file").OnClick("navigateToReportingInDetails");
             })
 
             .ShowArrowIcon(false)
@@ -756,6 +773,16 @@
     function addPurchase() {
         // Replace with the actual tenant name dynamically
         var url = `/${tenantName}/VAT/VATPurchaseEdit`;
+        window.location.href = url; // Navigate to the page
+    }
+    function navigateToReportingInDetails() {
+        // Replace with the actual tenant name dynamically
+        var url = `/${tenantName}/VAT/VATInvoiceReportingInDetails`;
+        window.location.href = url; // Navigate to the page
+    }
+    function navigateToDebtorsCollection() {
+        // Replace with the actual tenant name dynamically
+        var url = `/${tenantName}/VAT/DebtorsCollection`;
         window.location.href = url; // Navigate to the page
     }
         

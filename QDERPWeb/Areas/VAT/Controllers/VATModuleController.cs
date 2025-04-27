@@ -2436,7 +2436,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                     // Fetch records based on the date range
                     var vatInvoices = await dbContext.Qry201657proformaInvoiceRegisterMainViews
-                        .FromSqlRaw("SELECT * FROM qry201_657ProformaInvoiceRegisterMainView WHERE  BETWEEN @p0 AND @p1", from, to)
+                        .FromSqlRaw("SELECT * FROM qry201_657ProformaInvoiceRegisterMainView WHERE ProformaInvoiceDate BETWEEN @p0 AND @p1", from, to)
                         .ToListAsync();
 
                     return Json(vatInvoices);
