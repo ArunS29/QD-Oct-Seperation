@@ -995,6 +995,7 @@
 																				.Key("CurrencyExchangeId"))
 																				.LabelMode(EditorLabelMode.Outside)
 																				.ID("ddlGoodsGroup4")
+																				.Disabled(true)
 																				.ShowClearButton(true)
 																				.Value("Saudi Arabian Riyals")
 																				.AcceptCustomValue(true)
@@ -3408,8 +3409,9 @@
 										  // Replace or fetch dynamically
 
 											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-											window.location.href = url;
+											let title = "Goods and Services";
+												openModal(url, title);
+											//window.location.href = url;
 
 										},
 
@@ -3432,8 +3434,9 @@
 										  // Replace or fetch dynamically
 
 											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-											window.location.href = url;
+											let title = "Goods and Services";
+												openModal(url, title);
+											//window.location.href = url;
 
 										},
 
@@ -3562,8 +3565,10 @@
 										onClick: function () {
 
 											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+												 let title = "Unit of Measure";
+										openModal(url, title);
 
-											window.location.href = url;
+											//window.location.href = url;
 
 										},
 
@@ -3911,8 +3916,9 @@
 									// Replace or fetch dynamically
 
 									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
-
-									window.location.href = url;
+											let title = "Goods and Services";
+													openModal(url, title);
+									//window.location.href = url;
 
 								},
 
@@ -3935,8 +3941,9 @@
 									// Replace or fetch dynamically
 
 									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
-
-									window.location.href = url;
+											let title = "Goods and Services";
+													openModal(url, title);
+									//window.location.href = url;
 
 								},
 
@@ -4065,8 +4072,9 @@
 								onClick: function () {
 
 									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									window.location.href = url;
+									 let title = "Unit of Measure";
+									openModal(url, title);
+									//window.location.href = url;
 
 								},
 
