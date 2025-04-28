@@ -2979,6 +2979,122 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return BadRequest("Failed to retrieve tenant and database context.");
         }
 
+        [HttpPost]
+        public async Task<ActionResult> UpdateDebitNoteMasterDetails(Tbl20172VatdebitNoteMaster InvoiceMaster)
+        {
+            if (InvoiceMaster == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid invoice data received." });
+            }
+
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var existingInvoice = await dbContext.Tbl20172VatdebitNoteMasters
+                                                                 .FirstOrDefaultAsync(v => v.DebitNoteNo == InvoiceMaster.DebitNoteNo);
+
+                    if (existingInvoice != null)
+                    {
+                        // Update existing master record
+                        dbContext.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
+                    }
+                    else
+                    {
+                        // Insert new invoice master record
+                        await dbContext.Tbl20172VatdebitNoteMasters.AddAsync(InvoiceMaster);
+                    }
+
+
+                    await dbContext.SaveChangesAsync();
+                    // await transaction.CommitAsync();
+
+                    return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                // await transaction.RollbackAsync();
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+
+
+            return BadRequest("Failed to retrieve tenant and database context.");
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateDebitNoteChildDetails(List<InvoiceItem> InvoiceChildren)
+        {
+            if (InvoiceChildren == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
+            }
+
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    foreach (var child in InvoiceChildren)
+                    {
+                        // if (child == null) continue;
+
+                        if (child.InvoiceChildSlNo == null || child.InvoiceChildSlNo == 0)
+                        {
+                            // Create a new instance for each child
+                            var aTbl20173VatdebitNoteChild = new Tbl20173VatdebitNoteChild
+                            {
+                                DebitNoteNo = child.InvoiceNo,
+                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
+                                DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
+                                QuantityDebited = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                UnitsToDebited = 1,
+                                UnitRateMethod = 49,
+                                ItemCode = child.ItemCode ?? string.Empty, // Null safety
+                                UoM = "Each"
+                                // Do NOT set the ID or primary key if it is auto-incremented
+                            };
+
+                            await dbContext.Tbl20173VatdebitNoteChildren.AddAsync(aTbl20173VatdebitNoteChild);
+                        }
+                        else
+                        {
+                            // Find and update existing child (Update)
+                            var existingChild = await dbContext.Tbl20173VatdebitNoteChildren
+                                .FirstOrDefaultAsync(x => x.DebitNoteChildSlNo == child.InvoiceChildSlNo);
+
+                            if (existingChild != null)
+                            {
+                                existingChild.DebitNoteNo = child.InvoiceNo;
+                                existingChild.UnitRate = child.UnitRate;
+                                existingChild.DetailedDescription = child.DetailedDescription;
+                                existingChild.QuantityDebited = child.QuantityInvoiced;
+                                existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
+                                existingChild.UnitsToDebited = 1;
+                                existingChild.UnitRateMethod = 49;
+                                existingChild.ItemCode = child.ItemCode ?? string.Empty;
+                                existingChild.UoM = "Each";
+
+                                dbContext.Tbl20173VatdebitNoteChildren.Update(existingChild);
+                            }
+                        }
+
+
+                    }
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Invoice child records updated successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+
+            return BadRequest("Failed to retrieve tenant and database context.");
+        }
 
 
     }
