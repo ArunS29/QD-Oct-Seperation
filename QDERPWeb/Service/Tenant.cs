@@ -7,6 +7,6 @@
         public string ConnectionString { get; set; }
 
         public string LogoUrl { get; set; }
-        public string schema { get; set; }
+        public string schemaname { get; set; }
     }
 }

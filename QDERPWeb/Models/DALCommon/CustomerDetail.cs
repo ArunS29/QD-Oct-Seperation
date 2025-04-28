@@ -25,5 +25,5 @@ public partial class CustomerDetail
     public byte[] EncryptedConnectionStringOnline { get; set; }
 
     public byte[] EncryptedConnectionStringOffline { get; set; }
-	public string schema { get; set; }
+	public string schemaname { get; set; }
 }

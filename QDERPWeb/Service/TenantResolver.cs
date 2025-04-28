@@ -12,7 +12,7 @@ namespace QD.ERP.Web.Service
         private readonly IMemoryCache _cache;
         private const string CacheKey = "tenant_"; // Prefix for cache key
 
-        public TenantResolver(IMemoryCache cache, ERPCommonContext dbContext)
+public TenantResolver(IMemoryCache cache, ERPCommonContext dbContext)
         {
             _dbContext = dbContext;
             _cache = cache;
@@ -56,8 +56,8 @@ namespace QD.ERP.Web.Service
                     Id = Convert.ToInt32(company.CompanyId),
                     ConnectionString = company.ConnectionStringOnline,
                     LogoUrl = company.LogoUrl, // Set the logo URL dynamically
-                    schema =company.schema
-                };
+					schemaname = company.schemaname
+				};
             }
             else
             {
