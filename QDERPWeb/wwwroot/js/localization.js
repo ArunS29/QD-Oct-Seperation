@@ -17,7 +17,20 @@
         "Invoice Notes:": "Invoice Notes:",
         "Company Branch / Division": "Company Branch / Division",
         "VAT Desc": "VAT Desc",
-        "Units Till Bill":"Units Till Bill",
+        "Units Till Bill": "Units Till Bill",
+        "Client Name:": "Client Name:",
+        "Performa Invoice Date:": "Performa Invoice Date:",
+        "Project/Dept/PR/Contract No:": "Project/Dept/PR/Contract No:",
+        "Invoice Type Ar": "Invoice Type Ar",
+        "SES Reference:": "SES Reference:",
+        "Delivery Notes:": "Delivery Notes:",
+        "Invoice Submitted By:": "Invoice Submitted By:",
+        "Sales Person/Co-Ordinator:": "Sales Person/Co-Ordinator:",
+        "Company Branch/Division:":"Company Branch/Division:",
+
+        "Prepared By:": "Prepared By:",
+        "Checked By:": "Checked By:",
+        "Checked By:":"Checked By:",
      
 
 
