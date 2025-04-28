@@ -31,10 +31,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         public async Task<ActionResult> GetClientName(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
-                    .Where(p => p.AccountGroupId == "A011" || p.AccountGroupId == "A012")
-                    .Select(i => new
+			{
+				var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
+					.Where(p => p.AccountGroupId == "A011" || p.AccountGroupId == "A012") // Applying the filter
+					.Select(i => new
+				
                     {
                         i.MasterGroupId,
                         i.MasterGroup,
@@ -58,8 +59,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
-                    .Where(i => i.IsUseInSales == true || i.IsUseInSales == null) // Applying the filter
-                    .Select(i => new
+				   .Where(i => i.IsUseInSales == true ) // Applying the filter// Applying the filter
+					.Select(i => new
                     {
                         i.MasterGroupId,
                         i.MasterGroup,
