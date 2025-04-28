@@ -501,7 +501,7 @@
 						.Label("Currency Rate")
 						.LabelMode(EditorLabelMode.Outside)
 						.ID("txtCurrencyRate")
-						.Value("")
+						.Value("0.00")
 						//  .ReadOnly(true) // Make it read-only
 						.Width(160)
 						)
@@ -673,7 +673,7 @@
 		<li onclick="editCostAllocation()">
 			<i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation" class="no-border-input"></div>
 		</li>
-		<li onclick="editBillReceivable()">
+		<li onclick="editBillsReceivable()">
 			<i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable" class="no-border-input"></div>
 		</li>
 		<li onclick="editPropertyAllocation()">
@@ -801,7 +801,7 @@
 								.Label(new JS("formatMessage('Voucher Narration')"))
 								.LabelMode(EditorLabelMode.Outside)
 								.ID("VoucharNarration")
-								.Value(null)
+								.Value("")
 								)
 			</div>
 			<div class="form-group mt-3">
@@ -3170,7 +3170,7 @@
 				dataType: "json",
 				success: function (response) {
 					if (response.success) {
-						DevExpress.ui.notify("Voucher details saved successfully!", "success", 2000);
+						// DevExpress.ui.notify("Voucher details saved successfully!", "success", 2000);
 
 					} else {
 						//DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save!", "error", 2000);
@@ -3335,7 +3335,67 @@
 			}
 		});
 	}
-	
+	function closeParentModal() {
+		let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
+		popupInstance.hide();
+	}
+
+	function ClosePropertyModel() {
+		let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
+		popupInstance.hide();
+	}
+	function closeBill() {
+		let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
+		popupInstance.hide();
+	}
+	function CloseEmployeeModel() {
+		let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
+		popupInstance.hide();
+	}
+	function onContextMenuPreparing(e) {
+		if (e.row && e.row.rowType === "data") {
+			// Row is right-clicked
+			selectedRowData = e.row.data;
+			//  alert(selectedRowData.SubLedgerId);
+			e.items = [
+				{
+					text: "Delete Line Entry",
+					onItemClick: function () {
+
+						if (confirm(`You are about to delete the Bills Payable Records from the database. You cannot revert the changes. Are you sure you want to delete?`)) {
+
+							// Call server-side delete method
+							$.post(`/Finance/api/BillsPayableReceivable/DeleteRecord?id=${selectedRowData.SubLedgerId}`, function (response) {
+
+								if (response.success) {
+									alert("Bills Payable Records have been successfully removed from the database");
+
+									// Remove the selected row from the DataGrid
+									if (dataGridInstance2) {
+										// Remove the row directly from the grid data source
+										let dataSource = dataGridInstance2.option('dataSource');  // Get the current data source
+
+										// Filter out the deleted record based on SubLedgerId
+										let updatedDataSource = dataSource.filter(function (item) {
+											return item.SubLedgerId !== selectedRowData.SubLedgerId;  // Remove the row by matching SubLedgerId
+										});
+
+										// Update the grid's data source to the new filtered data (which no longer includes the deleted row)
+										dataGridInstance2.option('dataSource', updatedDataSource);
+									}
+
+								} else {
+									alert(`Error: ${response.message}`);
+								}
+							}).fail(function () {
+								alert("An error occurred while processing your request.");
+							});
+						}
+					}
+				}
+			];
+		}
+	}
 </script>
 
 
