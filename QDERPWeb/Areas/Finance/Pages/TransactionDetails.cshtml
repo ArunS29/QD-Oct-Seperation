@@ -180,7 +180,7 @@ function loadPivotGridData() {
                         { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
                         { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
                         { dataField: "CrAmount", area: "data", caption: "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
-                        { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+                        // { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
                         // { dataField: "VoucherDate", area: "column", caption: "Voucher Date", allowSorting: true, allowFiltering: true },
                         // { dataField: "VoucherRefNo", area: "column", caption: "Voucher Ref No", allowSorting: true, allowFiltering: true },
                         // { dataField: "VoucherNarration", area: "column", caption: "Voucher Narration", allowSorting: true, allowFiltering: true },
@@ -190,21 +190,21 @@ function loadPivotGridData() {
                         // { dataField: "VoucherVerifiedOn", area: "column", caption: "Voucher Verified On", allowSorting: true, allowFiltering: true },
                         // { dataField: "VoucherApprovedBy", area: "column", caption: "Voucher Approved By", allowSorting: true, allowFiltering: true },
                         // { dataField: "VoucherApprovedOn", area: "column", caption: "Voucher Approved On", allowSorting: true, allowFiltering: true },
-                        //{ dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No", allowSorting: true, allowFiltering: true },
-                        //{ dataField: "AccountHead", area: "column", caption: "Account Head", allowSorting: true, allowFiltering: true },
-                        //{ dataField: "VoucherAmountFormatted", area: "column", caption: "Voucher Amount Formatted", allowSorting: true, allowFiltering: true },
-                        //{ dataField: "EntryNarration", area: "column", caption: "Entry Narration", allowSorting: true, allowFiltering: true },
-                        //{ dataField: "AccountGroup", area: "column", caption: "Account Group", allowSorting: true, allowFiltering: true }
+                        // { dataField: "VoucherEntryNo", area: "column", caption: "Voucher Entry No", allowSorting: true, allowFiltering: true },
+                        // { dataField: "AccountHead", area: "column", caption: "Account Head", allowSorting: true, allowFiltering: true },
+                        // { dataField: "VoucherAmountFormatted", area: "column", caption: "Voucher Amount Formatted", allowSorting: true, allowFiltering: true },
+                        // { dataField: "EntryNarration", area: "column", caption: "Entry Narration", allowSorting: true, allowFiltering: true },
+                        // { dataField: "AccountGroup", area: "column", caption: "Account Group", allowSorting: true, allowFiltering: true }
                     ]
                 },
                 allowSortingBySummary: true,
                 allowSorting: true,
                 allowFiltering: true,
-                allowExpandAll: true,
+                allowExpandAll: true,   
                 showBorders: true,
                 showColumnHeaders: true,
                 showColumnTotals: true,
-                showRowTotals: false,
+                showRowTotals: true,
                 showColumnGrandTotals: true,
                 showRowGrandTotals: true,
                 wordWrapEnabled: true,
@@ -224,14 +224,33 @@ function loadPivotGridData() {
                 },
                 loadPanel: { enabled: true }
             }).dxPivotGrid("instance");
+                      // After PivotGrid is loaded, also bind the button click
+                            setupButtonClick();
         },
+
         error: function (xhr, status, error) {
             console.error("Error fetching data: ", error);
         }
     });
 }
 
+                      function setupButtonClick() {
+            var btnInstance = $("#btnShowRowTotals").dxButton("instance");
+            if (btnInstance) {
+                btnInstance.option("onClick", function() {
+                    var pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+                    if (pivotGrid) {
+                        // Get current state
+                        var currentShowRowTotals = pivotGrid.option("showRowTotals");
 
+                        // Toggle the value
+                        pivotGrid.option("showRowTotals", !currentShowRowTotals);
+                    }
+                });
+            } else {
+                console.warn("Button instance not found!");
+            }
+        }
 
     $(document).ready(function () {
         loadPivotGridData();
