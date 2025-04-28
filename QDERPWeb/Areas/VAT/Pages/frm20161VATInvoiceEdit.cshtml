@@ -1,4 +1,5 @@
-﻿@page
+﻿
+@page
 @using DevExtreme.AspNet.Mvc
 @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
@@ -6670,6 +6671,7 @@
 			dataGrid1.refresh();
 		}
 
+
 	function disableEditing() {
 		// Disable all input fields and buttons except for specific ones
 		$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
@@ -6696,7 +6698,6 @@
 			dataGrid.option("editing.allowDeleting", false);
 		}
 	}
-
 
 
 		$("#btnBack").on("click", function (e) {

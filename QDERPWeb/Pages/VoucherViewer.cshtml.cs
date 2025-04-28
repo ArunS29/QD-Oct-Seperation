@@ -1,9 +1,11 @@
-using DevExpress.XtraReports.UI;
+﻿using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
 using QD.ERP.Web.Areas.Finance.Reports.test;
 using QD.ERP.Web.Areas.Finance.Reports;
+using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+using QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using System;
@@ -31,11 +33,11 @@ namespace QD.ERP.Web.Pages
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved)
         {
-            if (string.IsNullOrEmpty(reportName) || string.IsNullOrEmpty(voucherNo))
+            if (string.IsNullOrEmpty(reportName))
             {
-                return BadRequest("Invalid report name or voucher number.");
+                return BadRequest("Invalid report name.");
             }
 
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
@@ -68,6 +70,36 @@ namespace QD.ERP.Web.Pages
                 {
                     Console.WriteLine("Error processing company logo: " + ex.Message);
                 }
+            }
+
+            // 👉 New CASE 2: If it is Invoice-related
+            if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" || reportName == "SimplifiedTaxInvoice")
+            {
+                if (string.IsNullOrEmpty(invoiceNo))
+                {
+                    return BadRequest("Invoice No is required for invoice reports.");
+                }
+
+                invoiceNo = invoiceNo; // In this case, treat invoiceNo like VoucherNo (you can separate if needed)
+
+				if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS")
+				{
+					// Instantiate the report dynamically
+					Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
+						invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+				}
+				//else if (reportName == "SimplifiedTaxInvoice")
+				//{
+				//    Report = new QD.ERP.Web.Areas.Finance.Reports.test.SimplifiedTaxInvoice(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+				//}
+
+				return Page();
+            }
+
+            // 👉 Existing CASE 1: Old voucher reports
+            if (string.IsNullOrEmpty(voucherNo))
+            {
+                return BadRequest("Voucher number is required.");
             }
 
             VoucherNo = voucherNo;
