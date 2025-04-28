@@ -3086,7 +3086,43 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
+        // GET api/VATModule/GetInvoiceApprovalStatus/{invoiceNo}
+        [HttpGet("{invoiceNo}")]
+        public async Task<ActionResult> GetInvoiceApprovalStatus(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Check if invoiceNo is valid
+                    if (string.IsNullOrEmpty(invoiceNo))
+                    {
+                        return BadRequest("Invoice number cannot be null or empty.");
+                    }
 
+
+                    // Query the invoice approval status from tbl20161VATInvoiceMaster
+                    var invoice = await dbContext.Tbl20161VatinvoiceMasters
+                        .Where(i => i.InvoiceNo == invoiceNo)
+                        .FirstOrDefaultAsync();
+
+                    if (invoice == null)
+                    {
+                        return Ok(new { isApproved = invoice.IsApproved ?? false });
+                    }
+
+                    // Return the approval status
+                    return Ok(new { isApproved = invoice.IsApproved });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error fetching approval status for invoice {invoiceNo}: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized("Unable to fetch tenant information.");
+        }
 
     }
 }
