@@ -6670,18 +6670,24 @@
 			dataGrid1.refresh();
 		}
 
+	function disableEditing() {
+		// Disable all input fields and buttons except for specific ones
+		$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
 
-		function disableEditing() {
-			// Disable all input fields and buttons except for specific ones
-			$('input, select, textarea').prop('disabled', true);
+		const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnSave', 'btnSaveAndClose', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1', 'btnPrint'];
 
-			$('.dx-button').each(function () {
-				const allowedButtons = ['btnMoveDown',  'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
-				if (!allowedButtons.includes($(this).attr('id'))) {
+		// Disable all dxButton and dxDropDownButton controls
+		$('.dx-button, .dx-dropdownbutton').each(function () {
+			const id = $(this).attr('id');
+			if (id && !allowedButtons.includes(id)) {
+				// Disable dxButton and dxDropDownButton widgets except for allowed ones
+				if ($(this).data('dxButton')) {
 					$(this).dxButton('option', 'disabled', true);
+				} else if ($(this).data('dxDropDownButton')) {
+					$(this).dxDropDownButton('option', 'disabled', true);
 				}
-			});
-
+			}
+		});
 
 		// Disable DataGrid Editing and Deleting
 		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -6689,8 +6695,8 @@
 			dataGrid.option("editing.allowUpdating", false);
 			dataGrid.option("editing.allowDeleting", false);
 		}
+	}
 
-		}
 
 
 		$("#btnBack").on("click", function (e) {

@@ -14,6 +14,7 @@ using System.Dynamic;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
 using System.Numerics;
 using System.Data;
+using System.IO;
 
 
 
@@ -2760,6 +2761,330 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSupplierName()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Qry201710vatsundryCreditorsAndCashAccs
+                        .Select(g => new
+                        {
+                            g.AccountId,           // Value member for GridLookUpEdit
+                            g.AccountHead,        // Display member
+                            g.RecordStatus
+                           
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetPurchaseVoucher(string accheadid)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = dbContext.Qry20179PurchaseBillsWithBalance02s
+     .Where(p => p.SupplierCode == accheadid)
+     .Select(p => new
+     {
+         p.PurchaseVoucherNo,
+         p.PurchaseVoucherDate,
+         p.SupplierCode,
+         p.PurchaseBillNo,
+         p.PurchaseBillDate,
+         p.TotalPurchaseAmount,
+         p.PayableAmount,
+         p.Paid,
+         p.Balance
+     })
+     .ToList();
+
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetItemsReturnedFromStore()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl60001storeMasters
+                        .Select(g => new
+                        {
+                            g.StoreId,
+                            g.StoreName   
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetItemsPurchaseAccount()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Qry201709vatexpensesLedgers
+                        .Select(g => new
+                        {
+                            g.AccountId,
+                            g.IncomeLedger
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDebitNoteDivision()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl901CompanyDetails
+                    .Select(g => new
+                    {
+                        g.CompanyId,
+                        g.CompanyName
+
+                    })
+                    .ToListAsync();
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+
+        //     public string GetNewDebitNoteNo(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear)
+        //     {
+        //try
+        //{
+        //	if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //	{
+        //		string query;
+        //		if (isResetByYear)
+        //		{
+        //			query = $"SELECT MAX(CAST(RIGHT(DebitNoteNo, 6) AS INT)) FROM tbl20172VATDebitNoteMaster WHERE YEAR(DebitNoteDate) = '{invoiceDate.Year}'";
+        //		}
+        //		else
+        //		{
+        //			query = "SELECT MAX(CAST(RIGHT(DebitNoteNo, 6) AS INT)) FROM tbl20172VATDebitNoteMaster";
+        //		}
+
+        //		int int1 = 0;
+        //		using (SqlCommand sqlCommand = new SqlCommand(query, dbContext)) // yourSqlConnection must be your open SqlConnection
+        //		{
+        //			object result = sqlCommand.ExecuteScalar();
+        //			if (result != DBNull.Value && result != null)
+        //			{
+        //				int1 = Convert.ToInt32(result);
+        //			}
+        //		}
+
+        //		int1 += 1;
+        //		string strNewQuotationNo = "000000" + int1.ToString();
+        //		strNewQuotationNo = strNewQuotationNo.Substring(strNewQuotationNo.Length - 6); // ensure only last 6 digits
+
+        //		if (yearInDigit <= 0)
+        //		{
+        //			yearInDigit = 0;
+        //		}
+
+        //		string strYear = invoiceDate.Year.ToString();
+        //		if (yearInDigit > 0)
+        //		{
+        //			strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+        //		}
+        //		else
+        //		{
+        //			strYear = ""; // no year part if YearInDigit is 0
+        //		}
+
+        //		strNewQuotationNo = $"DBN-{strYear}-{strNewQuotationNo}";
+
+        //		return strNewQuotationNo;
+        //	}
+        //}
+        //catch (Exception ex)
+        //{
+        //	string strYear = invoiceDate.Year.ToString();
+        //	if (yearInDigit > 0)
+        //	{
+        //		strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+        //	}
+        //	else
+        //	{
+        //		strYear = "";
+        //	}
+
+        //	string strNewQuotationNo = $"DBN-{strYear}-000001";
+        //	return strNewQuotationNo;
+        //}
+        //     }
+
+        [HttpGet]
+        public ActionResult<string> GetNewDebitNoteNoApi()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    // Step 1: Get company name from session
+                   // var companyNameShort = HttpContext.Session.GetString("TenantName");
+                    //if (string.IsNullOrEmpty(companyNameShort))
+                    //{
+                    //    return BadRequest("Company name not found in session.");
+                    //}
+
+					// Step 2: Get company details using dbContext
+					//var company = dbContext.Tbl901CompanyDetails
+					//                       .FirstOrDefault(c => c.CompanyNameShort == companyNameShort);
+
+					var company = dbContext.Tbl901CompanyDetails
+										   .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
+
+
+					if (company == null)
+                    {
+                        return NotFound("Company not found.");
+                    }
+
+                    string invoiceAbbrv = company.InvoiceAbbrv;
+                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+                  
+                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+
+                    DateTime invoiceDate = DateTime.Now;
+                   
+
+
+                    // Step 4: Generate New Debit Note No
+                    string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+
+                    return Ok(newDebitNoteNo);
+                }
+                else
+                {
+                    return BadRequest("Tenant or DB Context not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
+
+
+        private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+        {
+            try
+            {
+                int maxRunningNumber = 0;
+
+                if (isResetByYear)
+                {
+                    maxRunningNumber = dbContext.Tbl20172VatdebitNoteMasters
+                        .Where(d => d.DebitNoteDate.HasValue && d.DebitNoteDate.Value.Year == invoiceDate.Year)
+                        .Select(d => d.DebitNoteNo)
+                        .Where(no => no != null && no.Length >= 6)
+                        .Select(no => Convert.ToInt32(no.Substring(no.Length - 6)))
+                        .DefaultIfEmpty(0)
+                        .Max();
+                }
+                else
+                {
+                    maxRunningNumber = dbContext.Tbl20172VatdebitNoteMasters
+                        .Select(d => d.DebitNoteNo)
+                        .Where(no => no != null && no.Length >= 6)
+                        .Select(no => Convert.ToInt32(no.Substring(no.Length - 6)))
+                        .DefaultIfEmpty(0)
+                        .Max();
+                }
+
+                maxRunningNumber += 1;
+
+                string strNewDebitNoteNo = "000000" + maxRunningNumber.ToString();
+                strNewDebitNoteNo = strNewDebitNoteNo.Substring(strNewDebitNoteNo.Length - 6);
+
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
+
+                return $"DBN-{strYear}-{strNewDebitNoteNo}";
+
+            }
+            catch (Exception)
+            {
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
+
+                return $"DBN-{strYear}-000001";
+            }
+        }
+
 
 
 
