@@ -19,6 +19,7 @@ using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
 using qd.utilities;
+//using qd.utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
