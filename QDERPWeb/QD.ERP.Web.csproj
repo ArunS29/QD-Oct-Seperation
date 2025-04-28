@@ -75,6 +75,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\qd.utilities\qd.utilities\qd.utilities.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Update="Areas\Finance\Reports\cashPayments\cashPayments.cs">
 	    <SubType>XtraReport</SubType>
 	  </Compile>

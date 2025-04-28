@@ -18,6 +18,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Middlewares;
 using DevExpress.XtraCharts;
+using qd.utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,6 +87,27 @@ var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Override("System", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .WriteTo.Console();
+
+
+// Load local configuration from appsettings.json
+IConfiguration localConfig = builder.Configuration;
+
+// Get Azure App Configuration connection string from appsettings.json
+string azureConnectionString = localConfig["AzureAppConfig:ConnectionString"];
+
+// Initialize the ConfigurationHelper
+var configurationHelper = new ConfigurationHelper(localConfig, azureConnectionString);
+
+// Example: Access configuration values
+string mySetting = configurationHelper.GetConfigurationValue("MySetting");
+Console.WriteLine($"MySetting Value: {mySetting}");
+
+builder.Services.AddSingleton(new ClientFilesStorageHelper(
+	configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerUri"),
+	configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesConnectionString"),
+	configurationHelper.GetConfigurationValue("AzureBlobStorage:ClientFilesContainerName")
+));
+
 
 if (builder.Environment.IsDevelopment())
 {
