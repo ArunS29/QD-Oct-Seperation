@@ -55,7 +55,8 @@ namespace QD.ERP.Web.Service
                     Name = company.CompanyName.ToLower(),
                     Id = Convert.ToInt32(company.CompanyId),
                     ConnectionString = company.ConnectionStringOnline,
-                    LogoUrl = company.LogoUrl // Set the logo URL dynamically
+                    LogoUrl = company.LogoUrl, // Set the logo URL dynamically
+                    schema =company.schema
                 };
             }
             else
