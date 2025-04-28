@@ -260,27 +260,21 @@
 
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201807vatcreditNoteRegisterMainView>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201907vatdebitNoteRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Credit Note Details").Columns(subColumns =>
+			columns.Add().Caption("Debit Note Details").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceZatcaStatus)
-			.Caption("Invoice Zatca Status")
-			.Alignment(HorizontalAlignment.Center)
-			
-			.Width(135).MinWidth(23);
-
-				subColumns.AddFor(m => m.CreditNoteNo)
-			.Caption("Credit Note No")
+				subColumns.AddFor(m => m.DebitNoteNo)
+			.Caption("Debit Note No")
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
 
-				subColumns.AddFor(m => m.CreditNoteDate)
-			.Caption("Credit Note Date")
+				subColumns.AddFor(m => m.DebitNoteDate)
+			.Caption("Debit Note Date")
 			.Alignment(HorizontalAlignment.Center)
 			.Format("dd-MMM-yyyy")
 			.Width(135).MinWidth(23);
@@ -290,74 +284,77 @@
 			.Alignment(HorizontalAlignment.Center)
 			.Width(341).MinWidth(23);
 
-				subColumns.AddFor(m => m.InvoiceStatus)
-			.Caption("Credit Note Status")
+				subColumns.AddFor(m => m.DebitNoteStatus)
+			.Caption("Debit Note Status")
 			.Alignment(HorizontalAlignment.Center)
 			.Width(87).MinWidth(23);
 			});
 
-			columns.Add().Caption("Credit Note & Tax Amount").Columns(subColumns =>
+			columns.Add().Caption("Debit Note & Tax Amount").Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.CalcLineAmount)
 			.Caption("Amount Before Tax")
-			.Alignment(HorizontalAlignment.Right)
-			;
+			.Alignment(HorizontalAlignment.Right);
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption("Total VAT Amount")
-			.Alignment(HorizontalAlignment.Right)
-		;
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalCreditNoteAmount)
+				subColumns.AddFor(m => m.TotalDebitNoteAmount)
 			.Caption("Total Amount")
-			.Alignment(HorizontalAlignment.Right)
-			;
+			.Alignment(HorizontalAlignment.Right);
 			});
 
 			columns.Add().Caption("Credit Not Classified").Columns(revenueColumns =>
 			{
 				revenueColumns.Add().Caption("Domestic").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
-			.Caption("Domestic Revenue @5%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DomesticStandardPurchases)
+			.Caption("Domestic 5% Purchase")
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
-			.Caption("Domestic Revenue @10%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.TotalDspurchase10Perc)
+			.Caption("Domestic 10% Purchase")
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
-			.Caption("Domestic Revenue @15%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.TotalDspurchase15Perc)
+			.Caption("Domestic 15% Purchase")
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
-			.Caption("Domestic Zero Rated Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DomesticZeroTaxPurchases)
+			.Caption("Domestic Zero Rated Purchase")
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DomesticExemptedRevenue)
-			.Caption("Domestic Exempted Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DomesticExemptedTaxPurchases)
+			.Caption("Domestic Exempted Purchase")
+			.Alignment(HorizontalAlignment.Right);
 			});
 
 				revenueColumns.Add().Caption("Imports").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedRevenue)
-			.Caption("GCC Revenue")
-			.Alignment(HorizontalAlignment.Right)
-		;
-			});
+				subColumns.AddFor(m => m.ImportsVatpaidAtCustoms)
+			.Caption("Imports @5% Purchase")
+			.Alignment(HorizontalAlignment.Right);
 
-				revenueColumns.Add().Caption("Exports").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsRevenue)
-			.Caption("Exports Revenue")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
+			.Caption("Imports 10% Purchase")
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.TotalImportPurchase15Perc)
+			.Caption("Imports 15% Purchase")
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.ImportsVatthruRcm)
+			.Caption("RCM @5% Purchase")
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.TotalRcmpurchase10Perc)
+			.Caption("RCM 10% Purchase")
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.TotalRcmpurchase15Perc)
+			.Caption("RCM 15% Purchase")
+			.Alignment(HorizontalAlignment.Right);
 			});
 			});
 
@@ -365,56 +362,59 @@
 			{
 				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DomesticStandartRatedTax)
-			.Caption("Domestic VAT @5%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.DomesticStandardPurTax)
+			.Caption("Domestic 5% VAT")
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalTaxOf10Perc)
-			.Caption("Domestic VAT @10%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.TotalDspurchaseTax10Perc)
+			.Caption("Domestic 10% VAT")
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.TotalTaxOf15Perc)
-			.Caption("Domestic VAT @15%")
-			.Alignment(HorizontalAlignment.Right)
-			;
+				subColumns.AddFor(m => m.TotalDspurchaseTax15Perc)
+			.Caption("Domestic 15% VAT")
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DomesticZeroRatedTax)
+				subColumns.AddFor(m => m.DomesticZeroTaxPurTax)
 			.Caption("Domestic Zero Rated VAT")
-			.Alignment(HorizontalAlignment.Right)
-			;
+			.Alignment(HorizontalAlignment.Right);
 
-				subColumns.AddFor(m => m.DomesticExemptedTax)
+				subColumns.AddFor(m => m.DomesticExemptedTaxPurTax)
 			.Caption("Domestic Exempted VAT")
-			.Alignment(HorizontalAlignment.Right)
-			;
+			.Alignment(HorizontalAlignment.Right);
 			});
 
 				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedTax)
-			.Caption("GCC Tax")
-			.Alignment(HorizontalAlignment.Right)
-			;
-			});
+				subColumns.AddFor(m => m.ImportsVatpaidAtCustomsTax)
+			.Caption("Imports @5% VAT")
+			.Alignment(HorizontalAlignment.Right);
 
-				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsTax)
-			.Caption("Exports Tax")
-			.Alignment(HorizontalAlignment.Right)
-			;
-			});
-			});
+				subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
+			.Caption("Imports @10% VAT")
+			.Alignment(HorizontalAlignment.Right);
 
+				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
+			.Caption("Imports @15% VAT")
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.ImportsVatthruRcmtax)
+			.Caption("RCM @5% VAT")
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
+			.Caption("RCM @10% VAT")
+			.Alignment(HorizontalAlignment.Right);
+
+				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
+			.Caption("RCM @15% VAT")
+			.Alignment(HorizontalAlignment.Right);
+			});
+			});
 		})
-
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
 		)
-
 		.OnCellClick("function(e) { handleCellClick(e); }")
 		.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
@@ -427,7 +427,6 @@
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.Width("100%")
-
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
@@ -489,6 +488,7 @@
 		})
 		)
 </div>
+
 
 <ul id="submenu" class="custom-submenu">
 	<li id="addCreditNote">Add New e-Invoice</li>
@@ -683,7 +683,7 @@
 		toDateBox.option("value", toDate);
 
 		$.ajax({
-				url: '/api/VATModule/GetVatCreditNoteDetails',
+				url: '/api/VATModule/GetVatDebitNoteDetails',
 			type: 'GET',
 			data: {
 				frmDate: frmDate,
@@ -750,7 +750,7 @@
     });
 	$(document).on('click', '#addCreditNote', function (e) {
     e.stopPropagation();
-			const url = `/${tenantName}/VAT/CreditNoteEditForm`;
+			const url = `/${tenantName}/VAT/DebitNoteEditForm`;
     window.location.href = url;
 });
 });

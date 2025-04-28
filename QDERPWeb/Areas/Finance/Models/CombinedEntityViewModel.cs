@@ -366,7 +366,61 @@ namespace QD.ERP.Web.Areas.Finance.Models
        
 
     }
-    public class ExpenseClaimViewModel
+    public class InvoiceItem1
+    {
+		public int PurchaseChildSlNo { get; set; }
+
+		public string PurchaseVoucherNo { get; set; }
+
+		public string UoM { get; set; }
+
+		public decimal? QuantityInvoiced { get; set; }
+
+		public decimal? UnitsToBill { get; set; }
+
+		public byte? UnitRateMethod { get; set; }
+
+		public decimal? UnitRate { get; set; }
+
+		public decimal? LineAmount { get; set; }
+
+		public string DetailedDescription { get; set; }
+
+		public string ItemRemarks { get; set; }
+
+		public string DatesBilledFor { get; set; }
+
+		public string DeliveryNoteNo { get; set; }
+
+		public DateTime? DeliveryDate { get; set; }
+
+		public byte? TaxSlabCode { get; set; }
+
+		public decimal? TaxAmount { get; set; }
+
+		public string ItemCode { get; set; }
+
+		public bool? IsExpenses { get; set; }
+
+		public string ExpensesLedgerNo { get; set; }
+
+		public decimal? Discount { get; set; }
+
+		public string ItemPurchaseType { get; set; }
+
+		public bool? IsGoodsInTransitAccount { get; set; }
+
+		public string GoodsInTransitAccountNo { get; set; }
+
+		public string GoodsInTransitPurchaseVoucherNo { get; set; }
+
+		public decimal? LineOrderNo { get; set; }
+
+		public string EmployeeNo { get; set; }
+
+		public string PropertyNo { get; set; }
+	}
+		public class ExpenseClaimViewModel
     {
         public string ClaimRefNo { get; set; }
         public DateTime? ClaimDate { get; set; }

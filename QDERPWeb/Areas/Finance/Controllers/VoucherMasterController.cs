@@ -2492,9 +2492,152 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         }
 
+		[HttpPost]
+		public async Task<ActionResult> UpdatePurchaseChildDetails(List<InvoiceItem1> InvoiceChildren)
+		{
+			if (InvoiceChildren == null || InvoiceChildren.Count == 0)
+			{
+				return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
+			}
+
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					foreach (var child in InvoiceChildren)
+					{
+						if (child == null) continue;
+
+						if (child.PurchaseChildSlNo == 0)
+						{
+							// Create new child
+							var newChild = new Tbl20167VatpurchaseChild
+							{
+								PurchaseVoucherNo = child.PurchaseVoucherNo,
+								UoM = child.UoM ?? "Each",
+								QuantityInvoiced = child.QuantityInvoiced ?? 0m,
+								UnitsToBill = child.UnitsToBill ?? 1m,
+								UnitRateMethod = child.UnitRateMethod ?? (byte)49,
+								UnitRate = child.UnitRate ?? 0m,
+								LineAmount = child.LineAmount ?? 0m,
+								DetailedDescription = child.DetailedDescription ?? string.Empty,
+								ItemRemarks = child.ItemRemarks ?? string.Empty,
+								DatesBilledFor = child.DatesBilledFor ?? string.Empty,
+								DeliveryNoteNo = child.DeliveryNoteNo ?? string.Empty,
+								DeliveryDate = child.DeliveryDate,
+								TaxSlabCode = child.TaxSlabCode ?? (byte)8,
+								TaxAmount = child.TaxAmount ?? 0m,
+								ItemCode = child.ItemCode ?? string.Empty,
+								IsExpenses = child.IsExpenses ?? false,
+								ExpensesLedgerNo = child.ExpensesLedgerNo ?? string.Empty,
+								Discount = child.Discount ?? 0m,
+								ItemPurchaseType = child.ItemPurchaseType ?? string.Empty,
+								IsGoodsInTransitAccount = child.IsGoodsInTransitAccount ?? false,
+								GoodsInTransitAccountNo = child.GoodsInTransitAccountNo ?? string.Empty,
+								GoodsInTransitPurchaseVoucherNo = child.GoodsInTransitPurchaseVoucherNo ?? string.Empty,
+								LineOrderNo = child.LineOrderNo ?? 0m,
+								EmployeeNo = child.EmployeeNo ?? string.Empty,
+								PropertyNo = child.PropertyNo ?? string.Empty
+							};
+
+							await dbContext.Tbl20167VatpurchaseChildren.AddAsync(newChild);
+						}
+						else
+						{
+							// Update existing child
+							var existingChild = await dbContext.Tbl20167VatpurchaseChildren
+								.FirstOrDefaultAsync(x => x.PurchaseChildSlNo == child.PurchaseChildSlNo);
+
+							if (existingChild != null)
+							{
+								existingChild.PurchaseVoucherNo = child.PurchaseVoucherNo;
+								existingChild.UoM = child.UoM ?? "Each";
+								existingChild.QuantityInvoiced = child.QuantityInvoiced ?? 0m;
+								existingChild.UnitsToBill = child.UnitsToBill ?? 1m;
+								existingChild.UnitRateMethod = child.UnitRateMethod ?? (byte)49;
+								existingChild.UnitRate = child.UnitRate ?? 0m;
+								existingChild.LineAmount = child.LineAmount ?? 0m;
+								existingChild.DetailedDescription = child.DetailedDescription ?? string.Empty;
+								existingChild.ItemRemarks = child.ItemRemarks ?? string.Empty;
+								existingChild.DatesBilledFor = child.DatesBilledFor ?? string.Empty;
+								existingChild.DeliveryNoteNo = child.DeliveryNoteNo ?? string.Empty;
+								existingChild.DeliveryDate = child.DeliveryDate;
+								existingChild.TaxSlabCode = child.TaxSlabCode ?? (byte)8;
+								existingChild.TaxAmount = child.TaxAmount ?? 0m;
+								existingChild.ItemCode = child.ItemCode ?? string.Empty;
+								existingChild.IsExpenses = child.IsExpenses ?? false;
+								existingChild.ExpensesLedgerNo = child.ExpensesLedgerNo ?? string.Empty;
+								existingChild.Discount = child.Discount ?? 0m;
+								existingChild.ItemPurchaseType = child.ItemPurchaseType ?? string.Empty;
+								existingChild.IsGoodsInTransitAccount = child.IsGoodsInTransitAccount ?? false;
+								existingChild.GoodsInTransitAccountNo = child.GoodsInTransitAccountNo ?? string.Empty;
+								existingChild.GoodsInTransitPurchaseVoucherNo = child.GoodsInTransitPurchaseVoucherNo ?? string.Empty;
+								existingChild.LineOrderNo = child.LineOrderNo ?? 0m;
+								existingChild.EmployeeNo = child.EmployeeNo ?? string.Empty;
+								existingChild.PropertyNo = child.PropertyNo ?? string.Empty;
+
+								dbContext.Tbl20167VatpurchaseChildren.Update(existingChild);
+							}
+						}
+					}
+
+					await dbContext.SaveChangesAsync();
+
+					return Ok(new { success = true, message = "Invoice child records updated successfully!" });
+				}
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+			}
+
+			return BadRequest("Failed to retrieve tenant and database context.");
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> UpdatePurchaseMasterDetails(Tbl20166VatpurchaseMaster InvoiceMaster)
+		{
+			if (InvoiceMaster == null)
+			{
+				return BadRequest(new { success = false, message = "Invalid invoice data received." });
+			}
+
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var existingInvoice = await dbContext.Tbl20166VatpurchaseMasters
+																 .FirstOrDefaultAsync(v => v.PurchaseVoucherNo == InvoiceMaster.PurchaseVoucherNo);
+
+					if (existingInvoice != null)
+					{
+						// Update existing master record
+						dbContext.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
+					}
+					else
+					{
+						// Insert new invoice master record
+						await dbContext.Tbl20166VatpurchaseMasters.AddAsync(InvoiceMaster);
+					}
 
 
-        [HttpPost]
+					await dbContext.SaveChangesAsync();
+					// await transaction.CommitAsync();
+
+					return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
+				}
+			}
+			catch (Exception ex)
+			{
+				// await transaction.RollbackAsync();
+				return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+			}
+
+
+			return BadRequest("Failed to retrieve tenant and database context.");
+		}
+
+		[HttpPost]
         public async Task<ActionResult> UpdateInvoiceMasterDetails(Tbl20161VatinvoiceMaster InvoiceMaster)
         {
             if (InvoiceMaster == null)
@@ -2536,7 +2679,48 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return BadRequest("Failed to retrieve tenant and database context.");
         }
+        //[HttpPost]
+        //public async Task<ActionResult> UpdatePurchaseMasterDetails(Tbl20161VatinvoiceMaster InvoiceMaster)
+        //{
+        //    if (InvoiceMaster == null)
+        //    {
+        //        return BadRequest(new { success = false, message = "Invalid invoice data received." });
+        //    }
 
+        //    try
+        //    {
+        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
+        //                                                         .FirstOrDefaultAsync(v => v.InvoiceNo == InvoiceMaster.InvoiceNo);
+
+        //            if (existingInvoice != null)
+        //            {
+        //                // Update existing master record
+        //                dbContext.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
+        //            }
+        //            else
+        //            {
+        //                // Insert new invoice master record
+        //                await dbContext.Tbl20161VatinvoiceMasters.AddAsync(InvoiceMaster);
+        //            }
+
+
+        //            await dbContext.SaveChangesAsync();
+        //            // await transaction.CommitAsync();
+
+        //            return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // await transaction.RollbackAsync();
+        //        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+        //    }
+
+
+        //    return BadRequest("Failed to retrieve tenant and database context.");
+        //}
         //[HttpPost]
         //public async Task<ActionResult> UpdateInvoiceChildDetails(List<InvoiceItem> InvoiceChildren)
         //{
@@ -2795,6 +2979,122 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return BadRequest("Failed to retrieve tenant and database context.");
         }
 
+        [HttpPost]
+        public async Task<ActionResult> UpdateDebitNoteMasterDetails(Tbl20172VatdebitNoteMaster InvoiceMaster)
+        {
+            if (InvoiceMaster == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid invoice data received." });
+            }
+
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var existingInvoice = await dbContext.Tbl20172VatdebitNoteMasters
+                                                                 .FirstOrDefaultAsync(v => v.DebitNoteNo == InvoiceMaster.DebitNoteNo);
+
+                    if (existingInvoice != null)
+                    {
+                        // Update existing master record
+                        dbContext.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
+                    }
+                    else
+                    {
+                        // Insert new invoice master record
+                        await dbContext.Tbl20172VatdebitNoteMasters.AddAsync(InvoiceMaster);
+                    }
+
+
+                    await dbContext.SaveChangesAsync();
+                    // await transaction.CommitAsync();
+
+                    return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                // await transaction.RollbackAsync();
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+
+
+            return BadRequest("Failed to retrieve tenant and database context.");
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateDebitNoteChildDetails(List<InvoiceItem> InvoiceChildren)
+        {
+            if (InvoiceChildren == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid or empty invoice data received." });
+            }
+
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    foreach (var child in InvoiceChildren)
+                    {
+                        // if (child == null) continue;
+
+                        if (child.InvoiceChildSlNo == null || child.InvoiceChildSlNo == 0)
+                        {
+                            // Create a new instance for each child
+                            var aTbl20173VatdebitNoteChild = new Tbl20173VatdebitNoteChild
+                            {
+                                DebitNoteNo = child.InvoiceNo,
+                                UnitRate = child.UnitPrice?.GetDecimal() ?? 0m, // Ensure null safety
+                                DetailedDescription = child.Description?.GetString() ?? string.Empty, // Null safety
+                                QuantityDebited = child.Qty?.GetDecimal() ?? 0m, // Null safety
+                                TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8,
+                                UnitsToDebited = 1,
+                                UnitRateMethod = 49,
+                                ItemCode = child.ItemCode ?? string.Empty, // Null safety
+                                UoM = "Each"
+                                // Do NOT set the ID or primary key if it is auto-incremented
+                            };
+
+                            await dbContext.Tbl20173VatdebitNoteChildren.AddAsync(aTbl20173VatdebitNoteChild);
+                        }
+                        else
+                        {
+                            // Find and update existing child (Update)
+                            var existingChild = await dbContext.Tbl20173VatdebitNoteChildren
+                                .FirstOrDefaultAsync(x => x.DebitNoteChildSlNo == child.InvoiceChildSlNo);
+
+                            if (existingChild != null)
+                            {
+                                existingChild.DebitNoteNo = child.InvoiceNo;
+                                existingChild.UnitRate = child.UnitRate;
+                                existingChild.DetailedDescription = child.DetailedDescription;
+                                existingChild.QuantityDebited = child.QuantityInvoiced;
+                                existingChild.TaxSlabCode = child.TaxSlabCode?.GetByte() ?? (byte)8;
+                                existingChild.UnitsToDebited = 1;
+                                existingChild.UnitRateMethod = 49;
+                                existingChild.ItemCode = child.ItemCode ?? string.Empty;
+                                existingChild.UoM = "Each";
+
+                                dbContext.Tbl20173VatdebitNoteChildren.Update(existingChild);
+                            }
+                        }
+
+
+                    }
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Invoice child records updated successfully!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+            }
+
+            return BadRequest("Failed to retrieve tenant and database context.");
+        }
 
 
     }
