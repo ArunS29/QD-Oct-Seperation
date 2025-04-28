@@ -186,8 +186,8 @@
       new { text = "Trial Balance", icon = "chart-line" }, 
       new { text = "Trial Balance (Export Format)", icon = "chart-line" }, 
       new { text = "Trial Balance (Dr/ Cr Format)", icon = "chart-line" },
-      new { text = "Trial Balance (Customizable Format)", icon = "chart-line" }, 
-       } 
+@*       new { text = "Trial Balance (Customizable Format)", icon = "chart-line" }, 
+ *@       } 
        }, 
          new { 
       text = "Income Statements", 
@@ -195,8 +195,8 @@
     items = new[] { 
        new { text = "Income Statements", icon = "chart-line" }, 
      new { text = "Income Statements(By Month)", icon = "chart-line" }, 
-       new { text = "Income Statements(Customizable Format)", icon = "chart-line" }, 
-      } 
+@*        new { text = "Income Statements(Customizable Format)", icon = "chart-line" }, 
+ *@      } 
     }, 
      new {
        text = "Balance Sheet", 
@@ -243,7 +243,7 @@
             )
      </div>
 
-
+@* 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnFinancialReportsArabic")
@@ -253,7 +253,7 @@
             .Text("Financial Reports (Arabic)")
             .Width(300)
             )
-    </div>
+    </div> *@
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -708,19 +708,16 @@
 
         // Menu item click handler
     function  handleReportsClick(e) {
-        alert ('click')
         
         const selectedText = e.itemData.text;
 
         // Get UI control instances
         var accountGroup = selectBox;
-        alert(accountGroup)
         var frmDateBox = $("#frmdateBox").dxDateBox("instance");
         var toDateBox = $("#todateBox").dxDateBox("instance");
 
        // var accountGroup = accountGroup.option("value");
        var accountGroup = selectBox;
-      //  alert(value)
         var frmDate = frmDateBox.option("value");
         var toDate = toDateBox.option("value");
 

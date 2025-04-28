@@ -260,6 +260,9 @@ namespace QD.ERP.Web.Pages
                     case "ReceivableReport(EffectiveDate)":
                         Report = new ReceivableReport_EffectiveDate_(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
+                    case "BillsRecivableReport1":
+                        Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
 
 
                     default:

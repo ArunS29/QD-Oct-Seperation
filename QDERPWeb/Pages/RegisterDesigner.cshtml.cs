@@ -76,7 +76,8 @@ namespace QD.ERP.Web.Pages
                         break;
                     case "OrderByVchNoRegister":
                         Report = new OrderByVchNoRegister(voucherType, frmDate.Value, toDate.Value,
-                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                            tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, 
+                            _tenantDbContextHelper);
                         break;
                     case "OrderbyVchNoWIthVchNarration":
                         Report = new OrderbyVchNoWIthVchNarration(voucherType, frmDate.Value, toDate.Value,

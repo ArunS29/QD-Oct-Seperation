@@ -93,8 +93,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports
 
             var customQuery = new CustomSqlQuery
             {
-                Name = "qry201SubLedgerPayablesMaster",
-                Sql = "SELECT * FROM qry201SubLedgerPayablesMaster" // Replace with your actual query or view
+                Name = "qry201SubLedgerReceivablesMaster",
+                Sql = "SELECT * FROM qry201SubLedgerReceivablesMaster"
             };
 
             sqlDataSource1.Queries.Add(customQuery);
