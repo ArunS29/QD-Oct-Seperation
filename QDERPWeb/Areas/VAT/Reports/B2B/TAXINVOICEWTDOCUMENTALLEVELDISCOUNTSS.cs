@@ -93,7 +93,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             {
                 this.DataSource = dt;
                 this.DataMember = "";
-                SetWatermark(); 
+                SetWatermark();
             }
         }
 
