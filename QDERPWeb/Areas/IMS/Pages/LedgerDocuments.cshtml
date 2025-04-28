@@ -65,8 +65,11 @@
     }
 
 </style>
-<div id="LedgerDocuments" class="no-border-title cards-container-title"></div>
-
+<div class="title">
+    <div class="header-container">
+        <div id="LedgerDocuments" class="no-border-title"></div>
+    </div>
+</div>
 <div class="my-3" style="max-width:2000px;">
     <div class="row g-3">
         <!-- Card -->
@@ -75,8 +78,8 @@
 
                 <!-- First Row -->
                 <div id="EnteraNewDocument&AddtotheExistingList" class="no-border-input cards-container-title"></div>
-                <div class="row mb-3">
-                    <div class="col-12 col-md-4">
+                <div style="display:flex; align-items:end;">
+                    <div>
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Document No')"))
                             .LabelMode(EditorLabelMode.Outside)
@@ -87,7 +90,7 @@
 
                             )
                     </div>
-                    <div class="col-12 col-md-4">
+                    <div>
                         <label>Type of the Document Attached:</label>
                         @(Html.DevExtreme().DropDownBox()
                             .DataSource(d => d.WebApi()
@@ -120,7 +123,7 @@
                             .ContentTemplate(new TemplateName("DocumentAttachedContentTemplate"))
                             )
                     </div>
-                    <div class="col-12 col-md-1">
+                    <div>
                         @(Html.DevExtreme().Button()
                             .ID("btnAddAHead")
                             .Icon("plus")
@@ -128,12 +131,12 @@
                             @*       .OnClick("redirecttoledgersubgrou") *@
                             )
                     </div>
-                   @*  <div class="col-6 col-md-1 mt-4">
-                        @(Html.DevExtreme().Button()
-                            .ID("btnEditAHead")
-                            .Icon("edit")
-                            .Width("100%")
-                            )
+                    @*  <div class="col-6 col-md-1 mt-4">
+                    @(Html.DevExtreme().Button()
+                    .ID("btnEditAHead")
+                    .Icon("edit")
+                    .Width("100%")
+                    )
                     </div> *@
                 </div>
 
@@ -146,7 +149,7 @@
                             .ID("ReferenceNo")
                             .Value(null)
                             .Width("100%")
-                           // .Disabled(true)
+                            // .Disabled(true)
                             )
                     </div>
                     <div class="col-12 col-md-6">
@@ -170,8 +173,8 @@
                 <!-- Third Row -->
                 <div class="row mb-3">
                     @*  @{
-                        var expiryId = "accountMasterDropDownBoxExpiry";
-                        var notificationId = "accountMasterDropDownBoxNotification";
+                    var expiryId = "accountMasterDropDownBoxExpiry";
+                    var notificationId = "accountMasterDropDownBoxNotification";
                     }  *@
 
                     <div class="col-12 col-md-4">
@@ -185,11 +188,11 @@
                             .Value(DateTime.Now)
                             .Width("100%")
                             .OnValueChanged("onExpiryDateChanged")
-                           @*  .OnValueChanged(@<text>
-                            function(e) {
-                            var notificationBox = $("#@notificationId").dxDateBox("instance");
-                            notificationBox.option("value", e.value);
-                            }
+                            @*  .OnValueChanged(@<text>
+                        function(e) {
+                        var notificationBox = $("#@notificationId").dxDateBox("instance");
+                        notificationBox.option("value", e.value);
+                        }
                         </text>)  *@
                             .ValidationRules(rules =>
                             {
@@ -259,8 +262,8 @@
                             columns.AddFor(m => m.DocumentNo).Caption(new JS("formatMessage('DocumentNo')")).AllowEditing(false)
                         .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
                         .HeaderCellTemplate(@<div style="font-weight: bold;">DocumentNo</div>);
-                           
-                        columns.AddFor(m => m.DocumentType)
+
+                            columns.AddFor(m => m.DocumentType)
                             .Caption("Document Type")
                             .Lookup(lookup => lookup
                             .DataSource(d => d.WebApi()
@@ -273,7 +276,7 @@
                             .DisplayExpr("DocumentType")
                             );
 
-                           // columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
+                            // columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
                             columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref No')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Ref No</div>);
                             columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formatMessage('Document Remarks')")).HeaderCellTemplate(@<div style="font-weight: bold;">Document Remarks</div>);
 
@@ -289,7 +292,7 @@
                         .Caption(new JS("formatMessage('Notify On')"))
                         .Format("dd-MMM-yyyy").HeaderCellTemplate(@<div style="font-weight: bold;">Notify On</div>);  // Format date as DD-MM-YYYY
                         })
-                     .AllowColumnReordering(true)
+                    .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))
                     .HeaderFilter(filter => filter.Visible(true))
@@ -310,7 +313,7 @@
                 .ID("btnUpdate")
                 .Text(new JS("formatMessage('Update')"))
                 .Icon("save")
-              //  .OnClick("function() { UpdateVoucherEntry(); }")
+                //  .OnClick("function() { UpdateVoucherEntry(); }")
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnAllAttachments")
@@ -367,27 +370,27 @@
 <!-- DataGrid -->
 <script>
     $(function () {
-    // Trigger the AJAX request to get the new document number
-    $.ajax({
-        url: "/api/LedgerDocuments/GetNewDocumentNo", // Your API endpoint
-        type: 'GET',
-        success: function (data) {
-            // Set the value in the DocumentNo TextBox once the new number is retrieved
-            $("#DocumentNo").dxTextBox("instance").option("value", data);
-            
-            // Proceed with other actions after setting the document number
-            // For example, you can call other functions here that need to run after this
-            console.log("Document No has been set:", data);
+        // Trigger the AJAX request to get the new document number
+        $.ajax({
+            url: "/api/LedgerDocuments/GetNewDocumentNo", // Your API endpoint
+            type: 'GET',
+            success: function (data) {
+                // Set the value in the DocumentNo TextBox once the new number is retrieved
+                $("#DocumentNo").dxTextBox("instance").option("value", data);
 
-            // If there are any other actions that depend on this document number, place them here.
-            // e.g., Enable/Disable form elements, further API calls, etc.
-        },
-        error: function (xhr, status, error) {
-            console.error("Error loading Document No:", error);
-            // Optionally, handle error (e.g., show an alert)
-        }
+                // Proceed with other actions after setting the document number
+                // For example, you can call other functions here that need to run after this
+                console.log("Document No has been set:", data);
+
+                // If there are any other actions that depend on this document number, place them here.
+                // e.g., Enable/Disable form elements, further API calls, etc.
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading Document No:", error);
+                // Optionally, handle error (e.g., show an alert)
+            }
+        });
     });
-});
     function onExpiryDateChanged(e) {
         const selectedDate = e.value;
         const notificationDateBox = DevExpress.ui.dxDateBox.getInstance(document.getElementById("notificationId"));
@@ -411,37 +414,37 @@
         // var notificationIdValidation = notificationIdValidator.validate();
 
         // if (accountMasterDropDownBoxValidation.isValid && expiryIdValidation.isValid && notificationIdValidation.isValid) {
-            // Prepare the ViewModel (VM) for the API call
-            var VM = {
-                "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
-                "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value"),
-                "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value"),
-                "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value"),
-                "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value"),
-                "DocumentExpDate": $("#expiryId").dxDateBox("instance").option("value"),
-                "DocumentNotificationDate": $("#notificationId").dxDateBox("instance").option("value")
-            };
+        // Prepare the ViewModel (VM) for the API call
+        var VM = {
+            "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
+            "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value"),
+            "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value"),
+            "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value"),
+            "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value"),
+            "DocumentExpDate": $("#expiryId").dxDateBox("instance").option("value"),
+            "DocumentNotificationDate": $("#notificationId").dxDateBox("instance").option("value")
+        };
 
-            // Get selected row data from the data grid
-            var selectedRowData = $("#accountpaymentamount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+        // Get selected row data from the data grid
+        var selectedRowData = $("#accountpaymentamount-datagrid").dxDataGrid("instance").getSelectedRowsData();
 
-            if (!selectedRowData || selectedRowData.length === 0) {
-                DevExpress.ui.notify("Please select a row in the grid!", "error", 2000);
-                return;
-            }
+        if (!selectedRowData || selectedRowData.length === 0) {
+            DevExpress.ui.notify("Please select a row in the grid!", "error", 2000);
+            return;
+        }
 
-            // Extract DocumentType from the selected row
-            var documentType = selectedRowData[0].DocumentType;
+        // Extract DocumentType from the selected row
+        var documentType = selectedRowData[0].DocumentType;
 
-            // Make the AJAX POST request
-            $.ajax({
-                type: "POST",
-                url: `/api/LedgerDocuments/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
-                contentType: "application/json",
-                data: JSON.stringify(VM),
-                dataType: "json",
-                success: function (response) {
-                    console.log("thismonthdatas:", response);
+        // Make the AJAX POST request
+        $.ajax({
+            type: "POST",
+            url: `/api/LedgerDocuments/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
+            contentType: "application/json",
+            data: JSON.stringify(VM),
+            dataType: "json",
+            success: function (response) {
+                console.log("thismonthdatas:", response);
                 DevExpress.ui.notify("Document details added successfully!", "success", 2000);
                 // ✅ 1. Bind data to the current DataGrid
                 const currentGrid = $("#dataGrid").dxDataGrid("instance");
@@ -464,10 +467,10 @@
                     const latestEntry = response.data[response.data.length - 1];
                     $("#ExpiryDate").dxTextBox("instance").option("value", latestEntry.DocumentExpDateAr);
                 }
-                  
+
 
                 fetchNewDocumentNo();
-                    resetFormFields();
+                resetFormFields();
                 // Refresh the parent DataGrid (in the main page)
                 if (window.parent && window.parent.$("#dataGrid").length) {
                     const parentGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
@@ -475,13 +478,13 @@
                         parentGrid.getDataSource().reload(); // reloads from the original data source
                     }
                 }
-                   
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error occurred while updating data:", error);
-                    DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 2000);
-                }
-            });
+
+            },
+            error: function (xhr, status, error) {
+                console.error("Error occurred while updating data:", error);
+                DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 2000);
+            }
+        });
         // } else {
         //     DevExpress.ui.notify("Please fill in the required details!", "error", 2000);
         // }
@@ -520,8 +523,8 @@
     }
 
     $("#btnUpdate").dxButton({
-       
-       
+
+
         onClick: function () {
             updateGridData();
         }
@@ -586,4 +589,13 @@
     function onKeyDown(event) {
         console.log("Key pressed:", event.key);
     }
+             $(function () {
+                $("#LedgerDocuments").dxTextBox({
+                    text:formatMessage("Ledger Documents"),
+                    readOnly: true,
+                    onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading");
+                    }
+                });
+            });
 </script>
