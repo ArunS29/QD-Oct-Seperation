@@ -566,6 +566,24 @@
             .ShowArrowIcon(false)
             )
     </div>
+        <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReports2")
+            .Icon("doc")
+            .Width(100)
+            .Text(new JS("formatMessage('Report')"))
+            .ElementAttr(new { @class = "report-button" }) // changed here
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("Tax Summary Report -Purchases").Icon("file");
+                items.Add().Text("Tax Summary Report-Purchases(in Arabic)").Icon("file");
+                items.Add().Text("VATPurchase & Expenses Report").Icon("file").OnClick("navigateToPurchase");
+            })
+
+            .ShowArrowIcon(false)
+            )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReport0")
@@ -1778,10 +1796,91 @@
         const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
         window.open(reportUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
+    function addPrintButton_click(e) {
+        var selectedText = e.itemData.text;
+        console.log("Selected Option:", selectedText);
+
+        if (selectedText === "Print Regular TAX Invoice" || selectedText === "Print Simplified TAX Invoice") {
+            var invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+            var invoiceNo = invoiceNoBox.option("value");
+
+            if (!invoiceNo) {
+                alert("Invoice No is required.");
+                return;
+            }
+
+            // Call checkInvoiceApprovalStatus and handle the response inside .then()
+            checkInvoiceApprovalStatus(invoiceNo).then(function (isApproved) {
+                var reportName = "";
+                var watermarkText = "";
+
+                if (isApproved) {
+                    // Approved - no watermark
+                    if (selectedText === "Print Regular TAX Invoice") {
+                        reportName = "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS";
+                    } else if (selectedText === "Print Simplified TAX Invoice") {
+                        reportName = "SimplifiedTaxInvoice";
+                    }
+                } else {
+                    // Not approved - apply Draft watermark
+                    watermarkText = "Draft Copy";
+                    if (selectedText === "Print Regular TAX Invoice") {
+                        reportName = "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS";
+                    } else if (selectedText === "Print Simplified TAX Invoice") {
+                        reportName = "SimplifiedTaxInvoice";
+                    }
+                }
+
+                if (!reportName) {
+                    alert("Invalid report format selected.");
+                    return;
+                }
+
+                window.open(
+                    `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&invoiceNo=${encodeURIComponent(invoiceNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`,
+                    '_blank',
+                    'width=1200,height=800,scrollbars=yes,resizable=yes'
+                );
+
+            }).catch(function (error) {
+                console.error("Error checking invoice approval status:", error);
+                alert("Failed to check invoice approval status.");
+            });
+
+            // No need to continue outside the .then(), because execution is inside
+            return;
+        }
+    }
+
+
+    // Implement a function to check the approval status of the invoice
+    async function checkInvoiceApprovalStatus(invoiceNo) {
+        try {
+            const response = await $.ajax({
+                url: `/api/VATModule/GetInvoiceApprovalStatus/${encodeURIComponent(invoiceNo)}`,
+                method: 'GET',
+                dataType: 'json', // <-- Force JSON response
+            });
+
+            if (response && response.isApproved !== undefined) {
+                console.log('Invoice Approval Status:', response.isApproved);
+                alert(response.isApproved); // This will trigger now
+                return response.isApproved;
+            } else {
+                console.log("Error: Invalid response from server.");
+                return false;
+            }
+        } catch (error) {
+            console.log("Error fetching approval status:", error);
+            return false;
+        }
+    }
 
 
 
-  
+
+
+
 
 
 </script>
