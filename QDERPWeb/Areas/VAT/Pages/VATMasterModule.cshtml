@@ -85,6 +85,7 @@
 
         .mainContainer {
             margin-top: 1em;
+            width:98%;
         }
 
         .playIcon {
@@ -95,12 +96,10 @@
    
 </head>
 <body>
-    <div class="dx-card">
         <h3>Database Master Module:Unit of Measure</h3>
         <!-- Row 1: Type a New UOM & Add to the Existing List: -->
-        <div class="dx-fieldset">
             <div class="dx-field">
-                <table style="width: 800%;">
+                <table>
                     <tr>
                         <td colspan="2">
                             
@@ -123,7 +122,7 @@
                                 <div style="padding-top:25px;">
                                     @(Html.DevExtreme().Button()
                                         .ID("convertToArabic1")
-                                        .Width(45)
+                                        .Width(60)
                                         .Height(40)
                                         .Icon("fas fa-language")
                                         .ElementAttr(new { @class = "input-button" })
@@ -153,15 +152,6 @@
                     </tr>
                 </table>
             </div>
-				
-           
-
-        </div>
-
-
-     
-    
-
     <div class="dx-field ledgerResult">
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl40111PropertyUnitCode>()
 
@@ -171,6 +161,7 @@
             .Controller("VATModule") 
             .LoadAction("GetAccountGroups") 
             .LoadMode(DataSourceLoadMode.Raw)
+
             )
                 .Columns(columns =>
                 {
@@ -215,14 +206,16 @@
                 })
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
+            .Paging(p => p.Enabled(false))
             .HeaderFilter(filter => filter.Visible(false))
-            .Height(300)
+            .Height(400)
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .ShowBorders(true)
             .ShowRowLines(true)
                 .ColumnChooser(c => c.Enabled(false))
             .Width("100%")
+
             )
 
    
@@ -231,7 +224,6 @@
     </div>
 
 
-        </div>
     <div class="Head">
         <div class="limited-footer">
             @await Html.PartialAsync("VATModuleFooter")
