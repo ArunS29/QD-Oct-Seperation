@@ -7,6 +7,96 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
+    .form-container {
+        padding: 5px;
+        border-radius: 8px;
+        background-color: white;
+        max-width: 900px;
+        margin: auto;
+        color:black;
+    }
+
+    table {
+        width: 100%;
+        border-spacing: 5px;
+    }
+
+        table td, th {
+            vertical-align: top;
+            padding: 3px;
+        }
+
+    input[type="text"], textarea {
+        width: 100%;
+        padding: 2px;
+        box-sizing: border-box;
+        border-radius: 2px;
+        border: 1px solid #ccc;
+        color: black;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .btn {
+        background-color: #d4e6fb;
+        color: #000;
+        padding: 8px 16px;
+        margin-right: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        width:100%;
+    }
+
+    .add-btn {
+        background-color: #d4e6fb;
+        color: #000;
+        padding: 5px 12px;
+        border: none;
+        margin-left: 10px;
+        cursor: pointer;
+        font-size: 20px;
+        vertical-align: top;
+    }
+
+    .narration-cell {
+        position: relative;
+    }
+
+    /* .narration-cell a { */
+    /*     a {
+                    position: absolute;
+                    right: 70px;
+                    top: 8px;
+                    color: white;
+                    text-decoration: underline;
+                    font-size: 14px;
+                    cursor: pointer;
+                } */
+
+    .highlight {
+        background-color: #ffffb3;
+    }
+
+    /* New styles for labels above inputs */
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+        .input-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: black;
+        }
+
+    flex-row {
+        display: flex;
+        align-items: end;
+    }
     .dropdown-box {
         position: absolute;
         background-color: #ffffff;
@@ -14,12 +104,8 @@
         border: 1px solid #ccc;
         border-radius: 8px;
         padding: 16px;
-        width: 450px;
+        width: 50%;
         z-index: 9999;
-    }
-
-    .dropdown-content {
-        font-family: 'Segoe UI', sans-serif;
     }
 
     .row {
@@ -766,44 +852,110 @@
                         )
 }
 <div id = "floatingDropdownForm" class="dropdown-box" style="display: none;">
-<div class="dropdown-content">
-    <div class="row">
-        <div class="col">
-            <label>Tax %</label>
-                @(Html.DevExtreme().TextBox().ID("txtTax"))
-        </div>
-        <div class="col">
-            <label>Amount</label>
-                @(Html.DevExtreme().TextBox().ID("txtAmount"))
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <label>Supplier</label>
-                @(Html.DevExtreme().SelectBox()
-                    .ID("ddlSupplier")
-                    .DataSource(new[] { "Supplier A", "Supplier B", "Supplier C" })
-                    .SearchEnabled(true))
-        </div>
-        <div class="col">
-            <label>Narration</label>
-                @(Html.DevExtreme().TextArea().ID("txtNarration").Height(60))
-        </div>
-    </div>
-    <div class="row actions">
-        <div class="col">
-                @(Html.DevExtreme().Button()
-                    .Text("Submit")
-                    .Type(ButtonType.Success)
-                    .OnClick("submitForm"))
-        </div>
-        <div class="col">
-                @(Html.DevExtreme().Button()
-                    .Text("Cancel")
-                    .Type(ButtonType.Normal)
-                    .OnClick("closeDropdownForm"))
-        </div>
-    </div>
+    <div class="form-container">
+        <table>
+            <tr>
+                <td>
+                    <button class="btn">Calculate VAT</button>
+                </td>
+                <td>
+                    <button class="btn">Save Entry</button>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Tax Percentage</label>
+                        <div id="taxPercentage"></div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <div class="input-group">
+                        <label>Taxable Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <label>VAT Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <label>Round Off</label>
+                        <input type="text" class="highlight" />
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <label>Bill Amount</label>
+                        <input type="text" />
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2>
+                    <div class="input-group">
+                        <label>Supplier Name</label>
+                        <div id="supplierName"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Supplier Name In Arabic</label>
+                        <input type="text" />
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Supplier VAT No</label>
+                        <input type="text" />
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Purchaser Name</label>
+                        <div id="purchaserName"></div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                        <label>Line Narration</label>
+                </td>
+                <td colspan="2">
+                    <a href="#">Use Expense Description</a>
+                    <button class="add-btn">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="narration-cell">
+                    <textarea rows="3"></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Cost Allocation for Employees</label>
+                        <div id="costEmployees"></div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="input-group">
+                        <label>Cost Allocation for Property/Equipments</label>
+                        <div id="costProperty"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
 </div>
 </div>
 
@@ -827,18 +979,36 @@
                 $("#floatingDropdownForm").hide();
             }
 
-            function submitForm() {
-                const tax = $("#txtTax").dxTextBox("instance").option("value");
-                const amount = $("#txtAmount").dxTextBox("instance").option("value");
-                const supplier = $("#ddlSupplier").dxSelectBox("instance").option("value");
-                const narration = $("#txtNarration").dxTextArea("instance").option("value");
+                $(function() {
+                $("#taxPercentage").dxSelectBox({
+                    dataSource: ["5%", "10%", "15%"],
+                    showClearButton: true
+                });
 
-                console.log("Form submitted:", { tax, amount, supplier, narration });
+                $("#supplierName").dxSelectBox({
+                    dataSource: ["Supplier A", "Supplier B", "Supplier C"],
+                    searchEnabled: true,
+                    showClearButton: true
+                });
 
-                DevExpress.ui.notify("Submitted successfully!", "success", 2000);
-                closeDropdownForm();
-            }
+                $("#purchaserName").dxSelectBox({
+                    dataSource: ["Purchaser X", "Purchaser Y"],
+                    searchEnabled: true,
+                    showClearButton: true
+                });
 
+                $("#costEmployees").dxSelectBox({
+                    dataSource: ["Employee 1", "Employee 2"],
+                    searchEnabled: true,
+                    showClearButton: true
+                });
+
+                $("#costProperty").dxSelectBox({
+                    dataSource: ["Equipment A", "Equipment B"],
+                    searchEnabled: true,
+                    showClearButton: true
+                });
+            });
             $(document).on("click", function (e) {
                 if (!$(e.target).closest(".dropdown-box, .dx-button").length) {
                     closeDropdownForm();
