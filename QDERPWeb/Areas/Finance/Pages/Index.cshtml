@@ -699,12 +699,17 @@
                         },
                         summary: {
                             totalItems: [
-                                {
-                                    column: "Balance",
-                                    summaryType: "sum",
-                                    valueFormat: { type: "fixedPoint", precision: 2 },
-                                    displayFormat: "Total: {0}"
-                                }
+                                    {
+                                        column: "Balance",
+                                        summaryType: "sum",
+                                        valueFormat: { type: "fixedPoint", precision: 2 },
+                                        displayFormat: "Total: {0}"
+                                    },
+                                    {
+                                        column: "AccountHead",
+                                        summaryType: "count",
+                                        displayFormat: "Count: {0}"
+                                    }
                             ]
                         }
                     });
@@ -803,12 +808,17 @@
                         },
                         summary: {
                             totalItems: [
-                                {
-                                    column: "Balance",
-                                    summaryType: "sum",
-                                    valueFormat: { type: "fixedPoint", precision: 2 },
-                                    displayFormat: "Total: {0}"
-                                }
+                                    {
+                                        column: "Balance",
+                                        summaryType: "sum",
+                                        valueFormat: { type: "fixedPoint", precision: 2 },
+                                        displayFormat: "Total: {0}"
+                                    },
+                                    {
+                                        column: "AccountHead",
+                                        summaryType: "count",
+                                        displayFormat: "Count: {0}"
+                                    }
                             ]
                         }
                     });
@@ -885,12 +895,17 @@
                                 // Add summary row
                                 summary: {
                                     totalItems: [
-                                        {
-                                            column: "Balance Amount",
-                                            summaryType: "sum",
-                                            valueFormat: { type: "fixedPoint", precision: 2 },
-                                            displayFormat: "Total: {0}"
-                                        }
+                                            {
+                                                column: "Balance Amount",
+                                                summaryType: "sum",
+                                                valueFormat: { type: "fixedPoint", precision: 2 },
+                                                displayFormat: "Total: {0}"
+                                            },
+                                            {
+                                                    column: "Account Head",
+                                                summaryType: "count",
+                                                displayFormat: "Count: {0}"
+                                            }
                                     ]
                                 }
                             });
