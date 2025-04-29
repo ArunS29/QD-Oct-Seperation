@@ -61,6 +61,13 @@
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+		    <PackageReference Include="Azure.Identity" Version="1.13.2" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.1.1" />		<PackageReference Include="Azure.Identity" Version="1.13.2" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
+		
 	</ItemGroup>
 
 	<ItemGroup>
@@ -72,10 +79,6 @@
 	<ItemGroup>
 		<None Include="efpt.config.json.user" />
 		<None Include="wwwroot\images\sar 1.svg" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\qd.utilities\qd.utilities\qd.utilities.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

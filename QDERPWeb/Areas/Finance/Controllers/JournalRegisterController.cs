@@ -69,7 +69,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         .Select(u => new
                         {
                             u.UserId,
-                            u.UserName
+                            u.UserName,
+
                         })
                         .ToListAsync();
 
@@ -133,6 +134,62 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        // GET: /Finance/GetJournalStatus
+        [HttpGet]
+        public IActionResult GetJournalStatus(string journalRefNo)
+        {
+            if (string.IsNullOrEmpty(journalRefNo))
+                return BadRequest("Invalid JournalRefNo.");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var journal = dbContext.Tbl20126JournalRegisterMasters
+                    .Where(j => j.JournalRefNo == journalRefNo)
+                    .Select(j => new
+                    {
+                        isSubmitted = j.IsSubmittedToFinance,
+                        isApproved = j.IsApproved,
+                        isPosted = j.IsPosted
+                    })
+                    .FirstOrDefault();
+
+                if (journal == null)
+                    return NotFound();
+
+                return Json(journal);
+            }
+
+            return StatusCode(500, "Tenant context could not be loaded.");
+        }
+
+        // POST: /Finance/DeleteJournalEntry
+        [HttpPost]
+        public IActionResult DeleteJournalEntry(string journalRefNo)
+        {
+            if (string.IsNullOrEmpty(journalRefNo))
+                return BadRequest("Invalid JournalRefNo.");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var master = dbContext.Tbl20126JournalRegisterMasters
+                    .FirstOrDefault(j => j.JournalRefNo == journalRefNo);
+
+                if (master == null)
+                    return NotFound();
+
+                var childList = dbContext.Tbl20127JournalRegisterChildren
+                    .Where(c => c.JournalRefNo == journalRefNo)
+                    .ToList();
+
+                dbContext.Tbl20127JournalRegisterChildren.RemoveRange(childList);
+                dbContext.Tbl20126JournalRegisterMasters.Remove(master);
+                dbContext.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return StatusCode(500, "Tenant context could not be loaded.");
         }
 
     }

@@ -370,7 +370,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         ClaimRemarks = model.ClaimRemarks,
                         ClaimerId = claimerId,
                         ClaimCreatedBy = userName,
-                        ClaimCreatedOn = now
+                        ClaimCreatedOn = now,
+                        FundRequestTypeId = 1
                     };
 
                     dbContext.Tbl20102ExpenseClaimMasters.Add(newMaster);

@@ -1006,7 +1006,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     });
 
                 var resultList1 = await qryListOfAccountlists1.ToListAsync();
-                int crCount1 = resultList1.Count(i => i.DrCr == "Dr");
+                int crCount1 = resultList1.Count(i => i.DrCr == "Cr");
+                int drCount1 = resultList1.Count(i => i.DrCr == "Dr");
                 if (crCount1 >= 2)
                 {
                     matchingEntries = resultList1.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
@@ -1100,7 +1101,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 int debitamt = 0; // Initialize debit amount
 
-                int crCount = resultList.Count(i => i.DrCr == "Dr");
+                int crCount = resultList.Count(i => i.DrCr == "Cr");
+                int drCount = resultList1.Count(i => i.DrCr == "Dr");
 
                 //var lastCrEntry = resultList.LastOrDefault(i => i.DrCr == "Cr");
 
@@ -1230,6 +1232,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         }
                         entry.AccountHead = accountHead;
+                        if (entry.DrCr == "Dr" && crCount == 0 && drCount == 1)
+                        {
+                            entry.DrAmount = 0;
+                            entry.CrAmount = 0;
+                            entry.SysRemarks = "";
+                        }
+
                         if (Remarks == "")
                         {
                             Remarks = entry.AccountHead;

@@ -403,7 +403,7 @@
                     .Label("Currency Rate")
                     .LabelMode(EditorLabelMode.Outside)
                     .ID("txtCurrencyRate")
-                    .Value("")
+                    .Value("0.00")
                     //  .ReadOnly(true) // Make it read-only
                     .Width(160)
                     )
@@ -3863,7 +3863,16 @@
     }
     function showChequePopup() {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const totalDrAmount = dataGrid.getTotalSummaryValue("DrAmount");
+        let totalDrAmount = 0.00; // Safe default
+        if (dataGrid) {
+            try {
+                const summaryValue = dataGrid.getTotalSummaryValue("DrAmount");
+                totalDrAmount = (summaryValue != null) ? summaryValue : 0.00;
+            } catch (error) {
+                console.error("Error accessing getTotalSummaryValue:", error);
+                totalDrAmount = 0.00;
+            }
+        }
         const chequeboxNo = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value");
      //   const currencyInstance = $("#ddCurrency").dxDropDownBox("instance");
      //   const currencyId = currencyInstance.option("value"); // Current CurrencyID

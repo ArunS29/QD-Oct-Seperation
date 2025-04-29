@@ -1,5 +1,9 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
+@{
+    ViewData["journalClaimerUserName"] = HttpContext.Session.GetString("UserName");
+
+}
 <style>
 
     /* CSS */
@@ -119,7 +123,7 @@
             .LabelMode(EditorLabelMode.Outside) // Label positioning
             .SearchEnabled(true) // Enable searching
             .DisplayExpr("UserName") // Expression for displaying values
-            .Value(null) // Optional: Set a default value (if needed)
+            .Value(ViewData["journalClaimerUserName"]) // Optional: Set a default value (if needed)
             .ShowClearButton(true)
             )
 
@@ -315,6 +319,80 @@
                 }
             } else {
                 alert("Please select a row to edit.");
+            }
+        });
+        $('.spnRightClickGride:contains("Delete Journal Entry Form")').click(function () {
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
+            let selectedRow = dataGrid.getSelectedRowsData();
+
+            if (selectedRow.length > 0) {
+                let journalRefNo = selectedRow[0].JournalRefNo;
+
+                if (journalRefNo && journalRefNo.toString().trim() !== "") {
+                    // Now call backend to get IsSubmitted, IsApproved, IsPosted
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/JournalRegister/GetJournalStatus", // Adjust the URL to your controller and action
+                        contentType: "application/json",
+                       
+                        data: { journalRefNo: journalRefNo },
+                        success: function (response) {
+                            if (response) {
+                                let { isSubmitted, isApproved, isPosted } = response;
+
+                                if (isSubmitted && !isApproved && !isPosted) {
+                                    DevExpress.ui.dialog.alert("Journal Entry is already Submitted,<br/>You cannot delete the Submitted JV.", "Warning");
+                                }
+                                else if (isSubmitted && isApproved && !isPosted) {
+                                    DevExpress.ui.dialog.alert("Journal Entry is already Approved,<br/>You cannot delete the Approved JV.", "Warning");
+                                }
+                                else if (isSubmitted && isApproved && isPosted) {
+                                    DevExpress.ui.dialog.alert("Journal Entry is already Paid,<br/>You cannot delete the Posted JV.", "Warning");
+                                }
+                                else if (!isSubmitted && !isApproved && !isPosted) {
+                                    let result = DevExpress.ui.dialog.confirm(
+                                        "You are about to delete the Journal Entry from the Register,<br/>Click Yes if you would like to continue.",
+                                        "Confirm Deletion"
+                                    );
+                                    result.done(function (dialogResult) {
+                                        if (dialogResult) {
+
+                                            // User clicked Yes, so proceed to delete
+                                            $.ajax({
+                                                type: "POST",
+                                                url: `/api/JournalRegister/DeleteJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
+                                                contentType: "application/json",
+                                               
+                                                
+                                                success: function (deleteResponse) {
+                                                    if (deleteResponse.success) {
+                                                        DevExpress.ui.notify("Journal Entry deleted successfully.", "success", 2000);
+                                                        Refreshgrid(); // Refresh the grid to reflect deletion
+                                                    } else {
+                                                        DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
+                                                    }
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Error occurred during deletion.", "error", 2000);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            } else {
+                                DevExpress.ui.notify("Failed to fetch journal status.", "error", 2000);
+                            }
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Error fetching journal status.", "error", 2000);
+                        }
+                    });
+
+                } else {
+                    DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
+                }
+            } else {
+                DevExpress.ui.dialog.alert("Please select a row to delete.", "Error");
             }
         });
 
@@ -550,6 +628,53 @@
             }
         });
     });
+
+    function Refreshgrid() {
+
+        var dropDownBoxInstance = $("#requestedBy").dxSelectBox("instance");
+        var selectedValue = dropDownBoxInstance.option("value");
+        var requesterID = selectedValue ? selectedValue.UserId : null;
+
+        if (dropDownBoxInstance.option("value") === null) {
+            alert("Please select a requestedBy.");
+            return;
+        }
+        var frmDateBox = $("#startDate").dxDateBox("instance");
+        var toDateBox = $("#endDate").dxDateBox("instance");
+        var frmDate = new Date(frmDateBox.option("value"));
+        var toDate = new Date(toDateBox.option("value"));
+        var currentDate = new Date();
+        frmDate = frmDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        toDate = toDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        frmDateBox.option("value", frmDate);  // Set frmDateBox value
+        toDateBox.option("value", toDate);    // Set toDateBox value
+        $.ajax({
+            url: '/api/JournalRegister/GetJournalview',  // API endpoint
+            type: 'GET',
+            data: {
+                RequesterID: requesterID, // Set this according to your logic
+                StartDate: frmDate, // Start date
+                EndDate: toDate, // End date
+                IfShowAll: false // Set to
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+                //  DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
 
 </script>
 
