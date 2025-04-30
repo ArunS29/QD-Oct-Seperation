@@ -3,10 +3,9 @@
 @{
 }
 <style>
-    body {
-        background-color: #d9d9d9;
+    .mainContainer{
+        width:100%;
     }
-
     .containerLedgerAccount {
         margin: 10px;
         padding: 0;
@@ -18,15 +17,6 @@
         margin-bottom: 15px;
     }
 
-    .dx-fieldset.horizontal-container {
-        padding: 10px;
-        background-color: #ffffff;
-       /*  border: 1px solid #cccccc; */
-        border-radius: 4px;
-        box-shadow: none;
-        width: 1490px;
-    }
-
     .dx-tabs {
         background-color: #ffffff;
        /*  border: 1px solid #cccccc; */
@@ -36,22 +26,16 @@
 
     #vatOnSalesForm {
         display: flex;
-        background-color: #f2f2f2;
-        border: 1px solid #cccccc;
         margin-top: 0;
         flex-direction: row;
         gap: 20px;
-        padding: 20px;
     }
 
         #vatOnPurchaseForm {
         display: flex;
-        background-color: #f2f2f2;
-      /*   border: 1px solid #cccccc; */
         margin-top: 0;
         flex-direction: row;
         gap: 20px;
-        padding: 20px;
     }
 
  /*        #vatOnSalesForm::before {
@@ -80,11 +64,6 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-    }
-
-    .label-item {
-        margin-bottom: 15px;
-        font-size: 14px;
     }
 
     .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag,#btnPrint,#ddReport,#ddReports)){
@@ -182,61 +161,56 @@
                 )
         </div>
 
-        <div style="display: flex; max-width: 1200px; border: 1px solid #ccc; margin-top: 20px;">
-
-            <!-- Left Vertical Title -->
-            <div id="leftTitle" style="background: linear-gradient(to bottom, #003366, #0066cc); color: white; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; padding: 20px 5px; font-weight: bold; font-size: 16px; min-width: 50px; display: flex; align-items: center; justify-content: center;">
-                VAT on Sales
-            </div>
+        <div>
 
             <!-- Right Forms -->
-            <div style="flex-grow: 1; background: #f5f5f5; padding: 20px;">
+            <div style="padding: 0px 20px;">
 
                 <!-- VAT on Sales Form -->
                 <div id="vatOnSalesForm" style="display: flex; flex-direction: column; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">1 - Standard rated Sales 5%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssCreditNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssSalesTaxAfterAdj"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssCreditNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssSalesTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">1a - Standard rated Sales 15%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15Revenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15CreditNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15SalesTaxAfterAdj"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15Revenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15CreditNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15SalesTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
-                        <div style="width: 300px;">Sales to customers in VAT Implementing GCC</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("GccRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("GccCreditNote"))
+                        <div style="width: 300px;">2 - Sales to customers in VAT Implementing GCC</div>
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("GccRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("GccCreditNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">3 - Zero rated Domestic Sales</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DzrRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DzrCreditNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DzrRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DzrCreditNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">4 - Exports</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("ExpRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("ExpCreditNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("ExpRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("ExpCreditNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">5 - Exempt Sales</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DexRevenue"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DexCreditNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DexRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DexCreditNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">6 - Total Sales</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RevenueTotal"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("CreditNoteTotal"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DSSTotalSalesTax"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RevenueTotal"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("CreditNoteTotal"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DSSTotalSalesTax"))
                     </div>
                 </div>
 
@@ -244,65 +218,65 @@
                 <div id="vatOnPurchaseForm" style="display: none; flex-direction: column; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">7 - Standard rated Domestic Purchase 5%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssPurTaxAfterAdj"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">7a - Standard rated Domestic Purchase 15%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssPurchases15Perc"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15PerDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("Dss15PerPurTaxAfterAdj"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssPurchases15Perc"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15PerDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("Dss15PerPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">8 - Imports subject to VAT paid at Customer 5%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPCPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPCDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPCPurTaxAfterAdj"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPCPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPCDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPCPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">8a - Imports subject to VAT paid at Customer 15%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPCPurchases15Perc"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPC15PerDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("IPC15PerPurTaxAfterAdj"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPCPurchases15Perc"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPC15PerDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("IPC15PerPurTaxAfterAdj"))
 
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">9 - Imports subject to VAT - thru RCM 5%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCMPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCMDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCMPurTaxAfterAdj"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCMPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCMDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCMPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">9a - Imports subject to VAT - thru RCM 15%</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCMPurchases15Perc"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCM15PerDebitNote"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("RCM15PerPurTaxAfterAdj"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCMPurchases15Perc"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCM15PerDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("RCM15PerPurTaxAfterAdj"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">10 - Zero rate Purchase</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DZRPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DZRDebitNote"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DZRPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DZRDebitNote"))
                     </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">11 - Exempt Purchase</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DEXPurchases"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DEXDebitNote"))
-@*                         @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DssRevenue"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DEXPurchases"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DEXDebitNote"))
+@*                         @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DssRevenue"))
  *@                    </div>
 
                     <div style="display: flex; align-items: center; gap: 20px;">
                         <div style="width: 300px;">12 - Total Purchase</div>
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("PurchaseTotal"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("DebitNoteTotal"))
-                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(150).ID("TotalPurchaseTax"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("PurchaseTotal"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("DebitNoteTotal"))
+                        @(Html.DevExtreme().NumberBox().Format("#,##0.00").Width(250).ID("TotalPurchaseTax"))
                     </div>
                 </div>
 
@@ -353,11 +327,9 @@
     function onTabSelectionChanged(e) {
         var selectedIndex = e.component.option("selectedIndex");
         if (selectedIndex === 0) {
-            document.getElementById("leftTitle").innerText = "VAT on Sales";
             document.getElementById("vatOnSalesForm").style.display = "flex";
             document.getElementById("vatOnPurchaseForm").style.display = "none";
         } else {
-            document.getElementById("leftTitle").innerText = "VAT on Purchase";
             document.getElementById("vatOnSalesForm").style.display = "none";
             document.getElementById("vatOnPurchaseForm").style.display = "flex";
         }
