@@ -1,6 +1,6 @@
 ﻿var dictionary = {
     "en": {
-
+        "VAT Purchase Edit Form":"VAT Purchase Edit Form",
         "VATInvoiceReporting":"VATInvoiceReporting",
 
         "Debit Note No:": "Debit Note No:",
@@ -2113,6 +2113,7 @@
     },
 
     "ar": {
+        "VAT Purchase Edit Form":"نموذج تعديل عملية شراء ضريبة القيمة المضافة",
         "Invoice Submitted By:": "تم تقديم الفاتورة بواسطة",
         "Prepared By:": ":أُعِدَّ بواسطة",
         "Checked By:": "تمت المراجعة بواسطة:",
