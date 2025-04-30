@@ -27,16 +27,10 @@
         "Invoice Submitted By:": "Invoice Submitted By:",
         "Sales Person/Co-Ordinator:": "Sales Person/Co-Ordinator:",
         "Company Branch/Division:":"Company Branch/Division:",
-
         "Prepared By:": "Prepared By:",
         "Checked By:": "Checked By:",
-        "Checked By:":"Checked By:",
-     
-
-
         "Create New": "Create New",
         "Request/Enquiry Details":"Request/Enquiry Details",
-
         "Edit Bills Payable/ Bills Receivables":"Edit Bills Payable/ Bills Receivables",
         "DocumentNo:": "DocumentNo:",
         "Reference NO:": "Reference NO:",
@@ -2111,11 +2105,28 @@
         "Record Status": "Record Status",
         "Supplier account/Cash account": "Supplier account/Cash account",
         "Company ID": "Company ID",
-        "Company Name":"Company Name"
+        "Company Name": "Company Name",
+        "Invoice Type Arabic": "Invoice Type Arabic",
+       
+
 
     },
 
     "ar": {
+        "Invoice Submitted By:": "تم تقديم الفاتورة بواسطة",
+        "Prepared By:": ":أُعِدَّ بواسطة",
+        "Checked By:": "تمت المراجعة بواسطة:",
+        "Sales Person/Co-Ordinator:": "مندوب المبيعات / المنسق",
+        "Company Branch/Division:": "فرع / قسم الشركة",
+        "SES Reference:": "مرجع شهادة الإنجاز (SES):",
+        "Delivery Notes:": "ملاحظات التسليم:",
+        "Project/Dept/PR/Contract No:": "رقم المشروع / القسم / طلب الشراء / العقد",
+        "PO No": "رقم أمر الشراء",
+        "Client Name:": "اسم العميل",
+        "Performa Invoice Date:": "تاريخ الفاتورة المبدئية",
+        "Invoice Type": "نوع الفاتورة",
+        "Invoice Type Arabic": "نوع الفاتورة (بالعربية)",
+        "Supplier Name Arabic:": "اسم المورد (بالعربية):",
         "Bank Account Outstanding Details": "تفاصيل الحساب البنكي المستحق",
         "Supplier Outstanding Details": "تفاصيل المورد المعلقة",
         "Client Outstanding Details": "تفاصيل العميل المعلقة",

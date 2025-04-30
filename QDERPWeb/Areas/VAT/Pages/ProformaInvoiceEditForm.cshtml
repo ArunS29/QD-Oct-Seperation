@@ -597,7 +597,7 @@
 
 							<td style="width: 50%;">
 								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Invoice Type Ar')"))
+															.Label(new JS("formatMessage('Invoice Type Arabic')"))
 															.DataSource(d => d.WebApi()
 															.Controller("VATModule")
 															.LoadAction("GetVATInvoiceMaster")
@@ -794,185 +794,159 @@
 			</div>
 
 			<div id="tab-content-3" class="tab-content">
-				<div class="row">
-					<!-- Card 1: 8 columns -->
-					<div class="col-4">
-						<div class="card" style="height:200px">
-							<div class="card-body">
-								<div class="row" style="font-size:14px;">
-									
-									<div class="col-12">
-										<div style="display: flex; align-items: center; gap: 8px;">
-											<div style="flex-grow: 1;">
-												@(Html.DevExtreme().DropDownBox()
-																						.Label(new JS("formatMessage('Currency:')"))
-																						.ID("Currency")
-																						.DataSource(d => d.WebApi()
-																						.Controller("AccountLedgerMaster")
-																						.LoadAction("getVATInvoiceTypes")
-																						.LoadMode(DataSourceLoadMode.Raw)
-																						.Key("InvoiceType"))
-																						.AcceptCustomValue(true)
-																						.OpenOnFieldClick(false)
-																						.ValueChangeEvent("input")
-																						.HoverStateEnabled(true)
-																						.Value("Tax Invoice")
-																						.ValueExpr("InvoiceType")
-																						.DisplayExpr("InvoiceType")
-																						.LabelMode(EditorLabelMode.Outside)
-																						)
-											</div>
-
-											@(Html.DevExtreme().Button()
-																					.ID("AddCurrency")
-																					.Icon("plus")
-																					.Hint("Add Description")
-																					.Width(40)
-																					)
-
-											@(Html.DevExtreme().Button()
-																					.ID("EditCurrency")
-																					.Icon("edit")
-																					.Hint("Edit Description")
-																					.Width(40)
-																					)
-										</div>
-									</div>
-
-
-									<div class="col-12">
-										@(Html.DevExtreme().NumberBox()
-																				.Label(new JS("formatMessage('Currency Exchange Rate:')")) // You can update the label text if needed
-																				.ID("CurrencyExchangeRate")
+				<div class="card-container">
+					<!-- Left Card: Foreign Currency Billing -->
+					<div> 
+					<table style="width:500px; font-size:14px; margin:5px;" cellpadding="5">
+							<tr>
+								<th>Foreign Currency Billing</th>
+							</tr>
+							
+							<tr>
+								<td>
+									<div style="display: flex; align-items: end; gap: 10px;">
+										@(Html.DevExtreme().DropDownBox()
+																				.Label(new JS("formatMessage('Currency')"))
+																				.DataSource(d => d.WebApi()
+																				.Controller("VATModule")
+																				.LoadAction("GetTaxCurrency")
+																				.LoadMode(DataSourceLoadMode.Raw)
+																				.Key("CurrencyExchangeId"))
 																				.LabelMode(EditorLabelMode.Outside)
-																				.Value(0) // Default value, set to 0 or anything you want
-																				.ShowSpinButtons(true) // Show + and - buttons
-																				.Min(0) // Minimum value if needed
-																				.Max(999999) // Maximum value if needed
+																				.ID("ddlGoodsGroup4")
+																				.ShowClearButton(true)
+																				.Value("Saudi Arabian Riyals")
+																				.AcceptCustomValue(true)
+																				.OpenOnFieldClick(false)
+																				.ValueChangeEvent("input")
+																				.HoverStateEnabled(true)
+																				.ValueExpr("CurrencyExchangeId")
+																				.DisplayExpr("CurrencyName")
+																				.OnInput("dropDownBoxOnInput")
+																				.OnOpened("onOpened")
+																				.TabIndex(1)
+																				.DropDownOptions(o => o.Width(1000))
+																				@* .Disabled(true) *@
+																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+																				.Width("75%"))
+										@(Html.DevExtreme().Button()
+																				.ID("EditClient1")
+																				.Icon("edit")
+																				.Hint("Edit Description")
+																				.Width(60)
 																				)
-
 									</div>
-									
-								</div>
-							</div>
-						</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate")
+																			.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Value(1)
+																			.Width("75%")
+                                     )
+								</td>
+							</tr>
+						</table>
 					</div>
+					<!-- Right Card: Deductions -->
+					<div style="margin-right: 30%" >
+						<table width="900px" style="font-size:14px; margin:5px;" cellpadding="2">
+							<tr>
+								<th>Deductions:Advance / Retention</th>
+							</tr>
+							<tr>
 
-					<!-- Card 2: 4 columns -->
-					<div class="col-6"> 
-						<div class="card" style="height:200px">
-							<div class="card-body">
-								<div class="row" style="font-size:14px;">
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("LessAdvance")
+																			.Value("Less: Advance")
+																			.Width("90%")) <!-- Added Width -->
+								</td>
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate3")
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Width("90%")) <!-- Fixed pixel size -->
 
-									<div class="col-4">
-										@(Html.DevExtreme().TextBox()
-																				
-																				.LabelMode(EditorLabelMode.Outside)
-																				.ID("ddInvoicePeriod1")
-																				.ValidationRules(rules =>
-																				{
-																					rules.AddRequired()
-																					.Message(new JS("formatMessage('Client Name should be entered')"));
-																				})
-																				)
-									</div>
-									<div class="col-3">
-										@(Html.DevExtreme().NumberBox()
-																				
-																				.ID("CurrencyExchangeRate1")
-																				.LabelMode(EditorLabelMode.Outside)
-																				.Value(0) // Default value, set to 0 or anything you want
-																				.ShowSpinButtons(true) // Show + and - buttons
-																				.Min(0) // Minimum value if needed
-																				.Max(999999) // Maximum value if needed
-																				)
-									</div>
+								</td>
+								<td>
+									@* <span class="input-group-prepend" style="width: 0px;"> *@
+									@(
+																			Html.DevExtreme().Button()
+																			.ID("convertToArabic1")
+																			.Height(0)
+																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
+																			.ElementAttr(new { @class = "input-button" })
+																			.OnClick("function() { AdvanceconvertToArabic(); }")
+																			)
+									@* </span> *@
+								</td>
+								<td>
+									@(
+																			Html.DevExtreme().TextBox()
+																			.Label(new JS("formatMessage('')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("LessAdvanceAr")
+																			.Value("اقب المسبق")
+																			.Width("90%")
+																			.RtlEnabled(true)
+																			)
 
-									<div class="col-1">
+								</td>
 
-										@(
-														Html.DevExtreme().Button()
-														.ID("InvoiceNotesconvertToArabic1")
-														.Width("50")
-														.Height(50)
-														.Icon("fas fa-language") // Ensure Font Awesome class is correct
-														.ElementAttr(new { @class = "input-button" })
-														.OnClick("function() { convertToArabic(); }")
+							</tr>							
 
-														)
-														</div>
-															<div class="col-4">
-										@(Html.DevExtreme().TextBox()
-																				
-																				.LabelMode(EditorLabelMode.Outside)
-																				.ID("ddReferenceNo")
-																				.ValidationRules(rules =>
-																				{
-																					rules.AddRequired()
-																					.Message(new JS("formatMessage('Client Name should be entered')"));
-																				})
-																				)
-									</div>
+							<tr>
 
+								<td >
+									@(Html.DevExtreme().TextBox()
+																			.ID("LessRetention")
+																			.Value("Less: Retention")
+																			.Width("90%")) <!-- Added Width -->
+								</td>
 
-									<div class="col-4">
-										@(Html.DevExtreme().TextBox()
-																			
-																				.LabelMode(EditorLabelMode.Outside)
-																				.ID("ddInvoicePeriod2")
-																				.ValidationRules(rules =>
-																				{
-																					rules.AddRequired()
-																					.Message(new JS("formatMessage('Client Name should be entered')"));
-																				})
-																				)
-									</div>
-									<div class="col-3">
-										@(Html.DevExtreme().NumberBox()
-																				
-																				.ID("CurrencyExchangeRate2")
-																				.LabelMode(EditorLabelMode.Outside)
-																				.Value(0) // Default value, set to 0 or anything you want
-																				.ShowSpinButtons(true) // Show + and - buttons
-																				.Min(0) // Minimum value if needed
-																				.Max(999999) // Maximum value if needed
-																				)
-									</div>
-
-									<div class="col-1">
-
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate5")
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Width("90%"))
+								</td>
+								<td>
+									<span class="input-group-prepend" style="margin-right: 10px;">
 										@(
 																				Html.DevExtreme().Button()
-																				.ID("InvoiceNotesconvertToArabic2")
-																				.Width("50")
-																				.Height(50)
+																				.ID("convertToArabic3")
+																				.Height(30)
 																				.Icon("fas fa-language") // Ensure Font Awesome class is correct
 																				.ElementAttr(new { @class = "input-button" })
-																				.OnClick("function() { convertToArabic(); }")
-
+																				.OnClick("function() { RetentionconvertToArabic(); }")
 																				)
-									</div>
-									<div class="col-4">
-										@(Html.DevExtreme().TextBox()
-																				
-																				.LabelMode(EditorLabelMode.Outside)
-																				.ID("ddReferenceNo2")
-																				.ValidationRules(rules =>
-																				{
-																					rules.AddRequired()
-																					.Message(new JS("formatMessage('Client Name should be entered')"));
-																				})
-																				)
-									</div>
+									</span>
+								</td>
+								<td>
+									@(
+																			Html.DevExtreme().TextBox()
+																			.Label(new JS("formatMessage('')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("LessAdvanceAr2")
+																			.Value("احتفاظ أقل")
+																			.Width("90%")
+																			.RtlEnabled(true)
+																			)
 
-									
-								</div>
-							</div>
-						</div>
+								</td>
 
-						<div style="margin-right: 30%" >
-						<table width="900px" style="font-size:14px; margin:5px;" cellpadding="2">
-					
+							</tr>
 							<tr>
 								<td>
 									@(Html.DevExtreme().CheckBox()
@@ -986,7 +960,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
-																			//.Disabled(true)
+																			.Disabled(true)
 																			.Width("90%")
 																			)
 
@@ -995,7 +969,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("VerifiedOnDate")
 																			.Value(null) // Default value
-																			//.Disabled(true)
+																			.Disabled(true)
 																			.Width("90%")
 																			)
 								</td>
@@ -1027,8 +1001,6 @@
 							</tr>
 					</table>
 					</diV>
-					</div>
-
 				</div>
 			</div>
 			
@@ -1036,7 +1008,7 @@
 				<div class="row">
 					<!-- Card 1: 8 columns -->
 					<div class="col-6">
-						<div class="card" style="height:240px">
+						<div style="height:240px">
 							<div class="card-body">
 								<div class="row" style="font-size:14px;">
 									<div class="col-12">
@@ -1127,7 +1099,7 @@
 				<div class="card-container">
 					
 					<div class="row"> 
-						<div class="col-3">
+						<div class="col-3" style="display: flex; align-items: center; gap: 4px;">
 					
 								
 
@@ -1160,7 +1132,7 @@
 
 						
 								</div>
-									<div class="col-3">
+									<div class="col-3"  style="display: flex; align-items: center; gap: 4px;">
 								
 
 								@(Html.DevExtreme().DropDownBox()
@@ -1192,7 +1164,7 @@
 
 						
 							</div>
-								<div class="col-3">
+								<div class="col-3" style="display: flex; align-items: center; gap: 4px;">
 							
 
 								@(Html.DevExtreme().DropDownBox()
@@ -1226,7 +1198,7 @@
 							</div>
 					
 
-							<div class="row" style="margin-top:5px:">
+							<div class="row" style="margin-top:5px;">
 								<div class="col-3">
 								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Arabic Numbers in Invoice')"))
 															.ID("ArabicNumInvoice")
