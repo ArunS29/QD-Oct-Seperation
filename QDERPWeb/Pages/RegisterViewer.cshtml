@@ -267,17 +267,25 @@
 <div id="webDocumentViewer"></div> 
 
 <script>
+    function getTenantNameFromUrl() {
+        const pathParts = window.location.pathname.split('/');
+        return pathParts[1] || ''; // Assumes tenantName is the first segment after '/'
+    }
 
-         function openReportDesigner(reportName, voucherType, frmDate, toDate) {
+    function openReportDesigner(reportName, voucherType, frmDate, toDate) {
+        const tenantName = getTenantNameFromUrl();
+
         console.log("Opening Designer with:");
+        console.log("Tenant Name:", tenantName);
         console.log("Report Name:", reportName);
         console.log("Voucher Type:", voucherType);
         console.log("From Date:", frmDate);
         console.log("To Date:", toDate);
 
-        const reportDesignerUrl = `/pulse/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(voucherType)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        const reportDesignerUrl = `/${tenantName}/pulse/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(voucherType)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
+
 
 
 

@@ -440,7 +440,7 @@
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.table2});
-            this.Detail.HeightF = 118.8334F;
+            this.Detail.HeightF = 83.83341F;
             this.Detail.Name = "Detail";
             // 
             // table2
@@ -1588,8 +1588,7 @@
             // xrLabel28
             // 
             this.xrLabel28.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Prepared By"),
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Prepared By")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.TenantName]")});
             this.xrLabel28.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel28.LocationFloat = new DevExpress.Utils.PointFloat(579.68F, 153.1668F);
             this.xrLabel28.Multiline = true;
