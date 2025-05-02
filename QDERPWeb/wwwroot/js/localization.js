@@ -2106,9 +2106,7 @@
         "Supplier account/Cash account": "Supplier account/Cash account",
         "Company ID": "Company ID",
         "Company Name": "Company Name",
-        "Invoice Type Arabic": "Invoice Type Arabic",
-       
-
+        "Client Name in Arabic:":"Client Name in Arabic:"
 
     },
 
@@ -3905,7 +3903,8 @@
         "Record Status": "حالة السجل",
         "Supplier account/Cash account": "حساب المورد",
         "Company ID": "معرّف الشركة",
-        "Company Name": "اسم الشركة"
+        "Company Name": "اسم الشركة",
+        "Client Name in Arabic:":"اسم العميل باللغة العربية"
 
 
     }

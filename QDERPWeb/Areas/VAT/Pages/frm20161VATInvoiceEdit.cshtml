@@ -609,8 +609,9 @@
 																			//.ShowClearButton(true) // Optional: adds a clear (X) button
 																			)
 								</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
+@* 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside).ReadOnly(false))</td>
+ *@								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
 							<tr>
@@ -776,7 +777,7 @@
 															.ID("ddlGoodsGroup1")
 															.ShowClearButton(true)
 															.Value("Common Overheads")
-															.AcceptCustomValue(true)
+															.AcceptCustomValue(false)
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
@@ -2018,6 +2019,32 @@
 						.UseIcons(true)
 						)
 						.OnEditorPreparing("onEditorPreparing")
+						.Summary(summary =>
+
+						{
+
+							summary.TotalItems(totalItems =>
+
+							{
+
+								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+								totalItems.Add().Column("Amount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+							totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+							});
+
+						})
 						)
 		</div>
 
@@ -2078,7 +2105,7 @@
 								.WordWrapEnabled(true)
 								.ShowBorders(true)
 								.ShowColumnHeaders(true)
-								.FilterRow(f => f.Visible(false))
+								.FilterRow(f => f.Visible(true))
 								.SearchPanel(sp => sp.HighlightSearchText(true))
 								.Selection(sl => sl.Mode(SelectionMode.Single))
 								.OnSelectionChanged("ClientCodedataGridSelectionChanged")
@@ -5309,13 +5336,13 @@
 
 					});
 				});
-				$(function () {
-					$("#ClientVATNo").dxTextBox({
-						text: formatMessage("Client VAT Number: *"),
-						readOnly: true
+				// $(function () {
+				// 	$("#ClientVATNo").dxTextBox({
+				// 		text: formatMessage("Client VAT Number: *"),
+				// 		readOnly: true
 
-					});
-				});
+				// 	});
+				// });
 				$(function () {
 					$("#OtherType").dxTextBox({
 						text: formatMessage("Other ID Type: *"),
@@ -6260,8 +6287,8 @@
 			// Ensure InvoiceChildren is not empty or undefined
 			if (!InvoiceChildren || InvoiceChildren.length === 0) {
 				console.error("InvoiceChildren is empty or undefined");
-				DevExpress.ui.notify("No child records found.", "error", 3000);
-				return;  // Exit if there are no child records
+				// DevExpress.ui.notify("No child records found.", "error", 3000);
+				// return;  // Exit if there are no child records
 			}
 
 			// Send AJAX request to update the invoice master details
@@ -6413,8 +6440,8 @@
 				// Ensure InvoiceChildren is not empty or undefined
 				if (!InvoiceChildren || InvoiceChildren.length === 0) {
 					console.error("InvoiceChildren is empty or undefined");
-					DevExpress.ui.notify("No child records found.", "error", 3000);
-					return;  // Exit if there are no child records
+					// DevExpress.ui.notify("No child records found.", "error", 3000);
+					// return;  // Exit if there are no child records
 				}
 
 				// Send AJAX request to update the invoice master details

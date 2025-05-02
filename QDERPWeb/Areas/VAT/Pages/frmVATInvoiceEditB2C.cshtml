@@ -487,7 +487,7 @@
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("InvoiceTransactionsCode")
 																			.Label("Invoice Transaction Type")
-																			.Value("0100000") // Default selected value
+																			.Value("0200000") // Default selected value
 																			.ValueExpr("ID")
 																			.DisplayExpr("ID")
 																			.LabelMode(EditorLabelMode.Outside)
@@ -6923,6 +6923,7 @@
 				const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
 
 				if (!isInside) {
+
 					const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
 					dropDown.close();
 				}
@@ -7305,11 +7306,11 @@
 		// Generates the transaction code like "010110"
 		function setInvoiceTransactionCode(selectedIds) {
 			// Initialize the transaction code with a prefix
-			let strTransactionCode = "01";
+			let strTransactionCode = "02";
 
 			// Dynamically generate the binary string based on selections (1 for selected, 0 for unselected)
 			for (let i = 1; i <= 5; i++) {
-				strTransactionCode += selectedIds.includes(i) ? "1" : "0";
+				strTransactionCode += selectedIds.includes(i) ? "2" : "0";
 			}
 
 			return strTransactionCode;

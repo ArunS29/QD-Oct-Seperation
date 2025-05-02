@@ -5203,7 +5203,7 @@
 
 		  //InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 
-		  debugger
+	
 			if(clientnameValidation.isValid)
 			{
 	     	// Create JSON object for master invoice
@@ -5212,25 +5212,24 @@
 					// First Card (Left side)
 					PurchaseVoucherNo: $("#InvoiceNo").dxTextBox("instance").option("value") || null,          // Matches PurchaseVoucherNo
 					PurchaseVoucherDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,        // Matches PurchaseVoucherDate
-					PurchaseBillNo: $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value") || null,   // Matches PurchaseBillNo
-					PurchaseEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,       // Matches PurchaseEffectiveDate
-					PurchaseTaxCategoryCode: $("#VATInvoiceType").dxTextBox("instance").option("value") || null, // Matches PurchaseTaxCategoryCode
-					PurchaseOrderDate: $("#OrderDate").dxDateBox("instance").option("value") || null,            // Matches PurchaseOrderDate
-					MaterialReceiptNo: $("#MaterialReceipt").dxTextBox("instance").option("value") || null,      // Matches MaterialReceiptNo
-					PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null,       // Matches PurchaseDeliveryDate
+				    PurchaseBillNo: $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value") || null,  // Matches PurchaseBillNo
+				     PurchaseEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,       // Matches PurchaseEffectiveDate
+				 //    PurchaseTaxCategoryCode: $("#VATInvoiceType").dxTextBox("instance").option("value") || null, // Matches PurchaseTaxCategoryCode
+					 PurchaseOrderDate: $("#OrderDate").dxDateBox("instance").option("value") || null,            // Matches PurchaseOrderDate
+				     MaterialReceiptNo: $("#MaterialReceipt").dxTextBox("instance").option("value") || null,      // Matches MaterialReceiptNo
+				     PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null,       // Matches PurchaseDeliveryDate
 
 					// Second Card (Right side)
-					SupplierCode: accheadid || null,                                                            // Matches SupplierCode
-					SupplierName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,          // Matches SupplierName
-					SupplierGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,      // Matches SupplierGroupVatnumber
-					SupplierVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value") || null,          // Matches SupplierVatnumber
-					SupplierNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,        // Matches SupplierNameAr
-					SupplierOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value") || null,    // Matches SupplierOtherIdtype
-					SupplierOtherId: $("#ClientOtherID").dxTextBox("instance").option("value") || null,          // Matches SupplierOtherId
-					SupplierAddressStreet: $("#ClientAddressDetails").dxDropDownBox("instance").option("value") || null, // Matches SupplierAddressStreet
-					PurchasePeriod: $("#InvoiceCounterValue").dxTextBox("instance").option("value") || null,     // Matches PurchasePeriod
-					ReferenceNo: $("#UUID").dxTextBox("instance").option("value") || null
-
+					//SupplierCode: accheadid || null,                                                            // Matches SupplierCode
+					// SupplierName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,          // Matches SupplierName
+					// SupplierGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,      // Matches SupplierGroupVatnumber
+					// SupplierVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value") || null,          // Matches SupplierVatnumber
+					// SupplierNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,        // Matches SupplierNameAr
+					// SupplierOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value") || null,    // Matches SupplierOtherIdtype
+					// SupplierOtherId: $("#ClientOtherID").dxTextBox("instance").option("value") || null,          // Matches SupplierOtherId
+					// SupplierAddressStreet: $("#ClientAddressDetails").dxDropDownBox("instance").option("value") || null, // Matches SupplierAddressStreet
+					// PurchasePeriod: $("#InvoiceCounterValue").dxTextBox("instance").option("value") || null,     // Matches PurchasePeriod
+					// ReferenceNo: $("#UUID").dxTextBox("instance").option("value") || null
 
 
 					// 	//OtherDetails
@@ -5359,106 +5358,115 @@
 
 		 });
 
-
-
-				$("#btnSaveAndClose").on("click", function (e) {
+				 $("#btnSaveAndClose").on("click", function (e) {
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
 
-			  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
+			  //InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 
 
 				if(clientnameValidation.isValid)
 				{
-			// Create JSON object for master invoice
-				let InVoiceNo=$('#InvoiceNo').dxTextBox("instance").option("value");
+				// Create JSON object for master invoice
+					let PurchaseVoucherNo = $('#InvoiceNo').dxTextBox("instance").option("value");
 				var InvoiceMaster = {
-					InvoiceNo: $('#InvoiceNo').dxTextBox("instance").option("value") || null,
-					InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
-					InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
-					//PaymentMeansTypeCode: paymentmeanstypecode,
-					 //  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
-					 // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-					 // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
+						// First Card (Left side)
+						PurchaseVoucherNo: $("#InvoiceNo").dxTextBox("instance").option("value") || null,          // Matches PurchaseVoucherNo
+						PurchaseVoucherDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,        // Matches PurchaseVoucherDate
+						PurchaseBillNo: $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value") || null,  // Matches PurchaseBillNo
+						 PurchaseEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,       // Matches PurchaseEffectiveDate
+					 //    PurchaseTaxCategoryCode: $("#VATInvoiceType").dxTextBox("instance").option("value") || null, // Matches PurchaseTaxCategoryCode
+						 PurchaseOrderDate: $("#OrderDate").dxDateBox("instance").option("value") || null,            // Matches PurchaseOrderDate
+						 MaterialReceiptNo: $("#MaterialReceipt").dxTextBox("instance").option("value") || null,      // Matches MaterialReceiptNo
+						 PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null,       // Matches PurchaseDeliveryDate
 
-					 ClientCode: accheadid|| null,
-					 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
-					 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
-						 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
-					 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
-						 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
-					BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
-				   InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
-					InvoiceUuid: $("#UUID").dxTextBox("instance").option("value")|| null,
-
-				//OtherDetails
-				//InvoiceDueDate:("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
-				InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
-				InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
-				InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
-				RevenueAccount:revaccheadid|| null,
-				CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
-				RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
-				RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
-
-				//Documents
-				SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
-				Pono: $("#ClientPONo").dxTextBox("instance").option("value")|| null,
-				Podate: $("#PODate").dxDateBox("instance").option("value")|| null,
-				ReferenceNo: $("#ProjectRef").dxTextBox("instance").option("value")|| null,
-				SesreferenceNo: $("#SESReference").dxTextBox("instance").option("value")|| null,
-				PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
-				QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
-				DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
-				ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
-
-				//Deduction&CurrencyDetails
-			//	InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
-				//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
-				ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
-				AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
-				AdvanceAmount:$("#numLessAdvance").dxNumberBox("instance").option("value")|| null,
-				AdvanceTextAr:$("#AccountGroup1").dxTextBox("instance").option("value")|| null,
-				OtherDeductionText:$("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
-				OtherDeductionAmount:$("#numLessOtherDeductions").dxNumberBox("instance").option("value")|| null,
-				OtherDeductionTextAr:$("#AccountGroup2").dxTextBox("instance").option("value")|| null,
-				RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
-				RetentionAmount:$("#numLessRetention").dxNumberBox("instance").option("value")|| null,
-				RetentionTextAr:$("#AccountGroup3").dxTextBox("instance").option("value")|| null,
-
-				//Branch/DivisionDetails
-				BranchCode: branchcode|| null,
-				InvoiceSalesPerson: salespersoncode|| null,
-				CompanyId:companyid|| null,
-				 SellerName:$("#OurCompanyRegisteredName").dxTextBox("instance").option("value")|| null,
-				  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
-				  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
-				  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
-				   SellerOtherIdtype:SellerOtherIdtype|| null,
-				   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
+						// Second Card (Right side)
+						//SupplierCode: accheadid || null,                                                            // Matches SupplierCode
+						// SupplierName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,          // Matches SupplierName
+						// SupplierGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,      // Matches SupplierGroupVatnumber
+						// SupplierVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value") || null,          // Matches SupplierVatnumber
+						// SupplierNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,        // Matches SupplierNameAr
+						// SupplierOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value") || null,    // Matches SupplierOtherIdtype
+						// SupplierOtherId: $("#ClientOtherID").dxTextBox("instance").option("value") || null,          // Matches SupplierOtherId
+						// SupplierAddressStreet: $("#ClientAddressDetails").dxDropDownBox("instance").option("value") || null, // Matches SupplierAddressStreet
+						// PurchasePeriod: $("#InvoiceCounterValue").dxTextBox("instance").option("value") || null,     // Matches PurchasePeriod
+						// ReferenceNo: $("#UUID").dxTextBox("instance").option("value") || null
 
 
-				//Signatories
-				InvoicePreparedBy: SignatoryID|| null,
-			InvoiceCheckedBy: ChkbySignatoryID|| null,
-			InvoiceApprovedBy: ApproedbySignatoryID|| null
+						// 	//OtherDetails
+			// 	//InvoiceDueDate:("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
+			// 	InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+			// 	InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
+			// 	InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
+			// 	RevenueAccount:revaccheadid|| null,
+			// 	CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
+			// 	RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
+			// 	RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
+
+			// 	//Documents
+			// 	SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
+			// 	Pono: $("#ClientPONo").dxTextBox("instance").option("value")|| null,
+			// 	Podate: $("#PODate").dxDateBox("instance").option("value")|| null,
+			// 	ReferenceNo: $("#ProjectRef").dxTextBox("instance").option("value")|| null,
+			// 	SesreferenceNo: $("#SESReference").dxTextBox("instance").option("value")|| null,
+			// 	PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
+			// 	QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
+			// 	DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
+			// 	ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
+
+			// 	//Deduction&CurrencyDetails
+			// //	InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
+			// 	//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
+			// 	ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
+			// 	AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
+			// 	AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
+			// 	AdvanceTextAr:$("#AccountGroup1").dxTextBox("instance").option("value")|| null,
+			// 	OtherDeductionText:$("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
+			// 	OtherDeductionAmount:$("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
+			// 	OtherDeductionTextAr:$("#AccountGroup2").dxTextBox("instance").option("value")|| null,
+			// 	RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
+			// 	RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
+			// 	RetentionTextAr:$("#AccountGroup3").dxTextBox("instance").option("value")|| null,
+
+			// 	//Branch/DivisionDetails
+			// 	BranchCode: branchcode|| null,
+			// 	InvoiceSalesPerson: salespersoncode|| null,
+			// 	CompanyId:companyid|| null,
+			// 	 SellerName:$("#OurCompanyRegisteredName").dxTextBox("instance").option("value")|| null,
+			// 	  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
+			// 	  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
+			// 	  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
+			// 	   SellerOtherIdtype:SellerOtherIdtype|| null,
+			// 	   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
 
 
-
-
-
-
+			// 	//Signatories
+			// 	InvoicePreparedBy: SignatoryID|| null,
+			// InvoiceCheckedBy: ChkbySignatoryID|| null,
+			// InvoiceApprovedBy: ApproedbySignatoryID|| null
 
 				};
 
+				// var InvoiceChildren=null;
+
+				//  if(IsCurrent!="true")
+				//  {
+				//  }
+				//  else{
+				//        InvoiceChildren = $("#B2BUpdatedataGrid").dxDataGrid("instance").option("dataSource");
+				//  }
+
+				  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
+
 				// Create JSON array for child records
-				var InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
 
 				// Add InvoiceNo to each item
 			let updatedDataSource = InvoiceChildren.map(item => ({
 				...item,
-				InvoiceNo: InVoiceNo,
+						InvoiceNo: PurchaseVoucherNo,
 				TaxAmount:amt
 			}));
 
@@ -5475,14 +5483,14 @@
 				// Send AJAX request to update the invoice master details
 				$.ajax({
 					type: "POST",
-					url: `/api/VoucherMaster/UpdatePurchaseMasterDetails`,
+						url: `/api/VoucherMaster/UpdatePurchaseMasterDetails`,
 					contentType: "application/json",
 					data: JSON.stringify(InvoiceMaster),
 					success: function (response) {
 						// Send AJAX request to update the invoice child details after master is updated
 						$.ajax({
 							type: "POST",
-							url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+								url: `/api/VoucherMaster/UpdatePurchaseChildDetails`,
 							contentType: "application/json",
 							data: JSON.stringify(updatedDataSource),
 							success: function (response) {
@@ -5491,7 +5499,7 @@
 							"Invoice Details updated Successfully.",
 							"Update successful"
 						);
-						history.back();
+							history.back();
 							},
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -5513,6 +5521,8 @@
 
 			 });
 
+
+				
 
 		 $(document).ready(function () {
 			$.ajax({

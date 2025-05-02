@@ -400,20 +400,22 @@
 									<div style="flex-grow: 1;">
 										@(Html.DevExtreme().DropDownBox()
 																				.Label(new JS("formatMessage('Client Name:')"))
-																				.ID("VATDebitNoteNo")
+																				.ID("ddclientname")
 																				.DataSource(d => d.WebApi()
-																				.Controller("AccountLedgerMaster")
-																				.LoadAction("getVATInvoiceTypes")
+																				.Controller("VATModule")
+																				.LoadAction("GetProformaClientName")
 																				.LoadMode(DataSourceLoadMode.Raw)
-																				.Key("InvoiceType"))
+																				.Key("AccountId"))
 																				.AcceptCustomValue(true)
 																				.OpenOnFieldClick(false)
 																				.ValueChangeEvent("input")
 																				.HoverStateEnabled(true)
 																				.Value("Tax Invoice")
-																				.ValueExpr("InvoiceType")
-																				.DisplayExpr("InvoiceType")
+																				.ValueExpr("AccountId")
+																				.DisplayExpr("AccountHead")
 																				.LabelMode(EditorLabelMode.Outside)
+																	            .ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+
 																				)
 									</div>
 
@@ -489,8 +491,8 @@
 															.Label(new JS("formatMessage('VAT Invoice Sub Type')"))
 															.ID("VATInvoiceSubType")
 															.DataSource(d => d.WebApi()
-															.Controller("AccountLedgerMaster")
-															.LoadAction("getInvoiceSubTypes")
+															.Controller("VATModule")
+															.LoadAction("GetVATInvoiceSubType")
 															.LoadMode(DataSourceLoadMode.Raw)
 															.Key("SubType"))
 															.AcceptCustomValue(true)
@@ -498,10 +500,11 @@
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
 															.Value("Tax Invoice")
-															.ValueExpr("InvoiceType")
-															.DisplayExpr("InvoiceType")
+															.ValueExpr("InvoiceSubType")
+															.DisplayExpr("InvoiceSubTypeCode")
 															.LabelMode(EditorLabelMode.Outside)
 															.Disabled(true)
+															 .ContentTemplate(new TemplateName("VATInvoiceSubTypeContentTemplate"))
 															)
 							</td>
 						
@@ -540,30 +543,25 @@
 																			 .ElementAttr("style","margin-top:15px;")
 																			)
 									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Supplier Name Arabic:')"))
+																			.Label(new JS("formatMessage('Client Name in Arabic:')"))
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
-																			.LoadAction("GetClientCode")
+																			.LoadAction("GetProformaClientName")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("AccountId"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ddItemsReturnfromstore1")
-																			.ValidationRules(rules =>
-																			{
-																				rules.AddRequired()
-																				.Message(new JS("formatMessage('Client Code should be entered')"));
-																			})
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
-																			.ValueExpr("AccountHead")
+																			.ValueExpr("AccountHeadArabic")
 																			.DisplayExpr("AccountId")
 																			.Width(600)
 																			.TabIndex(4)
 																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
+																			.ContentTemplate(new TemplateName("ClientNameArContentTemplate"))
 																			)
 								</div>
 							</td>
@@ -575,9 +573,9 @@
 															.Label(new JS("formatMessage('Invoice Type')"))
 															.DataSource(d => d.WebApi()
 															.Controller("VATModule")
-															.LoadAction("GetVATInvoiceMaster")
+															.LoadAction("GetTaxCategory")
 															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("BuyerIdtypeName"))
+															.Key("TaxCategoryId"))
 															.LabelMode(EditorLabelMode.Outside)
 															.ID("OtherIDType")
 															.ShowClearButton(true)
@@ -585,13 +583,13 @@
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
-															.ValueExpr("BuyerIdtypeName")
-															.DisplayExpr("BuyerIdtypeName")
+															.ValueExpr("TaxCategoryId")
+															.DisplayExpr("TaxCategory")
 															.Width("100%")
 															.TabIndex(1)
 															.DropDownOptions(o => o.Width(1000))
 															.OnKeyDown("onKeyDown")
-															.ContentTemplate(new TemplateName("ClientNameContent"))
+															.ContentTemplate(new TemplateName("TaxCategoryContentTemplate"))
 															)
 							</td>
 
@@ -1559,7 +1557,7 @@
 					.ID("clientname-datagrid")
 					.DataSource(d => d.WebApi()
 					.Controller("VATModule")
-					.LoadAction("GetClientCode")
+					.LoadAction("GetProformaClientName")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("AccountHead")
 					)
@@ -1581,6 +1579,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
+						columns.Add().DataField("AccountId").Caption("Account Code").Alignment(HorizontalAlignment.Center);
 						columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
 
 					})
@@ -1858,14 +1857,14 @@
 									)
 
 }
-@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
+@using (Html.DevExtreme().NamedTemplate("VATInvoiceSubTypeContentTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
 
-												.ID("invoicecurrecy-datagrid")
+												.ID("vatinvoicetype-datagrid")
 											.DataSource(d => d.WebApi()
 											.Controller("VATModule")
-													.LoadAction("GetInvoiceCurrency")
+													.LoadAction("")
 											.LoadMode(DataSourceLoadMode.Raw)
 													///   .Key("AccountHead") //salary paid entry
 													.Key("CurrencyExchangeId")
@@ -3722,7 +3721,7 @@
 		$(document).ready(function () {
 			if (IsCurrent !== "true") {
 				$.ajax({
-					url: "/api/VATModule/GetVATInvoiceNo",
+					url: "/api/VATModule/GetVATProformaInvoiceNo",
 					type: "GET",
 					success: function (data) {
 						console.log("Success:", data);
@@ -3768,7 +3767,7 @@
 
 			  function ClientCodedataGridSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-				const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
+				const ddbInstance = $("#ddItemsReturnfromstore1").dxDropDownBox("instance");
 
 				if (selectedKey) {
 					ddbInstance.option("value", selectedKey);

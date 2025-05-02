@@ -300,7 +300,7 @@
 		.AllowUpdating(true)
 		)
 
-		.OnCellClick("function(e) {handleCellClick(e);}")
+		//.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
