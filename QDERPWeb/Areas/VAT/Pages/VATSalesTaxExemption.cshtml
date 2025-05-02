@@ -1,0 +1,115 @@
+﻿@page
+@model QD.ERP.Web.Areas.VAT.Pages.VATSalesTaxExemptionModel
+@{
+}
+<style>
+    body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    .tax-container {
+        background-color: #33b9b9;
+        border-radius: 8px;
+        padding: 25px;
+        width: 500px;
+        margin: 40px auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        color: #fff;
+    }
+
+    .title {
+        font-size: 16px;
+        margin-bottom: 15px;
+        
+    }
+
+    .radio-section {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        color: #000;
+        max-height: 200px; /* Set a max height */
+        overflow-y: auto; /* Enable vertical scroll */
+    }
+
+
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .radio-section::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .radio-section::-webkit-scrollbar-thumb {
+        background-color: #aaa;
+        border-radius: 4px;
+    }
+
+    .radio-section::-webkit-scrollbar-track {
+        background-color: #eee;
+    }
+
+</style>
+    <div class="tax-container">
+        <h4 class="title">Select the Tax Exemption Reason:</h4>
+        <div id="radioGroup" class="radio-section"></div>
+
+        <div class="button-group">
+            <div id="okButton"></div>
+            <div id="closeButton"></div>
+        </div>
+    </div>
+
+    <script>
+        const reasons = [
+            "Financial services mentioned in Article 29 of the VAT Regulations",
+            "Life insurance services mentioned in Article 29 of the VAT Regulations",
+            "Real estate transactions mentioned in Article 30 of the VAT Regulations",
+            "Export of goods",
+            "Export of services",
+            "International transport of Goods",
+            "International transport of passengers",
+            "Services directly connected and incidental to a Supply of international passenger transport",
+            "International Transport of Passengers",
+            "Services directly connected and incidental to a Supply of international passenger transport",
+            "Supply of a qualifying means of transport",
+            "Any services relating to Goods or Passenger transportation, asdefined in article tw",
+            "Medicines and medical equipment",
+            "Qualifying metals",
+            "Private Education to Saudi Citizen",
+            "Private Healthcare o Saudi Citizen"
+        ];
+
+        $("#radioGroup").dxRadioGroup({
+            items: reasons,
+            layout: "vertical",
+            value: reasons[0],
+            stylingMode: "outlined"
+        });
+
+        $("#okButton").dxButton({
+            text: "OK",
+            type: "success",
+            icon: "check",
+            onClick: function () {
+                const selected = $("#radioGroup").dxRadioGroup("instance").option("value");
+                DevExpress.ui.notify("Selected: " + selected, "success", 2000);
+            }
+        });
+
+        $("#closeButton").dxButton({
+            text: "Close",
+            type: "normal",
+            icon: "close",
+            onClick: function () {
+                DevExpress.ui.notify("Closed", "info", 2000);
+            }
+        });
+    </script>
+
+
