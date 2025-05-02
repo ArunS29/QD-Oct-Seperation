@@ -322,12 +322,18 @@
 		align-items: center;
 	}
 
+	
+
+	.mainContainer {
+		width: 95.5%;
+	}
+
 	.content-container-top {
-		width: 1840px;
+		width: 100%;
 	}
 
 	#tab-content-3 {
-		display: flex;
+	
 		justify-content: flex-end;
 		align-items: flex-start;
 		padding: 15px;
@@ -403,7 +409,7 @@
 	</div>
 </div>
 	<div class="content-container-top">
-		<div class="dx-fieldset horizontal-container">
+	<div class="dx-fieldset horizontal-container" style="width:100%;">
 			@(Html.DevExtreme().Tabs()
 						.Items(items =>
 						{
@@ -422,9 +428,9 @@
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
 			<div id="tab-content-1" class="tab-content">
-				<div class="card-container">
+			<div class="card-container">
 					<!-- First Card (Left Side) -->
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+				<table width="95%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 								<!-- 1. Purchase Voucher No (TextEdit) -->
 								<td>
@@ -549,8 +555,8 @@
 
 								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
 									<div style="display:flex; gap:5px;">
-										@(Html.DevExtreme().Button().ID("AddClient").Icon("plus").Hint("Add Description").Width(35))
-										@(Html.DevExtreme().Button().ID("EditClient").Icon("edit").Hint("Edit Description").Width(35))
+										@(Html.DevExtreme().Button().ID("AddClient").Icon("plus").Hint("Add Description").Width(60))
+										@(Html.DevExtreme().Button().ID("EditClient").Icon("edit").Hint("Edit Description").Width(60))
 									</div>
 								</td>
 
@@ -640,7 +646,7 @@
 																			.ID("ClientAddressDetails")
 																			.Label(new JS("formatMessage('Supplier Address Details')"))
 																			.ShowClearButton(true)
-																			.Width(300)
+																			.Width("100%")
 																			.LabelMode(EditorLabelMode.Outside)
 																			.DropDownOptions(o => o.Width(900).Height(600))
 																			.OpenOnFieldClick(true)
@@ -725,7 +731,7 @@
 
 			<div id="tab-content-2" class="tab-content">
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
+						<tr colspan="1">
 							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 
@@ -808,8 +814,8 @@
 						</tr>
 					</table>
 
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
+					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="2">
+						<tr colspan="2">
 							<td>
 								@(Html.DevExtreme().TextArea()
 																						.Label(new JS("formatMessage('Invoice Notes')"))
@@ -817,7 +823,7 @@
 																						.ID("txtInvoiceNotes")
 																						.Value("")
 																						.Height(40)
-																						.Width(570)
+																						.Width("100%")
 
 																						.Placeholder(new JS("formatMessage('Enter your comments here...')"))
 
@@ -826,30 +832,29 @@
 
 							</td>
 
-							<td>
+					<td>
+						<div style="display: flex; align-items: end; gap: 10px;">
+							@(
+														Html.DevExtreme().Button()
+														.ID("InvoiceNotesconvertToArabic")
+														.Icon("fas fa-language")
+														.ElementAttr(new { @class = "input-button" })
+														.OnClick("function() { convertToArabic(); }")
+														)
+							@(
+														Html.DevExtreme().TextArea()
+														.Label(new JS("formatMessage('Notes in Arabic')"))
+														.LabelMode(EditorLabelMode.Outside)
+														.ID("txtNotesinArabic")
+														.Value("")
+														.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+													    .Width("95%")
+														
+												
+														)
+						</div>
+					</td>
 
-								@(
-															Html.DevExtreme().Button()
-															.ID("InvoiceNotesconvertToArabic")
-															.Width(50)
-															.Height(30)
-															.Icon("fas fa-language") // Ensure Font Awesome class is correct
-															.ElementAttr(new { @class = "input-button" })
-															.OnClick("function() { convertToArabic(); }")
-															)
-								@(Html.DevExtreme().TextArea()
-																						.Label(new JS("formatMessage('Notes in Arabic')"))
-																						.LabelMode(EditorLabelMode.Outside)
-																						.ID("txtNotesinArabic")
-																						.Value("")
-																						.Height(40)
-																						.Width(570)
-																						.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-
-
-																						)
-
-							</td>
 
 
 						</tr>
@@ -863,14 +868,14 @@
 
 
 						<h5>Deductions:Advance / Retention</h5>
-						<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="2">
+						<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="3">
 							<tr>
 
 								<td style="width: 55%;">
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessAdvance")
 																			.Value("Less: Advance")
-																			.Width("100%")) <!-- Added Width -->
+																			.Width("90%")) <!-- Added Width -->
 								</td>
 								<td>
 									@(Html.DevExtreme().NumberBox()
@@ -878,7 +883,7 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("100%")) <!-- Fixed pixel size -->
+																			.Width("80%")) <!-- Fixed pixel size -->
 
 								</td>
 
@@ -891,7 +896,7 @@
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessOtherDeductions")
 																			.Value("Less: Other Deductions")
-																			.Width("100%")) <!-- Added Width -->
+																			.Width("90%")) <!-- Added Width -->
 								</td>
 
 								<td>
@@ -900,7 +905,7 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("100%"))
+																			.Width("80%"))
 								</td>
 
 							</tr>
@@ -911,27 +916,61 @@
 				</div>
 			</div>
 			<div id="tab-content-4" class="tab-content" style="margin-top: 10px;">
-				<div>
+			<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="2">
+
+				<tr>
+
+					<td>
+
 					@(Html.DevExtreme().CheckBox()
 												.ID("PrintOnLetterHead")
 												.Text("Print Purchase Bill in Letter Head")
 												.ElementAttr("style", "font-weight: bold; color: #0000ff; margin-bottom: 15px;")
 												)
+					</td>
+				</tr>
 
-					<div style="display: flex; justify-content: space-between; padding: 20px 10px;">
-						<!-- Verified Section -->
-						<div>
-							<label style="font-weight: bold;">Verified By:</label><br />
-							<span id="verifiedBy" style="font-style: italic;">Verified On:</span>
-						</div>
+				<tr>
+					<td>
+						
 
-						<!-- Approved Section -->
-						<div>
-							<label style="font-weight: bold;">Approved By:</label><br />
-							<span id="approvedBy" style="font-style: italic;">Approved On:</span>
-						</div>
-					</div>
-				</div>
+						@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Verified By')"))
+													.LabelMode(EditorLabelMode.Outside)
+													.ID("VerifiedBytext")
+													.Value(null) // Default value		
+													.Width("80%")
+													)
+
+						@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Verified On')"))
+													.LabelMode(EditorLabelMode.Outside)
+													.ID("VerifiedOnDate")
+													.Value(null) // Default value
+													.Width("80%")
+													)
+					</td>
+
+					<td colspan="3">																			
+						@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Approved By')"))
+													.LabelMode(EditorLabelMode.Outside)
+													.ID("ApprovedBytext")
+													.Value(null) // Default value												
+													.Width("80%")
+													@* .Disabled(true) *@
+													)
+						@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Approved On')"))
+													.LabelMode(EditorLabelMode.Outside)
+													.ID("ApprovedOntext")
+													.Value(null) // Default value												
+													.Width("80%")
+													)
+					</td>
+				</tr>
+				
+				</table>
 			</div>
 
 			<div id="tab-content-5" class="tab-content">
@@ -961,9 +1000,9 @@
 																			)
 								</td>
 
-							</tr>
+						
 
-							<tr>
+						
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.Label(new JS("formatMessage('Division')"))
@@ -984,9 +1023,7 @@
 																			.Width("100%")
 																			)
 								</td>
-							</tr>
-
-							<tr>
+							
 								<td>
 									@(Html.DevExtreme().DateBox()
 																			.Label(new JS("formatMessage('Inventory Effective Date:')"))
@@ -1009,15 +1046,7 @@
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr style="height: 60px;">
 							<td colspan="3">
-								<div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 10px 0;">
-								@* 	<button type="button" class="icon-btn-sm green" >
-							<i class="fa fa-plus"></i>
-						</button>
-
-						<!-- Edit Button (aligned left) -->
-						<button type="button" class="icon-btn-sm yellow" >
-							<i class="fa fa-pencil"></i>
-						</button> *@
+								<div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 10px 0;">						
 
 									<!-- Supplier Arabic Name DropDownBox -->
 									@(Html.DevExtreme().DropDownBox()

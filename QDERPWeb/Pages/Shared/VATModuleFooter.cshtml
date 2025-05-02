@@ -601,6 +601,29 @@
             .ShowArrowIcon(false)
             )
     </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnOk")
+            .Text("OK")
+            .Type(ButtonType.Success)
+            .StylingMode(ButtonStylingMode.Contained)
+            .Icon("check")
+            .ElementAttr(new { @class = "bold-button" }) // Optional custom class
+                                                         //.OnClick("onOkClick") // Uncomment and define this function in JS
+            )
+    </div>
+
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+            .ID("btnClose")
+            .Text("Close")
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Outlined)
+            .Icon("close")
+            .ElementAttr(new { @class = "bold-button" }) // Optional custom class
+                                                         //.OnClick("onCloseClick") // Uncomment and define this function in JS
+            )
+    </div>
 
         <div class="btn-containerIvoiceEdit">
             @(Html.DevExtreme().Button()
