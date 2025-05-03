@@ -149,6 +149,7 @@
 		.context-menu-itemInvoice:not(:last-child) {
 			border-bottom: 1px solid #e0e0e0;
 		}
+
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -248,71 +249,177 @@
 				subColumns.AddFor(m => m.AccountHead).Caption("Account Head").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.InvoiceStatus).Caption("Invoice Status").Alignment(HorizontalAlignment.Center).Visible(true);
 			});
+
 			columns.Add().Caption("Revenue & Tax Amount").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.CalcLineAmount).Caption("Amount Before Tax").Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
-				subColumns.AddFor(m => m.CalcTaxAmount).Caption("Total VAT Amount").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.TotalInvoiceAmount).Caption("Invoiced Amount").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.CalcLineAmount)
+			.Caption("Amount Before Tax")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.AllowEditing(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.CalcTaxAmount)
+			.Caption("Total VAT Amount")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalInvoiceAmount)
+			.Caption("Invoiced Amount")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
+
 			columns.Add().Caption("Revenue Classified").Columns(revenueColumns =>
 			{
 				revenueColumns.Add().Caption("Domestic").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DomesticStandartRatedRevenue).Caption("Domestic Revenue @5%").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.TotalRevenueOf10Perc).Caption("Domestic Revenue @10%").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.TotalRevenueOf15Perc).Caption("Domestic Revenue @15%").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.DomesticZeroRatedRevenue).Caption("Domestic Zero Rated Revenue").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.DomesticExemptedRevenue).Caption("Domestic Exempted Revenue").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
+			.Caption("Domestic Revenue @5%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
+			.Caption("Domestic Revenue @10%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
+			.Caption("Domestic Revenue @15%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
+			.Caption("Domestic Zero Rated Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticExemptedRevenue)
+			.Caption("Domestic Exempted Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
+
 				revenueColumns.Add().Caption("GCC Countries").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedRevenue).Caption("GCC Revenue").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.GccstandardRatedRevenue)
+			.Caption("GCC Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
+
 				revenueColumns.Add().Caption("Other Countries").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.ExportsRevenue).Caption("Exports Revenue").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.ExportsRevenue)
+			.Caption("Exports Revenue")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
+
 			columns.Add().Caption("VAT Amount Classified").Columns(vatColumns =>
 			{
 				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DomesticStandartRatedTax).Caption("Domestic VAT @5%").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.TotalTaxOf10Perc).Caption("Domestic VAT @10%").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.TotalTaxOf15Perc).Caption("Domestic VAT @15%").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.DomesticZeroRatedTax).Caption("Domestic Zero Rated VAT").Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.DomesticExemptedTax).Caption("Domestic Exempted VAT").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.DomesticStandartRatedTax)
+			.Caption("Domestic VAT @5%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalTaxOf10Perc)
+			.Caption("Domestic VAT @10%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.TotalTaxOf15Perc)
+			.Caption("Domestic VAT @15%")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticZeroRatedTax)
+			.Caption("Domestic Zero Rated VAT")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+				subColumns.AddFor(m => m.DomesticExemptedTax)
+			.Caption("Domestic Exempted VAT")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
+
 				vatColumns.Add().Caption("GCC VAT").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedTax).Caption("GCC Tax").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.GccstandardRatedTax)
+			.Caption("GCC Tax")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
+
 				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.ExportsTax).Caption("Exports Tax").Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.ExportsTax)
+			.Caption("Exports Tax")
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
-
-
 		})
-		.Editing(editing => editing
+
+		@* .Editing(editing => editing
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
-		)
-
-		//.OnCellClick("function(e) {handleCellClick(e);}")
+		) *@.Height(680) // <<< fixed height
+		@* .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@ // or .Standard
+		.ColumnAutoWidth(true)
+		.WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Height(600)
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
+		.Grouping(grouping => grouping.AutoExpandAll(true))
 		@* .ColumnAutoWidth(true) *@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.Width("100%")
+		.ColumnAutoWidth(true)
+@* 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))*@ 
+@* 
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(true))
+		.Height(680)
+		.ColumnAutoWidth(true)
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
+
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.Grouping(grouping => grouping.AutoExpandAll(true))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.Width("100%") *@
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>

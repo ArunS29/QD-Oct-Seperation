@@ -239,7 +239,10 @@
 			columns.Add().Caption("Purchase Details").Columns(detail =>
 			{
 				detail.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No");
-				detail.AddFor(m => m.PurchaseVoucherDate).Caption("Purchase Voucher Date");
+				detail.AddFor(m => m.PurchaseVoucherDate)
+			.Caption("Purchase Voucher Date")
+			.Format("dd-MMM-yyyy");
+
 				detail.AddFor(m => m.AccountHead).Caption("Account Head");
 				detail.AddFor(m => m.VoucherStatus).Caption("Voucher Status");
 			});
@@ -247,9 +250,12 @@
 			// 🔹 PURCHASE & TAX AMOUNT
 			columns.Add().Caption("Purchase & Tax Amount").Columns(amount =>
 			{
-				amount.AddFor(m => m.CalcLineAmount).Caption("Amount Before Tax");
-				amount.AddFor(m => m.CalcTaxAmount).Caption("Total VAT Amount");
-				amount.AddFor(m => m.TotalPurchaseAmount).Caption("Bill Amount");
+				amount.AddFor(m => m.CalcLineAmount).Caption("Amount Before Tax")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				amount.AddFor(m => m.CalcTaxAmount).Caption("Total VAT Amount")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				amount.AddFor(m => m.TotalPurchaseAmount).Caption("Bill Amount")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 			// 🔹 PURCHASE CLASSIFIED - Domestic & Imports
@@ -258,22 +264,33 @@
 				// Domestic
 				pclass.Add().Caption("Domestic").Columns(domestic =>
 			{
-				domestic.AddFor(m => m.DomesticStandardPurchases).Caption("Domestic Purchases @5%");
-				domestic.AddFor(m => m.TotalDspurchase10Perc).Caption("Domestic Purchases @10%");
-				domestic.AddFor(m => m.TotalDspurchase15Perc).Caption("Domestic Purchases @15%");
-				domestic.AddFor(m => m.DomesticZeroTaxPurchases).Caption("Domestic Zero Rated Purchases");
-				domestic.AddFor(m => m.DomesticExemptedTaxPurchases).Caption("Domestic Exempted Purchases");
+				domestic.AddFor(m => m.DomesticStandardPurchases).Caption("Domestic Purchases @5%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domestic.AddFor(m => m.TotalDspurchase10Perc).Caption("Domestic Purchases @10%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domestic.AddFor(m => m.TotalDspurchase15Perc).Caption("Domestic Purchases @15%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domestic.AddFor(m => m.DomesticZeroTaxPurchases).Caption("Domestic Zero Rated Purchases")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domestic.AddFor(m => m.DomesticExemptedTaxPurchases).Caption("Domestic Exempted Purchases")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 				// Imports
 				pclass.Add().Caption("Imports").Columns(imports =>
 			{
-				imports.AddFor(m => m.ImportsVatpaidAtCustoms).Caption("Imports Purchases thru Customs 5%");
-				imports.AddFor(m => m.TotalImportPurchase10Perc).Caption("Imports Purchases thru Customs 10%");
-				imports.AddFor(m => m.TotalImportPurchase15Perc).Caption("Imports Purchases thru Customs 15%");
-				imports.AddFor(m => m.ImportsVatthruRcm).Caption("Imports RCM 5%");
-				imports.AddFor(m => m.TotalRcmpurchase10Perc).Caption("Imports RCM 10%");
-				imports.AddFor(m => m.TotalRcmpurchase15Perc).Caption("Imports RCM 15%");
+				imports.AddFor(m => m.ImportsVatpaidAtCustoms).Caption("Imports Purchases thru Customs 5%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				imports.AddFor(m => m.TotalImportPurchase10Perc).Caption("Imports Purchases thru Customs 10%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				imports.AddFor(m => m.TotalImportPurchase15Perc).Caption("Imports Purchases thru Customs 15%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				imports.AddFor(m => m.ImportsVatthruRcm).Caption("Imports RCM 5%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				imports.AddFor(m => m.TotalRcmpurchase10Perc).Caption("Imports RCM 10%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				imports.AddFor(m => m.TotalRcmpurchase15Perc).Caption("Imports RCM 15%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
 
@@ -283,40 +300,47 @@
 				// Domestic VAT
 				vat.Add().Caption("Domestic VAT").Columns(domesticVAT =>
 			{
-				domesticVAT.AddFor(m => m.DomesticStandardPurTax).Caption("Domestic Purchases VAT @5%");
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc).Caption("Domestic Purchases VAT @10%");
-				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc).Caption("Domestic Purchases VAT @15%");
-				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax).Caption("Domestic Zero Rated VAT");
-				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax).Caption("Domestic Exempted VAT");
+				domesticVAT.AddFor(m => m.DomesticStandardPurTax).Caption("Domestic Purchases VAT @5%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc).Caption("Domestic Purchases VAT @10%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc).Caption("Domestic Purchases VAT @15%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax).Caption("Domestic Zero Rated VAT")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax).Caption("Domestic Exempted VAT")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 				// Imports VAT
 				vat.Add().Caption("Imports VAT").Columns(importsVAT =>
 			{
-				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax).Caption("VAT Paid in Customs 5%");
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc).Caption("VAT Paid in Customs 10%");
-				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc).Caption("VAT Paid in Customs 15%");
-				importsVAT.AddFor(m => m.ImportsVatthruRcmtax).Caption("VAT thru RCM 5%");
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc).Caption("VAT thru RCM 10%");
-				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc).Caption("VAT thru RCM 15%");
+				importsVAT.AddFor(m => m.ImportsVatpaidAtCustomsTax).Caption("VAT Paid in Customs 5%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc).Caption("VAT Paid in Customs 10%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc).Caption("VAT Paid in Customs 15%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				importsVAT.AddFor(m => m.ImportsVatthruRcmtax).Caption("VAT thru RCM 5%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc).Caption("VAT thru RCM 10%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc).Caption("VAT thru RCM 15%")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
 		})
-
-		
-		.Editing(editing => editing
+		@* .Editing(editing => editing
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
-		)
-
-		.OnCellClick("function(e) {handleCellClick(e);}")		
+		) *@
+		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
 		.Height(630)
-		@* .ColumnAutoWidth(true) *@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
@@ -326,100 +350,97 @@
 		{
 			summary.TotalItems(totalItems =>
 			{
-
 				totalItems.Add()
 			.Column("AccountHead")
 			.SummaryType(SummaryType.Count)
 			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
 
-
 				totalItems.Add()
 			.Column("CalcLineAmount")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("CalcTaxAmount")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("TotalInvoiceAmount")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
 				totalItems.Add()
 			.Column("DomesticStandartRatedRevenue")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("TotalRevenueOf10Perc")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("TotalRevenueOf15Perc")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("DomesticZeroRatedRevenue")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("DomesticExemptedRevenue")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("GccstandardRatedRevenue")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("ExportsRevenue")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("DomesticStandartRatedTax")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("TotalTaxOf10Perc")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("TotalTaxOf15Perc")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("DomesticZeroRatedTax")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("DomesticExemptedTax")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("GccstandardRatedTax")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add()
 			.Column("ExportsTax")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 		})
-
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
@@ -432,10 +453,8 @@
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
-
-
-
 </div>
+
 
 
 <div id="overlay" class="overlay">

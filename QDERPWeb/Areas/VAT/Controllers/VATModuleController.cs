@@ -119,7 +119,34 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
+		[HttpGet]
+		public async Task<ActionResult> GetProfitandloss(string frmDate, string toDate)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				try
+				{
+					if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+						return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
 
+					if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+						return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+					// Fetch records based on the date range
+					var vatInvoices = await dbContext.Qry201617vatinvoiceInDetails
+						.FromSqlRaw("SELECT * FROM Qry201_617vatinvoiceInDetails WHERE InvoiceDate BETWEEN @p0 AND @p1", from, to)
+						.ToListAsync();
+
+					return Json(vatInvoices);
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(500, $"Internal server error: {ex.Message}");
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
 		//[HttpGet]
 		//public async Task<ActionResult> GetVATInvoiceNo(DataSourceLoadOptions loadOptions)
 		//{
@@ -2068,7 +2095,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 		}
 		[HttpGet]
-		public async Task<IActionResult> GetCompanyPurchaseBranch(DataSourceLoadOptions loadOptions)
+		public async Task<IActionResult> GetCompanyBranch(DataSourceLoadOptions loadOptions)
 		{
 			try
 			{
@@ -3085,196 +3112,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult<string> GetVATProformaInvoiceNo()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                   
-                    var company = dbContext.Tbl901CompanyDetails
-                                           .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
 
         // GET api/VATModule/GetInvoiceApprovalStatus/{invoiceNo}
-      
-                  
-                    if (company == null)
-                    {
-                        return NotFound("Company not found.");
-                    }
-
-                    string invoiceAbbrv = company.InvoiceAbbrv;
-                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-
-                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-
-                    DateTime invoiceDate = DateTime.Now;
-
-
-
-                    // Step 4: Generate New Debit Note No
-                    string newDebitNoteNo = GetNewProformaInvoiceNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear);
-
-                    return Ok(newDebitNoteNo);
-                }
-                else
-                {
-                    return BadRequest("Tenant or DB Context not found.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error: " + ex.Message);
-            }
-        }
-
-        public string GetNewProformaInvoiceNo(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear)
-        {
-            string strYear = "";
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    int maxNumber = 0;
-
-                    var query = dbContext.Tbl20181ProformaInvoiceMasters.AsQueryable();
-
-                    if (isResetByYear)
-                    {
-                        query = query.Where(d => d.ProformaInvoiceDate.HasValue && d.ProformaInvoiceDate.Value.Year == invoiceDate.Year);
-                    }
-
-                    maxNumber = query
-     .Select(d => d.ProformaInvoiceNo)
-     .Where(no => !string.IsNullOrEmpty(no) && no.Length >= 6)
-     .AsEnumerable() // Important to move to memory
-     .Select(no => int.TryParse(no.Substring(no.Length - 6), out int number) ? number : 0)
-     .DefaultIfEmpty(0)
-     .Max();
-
-
-                    maxNumber += 1;
-
-                    // Prepare Year Part
-                    strYear = invoiceDate.Year.ToString();
-                    if (yearInDigit > 0 && yearInDigit <= 4)
-                    {
-                        strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-                    }
-                    else if (yearInDigit <= 0)
-                    {
-                        strYear = "";
-                    }
-
-                    // Final Invoice No
-                    string newProformaInvoiceNo = $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "PRO" : invoiceAbbr)}-{strYear}-{maxNumber.ToString().PadLeft(6, '0')}";
-                    return newProformaInvoiceNo;
-                }
-                else
-                {
-                    throw new Exception("Tenant or DbContext not found");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Fallback Invoice No in case of any error
-                strYear = invoiceDate.Year.ToString();
-                if (yearInDigit > 0 && yearInDigit <= 4)
-                {
-                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-                }
-                else
-                {
-                    strYear = "";
-                }
-
-                return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "PRO" : invoiceAbbr)}-{strYear}-000001";
-            }
-        }
-
-		[HttpGet]
-        public async Task<IActionResult> GetProformaClientName()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var result = await dbContext.Qry10143SundryDebtors
-                        .Select(g => new
-                        {
-                            g.AccountId,           // Value member for GridLookUpEdit
-                            g.AccountHead,     // Display member
-							g.AccountHeadArabic
-                            
-                           
-                        })
-                        .ToListAsync();
-
-                    return Ok(result);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetTaxCategory()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var result = await dbContext.Tbl20163VatTaxSlabs
-                        .Select(g => new
-                        {
-                            g.TaxCategoryId,           // Value member for GridLookUpEdit
-                            g.TaxCategory     // Display member
-
-                        })
-                        .ToListAsync();
-
-                    return Ok(result);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetVATInvoiceSubType()
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var result = await dbContext.Tbl00108InvoiceSubTypeCodes
-                        .Select(g => new
-                        {
-                            g.InvoiceSubType,           // Value member for GridLookUpEdit
-                            g.InvoiceSubTypeCode     // Display member
-
-                        })
-                        .ToListAsync();
-
-                    return Ok(result);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
         [HttpGet("{invoiceNo}")]
         public async Task<ActionResult> GetInvoiceApprovalStatus(string invoiceNo)
         {
@@ -3282,6 +3121,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 try
                 {
+                    // Check if invoiceNo is valid
+                    if (string.IsNullOrEmpty(invoiceNo))
+                    {
+                        return BadRequest("Invoice number cannot be null or empty.");
+                    }
+
 
                     // Query the invoice approval status from tbl20161VATInvoiceMaster
                     var invoice = await dbContext.Tbl20161VatinvoiceMasters
