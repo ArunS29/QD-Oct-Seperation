@@ -311,7 +311,7 @@
         .toggle-btn {
             position: fixed;
             top: 70px;
-            /* left: calc(var(--sidebar-width, 17em)); /* Use the sidebar width */
+            left: calc(var(--sidebar-width, 4em)); /* Use the sidebar width */
             width: 30px;
             height: 30px;
             background-color: var(--header-color);
@@ -332,7 +332,7 @@
 
         /* Sidebar hidden state */
         .sidebar.hidden ~ .toggle-btn {
-            left: calc(var(--sidebar-width, 60px)); /* Adjust position dynamically */
+            left: calc(var(--sidebar-width, 4em)); /* Adjust position dynamically */
         }
 
 
@@ -2350,7 +2350,7 @@
             sidebar2.style.display = 'none'; // Set display to none for sidebar2
 
             // Update the CSS variable based on the sidebar state
-            root.style.setProperty('--sidebar-width', '0px'); // No sidebar
+            root.style.setProperty('--sidebar-width', '4em'); // No sidebar
             sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
 
             // Adjust the toggle button symbol
@@ -2422,7 +2422,7 @@
                 root.style.setProperty('--sidebar-width', '80px'); // Sidebar 2 width
                 //sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
             } else if (sidebar.classList.contains('hidden')) {
-                root.style.setProperty('--sidebar-width', '0px'); // No sidebar
+                root.style.setProperty('--sidebar-width', '4em'); // No sidebar
                 //  sidebar2.style.marginTop = '70px'; // Adjust Sidebar 2 margin
             } else {
                 root.style.setProperty('--sidebar-width', '256px'); // Sidebar 1 width
