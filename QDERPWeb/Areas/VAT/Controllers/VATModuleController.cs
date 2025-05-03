@@ -1060,8 +1060,54 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Json(new { success = false, message = "Unable to get tenant context" });
 		}
+		//Unitofmeasure
+        [HttpPost]
+        public ActionResult UpdateUom(byte unitCode, string unitType, string unitDesc, string unitDescAr)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                // Validate input
+                if (string.IsNullOrWhiteSpace(unitType) || string.IsNullOrWhiteSpace(unitDesc) || string.IsNullOrWhiteSpace(unitDescAr))
+                {
+                    return Json(new { success = false, message = "All fields are required." });
+                }
+                unitType = unitType.Trim();
+                unitDesc = unitDesc.Trim();
+                unitDescAr = unitDescAr.Trim();
 
-		[HttpGet]
+                // Find existing record
+                var existing = dbContext.Tbl40111PropertyUnitCodes.FirstOrDefault(u => u.UnitCode == unitCode);
+                if (existing == null)
+                {
+                    return Json(new { success = false, message = "Unit not found." });
+                }
+
+                // Check for duplicate values (in other records)
+                bool isDuplicate = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
+                    u.UnitCode != unitCode &&
+                    u.UnitType.ToLower() == unitType.ToLower() &&
+                    u.UnitDesc.ToLower() == unitDesc.ToLower() &&
+                    u.UnitDescAr.ToLower() == unitDescAr.ToLower());
+
+                if (isDuplicate)
+                {
+                    return Json(new { success = false, message = "Another unit with the same values already exists." });
+                }
+
+                // Apply update
+                existing.UnitType = unitType;
+                existing.UnitDesc = unitDesc;
+                existing.UnitDescAr = unitDescAr;
+
+                dbContext.SaveChanges();
+
+                return Json(new { success = true, message = "Unit updated successfully." });
+            }
+
+            return Json(new { success = false, message = "Unable to get tenant context." });
+        }
+
+        [HttpGet]
 		public IActionResult GetVatTaxSlabs()
 		{
 			try

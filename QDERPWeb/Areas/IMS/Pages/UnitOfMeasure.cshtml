@@ -3,304 +3,373 @@
 @{
 }
 
-<style type="text/css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Goods and Services</title>
+    <style>
+        .dx-datagrid-column-chooser-button {
+            display: none !important;
+        }
+
+        .dx-fieldset {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            background-color: transparent;
+            width: 250px;
+            height:10%;
+
+        }
+       
+
+        .dx-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-left:10px;
+        }
+
+        .field-label {
+            font-weight: bold;
+        }
+
+        .aligned-input {
+            width: 100%;
+        }
+
+    /*     .dx-card {
+            padding: 20px;
+            background-color: transparent;
+            width: 100%;
+            margin: auto;
+            border-radius: 8px;
+        } */
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dx-textarea {
+            width: 100%;
+            height: 60px;
+        }
+        .dx-card{
+            width : 1000px;
+        }
+
+        .limited-footer .btn-container:not(:has(#btnSave,#btnBack)) {
+            display: none !important;
+        }
+
+        .container {
+            display: none !important;
+        }
+
+        .frame {
+            display: none !important;
+        }
+
+        .footerContainer {
+            display: none !important;
+        }
+
+        .bodyContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .mainContainer {
+            margin-top: 1em;
+            width:98%;
+        }
+
+        .playIcon {
+            display:  none;
+
+        }
+    </style>
+   
+</head>
+<body>
+        <h3>Database Master Module:Unit of Measure</h3>
+        <!-- Row 1: Type a New UOM & Add to the Existing List: -->
+            <div class="dx-field">
+                <table>
+                    <tr>
+                        <td colspan="2">
+                            
+                            @(Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Type a New UOM & Add to the Existing List:')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                            .ID("txtGoodsCode7").Width("69%"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @(Html.DevExtreme().TextArea()
+                                .Label(new JS("formatMessage('UoM Description:')"))
+                                .LabelMode(EditorLabelMode.Outside)
+                            .ID("txtDescription8").Width("95%").Height(60))
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 10px; width: 100%;">
+                                <!-- Language Button -->
+                                <div style="padding-top:25px;">
+                                    @(Html.DevExtreme().Button()
+                                        .ID("convertToArabic1")
+                                        .Width(60)
+                                        .Height(40)
+                                        .Icon("fas fa-language")
+                                        .ElementAttr(new { @class = "input-button" })
+                                        .OnClick("function() { convertToArabic(); }"))
+                                </div>
+
+                                <!-- Arabic TextArea -->
+                                <div style="flex: 1;">
+                                    @(Html.DevExtreme().TextArea()
+                                        .Label(new JS("formatMessage('UoM Description(in Arabic):')"))
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        .ID("txtDescriptionArabic")
+                                        .Width("100%")
+                                        .InputAttr("dir", "rtl")
+                                        .Height(45))
+                                </div>
+                                <div style="flex: 1; padding-top:25px;">
+                                    @(Html.DevExtreme().Button()
+                                        .Text(new JS("formatMessage('Add')"))
+                                        .ID("btnAddGroup3").Icon("plus").Height(60)
+                                        .OnClick("addUomToDatabase"))
+                                </div>
+                            </div>
+
+                        </td>
+    
+                    </tr>
+                </table>
+            </div>
+    <div class="dx-field ledgerResult">
+        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl40111PropertyUnitCode>()
+
+            .ID("dataGrid")
+            .RemoteOperations(false)
+            .DataSource(d => d.WebApi()
+            .Controller("VATModule") 
+            .LoadAction("GetAccountGroups") 
+            .LoadMode(DataSourceLoadMode.Raw)
+
+            )
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("UnitCode")
+                    .Caption(new JS("formatMessage('ID')"))
+                    .Width(134)
+                    .VisibleIndex(0)
+                    .Alignment(HorizontalAlignment.Center);
+
+                    columns.Add().DataField("UnitType")
+                    .Caption(new JS("formatMessage('Unit Type')"))
+                    .Width(378)
+                    .VisibleIndex(1)
+                    .Alignment(HorizontalAlignment.Center);
+
+                    columns.Add().DataField("UnitDesc")
+                    .Caption(new JS("formatMessage('Description')"))
+                    .Width(349)
+                    .VisibleIndex(2)
+                    .Alignment(HorizontalAlignment.Center);
+
+                    columns.Add().DataField("UnitDescAr")
+                    .Caption(new JS("formatMessage('Description (Arabic)')"))
+                    .Width(371)
+                    .VisibleIndex(3)
+                    .Alignment(HorizontalAlignment.Center);
+                })
+                .KeyExpr("UnitCode") // 👈 Must be unique
+                .Editing(editing => editing
+                .Mode(GridEditMode.Batch)
+                .AllowUpdating(true)
+
+                )
+                .Toolbar(toolbar =>
+                {
+                    toolbar.Items(items => { }); // hide default toolbar
+                })
+                .OnRowUpdating("onUnitRowUpdating")
+                .Toolbar(toolbar =>
+                {
+                    toolbar.Items(items => { }); // this disables default toolbar items
+                })
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .Paging(p => p.Enabled(false))
+            .HeaderFilter(filter => filter.Visible(false))
+            .Height(400)
+            .FilterRow(filterRow => filterRow.Visible(false))
+            .GroupPanel(groupPanel => groupPanel.Visible(false))
+            .ShowBorders(true)
+            .ShowRowLines(true)
+                .ColumnChooser(c => c.Enabled(false))
+            .Width("100%")
+
+            )
+
+   
 
 
-	.overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5); /* Transparent background */
-
-		z-index: 1000;
-	}
-	/* Ensure word wrap and center alignment for grid headers */
-	.header-wrap {
-		white-space: normal !important; /* Enable word wrap */
-		text-align: center !important; /* Center align text */
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		font-weight: bold;
-	}
-
-	/* Ensure text in grid headers is always centered */
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		white-space: normal !important;
-		text-align: center !important;
-	}
-
-	/* Ensure column headers text aligns to center */
-	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
-		text-align: center !important;
-	}
-
-	.overlay-content {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		height: 80%;
-		background: #fff;
-		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-		border-radius: 8px;
-		overflow: hidden;
-	}
-
-	#overlay-frame {
-		width: 100%;
-		height: 100%;
-	}
-
-	.Maincontainer.Maincontainer {
-		background-color: white;
-	}
-
-	.close-btn {
-		position: absolute;
-		top: 10px;
-		right: 20px;
-		font-size: 30px;
-		cursor: pointer;
-	}
+    </div>
 
 
-
-
-	/* Toolbar Styling */
-	.custom-toolbar {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-	}
-
-	.filter-btn {
-		background-color: #007bff;
-		color: white;
-		border: none;
-		padding: 6px 12px;
-		border-radius: 5px;
-		cursor: pointer;
-		font-family: 'Inter', sans-serif;
-	}
-
-		.filter-btn:hover {
-			background-color: #0056b3;
-		}
-
-	/* Text Editor Styling */
-	.dx-texteditor {
-		background-color: #909ead00 !important; /* Light background */
-		border: 1px solid #d6e4f0 !important; /* Soft border */
-		border-radius: 4px !important; /* Smaller rounded corners */
-
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
-		font-size: 14px !important; /* Slightly smaller font */
-		transition: all 0.2s ease-in-out !important;
-		height: 39px !important; /* Fixed height */
-	}
-
-		/* Hover and Focus States */
-		.dx-texteditor:hover,
-		.dx-texteditor.dx-state-hover,
-		.dx-button:hover {
-			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-			border-color: #86b7fe !important; /* Highlight border */
-		}
-
-		.dx-texteditor.dx-state-focused {
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
-			border-color: #508ae1 !important;
-		}
-
-	#dataGrid .dx-header-row .dx-datagrid-text-content {
-		font-weight: bold;
-		color: black;
-	}
-
-
-	.dx-datagrid-header-panel {
-		background-color: #909ead00;
-		/* display:none; */
-	}
-
-	.no-border-input {
-		border: none !important;
-		outline: none !important;
-		box-shadow: none !important;
-		background: transparent !important;
-		font-weight: bold;
-		font-size: 16px;
-		color: black;
-		pointer-events: none; /* Prevents hover and click effects */
-	}
-
-	.dx-button-mode-contained.dx-button-default {
-		color: black;
-	}
-
-	.dx-button-mode-contained.dx-button-success {
-		color: black;
-	}
-
-	.container {
-		display: none !important;
-	}
-
-	.frame {
-		display: none !important;
-	}
-
-	.footerContainer {
-		display: none !important;
-	}
-
-	.bodyContainer {
-		display: flex;
-		justify-content: center;
-	}
-
-	.imagecontainer {
-		border-bottom: 2px;
-	}
-
-	.mainContainer {
-		margin-top: 1em;
-		width: 100%;
-	}
-
-	.playIcon {
-		display: none;
-	}
-
-	
-</style>
-
-<div class="title"> 
- 	<div class="header-container" style="text-align:center;">
-		<div id="UnitOfMeasure" class="no-border-input"></div>
-	</div> 
- </div>
-<!-- Filter/Info Section -->
-
-
-<div class="dx-fieldset" style="padding: 20px;">
-	<div class="store-master-container">
-		<!-- Store Name Input -->
-		<div>
-		<div class="form-row">
-			<label class="form-label">Type a New Store & Add to the Existing List:</label>
-			@(Html.DevExtreme().TextBox().Width("100%"))
-		</div>
-
-		<!-- Store Code & Cost Center -->
-			<div style="display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;">
-
-				<!-- UoM Description -->
-				<div style="flex: 1;">
-					<label class="form-label">UoM Description</label>
-					@(Html.DevExtreme().TextBox()
-												.ID("uomDescriptionInput")
-												.Width("100%"))
-				</div>
-
-				<!-- Arabic Convert Button -->
-				<div>
-					@(Html.DevExtreme().Button()
-												.ID("convertToArabic2")
-												.Height(39)
-												.Icon("fas fa-language")
-												.ElementAttr(new { @class = "input-button" }))
-				</div>
-				<!-- Store Code -->
-				<div style="flex: 1;">
-					<label class="form-label">Store Code</label>
-					@(Html.DevExtreme().TextBox()
-												.ID("storeCodeInput")
-												.Width("80%"))
-				</div>
-				<!-- Add Button -->
-				<div>
-					@(Html.DevExtreme().Button()
-												.Text("Add")
-												.Type(ButtonType.Success)
-												.Icon("plus")
-												.Width("100%"))
-				</div>
-
-			</div>
-				</div>
-				</div>
-				<br/>
-		<!-- Data Grid -->
-		<div>
-			@(Html.DevExtreme().DataGrid()
-						.ID("unitOfMeasureGrid")
-						.Height(400)
-						.Width("100%")
-						.ShowBorders(true)
-						.ColumnAutoWidth(true)
-						.ShowColumnLines(true)
-						.ShowRowLines(true)
-						.RowAlternationEnabled(true)
-						.Columns(columns =>
-						{
-							columns.Add().DataField("ID").Caption("ID").Width(70)
-							.Alignment(HorizontalAlignment.Center);
-
-							columns.Add().DataField("UnitType").Caption("Unit Type").Width(150)
-							.Alignment(HorizontalAlignment.Center);
-
-							columns.Add().DataField("Description").Caption("Description").Width(150)
-							.Alignment(HorizontalAlignment.Center);
-
-							columns.Add().DataField("DescriptionArabic").Caption("Desc. (in Arabic) / وحدة القياس").Width(180)
-							.Alignment(HorizontalAlignment.Center);
-						})
-				.ShowColumnLines(true)
-				.ShowRowLines(true)
-				.RowAlternationEnabled(true)
-				.ShowColumnHeaders(true)
-				.ColumnAutoWidth(true)
-				.AllowColumnReordering(true) 
-				.AllowColumnResizing(true)  
-				.ColumnFixing(fixing => fixing.Enabled(true)) 
-				.GroupPanel(groupPanel => groupPanel.Visible(false))
-				.ShowBorders(true)
-				)
-						
-		</div>
-		<br />
-		<!-- Buttons -->
-		<div style="display:flex; gap:1%;">
-			<div class="action-buttons">
-				@(Html.DevExtreme().Button()
-								.Text("Update")
-								.Icon("save")
-								.Width(130)
-								.Type(ButtonType.Default))
-			</div>
-			<div class="action-buttons">
-				@(Html.DevExtreme().Button()
-								.Text("Back")
-								.Icon("arrowleft")
-								.Width(120)
-								.Type(ButtonType.Default))
-			</div>
-		</div>
-		</div>
+    <div class="Head">
+        <div class="limited-footer">
+            @await Html.PartialAsync("VATModuleFooter")
+        </div>
+    </div>
+</body>
+</html>
 <script>
-		 $(function () {
-	$("#UnitOfMeasure").dxTextBox({
-		text: formatMessage("Unit Of Measure"),
-			readOnly: true,
-			onContentReady: function (e) {
-			$(e.element).addClass("dx-textbox-heading");
-			}
-			});
-		});
+     $(document).ready(function () {
+
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+            if (!$(this).find("#btnSave, #btnBack").length) {
+                $(this).remove();
+            }
+
+        });
+
+        // Handle Back button click
+        $(document).on('click', '#btnBack', function () {
+            window.history.back();
+        });
+
+    });
+
+
+        async function convertToArabic() {
+            const englishBox = $("#txtDescription8").dxTextArea("instance");
+            const arabicBox = $("#txtDescriptionArabic").dxTextArea("instance");
+
+            if (!englishBox || !arabicBox) {
+                console.error("TextAreas not initialized.");
+                return;
+            }
+
+            const englishText = englishBox.option("value");
+
+            if (!englishText || englishText.trim() === "") {
+                alert("Please enter the UoM description to translate.");
+                return;
+            }
+
+            try {
+                const translatedText = await translateToArabic(englishText);
+                arabicBox.option("value", translatedText);
+            } catch (error) {
+                console.error("Translation failed", error);
+                alert("Translation failed. Please try again.");
+            }
+        }
+
+    async function translateToArabic(text) {
+        try {
+            const response = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+            );
+
+            if (!response.ok) {
+                throw new Error("Translation API request failed.");
+            }
+
+            const data = await response.json();
+            console.log("Translation result:", data);
+
+            return data?.responseData?.translatedText || "Translation not found";
+        } catch (error) {
+            console.error("Translation failed:", error);
+            throw error;
+        }
+    }
+
+    function addUomToDatabase() {
+        const unitType = $("#txtGoodsCode7").dxTextBox("instance").option("value");
+        const unitDesc = $("#txtDescription8").dxTextArea("instance").option("value");
+        const unitDescAr = $("#txtDescriptionArabic").dxTextArea("instance").option("value");
+
+        if (!unitType || !unitDesc) {
+            DevExpress.ui.notify("Please enter both Unit Type and Description.", "error", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: `/api/VATModule/AddUom`,
+            type: 'POST',
+            data: {
+                unitType: unitType,
+                unitDesc: unitDesc,
+                unitDescAr: unitDescAr
+            },
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify("UOM added successfully!", "success", 2000);
+
+                    // Clear inputs
+                    $("#txtGoodsCode7").dxTextBox("instance").option("value", "");
+                    $("#txtDescription8").dxTextArea("instance").option("value", "");
+                    $("#txtDescriptionArabic").dxTextArea("instance").option("value", "");
+
+                    // ✅ Refresh the grid
+                    $("#dataGrid").dxDataGrid("instance").refresh();
+                } else {
+                    // ❌ Notify the user of the exact backend error message
+                    DevExpress.ui.notify(response.message || "This Unit Rate Method already exists.", "error", 3000);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("An error occurred while adding the UOM.", "error", 3000);
+            }
+        });
+    }
+    $("#btnSave").on("click", function () {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        grid.saveEditData(); // Triggers onUnitRowUpdating
+    });
+
+
+    function onUnitRowUpdating(e) {
+        debugger;
+        const data = {
+            unitCode: e.oldData.UnitCode, // Include when updating
+            unitType: e.newData.UnitType ?? e.oldData.UnitType,
+            unitDesc: e.newData.UnitDesc ?? e.oldData.UnitDesc,
+            unitDescAr: e.newData.UnitDescAr ?? e.oldData.UnitDescAr
+        };
+
+        return $.ajax({
+            url: '/api/VATModule/UpdateUom',
+            method: "POST",
+            data: data, // No need to stringify if not using JSON
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify(response.message, "success", 1500);
+                    $("#dataGrid").dxDataGrid("instance").refresh();
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 1500);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Server error", "error", 1500);
+            }
+        });
+    }
+
+    $(function () {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        grid.hideColumnChooser(); // just in case it was opened previously
+    });
+
 </script>
