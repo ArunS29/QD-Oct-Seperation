@@ -350,97 +350,52 @@
 		{
 			summary.TotalItems(totalItems =>
 			{
+				// Count
 				totalItems.Add()
 			.Column("AccountHead")
 			.SummaryType(SummaryType.Count)
 			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
 
-				totalItems.Add()
-			.Column("CalcLineAmount")
-			.SummaryType(SummaryType.Sum)
+				// PURCHASE & TAX AMOUNT
+				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalPurchaseAmount").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
-				totalItems.Add()
-			.Column("CalcTaxAmount")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				// REVENUE CLASSIFIED - Domestic
+				totalItems.Add().Column("DomesticStandardPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
+				totalItems.Add().Column("TotalDspurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
+				totalItems.Add().Column("TotalDspurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
+				totalItems.Add().Column("DomesticZeroTaxPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
+				totalItems.Add().Column("DomesticExemptedTaxPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
 
-				totalItems.Add()
-			.Column("TotalInvoiceAmount")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				// REVENUE CLASSIFIED - Imports
+				totalItems.Add().Column("ImportsVatpaidAtCustoms").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
+				totalItems.Add().Column("TotalImportPurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
+				totalItems.Add().Column("TotalImportPurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
+				totalItems.Add().Column("ImportsVatthruRcm").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalRcmpurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalRcmpurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
-				totalItems.Add()
-			.Column("DomesticStandartRatedRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				// VAT CLASSIFIED - Domestic
+				totalItems.Add().Column("DomesticStandardPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalDspurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalDspurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("DomesticZeroTaxPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("DomesticExemptedTaxPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
-				totalItems.Add()
-			.Column("TotalRevenueOf10Perc")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("TotalRevenueOf15Perc")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("DomesticZeroRatedRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("DomesticExemptedRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("GccstandardRatedRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("ExportsRevenue")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("DomesticStandartRatedTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("TotalTaxOf10Perc")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("TotalTaxOf15Perc")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("DomesticZeroRatedTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("DomesticExemptedTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("GccstandardRatedTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
-				totalItems.Add()
-			.Column("ExportsTax")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				// VAT CLASSIFIED - Imports
+				totalItems.Add().Column("ImportsVatpaidAtCustomsTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalImportPurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalImportPurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("ImportsVatthruRcmtax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalRcmpurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("TotalRcmpurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 		})
+
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
