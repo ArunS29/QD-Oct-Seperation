@@ -79,21 +79,13 @@
 		background-color: transparent !important;
 	}
 
-
-
-
 	.address-form-container {
 		padding: 1px;
 		box-sizing: border-box;
 		width: 100%;
 		height: 100%;
 		font-size: 11px;
-	}
-
-	.address-form-scroll {
-		overflow-x: auto; /* enables horizontal scroll */
-		overflow-y: auto; /* enables vertical scroll */
-		 
+		
 	}
 
 	.address-form-table {
@@ -103,9 +95,9 @@
 	}
 
 		.address-form-table td {
-			padding: 2px;
+			padding: 1px;
 			vertical-align: top;
-			width: 35%;
+			width: 30%;
 		}
 
 		.address-form-table label {
@@ -119,9 +111,7 @@
 
 		.address-form-table input[type="text"],
 		.address-form-table select {
-			width: 100%;
-			padding: 2px;
-			font-size: 11px;
+			width: 100%;		
 			border: 1px solid #aaa;
 			border-radius: 3px;
 			box-sizing: border-box;
@@ -622,7 +612,9 @@
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
 																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
 																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("ddclientname")
+															
+															.ID("ddclientname")
+																			 
 																			.ValidationRules(rules =>
 																			{
 																				rules.AddRequired()
@@ -702,51 +694,130 @@
 
 
 									<div class="address-form-container">
-										<div class="address-form-scroll">
-											<table class="address-form-table">
-												<tr>
-													<td><label for="StreetName">Address - Street Name *</label><input type="text" id="StreetName" name="StreetName" /></td>
-													<td><label for="StreetNameArabic">Address - Street Name (Arabic) *</label><input type="text" id="StreetNameArabic" name="StreetNameArabic" /></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td><label for="AdditionalAddress">Address - Additional Address</label><input type="text" id="AdditionalAddress" name="AdditionalAddress" /></td>
-													<td><label for="AdditionalAddressArabic">Address - Additional Address (Arabic)</label><input type="text" id="AdditionalAddressArabic" name="AdditionalAddressArabic" /></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td><label for="BuildingNumber">Building Number *</label><input type="text" id="BuildingNumber" name="BuildingNumber" /></td>
-													<td><label for="ClientCity">Client City *</label><input type="text" id="ClientCity" name="ClientCity" /></td>
-													<td><label for="ClientCityArabic">Client City (Arabic) *</label><input type="text" id="ClientCityArabic" name="ClientCityArabic" /></td>
-												</tr>
-												<tr>
-													<td><label for="AdditionalNumber">Additional Number *</label><input type="text" id="AdditionalNumber" name="AdditionalNumber" /></td>
-													<td><label for="Province">Province / State</label><input type="text" id="Province" name="Province" /></td>
-													<td><label for="ProvinceArabic">Province / State (Arabic)</label><input type="text" id="ProvinceArabic" name="ProvinceArabic" /></td>
-												</tr>
-												<tr>
-													<td><label for="PostalCode">Postal Code *</label><input type="text" id="PostalCode" name="PostalCode" /></td>
-													<td><label for="District">District / Neighborhood *</label><input type="text" id="District" name="District" /></td>
-													<td><label for="DistrictArabic">District / Neighborhood (Arabic) *</label><input type="text" id="DistrictArabic" name="DistrictArabic" /></td>
-												</tr>
-												<tr>
-													<td>
-														<label for="CountryCode">Country Code *</label>
-														<select id="CountryCode" name="CountryCode">
-															<option value="US">US</option>
-															<option value="UK">UK</option>
-															<option value="IN" selected>IN</option>
-															<option value="SA">SA</option>
-															<option value="UAE">UAE</option>
-														</select>
-													</td>
-													<td>&nbsp;</td>
-													<td>&nbsp;</td>
+										
+										
+												<table class="address-form-table" cellpadding="5">
+													<tr>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Address - Street Name:')"))
+															.ID("StreetName")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
+															.ID("StreetNameArabic")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Building Number:')"))
+															.ID("BuildingNumber")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+													</tr>
+													<tr>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Address - Additional Address:')"))
+															.ID("AdditionalAddress")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
+															.ID("AdditionalAddressArabic")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Additional Number:')"))
+															.ID("AdditionalNumber")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
 
-												</tr>
-											</table>
+													</tr>
+													<tr>
+
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Client City:')"))
+															.ID("ClientCity")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Client City: (Arabic)')"))
+															.ID("ClientCityArabic")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Postal Code:')"))
+															.ID("PostalCode")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+													</tr>
+													<tr>
+
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Province / State:')"))
+															.ID("Province")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('Province / State: (Arabic)')"))
+															.ID("ProvinceArabic")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+
+														<td style="width: 100%">
+															@(Html.DevExtreme().SelectBox()
+															.ID("CountryCode")
+															.Label(new JS("formatMessage('Country Code:')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.Items(new[] { "US", "UK", "IN", "SA", "UAE" })
+															.Value("IN")
+															.SearchEnabled(true)
+															.Width("100%"))
+														</td>
+													</tr>
+													<tr>
+
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('District / Neighborhood:')"))
+															.ID("District")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+														<td>
+															@(Html.DevExtreme().TextBox()
+															.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
+															.ID("DistrictArabic")
+															.LabelMode(EditorLabelMode.Outside)
+															.Width("100%"))
+														</td>
+
+													</tr>
+												</table>
+											
 										</div>
-									</div>
+								
 
 									</text>)
 																			)
@@ -1535,81 +1606,130 @@
 																			.DropDownOptions(o => o.Width(900).Height(600))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ContentTemplate(@<text>
-										<div class="dx-viewport address-form-container">
-											<table class="address-form-table" style="width: 100%; border-collapse: collapse;">
-												<!-- Row 1 -->
-												<tr>
-													<td colspan="2"><label for="StreetName">Our Address - Street Name:*</label></td>
-													<td><label for="StreetNameArabic">Our Address - Street Name(Arabic):*</label></td>
-												</tr>
-												<tr>
-													<td colspan="2"><input type="text" id="OurStreetName" name="StreetName" style="width: 100%;" /></td>
-													<td><input type="text" id="OurStreetNameArabic" name="StreetNameArabic" style="width: 100%;" /></td>
-												</tr>
+									<div class="address-form-container">
 
-												<!-- Row 2 -->
-												<tr>
-													<td colspan="2"><label for="AdditionalAddress">Address - Additional Address:</label></td>
-													<td><label for="AdditionalAddressArabic">Address - Additional Address(Arabic):</label></td>
-												</tr>
-												<tr>
-													<td colspan="2"><input type="text" id="OurAdditionalAddress" name="AdditionalAddress" style="width: 100%;" /></td>
-													<td><input type="text" id="OurAdditionalAddressArabic" name="AdditionalAddressArabic" style="width: 100%;" /></td>
-												</tr>
 
-												<!-- Row 3 -->
-												<tr>
-													<td><label for="BuildingNumber">Building Number:*</label></td>
-													<td><label for="ClientCity">City:*</label></td>
-													<td><label for="ClientCityArabic">City(Arabic):*</label></td>
-												</tr>
-												<tr>
-													<td><input type="text" id="OurBuildingNumber" name="BuildingNumber" style="width: 100%;" /></td>
-													<td><input type="text" id="OurClientCity" name="ClientCity" style="width: 100%;" /></td>
-													<td><input type="text" id="OurClientCityArabic" name="ClientCityArabic" style="width: 100%;" /></td>
-												</tr>
+										<table class="address-form-table" cellpadding="5">
+											<tr>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Address - Street Name:')"))
+													.ID("StreetName")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
+													.ID("StreetNameArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Building Number:')"))
+													.ID("BuildingNumber")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+											</tr>
+											<tr>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Address - Additional Address:')"))
+													.ID("AdditionalAddress")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
+													.ID("AdditionalAddressArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Additional Number:')"))
+													.ID("AdditionalNumber")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
 
-												<!-- Row 4 -->
-												<tr>
-													<td><label for="AdditionalNumber">Additional Number:*</label></td>
-													<td><label for="Province">Province / State:</label></td>
-													<td><label for="ProvinceArabic">Province / State(Arabic):</label></td>
-												</tr>
-												<tr>
-													<td><input type="text" id="OurAdditionalNumber" name="AdditionalNumber" style="width: 100%;" /></td>
-													<td><input type="text" id="OurProvince" name="Province" style="width: 100%;" /></td>
-													<td><input type="text" id="OurProvinceArabic" name="ProvinceArabic" style="width: 100%;" /></td>
-												</tr>
+											</tr>
+											<tr>
 
-												<!-- Row 5 -->
-												<tr>
-													<td><label for="PostalCode">Postal Code:*</label></td>
-													<td><label for="District">District / Neighborhood:*</label></td>
-													<td><label for="DistrictArabic">District / Neighborhood(Arabic):*</label></td>
-												</tr>
-												<tr>
-													<td><input type="text" id="OurPostalCode" name="PostalCode" style="width: 100%;" /></td>
-													<td><input type="text" id="OurDistrict" name="District" style="width: 100%;" /></td>
-													<td><input type="text" id="OurDistrictArabic" name="DistrictArabic" style="width: 100%;" /></td>
-												</tr>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Client City:')"))
+													.ID("ClientCity")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Client City: (Arabic)')"))
+													.ID("ClientCityArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Postal Code:')"))
+													.ID("PostalCode")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+											</tr>
+											<tr>
 
-												<!-- Row 6 -->
-												<tr>
-													<td><label for="CountryCode">Country Code:*</label></td>
-												</tr>
-												<tr>
-													<td>
-														<select id="CountryCode" name="CountryCode" style="width: 100%;">
-															<option value="US">US</option>
-															<option value="UK">UK</option>
-															<option value="IN" selected>IN</option>
-															<option value="SA">SA</option>
-															<option value="UAE">UAE</option>
-														</select>
-													</td>
-												</tr>
-											</table>
-										</div>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Province / State:')"))
+													.ID("Province")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('Province / State: (Arabic)')"))
+													.ID("ProvinceArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+
+												<td style="width: 100%">
+													@(Html.DevExtreme().SelectBox()
+													.ID("CountryCode")
+													.Label(new JS("formatMessage('Country Code:')"))
+													.LabelMode(EditorLabelMode.Outside)
+													.Items(new[] { "US", "UK", "IN", "SA", "UAE" })
+													.Value("IN")
+													.SearchEnabled(true)
+													.Width("100%"))
+												</td>
+											</tr>
+											<tr>
+
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('District / Neighborhood:')"))
+													.ID("District")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+												<td>
+													@(Html.DevExtreme().TextBox()
+													.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
+													.ID("DistrictArabic")
+													.LabelMode(EditorLabelMode.Outside)
+													.Width("100%"))
+												</td>
+
+											</tr>
+										</table>
+
+									</div>
 									</text>)
 																			)
 

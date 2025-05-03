@@ -2,7 +2,7 @@
     "en": {
         "VAT Purchase Edit Form":"VAT Purchase Edit Form",
         "VATInvoiceReporting":"VATInvoiceReporting",
-
+        "Fill Contact Details":"Fill Contact Details",
         "Debit Note No:": "Debit Note No:",
         "Debit Note Date:": "Debit Note Date:",
         "Supplier Invoice No": "Supplier Invoice No",
