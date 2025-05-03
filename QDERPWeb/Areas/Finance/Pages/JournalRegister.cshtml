@@ -2,7 +2,12 @@
 @using DevExtreme.AspNet.Mvc
 @{
     ViewData["journalClaimerUserName"] = HttpContext.Session.GetString("UserName");
-
+    var userIdString = HttpContext.Session.GetString("UserId");
+    byte requesterIdByte = 0;
+    if (byte.TryParse(userIdString, out var byteVal))
+    {
+        requesterIdByte = byteVal;
+    }
 }
 <style>
 
@@ -112,20 +117,75 @@
 
     <div class="dx-fieldset horizontal-container ">
 
-        @(
-            Html.DevExtreme().SelectBox()
-            .ID("requestedBy") // Set the ID for the SelectBox
-            .DataSource(d => d.Mvc().Controller("JournalRegister").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw)
-            .Key("UserId")) // Set the key for the data source
-            .Width(300) // Set the width of the SelectBox
-            .ElementAttr("class", "button-alignment-down") // Add custom classes
-            .Label(new JS("formatMessage('Requested By')")) // Label for the SelectBox
-            .LabelMode(EditorLabelMode.Outside) // Label positioning
-            .SearchEnabled(true) // Enable searching
-            .DisplayExpr("UserName") // Expression for displaying values
-            .Value(ViewData["journalClaimerUserName"]) // Optional: Set a default value (if needed)
-            .ShowClearButton(true)
+       
+    @(Html.DevExtreme().DropDownBox()
+        .Label(new JS("formatMessage('Requested By')"))
+        .DataSource(d => d.WebApi()
+        .Controller("ExpenseClaim")
+        .LoadAction("GetUser")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("UserId")
+        )
+
+        .LabelMode(EditorLabelMode.Outside)
+        .ID("requestedBy")
+        .ShowClearButton(true)
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .ValueChangeEvent("input")
+        .HoverStateEnabled(true)
+        .ValueExpr("UserId")
+        .DisplayExpr("UserName")
+        .Value(ViewData["journalClaimerUserName"])
+
+        .OnOpened("onOpened")
+        .Width(300)
+        .TabIndex(1)
+        .DropDownOptions(o => o
+        .Width(300)
+        )
+        .OnKeyDown("onKeyDown")
+        //.OnValueChanged("dropDownBoxValueChanged")
+        .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+        )
+    @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+
+            .ID("accounthead-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("ExpenseClaim")
+            .LoadAction("GetUser")
+            .LoadMode(DataSourceLoadMode.Raw)
+            ///   .Key("AccountHead") //salary paid entry
+            .Key("UserName")
+
             )
+
+
+
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
+            .OnInitialized("dataGridAccountHeadInitialized")
+            // .HeaderFilter(p => p.Visible(true))
+
+
+
+
+
+            .Height(200)
+
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("UserName");
+                columns.Add().DataField("UserId").Visible(false);
+
+
+            })
+            )
+    }
+
 
         @(Html.DevExtreme().DateBox()
             .ID("startDate")
@@ -146,7 +206,7 @@
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
             )
         @(Html.DevExtreme().Button()
-            .Text(new JS("formatMessage('Show All Documents')"))
+        .Text("Show All Submission")
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Contained)
             .Width(180)
@@ -266,9 +326,11 @@
             )
     </div>
     
-</div>
+
 
 <script type="text/javascript">
+    let accheadname, accheadid;
+    var onload = @requesterIdByte;
     $(function () {
                 $("#JournalRegister").dxTextBox({
                         text:formatMessage("Journal Register"),
@@ -458,7 +520,7 @@
         return formattedDate;
     }
     function getJournalOnLoad() {
-        var requesterID = 102;
+        var requesterID = @requesterIdByte;
         // Get the current date
         var currentDate = new Date();
         // Get the start date of the current month
@@ -489,6 +551,9 @@
 
     }
     function getAllSubmissionJournal() {
+        var requestedByInstance = $("#requestedBy").dxDropDownBox("instance");
+        var requesterId = requestedByInstance.option("value");
+
         var startDateInstance = $("#startDate").dxDateBox("instance");
         var startDateval = startDateInstance.option("value");
         var startDate = formatedate(startDateval);
@@ -501,7 +566,7 @@
             url: '/api/JournalRegister/GetJournalview',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: "", // Set this according to your logic
+                RequesterID: accheadid, // Set this according to your logic
                 StartDate: startDate, // Start date
                 EndDate: endDate, // End date
                 IfShowAll: true
@@ -675,6 +740,54 @@
             }
         });
     }
+
+    function dataGridAccountHeadSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#requestedBy").dxDropDownBox("instance");
+        acchead = selectedKey;
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+            var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
+            // Get ReferenceNo from selected row
+            debugger
+            if (selectedRowData.length > 0) {
+                accheadid = selectedRowData[0].UserId;
+                accheadname = selectedRowData[0].UserName;
+
+
+            } else {
+                DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+                return;
+            }
+        }
+    }
+
+
+    function dataGridAccountHeadInitialized(e) {
+        dataGrid = e.component;
+    }
+
+    function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid.option("focusedRowIndex");
+            let visibleRows = dataGrid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+        }
+    }
+
 
 </script>
 
