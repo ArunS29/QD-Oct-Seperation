@@ -172,7 +172,7 @@
                             .ID("totalDebitTextbox")
                             .Value("0.00")
                             .ReadOnly(true)
-                            .Width(100)
+                            .Width(200)
                             .RtlEnabled(true)
                         )
     </div>
@@ -184,7 +184,7 @@
                             .ID("totalCreditTextbox")
                             .Value("0.00")
                             .ReadOnly(true)
-                            .Width(100)
+                            .Width(200)
                             .RtlEnabled(true)
                         )
     </div>
@@ -324,10 +324,12 @@ function formatDate(date) {
         const FromDate = getQueryParam("FromDate");
         const ToDate = getQueryParam("ToDate");
         const lastRowBalance = getQueryParam("lastRowBalance") || "0";
+        console.log("lstbal:",lastRowBalance);
         const cleanedBalanceLR = lastRowBalance.replace(/[^0-9.-]/g, "");
         const lastRowBalanceVal = parseFloat(cleanedBalanceLR) || 0;
 
         const firstRowBalance = getQueryParam("firstRowBalance") || "0";
+         console.log("fstbal:",firstRowBalance);
         const cleanedBalanceFR = firstRowBalance.replace(/[^0-9.-]/g, "");
         const firstRowBalanceVal = parseFloat(cleanedBalanceFR) || 0;
 
@@ -335,15 +337,35 @@ function formatDate(date) {
         const balanceBankStatementInstance = $("#BalanceAsPerBankStatement").dxTextBox("instance");
         const amountNotReflectedInstance = $("#AmountNotReflectedinBank").dxTextBox("instance");
 
-        if (balanceOurBooksInstance) {
-            LastAmt = Math.abs(lastRowBalanceVal);
-            balanceOurBooksInstance.option("value", LastAmt);
-        }
+        // if (balanceOurBooksInstance) {
+        //     LastAmt = Math.abs(lastRowBalanceVal);
+        //     balanceOurBooksInstance.option("value", LastAmt);
+        // }
 
-        if (balanceBankStatementInstance) {
-            FirstAmt = Math.abs(firstRowBalanceVal);
-            balanceBankStatementInstance.option("value", FirstAmt);
-        }
+        // if (balanceBankStatementInstance) {
+        //     FirstAmt = Math.abs(firstRowBalanceVal);
+        //     balanceBankStatementInstance.option("value", FirstAmt);
+        // }
+        function formatWithCommasAndParentheses(value) {
+    if (value == null) return "";
+
+    const absVal = Math.abs(value).toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    return value < 0 ? `(${absVal})` : absVal;
+}
+if (balanceOurBooksInstance) {
+    const formattedLastAmt = formatWithCommasAndParentheses(lastRowBalanceVal);
+    balanceOurBooksInstance.option("value", formattedLastAmt);
+}
+
+if (balanceBankStatementInstance) {
+    const formattedFirstAmt = formatWithCommasAndParentheses(firstRowBalanceVal);
+    balanceBankStatementInstance.option("value", formattedFirstAmt);
+}
+
 
         // const TotalVal = LastAmt - FirstAmt;
         // const TotalAmtNotReflectedInBank = Math.abs(TotalVal);
@@ -487,9 +509,24 @@ $(document).ready(function () {
 
             const balance = totalDebit - totalCredit;
 
-            const TotalAmtNotReflectedInBank = Math.abs(balance);
+               // Format balance for AmountNotReflectedinBank
+        let formattedAmount;
+        if (balance < 0) {
+            formattedAmount = `(${Math.abs(balance).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })})`;
+        } else {
+            formattedAmount = balance.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
 
-            $("#AmountNotReflectedinBank").dxTextBox("instance").option("value", TotalAmtNotReflectedInBank);
+        const amountNotReflectedBox = $("#AmountNotReflectedinBank").dxTextBox("instance");
+        if (amountNotReflectedBox) {
+            amountNotReflectedBox.option("value", formattedAmount);
+        }
 
             // Update TextBox values dynamically
 

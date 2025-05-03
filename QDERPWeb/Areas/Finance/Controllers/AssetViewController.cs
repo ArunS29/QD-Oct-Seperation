@@ -97,6 +97,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             x.FinancedBy,
                             x.DepPercentage,
                             x.PropertyNo,
+                            x.AddedBy,
+                            x.AddedOn,
+                            x.ModifiedBy,
+                            x.ModifiedOn
                         })
                         .ToListAsync();
 

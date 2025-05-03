@@ -560,7 +560,7 @@
                         <div class="form-label">
                             <label for="StartDate">Entered By</label>
                         </div>
-                        @Html.DevExtreme().TextBox().ID("txtenteredby").Value("").ReadOnly(true)
+                        @Html.DevExtreme().TextBox().ID("txtenteredby").Value(null).ReadOnly(true)
                     </div>
                     <div class="col-md-6">
                         <div class="form-label">
@@ -574,7 +574,7 @@
                         <div class="form-label">
                             <label for="StartDate">Entered on</label>
                         </div>
-                        @Html.DevExtreme().DateBox().ID("txtenteredon").Value(DateTime.Now).DisplayFormat("dd-MMM-yyyy").ReadOnly(true)
+                        @Html.DevExtreme().TextBox().ID("txtenteredon").Value(null).ReadOnly(true)
                     </div>
                     <div class="col-md-6">
                         <div class="form-label">
@@ -983,7 +983,7 @@
     <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
 </script>
 <script>
-  
+    let getUN = null;
     $(document).ready(function () {
         // Extract assetLedgerNo from the URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -992,6 +992,18 @@
         if (assetLedgerNo) {
             fetchAssetData(assetLedgerNo);  // Call the function to fetch data
         }
+
+
+              $.ajax({
+                 url: "/api/AccountLedgerMaster/getUserName",
+                type: 'GET',//
+                dataType: 'json',  // Expecting JSON response
+                success: function (response) {
+                      getUN=response.UserName;
+                    //   $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+                      console.log("userN:",getUN);
+                }
+             });
     });
 
     function deleteRow(element) {
@@ -1109,14 +1121,14 @@
                 dropDownBoxInstance.option("value", selectedRow.PropertyNo); // Set selected value
             }
 
-            var brandTextBox = $("#txtBrand").dxTextBox("instance");
+           @*  var brandTextBox = $("#txtBrand").dxTextBox("instance");
             if (brandTextBox) {
                 brandTextBox.option("value", selectedRow.Brand || ""); // Set the value or empty if null
             }
             var ModelBox = $("#txtModel").dxTextBox("instance");
             if (ModelBox) {
                 ModelBox.option("value", selectedRow.Model || "");
-            }
+            } *@
     @*   var Platnotxtbox = $("#txtplatno").dxTextBox("instance");
                 if(Platnotxtbox) {
                 Platnotxtbox.option("value",selectedRow.PlateNo || "");
@@ -1296,6 +1308,8 @@
 
         function populateFields(assetData) {
 
+                          console.log("Data received from API2:", assetData.AddedOn);
+            console.log("AddedBy:", assetData.AddedBy);
             $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo);
             $("#ddassetCategory").dxSelectBox("instance").option("value", assetData.AssetCategory);
 
@@ -1443,9 +1457,23 @@
             $("#txtMaintenanceReading").dxNumberBox("instance").option("value", assetData.CurrentReading);
 
             $("#txtenteredby").dxTextBox("instance").option("value", assetData.AddedBy);
-            $("#txtenteredon").dxDateBox("instance").option("value", assetData.AddedOn);
-            $("#txtmodifiedby").dxTextBox("instance").option("value", assetData.ModifiedBy);
-            $("#txtenteredon").dxDateBox("instance").option("value", assetData.ModifiedOn);
+       
+            $("#txtenteredon").dxTextBox("instance").option("value", formatDate(assetData.AddedOn));
+            $("#txtmodifiedby").dxTextBox("instance").option("value", getUN);
+            console.log("uan:", getUN);
+           
+            function formatDate(date) {
+                if (date) {
+                    const dateObj = new Date(date);
+                    const day = String(dateObj.getDate()).padStart(2, '0');
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const month = monthNames[dateObj.getMonth()];
+                    const year = dateObj.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+                return '';
+            }
 
             $("#txtDepreciationMethod").val(assetData.DepreciationMethod);
             $("#scrapValueOfProperty").val(assetData.ScrapValueOfProperty);
