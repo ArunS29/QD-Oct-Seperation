@@ -297,7 +297,6 @@
 				subColumns.AddFor(m => m.InvoiceZatcaStatus)
 			.Caption("Invoice Zatca Status")
 			.Alignment(HorizontalAlignment.Center)
-			
 			.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.CreditNoteNo)
@@ -327,17 +326,17 @@
 				subColumns.AddFor(m => m.CalcLineAmount)
 			.Caption("Amount Before Tax")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption("Total VAT Amount")
 			.Alignment(HorizontalAlignment.Right)
-		;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalCreditNoteAmount)
 			.Caption("Total Amount")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 			columns.Add().Caption("Credit Not Classified").Columns(revenueColumns =>
@@ -347,27 +346,27 @@
 				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
 			.Caption("Domestic Revenue @5%")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
 			.Caption("Domestic Revenue @10%")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
 			.Caption("Domestic Revenue @15%")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
 			.Caption("Domestic Zero Rated Revenue")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
 			.Caption("Domestic Exempted Revenue")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 				revenueColumns.Add().Caption("Imports").Columns(subColumns =>
@@ -375,7 +374,7 @@
 				subColumns.AddFor(m => m.GccstandardRatedRevenue)
 			.Caption("GCC Revenue")
 			.Alignment(HorizontalAlignment.Right)
-		;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 				revenueColumns.Add().Caption("Exports").Columns(subColumns =>
@@ -383,7 +382,7 @@
 				subColumns.AddFor(m => m.ExportsRevenue)
 			.Caption("Exports Revenue")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
 
@@ -394,27 +393,27 @@
 				subColumns.AddFor(m => m.DomesticStandartRatedTax)
 			.Caption("Domestic VAT @5%")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalTaxOf10Perc)
 			.Caption("Domestic VAT @10%")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.TotalTaxOf15Perc)
 			.Caption("Domestic VAT @15%")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
 			.Caption("Domestic Zero Rated VAT")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.DomesticExemptedTax)
 			.Caption("Domestic Exempted VAT")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
@@ -422,7 +421,7 @@
 				subColumns.AddFor(m => m.GccstandardRatedTax)
 			.Caption("GCC Tax")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 
 				vatColumns.Add().Caption("Exports VAT").Columns(subColumns =>
@@ -430,17 +429,14 @@
 				subColumns.AddFor(m => m.ExportsTax)
 			.Caption("Exports Tax")
 			.Alignment(HorizontalAlignment.Right)
-			;
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
 			});
-
 		})
-
-		.Editing(editing => editing
+	@* 	.Editing(editing => editing
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
-		)
-
+		) *@
 		.OnCellClick("function(e) { handleCellClick(e); }")
 		.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
@@ -453,7 +449,6 @@
 		.ShowBorders(true)
 		.ShowRowLines(true)
 		.Width("100%")
-
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
