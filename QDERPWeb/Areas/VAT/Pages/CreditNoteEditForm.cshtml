@@ -267,7 +267,7 @@
 	background: #fff;
 	} */
 
-	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
 	display: none !important;
 	}
 
@@ -354,6 +354,42 @@
         vertical-align: top;
         width: 33%;
     }
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -362,6 +398,19 @@
 	<div class="header-container">
 		<div id="CreditNoteEditForm" class="no-border-title"></div>
 	</div>
+</div>
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice">
+		<i class="dx-icon-plus"></i> Add Line Item
+	</div>
+
+	<div class="context-menu-itemInvoice">
+		<i class="dx-icon-close"></i> Delete Line Item
+	</div>
+	<div class="context-menu-itemInvoice">
+		<i class="dx-icon-close"></i> Delete All Line Items
+	</div>
+	
 </div>
 <div class="containerLedgerAccount">
 	<div class="content-container-top">
@@ -549,9 +598,11 @@
 							</tr>
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo").LabelMode(EditorLabelMode.Outside))</td>
+							    <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
 
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
 
+@* 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
+ *@
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
@@ -735,7 +786,8 @@
 										.Type(DateBoxType.Date)
 										.DisplayFormat("dd-MMM-yyyy")
 										.Width("100%")
-										.Value(DateTime.Now))
+										//.Value(DateTime.Now)
+										)
 								</td>
 							</tr>
 							<tr>
@@ -748,7 +800,8 @@
 										.Type(DateBoxType.Date)
 										.DisplayFormat("dd-MMM-yyyy")
 										.Width("100%")
-										.Value(DateTime.Now))
+										//.Value(DateTime.Now)
+										)
 								</td>
 									
 							</tr>
@@ -840,6 +893,17 @@
 									.Width(500)
 									.Placeholder(new JS("formatMessage('Enter your comments here...')"))
 									.MaxLength(1000))
+
+									@(
+														Html.DevExtreme().Button()
+														.ID("InvoiceNotesconvertToArabic")
+														.Width("100")
+														.Height(50)
+														.Icon("fas fa-language") // Ensure Font Awesome class is correct
+														.ElementAttr(new { @class = "input-button" })
+														.OnClick("function() { convertToArabic(); }")
+
+														)
 								</div>
 							</td>
 						</tr>
@@ -1085,10 +1149,11 @@
 																			.Text(new JS("formatMessage('Verified By')"))
 																			.ID("VerifiedBy")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			)
 
 									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Verified By')"))
+																			//.Label(new JS("formatMessage('Verified By')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
@@ -1111,9 +1176,10 @@
 									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
 																			.ID("ApprovedBy")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			)
 									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Approved By')"))
+																			//.Label(new JS("formatMessage('Approved By')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
@@ -1158,27 +1224,32 @@
 																						.DisplayExpr("BranchName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
-																						.DropDownOptions(o => o.Width(100))
+																						.DropDownOptions(o => o.Width(1000))
 																						.ContentTemplate(new TemplateName("DivisionTemplate"))
 																						.Width("100%")
 																						)
 
 							</td>
 							<td>
-								@(Html.DevExtreme().DropDownBox()
-										.Label(new JS("formatMessage('Sales Person / Co-ordinator')"))
-										.ID("SalesPerson/Co-Ordinator")
-										.LabelMode(EditorLabelMode.Outside)
-										.DataSource(d => d
-										.WebApi()
-										.Controller("AccountLedgerMaster")
-										.LoadAction("getVATInvoiceTypes")
-										.LoadMode(DataSourceLoadMode.Raw)
-										.Key("InvoiceType"))
-										.Width("100%"))
+							@(Html.DevExtreme().DropDownBox()
+																					.Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
+																					.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetSalesPerson").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonCode"))
+																					.LabelMode(EditorLabelMode.Outside)
+																					.ID("ddlSalesPerson")
+																					.ShowClearButton(true)
+																					.AcceptCustomValue(true)
+																					.OpenOnFieldClick(false)
+																					.ValueExpr("SalesPersonCode")
+																					.DisplayExpr("SalesPersonName")
+																					.OnInput("dropDownBoxOnInput")
+																					.OnOpened("onOpened")
+																					.DropDownOptions(o => o.Width(1000))
+																					.ContentTemplate(new TemplateName("SalesPersonTemplate"))
+																					.Width("100%")
+																					)
 							</td>
 							<td>
-								@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Credit Note Submitted On:')")).ID("CreditNoteSubmittedOn").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(false)
+								@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Credit Note Submitted On:')")).ID("CreditNoteSubmittedOn").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Disabled(false)
 								.LabelMode(EditorLabelMode.Outside).Width("100%")
 															)
 							</td>
@@ -1265,8 +1336,97 @@
 																						.Width("100%")
 																						)
 							</td><td>
-									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Address Details:')")).ID("OurAddressDetails").LabelMode(EditorLabelMode.Outside).Width("100%")
-																										)
+									@(Html.DevExtreme().DropDownBox()
+																			.Label(new JS("formatMessage('Our Address Details')"))
+																			.Width("95%")
+																			.ID("OurAddressDetails")
+																			.DataSource(d => d.WebApi()
+																			.Controller("AccountLedgerMaster")
+																			.LoadAction("getVATInvoiceTypes")
+																			.LoadMode(DataSourceLoadMode.Raw)
+																			.Key("InvoiceType"))
+																			.DropDownOptions(o => o.Width(900).Height(600))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ContentTemplate(@<text>
+										<div class="dx-viewport address-form-container">
+											<table class="address-form-table" style="width: 100%; border-collapse: collapse;">
+												<!-- Row 1 -->
+												<tr>
+													<td colspan="2"><label for="StreetName">Our Address - Street Name:*</label></td>
+													<td><label for="StreetNameArabic">Our Address - Street Name(Arabic):*</label></td>
+												</tr>
+												<tr>
+													<td colspan="2"><input type="text" id="OurStreetName" name="StreetName" style="width: 100%;" /></td>
+													<td><input type="text" id="OurStreetNameArabic" name="StreetNameArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 2 -->
+												<tr>
+													<td colspan="2"><label for="AdditionalAddress">Address - Additional Address:</label></td>
+													<td><label for="AdditionalAddressArabic">Address - Additional Address(Arabic):</label></td>
+												</tr>
+												<tr>
+													<td colspan="2"><input type="text" id="OurAdditionalAddress" name="AdditionalAddress" style="width: 100%;" /></td>
+													<td><input type="text" id="OurAdditionalAddressArabic" name="AdditionalAddressArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 3 -->
+												<tr>
+													<td><label for="BuildingNumber">Building Number:*</label></td>
+													<td><label for="ClientCity">City:*</label></td>
+													<td><label for="ClientCityArabic">City(Arabic):*</label></td>
+												</tr>
+												<tr>
+													<td><input type="text" id="OurBuildingNumber" name="BuildingNumber" style="width: 100%;" /></td>
+													<td><input type="text" id="OurClientCity" name="ClientCity" style="width: 100%;" /></td>
+													<td><input type="text" id="OurClientCityArabic" name="ClientCityArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 4 -->
+												<tr>
+													<td><label for="AdditionalNumber">Additional Number:*</label></td>
+													<td><label for="Province">Province / State:</label></td>
+													<td><label for="ProvinceArabic">Province / State(Arabic):</label></td>
+												</tr>
+												<tr>
+													<td><input type="text" id="OurAdditionalNumber" name="AdditionalNumber" style="width: 100%;" /></td>
+													<td><input type="text" id="OurProvince" name="Province" style="width: 100%;" /></td>
+													<td><input type="text" id="OurProvinceArabic" name="ProvinceArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 5 -->
+												<tr>
+													<td><label for="PostalCode">Postal Code:*</label></td>
+													<td><label for="District">District / Neighborhood:*</label></td>
+													<td><label for="DistrictArabic">District / Neighborhood(Arabic):*</label></td>
+												</tr>
+												<tr>
+													<td><input type="text" id="OurPostalCode" name="PostalCode" style="width: 100%;" /></td>
+													<td><input type="text" id="OurDistrict" name="District" style="width: 100%;" /></td>
+													<td><input type="text" id="OurDistrictArabic" name="DistrictArabic" style="width: 100%;" /></td>
+												</tr>
+
+												<!-- Row 6 -->
+												<tr>
+													<td><label for="CountryCode">Country Code:*</label></td>
+												</tr>
+												<tr>
+													<td>
+														<select id="CountryCode" name="CountryCode" style="width: 100%;">
+															<option value="US">US</option>
+															<option value="UK">UK</option>
+															<option value="IN" selected>IN</option>
+															<option value="SA">SA</option>
+															<option value="UAE">UAE</option>
+														</select>
+													
+
+													</td>
+												</tr>
+											</table>
+										</div>
+									</text>)
+																			)
 								</td>
 							</tr>
 							<tr>
@@ -1612,6 +1772,32 @@
 									.UseIcons(true)
 									)
 									.OnEditorPreparing("onEditorPreparing")
+									.Summary(summary =>
+
+						{
+
+							summary.TotalItems(totalItems =>
+
+							{
+
+								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+								totalItems.Add().Column("Amount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+							totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+							});
+
+						})
 									)
 		</div>
 
@@ -1998,12 +2184,10 @@
 											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 											.Columns(columns =>
 											{
-												columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("CurrencyCodeAr").Caption(new JS("formatMessage('CurrencyCodeAr')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
 
 
 											})
@@ -2041,13 +2225,9 @@
 												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 												.Columns(columns =>
 												{
-													columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("CurrencyCodeAr").Caption(new JS("formatMessage('CurrencyCodeAr')")).Alignment(HorizontalAlignment.Center);
-
+													columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
 
 												})
 
@@ -2147,15 +2327,7 @@
 														.Columns(columns =>
 
 														{
-
-															columns.Add().DataField("SalesPersonCode").Caption(new JS("formatMessage('SalesPersonCode')")).Alignment(HorizontalAlignment.Center);
-
 															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')")).Alignment(HorizontalAlignment.Center);
-
-															columns.Add().DataField("UserCode").Caption(new JS("formatMessage('UserCode')")).Alignment(HorizontalAlignment.Center);
-
-															columns.Add().DataField("EmailAddress").Caption(new JS("formatMessage('EmailAddress')")).Alignment(HorizontalAlignment.Center);
-
 														})
 
 													)
@@ -2561,7 +2733,7 @@
 
 			$(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-				if (!$(this).find("#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
+				if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint,#btnAddNew,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag").length) {
 
 					$(this).remove();
 
@@ -2708,7 +2880,7 @@
 
 								dataField: "ItemCode",
 
-								caption: "Item Code",
+								caption: formatMessage('Item Code'),
 
 								width: 200
 
@@ -2718,7 +2890,7 @@
 
 				dataField: "DetailedDescription",
 
-				caption: "Description",
+				caption: formatMessage('Description'),
 
 				width: 550,
 
@@ -2904,13 +3076,28 @@
 
 						},
 
-						{ dataField: "Descriptions", caption: "...", width: 50 },
+						{
+			dataField: "Descriptions",
+			caption: "...",
+			width: 50,
+			allowEditing: true,
+			editCellTemplate: function (cellElement, cellInfo) {
+				// Open the modal form in a popup
+				let url = `/${tenantName}/Finance/VATDetailsDescription`;
+				let title = "VAT Details Description";
+
+				// Pass cellInfo to the modal context
+				window.currentDescriptionCell = cellInfo;
+
+				openModal(url, title);
+			}
+		},
 
 						{
 
 							dataField: "UnitRateMethod",
 
-							caption: "Unit Rate Method",
+							caption: formatMessage('Unit Rate Method'),
 
 							width: 200,
 
@@ -3035,23 +3222,23 @@
 						},
 
 
-						{ dataField: "QuantityInvoiced", caption: "Qty", width: 150 },
+						{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
 
-						{ dataField: "UnitRate", caption: "Unit Price", width: 150 },
+						{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
 
-						{ dataField: "CalcLineAmountBeforeDiscount", caption: "Total Before Discount", width: 150 },
+						{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
 
-						{ dataField: "Discount", caption: "Discount", width: 150 },
+						{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
 						{ dataField: "DiscountDetails", caption: "...", width: 50 },
 
-						{ dataField: "CalcLineAmount", caption: "Amount", width: 150 },
+						{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
 
 						//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 						{
 			dataField: "VATPercentage",
-			caption: "VAT%",
+			caption: formatMessage('VAT%'),
 			width: 150,
 			editCellTemplate: function(cellElement, cellInfo) {
 				getTaxSlabData().done(function (dropdownData) {
@@ -3101,13 +3288,13 @@
 			}
 		},
 
-						{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
+						{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
 
-						{ dataField: "CalcTaxAmount", caption: "VAT", width: 150 },
+						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150 },
 
-						{ dataField: "LineTotal", caption: "Total", width: 150 },
+						{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
 
-						 { dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150 ,allowEditing: false,visible: false}
+						 { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150 ,allowEditing: false,visible: false}
 
 					],
 
@@ -3171,7 +3358,7 @@
 
 							dataField: "ItemCode",
 
-							caption: "Item Code",
+							caption: formatMessage('Item Code'),
 
 							width: 200
 
@@ -3181,7 +3368,7 @@
 
 			dataField: "Description",
 
-			caption: "Description",
+			caption: formatMessage('Description'),
 
 			width: 550,
 
@@ -3367,13 +3554,28 @@
 
 					},
 
-					{ dataField: "Descriptions", caption: "...", width: 50 },
+										{
+	dataField: "Descriptions",
+	caption: "...",
+	width: 50,
+	allowEditing: true,
+	editCellTemplate: function (cellElement, cellInfo) {
+		// Open the modal form in a popup
+		let url = `/${tenantName}/Finance/VATDetailsDescription`;
+		let title = "VAT Details Description";
+
+		// Pass cellInfo to the modal context
+		window.currentDescriptionCell = cellInfo;
+
+		openModal(url, title);
+	}
+},
 
 					{
 
 						dataField: "DescriptionDetails",
 
-						caption: "Unit Rate Method",
+						caption: formatMessage('Unit Rate Method'),
 
 						width: 200,
 
@@ -3498,23 +3700,109 @@
 					},
 
 
-					{ dataField: "Qty", caption: "Qty", width: 150 },
+					{ dataField: "Qty", caption: formatMessage('Qty'), width: 150 },
 
-					{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
+					{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 
-					{ dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
+					{ dataField: "TotalBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
 
-					{ dataField: "Discount", caption: "Discount", width: 150 },
+					{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 
-					{ dataField: "DiscountDetails", caption: "...", width: 50 },
+					{
+    dataField: "DiscountDetails",
+    caption: "...",
+    width: 100,
+    editCellTemplate: function (cellElement, cellInfo) {
+        
+        // Create Popup content
+        let $popupContent = $("<div>").css({
+            padding: "20px",
+            fontFamily: "Segoe UI, sans-serif",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            width: "100%"  // Full width inside popup
+        });
 
-					{ dataField: "Amount", caption: "Amount", width: 150 },
+        // Total Amount (read-only)
+        $("<div>").appendTo($popupContent).dxNumberBox({
+            label: "Total Amount",
+            labelMode: "outside",
+            min: 0,
+            format: "#,##0.00",
+            value: cellInfo.row.data.Amount || 0,
+            readOnly: true
+        });
+
+        // Discount input + OK button row
+        let $discountRow = $("<div>").css({
+            display: "flex",
+            gap: "10px",
+            alignItems: "center"
+        }).appendTo($popupContent);
+
+        let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
+            label: "Discount",
+            labelMode: "outside",
+            min: 0,
+            format: "#,##0.00",
+            value: cellInfo.value || 0
+        }).dxNumberBox("instance");
+
+        $("<div>").appendTo($discountRow).dxButton({
+            text: "OK",
+            width: 70,
+            onClick: function () {
+                let discountValue = discountEditor.option("value") || 0;
+                cellInfo.setValue(discountValue.toFixed(2));
+                popup.hide();
+            }
+        });
+
+        // Percentage buttons
+        let $grid = $("<div>").css({
+            marginTop: "10px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px"
+        }).appendTo($popupContent);
+
+        [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100].forEach(function (percent) {
+            $("<div>").appendTo($grid).dxButton({
+                text: percent + " %",
+                width: 80,
+                onClick: function () {
+                    let totalAmount = cellInfo.row.data.Amount || 0;
+                    let discount = (totalAmount * percent) / 100;
+                    discountEditor.option("value", discount);
+                }
+            });
+        });
+
+        // Create Popup
+        let popup = $("<div>").appendTo(cellElement).dxPopup({
+            contentTemplate: function () {
+                return $popupContent;
+            },
+            width: 550,     // ✅ set nice width
+            height: "auto",
+            showTitle: true,
+            title: "Set Discount Details",
+            visible: true,
+            dragEnabled: true,
+            closeOnOutsideClick: true
+        }).dxPopup("instance");
+
+    }
+},
+
+					{ dataField: "Amount", caption: formatMessage('Amount'), width: 150 },
 
 					//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 					{
 		dataField: "VATPercentage",
-		caption: "VAT%",
+		caption: formatMessage('VAT%'),
 		width: 150,
 		editCellTemplate: function(cellElement, cellInfo) {
 			getTaxSlabData().done(function (dropdownData) {
@@ -3582,13 +3870,13 @@
 		}
 	},
 
-					{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
+					{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
 
-					{ dataField: "VAT", caption: "VAT", width: 150 },
+					{ dataField: "VAT", caption: formatMessage('VAT'), width: 150 },
 
-					{ dataField: "Total", caption: "Total", width: 150 },
+					{ dataField: "Total", caption: formatMessage('Total'), width: 150 },
 
-					 { dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150 ,allowEditing: false,visible: false}
+					 { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150 ,allowEditing: false,visible: false}
 
 				],
 
@@ -4374,7 +4662,7 @@
 
 			const selectedKey = e.selectedRowKeys[0];
 
-			const ddbInstance = $("#ddlGoodsGroup6").dxDropDownBox("instance");
+			const ddbInstance = $("#ddlSalesPerson").dxDropDownBox("instance");
 
 			acchead = selectedKey;
 
@@ -4440,6 +4728,22 @@
 				if (selectedRowData.length > 0) {
 
 					companyid = selectedRowData[0].CompanyId;
+
+						$("#OurStreetName").val(selectedRowData[0].SellerAddressStreet);
+	$("#OurStreetNameArabic").val(selectedRowData[0].SellerAddressStreetAr);
+	$("#OurAdditionalAddress").val(selectedRowData[0].SellerAdditionalStreet);
+	$("#OurAdditionalAddressArabic").val(selectedRowData[0].SellerAdditionalStreetAr);
+	$("#OurBuildingNumber").val(selectedRowData[0].SellerBuildingNumber);
+	$("#OurClientCity").val(selectedRowData[0].SellerCity);
+	$("#OurClientCityArabic").val(selectedRowData[0].SellerCityAr);
+	$("#OurAdditionalNumber").val(selectedRowData[0].SellerAdditionalNumber);
+	$("#OurProvince").val(selectedRowData[0].SellerProvince);
+	$("#OurProvinceArabic").val(selectedRowData[0].SellerProvinceAr);
+	$("#OurPostalCode").val(selectedRowData[0].SellerPostalCode);
+
+	// Fix incorrect value assignments
+	$("#OurDistrict").val(selectedRowData[0].SellerNeighborhood); // was incorrectly using Arabic version key
+	$("#OurDistrictArabic").val(selectedRowData[0].SellerNeighborhoodAr); // was incorrectly using country code key
 				} else {
 
 					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -4871,13 +5175,13 @@
 
 					});
 				});
-				$(function () {
-					$("#ClientVATNo").dxTextBox({
-						text: formatMessage("Client VAT Number: *"),
-						readOnly: true
+				// $(function () {
+				// 	$("#ClientVATNo").dxTextBox({
+				// 		text: formatMessage("Client VAT Number: *"),
+				// 		readOnly: true
 
-					});
-				});
+				// 	});
+				// });
 				$(function () {
 					$("#OtherType").dxTextBox({
 						text: formatMessage("Other ID Type: *"),
@@ -5752,13 +6056,13 @@
 			ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 			AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
 			AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
-			AdvanceTextAr:$("#AccountGroup1").dxTextBox("instance").option("value")|| null,
+			AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
 			OtherDeductionText:$("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
-			OtherDeductionAmount:$("#currencyexchangerate1").dxNumberBox("instance").option("value")|| null,
-			OtherDeductionTextAr:$("#AccountGroup2").dxTextBox("instance").option("value")|| null,
+			OtherDeductionAmount:$("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
+			OtherDeductionTextAr:$("#LessAdvanceAr1").dxTextBox("instance").option("value")|| null,
 			RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
-			RetentionAmount:$("#currencyexchangerate2").dxNumberBox("instance").option("value")|| null,
-			RetentionTextAr:$("#AccountGroup3").dxTextBox("instance").option("value")|| null,
+			RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
+			RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
 
 				//SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
 			Pono: $("#ClientPONo").dxTextBox("instance").option("value")|| null,
@@ -5813,7 +6117,7 @@
 					success: function (response) {
 						//DevExpress.ui.notify(response.message, "success", 3000);
 						  DevExpress.ui.dialog.alert(
-					"Invoice Details updated Successfully.",
+					"Credit Note Details updated Successfully.",
 					"Update successful"
 				);
 					},
@@ -5853,6 +6157,135 @@
 			}
 		});
 	});
+
+	$("#btnSaveAndClose").on("click", function (e) {
+
+		var clientnameValidator = $("#ddclientname").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+		if(clientnameValidation.isValid)
+		{
+	// Create JSON object for master invoice
+		let CreditNoteNo=$('#CreditNoteNo').dxTextBox("instance").option("value");
+		alert(accid)
+		var InvoiceMaster = {
+			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
+			CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
+			//InvoiceEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
+			InvoiceSupplyDate: $("#SupplyDate").dxDateBox("instance").option("value"),
+			//PaymentMeansTypeCode: paymentmeanstypecode,
+		   /// InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")
+			// InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value"),
+			// InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value"),
+			 ClientCode: accid,
+			 BuyerName: $("#ddclientname").dxTextBox("instance").option("value"),
+			 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value"),
+			 SellerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value"),
+			 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value"),
+			 BuyerOtherIdtype: $("#OtherIDType").dxTextBox("instance").option("value"),
+			 BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value"),
+		     InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
+			 InvoiceNo: $("#InvoiceNo").dxTextBox("instance").option("value")|| null,
+
+			 InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
+			InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
+			RevenueAccount:revaccheadid|| null,
+			CostCenterCode: $("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")|| null,
+			RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
+			RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
+
+
+				//Deduction&CurrencyDetails
+		//	InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
+			//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
+			ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
+			AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
+			AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
+			AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
+			OtherDeductionText:$("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
+			OtherDeductionAmount:$("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
+			OtherDeductionTextAr:$("#LessAdvanceAr1").dxTextBox("instance").option("value")|| null,
+			RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
+			RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
+			RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
+
+				//SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
+			Pono: $("#ClientPONo").dxTextBox("instance").option("value")|| null,
+			ReferenceNo: $("#ProjectRef").dxTextBox("instance").option("value")|| null,
+			
+
+			//Branch/DivisionDetails
+			BranchCode: branchcode|| null,
+			InvoiceSalesPerson: salespersoncode|| null,
+			CompanyId:companyid|| null,
+			 SellerName:$("#OurCompanyRegisteredName").dxTextBox("instance").option("value")|| null,
+			  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
+			  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
+			  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
+			   SellerOtherIdtype:SellerOtherIdtype|| null,
+			   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
+		};
+
+		// Create JSON array for child records
+		var InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
+		// Add InvoiceNo to each item
+	let updatedDataSource = InvoiceChildren.map(item => ({
+		...item,
+		InvoiceNo: CreditNoteNo,
+		TaxAmount:amt
+	}));
+
+		console.log("InvoiceMaster:", InvoiceMaster);
+		console.log("InvoiceChildren:", updatedDataSource);
+
+		// Ensure InvoiceChildren is not empty or undefined
+		if (!InvoiceChildren || InvoiceChildren.length === 0) {
+			console.error("InvoiceChildren is empty or undefined");
+			DevExpress.ui.notify("No child records found.", "error", 3000);
+			return;  // Exit if there are no child records
+		}
+
+		// Send AJAX request to update the invoice master details
+		$.ajax({
+			type: "POST",
+			url: `/api/VoucherMaster/UpdateCreditNoteMasterDetails`,
+			contentType: "application/json",
+			data: JSON.stringify(InvoiceMaster),
+			success: function (response) {
+				// Send AJAX request to update the invoice child details after master is updated
+				$.ajax({
+					type: "POST",
+					url: `/api/VoucherMaster/UpdateCreditNoteChildDetails`,
+					contentType: "application/json",
+					data: JSON.stringify(updatedDataSource),
+					success: function (response) {
+						//DevExpress.ui.notify(response.message, "success", 3000);
+						  DevExpress.ui.dialog.alert(
+					"Credit Note Details updated Successfully.",
+					"Update successful"
+				);
+				history.back();
+					},
+					error: function (xhr) {
+						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+					}
+				});
+			},
+			error: function (xhr) {
+				DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+			}
+		});
+		}
+		else
+		{
+			  DevExpress.ui.dialog.alert(
+					"Cannot continue saving with errors,please clear the errors and continue.",
+					"Clear Errors"
+				);
+		}
+
+	 });
 
 
 
@@ -6337,6 +6770,271 @@
 				}
 			});
 		}
+
+		$("#btnBack").on("click", function (e) {
+    e.preventDefault(); // Prevent default behavior, just in case
+
+    DevExpress.ui.dialog.custom({
+        title: "Back",
+        message: "Credit Note Details have been edited, would you like to save changes?",
+        buttons: [
+            { text: "Yes", onClick: () => true },
+            { text: "No", onClick: () => false }
+        ],
+        showTitle: true
+    }).show().done(function (dialogResult) {
+        if (dialogResult === false) {
+            history.back(); // Only go back if user clicks "No"
+        }
+        // Optionally handle "Yes" to save changes
+    });
+});
+
+
+$(function () {
+			var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+				width: 600,
+				height: 400,
+				showTitle: true,
+				title: "Details",
+				visible: false,
+				dragEnabled: true,
+				closeOnOutsideClick: true,
+				contentTemplate: function () {
+					return $("<div>").attr("id", "popupFormContent");
+				}
+			}).dxPopup("instance");
+			var contextMenu = $("#contextMenu");
+			$(document).on("click", function () {
+				contextMenu.hide();
+			});
+			$("#B2BdataGrid").customizeGridContextMenu();
+			$("#B2BdataGrid").on("contextmenu", ".dx-data-row", function (e) {
+				e.preventDefault();
+				var rowIndex = $(this).index();
+					var rowData = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+				 // invoiceNo = rowData.InvoiceNo;
+				console.log(rowData);
+				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+			});
+		});
+
+		
+			$(function () {
+			var dropDownBox = $("#OurAddressDetails").dxDropDownBox("instance");
+		dropDownBox.open(); // Forces it to open on load
+		dropDownBox.close(); // Forces it to open on load
+	});
+
+
+			 //english text convert to arabic
+
+	async function translateToArabic(text) {
+
+		try {
+
+
+			const response = await fetch(
+
+				`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+
+			);
+
+			const data = await response.json();
+			console.log(data);
+			return data.responseData.translatedText;
+
+		} catch (error) {
+
+			console.error("Translation failed:", error);
+
+			return "Translation Error";
+
+		}
+
+	}
+
+	 async function convertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#txtInvoiceNotes").dxTextArea("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#txtNotesinArabic").dxTextArea("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+		
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
+
+	async function AdvanceconvertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#LessAdvance").dxTextBox("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#LessAdvanceAr").dxTextBox("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
+		
+
+	 async function OtherDeductionsconvertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#LessOtherDeductions").dxTextBox("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#LessAdvanceAr1").dxTextBox("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
+
+	 async function RetentionconvertToArabic() {
+
+		// Get the TextBox1 (input) instance
+
+		const textBox1Instance = $("#LessRetention").dxTextBox("instance");
+
+		// Get the TextBox2 (output) instance
+
+		const textBox2Instance = $("#LessAdvanceAr2").dxTextBox("instance");
+
+		// Ensure both instances are initialized
+
+		if (!textBox1Instance || !textBox2Instance) {
+
+			console.error("TextBox instances are not properly initialized.");
+
+			return;
+
+		}
+
+
+		// Get the value from TextBox1
+
+		const englishText = textBox1Instance.option("value");
+
+		// Validate input
+
+		if (!englishText || englishText.trim() === "") {
+
+			alert("Please enter text to translate.");
+
+			return;
+
+		}
+
+		// Perform translation
+
+		const arabicTranslation = await translateToArabic(englishText);
+
+		// Update TextBox2 with the Arabic translation
+
+		textBox2Instance.option("value", arabicTranslation);
+
+	}
 
 
 </script>

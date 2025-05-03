@@ -362,6 +362,42 @@
 		width: 100%; 
 	}
 
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
 
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -372,6 +408,21 @@
 		<div id="InvoiceEdit" class="no-border-title"></div>
 	</div>
 </div>
+
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice">
+		<i class="dx-icon-plus"></i> Add Line Item
+	</div>
+
+	<div class="context-menu-itemInvoice">
+		<i class="dx-icon-close"></i> Delete Line Item
+	</div>
+	<div class="context-menu-itemInvoice">
+		<i class="dx-icon-close"></i> Delete All Line Items
+	</div>
+	
+</div>
+
 <div class="containerLedgerAccount">
 	<div class="content-container-top">
 		<div class="dx-fieldset horizontal-container">
@@ -1178,10 +1229,11 @@
 																			.Text(new JS("formatMessage('Verified By')"))
 																			.ID("VerifiedBy")
 																			.Value(null) // Default value
+																			.Disabled(true)
 																			)
 
 									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Verified By')"))
+																			//.Label(new JS("formatMessage('Verified By')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
@@ -1204,9 +1256,10 @@
 									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
 																			.ID("ApprovedBy")
 																			.Value(null) // Default value
+															.Disabled(true)
 																			)
 									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Approved By')"))
+																			//.Label(new JS("formatMessage('Approved By')"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
@@ -2467,12 +2520,9 @@
 										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 										.Columns(columns =>
 										{
-											columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')")).Alignment(HorizontalAlignment.Center);
-											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')")).Alignment(HorizontalAlignment.Center);
-											columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
 											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
-											columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("CurrencyCodeAr").Caption(new JS("formatMessage('CurrencyCodeAr')")).Alignment(HorizontalAlignment.Center);
 
 
 										})
@@ -2510,12 +2560,9 @@
 											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 											.Columns(columns =>
 											{
-												columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')"));
-												columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')"));
-												columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')"));
-												columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')"));
-												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')"));
-												columns.Add().DataField("CurrencyCodeAr").Caption(new JS("formatMessage('CurrencyCodeAr')"));
+												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
 
 
 											})
@@ -3481,7 +3528,23 @@
 
 						},
 
-						{ dataField: "Descriptions", caption: "...", width: 50 },
+						//{ dataField: "Descriptions", caption: "...", width: 50 },
+							{
+			dataField: "Descriptions",
+			caption: "...",
+			width: 50,
+			allowEditing: true,
+			editCellTemplate: function (cellElement, cellInfo) {
+				// Open the modal form in a popup
+				let url = `/${tenantName}/Finance/VATDetailsDescription`;
+				let title = "VAT Details Description";
+
+				// Pass cellInfo to the modal context
+				window.currentDescriptionCell = cellInfo;
+
+				openModal(url, title);
+			}
+		},
 
 						{
 
@@ -3988,7 +4051,25 @@
 
 				},
 
-				{ dataField: "Descriptions", caption: "...", width: 50 },
+				//{ dataField: "Descriptions", caption: "...", width: 50 },
+
+					{
+		dataField: "Descriptions",
+		caption: "...",
+		width: 50,
+		allowEditing: true,
+		editCellTemplate: function (cellElement, cellInfo) {
+			// Open the modal form in a popup
+			let url = `/${tenantName}/Finance/VATDetailsDescription`;
+			let title = "VAT Details Description";
+
+			// Pass cellInfo to the modal context
+			window.currentDescriptionCell = cellInfo;
+
+			openModal(url, title);
+		}
+	},
+
 
 				{
 
@@ -7148,7 +7229,7 @@
 
 		const englishText = textBox1Instance.option("value");
 
-		alert(englishText)
+
 
 		// Validate input
 
@@ -7457,13 +7538,33 @@
 		dropDownBox.close(); // Forces it to open on load
 	});
 
-		// function openVATPage(discountValue) {
-		// 	// You can use modal, or open in a new tab/window
-		// 	window.open('/Path/To/VATPercentageCal', '_blank');
-
-		// 	// Or open a modal and load content via AJAX
-		// 	// $("#vatModal").modal("show").find(".modal-body").load('/Path/To/VATPercentageCal');
-		// }
+		$(function () {
+			var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+				width: 600,
+				height: 400,
+				showTitle: true,
+				title: "Details",
+				visible: false,
+				dragEnabled: true,
+				closeOnOutsideClick: true,
+				contentTemplate: function () {
+					return $("<div>").attr("id", "popupFormContent");
+				}
+			}).dxPopup("instance");
+			var contextMenu = $("#contextMenu");
+			$(document).on("click", function () {
+				contextMenu.hide();
+			});
+			$("#B2BdataGrid").customizeGridContextMenu();
+			$("#B2BdataGrid").on("contextmenu", ".dx-data-row", function (e) {
+				e.preventDefault();
+				var rowIndex = $(this).index();
+					var rowData = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+				 // invoiceNo = rowData.InvoiceNo;
+				console.log(rowData);
+				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+			});
+		});
 
 		
 

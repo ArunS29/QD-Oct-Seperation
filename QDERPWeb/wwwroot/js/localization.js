@@ -1755,7 +1755,7 @@
         "Type a New Currency Details & Add to the Existing List:": "Type a New Currency Details & Add to the Existing List:",
         "Database Master Module:Foriegn Currency Master": "Database Master Module:Foriegn Currency Master",
         "ID": "ID",
-        "Currency Name": "Currency Name",
+        "Currency": "Currency",
         "Currency Name Ar": "Currency Name Ar",
         "Exchange Rate": "Exchange Rate",
         "Currency Code": "Currency Code",
@@ -3821,7 +3821,7 @@
         "CostAllocationUnitID": "معرف وحدة توزيع التكلفة",
         "CostAllocationUnit": "وحدة توزيع التكلفة",
         "Currency Exchange ID": "معرف تحويل العملة",
-        "CurrencyName": "اسم العملة",
+        "Currency": "اسم العملة",
         "CurrencyNameAr": "اسم العملة بالعربية",
         "ExchangeRate": "سعر الصرف",
         "CurrencyCode": "رمز العملة",
@@ -3903,7 +3903,11 @@
         "Supplier account/Cash account": "حساب المورد",
         "Company ID": "معرّف الشركة",
         "Company Name": "اسم الشركة",
-        "Client Name in Arabic:":"اسم العميل باللغة العربية"
+        "Client Name in Arabic:": "اسم العميل باللغة العربية",
+        "Foreign Currency Billing": "الفوترة بالعملة الأجنبية",
+        "Deductions:Advance / Retention":"الخصومات: سلفة / احتجاز"
+
+
 
 
     }

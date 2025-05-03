@@ -2068,7 +2068,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 		}
 		[HttpGet]
-		public async Task<IActionResult> GetCompanyBranch(DataSourceLoadOptions loadOptions)
+		public async Task<IActionResult> GetCompanyPurchaseBranch(DataSourceLoadOptions loadOptions)
 		{
 			try
 			{

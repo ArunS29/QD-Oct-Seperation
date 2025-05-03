@@ -177,6 +177,22 @@
 		.context-menu-item:not(:last-child) {
 			border-bottom: 1px solid #e0e0e0;
 		}
+
+	.has-submenu .submenu {
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 100%;
+		background: #fff;
+		border: 1px solid #ccc;
+		min-width: 200px;
+		z-index: 1000;
+	}
+
+	.has-submenu:hover .submenu {
+		display: block;
+	}
+
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -193,22 +209,32 @@
 	</div>
 </div>
 
-<div class="context-menu" id="contextMenu">
-	<div class="context-menu-item" onclick="viewInvoice()">
-		<i class="dx-icon-search"></i> View e-Invoice
-	</div>
-
-	<div class="context-menu-item" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
+@* <div class="context-menu" id="contextMenu">
+	<div class="context-menu-item">
+		<i class="dx-icon-search"></i> View e-Invoice Credit Note
 	</div>
 	<div class="context-menu-item">
-		<i class="dx-icon-file"></i> VAT Invoices (Obselete)
+		<i class="dx-icon-file"></i> VAT Credit Notes (Obselete)
 	</div>
 
-	<div class="context-menu-item" onclick="cloneEInvoice()">
-		<i class="dx-icon-copy"></i> Clone e-Invoice
+</div> *@
+
+<div class="context-menu" id="contextMenu">
+	<div class="context-menu-item">
+		<i class="dx-icon-search"></i> View e-Invoice Credit Note
+	</div>
+
+	<div class="context-menu-item has-submenu">
+		<i class="dx-icon-file"></i> VAT Credit Notes (Obsolete)
+		<div class="submenu">
+			<div class="context-menu-item">
+				<i class="dx-icon-file"></i> View VAT Credit Note
+			</div>
+		</div>
 	</div>
 </div>
+
+
 
 
 <div class="dx-fieldset horizontal-container">
@@ -491,7 +517,7 @@
 </div>
 
 <ul id="submenu" class="custom-submenu">
-	<li id="addCreditNote">Add New e-Invoice</li>
+	<li id="addCreditNote">Add new e-Invoice Credit Note</li>
 </ul>
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
