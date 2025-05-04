@@ -1,9 +1,5 @@
 ﻿var dictionary = {
     "en": {
-   
- 
-
-
           "The New Project Sub Unit & Add to the Existing List:":"The New Project Sub Unit & Add to the Existing List:",
         "Signature Image":"Signature Image",
           "PO No":"PO No",
@@ -40,6 +36,8 @@
         "Request Details": "Request Details",
         "Material Request's/Enquiry Details":"Material Request's/Enquiry Details",
 
+
+        "Debit Note Edit Form":"Debit Note Edit Form",
         "VAT Purchase Edit Form":"VAT Purchase Edit Form",
         "VATInvoiceReporting":"VATInvoiceReporting",
         "Fill Contact Details":"Fill Contact Details",
@@ -2150,6 +2148,7 @@
     },
 
     "ar": {
+        "Debit Note Edit Form": "نموذج تعديل إشعار الخصم",
         "VAT Purchase Edit Form":"نموذج تعديل عملية شراء ضريبة القيمة المضافة",
         "Invoice Submitted By:": "تم تقديم الفاتورة بواسطة",
         "Prepared By:": ":أُعِدَّ بواسطة",

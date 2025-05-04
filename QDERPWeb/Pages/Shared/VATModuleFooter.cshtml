@@ -219,6 +219,10 @@
         display: inline-block;
         margin-left: 8px; /* optional spacing between icon and text */
     }
+
+    .multiline-button .dx-button-text {
+        white-space: normal;
+    }
 </style>
 
 <div class="dx-fieldset horizontal-container"style="width:1000px;background-color:transparent;" >
@@ -386,10 +390,10 @@
         @(Html.DevExtreme().Button()
             .ID("btnAddNewPayment")
             .Icon("money")
-            .Width(300)
-            .Text("Add New VAT Purchase Bill")
+            .Text("Add New VAT Purchase Bill")         
             .OnClick("addPurchase")
             )
+
     </div>
     <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
@@ -780,8 +784,8 @@
         @(Html.DevExtreme().Button()
                                 .ID("btnPostTag")
                                 .Text(new JS("formatMessage('Posting')"))
-                                .Icon("tag")
-                                //.OnClick("onAttachButtonClick")
+            .Icon("upload")
+            //.OnClick("onAttachButtonClick")
                                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                                 )
                        </div>

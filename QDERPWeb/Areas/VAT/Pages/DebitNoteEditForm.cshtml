@@ -379,8 +379,8 @@
     <div class="row">
         <!-- Card 1: 8 columns -->
         <div class="col-8">
-            <div class="card">
-                <div class="card-body">
+            
+              
                     <div class="row" style="font-size:14px;">
                         <div class="col-6">
                             @(Html.DevExtreme().TextBox()
@@ -390,7 +390,7 @@
                             )
                         </div>
                        <div class="col-6">
-    <div style="display: flex; align-items: center; gap: 8px;">
+    <div style="display: flex; align-items: flex-end; gap: 8px;">
         <div style="flex-grow: 1;">
             @(Html.DevExtreme().DropDownBox()
                 .Label(new JS("formatMessage('Supplier Name:')"))
@@ -422,14 +422,14 @@
             .ID("AddDebit")
             .Icon("plus")
             .Hint("Add Description")
-            .Width(40)  
+            .Width("12%")  
         )
 
         @(Html.DevExtreme().Button()
             .ID("EditDebit")
             .Icon("edit")
             .Hint("Edit Description")
-            .Width(40)
+            .Width("12%")
         )
     </div>
 </div>
@@ -490,29 +490,21 @@
                             )
                         </div>
                     </div>
-                </div>
-            </div>
+               
+            
         </div>
 
         <!-- Card 2: 4 columns -->
         <div class="col-4">
-            <div class="card">
-                <div class="card-body">
+           
+              
                     <div class="row" style="font-size:14px;">
                         <div class="col-12">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                @(Html.DevExtreme().Button()
-                                    .ID("AddDebit1")
-                                    .Icon("plus")
-                                    .Hint("Add Description")
-                                    .Width(50)
-                                )
-                                @(Html.DevExtreme().Button()
-                                    .ID("EditDebit1")
-                                    .Icon("edit")
-                                    .Hint("Edit Description")
-                                    .Width(50)
-                                )
+							
+                            <div style="display: flex; align-items: flex-end; gap: 8px;">
+                               
+
+								  
                                 @(Html.DevExtreme().DropDownBox()
                                     .Label(new JS("formatMessage('Supplier Name Arabic:')"))
                                     .DataSource(d => d.WebApi()
@@ -534,6 +526,18 @@
                                     .DropDownOptions(o => o.Width(1000))
                                     .ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
                                 )
+								@(Html.DevExtreme().Button()
+                                    .ID("AddDebit1")
+                                    .Icon("plus")
+                                    .Hint("Add Description")
+                                    .Width("15%")
+                                )
+                                @(Html.DevExtreme().Button()
+                                    .ID("EditDebit1")
+                                    .Icon("edit")
+                                    .Hint("Edit Description")
+                                    .Width("15%")
+                                )
                             </div>
                         </div>
 
@@ -550,7 +554,7 @@
                             )
                         </div>
 
-                        <div class="col-12">
+                        <div class="col-6">
                             @(Html.DevExtreme().TextBox()
                                 .Label(new JS("formatMessage('Invoice Period')"))
                                 .LabelMode(EditorLabelMode.Outside)
@@ -563,7 +567,7 @@
                             )
                         </div>
 
-                        <div class="col-12">
+                        <div class="col-6">
                             @(Html.DevExtreme().DropDownBox()
                                 .Label(new JS("formatMessage('Items Returned from Store:')"))
                                 .DataSource(d => d.WebApi()
@@ -586,10 +590,11 @@
                                 .ContentTemplate(new TemplateName("ItemsReturnedfromStoreTemplate"))
                             )
                         </div>
+						</table>
                     </div>
                 </div>
-            </div>
-        </div>
+           
+      
 
     </div>
 </div>
@@ -599,10 +604,10 @@
 			<div id="tab-content-2" class="tab-content">
 
 				<!-- Card 1: Dates & Dropdowns -->
-				<div style="display:flex;flex-direction: row;align-items:baseline;">
+				<div>
 					<div>
-						<table style="font-size:14px; margin:10px 0; gap:10px;">
-							<tr colspan="3">
+						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+							<tr>
 								<td>
 									@(Html.DevExtreme().DateBox()
 										.Label(new JS("formatMessage('Effective Date')"))
@@ -610,20 +615,12 @@
 										.ID("EffectiveDate")
 										.Type(DateBoxType.Date)
 										.DisplayFormat("dd-MMM-yyyy")
-										.Width(506)
+										.Width("100%")
 										.Value(DateTime.Now))
-								</td> </tr>
-							
-
-
-						</table>
-					</div>
-					<div class="card1" style="margin-left: 104px;">
-						<table style="width: 100%; ">
-
-							<tr>
-
-								<td>
+								</td> 
+			
+					<td>
+													
 									@(Html.DevExtreme().DropDownBox()
 											.Label(new JS("formatMessage('Purchase Account')"))
 											.DataSource(d => d.WebApi()
@@ -644,10 +641,9 @@
 											.OnOpened("onOpened")
 											.DropDownOptions(o => o.Width(1000))
 											.ContentTemplate(new TemplateName("PurchaseAccountTemplate"))
-											.Width("61%"))
+											.Width("100%"))
 								</td>
-							</tr>
-							<tr>
+							
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 											.Label(new JS("formatMessage('Cost Center Account')"))
@@ -669,7 +665,7 @@
 											.OnOpened("onOpened")
 											.DropDownOptions(o => o.Width(1000))
 											.ContentTemplate(new TemplateName("CostCenterAccountTemplate"))
-											.Width("61%"))
+											.Width("100%"))
 								</td>
 							</tr>
 						</table>
@@ -678,7 +674,7 @@
 
 				<!-- Card 2: Remarks & Arabic Notes -->
 				<div>
-					<table width="50%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
 							<td>
 								@(Html.DevExtreme().TextArea()
@@ -686,22 +682,32 @@
 									.LabelMode(EditorLabelMode.Outside)
 									.ID("txtInvoiceNotes")
 									.Value("")
-									.Height(80)
-									.Width(500)
+									
+									.Width("100%")
 									.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-									.MaxLength(1000))
+									)
 							</td>
 							<td>
-								<div style="margin-left:18%">
+								<div style="margin-left:20%;display: flex; align-items: end;">
 								@(Html.DevExtreme().TextArea()
 									.Label(new JS("formatMessage('Notes in Arabic')"))
 									.LabelMode(EditorLabelMode.Outside)
 									.ID("txtNotesinArabic")
 									.Value("")
-									.Height(80)
-									.Width(550)
+									
+									.Width("100%")
 									.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-									.MaxLength(1000))
+									)
+									@(
+														Html.DevExtreme().Button()
+														.ID("InvoiceNotesconvertToArabic")
+														.Width("10%")
+														
+														.Icon("fas fa-language") // Ensure Font Awesome class is correct
+														.ElementAttr(new { @class = "input-button" })
+														.OnClick("function() { convertToArabic(); }")
+
+														)
 								</div>
 							</td>
 						</tr>
@@ -711,12 +717,10 @@
 
 
 			<div id="tab-content-3" class="tab-content">
-				<div class="card-container">
-					<!-- Left Card: Foreign Currency Billing -->
-					
-					<!-- Right Card: Deductions -->
-					<div style="margin-right: 30%" >
-						<table width="900px" style="font-size:14px; margin:5px;" cellpadding="2">
+				
+				
+					<div style="margin-right: 30%">
+						<table width="100%" style="font-size:14px; margin:10px;" cellpadding="5">
 					
 							<tr>
 								<td>
@@ -732,7 +736,7 @@
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
-																			.Width("90%")
+																			.Width("100%")
 																			)
 
 									@(Html.DevExtreme().TextBox()
@@ -741,7 +745,7 @@
 																			.ID("VerifiedOnDate")
 																			.Value(null) // Default value
 																			.Disabled(true)
-																			.Width("90%")
+																			.Width("100%")
 																			)
 								</td>
 
@@ -757,7 +761,7 @@
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
-																			.Width("90%")
+																			.Width("100%")
 																			@* .Disabled(true) *@
 																			)
 									@(Html.DevExtreme().TextBox()
@@ -766,19 +770,19 @@
 																			.ID("ApprovedOntext")
 																			.Value(null) // Default value
 																			.Disabled(true)
-																			.Width("90%")
+																			.Width("100%")
 																			)
 								</td>
 							</tr>
 					</table>
-					</diV>
+					
 				</div>
 			</div>
 
 
 			<div id="tab-content-4" class="tab-content">
 				<div>
-					<table width="40%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<table width="50%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
 							<td >
 								
@@ -801,14 +805,7 @@
 																						.Width("100%")
 																						)
 
-							</td>
-						
-
-							
-
-							</tr>
-						
-							<tr>
+							</td>			
 							<td >
 								
 								@(Html.DevExtreme().DropDownBox()
@@ -1704,7 +1701,16 @@
 			});
 
 		});
+		$(function () {
+					$("#DebitNoteEditForm").dxTextBox({
+						text: formatMessage("Debit Note Edit Form"),
+						readOnly: true,
+									onContentReady: function(e) {
+									$(e.element).addClass("dx-textbox-heading");
+							}
 
+					});
+				});
 		//View e-Invoice
 
 			$(document).ready(function () {
