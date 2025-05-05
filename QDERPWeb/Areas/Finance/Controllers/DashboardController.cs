@@ -38,10 +38,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var cashBalance = await dbContext.Qry201MainVoucherEntriesWithMasters
-                        .Select(v => v.CrAmount - v.DrAmount)
-                        .SumAsync();
-                    cashBalance = (int)cashBalance;
-                    return Ok(new { success = true, cashBalance });
+                .Where(v => v.AccountGroup == "BANK ACCOUNTS" || v.AccountGroup == "CASH-IN-HAND") // Add this filter
+                .Select(v => (v.DrAmount ?? 0) - (v.CrAmount ?? 0)) // Match Part 2 logic
+                .SumAsync();
+
+                    return Ok(new { success = true, cashBalance = (int)cashBalance }); // Convert to int if needed
                 }
                 catch (Exception ex)
                 {
@@ -260,13 +261,13 @@ public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOpt
                 {
                     var data = dbContext.Qry20115BillsPayableOutStandings
                         .Where(b => b.Balance > 0) // Only bills with outstanding balance
-                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Group by fields
+                        .GroupBy(b => new {  b.AccountHeadNo, b.AccountHead }) // Group by fields
                         .Select(g => new
                         {
                             AccountHeadNo = g.Key.AccountHeadNo,
                             AccountHead = g.Key.AccountHead,
-                            Balance = g.Key.Balance,
-                            OverdueDays = g.Key.OverdueDays
+                            Balance = g.Sum(x => x.Balance  ),
+                            OverdueDays = g.Max(x => x.OverdueDays),
                         })
                         .OrderByDescending(g => g.Balance)
                         .ThenByDescending(g => g.OverdueDays)
@@ -523,21 +524,20 @@ public async Task<IActionResult> GetAccountSummary(DataSourceLoadOptions loadOpt
                 try
                 {
                     var data = dbContext.Qry20115BillsOutStandings
-                        .Where(b => b.Balance > 0) // Only bills with outstanding balance
-                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Match grouping with Payables
-                        .Select(g => new
-                        {
-                            AccountHeadNo = g.Key.AccountHeadNo,
-                            AccountHead = g.Key.AccountHead,
-                            Balance = g.Key.Balance,
-                            OverdueDays = g.Key.OverdueDays
-                        })
-                        .OrderByDescending(g => g.Balance)
-                        .ThenByDescending(g => g.OverdueDays)
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead)) // Optional: push nulls last
-                        .ThenBy(g => g.AccountHead)
-                        .AsQueryable(); // Removed .Take(5)
-
+      .Where(b => b.Balance > 0)
+      .GroupBy(b => new { b.AccountHeadNo, b.AccountHead }) // Removed b.Balance and b.OverdueDays
+      .Select(g => new
+      {
+          AccountHeadNo = g.Key.AccountHeadNo,
+          AccountHead = g.Key.AccountHead,
+          Balance = g.Sum(x => x.Balance),
+          OverdueDays = g.Max(x => x.OverdueDays) // Optional: use Max/Avg if needed
+      })
+      .OrderByDescending(g => g.Balance)
+      .ThenByDescending(g => g.OverdueDays)
+      .ThenBy(g => string.IsNullOrEmpty(g.AccountHead))
+      .ThenBy(g => g.AccountHead)
+      .AsQueryable();
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
                 }
                 catch (Exception ex)

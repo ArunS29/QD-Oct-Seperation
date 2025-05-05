@@ -1018,7 +1018,7 @@
 
         $.getJSON("/api/Dashboard/GetCashBalance", function (response) {
             if (response.success) {
-                $("#cashBalanceValue").text(response.cashBalance);
+                    $("#cashBalanceValue").text(response.cashBalance.toLocaleString('en-US'));
             } else {
                 alert("Error loading cash balance data.");
             }
