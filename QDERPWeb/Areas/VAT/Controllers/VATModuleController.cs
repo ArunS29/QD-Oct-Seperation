@@ -3448,8 +3448,28 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             return Unauthorized("Unable to fetch tenant information.");
         }
+		[HttpGet]
+		public IActionResult IsOldVATInvoice(string invoiceNo)
+		{
+			try
+			{
+				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+				{
+					var isOldInvoice = dbContext.Tbl20161VatinvoiceMasters
+			.Any(x => x.InvoiceNo == invoiceNo && x.InvoiceUuid == "0");
+					// Adjusted condition
 
-    }
+					return new JsonResult(isOldInvoice); // Return true/false
+				}
+			}
+			catch (Exception ex)
+			{
+				return new JsonResult(new { success = false, message = ex.Message });
+			}
+
+			return new JsonResult(new { success = false, message = "Invalid tenant." });
+		}
+	}
 }
 
 
