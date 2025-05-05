@@ -311,7 +311,7 @@
             this.xrLine5,
             this.xrLabel2,
             this.xrLabel1});
-            this.ReportHeader.HeightF = 152.0833F;
+            this.ReportHeader.HeightF = 153.0833F;
             this.ReportHeader.Name = "ReportHeader";
             this.ReportHeader.StylePriority.UseBackColor = false;
             this.ReportHeader.StylePriority.UseBorders = false;
@@ -408,14 +408,14 @@
             // 
             this.xrLabel2.Borders = DevExpress.XtraPrinting.BorderSide.Right;
             this.xrLabel2.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[VoucherTypeAr]"),
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[VoucherTypeAr]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "نوع القسيمة: [VoucherTypeAr]"),
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "نوع القسيمة: [VoucherTypeAr]")});
             this.xrLabel2.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel2.LocationFloat = new DevExpress.Utils.PointFloat(421.5685F, 105.125F);
+            this.xrLabel2.LocationFloat = new DevExpress.Utils.PointFloat(387.4322F, 106.125F);
             this.xrLabel2.Multiline = true;
             this.xrLabel2.Name = "xrLabel2";
             this.xrLabel2.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel2.SizeF = new System.Drawing.SizeF(388.4315F, 46.95834F);
+            this.xrLabel2.SizeF = new System.Drawing.SizeF(422.5684F, 46.95834F);
             this.xrLabel2.StylePriority.UseBorders = false;
             this.xrLabel2.StylePriority.UseFont = false;
             this.xrLabel2.StylePriority.UseTextAlignment = false;
