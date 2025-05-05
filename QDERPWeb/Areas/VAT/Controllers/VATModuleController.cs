@@ -34,22 +34,40 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			_logger = logger;
 		}
 		[HttpGet]
-		public async Task<ActionResult> GetVatInvoices(string frmDate, string toDate)
+		public async Task<ActionResult> GetVatInvoices(string frmDate, string toDate, bool useEffectiveDate)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 			{
 				try
 				{
-					if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
-						return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+					string[] acceptedFormats = { "MM/dd/yyyy", "yyyy-MM-dd" };
 
-					if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
-						return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+					if (!DateTime.TryParseExact(frmDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+						return BadRequest("Invalid from date format. Use MM/dd/yyyy or yyyy-MM-dd.");
 
-					// Fetch records based on the date range
-					var vatInvoices = await dbContext.Qry201607vatinvoiceRegisterMainViews
-						.FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceDate BETWEEN @p0 AND @p1", from, to)
-						.ToListAsync();
+					if (!DateTime.TryParseExact(toDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+						return BadRequest("Invalid to date format. Use MM/dd/yyyy or yyyy-MM-dd.");
+
+
+					// Ensure end date includes the full day (up to 23:59:59)
+					DateTime toWithTime = to.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+
+					List<Qry201607vatinvoiceRegisterMainView> vatInvoices;
+
+					if (useEffectiveDate)
+					{
+						// If checkbox is enabled, use InvoiceEffectiveDate
+						vatInvoices = await dbContext.Qry201607vatinvoiceRegisterMainViews
+							.FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceEffectiveDate BETWEEN @p0 AND @p1", from, toWithTime)
+							.ToListAsync();
+					}
+					else
+					{
+						// Default: use InvoiceDate (original logic)
+						vatInvoices = await dbContext.Qry201607vatinvoiceRegisterMainViews
+							.FromSqlRaw("SELECT * FROM Qry201_607vatinvoiceRegisterMainView WHERE InvoiceDate BETWEEN @p0 AND @p1", from, toWithTime)
+							.ToListAsync();
+					}
 
 					return Json(vatInvoices);
 				}

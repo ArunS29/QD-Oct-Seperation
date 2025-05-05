@@ -1,7 +1,9 @@
 ﻿@page
-@model QD.ERP.Web.Areas.Finance.Pages.VATDatabaseSignatoriesModel
+@model QD.ERP.Web.Areas.IMS.Pages.SignatoriesModel
 @{
 }
+
+
 @using DevExtreme.AspNet.Mvc
 @using DevExtreme.AspNet.Mvc.Builders
 <style>
@@ -11,7 +13,7 @@
 
     .form-row {
         display: flex;
-        gap:15px;
+        gap: 15px;
         align-items: end;
     }
 
@@ -29,9 +31,9 @@
     .dx-datagrid-headers .dx-toolbar {
         padding-right: 0 !important;
     }
+
     .form-row .form-row-btn {
         margin: 2px;
-        
         width: 340px;
         padding: 0px;
     }
@@ -39,16 +41,18 @@
     .rtl-textbox input {
         text-align: right;
     }
-        .form-row input,
-        .form-row .dx-textbox,
-        .form-row .dx-selectbox {
-            flex: 1;
-        }
+
+    .form-row input,
+    .form-row .dx-textbox,
+    .form-row .dx-selectbox {
+        flex: 1;
+    }
 
     .dx-fileuploader-input-wrapper .dx-button {
         float: left;
         margin-top: -10px;
     }
+
     .image-upload-row {
         align-items: center;
         gap: 10px;
@@ -62,16 +66,16 @@
     .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
         display: none !important;
     }
-    
-    .upload{
+
+    .upload {
         display: block;
         top: 26px;
         position: relative;
         left: 0px;
     }
 
-    .grid{
-        padding:20px;
+    .grid {
+        padding: 20px;
     }
 
     .container {
@@ -95,6 +99,31 @@
     .mainContainer {
         margin-top: 1em;
     }
+
+    .imagecontainer {
+        background-color: #fff;
+        border: 1px solid #90caf9;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
+
 </style>
 <div class="title">
     <div class="header-container">
@@ -103,7 +132,7 @@
 </div>
 <div class="signatory-form-container">
     <div id="DatabaseSignatories" class="no-border-title"></div>
-   
+
     <div class="form-row">
         @(Html.DevExtreme().TextBox()
             .ID("SignatoryName")
@@ -167,28 +196,29 @@
             .ID("SignatoryEmail")
             .Label(new JS("formatMessage('Signatory Email')"))
             .LabelMode(EditorLabelMode.Outside)
-            
+
             )
     </div>
 
 
-    <div class="form-row">
-      <div class="form-row-btn">
-    @(Html.DevExtreme().DropDownBox()
-        .ID("SignatoryUserId")
-        .Label(new JS("formatMessage('Signatory User ID:')"))
-        .LabelMode(EditorLabelMode.Outside)
-        .ShowClearButton(true)
-        .OpenOnFieldClick(true)
-        .AcceptCustomValue(false)
-        .DataSource(d => d.WebApi()
-                .Controller("VATModule") // Update controller if needed
-                .LoadAction("GetAllSign")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("SignatoryID")
-        )
-        .ValueExpr("SignatoryID")
-        .DisplayExpr("SignatoryName")
+    <div class="form-row d-flex align-items-end" style="gap: 15px; flex-wrap: wrap;">
+
+        <!-- Signatory DropDownBox -->
+        <div class="form-group mb-2" style="min-width: 250px;">
+            @(Html.DevExtreme().DropDownBox()
+                .ID("SignatoryUserId")
+                .Label("Signatory User ID:")
+                .LabelMode(EditorLabelMode.Outside)
+                .ShowClearButton(true)
+                .OpenOnFieldClick(true)
+                .AcceptCustomValue(false)
+                .DataSource(d => d.WebApi()
+                .Controller("Signatories")
+                .LoadAction("GetAllSignData")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("SignatoryID"))
+                .ValueExpr("SignatoryID")
+                .DisplayExpr("SignatoryName")
                 .ContentTemplate(@<text>
                 <div id="SignatoryGridContainer"></div>
                 <script>
@@ -196,7 +226,7 @@
                         $("#SignatoryGridContainer").dxDataGrid({
                             dataSource: DevExpress.data.AspNet.createStore({
                                 key: "SignatoryID",
-                                loadUrl: "/api/VATModule/GetAllSign"
+                                loadUrl: "/api/Signatories/GetAllSignData"
                             }),
                             height: 250,
                             selection: { mode: "single" },
@@ -220,47 +250,57 @@
                     });
                 </script>
             </text>)
-)
-</div>
+                )
+        </div>
 
-
-        <div class="form-row-btn">
+        <!-- Add Button -->
+        <div class="form-group mb-2">
             @(Html.DevExtreme().Button()
                 .ID("btnAddSalesPerson")
-                .Text(new JS("formatMessage('ADD')"))
+                .Text("ADD")
                 .Icon("plus")
                 .OnClick("function() { addSignatoryToGrid(); }")
                 .ElementAttr(new { @class = "dx-button-add" })
                 )
-
-
         </div>
-        <div class="form-row-btn upload">
 
-        @(Html.DevExtreme().FileUploader()
-            .ID("SignatureImageUploader")
-            .SelectButtonText(new JS("formatMessage('Upload Signature')"))
-            .Accept("image/*")
-            .UploadMode(FileUploadMode.UseForm)
-            .Multiple(false)
-
-            )
+        <!-- Image Upload Box -->
+        <div class="form-group mb-2">
+            <div class="dx-fieldset" style="width: 150px;">
+                <div class="imagecontainer" id="imgBox1" style="width: 100%; height: 100px; background-color: white;">
+                    <span>Upload Signature</span>
+                </div>
+                <input type="file" id="imageInput" accept="image/*" style="display:none;" />
+            </div>
         </div>
-        
 
-    </div> 
-        
     </div>
+
+
+    <!-- ✅ Business Card Upload Section -->
+    @*    <div class="form-row">
+    <div class="form-row-btn">
+    <label><b>Business Card</b></label>
+    <div class="dx-fieldset" style="display:flex;flex-direction:column;gap:10px;width:50%;">
+    <div class="imagecontainer" id="imgBox1">
+    <span>Upload Signature </span>
+    </div>
+
+    <input type="file" id="imageInput" accept="image/*" style="display:none;" />
+    </div>
+    </div>
+    </div> *@
+</div>
 <div class="dx-field ledgerResult">
     @(Html.DevExtreme().DataGrid()
-            .ID("SignatoryGrid")
-            .KeyExpr("SignatoryID")
-            .RemoteOperations(false)
-            .DataSource(d => d.WebApi()
-            .Controller("VATModule")
-            .LoadAction("GetAllSign")
-            .LoadMode(DataSourceLoadMode.Raw)
-            )
+        .ID("SignatoryGrid")
+        .KeyExpr("SignatoryID")
+        .RemoteOperations(false)
+        .DataSource(d => d.WebApi()
+        .Controller("Signatories")
+        .LoadAction("GetAllSignData")
+        .LoadMode(DataSourceLoadMode.Raw)
+        )
         .Editing(editing => editing
         .Mode(GridEditMode.Batch)
         .AllowUpdating(true)
@@ -271,27 +311,40 @@
             toolbar.Items(items => { }); // hide default toolbar
         })
         .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
-            .Columns(columns =>
-            {
-                columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
-                columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
-                columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
-                columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
-                columns.Add().DataField("SignatoryEmail").Caption("Email").Width(150);
-                @* columns.Add().Caption("Signature Image").AllowEditing(false)
-            .CellTemplate(@<text>
-        function(cellElement, cellInfo) {
-        if (cellInfo.data?.SignatureImageBase64) {
-        $("<img>")
-        .attr("src", "data:image/png;base64," + cellInfo.data.SignatureImageBase64)
-        .css({ height: "40px", borderRadius: "4px" })
-        .appendTo(cellElement);
-        } else {
-        cellElement.text("No image");
-        }
-        }
+        .Columns(columns =>
+        {
+            columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
+            columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
+            columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
+            columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
+            columns.Add().DataField("SignatoryEmail").Caption("Email").Width(250);
+            // Image columns with cell template
+            columns.Add().DataField("DecodedBusinessCard1")
+            .Caption(new JS("formatMessage('Signature Image')"))
+            .CellTemplate(new JS(@"
+    function(cellElement, cellInfo) {
+    if (cellInfo.value) {
+    $('<img>')
+    .attr('src', cellInfo.value)
+    .css({ width: '100px', height: 'auto' })
+    .appendTo(cellElement);
+    }
+    }
+    ")).Width(150);
+            @* columns.Add().Caption("Signature Image").AllowEditing(false)
+    .CellTemplate(@<text>
+    function(cellElement, cellInfo) {
+    if (cellInfo.data?.SignatureImageBase64) {
+    $("<img>")
+    .attr("src", "data:image/png;base64," + cellInfo.data.SignatureImageBase64)
+    .css({ height: "40px", borderRadius: "4px" })
+    .appendTo(cellElement);
+    } else {
+    cellElement.text("No image");
+    }
+    }
     </text>); *@
-            })
+        })
         .Height(500)
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
@@ -316,34 +369,34 @@
 <div class="limited-footer">
     @await Html.PartialAsync("VATModuleFooter")
 </div>
- <script>
+<script>
 
     $(document).ready(function () {
 
-          $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
 
-              if (!$(this).find("#btnUpdate,#btnBack").length) {
+            if (!$(this).find("#btnUpdate,#btnBack").length) {
 
-                  $(this).remove();
+                $(this).remove();
 
-              }
+            }
 
-          });
+        });
 
-      });
+    });
 
     $(document).on("click", "#btnBack", function () {
         window.history.back();
     });
 
-      $(function () {
-            $("#DatabaseSignatories").dxTextBox({
-                text: formatMessage("Database "),
-                readOnly: true,
-                           
+    $(function () {
+        $("#DatabaseSignatories").dxTextBox({
+            text: formatMessage("Database "),
+            readOnly: true,
 
-            });
+
         });
+    });
 
     $(function () {
         $("#TypeSignatory").dxTextBox({
@@ -397,6 +450,8 @@
             throw error;
         }
     }
+    //img
+    let businessCard1Base64 = "";
     function addSignatoryToGrid() {
         // Validate fields using the Validator components
         const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
@@ -414,11 +469,13 @@
             SignatoryPositionArabic: $("#SignatoryPositionArabic").dxTextBox("instance").option("value"),
             SignatoryContact: $("#SignatoryContact").dxTextBox("instance").option("value"),
             SignatoryEmail: $("#SignatoryEmail").dxTextBox("instance").option("value"),
-            SignatoryUserId: $("#SignatoryUserId").dxDropDownBox("instance").option("value")
+            SignatoryUserId: $("#SignatoryUserId").dxDropDownBox("instance").option("value"),
+            // Add base64 data for images, removing the prefix
+            SignatureImage: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
         };
 
         $.ajax({
-            url: '/api/VATModule/SaveSignatory',
+            url: '/api/Signatories/SaveOrUpdateSignatory',
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -451,12 +508,12 @@
         e.cancel = true; // prevents grid from doing its own update
 
         return $.ajax({
-            url: '/api/VATModule/SaveSignatory',
+            url: '/api/Signatories/SaveOrUpdateSignatory',
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function () {
-                DevExpress.ui.notify("Saved!", "success", 1500);
+                DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
             },
             error: function () {
@@ -466,5 +523,45 @@
     }
 
 
+    //Imageupload
 
-    </script>
+    let selectedContainer = null;
+
+
+    // Add event listeners after the DOM is ready
+    document.addEventListener("DOMContentLoaded", function () {
+        const containers = document.querySelectorAll('.imagecontainer');
+
+        containers.forEach(container => {
+            container.addEventListener('click', () => {
+                selectedContainer = container;
+                document.getElementById('imageInput').click();
+            });
+        });
+
+        document.getElementById('imageInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file && selectedContainer) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const base64Image = e.target.result;
+
+                    selectedContainer.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = base64Image;
+                    img.style.maxWidth = '100%';
+                    selectedContainer.appendChild(img);
+
+                    businessCard1Base64 = base64Image;
+                };
+
+                reader.readAsDataURL(file);
+                event.target.value = '';
+            }
+        });
+    });
+
+
+
+</script>
