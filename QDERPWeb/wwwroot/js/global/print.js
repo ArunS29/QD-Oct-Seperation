@@ -12,6 +12,7 @@
         var columns = grid.getVisibleColumns();
         var columnCount = columns.length;
 
+        // ✅ Define orientation before using it
         var orientation = columnCount > 10 ? "landscape" : "portrait";
 
         var doc = new jsPDF({
@@ -20,11 +21,7 @@
             format: "a3"
         });
 
-        // ✅ Arabic font setup (required before using setFont)
-        doc.addFileToVFS("Amiri Regular-normal.ttf", Amiri_Regular);
-        doc.addFont("Amiri Regular-normal.ttf", "Amiri", "normal");
-        doc.setFont("Amiri");
-        doc.setFontSize(9);
+        doc.setFontSize(9); // Default font
 
         var columnStyles = {};
         columns.forEach((col, index) => {
@@ -35,15 +32,9 @@
             jsPDFDocument: doc,
             component: grid,
             autoTableOptions: {
-                styles: { font: "Amiri", fontSize: 9, cellPadding: 3 },
+                styles: { fontSize: 9, cellPadding: 3 },
                 tableWidth: "wrap",
-                columnStyles: columnStyles,
-                didDrawCell: function (data) {
-                    const txt = data.cell.text;
-                    if (typeof txt === "string" && /[\u0600-\u06FF]/.test(txt)) {
-                        data.cell.text = txt.split(" ").reverse().join(" ");
-                    }
-                }
+                columnStyles: columnStyles
             }
         }).then(() => {
             var pdfBlob = doc.output("blob");
