@@ -73,27 +73,35 @@ namespace QD.ERP.Web.Pages
             }
 
             // 👉 New CASE 2: If it is Invoice-related
-            if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" || reportName == "SimplifiedTaxInvoice")
+            if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" || reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" || reportName == "SimplifiedTaxInvoice" || reportName == "PrintRegularInvoiceFormat02"|| reportName == "ForeignCurrency")
             {
                 if (string.IsNullOrEmpty(invoiceNo))
                 {
                     return BadRequest("Invoice No is required for invoice reports.");
                 }
 
-                invoiceNo = invoiceNo; // In this case, treat invoiceNo like VoucherNo (you can separate if needed)
+                invoiceNo = invoiceNo; 
 
-				if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS")
-				{
-					// Instantiate the report dynamically
-					Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
-						invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-				}
-				//else if (reportName == "SimplifiedTaxInvoice")
-				//{
-				//    Report = new QD.ERP.Web.Areas.Finance.Reports.test.SimplifiedTaxInvoice(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-				//}
+                if (reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS")
+                {
+                    // Instantiate the report dynamically
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
+                        invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+                else if (reportName == "PrintRegularInvoiceFormat02")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.PrintRegularInvoiceFormat02(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved,_tenantDbContextHelper);
+                }
+                else if (reportName == "ForeignCurrency")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.ForeignCurrency(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
+                else if (reportName == "RegulartaxinvoicewithoutSignatoriesFormat05")
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.RegulartaxinvoicewithoutSignatoriesFormat05(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
 
-				return Page();
+                return Page();
             }
 
             // 👉 Existing CASE 1: Old voucher reports

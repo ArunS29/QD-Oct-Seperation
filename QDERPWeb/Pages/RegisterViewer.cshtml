@@ -269,7 +269,7 @@
 <script>
     function getTenantNameFromUrl() {
         const pathParts = window.location.pathname.split('/');
-        return pathParts[1] || ''; // Assumes tenantName is the first segment after '/'
+        return pathParts[1] || ''; 
     }
 
     function openReportDesigner(reportName, voucherType, frmDate, toDate) {
@@ -282,7 +282,7 @@
         console.log("From Date:", frmDate);
         console.log("To Date:", toDate);
 
-        const reportDesignerUrl = `/${tenantName}/pulse/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(voucherType)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
+        const reportDesignerUrl = `/${tenantName}/RegisterDesigner?reportName=${encodeURIComponent(reportName)}&voucherType=${encodeURIComponent(voucherType)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
 
