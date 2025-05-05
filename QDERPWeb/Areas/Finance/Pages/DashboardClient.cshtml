@@ -55,7 +55,7 @@
     <!-- Client Outstanding Aging Chart -->
     <div class="chart-container">
         <div id="ClientOutstandingAgingChart" class="no-border-title"></div>
-        <canvas id="clientOutstandingChart" style="width:720px; height:650px"></canvas>
+        <canvas id="clientOutstandingChart" style="width:750px; height:650px"></canvas>
     </div>
 </div>
     <!-- Bills Payable Outstanding Section -->
@@ -216,7 +216,7 @@
                 if (result.success) {
                     const data = result.data;
 
-                    const labels = data.map(item => item.AccountHead ?? "Unknown");
+                    const labels = data.map(item => item.AccountHead ?? formatMessage("Unknown"));
                     const balances = data.map(item => item.TotalBalance);
 
                     const ctx = document.getElementById('clientOutstandingChart').getContext('2d');
@@ -225,7 +225,7 @@
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: 'Outstanding Balance',
+                                label: formatMessage('Outstanding Balance'),
                                 data: balances,
                                 backgroundColor: '#007acc',
                                 borderColor: '#007acc',
@@ -239,13 +239,13 @@
                                     beginAtZero: true,
                                     title: {
                                         display: true,
-                                        text: 'Balance (₹)'
+                                        text: formatMessage('Balance (₹)')
                                     }
                                 },
                                 x: {
                                     title: {
                                         display: true,
-                                        text: 'Account Head'
+                                        text: formatMessage('Account Head')
                                     }
                                 }
                             }
@@ -657,7 +657,7 @@
                                     column: "Balance",
                                     summaryType: "sum",
                                     valueFormat: { type: "fixedPoint", precision: 2 },
-                                    displayFormat: "Total: {0}"
+                                    displayFormat: formatMessage("Total : {0}")
                                 }
                             ]
                         }
@@ -761,7 +761,7 @@
                         column: "Balance",
                         summaryType: "sum",
                         valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat: "Total: {0}"
+                        displayFormat: formatMessage("Total : {0}")
                     }
                 ]
             }
@@ -824,7 +824,7 @@
                             column: "Amount",
                             summaryType: "sum",
                             valueFormat: { type: "fixedPoint", precision: 2 },
-                            displayFormat: "Total: {0}"
+                            displayFormat: formatMessage("Total : {0}")
                         }
                     ]
                 }
@@ -929,7 +929,7 @@
 
             $.getJSON("/api/Dashboard/GetCashBalance", function (response) {
                 if (response.success) {
-                    $("#cashBalanceValue").text(response.cashBalance);
+                    $("#cashBalanceValue").text(response.cashBalance.toLocaleString('en-US'));
                 } else {
                     alert("Error loading cash balance data.");
                 }
@@ -1071,8 +1071,8 @@
     }
 
     #clientOutstandingChart {
-        width: 800px !important;
-        height: 600px !important;
+        width: 850px !important;
+        height: 700px !important;
     }
     .dx-card-content .total-value {
         font-size: 24px;

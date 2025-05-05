@@ -375,7 +375,7 @@
                             data: {
                                 labels: labels,
                                 datasets: [{
-                                    label: 'Total Balance',
+                                    label: formatMessage('Total Balance'),
                                     data: dataValues,
                                     backgroundColor: '#007acc',
                                     borderColor: '#007acc',
@@ -763,16 +763,16 @@
                     }
                 ]
             },
-            summary: {
-                totalItems: [
-                    {
-                        column: "Balance",
-                        summaryType: "sum",
-                        valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat: "Total: {0}"
-                    }
-                ]
-            }
+                summary: {
+                    totalItems: [
+                        {
+                            column: "Balance",
+                            summaryType: "sum",
+                            valueFormat: { type: "fixedPoint", precision: 2 },
+                                displayFormat: formatMessage('Total : {0}')
+                        }
+                    ]
+                }
         });
 
 
@@ -863,7 +863,7 @@
                         column: "Balance",
                         summaryType: "sum",
                         valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat: "Total: {0}"
+                        displayFormat: formatMessage('Total : {0}')
                     }
                 ]
             }
@@ -884,9 +884,9 @@
                             $("#accountSummaryGrid").dxDataGrid({
                                 dataSource: response.data, // Use the data from the response
                                 columns: [
-                                    { dataField: "AccountHeadName", caption: "Account Head", width: 200, allowReordering: true },
-                                        { dataField: "TotalBalance", caption: "Balance Amount", format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
-                                    { dataField: "AccountGroup", caption: "Account Group", visible: true, allowHiding: true }
+                                    { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
+                                            { dataField: "TotalBalance", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
+                                        { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: true, allowHiding: true }
                                 ],
                                 columnAutoWidth: true, // Automatically adjust column widths
                                 showBorders: true, // Show grid borders
@@ -920,7 +920,7 @@
                                             widget: "dxButton",
                                             options: {
                                                 icon: "columnchooser",
-                                                text: "Column Chooser",
+                                                    text: formatMessage("Column Chooser"),
                                                 onClick: function () {
                                                     $("#accountSummaryGrid").dxDataGrid("instance").showColumnChooser();
                                                 }
@@ -933,10 +933,10 @@
                                 summary: {
                                     totalItems: [
                                         {
-                                            column: "Balance Amount",
+                                            column: "TotalBalance",
                                             summaryType: "sum",
                                             valueFormat: { type: "fixedPoint", precision: 2 },
-                                            displayFormat: "Total: {0}"
+                                                displayFormat: formatMessage('Total : {0}')
                                         }
                                     ]
                                 }
@@ -1050,7 +1050,7 @@
 
         $.getJSON("/api/Dashboard/GetCashBalance", function (response) {
             if (response.success) {
-                $("#cashBalanceValue").text(response.cashBalance);
+                    $("#cashBalanceValue").text(response.cashBalance.toLocaleString('en-US'));
             } else {
                 alert("Error loading cash balance data.");
             }
@@ -1209,8 +1209,8 @@
     }
 
     #bankAccountsChart {
-        width: 800px !important;
-        height: 600px !important;
+        width: 850px !important;
+        height: 700px !important;
     }
     .grid-container {
         display: flex;
