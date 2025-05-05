@@ -278,7 +278,15 @@
 <div id="webDocumentViewer"></div>
 
 <script>
+    function getTenantNameFromUrl() {
+        const pathParts = window.location.pathname.split('/');
+        return pathParts[1] || ''; 
+    }
+
     function openReportDesigner(reportName, accountId, frmDate, toDate) {
+        const tenantName = getTenantNameFromUrl();
+
+
         const reportDesignerUrl = `/${tenantName}/ReportDesigner?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDate)}&toDate=${encodeURIComponent(toDate)}`;
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
