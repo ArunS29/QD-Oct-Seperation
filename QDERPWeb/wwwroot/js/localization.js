@@ -1,5 +1,13 @@
 ﻿var dictionary = {
     "en": {
+
+        "Terms Category":"Terms Category",
+        "Type Of Request":"Type Of Request",
+        "ID":"ID",
+   
+        "Quotation Type of Request":"Quotation Type of Request",
+        "Terms Category:":"Terms Category:",
+
           "The New Project Sub Unit & Add to the Existing List:":"The New Project Sub Unit & Add to the Existing List:",
         "Signature Image":"Signature Image",
           "PO No":"PO No",
