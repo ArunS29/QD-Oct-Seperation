@@ -194,19 +194,19 @@
 		<!-- Store Name Input -->
 		<div>
 		<div class="form-row">
-			<label class="form-label">Type a New Store & Add to the Existing List:</label>
+			<label id="Typeanewstore" class="form-label"></label>
 			@(Html.DevExtreme().TextBox().Width("75%"))
 		</div>
 
 		<!-- Store Code & Cost Center -->
 		<div class="form-row multi-column">
 			<div>
-				<label class="form-label">Store Code:</label>
+				<label id="StoreCode" class="form-label"></label>
 				@(Html.DevExtreme().TextBox().Width("55%"))
 			</div>
 
 			<div>
-			<label class="form-label">Cost Center Code: (Finance Modules)</label>
+					<label id="CostCenterCode" class="form-label"></label>
 			<div style="display:flex;">
 				@(Html.DevExtreme().SelectBox()
 								.Width("70%")
@@ -221,7 +221,7 @@
 				@* 				.Width("10%")) *@
 			<div class="add-button-wrap" style="margin-left:50%;" > 
 				@(Html.DevExtreme().Button() 
-				.Text("Add") 
+				.Text(new JS("formatMessage('Add')"))
 				.Type(ButtonType.Success) 
 				.Icon("plus") 
 				.Width("100%"))
@@ -245,11 +245,11 @@
 				.RowAlternationEnabled(true)
 				.Columns(columns =>
 				{
-					columns.Add().DataField("StoreID").Caption("Store ID").Width(200)
+							columns.Add().DataField("StoreID").Caption(new JS("formatMessage('Store ID')")).Width(200)
 							.Alignment(HorizontalAlignment.Center);
-					columns.Add().DataField("StoreName").Caption("Store Name").Width(300)
+							columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300)
 							.Alignment(HorizontalAlignment.Center);
-					columns.Add().DataField("CostCenter").Caption("Cost Center for Consumption").Width(200)
+							columns.Add().DataField("CostCenter").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(200)
 							.Alignment(HorizontalAlignment.Center);
 
 				})
@@ -270,14 +270,14 @@
 		<div style="display:flex; gap:1%;">
 		<div class="action-buttons"  >
 			@(Html.DevExtreme().Button()
-						.Text("Update")
+						.Text(new JS("formatMessage('Update')"))
 						.Icon("save")
 						.Width(130)
 						.Type(ButtonType.Default))
 				</div>
 		<div class="action-buttons">
 			@(Html.DevExtreme().Button()
-						.Text("Back")
+						.Text(new JS("formatMessage('Back')"))
 						.Icon("arrowleft")
 						.Width(120)
 						.Type(ButtonType.Default))
@@ -295,4 +295,18 @@
 			}
 			});
 		});
+		$(function () {
+		$("#Typeanewstore").text(
+			 formatMessage("Type a New Store & Add to the Existing List:"));
+	});
+	$(function () {
+		$("#StoreCode").text(
+			 formatMessage("Store Code:"));
+	});
+	$(function () {
+		$("#CostCenterCode").text(
+			 formatMessage("Cost Center Code: (Finance Modules)"));
+	});
+
+
 </script>

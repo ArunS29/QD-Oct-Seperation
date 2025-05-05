@@ -13,7 +13,7 @@
 </style>
 @(Html.DevExtreme().DropDownButton()
     .ID("ItemDeliversDropdown")
-    .Text("Print")
+    .Text(new JS("formatMessage('Print')"))
     .Icon("print")
   .ElementAttr("style", "padding:10px")
     .DisplayExpr("Text")
@@ -41,25 +41,24 @@
         .ColumnAutoWidth(true)
         .Columns(columns =>
         {
-            columns.Add().DataField("DeliveryNoteNo").Caption("Delivery Note No");
-            columns.Add().DataField("DeliveryDate").Caption("Delivery Date").DataType(GridColumnDataType.Date);
-            columns.Add().DataField("Status").Caption("Status");
-            columns.Add().DataField("InvoiceNo").Caption("Invoice No");
-            columns.Add().DataField("IssuedFromStore").Caption("Issued From(Store)");
-            columns.Add().DataField("IssuedTo").Caption("Issued To");
-
-            columns.Add().DataField("Qty").Caption("Qty").DataType(GridColumnDataType.Number);
-            columns.Add().DataField("UnitPrice").Caption("Unit Price");
-            columns.Add().DataField("Total").Caption("Total").Format("##,##0.00");
+            columns.Add().DataField("DeliveryNoteNo").Caption(new JS("formatMessage('Delivery Note No')"));
+            columns.Add().DataField("DeliveryDate").Caption(new JS("formatMessage('Delivery Date')")).DataType(GridColumnDataType.Date);
+            columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')"));
+            columns.Add().DataField("InvoiceNo").Caption(new JS("formatMessage('Invoice No')"));
+            columns.Add().DataField("IssuedFromStore").Caption(new JS("formatMessage('Issued From(Store)')"));
+            columns.Add().DataField("IssuedTo").Caption(new JS("formatMessage('Issued To')"));
+            columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
+            columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+            columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
         })
         .Summary(summary =>
         {
-            summary.TotalItems(items =>
-            {
-                items.Add().Column("DeliveryNoteNo ").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
-                items.Add().Column("Qty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-            });
+        summary.TotalItems(items =>
+        {
+            items.Add().Column("DeliveryNoteNo ").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
+            items.Add().Column("Qty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
+            items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+        });
         })
         )
 </div>
