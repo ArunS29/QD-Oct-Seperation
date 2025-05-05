@@ -2152,6 +2152,9 @@
         "Company ID": "Company ID",
         "Company Name": "Company Name",
         "Client Name in Arabic:": "Client Name in Arabic:",
+        "Reason for Issuing Credit Note": "Reason for Issuing Credit Note",
+        "Invoice Transaction Code":"Invoice Transaction Code",
+        "Client Name in Arabic:": "Client Name in Arabic:",
         "Base Currency": "Base Currency",
         "Exchange Currency": "Exchange Currency",
         "Currency Rate": "Currency Rate",
@@ -4212,7 +4215,9 @@
         "Company Name": "اسم الشركة",
         "Client Name in Arabic:": "اسم العميل باللغة العربية",
         "Foreign Currency Billing": "الفوترة بالعملة الأجنبية",
-        "Deductions:Advance / Retention":"الخصومات: سلفة / احتجاز"
+        "Deductions:Advance / Retention": "الخصومات: سلفة / احتجاز",
+        "Reason for Issuing Credit Note": "سبب إصدار إشعار الدائن",
+        "Invoice Transaction Code":"رمز معاملة الفاتورة"
 
 
 

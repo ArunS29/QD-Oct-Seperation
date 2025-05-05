@@ -268,7 +268,7 @@
             )
     </div>
 
- @*    <div class="btn-container">
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Icon("print")
@@ -278,8 +278,8 @@
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
- *@
-    <div class="btn-container">
+
+  @*   <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint")
             .Text("Print") // Using string directly
@@ -293,12 +293,12 @@
                 items.Add().Text("Print Simplified TAX Invoice").Icon("file");
          
             })
-         @*    .OnItemClick("addPrintButton_click") *@
+       
             )
 
 
 
-    </div>
+    </div> *@
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()

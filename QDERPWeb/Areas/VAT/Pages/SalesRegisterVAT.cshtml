@@ -174,7 +174,7 @@
 	<div class="context-menu-itemInvoice" onclick="cancelInvoice()">
 		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
 	</div>
-	<div class="context-menu-itemInvoice">
+	<div class="context-menu-itemInvoice" onclick="checkIfOldVATInvoice('INV001')">
 		<i class="dx-icon-file"></i> VAT Invoices (Obselete)
 	</div>
 
@@ -539,6 +539,7 @@
 
 
 </div>
+<div id="invoiceErrorPopup"></div>
 
 
 <div id="overlay" class="overlay">
@@ -841,4 +842,41 @@
 			}
 		});
 	});
+	function checkIfOldVATInvoice(invoiceNo) {
+		$.ajax({
+			url: '/api/VATModule/IsOldVATInvoice',
+			type: 'GET',
+			data: { invoiceNo: invoiceNo },
+			success: function (isOld) {
+				if (isOld === true) {
+					window.location.href = `/VATModule/frm20161VATInvoiceEdit?invoiceNo=${invoiceNo}`;
+				} else {
+					showInvoiceErrorPopup("This Invoice is registered as e-Invoice. Please review the Invoice Type. Use the e-Invoice View Form.");
+				}
+			},
+			error: function () {
+				showInvoiceErrorPopup("Error checking the invoice type.");
+			}
+		});
+	}
+
+	function showInvoiceErrorPopup(message) {
+		$("#invoiceErrorPopup").dxPopup({
+			title: "Invalid Action",
+			contentTemplate: function () {
+				return $("<div>").text(message);
+			},
+			width: 400,
+			height: 200,
+			showCloseButton: true,
+			showTitle: true,
+			visible: true,
+			onHiding: function (e) {
+				// Cleanup if needed
+				$("#invoiceErrorPopup").dxPopup("dispose");
+			}
+		});
+	}
+
+
 </script>
