@@ -37,7 +37,7 @@
     }
 
     .card {
-        border: 1px solid navy; /* Navy border for cards */
+        border: 1px solid #ddd; /* Navy border for cards */
         border-radius: 8px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         width: 49%;
@@ -85,31 +85,26 @@
 
     /* Checkbox styling */
     .dx-checkbox-icon {
-        border-color: navy; /* Navy for checkbox borders */
+        border-color: #ddd; /* #ddd for checkbox borders */
     }
 
     .dx-checkbox-checked .dx-checkbox-icon {
-        background-color: navy; /* Navy for checked checkboxes */
+        background-color: navy; /* #ddd for checked checkboxes */
     }
 
     /* Dropdown box styling */
     .dx-dropdownbox {
-        border-color: navy; /* Navy for dropdown borders */
+        border-color: #ddd; /* #ddd for dropdown borders */
     }
 
         .dx-dropdownbox .dx-texteditor-input {
-            color: navy; /* Navy for dropdown text */
+            color: #ddd; /* #ddd for dropdown text */
         }
 
     /* Textbox styling */
     .dx-textbox {
-        border-color: navy; /* Navy for textbox borders */
+        border-color: #ddd; /* Navy for textbox borders */
     }
-
-        .dx-textbox .dx-texteditor-input {
-            color: navy; /* Navy for textbox text */
-        }
-
 
     .vertical-container {
         display: flex;
@@ -208,9 +203,13 @@
 </style>
 
 
-    <div id="AccountingLedgerGroups" class="no-border-title"></div>
+<div class="title">
+    <div class="header-container">
+        <div id="AccountingLedgerGroups" class="no-border-input"></div>
+    </div>
+</div>
 
-<div class="cards-container">
+<div class="cards-container" style="padding:1em;">
     @*    <h2>@ViewData["Title"]</h2> *@
     <!-- Card 1: General Account Group Information -->
     <div class="card">
@@ -306,7 +305,7 @@
                     )
             </div>
             <div class="form-group" style="display: flex;">
-                <div class="input-group" style="display: flex; align-items: center; width: 100%;justify-content: end;">
+                <div class="input-group" style="display: flex; align-items: end; width: 100%;justify-content: end;">
                     <span class="input-group-prepend" style="margin-right: 10px;">
                         @(
                             Html.DevExtreme().Button()
@@ -643,16 +642,15 @@
 </div>
 
 <script>
-    $(function () {
-                                $("#AccountingLedgerGroups").dxTextBox({
-                                            text:formatMessage("Accounting Ledger Groups"),
-                                            readOnly: true,
-						onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
-
-                            });
-                    });
+        $(function () {
+            $("#AccountingLedgerGroups").dxTextBox({
+            text: formatMessage("Accounting Ledger Groups"),
+            readOnly: true,
+            onContentReady: function (e) {
+            $(e.element).addClass("dx-textbox-heading");
+            }
+            });
+        });
     $(function () {
                                 $("#ModifiedOn").dxTextBox({
                                             text:formatMessage("Modified On:"),
