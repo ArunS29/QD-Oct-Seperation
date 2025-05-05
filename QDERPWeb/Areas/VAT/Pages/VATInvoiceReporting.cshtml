@@ -103,6 +103,9 @@
                 .TabIndex(3)
                 )
         </div>
+        <div>
+
+        
         <!-- Dropdown Button to Show Records -->
         @(Html.DevExtreme().DropDownButton()
             .ID("ddBtnShowRecords")
@@ -125,7 +128,8 @@
                 items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
                 items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
             })
-            )
+                )
+        </div>
         <div class="dx-field dx-field-4" id="check">
             <!-- Use Effective Date Checkbox -->
             @(Html.DevExtreme().CheckBox()
