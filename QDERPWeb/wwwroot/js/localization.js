@@ -2280,9 +2280,12 @@
         "Stock No / Item Code:": "Stock No / Item Code:",
         "Symbol": "Symbol",
         "Unicode": "Unicode",
-
+        "Add New VAT Purchase Bill": "Add New VAT Purchase Bill",
+        "Proforma Invoice Edit Form": "Proforma Invoice Edit Form"
     },
     "ar": {
+        "Proforma Invoice Edit Form": "نموذج تعديل الفاتورة الأولية",
+        "Add New VAT Purchase Bill":"إضافة فاتورة مشتريات ضريبة القيمة المضافة جديدة",
         "Unicode": "يونيكود",
         "Symbol": "رمز",
         "Stock No / Item Code:": "رقم المخزون / رمز الصنف:",
