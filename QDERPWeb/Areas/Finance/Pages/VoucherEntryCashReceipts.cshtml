@@ -119,14 +119,15 @@
             height: 250px !important;
             width: 100px !important;
         }
+
 </style>
 
-
-<div class="title">
-    <div class="header-container">
-        <div class="title">Receipts Voucher Details</div>
+    <div class="title">
+        <div class="header-container">
+            <div id="ReceiptsVoucherDetails"  class="no-border-input" ></div>
+        </div>
     </div>
-</div>
+
 <div class="content-container-top" style="background-color:#909ead00;">
 
 
@@ -354,7 +355,7 @@
         </div>
         <div class="form-group">
             @(Html.DevExtreme().DropDownBox()
-                .Label("Base Currency")
+                .Label(new JS("formatMessage('Base Currency')"))
                 .DataSource(d => d.WebApi()
                 .Controller("Utility") // Use same controller or change if needed
                 .LoadAction("GetCurrencyList")
@@ -405,17 +406,17 @@
                 .Height(300)
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("CurrencyID").Caption("ID").Visible(false);
-                    columns.Add().DataField("CurrencyName").Caption("Currency Name");
-                    columns.Add().DataField("CurrencySymbol").Caption("Symbol");
-                    columns.Add().DataField("CurrencyUnicode").Caption("Unicode");
-                    columns.Add().DataField("IsDefault").Caption("Default").DataType(GridColumnDataType.Boolean);
+                    columns.Add().DataField("CurrencyID").Caption(new JS("formatMessage('ID')")).Visible(false);
+                    columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                    columns.Add().DataField("CurrencySymbol").Caption(new JS("formatMessage('Symbol')"));
+                    columns.Add().DataField("CurrencyUnicode").Caption(new JS("formatMessage('Unicode')"));
+                    columns.Add().DataField("IsDefault").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
                 })
                 )
         }
         <div class="form-group">
             @(Html.DevExtreme().DropDownBox()
-                .Label("Exchange Currency")
+                .Label(new JS("formatMessage('Exchange Currency')"))
                 .DataSource(d => d.WebApi()
                 .Controller("Utility") // Adjust if needed
                 .LoadAction("GetCurrencyList")
@@ -447,7 +448,7 @@
         </div>
         <div class="form-group">
             @(Html.DevExtreme().TextBox()
-                .Label("Currency Rate")
+                .Label(new JS("formatMessage('Currency Rate')"))
                 .LabelMode(EditorLabelMode.Outside)
                 .ID("txtCurrencyRate")
                 .Value("0.00")
@@ -475,11 +476,11 @@
                 .Height(300)
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("CurrencyID").Caption("ID").Visible(false);
-                    columns.Add().DataField("CurrencyName").Caption("Currency Name");
-                    columns.Add().DataField("CurrencySymbol").Caption("Symbol");
-                    columns.Add().DataField("CurrencyUnicode").Caption("Unicode");
-                    columns.Add().DataField("IsDefault").Caption("Default").DataType(GridColumnDataType.Boolean);
+                    columns.Add().DataField("CurrencyID").Caption(new JS("formatMessage('ID')")).Visible(false);
+                    columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                    columns.Add().DataField("CurrencySymbol").Caption(new JS("formatMessage('Symbol')"));
+                    columns.Add().DataField("CurrencyUnicode").Caption(new JS("formatMessage('Unicode')"));
+                    columns.Add().DataField("IsDefault").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
                 })
                 )
         }
@@ -488,7 +489,7 @@
    
     <div class="dx-fieldset horizontal-container " style="margin-top:0px;margin-bottom:0px;padding-top:15px;padding-bottom:30px;">
         <div class="form-group">
-            <label for="Amount" class="button-alignment-down" style="margin-right:25px;height:40px;">Narration:</label>
+            <label id="narration" for="Amount" class="button-alignment-down" style="margin-right:25px;height:40px;">Narration:</label>
         </div>
         <div class="form-group">
             @(
@@ -505,14 +506,13 @@
         <div class="form-group" style="">
             @(Html.DevExtreme().Button()
                         .ID("btnaddCostAllocation")
-                        .Text("ADD")
+                        .Text(new JS("formatMessage('ADD')"))
                         .Height(40)
                         .Width(178)
                         .Icon("plus")
                         .OnClick("function() { addVoucherEntry(); }")
                         )
         </div>
-
     </div>
     <div class="dx-field ledgerResult">
         <div class="dx-row dx-column-lines dx-header-row ">
@@ -524,15 +524,16 @@
                             {
                                 columns.AddFor(m => m.VoucherEntryNo)
                             .Caption("VoucherEntryNo")
+                            .Caption(new JS("formatMessage('VoucherEntryNo')"))
                             .Visible(false);
 
-                                columns.AddFor(m => m.DrCr).Caption("Dr/Cr").DataType(GridColumnDataType.String).Lookup(lookup => lookup
+                        columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')")).DataType(GridColumnDataType.String).Lookup(lookup => lookup
                             .DataSource(new[] { "Dr", "Cr" })
                             .ValueExpr("this")
                             .DisplayExpr("this")
                             );
 
-                                columns.AddFor(m => m.AccountHead).DataField("AccountHead").Width("350")
+                        columns.AddFor(m => m.AccountHead).DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width("350")
                             .CellTemplate(@<text>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span class="account-head-span">
@@ -576,16 +577,16 @@
 
 
 
-                                columns.AddFor(m => m.DrAmount).Caption("Debit").Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(
+                        columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(
                             "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
                             );
-                                columns.AddFor(m => m.CrAmount).Caption("Credit").Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(
+                        columns.AddFor(m => m.CrAmount).Caption(new JS("formatMessage('Credit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(
                             "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
                             );
-                                columns.AddFor(m => m.EntryNarration).Caption("Entry Narration").Width(300);
-                                columns.AddFor(m => m.SysRemarks).Caption("Remarks").Width(300);
+                        columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')")).Width(300);
+                        columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Width(300);
                             })
                         .Selection(selection => selection.Mode(SelectionMode.Single))
                         //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
@@ -3202,5 +3203,19 @@ function fetchUpdatedData(voucherEntryNo) {
         e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color
     }
 }
-  
+
+            $(function () {
+                $("#narration").text(
+                     formatMessage("Narration"));
+        });
+        
+                $(function () {
+                $("#ReceiptsVoucherDetails").dxTextBox({
+                    text: formatMessage("Receipts Voucher Details"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
 </script>

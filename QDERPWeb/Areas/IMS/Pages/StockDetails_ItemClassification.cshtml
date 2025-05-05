@@ -190,13 +190,13 @@
 		<!-- Store Name Input -->
 		<div>
 				<div>
-					<label class="form-label">Type new Stock Classification By & Add to the Existing List</label>
+				<label id="TypenewStockClassification" class="form-label"></label>
 					<div style="display:flex;">
 						@(Html.DevExtreme().SelectBox()
 													.Width("70%")
 													.Placeholder("Select Cost Center")
 													@* .DataSource(new[] { "", "" }) *@
-													.ValueExpr("this")
+													.ValueExpr("this")	
 													.DisplayExpr("this"))
 						@* @(Html.DevExtreme().Button() *@
 						@* 				.Text("Add") *@
@@ -205,7 +205,7 @@
 						@* 				.Width("10%")) *@
 						<div class="add-button-wrap" style="margin-left:50%;">
 							@(Html.DevExtreme().Button()
-														.Text("Add")
+														.Text(new JS("formatMessage('Add')"))
 														.Type(ButtonType.Success)
 														.Icon("plus")
 														.Width("100%"))
@@ -229,9 +229,9 @@
 						.RowAlternationEnabled(true)
 						.Columns(columns =>
 						{
-							columns.Add().DataField("StoreName").Caption("Code").Width(300)
+					columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Code')")).Width(300)
 							.Alignment(HorizontalAlignment.Center);
-							columns.Add().DataField("CostCenter").Caption("Stock Classification").Width(200)
+					columns.Add().DataField("CostCenter").Caption(new JS("formatMessage('Stock Classification')")).Width(200)
 							.Alignment(HorizontalAlignment.Center);
 						})
 						.ShowColumnLines(true)
@@ -274,5 +274,9 @@
 		$(e.element).addClass("dx-textbox-heading");
 		}
 		});
+	});
+	$(function () {
+		$("#TypenewStockClassification").text(
+			 formatMessage("Type new Stock Classification By & Add to the Existing List"));
 	});
 </script>

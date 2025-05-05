@@ -306,8 +306,8 @@
            
           <div class="form-group">
     @(Html.DevExtreme().DropDownBox()
-        .Label("Base Currency")
-        .DataSource(d => d.WebApi()
+            .Label(new JS("formatMessage('Base Currency')"))
+            .DataSource(d => d.WebApi()
             .Controller("Utility") // Use same controller or change if needed
             .LoadAction("GetCurrencyList")
             .LoadMode(DataSourceLoadMode.Raw)
@@ -357,18 +357,18 @@
         .Height(300)
         .Columns(columns =>
         {
-            columns.Add().DataField("CurrencyID").Caption("ID").Visible(false);
-            columns.Add().DataField("CurrencyName").Caption("Currency Name");
-            columns.Add().DataField("CurrencySymbol").Caption("Symbol");
-            columns.Add().DataField("CurrencyUnicode").Caption("Unicode");
-            columns.Add().DataField("IsDefault").Caption("Default").DataType(GridColumnDataType.Boolean);
+                        columns.Add().DataField("CurrencyID").Caption(new JS("formatMessage('ID')")).Visible(false);
+                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                        columns.Add().DataField("CurrencySymbol").Caption(new JS("formatMessage('Symbol')"));
+                        columns.Add().DataField("CurrencyUnicode").Caption(new JS("formatMessage('Unicode')"));
+                        columns.Add().DataField("IsDefault").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
         })
     )
 }
 
             <div class="form-group">
                 @(Html.DevExtreme().DropDownBox()
-                    .Label("Exchange Currency")
+                    .Label(new JS("formatMessage('Exchange Currency')"))
                     .DataSource(d => d.WebApi()
                     .Controller("Utility") // Adjust if needed
                     .LoadAction("GetCurrencyList")
@@ -400,7 +400,7 @@
             </div>
             <div class="form-group">
                 @(Html.DevExtreme().TextBox()
-                    .Label("Currency Rate")
+                    .Label(new JS("formatMessage('Currency Rate')"))
                     .LabelMode(EditorLabelMode.Outside)
                     .ID("txtCurrencyRate")
                     .Value("0.00")
@@ -428,11 +428,11 @@
                     .Height(300)
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("CurrencyID").Caption("ID").Visible(false);
-                        columns.Add().DataField("CurrencyName").Caption("Currency Name");
-                        columns.Add().DataField("CurrencySymbol").Caption("Symbol");
-                        columns.Add().DataField("CurrencyUnicode").Caption("Unicode");
-                        columns.Add().DataField("IsDefault").Caption("Default").DataType(GridColumnDataType.Boolean);
+                        columns.Add().DataField("CurrencyID").Caption(new JS("formatMessage('ID')")).Visible(false);
+                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                        columns.Add().DataField("CurrencySymbol").Caption(new JS("formatMessage('Symbol')"));
+                        columns.Add().DataField("CurrencyUnicode").Caption(new JS("formatMessage('Unicode')"));
+                        columns.Add().DataField("IsDefault").Caption(new JS("formatMessage('Default')")).DataType(GridColumnDataType.Boolean);
                     })
                     )
             }

@@ -1,0 +1,128 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.ReplicateUserAccountModel
+@{
+}
+
+
+<style>
+    .form-table {
+        width: 100%;
+        height: 100%;
+        margin: 30px;
+        border-spacing: 10px;
+        font-family: Segoe UI, sans-serif;
+    }
+
+        .form-table th {
+            text-align: left;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        .form-table tr {
+            margin-bottom: 5px;
+        }
+
+        .form-table td {
+            vertical-align: top;
+            width: 100%;
+        }
+
+    .highlight {
+        color: blue;
+        font-weight: bold;
+    }
+
+    .muted-text {
+        color: gray;
+        font-size: 12px;
+        padding-top: 10px;
+    }
+
+    .flex-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .mainContainer {
+        width: 100%;
+    }
+
+
+    .maindiv {
+        display: flex;
+    }
+
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+</style>
+
+
+<div class="maindiv">
+    <table class="form-table">
+        <tr>
+            <td>
+                <h6 class="highlight">Copy User Access Permissions From One User Account to Other User Account</h6>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("ReplicateUserPermissions")
+                    .Label("Replicate User Access Permissions From the User")
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+            
+        </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                    .ID("ToThisUserAccount")
+                    .Label("To This User Account")
+                    .Width("100%")
+                    .LabelMode(EditorLabelMode.Outside))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().Button()
+                    @* .ID("btnReplicateUserAccount") *@
+                    .Text("Replicate User Account")
+                    .Icon("key")
+                    .Width("250px")
+                    @* .OnClick("ReplicateUserAccountOnClick") *@
+                    )
+            </td>
+        </tr>
+    </table>
+</div>

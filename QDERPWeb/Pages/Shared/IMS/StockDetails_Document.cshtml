@@ -153,19 +153,19 @@
 <!-- Filter/Info Section -->
 <div class="toolbar-container">
 	@(Html.DevExtreme().Button()
-			.Text("Add & Attach Files")
+			.Text(new JS("formatMessage('Add & Attach Files')"))
 			.Icon("attach")
 			.Type(ButtonType.Default)
 			.Width(250)
 			)
 	@(Html.DevExtreme().Button()
-			.Text("Merge Selected Files")
+			.Text(new JS("formatMessage('Merge Selected Files')"))
 			.Icon("fas fa-file-pdf") // Font Awesome icon can be used with customization
 			.Type(ButtonType.Default)
 			.Width(250)
 			)
 	@(Html.DevExtreme().Button()
-			.Text("Save Separated PDF Files")
+			.Text(new JS("formatMessage('Save Separated PDF Files')"))
 			.Icon("save")
 			.Type(ButtonType.Default)
 			.Width(280)
@@ -191,11 +191,11 @@
 			.GroupPanel(p => p.Visible(false))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("Total").Caption("Total").Alignment(HorizontalAlignment.Center).Width(100);
-				columns.Add().DataField("DocumentType").Caption("Document Type").Alignment(HorizontalAlignment.Center).Width(200);
-				columns.Add().DataField("DocumentRefNo").Caption("Document Ref No").Alignment(HorizontalAlignment.Center).Width(200);
-				columns.Add().DataField("ExpiryOn").Caption("Expiry On").Alignment(HorizontalAlignment.Center).Width(150);
-				columns.Add().DataField("NotifyOn").Caption("Notify On").Alignment(HorizontalAlignment.Center).Width(150);
+			columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Center).Width(100);
+			columns.Add().DataField("DocumentType").Caption(new JS("formatMessage('Document Type')")).Alignment(HorizontalAlignment.Center).Width(200);
+			columns.Add().DataField("DocumentRefNo").Caption(new JS("formatMessage('Document Ref No')")).Alignment(HorizontalAlignment.Center).Width(200);
+			columns.Add().DataField("ExpiryOn").Caption(new JS("formatMessage('Expiry On')")).Alignment(HorizontalAlignment.Center).Width(150);
+			columns.Add().DataField("NotifyOn").Caption(new JS("formatMessage('Notify On')")).Alignment(HorizontalAlignment.Center).Width(150);
 			})
 			.Summary(s => s
 			.TotalItems(items =>

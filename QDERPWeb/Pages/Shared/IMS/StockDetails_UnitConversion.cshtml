@@ -11,7 +11,7 @@
 <div style="text-align: right;">
     @(Html.DevExtreme().Button()
         .ID("addButton")
-        .Text("Add")
+        .Text(new JS("formatMessage('Add')"))
         .Icon("plus")
         .Type(ButtonType.Default)
         .Width(140)
@@ -36,9 +36,9 @@
         .ColumnAutoWidth(true)
         .Columns(columns =>
         {
-            columns.Add().DataField("UnitCodeOfCoversion").Caption(" Unit Code Of Coversion");
-            columns.Add().DataField("UnitConverted").Caption("Unit Converted");
-            columns.Add().DataField("UnitConversionRemarks").Caption("Unit Conversion Remarks");
+            columns.Add().DataField("UnitCodeOfCoversion").Caption(new JS("formatMessage('Unit Code Of Coversion')"));
+            columns.Add().DataField("UnitConverted").Caption(new JS("formatMessage('Unit Converted')"));
+            columns.Add().DataField("UnitConversionRemarks").Caption(new JS("formatMessage('Unit Conversion Remarks')"));
           
         })
         
