@@ -1,20 +1,19 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using DevExpress.XtraReports.UI;
 using System.Drawing;
-using QD.ERP.Web.Service;
+using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting.Drawing;
+using QD.ERP.Web.Service;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
 {
-    public partial class TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS : XtraReport
+    public partial class RegulartaxinvoicewithoutSignatoriesFormat05 : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private bool _isApproved;  // This flag will come from the client-side
+        private bool _isApproved;
 
-        public TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
+        public RegulartaxinvoicewithoutSignatoriesFormat05(
             string invoiceNo,
             string tenantName,
             string companyName,
@@ -22,15 +21,15 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-            bool isApproved,  // Accepting approval status here
+            bool isApproved,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
-            _isApproved = isApproved;  // Store the approval status
+            _isApproved = isApproved;
 
             InitializeComponent();
             SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
-            LoadReportData(invoiceNo);  // Load the data synchronously
+            LoadReportData(invoiceNo);
         }
 
         private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
@@ -82,7 +81,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
 
         private void LoadReportData(string invoiceNo)
         {
-            DataTable dt = GetReportData(invoiceNo);  // Load data synchronously
+            DataTable dt = GetReportData(invoiceNo);
 
             if (dt.Rows.Count == 0)
             {
@@ -97,7 +96,6 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             }
         }
 
-        // GetReportData is implemented below:
         private DataTable GetReportData(string invoiceNo)
         {
             DataTable dt = new DataTable();
@@ -136,29 +134,19 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             return dt;
         }
 
-
         private void SetWatermark()
         {
             if (!_isApproved)
             {
                 this.Watermark.Text = "DRAFT COPY";
-
-                // Set font
                 this.Watermark.Font = new Font("Arial", 70, FontStyle.Bold);
-
                 this.Watermark.ForeColor = Color.FromArgb(80, 173, 216, 230); 
-
                 this.Watermark.TextDirection = DirectionMode.ForwardDiagonal;
-
                 this.Watermark.ShowBehind = true;
-
                 this.Watermark.ImageTiling = false;
                 this.Watermark.ImageViewMode = ImageViewMode.Stretch;
             }
         }
-
-
-
 
         private void CreateNoDataLabel()
         {
