@@ -139,16 +139,24 @@
                         <label for="AssetCategory">Asset Category</label>
                     </div>
                     <div class="form-group-row">
-                        @(Html.DevExtreme().SelectBox().ID("ddassetCategory")
-                            .LabelMode(EditorLabelMode.Outside).ValueExpr("AssetCategoryCode")
-                            .InputAttr("aria-label", "Owner")
-                            .DisplayExpr("AssetCategory")
-                            .DataSource(d => d.WebApi().Controller("assetview")
-                            .LoadAction("GetAssetCategoriesByCode")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("AssetCategory")).SearchEnabled(true).ShowClearButton(true).TabIndex(1)
+        @(Html.DevExtreme().SelectBox()
+            .ID("ddassetCategory")
+            .LabelMode(EditorLabelMode.Outside)
+            .ValueExpr("AssetCategoryCode")
+            .DisplayExpr("AssetCategory")
+            .InputAttr("aria-label", "Owner")
+            .DataSource(d => d.WebApi()
+            .Controller("assetview")
+            .LoadAction("GetAssetCategoriesByCode")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AssetCategory")
+            )
+            .SearchEnabled(true)
+            .ShowClearButton(true)
+            .TabIndex(1)
+            .MinSearchLength(0) // Starts searching after typing 1 character
+            )
 
-                            )
                         @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToAssetCategoryView"))
                     </div>
                 </div>

@@ -148,6 +148,24 @@
 
                 );
                     })
+                    .Summary(summary =>
+                    {
+                        summary.TotalItems(totalItems =>
+                        {
+                        totalItems.Add()
+                        .Column("DrAmount")
+                        .SummaryType(SummaryType.Sum)
+                        .CustomizeText(
+                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+                        );
+                        totalItems.Add()
+                        .Column("CrAmount")
+                        .SummaryType(SummaryType.Sum)
+                        .CustomizeText(
+                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+                        );
+                        });
+                    })
                     .AllowColumnReordering(true)
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))
@@ -162,35 +180,6 @@
                     .OnSelectionChanged("getSelectedVoucherEntryNo")
                     )
 </div>
-
-
-        <div id="footerTotals" class="background" style="display: flex; justify-content: flex-end; padding: 10px; margin-top: -11px; font-size: 14px; max-width: 1245px;">
-    <!-- Total Debit -->
-    <div style="text-align: right; margin-right: 20px;">
-       @*  <label style="font-weight: bold; margin-right: 5px;">Total Debit:</label> *@
-                @(Html.DevExtreme().TextBox()
-                            .ID("totalDebitTextbox")
-                            .Value("0.00")
-                            .ReadOnly(true)
-                            .Width(200)
-                            .RtlEnabled(true)
-                        )
-    </div>
-
-    <!-- Total Credit -->
-    <div style="text-align: right;">
-       @*  <label style="font-weight: bold; margin-right: 5px;">Total Credit:</label> *@
-                @(Html.DevExtreme().TextBox()
-                            .ID("totalCreditTextbox")
-                            .Value("0.00")
-                            .ReadOnly(true)
-                            .Width(200)
-                            .RtlEnabled(true)
-                        )
-    </div>
-</div>
-
-
 <div class="dx-fieldset vertical-container" style="display: flex;flex-direction: row;justify-content: space-around;">
     <div>
                 @(Html.DevExtreme().TextBox()
