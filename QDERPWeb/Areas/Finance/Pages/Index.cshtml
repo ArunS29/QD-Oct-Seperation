@@ -703,12 +703,12 @@
                                         column: "Balance",
                                         summaryType: "sum",
                                         valueFormat: { type: "fixedPoint", precision: 2 },
-                                        displayFormat: "Total: {0}"
+                                        displayFormat: formatMessage('Total : {0}')
                                     },
                                     {
                                         column: "AccountHead",
                                         summaryType: "count",
-                                        displayFormat: "Count: {0}"
+                                            displayFormat: formatMessage('Count : {0}')
                                     }
                             ]
                         }
@@ -812,12 +812,12 @@
                                         column: "Balance",
                                         summaryType: "sum",
                                         valueFormat: { type: "fixedPoint", precision: 2 },
-                                        displayFormat: "Total: {0}"
+                                            displayFormat: formatMessage('Total : {0}')
                                     },
                                     {
                                         column: "AccountHead",
                                         summaryType: "count",
-                                        displayFormat: "Count: {0}"
+                                            displayFormat: formatMessage('Count : {0}')
                                     }
                             ]
                         }
@@ -848,9 +848,9 @@
                             $("#accountSummaryGrid").dxDataGrid({
                                 dataSource: response.data, // Use the data from the response
                                 columns: [
-                                    { dataField: "AccountHeadName", caption: "Account Head", width: 200, allowReordering: true },
-                                        { dataField: "TotalBalance", caption: "Balance Amount", format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
-                                    { dataField: "AccountGroup", caption: "Account Group", visible: true, allowHiding: true }
+                                    { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
+                                            { dataField: "TotalBalance", caption:  formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
+                                        { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: true, allowHiding: true }
                                 ],
                                 columnAutoWidth: true, // Automatically adjust column widths
                                 showBorders: true, // Show grid borders
@@ -883,7 +883,7 @@
                                             widget: "dxButton",
                                             options: {
                                                 icon: "columnchooser",
-                                                text: "Column Chooser",
+                                                    text: formatMessage("Column Chooser"),
                                                 onClick: function () {
                                                     $("#accountSummaryGrid").dxDataGrid("instance").showColumnChooser();
                                                 }
@@ -896,15 +896,15 @@
                                 summary: {
                                     totalItems: [
                                             {
-                                                column: "Balance Amount",
+                                                column: "TotalBalance",
                                                 summaryType: "sum",
                                                 valueFormat: { type: "fixedPoint", precision: 2 },
-                                                displayFormat: "Total: {0}"
+                                                displayFormat: formatMessage('Total : {0}')
                                             },
                                             {
-                                                    column: "Account Head",
+                                                column: "AccountHeadName",
                                                 summaryType: "count",
-                                                displayFormat: "Count: {0}"
+                                                displayFormat: formatMessage('Count : {0}')
                                             }
                                     ]
                                 }
