@@ -117,7 +117,10 @@ namespace QD.ERP.Web.Pages
                 case "cashPaymentformat2":
                     Report = new cashPaymentformat2(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
-                case "cashPayments":
+				case "SalesVoucherReport":
+					Report = new SalesVoucherReport(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+					break;
+				case "cashPayments":
                     Report = new cashPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
                 case "PreviewClaimRequestForm":

@@ -100,6 +100,24 @@
         .OnItemClick("handlePreviewClick")
         )
 
+         @(Html.DevExtreme().DropDownButton()
+        .ID("btnPreview2")
+        .Text(new JS("formatMessage('Preview')"))
+        .Icon("fullscreen")
+        .Hint("Click to Preview")
+        .ElementAttr(new { @class = "bold-button" })
+        .Width(180)
+        .DropDownOptions(options => options.Width(220))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Preview Format 2')")).Icon("textdocument");
+
+        })
+        .OnItemClick("handlePreviewClick1")
+        )
+
+
 
 
     @(Html.DevExtreme().Button()
@@ -988,6 +1006,41 @@
         var reportName = "";
         if (selectedText === formatMessage('Preview Format 1')) {
             reportName = "cashPayments";
+        } else if (selectedText === formatMessage('Preview Format 2')) {
+            reportName = "cashPaymentformat2";
+        }
+
+        // Ensure a valid report is selected
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+        // Open the XtraReport with Voucher No as a parameter
+       window.open(
+            `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
+            '_blank',
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+    }
+     function handlePreviewClick1(e) {
+        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        var voucherNo = voucherNoBox.option("value");
+
+        // Ensure Voucher No is available
+        if (!voucherNo) {
+            alert("Voucher No is required.");
+            return;
+        }
+
+        // Get the selected item text
+        var selectedText = e.itemData.text;
+        console.log("Selected Report:", selectedText);
+
+        // Determine the report name based on the selected text
+        var reportName = "";
+        if (selectedText === formatMessage('Preview Format 1')) {
+            reportName = "SalesVoucherReport";
         } else if (selectedText === formatMessage('Preview Format 2')) {
             reportName = "cashPaymentformat2";
         }
