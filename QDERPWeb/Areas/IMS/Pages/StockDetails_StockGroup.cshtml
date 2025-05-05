@@ -138,16 +138,18 @@
             <td>
                 @(Html.DevExtreme().TextArea()
                     .ID("NewStockServicesGroups")
-                    .Label("Type a New Stock or Services Group & Add to the Eisting List : ")
+                    .Label(new JS("formatMessage('Type a New Stock or Services Group & Add to the Eisting List:')"))
                     .LabelMode(EditorLabelMode.Outside))
+
             </td>
+
         </tr>
 
         <tr>
             <td style="display: flex;">
                 @(Html.DevExtreme().TextArea()
                     .ID("StockServicesGroups")
-                    .Label("Stock / Service Group (In Arabic) : ")
+                    .Label(new JS("formatMessage('Stock / Service Group (In Arabic):')"))
                     .Width("100%")
                     .LabelMode(EditorLabelMode.Outside))
                 @(Html.DevExtreme().Button()
@@ -156,7 +158,6 @@
                     .Icon("fas fa-language")
                     .ElementAttr("style", "margin-top: 25px;")
                     )
-               
             </td>
         </tr>
 
@@ -167,19 +168,22 @@
                 @(Html.DevExtreme().TextBox()
                     .ID("GroupCode")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Group Code *"))
+                    .Label(new JS("formatMessage('Group Code *')"))
+                    )
             </td>
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("Category")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Category"))
+                    .Label(new JS("formatMessage('Category')"))
+                    )
             </td>
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryMasterGroups")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Inventory Master Groups"))
+                    .Label(new JS("formatMessage('Inventory Master Groups')"))
+                )
             </td>
         </tr>
         <tr class="flex-row" style="width:100%;">
@@ -187,14 +191,16 @@
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryLedgerAccount")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Inventory Ledger Account"))
+                    .Label(new JS("formatMessage('Inventory Ledger Account')"))
+                )
             </td>
 
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("CostLedgerAccount")
                     .LabelMode(EditorLabelMode.Outside)
-                    .Label("Cost Ledger Account"))
+                    .Label(new JS("formatMessage('Cost Ledger Account')"))
+                )
             </td>
             <td style="padding: 10px; margin-top: 20px;">
                 <div  style="display: flex; width:400px;">
@@ -203,7 +209,7 @@
                     @(Html.DevExtreme().CheckBox()
                         .ID("ServicesGroup")
                         .Value(false))
-                    <label class="item-discontinued-label">Choose the Group is Services Group ?</label>
+                    <label id="ChoosetheGroupisServicesGroup" class="item-discontinued-label">Choose the Group is Services Group ?</label>
                 </div>
 
             </td>
@@ -212,7 +218,7 @@
                 @(Html.DevExtreme().Button()
                     .ID("btnAdd")
                     .Icon("plus")
-                    .Text("Add")
+                    .Text(new JS("formatMessage('Add')"))
                     .Width(60)
                     .ElementAttr("style", "margin-top:23px")
                     )
@@ -244,30 +250,30 @@
                     .Columns(columns =>
                     {
                         columns.Add().DataField("Code")
-                        .Caption("Code")
+                        .Caption(new JS("formatMessage('Code')"))
                         .Alignment(HorizontalAlignment.Center);
 
                         columns.Add().DataField("GSGroup")
-                        .Caption("GS Group")
+                        .Caption(new JS("formatMessage('Code')"))
                         .Alignment(HorizontalAlignment.Center);
 
                         columns.Add().DataField("GSGroupArabic")
-                        .Caption("GS Group (In Arabic)")
+                        .Caption(new JS("formatMessage('GS Group (In Arabic')"))
                         .Alignment(HorizontalAlignment.Center);
 
                         columns.Add().DataField("Category")
-                        .Caption("Category")
+                        .Caption(new JS("formatMessage('Category')"))
                         .Alignment(HorizontalAlignment.Center);
 
                         columns.Add().DataField("InventoryMasterGroup")
-                        .Caption("Inventory Master Group")
+                        .Caption(new JS("formatMessage('Inventory Master Group')"))
                         .Alignment(HorizontalAlignment.Center);
 
                             columns.Add().DataField("IsServices")
-                        .Caption("Is Services?")
+                        .Caption(new JS("formatMessage('Is Services?')"))
                         .Alignment(HorizontalAlignment.Center)
                         .CellTemplate(@<text>
-                   
+                    
                     
                 </text>);
 
@@ -302,4 +308,11 @@
     function viewStockMovement() {
         alert("View stock movement clicked");
     }
+    $(function () {
+        $("#ChoosetheGroupisServicesGroup").text(
+             formatMessage("Choose the Group is Services Group ?"));
+    });
+
+
+
 </script>
