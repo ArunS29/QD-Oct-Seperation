@@ -13,7 +13,7 @@
             grid-template-columns: 1fr 1fr 1fr;
             gap: 15px;
             padding: 15px;
-            background-color: #e6eef7;
+            /* background-color: #e6eef7; */
             width: 1200px;
 
 
@@ -36,7 +36,7 @@
 
         .dx-card {
             padding: 20px;
-            background-color: #e6eef7;
+            /* background-color: #e6eef7; */
             width: 90%;
             margin: auto;
             border-radius: 8px;
@@ -467,6 +467,39 @@
 </body>
 </html>
 <script>
+
+    $(document).ready(function () {
+            var urlParams = new URLSearchParams(window.location.search);
+    var ItemNo = urlParams.get('ItemNo') ?? '';
+    var Gsdescrpition = urlParams.get('Gsdescrpition') ?? '';
+    var GsdescriptionAr = urlParams.get('GsdescriptionAr') ?? '';
+    var ItemPartNo = urlParams.get('ItemPartNo') ?? '';
+    var CostPrice = urlParams.get('CostPrice') ?? '';
+    var GssellingRate = urlParams.get('GssellingRate') ?? '';
+    var ReorderQty = urlParams.get('ReorderQty') ?? '';
+              // var IsEditflag = urlParams.get('IsEditflag');
+           
+              alert(ItemNo)
+                // IsCurrent=IsEditflag.toString();
+
+                // // console.log("Iseditflag",IsEditflag)
+                // if (IsCurrent === "true") {
+               
+                     $("#txtGoodsCode7").dxTextBox("instance").option("value",ItemNo);
+                     $("#txtItemPartNo4").dxTextBox("instance").option("value",ItemPartNo);
+                     $("#txtDescription8").dxTextArea("instance").option("value",Gsdescrpition);
+                      $("#txtDescriptionArabic").dxTextArea("instance").option("value",GsdescriptionAr);
+
+                       $("#packingUnit").dxNumberBox("instance").option("value",ReorderQty);
+                        $("#sellingRate").dxNumberBox("instance").option("value",GssellingRate);
+                         $("#txtCostPrice3").dxNumberBox("instance").option("value",CostPrice);
+                     
+                     //dataGridAccountHeadSelectionChanged({ selectedRowKeys: [Gsdescrpition]});
+
+           // }
+
+
+        });
 
     function redirectToVATMasterModule() {
         const url = `/${tenantName}/VAT/VATMasterModule`;

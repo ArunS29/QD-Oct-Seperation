@@ -454,6 +454,7 @@
 																			.LabelMode(EditorLabelMode.Outside)
 																			.Value(DateTime.Now)
 																			.Disabled(true)
+																			
 																			)
 								</td>
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
@@ -527,7 +528,7 @@
 
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("InvoiceTransactionsCode")
-																			.Label("Invoice Transaction Type")
+																			.Label("Invoice Transaction Code")
 																			.Value("0100000") // Default selected value
 																			.ValueExpr("ID")
 																			.DisplayExpr("ID")
@@ -594,18 +595,51 @@
 																				.Hint("Add Description")
 																				.Width(35)
 																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-
+																			.OnClick("showLedgerAccountPopup")
 
 																				)
+
+									<!-- DevExtreme Popup -->
+									@(Html.DevExtreme().Popup()
+																			.ID("ledgerAccountPopup")
+																			.Width("80%")
+																			.Height("85%")
+																			.Title("Add Ledger Account")
+																			.ShowTitle(true)
+																			.CloseOnOutsideClick(true)
+																			.Visible(false)
+																			.ResizeEnabled(true)
+																			.ContentTemplate(@<text>
+										<div id="popupContent" class="background" style="width:100%; height:100%;">
+											<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+										</div>
+									</text>)
+																			)
 										@(Html.DevExtreme().Button()
 																				.ID("EditClient")
 																				.Icon("edit")
 																				.Hint("Edit Description")
 																				.Width(35)
 																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-
+																			.OnClick("showLedgerAccountEditPopup")
 
 																				)
+
+									@(Html.DevExtreme().Popup()
+																			.ID("ledgerEditAccountPopup")
+																			.Width("80%")
+																			.Height("85%")
+																			.Title(new JS("formatMessage('Edit Ledger Account')"))
+																			.ShowTitle(true)
+																			.CloseOnOutsideClick(true)
+																			.Visible(false)  // Hidden by default
+																			.ResizeEnabled(true)
+																			.ContentTemplate(@<text>
+										<div id="popupContent" style="width:100%; height:100%;">
+											<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+										</div>
+									</text>)
+																			)
 									</div>
 								</td>
 								<td>
@@ -639,8 +673,6 @@
 								</td>
 							</tr>
 							<tr>
-@* 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Group VAT No')")).ID("GroupVATNo")	.LabelMode(EditorLabelMode.Outside))</td>
- *@								
                                 <td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("GroupVATNo")
@@ -652,9 +684,19 @@
 																			//.ShowClearButton(true) // Optional: adds a clear (X) button
 																			)
 								</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside))</td>
-@* 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client VAT No')")).ID("ClientVATNo").LabelMode(EditorLabelMode.Outside).ReadOnly(false))</td>
- *@								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+							<td>
+
+								@(Html.DevExtreme().TextBox()
+															.ID("ClientVATNo")
+															.Label(new JS("formatMessage('Client VAT No')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.MaxLength(15)
+															.Mask("000000000000000") // 15 digits
+															.MaskChar(" ") // Optional: makes it more readable
+																					//.ShowClearButton(true) // Optional: adds a clear (X) button
+															)
+							</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
 
 							</tr>
 							<tr>
@@ -3288,7 +3330,7 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
+					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -3463,6 +3505,7 @@
 				caption: formatMessage('Description'),
 
 				width: 550,
+					 sortOrder: "asc", // auto-sort
 
 				  editCellTemplate: function (cellElement, cellInfo) {
 
@@ -3884,6 +3927,12 @@
 						//allowDeleting: true
 
 					},
+						onCellValueChanged: function (e) {
+		if (e.column.dataField === "Description") {
+			dataGridInstance.columnOption("Description", "sortOrder", "asc");
+			dataGridInstance.refresh(); // Trigger sort
+		}
+	},
 
 					onInitNewRow: function (e) {
 
@@ -3986,7 +4035,7 @@
 					caption: formatMessage('Description'),
 
 					width: 550,
-
+						 sortOrder: "asc", // auto-sort
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getDropdownData().done(function (dropdownData) {
@@ -4018,6 +4067,7 @@
 								onValueChanged: function (e) {
 
 									let selectedItem = dropdownData.find(item => item.GSCode === e.value);
+										
 
 									if (selectedItem) {
 
@@ -4034,6 +4084,16 @@
 											dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 											dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+
+													   ItemNo = selectedItem.GSCode;
+
+											Gsdescrpition = selectedItem.GSDescrpition;
+									//ItemNo = selectedRowData[0].GsgroupId;
+											GsdescriptionAr = selectedItem.GsdescriptionAr;
+											ItemPartNo = selectedItem.ItemPartNo;
+										CostPrice = selectedItem.CostPrice;
+											GssellingRate = selectedItem.GSSellingRate;
+									    ReorderQty = selectedItem.ReorderQty;
 
 										}
 
@@ -4126,8 +4186,8 @@
 								onClick: function () {
 
 									// Replace or fetch dynamically
-
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
+										
+										    let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
 											let title = "Goods and Services";
 													openModal(url, title);
 									//window.location.href = url;
@@ -4152,7 +4212,9 @@
 
 									// Replace or fetch dynamically
 
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
+										
+									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
+						          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
 											let title = "Goods and Services";
 													openModal(url, title);
 									//window.location.href = url;
@@ -4793,8 +4855,16 @@
 		 var selectedRowData = $("#accountDropDownBoxeditGrid").dxDataGrid("instance").getSelectedRowsData();
 							// Get ReferenceNo from selected row
 							if (selectedRowData.length > 0) {
-								ItemNo = selectedRowData[0].Gscode;
-
+								
+								    ItemNo = selectedRowData[0].Gscode;
+										alert(ItemNo)
+									Gsdescrpition = selectedRowData[0].Gsdescrpition;
+									//ItemNo = selectedRowData[0].GsgroupId;
+									GsdescriptionAr = selectedRowData[0].GsdescriptionAr;
+									ItemPartNo = selectedRowData[0].ItemPartNo;
+									CostPrice = selectedRowData[0].CostPrice;
+									GssellingRate = selectedRowData[0].GssellingRate;
+									ReorderQty = selectedRowData[0].ReorderQty;
 
 								}
 
@@ -7685,6 +7755,51 @@
 				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 			});
 		});
+
+
+		function showLedgerAccountPopup() {
+			var popup = $("#ledgerAccountPopup").dxPopup("instance");
+			popup.show();
+
+			// Correct URL to your LedgerAccount view
+			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+		}
+
+				function showLedgerAccountEditPopup() {
+		
+
+			// IsEdit = true;
+			// if (!refno) refno = "";
+			// if (!accheadar) accheadar = "";
+
+			//const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(acchedid)}&ReferenceNo=${encodeURIComponent(refno)}&AccountHeadName=${encodeURIComponent(accheadname)}&AccountGroup=${encodeURIComponent(accgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(accgroupid)}&AccountHeadAr=${encodeURIComponent(accheadar)}`;
+
+				const url = `/${tenantName}/Finance/LedgerAccount`;
+
+			var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+
+			// Add an event to refresh the page when the popup is closed
+			popupInstance.option("onHidden", function () {
+				//location.reload(); // Reloads the page after closing the popup
+			});
+
+			popupInstance.show();
+
+			setTimeout(function () {
+				var iframe = document.getElementById("ledgerEditAccountFrame");
+
+				if (!iframe) {
+					console.error("Error: ledgerEditAccountFrame not found!");
+					return;
+				}
+
+				iframe.onload = function () {
+					console.log("Iframe loaded successfully.");
+				};
+
+				iframe.src = url;
+			}, 300);
+		}
 
 		
 
