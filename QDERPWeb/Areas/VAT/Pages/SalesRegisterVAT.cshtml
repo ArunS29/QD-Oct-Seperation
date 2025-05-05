@@ -602,19 +602,20 @@
 	}
 
 
-	 function cancelInvoice() {
+	function cancelInvoice() {
 		if (!invoiceNo) {
 			alert("InvoiceNo is required.");
 			return;
 		}
 
 		$.ajax({
-			url: `/api/VATModule/InsertAmendEInvoice?InvoiceNo=${encodeURIComponent(invoiceNo)}`, // Change this to match your actual controller route
+			url: `/api/VATModule/InsertAmendEInvoice?InvoiceNo=${encodeURIComponent(invoiceNo)}`,
 			type: 'POST',
-			data: { InvoiceNo: invoiceNo },
 			success: function (response) {
 				console.log("Clone success:", response);
-				
+				// You can redirect to the Credit Note Edit page now
+				window.location.href = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}`;
+
 			},
 			error: function (xhr) {
 				let message = xhr.responseJSON?.message || "Unknown error";
@@ -881,3 +882,5 @@
 
 
 </script>
+
+	

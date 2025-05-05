@@ -2531,8 +2531,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
-
-
 		[HttpPost]
 		public async Task<ActionResult> InsertAmendEInvoice(string InvoiceNo)
 		{
@@ -2567,18 +2565,24 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 					var invoice = await dbContext.Tbl20161VatinvoiceMasters
 												 .FirstOrDefaultAsync(i => i.InvoiceNo == InvoiceNo);
 
+					if (invoice == null)
+					{
+						return NotFound(new { Message = "Invoice not found." });
+					}
+
 					// Extract values from the fetched invoice
-					string CreditNoteNo = newCreditNoteNumber; // You can generate or assign this as needed
+					string CreditNoteNo = newCreditNoteNumber;
 					DateTime InvoiceDate = invoice.InvoiceDate ?? DateTime.Now;
-					string AddedBy = invoice.AddedBy ?? "System"; // Fallback if null
+					string AddedBy = invoice.AddedBy ?? "System";
 					DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
 					string CreditNoteUUID = invoice.InvoiceUuid ?? Guid.NewGuid().ToString();
-					long? InvoiceCounterValue = invoice.InvoiceCounterValue;
+					long? InvoiceCounterValue = invoice.InvoiceCounterValue ?? 0;
 
-					// Execute the stored procedure
+					// Call the stored procedure (6 parameters only)
 					var result = dbContext.Database.ExecuteSqlRaw(
-						"EXEC sp201_66InsertCreditNoteFromInvoice @p0,@p1,@p2,@p3,@p4,@p5,@p6",
-						InvoiceNo, CreditNoteNo, AddedBy, AddedOn, CreditNoteUUID, InvoiceCounterValue);
+						"EXEC sp201_66InsertCreditNoteFromInvoice @p0, @p1, @p2, @p3, @p4, @p5",
+						InvoiceNo, CreditNoteNo, AddedBy, AddedOn, CreditNoteUUID, InvoiceCounterValue
+					);
 
 					dbContext.SaveChanges();
 
@@ -2596,6 +2600,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
+
 
 
 		[HttpGet]
