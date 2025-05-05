@@ -244,7 +244,11 @@
 				cogsColumns.AddFor(m => m.SalesAmount).Caption("Sales Amount").Alignment(HorizontalAlignment.Right).Visible(true);
 				cogsColumns.AddFor(m => m.CostOfGoodsSold).Caption("Cost of Goods Sold").Alignment(HorizontalAlignment.Right).Visible(true);
 				cogsColumns.AddFor(m => m.ProfitOnSales).Caption("Profit On Sales").Alignment(HorizontalAlignment.Right).Visible(true);
-				cogsColumns.AddFor(m => m.IsCogsPosted).Caption("Is Cogs Posted").Alignment(HorizontalAlignment.Center).Visible(true);
+				cogsColumns.AddFor(m => m.IsCogsPosted).Caption("Is Cogs Posted").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsCogsPosted ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>);
 				cogsColumns.AddFor(m => m.StatusForPosting).Caption("Status For Posting").Alignment(HorizontalAlignment.Center).Visible(true);
 			});
 		})
@@ -252,7 +256,7 @@
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
 		) *@
-
+		.OnCellPrepared("onCellPrepared")
 	@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
@@ -569,4 +573,12 @@
 
 			return [day, strmonth, year].join('-');
 		}
+	function onCellPrepared(e) {
+		if (e.rowType === "data" && e.column.dataField === "ProfitOnSales") {
+			if (e.value < 0) {
+				e.cellElement.style.color = "red";
+				e.cellElement.style.backgroundColor = "rgb(255, 192, 192)"; // Light red
+			}
+		}
+	}
 </script>
