@@ -14,34 +14,35 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e6f0ff;
-            padding: 20px;
+            background-color: white;
+            padding: 5px;
         }
 
         .form-container {
-            background-color: #3b6cc2;
-            padding: 20px;
+           
+            padding: 5px;
             border-radius: 8px;
-            color: white;
-            max-width: 1200px;
+            background-color: white;
+            max-width: 900px;
             margin: auto;
         }
 
         table {
             width: 100%;
-            border-spacing: 10px;
+            border-spacing: 5px;
         }
 
-        td, th {
+        table td, th {
+           
             vertical-align: top;
-            padding: 5px;
+            padding: 3px;
         }
 
         input[type="text"], textarea {
             width: 100%;
-            padding: 6px;
+            padding: 2px;
             box-sizing: border-box;
-            border-radius: 4px;
+            border-radius: 2px;
             border: 1px solid #ccc;
             color: black;
         }
@@ -75,9 +76,11 @@
 
         .narration-cell {
             position: relative;
+            
         }
 
-            .narration-cell a {
+            /* .narration-cell a { */
+            /*     a {
                 position: absolute;
                 right: 70px;
                 top: 8px;
@@ -85,7 +88,7 @@
                 text-decoration: underline;
                 font-size: 14px;
                 cursor: pointer;
-            }
+            } */
 
         .highlight {
             background-color: #ffffb3;
@@ -102,6 +105,10 @@
                 font-weight: bold;
                 color: white;
             }
+            flex-row {
+                display:flex;
+                align-items: end;
+            }
     </style>
 </head>
 
@@ -109,99 +116,171 @@
 
     <div class="form-container">
         <table>
-            <tr>
-                <td colspan="2">
-                    <button class="btn">Calculate VAT</button>
-                    <button class="btn">Save Entry</button>
+            <tr class="flex-row" >
+                <td colspan="2"  style="padding-top: 27px;">
+                    @(Html.DevExtreme().Button()
+                        .ID("calculateVat") 
+                        .Text("Calculate VAT")
+                        .Height("80px")
+                        .Width("100%")
+                         @* .OnClick("ReplicateUserAccountOnClick") *@
+                     )
                 </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Tax Percentage</label>
-                        <div id="taxPercentage"></div>
-                    </div>
+                <td colspan="2" style="padding-top: 27px;">
+                    @(Html.DevExtreme().Button()
+                                        .ID("saveEntry")
+                                        .Text("Save Entry")
+                                        .Height("80px")
+                                        .Width("100%")
+                    )
                 </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Taxable Amount</label>
-                        <input type="text" />
-                    </div>
-                </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>VAT Amount</label>
-                        <input type="text" />
-                    </div>
-                </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Round Off</label>
-                        <input type="text" class="highlight" />
-                    </div>
-                </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Bill Amount</label>
-                        <input type="text" />
-                    </div>
+                  
+                <td colspan="2" style="display:flex; align-items: end;">
+                 
+                        @(Html.DevExtreme().SelectBox()
+                              .ID("taxPercentage")
+                              .Label("Tax Percentage")
+                              .Width("100%")
+                              .LabelMode(EditorLabelMode.Outside)
+                              )
+                    @(Html.DevExtreme().Button()
+                                        @* .ID("saveEntry") *@
+                                        .Icon("close")
+                                        )
                 </td>
             </tr>
 
-            <tr>
-                <td colspan="1">
-                    <div class="input-group">
-                        <label>Supplier Name</label>
-                        <div id="supplierName"></div>
-                    </div>
+            <tr class="flex-row">
+                <td colspan="2">
+                   
+                        @(Html.DevExtreme().TextBox()
+                            .ID("taxableAmount")
+                            .Width("100%")
+                            .Label("Taxable Amount")
+                            .LabelMode(EditorLabelMode.Outside)
+                            @* .ElementAttr("class", "input-group") *@
+                            )
+            
+                   
+                </td>
+                <td colspan="2">
+
+                    @(Html.DevExtreme().TextBox()
+                            .ID("vatAmount")
+                            .Label("VAT Amount")
+                            .Width("100%")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ElementAttr("class", "input-group")
+                            )
+                    
+                </td>
+                <td colspan="2">
+                    @(Html.DevExtreme().TextBox()
+                            .ID("roundOff")
+                            .Label("Round Off")
+                            .Width("100%")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .ElementAttr("class", "input-group")
+                            )
+                    
+                </td>
+                <td colspan="2">
+                    @(Html.DevExtreme().TextBox()
+                        .ID("billAmount")
+                        .Label("Bill Amount")
+                        .Width("100%")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .ElementAttr("class", "input-group")
+                        )
+                   
+                </td>
+            </tr>
+
+            <tr class="flex-row">
+                <td colspan="3">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("supplierName")
+                        .Label("Supplier Name")
+                        .Width("100%")
+                        .LabelMode(EditorLabelMode.Outside)
+                        @* .ElementAttr("class", "input-group") *@
+                        )
+                    
                 </td>
                 <td colspan="3">
-                    <div class="input-group">
-                        <label>Supplier Name In Arabic</label>
-                        <input type="text" />
-                    </div>
+                    @(Html.DevExtreme().TextBox()
+                        @* .ID("supplierName") *@
+                        .Label("Supplier Name In Arabic")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .ElementAttr("class", "input-group")
+                        )
+
                 </td>
             </tr>
 
-            <tr>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Supplier VAT No</label>
-                        <input type="text" />
-                    </div>
+            <tr class="flex-row">
+                <td colspan="3">
+                    @(Html.DevExtreme().TextBox()
+                    @* .ID("supplierName") *@
+                        .Label("Supplier VAT No")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        .ElementAttr("class", "input-group")
+                        )
                 </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Purchaser Name</label>
-                        <div id="purchaserName"></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="4" class="narration-cell">
-                    <div class="input-group">
-                        <label>Line Narration</label>
-                        <textarea rows="3"></textarea>
-                    </div>
-                    <a href="#">Use Expense Description</a>
-                    <button class="add-btn">+</button>
+                <td colspan="3">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("purchaserName")
+                        .Label("Purchaser Name")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("100%")
+                        @* .ElementAttr("class", "input-group") *@
+                        )
                 </td>
             </tr>
 
-            <tr>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Cost Allocation for Employees</label>
-                        <div id="costEmployees"></div>
-                    </div>
+            <tr  class="flex-row">
+                <td colspan="4">
+                    @(Html.DevExtreme().TextArea()
+                                        .Label("Line Narration")
+                                        .LabelMode(EditorLabelMode.Outside)
+                                        .Width("100%")
+                                        )
                 </td>
-                <td colspan="2">
-                    <div class="input-group">
-                        <label>Cost Allocation for Property/Equipments</label>
-                        <div id="costProperty"></div>
-                    </div>
+                <td colspan="3">
+                    <a style="color:blue;" href="#"><u>Use Expense Description</u></a>
+                </td>
+                <td colspan="1">
+                    @(Html.DevExtreme().Button()
+                                        .Icon("plus")
+                                        .Width(50)
+                                        )
+                </td>
+                
+            </tr>
+
+
+            <tr class="flex-row">
+                <td colspan="4">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("costEmployees")
+                        .Label("Cost Allocation for Employees")
+                        .LabelMode(EditorLabelMode.Outside)
+                        .Width("90%")
+                        @* .ElementAttr("class", "input-group") *@
+                        )
+                   
+                </td>
+                <td colspan="4">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("costProperty")
+                        .Label("Cost Allocation for Property/Equipment")
+                        .Width("90%")
+                        .LabelMode(EditorLabelMode.Outside)
+                    @* .ElementAttr("class", "input-group") *@
+                                        )
+
                 </td>
             </tr>
         </table>

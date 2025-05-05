@@ -121,6 +121,7 @@
             --header-color: var(--header-color-1);
             --primary-color: var(--primary-color-1);
             --background-color: var(--background-color-1);
+            --dx-card-hover-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .title {
@@ -133,6 +134,14 @@
             color: white;
         }
 
+        .dx-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+            .dx-card:hover {
+                transform: scale(1.05);
+                box-shadow: var(--dx-card-hover-box-shadow, 0 4px 10px rgba(0, 0, 0, 0.2)); /* fallback added */
+            }
         body {
             font-family: Arial, sans-serif;
             background: var(--background-color);
@@ -592,7 +601,7 @@
             padding: 20px;
         }
 
-        .popup-header {
+        .popup-header  {
             font-size: 18px;
             font-weight: bold;
             display: flex;
@@ -951,9 +960,9 @@
                 <i class="fa-solid fa-user img" onclick="toggleDropdown()"></i>
                 <div id="userDropdown" class="dropdown-menu">
                     <div class="userName">
-                        <a href="javascript:void(0);" onclick="window.location.href = '/@tenantName/Finance/frm201useracces';">Welcome, @userName &#128513;!</a>
+                        <a href="javascript:void(0);" onclick="window.location.href = '/@tenantName/Finance/frm201useracces';"><span id="userWelcome"></span> @userName &#128513;!</a>
                     </div>
-                    <a href="#" onclick="logout()">Logout</a>
+                    <a href="#" onclick="logout()" id="userLogout"></a>
                 </div>
             </div>
         </div>
@@ -1273,26 +1282,26 @@
         <!-- Notification Popup -->
         <div id="notificationPopup" class="popup">
             <div class="popup-header">
-                Notifications
+                <span class="popup-header" id="notificationTitle"></span>
                 <span class="popup-close" onclick="closePopup('notificationPopup')">X</span>
             </div>
             <div class="popup-content">
-                <!-- Add notification content here -->
-                <p>You have new notifications!</p>
+                <p><span id="notificationMessage"></span></p>
             </div>
         </div>
 
+
         <!-- Settings Popup -->
         <div id="settingsPopup" class="popup">
-            <div class="popup-header">
-                Settings
+            <div  class="popup-header">
+                <span class="popup-header"  id="Settings1"></span>
                 <span class="popup-close" onclick="closePopup('settingsPopup')">X</span>
             </div>
             <div class="popup-content">
                 <!-- Add settings content here -->
-                <p>Adjust your preferences here.</p>
+                <p id="settingMessage1"></p>
                 <div class="switcher-section">
-                    <h3>Predefined Themes:</h3>
+                    <h3 id="settingMessage2"></h3>
                     <button class="color-btn" style="background: #FFDDC1;" onclick="applyTheme('light-orange')"></button>
                     <button class="color-btn" style="background: #FFD3E0;" onclick="applyTheme('light-pink')"></button>
                     <button class="color-btn" style="background: #C3E8F7;" onclick="applyTheme('light-cyan')"></button>
@@ -2580,15 +2589,18 @@
                 "--nav-color": "#FFB899",
                 "--background-color": "#FFF4E1",
                 "--hover-bg-color": "#FFC49C",
-                "--title-background-color": "#faa25a"
-            },
+                "--title-background-color": "#faa25a",
+        "--dx-card-hover-box-shadow": "0 4px 12px #faa25a",
+                    },
             "light-pink": {
                 "--header-color": "#FFD3E0",
                 "--footer-color": "#FFD3E0",
                 "--nav-color": "#FF9FB9",
                 "--background-color": "#FFECF2",
                 "--hover-bg-color": "#FFB6C9",
-                "--title-background-color": "#fc6f99"
+                "--title-background-color": "#fc6f99",       
+                "--dx-card-hover-box-shadow": "0 4px 12px #fc6f99",
+
             },
             "light-cyan": {
                 "--header-color": "#C3E8F7",
@@ -2596,7 +2608,9 @@
                 "--nav-color": "#91D6ED",
                 "--background-color": "#E8F8FF",
                 "--hover-bg-color": "#A5DAEE",
-                "--title-background-color": "#4394b4"
+                "--title-background-color": "#4394b4",    
+                "--dx-card-hover-box-shadow": "0 4px 12px #4394b4",
+
             },
             "light-rose": {
                 "--header-color": "#D4A5A5",
@@ -2604,7 +2618,9 @@
                 "--nav-color": "#B97F7F",
                 "--background-color": "#EFD8D8",
                 "--hover-bg-color": "#C78C8C",
-                "--title-background-color": "#8d5353"
+                "--title-background-color": "#8d5353",
+                "--dx-card-hover-box-shadow": "0 4px 12px #8d5353",
+
             },
             "light-gold": {
                 "--header-color": "#FFF7D6",
@@ -2612,7 +2628,9 @@
                 "--nav-color": "#FFEB99",
                 "--background-color": "#FFFBEA",
                 "--hover-bg-color": "#FFDE88",
-                "--title-background-color": "#caae3b"
+                "--title-background-color": "#caae3b",
+            "--dx-card-hover-box-shadow": "0 4px 12px #caae3b",
+
             },
             "light-mint": {
                 "--header-color": "#E1F7D5",
@@ -2620,7 +2638,9 @@
                 "--nav-color": "#B3E99F",
                 "--background-color": "#F3FBED",
                 "--hover-bg-color": "#C8F3B8",
-                "--title-background-color": "#97ce7a"
+                "--title-background-color": "#97ce7a",
+            "--dx-card-hover-box-shadow": "0 4px 12px #97ce7a",
+
             },
             "light-peach": {
                 "--header-color": "#FAE1DD",
@@ -2628,7 +2648,9 @@
                 "--nav-color": "#F5BFB8",
                 "--background-color": "#FFF2EF",
                 "--hover-bg-color": "#F7C9C2",
-                "--title-background-color": "#af665b"
+                "--title-background-color": "#af665b",
+                  "--dx-card-hover-box-shadow": "0 4px 12px #af665b",
+
             },
             "light-sky": {
                 "--header-color": "#E6F0FF",
@@ -2636,7 +2658,9 @@
                 "--nav-color": "#B3D1FF",
                 "--background-color": "#F5FAFF",
                 "--hover-bg-color": "#C3DBFF",
-                "--title-background-color": "#5d82b9"
+                "--title-background-color": "#5d82b9",
+                "--dx-card-hover-box-shadow": "0 4px 12px #5d82b9",
+
             },
             "light-olive": {
                 "--header-color": "#D9E4DD",
@@ -2644,7 +2668,9 @@
                 "--nav-color": "#B3C6B9",
                 "--background-color": "#EDF5F0",
                 "--hover-bg-color": "#C3D5C7",
-                "--title-background-color": "#5cb97e"
+                "--title-background-color": "#5cb97e",
+            "--dx-card-hover-box-shadow": "0 4px 12px #5cb97e",
+
             },
             "light-coral": {
                 "--header-color": "#FDE2E4",
@@ -2652,7 +2678,9 @@
                 "--nav-color": "#FAB6B8",
                 "--background-color": "#FFF4F5",
                 "--hover-bg-color": "#FBC8CA",
-                "--title-background-color": "#ca6d73"
+                "--title-background-color": "#ca6d73",
+               "--dx-card-hover-box-shadow": "0 4px 12px #ca6d73",
+
             },
             "light-sand": {
                 "--header-color": "#E3D5CA",
@@ -2660,7 +2688,9 @@
                 "--nav-color": "#C5A994",
                 "--background-color": "#F7F2ED",
                 "--hover-bg-color": "#D6BFAE",
-                "--title-background-color": "#a77b59"
+                "--title-background-color": "#a77b59",
+                "--dx-card-hover-box-shadow": "0 4px 12px #a77b59",
+
             },
                    "light-lavender": {
             "--header-color": "#E6E6FA",
@@ -2668,7 +2698,9 @@
             "--nav-color": "#D8BFD8",
             "--background-color": "#F8F8FF",
             "--hover-bg-color": "#DDA0DD",
-                "--title-background-color": "#6262d6"
+                "--title-background-color": "#6262d6",
+             "--dx-card-hover-box-shadow": "0 4px 12px #6262d6",
+
         },
         "light-seafoam": {
             "--header-color": "#D1F2EB",
@@ -2676,7 +2708,9 @@
             "--nav-color": "#A3E4D7",
             "--background-color": "#E8F8F5",
             "--hover-bg-color": "#76D7C4",
-                "--title-background-color": "#5aaa99"
+                "--title-background-color": "#5aaa99",
+             "--dx-card-hover-box-shadow": "0 4px 12px #5aaa99",
+
         },
         "light-butter": {
             "--header-color": "#FFF9E6",
@@ -2684,7 +2718,9 @@
             "--nav-color": "#FFECB3",
             "--background-color": "#FFFAF0",
             "--hover-bg-color": "#FFE082",
-                "--title-background-color": "#ceb45e"
+                "--title-background-color": "#ceb45e",
+            "--dx-card-hover-box-shadow": "0 4px 12px #ceb45e",
+
         },
         "light-periwinkle": {
             "--header-color": "#E0E7FF",
@@ -2692,7 +2728,9 @@
             "--nav-color": "#C7D2FE",
             "--background-color": "#F3F4FF",
             "--hover-bg-color": "#A5B4FC",
-                "--title-background-color": "#526bbd"
+                "--title-background-color": "#526bbd",
+          "--dx-card-hover-box-shadow": "0 4px 12px #526bbd",
+
         },
         "light-mauve": {
             "--header-color": "#F5E0E6",
@@ -2700,7 +2738,9 @@
             "--nav-color": "#ECB3C1",
             "--background-color": "#FFF0F5",
             "--hover-bg-color": "#E57399",
-                "--title-background-color": "#c45373"
+                "--title-background-color": "#c45373",
+        "--dx-card-hover-box-shadow": "0 4px 12px #c45373",
+
         },
         "light-aqua": {
             "--header-color": "#E0FFFF",
@@ -2708,7 +2748,9 @@
             "--nav-color": "#B2DFDB",
             "--background-color": "#F0FFFF",
             "--hover-bg-color": "#80CBC4",
-                "--title-background-color": "#48aaaa"
+                "--title-background-color": "#48aaaa",
+           "--dx-card-hover-box-shadow": "0 4px 12px #48aaaa",
+
         },
         "light-blush": {
             "--header-color": "#FFE4E1",
@@ -2716,7 +2758,9 @@
             "--nav-color": "#FFCDD2",
             "--background-color": "#FFF5F5",
             "--hover-bg-color": "#EF9A9A",
-                "--title-background-color": "#df7367"
+                "--title-background-color": "#df7367",
+             "--dx-card-hover-box-shadow": "0 4px 12px #df7367",
+
         },
         "light-mist": {
             "--header-color": "#F0F8FF",
@@ -2724,7 +2768,9 @@
             "--nav-color": "#D6EAF8",
             "--background-color": "#F8FBFF",
             "--hover-bg-color": "#AED6F1",
-                "--title-background-color": "#4a7fad"
+                "--title-background-color": "#4a7fad",
+            "--dx-card-hover-box-shadow": "0 4px 12px #4a7fad",
+
         },
         "light-pearl": {
             "--header-color": "#FAF0E6",
@@ -2732,7 +2778,9 @@
             "--nav-color": "#F5DEB3",
             "--background-color": "#FFF5EE",
             "--hover-bg-color": "#EEDFCC",
-                "--title-background-color": "#af7d4b"
+                "--title-background-color": "#af7d4b",
+              "--dx-card-hover-box-shadow": "0 4px 12px #af7d4b",
+
         },
         "light-mint-cream": {
             "--header-color": "#F5FFFA",
@@ -2740,7 +2788,9 @@
             "--nav-color": "#CCFFCC",
             "--background-color": "#F0FFF0",
             "--hover-bg-color": "#99FF99",
-                "--title-background-color": "#54a77d"
+                "--title-background-color": "#54a77d",
+               "--dx-card-hover-box-shadow": "0 4px 12px #54a77d",
+
                 },
             "dark-charcoal": {
             "--header-color": "#918f8f",
@@ -2748,7 +2798,9 @@
             "--nav-color": "#c2bfbf",
             "--background-color": "#c2bfbf",
             "--hover-bg-color": "#6E6E6E",
-            "--title-background-color": "#050505"
+            "--title-background-color": "#050505",
+          "--dx-card-hover-box-shadow": "0 4px 12px #050505",
+
         }
         };
 
@@ -2768,6 +2820,8 @@
             document.documentElement.style.setProperty("--background-color", localStorage.getItem("--background-color") || "#F8FBFF");
             document.documentElement.style.setProperty("--hover-bg-color", localStorage.getItem("--hover-bg-color") || "#AED6F1");
             document.documentElement.style.setProperty("--title-background-color", localStorage.getItem("--title-background-color") || "#4a7fad");
+            document.documentElement.style.setProperty("--dx-card-hover-box-shadow", localStorage.getItem("--dx-card-hover-box-shadow") || "#4a7fad");
+
 
         };
         window.onscroll = function () {
@@ -2919,6 +2973,26 @@
                 alert("Something went wrong. Check console for details.");
             }
         }
+         $(function () {
+            // Set the header text
+            $("#notificationTitle").text(formatMessage("Notifications"))
+                .addClass("dx-textbox-heading");
+
+            // Set the message text
+            $("#notificationMessage").text(formatMessage("You have new notifications!"));
+
+            $("#Settings1").text(formatMessage("Settings"))
+                .addClass("dx-textbox-heading");
+            
+            $("#settingMessage1").text(formatMessage("Adjust your preferences here."));
+
+            $("#settingMessage2").text(formatMessage("Predefined Themes:"));
+
+            $("#userWelcome").text(formatMessage("Welcome, "));
+
+            $("#userLogout").text(formatMessage("Logout"));
+
+        });
 
 
     </script>
