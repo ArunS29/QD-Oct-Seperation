@@ -1,70 +1,30 @@
 ﻿@using DevExtreme.AspNet.Mvc
-@using DevExtreme.AspNet.Mvc.Builders
 @{
-    ViewBag.Title = "Invoice Grid";
+    var alertItems = new[] {
+        new { Id = "company", Label = "Company Documents" },
+        new { Id = "hr", Label = "HR Documents" },
+        new { Id = "equipment", Label = "Equipment Documents" }
+    };
 }
- @{ 
-    var dummyData = new[] {
-    new { QuoteNo = "INV001", QuoteDate = DateTime.Now.AddDays(-3), ClientName = "John Doe", Qty = 3, UnitPrice=200, Discount = 10m, VatAmount = 5m },
-     new { QuoteNo = "INV002", QuoteDate = DateTime.Now.AddDays(-2), ClientName = "Jane Smith", Qty = 2,  UnitPrice=200, Discount = 20m, VatAmount = 10m },
-     new { QuoteNo = "INV003", QuoteDate = DateTime.Now.AddDays(-1), ClientName = "Acme Corp", Qty = 5,  UnitPrice=200, Discount = 15m, VatAmount = 7.5m }
- };
- }  
 
+@foreach (var item in alertItems)
+{
+    <div style="border: 1px solid #8ea5c2; background-color: #d8e4f0; border-radius: 5px; padding: 15px; margin-bottom: 15px; max-width: 800px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/1827/1827375.png"
+                 alt="bell"
+                 style="width: 32px; height: 32px;" />
 
-<style>
-
-</style>
-@(Html.DevExtreme().DropDownButton()
-    .ID("Dropdown")
-    .Text("Print")
-    .Icon("print")
-  .ElementAttr("style", "padding:10px")
-    .DisplayExpr("Text")
-    .KeyExpr("Text")
-    .ItemTemplate(@<text>
-    <div style="display: flex; align-items: center;">
-        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-        <span><%- Text %></span>
+            @(Html.DevExtreme().Button()
+                .Text($"Remove Alert Notification for {item.Label}")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .ID($"removeAlert_{item.Id}")
+                .Width(350)
+                )
+        </div>
+        <div style="margin-top: 10px; font-weight: 500; color: #1d3c8d; font-size: 15px;">
+            This User Account is set to receive Popup Notification on Expiry of <strong>@item.Label</strong>.
+        </div>
     </div>
-</text>)
-
-)
-
-
-<div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
-   
-
-    @(Html.DevExtreme().DataGrid()
-            .ID("quotationGrid")
-            .Height(620)
-            .DataSource(dummyData)
-            .ShowBorders(true)
-            .ShowColumnLines(true)
-            .ShowRowLines(true)
-            .RowAlternationEnabled(true)
-            .ColumnAutoWidth(true)
-            .Columns(columns =>
-            {
-                columns.Add().DataField("QuoteNo").Caption("Quote No");
-            columns.Add().DataField("QuoteDate").Caption("Quote Date").DataType(GridColumnDataType.Date);
-                columns.Add().DataField("ClientName").Caption("Client Name");
-                columns.Add().DataField("Qty").Caption("Qty").DataType(GridColumnDataType.Number);
-                columns.Add().DataField("UnitPrice").Caption("Unit Price");
-                columns.Add().DataField("Discount").Caption("Discount").Format("##,##0.00");
-                columns.Add().DataField("VatAmount").Caption("VAT Amount").Format("##,##0.00");
-            })
-            .Summary(summary =>
-            {
-                summary.TotalItems(items =>
-                {
-                items.Add().Column("QuoteNo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
-
-                    items.Add().Column("Qty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                    items.Add().Column("Discount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                    items.Add().Column("VatAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                });
-            })
-            )
-</div>
-
+}

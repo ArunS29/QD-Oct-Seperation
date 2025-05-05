@@ -1,54 +1,39 @@
-﻿@using DevExtreme.AspNet.Mvc
-@using DevExtreme.AspNet.Mvc.Builders
-@{
-    ViewBag.Title = "MaterialRequest Grid";
-}
- 
-
-
-<style>
-
-</style>
-@(Html.DevExtreme().DropDownButton()
-    .ID("MaterialRequestDropdown")
-    .Text("Print")
-    .Icon("print")
-  .ElementAttr("style", "padding:10px")
-    .DisplayExpr("Text")
-    .KeyExpr("Text")
-    .ItemTemplate(@<text>
-    <div style="display: flex; align-items: center;">
-        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-        <span><%- Text %></span>
-    </div>
-</text>)
-
-)
-
-
-<div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
-
-
-    @(Html.DevExtreme().DataGrid()
-                .ID("MaterialRequestGrid")
-                .Height(620)
-                .ShowBorders(true)
-                .ShowColumnLines(true)
-                .ShowRowLines(true)
-                .RowAlternationEnabled(true)
-                .ColumnAutoWidth(true)
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("MRPNo").Caption("PO No");
-            columns.Add().DataField("RequstedNamedRef").Caption("Requsted Named Ref").DataType(GridColumnDataType.Date);
-                    columns.Add().DataField("SupplierName").Caption("Supplier Name");
-            columns.Add().DataField("QtyRequested").Caption("Qty Requested").DataType(GridColumnDataType.Number);
-            columns.Add().DataField("UnitDesc").Caption("Unit Desc");
-            columns.Add().DataField("ExpectedUnitRate").Caption("Expected Unit Rate");
-            columns.Add().DataField("ProjectSubUnitName").Caption("Project Sub Unit Name");
-            columns.Add().DataField("PurchaseRequestStatus").Caption("Purchase Request Status");
-                })
-            
-              
-                )
+﻿<!-- Dropdown Header -->
+<div style="margin-bottom: 15px;">
+    @(Html.DevExtreme().SelectBox()
+        .ID("screenSelector7")
+        .Placeholder("Screen / Form / Modules") // Placeholder text
+        .SearchEnabled(false) // Makes it look like a classic dropdown
+        .ShowClearButton(true) // Optional: show clear button
+        .Width(300)
+        )
 </div>
+
+
+<!-- ERP Master Grid -->
+<div id="erpMasterGridContainer">
+    @(Html.DevExtreme().DataGrid()
+        .ID("erpMasterGrid7")
+        .SearchPanel(s => s.Visible(false)
+        .HighlightSearchText(true))
+        .FilterRow(f => f.Visible(false))
+        .HeaderFilter(h => h.Visible(false))
+        .ShowBorders(true)
+        .ColumnAutoWidth(true)
+        .HoverStateEnabled(true)
+        .Height(600)
+        .Columns(columns =>
+        {
+            columns.Add().DataField("Item").Caption("Item#").Width(60);
+            columns.Add().DataField("Name").Caption("Item Name");
+            columns.Add().DataField("Description").Caption("Item Description");
+            columns.Add().DataField("EnableAccess").Caption("Enable Access").CellTemplate(@<text>
+        <input type="checkbox" class="row-checkbox" data-claimrefno="<%= data.ClaimRefNo %>" onclick="highlightRow(this)" />
+    </text>);
+
+        })
+        )
+</div>
+
+
+

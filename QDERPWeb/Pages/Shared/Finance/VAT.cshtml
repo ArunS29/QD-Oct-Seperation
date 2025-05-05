@@ -1,77 +1,39 @@
-﻿@using DevExtreme.AspNet.Mvc
-@using DevExtreme.AspNet.Mvc.Builders
-@{
-    ViewBag.Title = "Invoice Grid";
-}
-@{
-     var dummyData = new[] { 
-    new { InvoiceNo = "INV001", InvoiceDate = DateTime.Now.AddDays(-3), ClientName = "John Doe", Qty = 3, UnitDesc = "Product A", UnitRate = 100m, Discount = 10m, VatAmount = 5m, Total = 295m }, 
-     new { InvoiceNo = "INV002", InvoiceDate = DateTime.Now.AddDays(-2), ClientName = "Jane Smith", Qty = 2, UnitDesc = "Product B", UnitRate = 200m, Discount = 20m, VatAmount = 10m, Total = 390m }, 
-     new { InvoiceNo = "INV003", InvoiceDate = DateTime.Now.AddDays(-1), ClientName = "Acme Corp", Qty = 5, UnitDesc = "Product C", UnitRate = 150m, Discount = 15m, VatAmount = 7.5m, Total = 732.5m } 
- }; 
- }  
+﻿<!-- Dropdown Header -->
+<div style="margin-bottom: 15px;">
+    @(Html.DevExtreme().SelectBox()
+        .ID("screenSelector3")
+        .Placeholder("Screen / Form / Modules") // Placeholder text
+        .SearchEnabled(false) // Makes it look like a classic dropdown
+        .ShowClearButton(true) // Optional: show clear button
+        .Width(300)
+        )
+</div>
 
 
-<style>
-   
-</style>
-@(Html.DevExtreme().DropDownButton()
-    .ID("printDropdown")
-    .Text("Print")
-    .Icon("print")
-  .ElementAttr("style" ,"padding:10px")
-    .DisplayExpr("Text")
-    .KeyExpr("Text")
-    .ItemTemplate(@<text>
-    <div style="display: flex; align-items: center;">
-        <i class="dx-icon-<%- Icon %>" style="padding:10px;"></i>
-        <span><%- Text %></span>
-    </div>
-</text>)
-   
-)
-
-
-<div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
-    <div class="">
-        @(Html.DevExtreme().TextBox()
-            .ID("StockNo")
-            .Label("Stock No / Item Code:")
-            .LabelMode(EditorLabelMode.Outside)
-            .Width("90%"))
-    </div>   
-
+<!-- ERP Master Grid -->
+<div id="erpMasterGridContainer">
     @(Html.DevExtreme().DataGrid()
-        .ID("invoiceGrid")
-        .Height(620)
-        .DataSource(dummyData)
+        .ID("erpMasterGrid3")
+        .SearchPanel(s => s.Visible(false)
+        .HighlightSearchText(true))
+        .FilterRow(f => f.Visible(false))
+        .HeaderFilter(h => h.Visible(false))
         .ShowBorders(true)
-        .ShowColumnLines(true)
-        .ShowRowLines(true)
-        .RowAlternationEnabled(true)
         .ColumnAutoWidth(true)
+        .HoverStateEnabled(true)
+        .Height(600)
         .Columns(columns =>
         {
-            columns.Add().DataField("InvoiceNo").Caption("Invoice No");
-            columns.Add().DataField("InvoiceDate").Caption("Invoice Date").DataType(GridColumnDataType.Date);
-            columns.Add().DataField("ClientName").Caption("Client Name");
-            columns.Add().DataField("Qty").Caption("Qty").DataType(GridColumnDataType.Number);
-            columns.Add().DataField("UnitDesc").Caption("Unit Desc");
-            columns.Add().DataField("UnitRate").Caption("Unit Rate");
-            columns.Add().DataField("Discount").Caption("Discount").Format("##,##0.00");
-            columns.Add().DataField("VatAmount").Caption("VAT Amount").Format("##,##0.00");
-            columns.Add().DataField("Total").Caption("Total").Format("##,##0.00");
-        })
-        .Summary(summary =>
-        {
-            summary.TotalItems(items =>
-            {
-                items.Add().Column("InvoiceNo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
-                items.Add().Column("Qty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                items.Add().Column("Discount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                items.Add().Column("VatAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-            });
+            columns.Add().DataField("Item").Caption("Item#").Width(60);
+            columns.Add().DataField("Name").Caption("Item Name");
+            columns.Add().DataField("Description").Caption("Item Description");
+            columns.Add().DataField("EnableAccess").Caption("Enable Access").CellTemplate(@<text>
+        <input type="checkbox" class="row-checkbox" data-claimrefno="<%= data.ClaimRefNo %>" onclick="highlightRow(this)" />
+    </text>);
+
         })
         )
 </div>
+
+
+
