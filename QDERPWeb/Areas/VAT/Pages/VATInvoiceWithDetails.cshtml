@@ -211,6 +211,12 @@
 			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 		})
 		)
+	@(Html.DevExtreme().CheckBox()
+		.ID("chkUseEffectiveDate")
+		.Text("Use Effective Date")
+		.Value(false)
+		.ElementAttr("class", "mt-4 ml-4") // Adjust margin as needed
+		)
 
 </div>
 <div class="dx-field ledgerResult">
