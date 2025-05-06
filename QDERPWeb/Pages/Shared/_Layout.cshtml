@@ -3,13 +3,13 @@
 @using Microsoft.AspNetCore.Http
 @using QD.ERP.Web.DAL.Entities
 @using QD.ERP.Web.Service
-@inject CurrencyService CurrencyService
+@* @inject CurrencyService CurrencyService *@
 @inject LanguageService LanguageService
 @inject SaasKit.Multitenancy.ITenant<Tenant> Tenant
 @inject UserAccessService UserAccessService
 
 @{
-    var currencies = CurrencyService.GetCurrencies();
+    // var currencies = CurrencyService.GetCurrencies();
     var Languages = LanguageService.GetLanguages();
 
     string userName = "";
@@ -17,6 +17,8 @@
     string tenantName = "";
     string companyName = "";
     List<string> userModules = new List<string>();
+    string encryptedTenantName = EncryptionHelper.Encrypt(tenantName); // Encrypt tenantName
+
 
     var authToken = Context.Request.Cookies["AuthToken"];
     if (!string.IsNullOrEmpty(authToken))
@@ -34,6 +36,8 @@
             Context.Session.SetString("UserName", userName ?? "");
             Context.Session.SetString("UserId", userId ?? "");
             Context.Session.SetString("TenantName", tenantName ?? "");
+
+           
 
             if (int.TryParse(userId, out int parsedUserId))
             {
@@ -932,7 +936,7 @@
                 </div>
             </div>
             <div class="dropdownLang">
-            <div>
+          @*   <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("currencySelect")
                     .DataSource(currencies)
@@ -943,7 +947,7 @@
                     .LabelMode(EditorLabelMode.Outside)
                     .Value(currencies.FirstOrDefault()?.CurrencyID)
                     )
-            </div>
+            </div> *@
             <div>
                 @(Html.DevExtreme().SelectBox()
                     .ID("languageSelectBox")
@@ -2132,10 +2136,10 @@
                                     <div class="text">${formatMessage("Finance Dashboard")}</div>
                                 </div>
                                 <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-                                    <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
-                                        <i class="fas fa-tachometer-alt"></i>
-                                        <div class="text">${formatMessage("My Dashboard")}</div>
-                                    </a>
+                                         <a class="submenu-item" onclick="hideSidebars()" href="/@encryptedTenantName/Finance/Index">
+            <i class="fas fa-tachometer-alt"></i>
+            <div class="text">${formatMessage("My Dashboard")}</div>
+        </a>
                                     <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/VoucherApproval">
                                         <i class="fas fa-check-double"></i>
                                         <div class="text">${formatMessage("Voucher Verification")}</div>
