@@ -44,7 +44,8 @@ namespace QD.ERP.Web.Pages
 			ReportName = reportName;
 
 			string tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-			ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+			string username = HttpContext.Session.GetString("UserName") ?? "Default User";
+            ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
 				.FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
 			string companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -68,14 +69,14 @@ namespace QD.ERP.Web.Pages
 
 			var parameterizedReports = new Dictionary<string, Func<string, DateTime, DateTime, XtraReport>>()
 			{
-				{ "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
-				{ "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to, "", "", "", null, "", "",_tenantDbContextHelper) },
-				{ "AccountDetails", (id, from, to) => new AccountDetails(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
-				{ "AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to,"", "", "", null, "", "", _tenantDbContextHelper) },
-				{ "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to,"", "", "", null, "", "",_tenantDbContextHelper) },
-				{ "AccountExportLandscapeReport", (id, from, to) => new AccountExportLandscapeReport(id, from, to,"", "", "", null, "", "", _tenantDbContextHelper) },
-				{ "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to, "", "", "", null, "", "",_tenantDbContextHelper) },
-				{ "AccountOrderbyVchNoWONarrationReport", (id, from, to) => new AccountOrderbyVchNoWONarrationReport(id, from, to,"", "", "", null, "", "", _tenantDbContextHelper) },
+				{ "StatementOfAccountReport", (id, from, to) => new StatementOfAccountReport(id, from, to, "", "", "", null, "", "","",_tenantDbContextHelper)  },
+				{ "AccountWithNarration", (id, from, to) => new AccountWithNarration(id, from, to, "", "", "", null, "", "","",_tenantDbContextHelper) },
+				{ "AccountDetails", (id, from, to) => new AccountDetails(id, from, to,"","","",null,"","","",_tenantDbContextHelper) },
+				{ "AccountOrderByVoucherNo",( id, from, to)=> new AccountOrderByVoucherNo(id, from, to,"", "", "", null, "", "","", _tenantDbContextHelper) },
+				{ "AccountExportFromatReport", (id, from, to) => new AccountExportFromatReport(id, from, to,"", "", "", null, "", "","",_tenantDbContextHelper) },
+				{ "AccountExportLandscapeReport", (id, from, to) => new AccountExportLandscapeReport(id, from, to,"", "", "", null, "", "","", _tenantDbContextHelper) },
+				{ "AccountStatementFormat2Report", (id, from, to) => new AccountStatementFormat2Report(id, from, to, "", "", "", null, "", "","",_tenantDbContextHelper) },
+				{ "AccountOrderbyVchNoWONarrationReport", (id, from, to) => new AccountOrderbyVchNoWONarrationReport(id, from, to,"", "", "", null, "", "","", _tenantDbContextHelper) },
 				{ "BillsReceivablelandscapeformat", (id, from, to) => new BillsReceivablelandscapeformat(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
 				{ "BillsReceivableLedgerBalance", (id, from, to) => new BillsReceivableLedgerBalance(id, from, to,"","","",null,"","",_tenantDbContextHelper) },
 				{ "BillsReceivableRentation", (id, from, to) => new BillsReceivableRentation(id, from, to,"","","",null,"","",_tenantDbContextHelper) },

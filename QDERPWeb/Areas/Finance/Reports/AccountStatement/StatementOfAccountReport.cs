@@ -20,19 +20,19 @@ namespace QD.ERP.Web.Reports
         public StatementOfAccountReport(
             string accountId, DateTime frmDate, DateTime toDate,
             string tenantName, string company_Name, string company_address,
-            Image logoImage, string Company_Name_Ar, string company_address_arb,
+            Image logoImage, string Company_Name_Ar, string company_address_arb,string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
             ConfigureSqlDataSource(accountId, frmDate, toDate);
         }
 
         public StatementOfAccountReport()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
         }
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
@@ -56,13 +56,14 @@ namespace QD.ERP.Web.Reports
 
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate,
                                          string tenantName, string company_Name, string company_address,
-                                         Image logoImage, string Company_Name_Ar, string company_address_arb)
+                                         Image logoImage, string Company_Name_Ar, string company_address_arb,string username)
         {
             AddReportParameter("AccountID", typeof(string), accountId ?? "");
             AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
             AddReportParameter("EndDate", typeof(DateTime), toDate == DateTime.MinValue ? DateTime.Today : toDate);
 
             AddReportParameter("TenantName", typeof(string), tenantName ?? "");
+            AddReportParameter("UserName", typeof(string), username ?? "");
             AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
             AddReportParameter("CompanyAddress", typeof(string), company_address ?? "");
             AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
@@ -71,6 +72,8 @@ namespace QD.ERP.Web.Reports
             Console.WriteLine($"Company Logo: {(logoImage != null ? "Exists" : "Not Provided")}");
 
             AssignLabelText("xrLabelTenantName", tenantName);
+            AssignLabelText("xrLabelUserName", username);
+
             AssignLabelText("xrLabelCompanyAddress", company_address);
             AssignLabelText("xrLabelCompanyNameAr", Company_Name_Ar);
             AssignLabelText("xrLabelCompanyAddressArb", company_address_arb);

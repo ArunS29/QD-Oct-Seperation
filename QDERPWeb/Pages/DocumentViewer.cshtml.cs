@@ -70,8 +70,9 @@ namespace QD.ERP.Web.Pages
 				ToDate = toDate.Value;
 
 				var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
-				var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
 					.FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
 				string companyName = companyDetails?.CompanyName ?? string.Empty;
@@ -105,7 +106,8 @@ namespace QD.ERP.Web.Pages
 					logoImage,
 					companyNameAr,
 					companyAddressAr,
-					_tenantDbContextHelper
+                    userName,
+                    _tenantDbContextHelper
 				);
 			}
 
@@ -125,6 +127,8 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -154,8 +158,8 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountWithNarration(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
-				);
+                    companyNameAr, companyAddressAr,  userName, _tenantDbContextHelper
+                );
             }
             else if (reportName == "AccountStatementFormat2Report")
             {
@@ -169,6 +173,8 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -196,7 +202,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountStatementFormat2Report(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
 				);
             }
             else if (reportName == "AccountExportFromatReport")
@@ -211,7 +217,9 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-       ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
            .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
        var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -238,7 +246,7 @@ namespace QD.ERP.Web.Pages
        }
        Report = new AccountExportFromatReport(
            AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-           companyNameAr, companyAddressAr, _tenantDbContextHelper
+           companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
 	   );
                
             }
@@ -254,6 +262,8 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -281,7 +291,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountOrderbyVchNoWONarrationReport(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
 				);
 
 
@@ -298,6 +308,8 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -325,7 +337,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountExportLandscapeReport(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
 				);
 
 
@@ -356,6 +368,7 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
@@ -414,6 +427,8 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -441,7 +456,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountOrderByVoucherNo(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
 				);
 
             }
@@ -466,6 +481,8 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -493,7 +510,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new AccountDetails(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr,userName, _tenantDbContextHelper
 				);
 
             }

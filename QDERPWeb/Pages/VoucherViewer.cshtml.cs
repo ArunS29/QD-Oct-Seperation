@@ -47,6 +47,8 @@ namespace QD.ERP.Web.Pages
 
             _eRPMasterWtDataContext = dbContext;
 
+            var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
             var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
             var ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyNameShort == tenantName);
@@ -115,13 +117,13 @@ namespace QD.ERP.Web.Pages
             switch (reportName)
             {
                 case "cashPaymentformat2":
-                    Report = new cashPaymentformat2(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new cashPaymentformat2(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName,_tenantDbContextHelper);
                     break;
 				case "SalesVoucherReport":
-					Report = new SalesVoucherReport(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+					Report = new SalesVoucherReport(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
 					break;
 				case "cashPayments":
-                    Report = new cashPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new cashPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                     break;
                 case "PreviewClaimRequestForm":
                     Report = new PreviewClaimRequestForm(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);

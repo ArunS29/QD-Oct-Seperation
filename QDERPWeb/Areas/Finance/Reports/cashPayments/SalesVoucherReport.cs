@@ -20,16 +20,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             Image logoImage,
             string Company_Name_Ar,
             string company_address_arb,
+            string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
             LoadReportData(voucherNo);
         }
 
-        private void SetReportParameters(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb,string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -52,6 +53,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
             AddOrUpdateParameter("VoucherNo", voucherNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+
             AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
@@ -59,7 +62,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
-
+            if (FindControl("xrLabelUserName", true) is XRLabel userLabel)
+                userLabel.Text = username;
             if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
 
@@ -93,10 +97,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                 decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(DrAmount)", ""));
 
                 if (FindControl("xrLabel9", true) is XRLabel labelEnglish)
-                    labelEnglish.Text = NumberToWordsHelper.ToEnglishWords(totalAmount);
+                    labelEnglish.Text = "Amount in Words: " + NumberToWordsHelper.ToEnglishWords(totalAmount);
 
                 if (FindControl("xrLabel10", true) is XRLabel labelArabic)
-                    labelArabic.Text = NumberToWordsHelper.ToArabicWords(totalAmount);
+                    labelArabic.Text = "المبلغ كتابةً: " + NumberToWordsHelper.ToArabicWords(totalAmount);
 
             }
         }
