@@ -25,17 +25,18 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             Image logoImage,
             string Company_Name_Ar,
             string company_address_arb,
+            string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
         }
 
         public BillsReceivableLedgerBalance()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
         }
 
         private void SetReportParameters(
@@ -47,6 +48,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             string company_address,
             Image logoImage,
             string Company_Name_Ar,
+            string username,
             string company_address_arb)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -67,6 +69,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
                     Parameters[name].Visible = visible;
                 }
             }
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string));
 
             AddOrUpdateParameter("AccountID", accountId ?? "", typeof(string));
             AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
@@ -79,7 +82,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
             if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
-
+            if (this.FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
             if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
 
