@@ -114,7 +114,7 @@
 		pointer-events: none;
 	}
 
-	.context-menu {
+	.context-menuInvoice {
 		position: absolute;
 		background: #fff;
 		border-radius: 8px;
@@ -126,7 +126,7 @@
 		z-index: 1000;
 	}
 
-	.context-menu-item {
+	.context-menu-itemInvoice {
 		display: flex;
 		align-items: center;
 		padding: 10px 15px;
@@ -136,19 +136,20 @@
 		color: #333;
 	}
 
-		.context-menu-item i {
+		.context-menu-itemInvoice i {
 			margin-right: 10px;
 			font-size: 16px;
 			color: #007bff;
 		}
 
-		.context-menu-item:hover {
+		.context-menu-itemInvoice:hover {
 			background: #f0f0f0;
 		}
 
-		.context-menu-item:not(:last-child) {
+		.context-menu-itemInvoice:not(:last-child) {
 			border-bottom: 1px solid #e0e0e0;
 		}
+
 </style>
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
@@ -163,7 +164,14 @@
 	</div>
 </div>
 
-
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice" onclick="viewInvoice()">
+		<i class="dx-icon-search"></i> View Invoice
+	</div>
+	<div class="context-menu-itemInvoice" onclick="viewStock()">
+		<i class="dx-icon-close"></i> View Stock Details
+	</div>
+</div>
 
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -373,10 +381,16 @@
 		});
 	});
 
-			  function viewInvoice(tenantName) {
-				let url = `/${tenantName}/VAT/frm20161VATInvoiceEdit`;
-				window.location.href = url; // Navigate to the form
-			}
+	function viewInvoice() {
+			
+		var url = `/${tenantName}/VAT/frm20161VATInvoiceEdit`;
+		window.location.href = url; // Navigate to the form
+		}
+	function viewStock() {
+
+		var url = `/${tenantName}/IMS/InventoryStockDetails`;
+		window.location.href = url; // Navigate to the form
+	}
 
 
 	$(document).ready(function () {
@@ -449,32 +463,42 @@
 				}
 			});
 		});
-		$(function () {
-			var inputPopupInstance = $("#inputPopupContainer").dxPopup({
-				width: 600,
-				height: 400,
-				showTitle: true,
-				title: "Details",
-				visible: false,
-				dragEnabled: true,
-				closeOnOutsideClick: true,
-				contentTemplate: function () {
-					return $("<div>").attr("id", "popupFormContent");
-				}
-			}).dxPopup("instance");
-			var contextMenu = $("#contextMenu");
-			$(document).on("click", function () {
-				contextMenu.hide();
-			});
-			$("#dataGrid").customizeGridContextMenu();
-			$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-				e.preventDefault();
-				var rowIndex = $(this).index();
-				var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-				console.log(rowData);
-				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-			});
+	$(function () {
+		var contextMenu = $("#contextMenu");
+		let selectedRowData = null;
+
+		// Initialize Popup (optional if using later)
+		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+			width: 600,
+			height: 400,
+			showTitle: true,
+			title: "Details",
+			visible: false,
+			dragEnabled: true,
+			closeOnOutsideClick: true,
+			contentTemplate: function () {
+				return $("<div>").attr("id", "popupFormContent");
+			}
+		}).dxPopup("instance");
+
+		// Hide context menu when clicking anywhere else
+		$(document).on("click", function () {
+			contextMenu.hide();
 		});
+
+		// Bind to DataGrid right-click
+		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+			e.preventDefault();
+			const dataGridInstance = $("#dataGrid").dxDataGrid("instance");
+			const rowIndex = $(this).index();
+
+			// Get row data
+			selectedRowData = dataGridInstance.getDataSource().items()[rowIndex];
+
+			// Show the context menu at cursor position
+			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+		});
+	});
 
 		function ddBtnShowRecords_click(duration) {
 			var frmDateBox = $("#frmdateBox").dxDateBox("instance");
