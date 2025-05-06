@@ -2290,9 +2290,13 @@
         "Adjust your preferences here.": "Adjust your preferences here.",
         "Predefined Themes:": "Predefined Themes:",
         "Welcome, ": "Welcome, ",
-        "Logout": "Logout"
+        "Logout": "Logout",
+        "Copyright ": "Copyright ",
+        " All rights reserved.": " All rights reserved.",
     },
     "ar": {
+        " All rights reserved.": "كل الحقوق محفوظة.",
+        "Copyright ": "حقوق النشر",
         "Welcome, ": " أهلًا وسهلًا",
         "Predefined Themes:": "الموضوعات المحددة مسبقا:",
         "Adjust your preferences here.": "اضبط تفضيلاتك هنا.",

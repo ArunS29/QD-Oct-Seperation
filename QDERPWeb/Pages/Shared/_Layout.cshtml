@@ -1439,9 +1439,12 @@
             </main>
         </div>
     </div>
-    <footer class="text-center py-3 footerContainer">
-        <p><b>Copyright &copy; @DateTime.Now.Year Pulse InfoTech.</b> All rights reserved.</p>
-    </footer>
+    <footer class="text-center py-3 footerContainer" style="display:flex;">
+        <p id="footerMessage1" style="font-weight:bold;"></p>
+        <p> &copy; @DateTime.Now.Year Pulse InfoTech. </p>
+        <p id="footerMessage2"></p>
+  </footer>
+
     <script src="~/js/localization.js" asp-append-version="true"></script>
     <script src="~/js/popup.js" asp-append-version="true"></script>
     <!-- Bootstrap Modal -->
@@ -2991,6 +2994,12 @@
             $("#userWelcome").text(formatMessage("Welcome, "));
 
             $("#userLogout").text(formatMessage("Logout"));
+
+            $("#footerMessage1").text(formatMessage("Copyright "));
+
+            $("#footerMessage2").text(formatMessage(" All rights reserved."));
+
+
 
         });
 
