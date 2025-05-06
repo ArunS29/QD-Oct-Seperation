@@ -330,7 +330,7 @@
 
 <script type="text/javascript">
     let accheadname, accheadid;
-    var onload = @requesterIdByte;
+    var onload = @requesterIdByte
     $(function () {
                 $("#JournalRegister").dxTextBox({
                         text:formatMessage("Journal Register"),
@@ -520,7 +520,7 @@
         return formattedDate;
     }
     function getJournalOnLoad() {
-        var requesterID = @requesterIdByte;
+        var requesterID = @requesterIdByte
         // Get the current date
         var currentDate = new Date();
         // Get the start date of the current month
@@ -587,14 +587,7 @@
     // This function used to call API to get records for the selected values.
     function ddBtnShowRecords_click(duration) {
 
-        var dropDownBoxInstance = $("#requestedBy").dxSelectBox("instance");
-        var selectedValue = dropDownBoxInstance.option("value");
-        var requesterID = selectedValue ? selectedValue.UserId : null;
-
-        if (dropDownBoxInstance.option("value") === null) {
-            alert("Please select a requestedBy.");
-            return;
-        }
+        
         var frmDateBox = $("#startDate").dxDateBox("instance");
         var toDateBox = $("#endDate").dxDateBox("instance");
         var frmDate = new Date(frmDateBox.option("value"));
@@ -667,7 +660,7 @@
             url: '/api/JournalRegister/GetJournalview',  // API endpoint
             type: 'GET',
             data: {
-                RequesterID: requesterID, // Set this according to your logic
+                RequesterID: accheadid, // Set this according to your logic
                 StartDate: frmDate, // Start date
                 EndDate: toDate, // End date
                 IfShowAll: false // Set to

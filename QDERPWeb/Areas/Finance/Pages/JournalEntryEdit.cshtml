@@ -227,7 +227,7 @@
                 <div class="headerBolder">...</div>
             </text>);
                         // ✅ Additional columns from entity
-                        columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(false);
+                        columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(true);
                         columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
                         columns.Add().DataField("LineOrderNo").Caption("Line Order No").Width(120).Visible(false);
                         columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
@@ -747,7 +747,7 @@
     });
     function saveJournalEntrys() {
         debugger;
-        var button = $("#btnSubmit").dxButton("instance");
+        
 
         var gridInstance = $("#dataGrid").dxDataGrid("instance");
         var gridData = gridInstance.getDataSource().items();
@@ -863,7 +863,7 @@
                 let selectedAccountHead = rowData.AccountHead;
                 let selectedAccountId = rowData.AccountId;
                 let selectedDrCr = rowData.DrCr;
-                let SelectedEntryNo = rowData.LineOrderNo;
+                let SelectedEntryNo = rowData.JournalChildNo;
                 let selectedAmount = selectedDrCr === "Dr" ? rowData.DrAmount : rowData.CrAmount;
                 selectedAmount = parseFloat(selectedAmount).toFixed(2); // Ensuring numeric format
                 var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
@@ -1186,38 +1186,42 @@
     //         });
     // }
 
+    const popupInstances = {}; // Global object to store popups by voucherEntryNo
+
     function openAllocationPopup(allocationType, params) {
-    const queryString = Object.keys(params)
-        .map(key => `${key}=${encodeURIComponent(params[key])}`)
-        .join('&');
+        const queryString = Object.keys(params)
+            .map(key => `${key}=${encodeURIComponent(params[key])}`)
+            .join('&');
 
-    const popupContentId = "popupContent_" + Math.floor(Math.random() * 10000);
+        const voucherEntryNo = params.VoucherEntryNo; // ensure this is passed in params
+        const popupContentId = `popupContent_${voucherEntryNo}`; // Use stable ID
 
-    let title = "";
-    let url = "";
+        let title = "";
+        let url = "";
 
-    switch (allocationType) {
-        case "Cost":
-            title = "Cost Allocation";
-            url = `/api/JournalEntryEdit/CostAllocation?${queryString}`;
-            break;
-        case "Property":
-            title = "Property Allocation";
-            url = `/api/JournalEntryEdit/PropertyAllocation?${queryString}`;
-            break;
-        case "Employee":
-            title = "Employee Allocation";
-            url = `/api/JournalEntryEdit/EmployeeAllocation?${queryString}`;
-            break;
-        default:
-            console.error("Unknown allocation type");
-            return;
-    }
+        switch (allocationType) {
+            case "Cost":
+                title = "Cost Allocation";
+                url = `/api/JournalEntryEdit/CostAllocation?${queryString}`;
+                break;
+            case "Property":
+                title = "Property Allocation";
+                url = `/api/JournalEntryEdit/PropertyAllocation?${queryString}`;
+                break;
+            case "Employee":
+                title = "Employee Allocation";
+                url = `/api/JournalEntryEdit/EmployeeAllocation?${queryString}`;
+                break;
+            default:
+                console.error("Unknown allocation type");
+                return;
+        }
 
-    $("<div>")
-        .appendTo("body")
-        .attr("id", popupContentId)
-        .dxPopup({
+        const $popupDiv = $("<div>")
+            .appendTo("body")
+            .attr("id", popupContentId);
+
+        const popup = $popupDiv.dxPopup({
             title: title,
             width: "80%",
             height: "80%",
@@ -1240,10 +1244,86 @@
             dragEnabled: true,
             closeOnOutsideClick: true,
             onHidden: function () {
-                $("#" + popupContentId).remove(); // Clean up popup div after closed
+                $popupDiv.remove();
+                delete popupInstances[voucherEntryNo]; // Clean up
             }
-        });
-}
+        }).dxPopup("instance");
+
+        // Store the popup instance globally
+        popupInstances[voucherEntryNo] = popup;
+    }
+
+
+    function closeParentModal() {
+        // Hide the popup
+        if (popupInstances[journalchildno]) {
+            popupInstances[journalchildno].hide();
+        }
+    }
+
+    function ClosePropertyModel() {
+        let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+    function closeBill() {
+        let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+    function CloseEmployeeModel() {
+        let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
+        popupInstance.hide();
+    }
+    function Closepopup() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount !== 0) {
+            var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+            var VM = {
+                JournalRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                JournalEntryDate: $("#VoucherDate").dxDateBox("instance").option("value"),
+                JournalEffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value"),
+                JournalVoucherNarration: $("#VoucherNarration").dxTextArea("instance").option("value"),
+                JournalDetails: gridData // 🔁 Add the grid rows here
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/JournalEntryEdit/UpdateVoucher",
+                contentType: "application/json",
+                data: JSON.stringify(VM),
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        
+
+                    } else {
+                        alert("Update failed: " + response.message);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+            });
+        } else {
+            if (IsNotification === true) {
+                DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors, please clear the errors and continue.",
+                    "Clear Errors"
+                );
+            } else {
+                DevExpress.ui.dialog.alert(
+                    "Voucher has no line items to be saved, please enter transaction to save.!",
+                    "No Line Items"
+                );
+            }
+        }
+
+    }
 
 
 </script>

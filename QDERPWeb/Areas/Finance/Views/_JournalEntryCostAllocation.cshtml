@@ -168,8 +168,7 @@
                 )
         </div>
         <div class="dx-field ledgerResult" style="padding-top:20px">
-            @(
-                    Html.DevExtreme().DataGrid()
+            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20128JournalRegisterCostAllocation>()
                     .ID("costdataGrid")
 
                     .RemoteOperations(false)
@@ -177,8 +176,8 @@
                     .DataSource(new object[] { })
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-                        columns.Add()
+                        columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
+                        columns.AddFor(m => m.CostAllocationUnitId)
                     .DataField("CostAllocationUnit")
                     .Caption("Cost Allocated (Projects/Jobs)")
                     .Width(500)
@@ -227,7 +226,7 @@
                     .Placeholder("Select Cost Allocation")
                     .Width(350)
                     .DropDownOptions(o => o.Width(800))
-                    .Value(new JS("data.CostAllocationUnit || 'Common Overheads'"))
+                    .Value(new JS("data.CostAllocationUnitId || 'ADMIN-0001'"))
                     .ContentTemplate(new TemplateName("JournalcostAllocationDropdownContentTemplate"))
                     )
 
@@ -250,7 +249,7 @@
                 </div>
 
             </text>);
-                        columns.Add()
+                        columns.AddFor(m => m.EffectiveDate)
                     .Caption("Effective Date")
                     .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                     .AllowEditing(true)
@@ -442,9 +441,9 @@
     $(document).ready(function () {
         // Check if accountHead starts with "Cost"
         var accountHead = '@accountHead';
-        if (!accountHead.startsWith("Cost")) {
-            return; // Exit if condition is not met
-        }
+        // if (!accountHead.startsWith("Cost")) {
+        //     return; // Exit if condition is not met
+        // }
         // Capture the initial value of the NumberBox
         const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
 
@@ -561,12 +560,13 @@
             let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
 
             if (selectedRowData) {
-                selectedCostAllocationUnitID = selectedRowData.CostAllocationUnitId; // Store the correct ID
-
+                rowData.CostAllocationUnitId = selectedRowData.CostAllocationUnitId;
+                rowData.CostAllocationUnit = selectedRowData.CostAllocationUnit; // Update AccountHead
+                grid.cellValue(rowIndex, "CostAllocationUnitId", selectedRowData.CostAllocationUnitId);
+                grid.cellValue(rowIndex, "CostAllocationUnit", selectedRowData.CostAllocationUnit); // Reflect change
             }
 
-            rowData.CostAllocationUnit = e.value; // Update the row data
-            grid.cellValue(rowIndex, "CostAllocationUnit", e.value); // Ensure it reflects in the grid
+           
 
         }
 
@@ -605,72 +605,57 @@
     //   }
 
 
-    $("#btnCostSaveAndClose").on("click", function (e) {
-        e.preventDefault();
+    $("#btnCostSaveAndClose").dxButton("instance").option("onClick", function () {
+        let grid = $("#costdataGrid").dxDataGrid("instance");
+        let allRowsData = grid.getDataSource().items();
+        let journalchildno = parseInt('@voucherEntryNo'.trim(), 10);
+        let voucherno = '@voucherNo';
+        
 
-        // Get the DataGrid instance
-        const costdataGrid = $("#costdataGrid").dxDataGrid("instance");
+        // Append voucherEntryNo to each row
+        let costAllocations = allRowsData.map(row => ({
+            CostAllocDrCr: row.DrCr,
+            CostAllocationUnitId: row.CostAllocationUnitId,
+            EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
+            AmountAllocated: row.VoucherAmount,
+            CostAllocRemarks: row.Remarks,
+            JournalChildNo:journalchildno,
+            VoucherNo:voucherno
+        }));
 
-        if (!costdataGrid) {
-            DevExpress.ui.notify("DataGrid instance not found.", "error", 2000);
-            return;
-        }
+        // Optional: validate before sending
 
-        // Get the data from the first row of the DataGrid
-        const dataGridData = costdataGrid.getDataSource().items();
-        if (!dataGridData || dataGridData.length === 0) {
-            DevExpress.ui.notify("No data in the grid to save.", "error", 2000);
-            return;
-        }
-
-        // Extract values from the first row (you can adjust logic for multiple rows if needed)
-        const firstRowData = dataGridData[0];
-        const selectedCostAllocUnit = selectedCostAllocationUnitID || "ADMIN-0001"; // From dropdown column
-        const remarks = firstRowData.Remarks || null; // Remarks column value
-        const effectiveDate = firstRowData.EffectiveDate; // Ensure this is populated from server-side Request.Query["EffectiveDate"]
-
-
-
-        // Construct the ViewModel object
-        const VM = {
-
-            CostAllocationUnitID: selectedCostAllocUnit,
-            EffectiveDate: new Date().toISOString().split('T')[0],
-            AmountAllocated: '@voucherAmountParsed', // Ensure server-side value is correctly populated
-            CostAllocRemarks: remarks,
-            VoucherNo: '@voucherNo',
-            CostAllocDrCr: '@drCr'
-        };
-
-        // Debug to ensure VM is correctly populated
-        console.log("VM to be sent:", VM);
-        // debugger;
         $.ajax({
             type: "POST",
-            url: "/api/CostAllocation/SaveCostAllocation",
+            url: "/api/JournalEntryEdit/SaveCostAllocations", // adjust area/controller path if needed
             contentType: "application/json",
-            data: JSON.stringify(VM),
-            dataType: "json",
+            data: JSON.stringify(costAllocations),
             success: function (response) {
-                if (response.success) {
-                    DevExpress.ui.notify("Cost Allocation Details updated Successfully.", "success", 2000);
-                    //     window.location.reload();
-                    // CostAllocationPopup.hide();
-                    let popupInstance = $("#CostAllocationPopup").dxPopup("instance");
-                    popupInstance.hide();
+                debugger;
+                // Closepopup();
+                DevExpress.ui.dialog.alert(
+                    "Cost Allocation Details updated Successfully.",
+                    "Update Successful"
+                ).then(function () {
+                    setTimeout(function () {
+                        loadLedgerGridData('@voucherNo');
+                    }, 500);
+                    if (popupInstances[journalchildno]) {
+                        popupInstances[journalchildno].hide();
+                    }
+                });
 
-                } else {
-                    alert("Update failed: " + response.message);
-                }
+                //     window.location.reload();
+                // CostAllocationPopup.hide();
+                // Hide the popup
+                
             },
-            error: function (xhr, status, error) {
-                DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
+            error: function (xhr) {
+                DevExpress.ui.notify("Error saving data: " + xhr.responseText, "error", 4000);
             }
-
         });
-
-
     });
+
 
     // function dropDownBoxOnInput(e) {
     //     const ddbInstance = e.component;

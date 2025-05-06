@@ -413,23 +413,23 @@
 
 
 	$(document).ready(function () {
-		// Make an AJAX request to check the condition
-		$.ajax({
-			url: '/api/VoucherEntryReceipts/CheckEmployeeAllocation',
-			method: 'GET',
-			data: { AccountHead: '@accountHead', AccountID: '@accountId' }, // Pass accountHead as a parameter
-			success: function (response) {
-				if (response.isAllocated) {  // Assuming API returns { allowExecution: true/false }
-					employeeinitializePage();  // Call function to execute the necessary logic
-				}
-			},
-			error: function (xhr, status, error) {
-				console.error('Error checking employee allocation:', error);
-			}
-		});
-	});
+	// 	// Make an AJAX request to check the condition
+	// 	$.ajax({
+	// 		url: '/api/VoucherEntryReceipts/CheckEmployeeAllocation',
+	// 		method: 'GET',
+	// 		data: { AccountHead: '@accountHead', AccountID: '@accountId' }, // Pass accountHead as a parameter
+	// 		success: function (response) {
+	// 			if (response.isAllocated) {  // Assuming API returns { allowExecution: true/false }
+	// 				employeeinitializePage();  // Call function to execute the necessary logic
+	// 			}
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			console.error('Error checking employee allocation:', error);
+	// 		}
+	// 	});
+	// });
 
-	function employeeinitializePage() {
+	// function employeeinitializePage() {
 		// Capture the initial value of the NumberBox
 		const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
 
@@ -479,7 +479,6 @@
 				}
 			}
 		});
-	}
 
 	function formatEffectiveDate(dateString) {
 		if (!dateString) return 'N/A';
@@ -488,6 +487,7 @@
 		const options = { day: 'numeric', month: 'short', year: 'numeric' };
 		return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
 	}
+	});
 
 
 	// 	   $(document).ready(function () {

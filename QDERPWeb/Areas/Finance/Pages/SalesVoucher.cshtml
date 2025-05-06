@@ -801,7 +801,7 @@
 								.Label(new JS("formatMessage('Voucher Narration')"))
 								.LabelMode(EditorLabelMode.Outside)
 								.ID("VoucharNarration")
-								.Value("")
+								.Value(null)
 								)
 			</div>
 			<div class="form-group mt-3">
@@ -1211,7 +1211,7 @@
 					"InvoiceDueDate": $("#InvoiceDueDate").dxDateBox("instance").option("value"),
 					"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),
 					"VoucherRefNo": $("#VoucherRefNo").dxTextBox("instance").option("value"),
-					"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value") || null,
+				"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value") || null,
 					"VoucherType": $("#VoucherType").dxSelectBox("instance").option("value"),
 					"BillRemarks": $("#BillRemarks").dxTextBox("instance").option("value"),
 					"UseSubmittedDate": $("#UseSubmittedDate").dxCheckBox("instance").option("value"),
@@ -1329,7 +1329,7 @@
 					$("#InvoiceDueDate").dxDateBox("instance").option("value", data.InvoiceDueDate);
 					$("#InvoiceNoOfDays").dxNumberBox("instance").option("value", data.InvoiceNoOfDays || null);
 					$("#VoucherRefNo").dxTextBox("instance").option("value", data.VoucherRefNo || "");
-					$("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || "");
+					$("#VoucharNarration").dxTextBox("instance").option("value", data.VoucherNarration || null);
 					$("#VoucherType").dxSelectBox("instance").option("value", data.VoucherType || null);
 					$("#BillRemarks").dxTextBox("instance").option("value", data.BillRemarks || "");
 					$("#VerifiedBy").dxCheckBox("instance").option("value", data.IsVerified || false);
@@ -2412,7 +2412,7 @@
 					"InvoiceDueDate": $("#InvoiceDueDate").dxDateBox("instance").option("value"),
 					"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),
 					"VoucherRefNo": $("#VoucherRefNo").dxTextBox("instance").option("value"),
-					"VoucharNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
+					"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value") || null,
 					"VoucherType": $("#VoucherType").dxSelectBox("instance").option("value"),
 					"BillRemarks": $("#BillRemarks").dxTextBox("instance").option("value"),
 					"UseSubmittedDate": $("#UseSubmittedDate").dxCheckBox("instance").option("value"),
@@ -3152,7 +3152,7 @@
 				"InvoiceDueDate": $("#InvoiceDueDate").dxDateBox("instance").option("value"),
 				"InvoiceNoOfDays": $("#InvoiceNoOfDays").dxNumberBox("instance").option("value"),
 				"VoucherRefNo": $("#VoucherRefNo").dxTextBox("instance").option("value"),
-				"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value"),
+				"VoucherNarration": $("#VoucharNarration").dxTextBox("instance").option("value") || null,
 				"VoucherType": $("#VoucherType").dxSelectBox("instance").option("value"),
 				"BillRemarks": $("#BillRemarks").dxTextBox("instance").option("value"),
 				"UseSubmittedDate": $("#UseSubmittedDate").dxCheckBox("instance").option("value"),

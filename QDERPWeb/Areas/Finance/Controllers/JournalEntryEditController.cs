@@ -189,7 +189,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var records = (from jr in dbContext.Tbl20127JournalRegisterChildren
+                var records = (from jr in dbContext.Qry202101journalRegisterChildren
                                join acc in dbContext.Tbl201ChartOfAccounts
                                on jr.AccountId equals acc.AccountId into accJoin
                                from acc in accJoin.DefaultIfEmpty()
@@ -198,11 +198,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                {
                                    jr.LineOrderNo,
                                    jr.AccountId,
-                                   AccountHead = acc != null ? acc.AccountHead : "",
+                                   jr.AccountHead,
                                    jr.EntryNarration,
                                    jr.DrCr,
                                    jr.DrAmount,
-                                   jr.CrAmount
+                                   jr.CrAmount,
+                                   jr.JournalChildNo,
+                                   jr.CostAllocationDescription,
+                                   jr.EmployeeCostDescription,
+                                   jr.PropertyCostDescription,
+                                   jr.TotalCostAllocated,
+                                   jr.TotalEmpAllocated,
+                                   jr.TotalEqpAllocted,
+                                   
                                }).ToList();
 
                 return Json(records);
@@ -225,6 +233,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpPost]
         public async Task<IActionResult> UpdateVoucher([FromBody] JournalRegisterViewModel model)
         {
@@ -278,16 +287,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
 
                 // ✅ Remove existing child rows for this ClaimRefNo
-                var existingChildren = dbContext.Tbl20127JournalRegisterChildren
+                var existingChildren = dbContext.Qry202101journalRegisterChildren
                     .Where(c => c.JournalRefNo == model.JournalRefNo);
 
-                dbContext.Tbl20127JournalRegisterChildren.RemoveRange(existingChildren);
+                dbContext.Qry202101journalRegisterChildren.RemoveRange(existingChildren);
 
                 // ✅ Add new child rows
                 foreach (var item in model.JournalDetails)
                 {
-                    var child = new Tbl20127JournalRegisterChild
+                    var child = new Qry202101journalRegisterChild
                     {
+                        JournalChildNo = item.JournalChildNo,
                         JournalRefNo = model.JournalRefNo,
                         LineOrderNo = item.LineOrderNo,
                         DrCr = item.DrCr,
@@ -295,10 +305,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         CrAmount = item.CrAmount,
                         EntryNarration = item.EntryNarration,
                         AccountId = item.AccountId,
+                        CostAllocationDescription = item.CostAllocationDescription,
+                        TotalCostAllocated = item.TotalCostAllocated,
+                        EmployeeCostDescription = item.EmployeeCostDescription,
+                        TotalEmpAllocated = item.TotalEmpAllocated,
+                        PropertyCostDescription =item.PropertyCostDescription
                         
                     };
 
-                    dbContext.Tbl20127JournalRegisterChildren.Add(child);
+                    dbContext.Qry202101journalRegisterChildren.Add(child);
                 }
 
                 await dbContext.SaveChangesAsync();
@@ -345,6 +360,79 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             ViewBag.AccountID = accountId;
             return PartialView("~/Areas/Finance/Views/_JournalEntryEmployeeAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
+
+        [HttpPost]
+        public IActionResult SaveCostAllocations([FromBody] List<Tbl20128JournalRegisterCostAllocation> allocations)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (allocations == null || !allocations.Any())
+            {
+                return BadRequest("No cost allocation data received.");
+            }
+
+            foreach (var allocation in allocations)
+            {
+                var entity = new Tbl20128JournalRegisterCostAllocation
+                {
+                    CostAllocDrCr = allocation.CostAllocDrCr,
+                    CostAllocationUnitId = allocation.CostAllocationUnitId,
+                    EffectiveDate = allocation.EffectiveDate,
+                    AmountAllocated = decimal.Parse(allocation.AmountAllocated.ToString()),
+                    CostAllocRemarks = allocation.CostAllocRemarks,
+                    JournalChildNo = allocation.JournalChildNo,
+                    VoucherNo = allocation.VoucherNo
+                };
+
+                dbContext.Tbl20128JournalRegisterCostAllocations.Add(entity);
+            }
+
+            dbContext.SaveChanges();
+
+            // Group allocations by JournalChildNo to create descriptions
+            var journalChildNos = allocations.Select(a => a.JournalChildNo).Distinct();
+
+            foreach (var journalChildNo in journalChildNos)
+            {
+                var relatedAllocations = dbContext.Tbl20128JournalRegisterCostAllocations
+                    .Where(x => x.JournalChildNo == journalChildNo)
+                    .Join(dbContext.Tbl201CostAllocationUnits,
+                        alloc => alloc.CostAllocationUnitId,
+                        unit => unit.CostAllocationUnitId,
+                        (alloc, unit) => new
+                        {
+                            alloc.CostAllocationUnitId,
+                            unit.CostAllocationUnit,
+                            alloc.AmountAllocated,
+                            alloc.CostAllocDrCr
+                        })
+                    .ToList();
+
+                var descriptionParts = relatedAllocations.Select(x =>
+                    $"{x.CostAllocationUnitId} | {x.CostAllocationUnit.Substring(0, Math.Min(25, x.CostAllocationUnit.Length))} | ({x.AmountAllocated} {x.CostAllocDrCr}) ::"
+                );
+
+                string costAllocationDescription = string.Join(" ", descriptionParts);
+
+                var journalChildRecord = dbContext.Qry202101journalRegisterChildren
+                    .FirstOrDefault(x => x.JournalChildNo == journalChildNo);
+
+                if (journalChildRecord != null)
+                {
+                    journalChildRecord.CostAllocationDescription = costAllocationDescription;
+                }
+            }
+
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
+
+
+
     }
 }
 
