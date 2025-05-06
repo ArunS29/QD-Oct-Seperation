@@ -1,23 +1,31 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.EditMaterialRequestModel
+@model QD.ERP.Web.Areas.IMS.Pages.AddNewStoreRequestModel
 @{
 }
+
+
+
+
 <style>
 
-
+    /* Ensure tab text is styled properly */
     .dx-tabpanel .dx-tab {
-        color: black !important;
-        font-weight: bold; 
-        font-size: 14px;
-        padding: 10px 15px; 
+        color: black !important; /* Set the tab text color to black */
+        font-weight: bold; /* Optionally make the text bold */
+        font-size: 14px; /* Adjust font size for better visibility */
+        padding: 10px 15px; /* Increase padding for better appearance */
     }
 
-       
+        /* Optional: Adjust the selected tab styling */
         .dx-tabpanel .dx-tab.dx-selection {
-            background-color: lightblue;
-            color: white !important;
+            background-color: lightblue; /* Highlight selected tab with a background */
+            color: white !important; /* Set selected tab text color */
         }
+
+    /* Add a gray border around the tab panel */
     .dx-tabpanel {
+        /*  border: 2px solid gray;  Set the border color to gray */
+        /* border-radius: 5px;  Optionally, add rounded corners to the border */
     }
 
 
@@ -28,13 +36,13 @@
     .form-container1 {
         margin: 15px;
         width: 99%;
-        padding: 5px;
-        border-radius: 1px; 
+        padding: 5px; /* Optional: Add some padding inside the border */
+        border-radius: 1px; /* Optional: Rounded corners */
     }
 
     .form-container {
         width: 100%;
-        border-radius: 1px; 
+        border-radius: 1px; /* Optional: Rounded corners */
     }
 
     .form-row {
@@ -42,7 +50,7 @@
         gap: 10px;
         padding: 10px;
         margin-bottom: 15px;
-        width: 100%;
+        width: 97%;
     }
 
 
@@ -60,7 +68,7 @@
     .dx-textbox .dx-texteditor-input,
     .dx-numberbox .dx-texteditor-input,
     .dx-selectbox .dx-texteditor-input {
-      
+        /*  background-color: white; */
     }
 
     .dx-button {
@@ -72,10 +80,17 @@
     }
 
     .footer-buttons .row {
-        margin-top: 20px;
+        margin-top: 20px; /* Add some space between the form and footer */
     }
 
+    .footer-buttons .col-md-1 {
+        /*  padding-left: 10px;
+                                            padding-right: 10px; */
+    }
+
+    /* Adds border to form control elements */
     .form-control-with-border {
+        /* border: 1px solid gray; */
         border-radius: 4px;
         padding: 8px;
         width: 100%;
@@ -84,9 +99,9 @@
 
     .horizontal-container {
         display: flex;
-        gap: 20px;
-        justify-content: start;
-        align-items: center; 
+        gap: 20px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
         margin: 15px;
     }
 
@@ -95,12 +110,15 @@
         justify-content: center;
         padding: 8px;
     }
+    /* Optional: Adds a border to the form-row as a whole */
     .form-row.border-outline {
         border: 1px solid gray;
         padding: 10px;
         margin-bottom: 15px;
         border-radius: 8px;
     }
+
+
     .container {
         display: none !important;
     }
@@ -164,51 +182,20 @@
         align-items: end;
     }
 
-    .form-container{
-      
-        gap: 20px;
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .form-card1 {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        padding: 1%;
-    }
-
-    .form-row1 {
-        display: flex;
-        gap: 20px;
-    }
-
-    .form-group1 {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    label {
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-
-    .containers{
-        display:flex;
-    }
 </style>
 <meta charset="UTF-8">
 <div class="title">
     <div class="header-container">
-        <div id="EditMaterialRequest" class="no-border-title"></div>
+        <div id="SupplierMaster" class="no-border-title"></div>
     </div>
 </div>
 <div class="form-container1">
+
+    
+
+
     <div class="form-container">
+
         <!-- Tab Menu -->
         @(
                 Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
@@ -216,7 +203,6 @@
                 {
                     item.Add()
                 .Title("Material Request's/Enquiry Details")
-                .Icon("folder")
                 .Text("Material Request's/Enquiry Details")
                 .Template(@<text>
             <div class="form-container">
@@ -227,27 +213,27 @@
                         <!-- Row 1 -->
                         <tr>
                             <td>
-                                    @(Html.DevExtreme().TextBox()
-                                    .ID("RequestNo")
-                                    .Value("AIC-ENQ-25-68009")
-                                    .Label("Request No:")
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .Width("100%"))
+                                @(Html.DevExtreme().TextBox()
+                                .ID("RequestNo")
+                                .Value("AIC-ENQ-25-68010")
+                                .Label("Request No:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
                             </td>
                             <td>
-                                    @(Html.DevExtreme().TextBox()
-                                    .ID("RevNo")
-                                    .Label("Rev. No:")
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .Width("100%"))
+                                @(Html.DevExtreme().TextBox()
+                                .ID("RevNo")
+                                .Label("Rev. No:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
                             </td>
                             <td>
-                                    @(Html.DevExtreme().DateBox()
-                                    .ID("RequestedOn")
-                                    .Value(new DateTime(2025, 5, 2))
-                                    .Label("Requested On:")
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .Width("100%"))
+                                @(Html.DevExtreme().DateBox()
+                                .ID("RequestedOn")
+                                .Value(new DateTime(2025, 5, 2))
+                                .Label("Requested On:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
                             </td>
                             <td colspan="2">
                                 <div style="display:flex; align-items: end;">
@@ -304,25 +290,25 @@
                                 </div>
                             </td>
                             <td>
-                                    @(Html.DevExtreme().TextBox()
-                                    .ID("StoreIncharge")
-                                    .Label("Name of the Store Incharge:")
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .Width("100%"))
+                                @(Html.DevExtreme().TextBox()
+                                .ID("StoreIncharge")
+                                .Label("Name of the Store Incharge:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
                             </td>
                             <td>
-                                    @(Html.DevExtreme().TextBox()
-                                    .ID("RequesterEmail")
-                                    .Label("Requester Email:")
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .Width("100%"))
+                                @(Html.DevExtreme().TextBox()
+                                .ID("RequesterEmail")
+                                .Label("Requester Email:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
                             </td>
                             <td>
-                                    @(Html.DevExtreme().TextBox()
-                                    .ID("ContactNo")
-                                    .Label("Contact No:")
-                                    .LabelMode(EditorLabelMode.Outside)
-                                    .Width("100%"))
+                                @(Html.DevExtreme().TextBox()
+                                .ID("ContactNo")
+                                .Label("Contact No:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
                             </td>
                         </tr>
 
@@ -359,7 +345,7 @@
                                 </div>
                             </td>
                             <td>
-                                @(Html.DevExtreme().SelectBox()
+                                @(Html.DevExtreme().TextBox()
                                 .ID("SalesPerson")
                                 .Label("Sales Person:")
                                 .LabelMode(EditorLabelMode.Outside)
@@ -373,21 +359,11 @@
                                 .Width("100%"))
                             </td>
                             <td colspan="3">
-                                <div style="display: flex; gap: 8px; align-items: flex-end;">
-                                    <div style="flex: 1;">
-                                        @(Html.DevExtreme().SelectBox()
-                                        .ID("Project")
-                                        .Label("Project")
-                                        .LabelMode(EditorLabelMode.Outside)
-                                        .Width("100%"))
-                                    </div>
-                                    <div style="width: 60px;">
-                                        @(Html.DevExtreme().Button()
-                                        .Icon("plus")
-                                        .Hint("Add Type")
-                                        .Type(ButtonType.Normal))
-                                    </div>
-                                </div>
+                                @(Html.DevExtreme().TextBox()
+                                .ID("Project")
+                                .Label("Project:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
                             </td>
                         </tr>
                     </table>
@@ -397,69 +373,95 @@
 
         </text>);
 
-                    item.Add().Title("Request Details").Icon("detailslayout").Text("Request Details").Template(@<text>
-            <div class="containers">
-                <!-- Left Card -->
-                <div class="form-card1">
-                    <div class="form-group1">
-                        <label>Purpose of Request:</label>
-                        @(Html.DevExtreme()
-                        .TextBox()
-                        .Width("100%"))
-                    </div>
+                    item.Add().Title("Request Details").Text("Request Details").Template(@<text>
+            <div class="dx-fieldset" style="display:flex;gap: 10px;width:100%;">
+              <div style="width:90%">
+                <table style="width: 100%; border-spacing: 10px;">
+                    <!-- Row 1 -->
+                    <tr>
+                        <td colspan="3">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("PurposeOfRequest")
+                            .Label("Purpose of Request:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%"))
+                        </td>
+                            <td  colspan="5">
+                                @(Html.DevExtreme().TextArea()
+                                .ID("Remarks")
+                                .Label("Remarks:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Height("100px")
+                                .Width("100%"))
+                            </td>
 
-                    <div class="form-row1">
-                        <div class="form-group1">
-                            <label>Priority:</label>
-                            @(Html.DevExtreme()
-                            .TextBox()
-                            .Width("100%"))
-                        </div>
-                        <div class="form-group1">
-                            <label>Cost Center:</label>
-                            @(Html.DevExtreme()
-                            .TextBox()
-                            .Width("100%"))
-                        </div>
-                    </div>
 
-                    <div class="form-row1">
-                        <div class="form-group1">
-                            <label>Expected VAT %:</label>
-                            @(Html.DevExtreme()
-                            .SelectBox()
-                            .Width("100%"))
-                        </div>
 
-                        <div class="form-group1">
-                            <label>Expected Date:</label>
-                            @(Html.DevExtreme()
-                            .SelectBox()
+                        </tr>
+
+                    <!-- Row 2 -->
+                    <tr>
+                        <td colspan="2">
+                            @(Html.DevExtreme().DropDownBox()
+                            .ID("Priority")
+                            .Label("Priority:")
+                            .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
-                        </div>
-                        <div class="form-group1" style="align-items:center;">
-                            @(Html.DevExtreme()
-                            .CheckBox()
-                            .Text("Show VAT in Report")
-                            .Value(true))
-                        </div>
-                    </div>
+                        </td>
+                        <td colspan="2">
+                            @(Html.DevExtreme().TextBox()
+                            .ID("CostCenter")
+                            .Label("Cost Center:")
+                            .LabelMode(EditorLabelMode.Outside)
+                            .Width("100%"))
+                        </td>
+                       
+                    </tr>
+                    <tr>
+                            <td colspan="2">
+                                @(Html.DevExtreme().DropDownBox()
+                                .ID("ExpectedVAT")
+                                .Label("Expected VAT %")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
+                            </td>
+                            <td colspan="2">
+                                @(Html.DevExtreme().DateBox()
+                                .ID("ExpectedDate")
+                                .Label("Expected Date:")
+                                .LabelMode(EditorLabelMode.Outside)
+                                .Width("100%"))
+
+                            </td>
+                            <td colspan="2">
+                                <div style="margin-top: 5px;">
+                                    @(Html.DevExtreme().CheckBox()
+                                    .ID("ShowVatInReport")
+                                    .Text("Show VAT in Report")
+                                   )
+                                </div>
+                            </td>
+
+                    </tr>
+                </table>
                 </div>
+              
 
-                <!-- Right Card -->
-                <div class="form-card1">
-                    <div class="form-group1" style="height: 150px;">
-                        <label>Remarks:</label>
-                        @(Html.DevExtreme().TextArea()
-                        .ElementAttr("style", "height:150px !important;")
-                        .Width(775))
-                    </div>
-                </div>
             </div>
+
+          
+
+
         </text>);
-                    item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
+
+
+                    item.Add().Text("Branch / Division").Title("Branch / Division").Template(@<text>
             <div class="form-container" style="display:flex; ">
+
+
                 <div style="width: 100%;">
+
+                
                 <table style="width: 100%;">
                     <tr>
                         <!-- Company / Branch -->
@@ -470,7 +472,10 @@
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
                         </td>
+
+
                     </tr>
+
                     <tr>
                         <!-- Requested By -->
                         <td>
@@ -478,7 +483,7 @@
                             .ID("RequestedBy")
                             .Label("Requested By: (MPR Type)")
                             .LabelMode(EditorLabelMode.Outside)
-                            .Width("95%"))
+                            .Width("100%"))
                         </td>
 
                         <!-- Request / Enquiry Status -->
@@ -489,7 +494,10 @@
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
                         </td>
+
+                       
                     </tr>
+
                     <tr>
                         <!-- Inventory Group Master -->
                         <td>
@@ -497,7 +505,9 @@
                                 .ID("InventoryGroupMaster")
                                 .Label("Inventory Group Master:")
                                 .LabelMode(EditorLabelMode.Outside)
-                                .Width("95%"))
+                                .Width("100%"))
+                               
+                          
                         </td>
 
                         <!-- Requesting Unit -->
@@ -514,9 +524,14 @@
                                 .Width(35)
                                 .ElementAttr("style","justify-content: center")
                                 )
+
+                             
+
                         </td>
                     </tr>
                 </table>
+           
+
                 </div>
                 <div style="width: 100%;">
                     <table style="width: 95%;">
@@ -527,7 +542,7 @@
                             .ID("BiClosingDate")
                             .Label("Bid Closing Date:")
                             .LabelMode(EditorLabelMode.Outside)
-                            .Width("97%"))
+                            .Width("100%"))
                         </td>
 
                         <!-- Set Reminder -->
@@ -546,15 +561,27 @@
                             .ID("ClientProjectDetails")
                             .Label("Client Project Details:")
                             .LabelMode(EditorLabelMode.Outside)
-                            .Width("97%"))
+                            .Width("100%"))
                         </td>
                     </tr>
                 </table>
+
+
+
                 </div>
+
+
+
+
             </div>
         </text>);
-                    item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
+
+
+
+                    item.Add().Text("Signatories").Title("Signatories").Template(@<text>
+
             <div class="form-container">
+
                 <table style="width: 99%;">
                     <tr>
                         <!-- Prepared By -->
@@ -583,6 +610,7 @@
                             .LabelMode(EditorLabelMode.Outside)
                             .Width("100%"))
                         </td>
+
                         <!-- Approved By -->
                         <td style="width: 33%;">
                             @(Html.DevExtreme().DropDownBox()
@@ -593,23 +621,31 @@
                         </td>
                     </tr>
                 </table>
+
                 <br />
+
                 <!-- Checkboxes -->
                 <div style="display:grid; gap: 20px;">
                     @(Html.DevExtreme().CheckBox()
                     .ID("PrintInLetterhead")
                     .Text("Print in Letter Head")
                     .Value(true))
+
                     @(Html.DevExtreme().CheckBox()
                     .ID("ShowCompanySeal")
                     .Text("Show Company Seal")
                     .Value(true))
+
                     @(Html.DevExtreme().CheckBox()
                     .ID("ShowSignature")
                     .Text("Show Signature")
                     .Value(true))
                 </div>
+
+
             </div>
+
+
         </text>);
                 })
             )
@@ -629,6 +665,8 @@
         )
         .Columns(columns =>
         {
+            // No need to add a column for checkboxes — it appears automatically with selection config
+
             columns.Add().Caption("#").CellTemplate(@<text>
         @(ViewData["rowIndex"] = ((int)(ViewData["rowIndex"] ?? 0)) + 1)
         @ViewData["rowIndex"]
@@ -644,42 +682,39 @@
             columns.Add().DataField("LineTotal").Caption("Line Total").Format("currency");
         })
         )
+
+
+
+
+
+
+
+
+
+
+
 </div>
+
       
 <div class="form-container">
     <div class="footer-buttons">
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-2">
-        @(Html.DevExtreme()
-            .Button()
-            .ID("btnSave")
-            .Text("Save")
-            .Icon("check")
-            .OnClick("onSaveSupplierMasterClick"))
+        @(Html.DevExtreme().Button().ID("btnSave").Text("Save").Icon("check").OnClick("onSaveSupplierMasterClick"))
+        @* .OnClick("onSaveClientMasterClick")  .OnClick("function() { saveAndClose(); }") *@
                 </div>
                 <div class="col-md-2">
-        @(Html.DevExtreme()
-            .Button()
-            .ID("btnSaveClose")
-            .Text("Save & Close")
-            .Icon("check"))
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check"))
                 </div>
                 <div class="col-md-2">
-        @(Html.DevExtreme()
-            .Button()
-            .ID("btnDelete")
-            .Text("Delete")
-            .Icon("trash")) 
+        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash"))
                 </div>
                 <div class="col-md-2">
-        @(Html.DevExtreme()
-            .Button()
-            .ID("btnBack")
-            .Text("Back")
-            .Icon("arrowleft"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft"))
                 </div>
             </div>
         </div>
     </div>
 </div>
+

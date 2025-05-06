@@ -193,7 +193,6 @@
         "Is Used In Purchase": "Is Used In Purchase",
         "Added By": "Added By",
         "Added On": "Added On",
-        "Create New":"Create New",
         "Trial Balance":"Trial Balance",
         "All Vouchers": "All Vouchers",
         "Supplier Payables": "Supplier Payables",
@@ -2299,8 +2298,15 @@
         "Logout": "Logout",
         "Copyright ": "Copyright ",
         " All rights reserved.": " All rights reserved.",
+        "Add New Client Request":"Add New Client Request",
+        "Add New Store Request":"Add New Store Request",
+        "Add New Project Request":"Add New Project Request"
     },
     "ar": {
+        "Create New":"إنشاء جديد",
+        "Add New Client Request": "إضافة طلب عميل جديد",
+        "Add New Store Request": "طلب إضافة متجر جديد",
+        "Add New Project Request": "طلب إضافة مشروع جديد",
         " All rights reserved.": "كل الحقوق محفوظة.",
         "Copyright ": "حقوق النشر",
         "Welcome, ": " أهلًا وسهلًا",
