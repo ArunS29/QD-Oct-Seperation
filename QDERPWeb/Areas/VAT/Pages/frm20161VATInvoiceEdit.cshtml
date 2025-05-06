@@ -20,50 +20,46 @@
 			height: 0;
 		}
 
-	.toggle-switch {
-	position: relative;
-	display: inline-block;
-	width: 40px;
-	height: 20px;
-}
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #e53935; /* RED = OFF */
+		transition: .4s;
+		border-radius: 20px;
+	}
 
-.toggle-switch input {
-	opacity: 0;
-	width: 0;
-	height: 0;
-}
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 16px;
+			width: 16px;
+			left: 2px;
+			bottom: 2px;
+			background-color: white;
+			transition: .4s;
+			border-radius: 50%;
+		}
 
-.slider {
-	position: absolute;
-	cursor: pointer;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: #e53935; /* Red by default */
-	transition: 0.4s;
-	border-radius: 20px;
-}
+	input:checked + .slider {
+		background-color: #4CAF50;
+	}
 
-.slider:before {
-	position: absolute;
-	content: "";
-	height: 16px;
-	width: 16px;
-	left: 2px;
-	bottom: 2px;
-	background-color: white;
-	transition: 0.4s;
-	border-radius: 50%;
-}
+		input:checked + .slider:before {
+			transform: translateX(20px);
+		}
 
-.toggle-switch input:checked + .slider {
-	background-color: #4CAF50; /* Green when checked */
-}
+	.toggle-switch input:checked + .slider {
+		background-color: #4CAF50; /* GREEN = ON */
+		transform: scale(0.95);
+	}
 
-.toggle-switch input:checked + .slider:before {
-	transform: translateX(20px);
-}
+		.toggle-switch input:checked + .slider:before {
+			transform: translateX(20px);
+		}
 
 	.vat-item {
 		display: flex;
@@ -3180,7 +3176,7 @@
 			new { ID = 4, Name = "Summary Tax Invoice" },
 			new { ID = 5, Name = "Self Billed Tax Invoice" }
 		})
-			.DisplayExpr("ID")
+				.DisplayExpr("ID")
 			.KeyExpr("ID")
 			.SelectionMode(ListSelectionMode.Multiple)
 			.SelectedItemKeys(new[] { 1 }) // Default selected
@@ -3188,15 +3184,14 @@
 			.ItemTemplate(@<text>
 	<div class="vat-item">
 		<label class="toggle-switch">
-			<input type="checkbox" class="vat-checkbox" value="<%- ID %>" />
+			<input type="checkbox" name="vatOption" value="<%- ID %>" />
 			<span class="slider"></span>
 		</label>
-		<span class="vat-label"><%- Name %></span>
+		<label class="vat-label"><%- Name %></label>
 	</div>
 </text>)
 		)
 }
-
 
 
 @using (Html.DevExtreme().NamedTemplate("ApprovedByTemplate"))
@@ -7708,30 +7703,38 @@
 	function onDropDownInitialized(e) {
     dropDownInstance = e.component;
 }
-		function onVatTransactionSelectionChanged(e) {
-	const selectedIds = e.component.option("selectedItemKeys");
-	const transactionCode = setInvoiceTransactionCode(selectedIds);
+			function onVatTransactionSelectionChanged(e) {
+		const selectedIds = e.component.option("selectedItemKeys");
+		const transactionCode = setInvoiceTransactionCode(selectedIds);
 
-	const ddbInstance = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+		const ddbInstance = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
 
-	let dataSource = ddbInstance.option("dataSource");
-	let currentData = Array.isArray(dataSource) ? dataSource : (dataSource?.items?.() || []);
+		// Get the dataSource and ensure we deal with an array
+		let dataSource = ddbInstance.option("dataSource");
+		let currentData = [];
 
-	const found = currentData.find(item => item.code === transactionCode);
-	if (!found) {
-		currentData.push({ code: transactionCode });
-		ddbInstance.option("dataSource", currentData);
+		if (Array.isArray(dataSource)) {
+			currentData = dataSource;
+		} else if (dataSource && typeof dataSource.items === "function") {
+			currentData = dataSource.items();
+		}
+
+		// Check if transactionCode already exists
+		const found = currentData.find(item => item.code === transactionCode);
+
+		// If not, add it
+		if (!found) {
+			currentData.push({ code: transactionCode });
+
+			// Reassign the updated array as the new data source
+			ddbInstance.option("dataSource", currentData);
+		}
+
+		// Set the value
+		ddbInstance.option("value", transactionCode);
+
+		console.log("Transaction Code: " + transactionCode);
 	}
-
-	ddbInstance.option("value", transactionCode);
-
-	// Update toggle color
-	$(".vat-checkbox").each(function () {
-		const id = parseInt($(this).val());
-		const isChecked = selectedIds.includes(id);
-		$(this).prop("checked", isChecked);
-	});
-}
 
 
 
