@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using SkiaSharp;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -315,5 +316,66 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpPost]
+        public IActionResult DeleteMaintenanceSchedule(long MaintenanceRefNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var schedule = dbContext.Tbl20111AssetMaintenanceMasters
+                                            .FirstOrDefault(m => m.MaintenanceRefNo == MaintenanceRefNo);
+
+                    if (schedule == null)
+                    {
+                        return Json(new { success = false, message = "Maintenance Schedule not found." });
+                    }
+
+                    dbContext.Tbl20111AssetMaintenanceMasters.Remove(schedule);
+                    dbContext.SaveChanges();
+
+                    return Json(new { success = true, message = "Master Records has been successfully removed from the database." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error deleting Maintenance Schedule: {ex.Message}");
+                    return Json(new { success = false, message = "An error occurred while deleting the record." });
+                }
+            }
+
+            return Json(new { success = false, message = "Invalid tenant." });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetMaintenance(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var qryListOfAccountlists = dbContext.Tbl20111AssetMaintenanceMasters.Select(i => new
+                {
+
+
+    i.AssetLedgerNo,
+    i.MaintenanceRefNo,
+       i.MaintenanceTypeId,
+         i.MaintenanceReading,
+
+        i.MaintenanceDate,
+
+         i.ReminderDate,
+
+        i.IsMaintenanceDone, 
+
+       i.ActualMaintenanceDoneOn,
+
+        i.MaintenanceRemarks 
+    });
+
+                return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
     }
 }

@@ -318,24 +318,14 @@ $(function () {
                         },
                         location: "after"
                     },
-                    {
-                        widget: "dxButton",
-                        options: {
-                            icon: "close",
-                            text: "Cancel",
-                            onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
-                            }
-                        },
-                        location: "after"
-                    },
+                   
                     {
                         widget: "dxButton",
                         options: {
                             icon: "arrowleft",
                             text: "Back",
                             onClick: function () {
-                                window.close(); // Close the current window/tab
+                                    window.parent.closeModal();// This closes the current window/tab
                             }
                         },
                         location: "after"

@@ -186,22 +186,60 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateBankReconcilation([FromBody] Tbl201VoucherEntry model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var now = DateTime.Now;
 
-      
+                    // Find the existing record by VoucherEntryNo
+                    var existing = await dbContext.Tbl201VoucherEntries
+                        .FirstOrDefaultAsync(x => x.VoucherEntryNo == model.VoucherEntryNo);
+
+                    if (existing != null)
+                    {
+                        // Update only the fields that are being modified
+                        existing.PaymentStatus = model.PaymentStatus;
+
+                        // If you want to update other fields, add them here
+                        // existing.OtherField = model.OtherField;
+                    }
+                    else
+                    {
+                        // If no existing record found, return an error message
+                        return NotFound(new { success = false, message = "Voucher entry not found." });
+                    }
+
+                    // Save the changes to the database
+                    await dbContext.SaveChangesAsync();
+
+                    // Return success response
+                    return Ok(new { success = true, message = "Bank Reconciliation updated successfully." });
+                }
+                catch (Exception ex)
+                {
+                    // Log the error and return a server error response
+                    _logger.LogError($"Error in SaveOrUpdateSignatory: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
+                }
+            }
+
+            // Return Unauthorized response if tenant is invalid
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
+        }
+
 
         [HttpPost]
-        public IActionResult UpdateBankClearedOn(string VoucherEntryNo, DateTime BankClearedOn)
+        public IActionResult UpdateBankClearedOn(string VoucherEntryNo, DateTime? BankClearedOn, string PaymentStatus)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 if (string.IsNullOrEmpty(VoucherEntryNo) || !int.TryParse(VoucherEntryNo, out int voucherEntryNoParsed) || voucherEntryNoParsed <= 0)
                 {
                     return BadRequest("Invalid Voucher Entry No.");
-                }
-
-                if (BankClearedOn == default(DateTime))
-                {
-                    return BadRequest("Invalid BankClearedOn date.");
                 }
 
                 try
@@ -212,10 +250,24 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         return NotFound("Voucher not found.");
                     }
 
-                    voucher.BankClearedOn = BankClearedOn;
+                    // If BankClearedOn is provided (not null), update it
+                    if (BankClearedOn.HasValue && BankClearedOn.Value != default(DateTime))
+                    {
+                        voucher.BankClearedOn = BankClearedOn.Value;
+                    }
+                    // If BankClearedOn is not provided, update PaymentStatus instead
+                    else if (!string.IsNullOrEmpty(PaymentStatus))
+                    {
+                        voucher.PaymentStatus = PaymentStatus;
+                    }
+                    else
+                    {
+                        return BadRequest("No valid update field provided.");
+                    }
+
                     dbContext.SaveChanges();
 
-                    return Ok("BankClearedOn updated successfully.");
+                    return Ok("Voucher entry updated successfully.");
                 }
                 catch (Exception ex)
                 {

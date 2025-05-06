@@ -1,0 +1,338 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.QuotationModeOfRequestModel
+@{
+}
+
+
+
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+<style>
+    .signatory-form-container {
+        padding: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        gap:15px;
+        align-items: end;
+    }
+
+    .dx-datagrid-save-button,
+    .dx-datagrid-cancel-button {
+        display: none !important;
+    }
+
+    /* Also hide the entire right-aligned toolbar space */
+    .dx-toolbar-after {
+        display: none !important;
+    }
+
+    /* Optionally, remove padding/margin if needed */
+    .dx-datagrid-headers .dx-toolbar {
+        padding-right: 0 !important;
+    }
+    .form-row .form-row-btn {
+        margin: 2px;
+
+        width: 340px;
+        padding: 0px;
+    }
+
+    .rtl-textbox input {
+        text-align: right;
+    }
+        .form-row input,
+        .form-row .dx-textbox,
+        .form-row .dx-selectbox {
+            flex: 1;
+        }
+
+    .dx-fileuploader-input-wrapper .dx-button {
+        float: left;
+        margin-top: -10px;
+    }
+    .image-upload-row {
+        align-items: center;
+        gap: 10px;
+    }
+
+    .signature-upload {
+        border: 1px solid #ccc;
+        background-color: #fff;
+    }
+
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+        display: none !important;
+    }
+
+
+    .grid{
+        padding:20px;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: flex-start;
+        background-color: var(--background-color);
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+
+
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="QuotationModeofRequest" class="no-border-input"></div>
+    </div>
+</div>
+<div class="signatory-form-container">
+    <div id="DatabaseSignatories" class="no-border-title"></div>
+
+    <div class="form-row">
+        <div class="col-md-6">
+            @(Html.DevExtreme().TextBox()
+                .ID("txtModeOfRequest")
+                .Label(new JS("formatMessage('Type new Quotation Mode of Request & Add to the Existing List:')"))
+                .LabelMode(EditorLabelMode.Outside)
+                .ValidationRules(rules =>
+                {
+                    rules.AddRequired().Message("Mode of Request is required");
+                })
+                )
+
+        </div>
+  
+
+   
+        <div class="col-md-2">
+            @(Html.DevExtreme().Button()
+                .ID("btnAddSalesPerson")
+                .Text("ADD")
+                .Icon("plus")
+                .OnClick("function() { addSignatoryToGrid(); }")
+                .ElementAttr(new { @class = "dx-button-add" })
+                )
+        </div>
+    </div>
+    </div>
+
+
+
+
+    <div class="dx-field ledgerResult">
+        @(Html.DevExtreme().DataGrid()
+            .ID("SignatoryGrid")
+        .KeyExpr("ModeOfRequestId")
+            .RemoteOperations(false)
+            .DataSource(d => d.WebApi()
+        .Controller("QuotationModeOfRequestf")
+        .LoadAction("GetModeofRequest")
+            .LoadMode(DataSourceLoadMode.Raw)
+            )
+            .Editing(editing => editing
+            .Mode(GridEditMode.Batch)
+            .AllowUpdating(true)
+
+            )
+            .Toolbar(toolbar =>
+            {
+                toolbar.Items(items => { }); // hide default toolbar
+            })
+            .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
+            .Columns(columns =>
+            {
+            columns.Add().DataField("ModeOfRequestId").Caption("ID").Width(80).AllowEditing(false);
+            columns.Add().DataField("ModeOfRequest").Caption("Mode Of Request").Width(200);
+           
+
+            })
+            .Height(500)
+            .ColumnAutoWidth(true)
+            .AllowColumnReordering(true)
+            .AllowColumnResizing(true)
+            .ColumnFixing(f => f.Enabled(true))
+            .Paging(p => p.Enabled(true))
+            .Scrolling(s => s
+            .Mode(GridScrollingMode.Virtual)
+            .RowRenderingMode(GridRowRenderingMode.Virtual)
+            .PreloadEnabled(true)
+            .ScrollByContent(true)
+            )
+            .ShowBorders(true)
+            .ShowRowLines(true)
+            .Width("100%")
+            )
+
+
+    </div>
+
+
+    <div class="limited-footer">
+        @await Html.PartialAsync("VATModuleFooter")
+    </div>
+    <script>
+
+        $(document).ready(function () {
+
+              $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+                  if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                      $(this).remove();
+
+                  }
+
+              });
+
+          });
+
+        $(document).on("click", "#btnBack", function () {
+            window.history.back();
+        });
+
+          $(function () {
+                $("#DatabaseSignatories").dxTextBox({
+                    text: formatMessage("Database "),
+                    readOnly: true,
+
+
+                });
+            });
+
+        $(function () {
+        $("#QuotationModeofRequest").dxTextBox({
+                width: "600px",
+            text: formatMessage("Quotation Mode of Request"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
+        async function convertToArabic(sourceId, targetId) {
+            const sourceBox = $("#" + sourceId).dxTextBox("instance");
+            const targetBox = $("#" + targetId).dxTextBox("instance");
+
+            if (!sourceBox || !targetBox) {
+                console.error("TextBox not initialized.");
+                return;
+            }
+
+            const sourceText = sourceBox.option("value");
+
+            if (!sourceText || sourceText.trim() === "") {
+                alert("Please enter a value to translate.");
+                return;
+            }
+
+            try {
+                const translatedText = await translateToArabic(sourceText);
+                targetBox.option("value", translatedText);
+            } catch (error) {
+                console.error("Translation failed", error);
+                alert("Translation failed. Please try again.");
+            }
+        }
+
+        async function translateToArabic(text) {
+            try {
+                const response = await fetch(
+                    `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`
+                );
+
+                if (!response.ok) {
+                    throw new Error("Translation API request failed.");
+                }
+
+                const data = await response.json();
+                return data?.responseData?.translatedText || "Translation not found";
+            } catch (error) {
+                console.error("Translation failed:", error);
+                throw error;
+            }
+        }
+       
+        function addSignatoryToGrid() {
+            // Validate fields using the Validator components
+            // const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
+            // const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
+
+            // if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
+            //     DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+            //     return;
+            // }
+
+            const data = {
+            ModeOfRequest: $("#txtModeOfRequest").dxTextBox("instance").option("value"),
+          
+
+
+            };
+
+            $.ajax({
+            url: '/api/QuotationModeOfRequestf/SaveOrUpdateMode',
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function () {
+                DevExpress.ui.notify("Quotation Mode Of Request saved successfully!", "success", 2000);
+                    $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+                }
+            });
+        }
+
+
+        $("#btnUpdate").on("click", function () {
+            const grid = $("#SignatoryGrid").dxDataGrid("instance");
+            grid.saveEditData(); // 🔥 only triggers on manual click
+        });
+
+
+        function onSignatoryUpdating(e) {
+            const data = {
+            ModeOfRequestId: e.oldData.ModeOfRequestId,
+            ModeOfRequest: e.newData.ModeOfRequest ?? e.oldData.ModeOfRequest
+               
+            };
+
+            e.cancel = true; // prevents grid from doing its own update
+
+            return $.ajax({
+            url: '/api/QuotationModeOfRequestf/SaveOrUpdateMode',
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function () {
+                    DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
+                    $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to save.", "error", 1500);
+                }
+            });
+        }
+
+
+
+
+
+
+    </script>
