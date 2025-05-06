@@ -445,8 +445,8 @@
 					<!-- First Card (Left Side) -->
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No*')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date*')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
 								<td>
@@ -461,12 +461,12 @@
 																			
 																			)
 								</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date*')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
 								<td>
 									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('VAT Invoice Type')"))
+																			.Label(new JS("formatMessage('VAT Invoice Type*')"))
 																			.ID("VATInvoiceType")
 																			.DataSource(d => d.WebApi()
 																			.Controller("AccountLedgerMaster")
@@ -487,7 +487,7 @@
 								</td>
 								<td>
 
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')"))
+									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means*')"))
 																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeansTypeCode"))
 																			.ID("ddpaymentmeans")
 																			.ShowClearButton(true)
@@ -516,7 +516,7 @@
 							</tr>
 							<tr>
 								<td>
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Sub Type')")).ID("VATInvoiceSubType")
+									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Sub Type*')")).ID("VATInvoiceSubType")
 																			.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getInvoiceSubTypes").LoadMode(DataSourceLoadMode.Raw).Key("SubType"))
 																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
@@ -532,7 +532,7 @@
 
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("InvoiceTransactionsCode")
-																			.Label("Invoice Transaction Code")
+																			.Label("Invoice Transaction Code*")
 																			.Value("0100000") // Default selected value
 																			.ValueExpr("ID")
 																			.DisplayExpr("ID")
@@ -707,7 +707,7 @@
 
 								<td>
 									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Other ID Type')"))
+																			.Label(new JS("formatMessage('Other ID Type*')"))
 																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerIdtypeName"))
 																			.LabelMode(EditorLabelMode.Outside)
 																			.ID("OtherIDType")
@@ -726,7 +726,7 @@
 																			.ContentTemplate(new TemplateName("ClientNameContent"))
 																			)
 								</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID*')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside))</td>
 								<td>
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ClientAddressDetails")
@@ -871,8 +871,8 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value*')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID*')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							</tr>
 						</table>
 					
@@ -1598,9 +1598,30 @@
 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
 							</tr>
 							<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No')")).ID("OurVATNo").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
+@* 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
+ *@							
+							<td>@(Html.DevExtreme().TextBox()
+															.ID("OurGroupVATNo")
+															.Label(new JS("formatMessage('Our Group VAT No')"))
+														.LabelMode(EditorLabelMode.Outside)
+														.MaxLength(15)
+														.Mask("000000000000000") // 15 digits
+														.MaskChar(" ") // Optional: makes it more readable
+																				//.ShowClearButton(true) // Optional: adds a clear (X) button
+														)</td>
+							<td>
+								@(Html.DevExtreme().TextBox()
+															.ID("OurVATNo")
+															.Label(new JS("formatMessage('Our VAT No')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.MaxLength(15)
+															.Mask("000000000000000") // 15 digits
+															.MaskChar(" ") // Optional: makes it more readable
+																					//.ShowClearButton(true) // Optional: adds a clear (X) button
+															)
+							</td>
+@*                             <td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No')")).ID("OurVATNo").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
+ *@							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
 							</tr>
 							<tr>
 								<td>
@@ -3417,6 +3438,17 @@
 											dataGridPreparedByHeadSelectionChanged({ selectedRowKeys: [account.InvoicePreparedBy]});
 											dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
 											dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
+											$('#LessAdvance').dxTextBox("instance")?.option("value", account.AdvanceText);
+											$('#currencyexchangerate3').dxNumberBox("instance")?.option("value", account.AdvanceAmount);
+											$('#LessAdvanceAr').dxTextBox("instance")?.option("value", account.AdvanceTextAr);
+											$('#LessOtherDeductions').dxTextBox("instance")?.option("value", account.OtherDeductionText);
+											$('#currencyexchangerate4').dxNumberBox("instance")?.option("value", account.OtherDeductionAmount);
+											$('#LessAdvanceAr1').dxTextBox("instance")?.option("value", account.OtherDeductionTextAr);
+											$('#LessRetention').dxTextBox("instance")?.option("value", account.RetentionText);
+											$('#currencyexchangerate5').dxNumberBox("instance")?.option("value", account.RetentionAmount);
+											$('#LessAdvanceAr2').dxTextBox("instance")?.option("value", account.RetentionTextAr);
+
+
 
 											if(account.IsApproved==true)
 											{
