@@ -790,7 +790,11 @@
                                     summaryType: "sum",
                                     valueFormat: { type: "fixedPoint", precision: 2 },
                                     displayFormat: formatMessage("Total : {0}")
-                                }
+                                    }, {
+                                            column: "AccountHead",
+                                            summaryType: "count",
+                                                displayFormat: formatMessage('Count : {0}')
+                                        }
                             ]
                         }
                     });

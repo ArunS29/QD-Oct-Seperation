@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model QD.ERP.Web.Areas.Finance.Pages.DashboardBankAccountModel
 @{
 }
@@ -886,11 +886,11 @@
                                 columns: [
                                     { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
                                             { dataField: "TotalBalance", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
-                                        { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: true, allowHiding: true }
+                                        { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: false, allowHiding: true }
                                 ],
                                 columnAutoWidth: true, // Automatically adjust column widths
                                 showBorders: true, // Show grid borders
-                                filterRow: { visible: true }, // Enable filter row
+                                filterRow: { visible: false }, // Enable filter row
                                 paging: { enabled: false }, // Disable paging to show all data
 
                                 // Enable vertical scrolling
@@ -937,6 +937,10 @@
                                             summaryType: "sum",
                                             valueFormat: { type: "fixedPoint", precision: 2 },
                                                 displayFormat: formatMessage('Total : {0}')
+                                            },{
+                                                column: "AccountHeadName",
+                                            summaryType: "count",
+                                                displayFormat: formatMessage('Count : {0}')
                                         }
                                     ]
                                 }
