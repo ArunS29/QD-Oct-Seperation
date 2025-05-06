@@ -283,7 +283,48 @@
             )
     </div>
 
-  @*   <div class="btn-container">
+     <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint2")
+            .Text("Print") // Using string directly
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Preview CreditNote Invoice").Icon("print");
+                items.Add().Text("Preview Credit Note(Foreign Currency)").Icon("file");
+                items.Add().Text(" Credit Note cost Posting)").Icon("file");
+
+            })
+
+            )
+
+
+
+    </div> 
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint3")
+            .Text("Print") // Using string directly
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Preview DebitNote Invoice").Icon("print");
+                
+
+            })
+
+            )
+
+
+
+    </div>
+    @*   <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnPrint")
             .Text("Print") // Using string directly
@@ -303,6 +344,7 @@
 
 
     </div> *@
+
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -520,6 +562,27 @@
             .ShowArrowIcon(false)
             )
     </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReport12")
+            .Icon("doc")
+            .Width(50)
+            .Text(new JS("formatMessage('Report')"))
+        
+            .DropDownOptions(options => options.Width(285))
+            .Items(items =>
+            {
+  
+
+                items.Add().Text(new JS("formatMessage('Tax Summary Report-Debit Notes')")).Icon("search");
+
+
+            })
+            @* .OnItemClick("") *@
+            .ShowArrowIcon(false)
+            )
+    </div>
 @*     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReports1")
@@ -593,6 +656,46 @@
             .ShowArrowIcon(false)
             )
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddReports4")
+            .Icon("doc")
+            .Width(100)
+            .Text(new JS("formatMessage('Report')"))
+            .ElementAttr(new { @class = "report-button" }) // changed here
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text("VAT Returns Form").Icon("file");
+                items.Add().Text("VAT Summary Report").Icon("file").OnClick("showSubmenu10");
+             
+            })
+
+            .ShowArrowIcon(false)
+            )
+    </div>
+
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint2")
+            .Text("Print")
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Preview Voucher").Icon("print");
+                items.Add().Text("Preview VAT Purchase Bill").Icon("file");
+                items.Add().Text("Edit Voucher").Icon("folder");
+                items.Add().Text("UploadItems Form Excel").Icon("edit");
+               
+            })
+            
+            
+            )
+    </div>
+
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReport0")
@@ -725,7 +828,27 @@
             .OnItemClick("addPrintButton_click") 
             )
     </div>
-
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("btnPrint22")
+            .Text("Print")
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Preview Invoice").Icon("print");
+                items.Add().Text("Preview Proforma Invoice(NewFormat)").Icon("file");
+                items.Add().Text("Preview Invoice(English)").Icon("folder");
+                items.Add().Text("Preview Invoices in Foreign Currency(English)").Icon("edit");
+                items.Add().Text("Preview Invoices in (Foreign Currency)").Icon("upload");
+                items.Add().Text("Upload Items From Excel").Icon("chart");
+               
+            })
+            @* .OnItemClick("addPrintButton_click") *@
+            )
+    </div>
     <!-- Hidden anchor for submenu positioning -->
     <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
 
@@ -1587,8 +1710,48 @@
             }
         });
     }
-      
-    function showSubmenu9(e) {
+
+
+        function showSubmenu10(e) {
+            e.event.stopPropagation();
+            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            var $submenu = $('#submenuContainer10');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var submenuWidth = $submenu.outerWidth();
+
+            // Calculate left-side positioning
+                var leftPos = offset.left - submenuWidth - 533;
+
+            // Prevent submenu from going off-screen on the left
+            if (leftPos < 0) {
+                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+            }
+
+            // Position submenu
+            $submenu.css({
+                'width': 250,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': leftPos,
+                'display': 'block',
+                'background': '#fff',
+                'border': '1px solid #ccc',
+                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+                'padding': '5px'
+            });
+
+            // Click outside to close
+            $(document).on("click", function (event) {
+                if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+                    $submenu.hide();
+                    $(document).off("click");
+                }
+            });
+        }
+
+
+        function showSubmenu9(e) {
         e.event.stopPropagation();
         hideAllSubmenus(); // Hide all submenus before showing the selected one
         var $submenu = $('#submenuContainer9');
