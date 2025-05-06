@@ -134,7 +134,7 @@
         .btn-container:hover .dx-dropdownbutton .dx-button-text {
             display: inline-block;
         }
-    
+
 
 
 </style>
@@ -259,7 +259,7 @@
             )
 
     </div>
-     <div class="btn-container">
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnRequestEnquiry")
             .Icon("preferences")
@@ -271,23 +271,24 @@
 
     </div>
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
+        @(Html.DevExtreme().DropDownButton()
             .ID("btnAddMaterialRequest")
             .Icon("add")
             .Width(50)
             .Text(new JS("formatMessage('Create New')"))
             .ElementAttr(new { style = "display: none;" })
-            // .OnClick("toggleGroupPanel")
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Add New Client Request')")).Icon("user");
+                items.Add().Text(new JS("formatMessage('Add New Store Request')")).Icon("cart");
+                items.Add().Text(new JS("formatMessage('Add New Project Request')")).Icon("event");
+            })
+            .OnItemClick("addNewMaterialRequest")
+            .ShowArrowIcon(false)
             )
-
     </div>
-</div> 
-
 </div>
-
-
-
-
 
 
 <script type="text/javascript">
@@ -1146,7 +1147,24 @@
             $('#submenuContainer7').hide();
         }
 
+        function addNewMaterialRequest(e) {
+            let url = ''; // Declare once
+            switch (e.itemData.text) {
+                case formatMessage('Add New Client Request'):
+                    url = `/${tenantName}/IMS/AddNewClientRequest`;
+                    break;
+                case formatMessage('Add New Store Request'):
+                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
+                    break;
+                case formatMessage('Add New Project Request'):
+                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
 
-
+            window.location.href = url;
+        }
 
 </script>

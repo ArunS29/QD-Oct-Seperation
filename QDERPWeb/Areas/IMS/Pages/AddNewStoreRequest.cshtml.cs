@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace QD.ERP.Web.Areas.IMS.Pages
 {
-    public class AddNewRequestModel : PageModel
+    public class AddNewStoreRequestModel : PageModel
     {
         public void OnGet()
         {

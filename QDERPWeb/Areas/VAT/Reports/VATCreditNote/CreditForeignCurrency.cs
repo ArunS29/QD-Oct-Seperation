@@ -4,11 +4,11 @@ using System.Collections;
 using System.ComponentModel;
 using DevExpress.XtraReports.UI;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
+namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
 {
-	public partial class DebitNoteSummary2 : DevExpress.XtraReports.UI.XtraReport
+	public partial class CreditForeignCurrency : DevExpress.XtraReports.UI.XtraReport
 	{	
-		public DebitNoteSummary2()
+		public CreditForeignCurrency()
 		{
 			InitializeComponent();
 		}

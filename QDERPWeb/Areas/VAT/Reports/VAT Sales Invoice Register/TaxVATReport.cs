@@ -1,9 +1,7 @@
-﻿using System;
-using System.Drawing;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
-using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service;
+using System.Drawing;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
 {

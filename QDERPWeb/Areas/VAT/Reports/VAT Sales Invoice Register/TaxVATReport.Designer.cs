@@ -579,6 +579,7 @@
             this.tableCell23.StylePriority.UseBorders = false;
             this.tableCell23.StylePriority.UseBorderWidth = false;
             this.tableCell23.StylePriority.UseFont = false;
+            this.tableCell23.TextFormatString = "{0:dd-MMM-yyyy}";
             this.tableCell23.Weight = 0.064643585122968125D;
             // 
             // tableCell24
@@ -589,13 +590,15 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell24.BorderWidth = 1F;
             this.tableCell24.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountHead]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountID]")});
             this.tableCell24.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
             this.tableCell24.Name = "tableCell24";
             this.tableCell24.StylePriority.UseBorderColor = false;
             this.tableCell24.StylePriority.UseBorders = false;
             this.tableCell24.StylePriority.UseBorderWidth = false;
             this.tableCell24.StylePriority.UseFont = false;
+            this.tableCell24.StylePriority.UseTextAlignment = false;
+            this.tableCell24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.tableCell24.Weight = 0.062364306498496808D;
             // 
             // tableCell25
@@ -857,7 +860,7 @@
             this.tableCell34.StylePriority.UseBorderWidth = false;
             this.tableCell34.StylePriority.UseFont = false;
             this.tableCell34.StylePriority.UseTextAlignment = false;
-            this.tableCell34.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            this.tableCell34.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell34.TextFormatString = "{0:0.00}";
             this.tableCell34.Weight = 0.051030436027109743D;
             // 
@@ -877,7 +880,7 @@
             this.tableCell35.StylePriority.UseBorderWidth = false;
             this.tableCell35.StylePriority.UseFont = false;
             this.tableCell35.StylePriority.UseTextAlignment = false;
-            this.tableCell35.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.tableCell35.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell35.TextFormatString = "{0:0.00}";
             this.tableCell35.Weight = 0.0470427413279409D;
             // 
@@ -1507,8 +1510,10 @@
             this.xrLabel19.StylePriority.UseBackColor = false;
             this.xrLabel19.StylePriority.UseBorders = false;
             this.xrLabel19.StylePriority.UseFont = false;
+            this.xrLabel19.StylePriority.UseTextAlignment = false;
             xrSummary2.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
             this.xrLabel19.Summary = xrSummary2;
+            this.xrLabel19.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrLabel19.TextFormatString = "{0:0.00}";
             // 
             // xrLabel17

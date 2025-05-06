@@ -94,7 +94,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
             {
                 Name = "qry201_723VATonPurchaseAndExpenses",
                 Sql = @"SELECT * qry201_723VATonPurchaseAndExpenses 
-                        WHERE InvoiceDate BETWEEN @StartDate AND @EndDate"
+                        WHERE PurchaseVoucherDate BETWEEN @StartDate AND @EndDate"
             };
 
             selectQuery.Parameters.AddRange(new[]

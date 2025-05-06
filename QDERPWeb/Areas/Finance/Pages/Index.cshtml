@@ -673,9 +673,10 @@
                         paging: { enabled: false },
                         height: 400,
                         scrolling: {
-                            mode: "virtual"
+                            mode: "standard"
                         },
                         searchPanel: { visible: false },
+                            wordWrapEnabled: true,
                         allowColumnReordering: true,
                         allowColumnResizing: true,
                         columnChooser: {
@@ -778,13 +779,15 @@
                         ],
                         columnAutoWidth: true,
                         showBorders: true,
+                            wordWrapEnabled: true,
                         filterRow: { visible: false },
                         paging: { enabled: false },
                         height: 400,
                         scrolling: {
-                            mode: "virtual"
+                            mode: "standard"
                         },
                         searchPanel: { visible: false },
+
                         allowColumnReordering: true,
                         allowColumnResizing: true,
                         columnChooser: {
@@ -850,7 +853,8 @@
                                 columns: [
                                     { dataField: "AccountHeadName", caption: formatMessage("Account Head"), width: 200, allowReordering: true },
                                             { dataField: "TotalBalance", caption:  formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
-                                        { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: true, allowHiding: true }
+                                             { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: false, allowHiding: true }
+
                                 ],
                                 columnAutoWidth: true, // Automatically adjust column widths
                                 showBorders: true, // Show grid borders
@@ -859,10 +863,11 @@
                                 // Enable vertical scrolling
                                 height: 400, // Adjust grid height as needed
                                 scrolling: {
-                                    mode: "virtual" // Enable virtual scrolling for large datasets
+                                    mode: "standard" // Enable virtual scrolling for large datasets
                                 },
 
                                 searchPanel: { visible: false },
+                                    wordWrapEnabled: true,
 
                                 // Enable column reordering and resizing
                                 allowColumnReordering: true,    

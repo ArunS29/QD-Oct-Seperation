@@ -66,7 +66,7 @@
         justify-content: center;
     }
 
-    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag,#btnPrint,#ddReport,#ddReports)){
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag,#btnPrint,#ddReports)){
         display: none !important;
     }
 
@@ -302,7 +302,7 @@
 <script>
     $(document).ready(function () {
         $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-            if (!$(this).find("#btnPrint,#ddReport,#ddReports2").length) {
+            if (!$(this).find("#btnPrint,#ddReports2").length) {
                 $(this).remove();
             }
         });
