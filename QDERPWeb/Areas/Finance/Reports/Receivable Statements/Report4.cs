@@ -25,17 +25,18 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             Image logoImage,
             string Company_Name_Ar,
             string company_address_arb,
+            string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
         }
 
         public Report4()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
         }
 
         private void SetReportParameters(
@@ -47,6 +48,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             string company_address,
             Image logoImage,
             string Company_Name_Ar,
+            string username,
             string company_address_arb)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -72,6 +74,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
             AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
@@ -79,6 +82,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
 
             if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
+            if (this.FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
 
             if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
