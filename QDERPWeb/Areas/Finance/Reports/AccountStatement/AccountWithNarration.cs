@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Drawing;
-using DevExpress.DataAccess.Sql;
 using DevExpress.XtraReports.UI;
+using DevExpress.DataAccess.Sql;
 using DevExpress.DataAccess.ConnectionParameters;
-using QD.ERP.Web.Service;
+using QD.ERP.Web.Service; // Needed for TenantDbContextHelper
 
 namespace QD.ERP.Web.Reports
 {
 	public partial class AccountWithNarration : XtraReport
 	{
+		private QueryParameter queryParameter1;
+		private QueryParameter queryParameter2;
+		private QueryParameter queryParameter3;
+		private StoredProcQuery storedProcQuery1;
+
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 
 		public AccountWithNarration(
@@ -16,21 +21,22 @@ namespace QD.ERP.Web.Reports
 			DateTime frmDate,
 			DateTime toDate,
 			string tenantName,
-			string companyName,
-			string companyAddress,
+			string company_Name,
+			string company_address,
 			Image logoImage,
-			string companyNameAr,
-			string companyAddressArb,
+			string Company_Name_Ar,
+			string company_address_arb,
 			string username,
-			TenantDbContextHelper tenantDbContextHelper)
+			TenantDbContextHelper tenantDbContextHelper 
+		)
 		{
 			_tenantDbContextHelper = tenantDbContextHelper;
 			InitializeComponent();
-			SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb, username);
+			SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
 
 			try
 			{
-				sqlDataSource1.Fill();
+				this.sqlDataSource1.Fill();
 			}
 			catch (Exception ex)
 			{
@@ -41,92 +47,108 @@ namespace QD.ERP.Web.Reports
 		public AccountWithNarration()
 		{
 			InitializeComponent();
+			SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
 		}
 
-		private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb, string username)
+		private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb,string username)
 		{
-			accountId ??= "";
-			frmDate = frmDate == DateTime.MinValue ? DateTime.Today : frmDate;
-			toDate = toDate == DateTime.MinValue ? DateTime.Today : toDate;
+			AddReportParameter("AccountID", typeof(string), accountId ?? "");
+			AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
+			AddReportParameter("EndDate", typeof(DateTime), toDate == DateTime.MinValue ? DateTime.Today : toDate);
 
-			AddOrUpdateParameter("AccountID", accountId, typeof(string), false);
-			AddOrUpdateParameter("StartDate", frmDate, typeof(DateTime), false);
-			AddOrUpdateParameter("EndDate", toDate, typeof(DateTime), false);
-			AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
-			AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
-			AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string), false);
-			AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string), false);
-			AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string), false);
-			AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string), false);
+			AddSqlQueryParameters(accountId, frmDate, toDate);
 
-			// Set control values
+			// New parameters for Tenant and Company Info
+			AddReportParameter("UserName", typeof(string), username ?? "");
+            AddReportParameter("TenantName", typeof(string), tenantName ?? "");
+			AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
+			AddReportParameter("CompanyAddress", typeof(string), company_address ?? "");
+			AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
+			AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
+
 			if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
-				userNameLabel.Text = username;
+                userNameLabel.Text = username;
 
-			if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
 				tenantLabel.Text = tenantName;
 
-			if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
-				companyNameLabel.Text = companyName;
+			if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+				companyNameLabel.Text = company_Name;
 
 			if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
-				addressLabel.Text = companyAddress;
+				addressLabel.Text = company_address;
 
 			if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
 				logoPictureBox.Image = logoImage;
 
 			if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
-				companyNameArLabel.Text = companyNameAr;
+				companyNameArLabel.Text = Company_Name_Ar;
 
 			if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
-				addressArbLabel.Text = companyAddressArb;
-
-			ConfigureSqlDataSource(accountId, frmDate, toDate);
+				addressArbLabel.Text = company_address_arb;
 		}
 
-		private void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
+		private void AddReportParameter(string paramName, Type paramType, object paramValue)
 		{
-			var parameter = Parameters[paramName];
-			if (parameter == null)
+			if (Parameters[paramName] == null)
 			{
-				Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter
+				Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
 				{
 					Name = paramName,
 					Type = paramType,
 					Value = paramValue,
-					Visible = visible
+					Visible = false
 				});
 			}
 			else
 			{
-				parameter.Value = paramValue;
-				parameter.Visible = visible;
+				Parameters[paramName].Value = paramValue;
+				Parameters[paramName].Visible = false;
 			}
 		}
 
-		private void ConfigureSqlDataSource(string accountId, DateTime frmDate, DateTime toDate)
+		private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
 		{
-			sqlDataSource1.Queries.Clear();
+			queryParameter1 = new QueryParameter
+			{
+				Name = "@ParamAccountNo",
+				Type = typeof(string),
+				ValueInfo = accountId ?? "L00567"
+			};
 
-			var storedProcQuery = new StoredProcQuery
+			queryParameter2 = new QueryParameter
+			{
+				Name = "@StartDate",
+				Type = typeof(DateTime),
+				ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd")
+			};
+
+			queryParameter3 = new QueryParameter
+			{
+				Name = "@EndDate",
+				Type = typeof(DateTime),
+				ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd")
+			};
+
+			storedProcQuery1 = new StoredProcQuery
 			{
 				Name = "StProAccountLedger",
 				StoredProcName = "StProAccountLedger"
 			};
 
-			storedProcQuery.Parameters.AddRange(new[]
-			{
-				new QueryParameter("@ParamAccountNo", typeof(string), accountId),
-				new QueryParameter("@StartDate", typeof(DateTime), frmDate),
-				new QueryParameter("@EndDate", typeof(DateTime), toDate)
-			});
+			storedProcQuery1.Parameters.Clear();
+			storedProcQuery1.Parameters.AddRange(new QueryParameter[] { queryParameter1, queryParameter2, queryParameter3 });
 
-			sqlDataSource1.Queries.Add(storedProcQuery);
+			sqlDataSource1.Queries.Clear();
+			sqlDataSource1.Queries.Add(storedProcQuery1);
 			sqlDataSource1.Name = "sqlDataSource1";
 
+			// Connection string logic
 			if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
 			{
-				sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+				var connectionString = tenant.ConnectionString;
+				var connectionParams = new CustomStringConnectionParameters(connectionString);
+				sqlDataSource1.ConnectionParameters = connectionParams;
 			}
 			else
 			{
