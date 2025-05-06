@@ -32,6 +32,8 @@ namespace QD.ERP.Web.Controllers
                 return StatusCode(500, "Tenant not found or DbContext could not be created.");
 
             var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            var username = HttpContext.Session.GetString("UserName") ?? "Default Tenant";
+
 
             string companyName = string.Empty;
             string companyAddress = string.Empty;
@@ -66,7 +68,7 @@ namespace QD.ERP.Web.Controllers
             }
 
             // Generate the report
-            XtraReport report = GenerateReport(request.ReportName, request.VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+            XtraReport report = GenerateReport(request.ReportName, request.VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username);
 
             // Save to Azure-safe path (temp path)
             string fileName = $"{request.VoucherNo}_{Guid.NewGuid():N}.pdf";
@@ -86,17 +88,17 @@ namespace QD.ERP.Web.Controllers
 
 
 
-        private XtraReport GenerateReport(string reportName, string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+        private XtraReport GenerateReport(string reportName, string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr,string username)
         {
             XtraReport report;
 
             switch (reportName)
             {
                 case "cashPayments":
-                    report = new cashPayments(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    report = new cashPayments(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username,_tenantDbContextHelper);
                     break;
                 case "cashPaymentformat2":
-                    report = new cashPaymentformat2(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    report = new cashPaymentformat2(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
                     break;
 
                 default:

@@ -22,13 +22,13 @@ namespace QD.ERP.Web.Reports
 		public AccountExportLandscapeReport(
 			string accountId, DateTime frmDate, DateTime toDate,
 			string tenantName, string company_Name, string company_address,
-			Image logoImage, string Company_Name_Ar, string company_address_arb,
+			Image logoImage, string Company_Name_Ar, string company_address_arb,string username,
 			TenantDbContextHelper tenantDbContextHelper // ✅ Add this
 		)
 		{
 			_tenantDbContextHelper = tenantDbContextHelper; // ✅ Assign
 			InitializeComponent();
-			SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+			SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
 
 			try
 			{
@@ -44,10 +44,10 @@ namespace QD.ERP.Web.Reports
 		public AccountExportLandscapeReport()
 		{
 			InitializeComponent();
-			SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+			SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
 		}
 
-		private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+		private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, string username)
 		{
 			void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
 			{
@@ -72,7 +72,9 @@ namespace QD.ERP.Web.Reports
 			AddOrUpdateParameter("StartDate", frmDate == DateTime.MinValue ? DateTime.Today : frmDate, typeof(DateTime));
 			AddOrUpdateParameter("EndDate", toDate == DateTime.MinValue ? DateTime.Today : toDate, typeof(DateTime));
 			AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
-			AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+
+            AddOrUpdateParameter("CompanyName", company_Name ?? "", typeof(string), false);
 			AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
 			AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
 			AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
@@ -81,8 +83,9 @@ namespace QD.ERP.Web.Reports
 
 			if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
 				tenantLabel.Text = tenantName;
-
-			if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelUserName", true) is XRLabel userLabel)
+                userLabel.Text = username;
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
 				companyNameLabel.Text = company_Name;
 
 			if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)

@@ -2159,7 +2159,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 		}
 		[HttpGet]
-		public async Task<IActionResult> GetCompanyBranch(DataSourceLoadOptions loadOptions)
+		public async Task<IActionResult> GetPurchaseCompanyBranch(DataSourceLoadOptions loadOptions)
 		{
 			try
 			{
@@ -2601,6 +2601,104 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
 
+
+		//[HttpPost]
+		//public async Task<ActionResult> InsertAmendEInvoice(string InvoiceNo)
+		//{
+		//    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+		//    {
+		//        try
+		//        {
+		//            // Step 1: Validate if invoice exists
+		//            var invoice = await dbContext.Tbl20161VatinvoiceMasters
+		//                                         .FirstOrDefaultAsync(i => i.InvoiceNo == InvoiceNo);
+
+		//            if (invoice == null)
+		//                return NotFound(new { Message = "Invoice not found." });
+
+		//            // Step 2: Check if invoice is posted
+		//            if (!(invoice.IsPosted ?? false))
+		//            {
+		//                return BadRequest(new
+		//                {
+		//                    Message = "VAT Invoice is not posted. You must post the invoice before cancelling or amending it."
+		//                });
+		//            }
+
+		//            // Step 3: Get credit note totals
+		//            var creditNoteData = await dbContext.Qry201807vatcreditNoteRegisterMainViews
+		//                .Where(cn => cn.InvoiceNo == InvoiceNo)
+		//                .GroupBy(cn => cn.InvoiceNo)
+		//                .Select(g => new
+		//                {
+		//                    CreditNoteAmount = g.Sum(x => x.TotalCreditNoteAmount ?? 0)
+		//                }).FirstOrDefaultAsync();
+
+		//            decimal creditNoteTotal = creditNoteData?.CreditNoteAmount ?? 0;
+		//            decimal invoiceTotal = invoice.TotalInvoiceAmount ?? 0;
+
+		//            // Step 4: Validation rules
+		//            if (creditNoteTotal < 0)
+		//                return BadRequest(new { Message = "Credit Note cannot be issued for this invoice. Please review the invoice again." });
+
+		//            if (invoiceTotal == 0)
+		//                return BadRequest(new { Message = "VAT Invoice already has no amount to pass a credit note. Please review the invoice total value." });
+
+		//            if (invoiceTotal == creditNoteTotal || invoiceTotal < creditNoteTotal)
+		//                return BadRequest(new { Message = "VAT Invoice has already been fully or over-issued with a credit note. Please review the invoice & credit note details." });
+
+		//            // Step 5: Generate new credit note number
+		//            string yearSuffix = DateTime.Now.ToString("yy"); // e.g., "25"
+		//            string creditNoteAbbrv = "CRN";
+
+		//            var lastCreditNoteNumber = await dbContext.Tbl20170VatcreditNoteMasters
+		//                .Where(cn => cn.CreditNoteNo.StartsWith($"{creditNoteAbbrv}-{yearSuffix}-"))
+		//                .OrderByDescending(cn => cn.CreditNoteNo)
+		//                .Select(cn => cn.CreditNoteNo)
+		//                .FirstOrDefaultAsync();
+
+		//            int newNumber = 1;
+		//            if (!string.IsNullOrEmpty(lastCreditNoteNumber))
+		//            {
+		//                var match = Regex.Match(lastCreditNoteNumber, @"-(\d+)$");
+		//                if (match.Success)
+		//                {
+		//                    newNumber = int.Parse(match.Groups[1].Value) + 1;
+		//                }
+		//            }
+
+		//            string newCreditNoteNumber = $"{creditNoteAbbrv}-{yearSuffix}-{newNumber:D5}";
+
+		//            // Extract values from the fetched invoice
+		//            string CreditNoteNo = newCreditNoteNumber;
+		//            DateTime InvoiceDate = invoice.InvoiceDate ?? DateTime.Now;
+		//            string AddedBy = invoice.AddedBy ?? "System";
+		//            DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
+		//            string CreditNoteUUID = invoice.InvoiceUuid ?? Guid.NewGuid().ToString();
+		//            long? InvoiceCounterValue = invoice.InvoiceCounterValue;
+
+		//            // Step 6: Execute stored procedure
+		//            var result = dbContext.Database.ExecuteSqlRaw(
+		//                "EXEC sp201_66InsertCreditNoteFromInvoice @p0,@p1,@p2,@p3,@p4,@p5,@p6",
+		//                InvoiceNo, CreditNoteNo, AddedBy, AddedOn, CreditNoteUUID, InvoiceCounterValue);
+
+		//            await dbContext.SaveChangesAsync();
+
+		//            return Ok(new
+		//            {
+		//                Message = "Credit Note has been added to the database.",
+		//                CreditNoteNo,
+		//                VoucherVerifiedBy = User.Identity?.Name ?? "System"
+		//            });
+		//        }
+		//        catch (Exception ex)
+		//        {
+		//            return BadRequest(new { Message = ex.Message });
+		//        }
+		//    }
+
+		//    return Unauthorized(new { Message = "Invalid tenant.", success = false });
+		//}
 
 
 		[HttpGet]

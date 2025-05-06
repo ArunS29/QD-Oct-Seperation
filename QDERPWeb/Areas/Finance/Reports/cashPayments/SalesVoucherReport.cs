@@ -3,16 +3,16 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service;
 using Microsoft.Extensions.Configuration;
+using QD.ERP.Web.Service;
 
-namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
+namespace QD.ERP.Web.Areas.Finance.Reports.test
 {
-    public partial class cashPaymentformat2 : XtraReport
+    public partial class SalesVoucherReport : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public cashPaymentformat2(
+        public SalesVoucherReport(
             string voucherNo,
             string tenantName,
             string company_Name,
@@ -30,7 +30,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             LoadReportData(voucherNo);
         }
 
-        private void SetReportParameters(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, string username)
+        private void SetReportParameters(string voucherNo, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb,string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -60,23 +60,23 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string));
 
-            if (this.FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
             if (FindControl("xrLabelUserName", true) is XRLabel userLabel)
                 userLabel.Text = username;
-            if (this.FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = company_Name;
 
-            if (this.FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = company_address;
 
-            if (this.FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = Company_Name_Ar;
 
-            if (this.FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = company_address_arb;
 
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
         }
 
@@ -97,13 +97,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
                 decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(DrAmount)", ""));
 
                 if (FindControl("xrLabel9", true) is XRLabel labelEnglish)
-                    labelEnglish.Text = NumberToWordsHelper.ToEnglishWords(totalAmount);
+                    labelEnglish.Text = "Amount in Words: " + NumberToWordsHelper.ToEnglishWords(totalAmount);
 
                 if (FindControl("xrLabel10", true) is XRLabel labelArabic)
-                    labelArabic.Text = NumberToWordsHelper.ToArabicWords(totalAmount);
+                    labelArabic.Text = "المبلغ كتابةً: " + NumberToWordsHelper.ToArabicWords(totalAmount);
 
             }
         }
+
 
         private DataTable GetReportData(string voucherNo)
         {
@@ -111,25 +112,22 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
 
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-                {
-                    string connectionString = tenant.ConnectionString;
+                // Get multi-tenant connection string
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                    throw new Exception("Unable to retrieve tenant context. Please check session or cache.");
 
-                    using (SqlConnection conn = new SqlConnection(connectionString))
-                    {
-                        string query = "SELECT * FROM [qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
-                            SqlDataAdapter da = new SqlDataAdapter(cmd);
-                            conn.Open();
-                            da.Fill(dt);
-                        }
-                    }
-                }
-                else
+                string connectionString = tenant.ConnectionString;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    throw new Exception("Unable to get tenant context. Please check session and cache.");
+                    string query = "SELECT * FROM [qry201MainVoucherEntriesWithMaster] WHERE voucherno = @VoucherNo";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        conn.Open();
+                        da.Fill(dt);
+                    }
                 }
             }
             catch (Exception ex)
@@ -150,6 +148,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             };
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
         }
+
         public static class NumberToWordsHelper
         {
             public static string ToEnglishWords(decimal number)
@@ -266,5 +265,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
                 return words.Trim();
             }
         }
+
     }
 }

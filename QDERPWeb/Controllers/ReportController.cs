@@ -36,6 +36,7 @@ namespace QD.ERP.Web.Controllers
 
             // Get tenant name from session
             var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            var username = HttpContext.Session.GetString("UserName") ?? "Default Tenant";
 
             // Default company info
             string companyName = string.Empty;
@@ -73,7 +74,7 @@ namespace QD.ERP.Web.Controllers
             }
 
             // Generate report dynamically
-            XtraReport report = GenerateReport(reportName, voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+            XtraReport report = GenerateReport(reportName, voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username, _tenantDbContextHelper);
 
             // Convert to PDF
             using (MemoryStream stream = new MemoryStream())
@@ -84,14 +85,14 @@ namespace QD.ERP.Web.Controllers
             }
         }
 
-        private XtraReport GenerateReport(string reportName, string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr, TenantDbContextHelper tenantHelper)
+        private XtraReport GenerateReport(string reportName, string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr,string username, TenantDbContextHelper tenantHelper)
         {
             XtraReport report;
 
             switch (reportName)
             {
                 case "cashPayments":
-                    report = new cashPayments(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper);
+                    report = new cashPayments(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username, tenantHelper);
                     break;
                 // Add other report types if needed
 

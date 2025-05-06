@@ -26,12 +26,13 @@ namespace QD.ERP.Web.Reports
 			Image logoImage,
 			string Company_Name_Ar,
 			string company_address_arb,
+			string username,
 			TenantDbContextHelper tenantDbContextHelper
 		)
 		{
 			_tenantDbContextHelper = tenantDbContextHelper;
 			InitializeComponent();
-			SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+			SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
 
 			try
 			{
@@ -46,10 +47,10 @@ namespace QD.ERP.Web.Reports
 		public AccountStatementFormat2Report()
 		{
 			InitializeComponent();
-			SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "");
+			SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
 		}
 
-		private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+		private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb,string username)
 		{
 			AddReportParameter("AccountID", typeof(string), accountId ?? "");
 			AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
@@ -57,7 +58,8 @@ namespace QD.ERP.Web.Reports
 			AddSqlQueryParameters(accountId, frmDate, toDate);
 
 			AddReportParameter("TenantName", typeof(string), tenantName ?? "");
-			AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
+            AddReportParameter("UserName", typeof(string), username ?? "");
+            AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
 			AddReportParameter("CompanyAddress", typeof(string), company_address ?? "");
 			AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
 			AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
@@ -66,8 +68,10 @@ namespace QD.ERP.Web.Reports
 
 			if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
 				tenantLabel.Text = tenantName;
+            if (FindControl("xrLabelUserName", true) is XRLabel userLabel)
+                userLabel.Text = username;
 
-			if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel companyNameLabel)
 				companyNameLabel.Text = company_Name;
 
 			if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
