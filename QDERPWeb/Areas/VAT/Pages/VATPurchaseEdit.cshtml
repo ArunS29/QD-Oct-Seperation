@@ -293,7 +293,7 @@
 		display: flex;
 		justify-content: space-between;
 		gap: 20px;
-		padding: 20px;
+		padding: 0 10px;
 	}
 
 	.limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
@@ -323,9 +323,9 @@
 		width: 95.5%;
 	}
 
-	.content-container-top {
+	/* .content-container-top {
 		width: 100%;
-	}
+	} */
 
 	#tab-content-3 {
 	
@@ -804,7 +804,7 @@
 			</div>
 
 
-			<div id="tab-content-2" class="tab-content">
+		<div id="tab-content-2" class="tab-content" style="align-items: flex-start;padding: 0 10px;min-height: 100%;">
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr colspan="1">
 							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
@@ -887,10 +887,10 @@
 							</td>
 
 						</tr>
-					</table>
+					
 
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="2">
-						<tr colspan="2">
+					<tr width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5"
+						colspan="2">
 							<td>
 								@(Html.DevExtreme().TextArea()
 																						.Label(new JS("formatMessage('Invoice Notes')"))
@@ -907,8 +907,8 @@
 
 							</td>
 
-					<td>
-						<div style="display: flex; align-items: end; gap: 10px;">
+					<td
+						style="display: flex; align-items: end; gap: 10px;">
 							@(
 														Html.DevExtreme().Button()
 														.ID("InvoiceNotesconvertToArabic")
@@ -927,7 +927,7 @@
 														
 												
 														)
-						</div>
+						
 					</td>
 
 
@@ -937,7 +937,7 @@
 					</table>
 			</div>
 
-			<div id="tab-content-3" class="tab-content">
+		<div id="tab-content-3" class="tab-content" style="align-items: flex-start;padding: 0 13px;min-height: 100%;">
 				<div>
 
 
@@ -990,7 +990,7 @@
 						</table>
 				</div>
 			</div>
-			<div id="tab-content-4" class="tab-content" style="margin-top: 10px;">
+		<div id="tab-content-4" class="tab-content" style="align-items: flex-start;padding: 0 13px;min-height: 100%;">
 			<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="2">
 
 				<tr>
@@ -1048,7 +1048,7 @@
 				</table>
 			</div>
 
-			<div id="tab-content-5" class="tab-content">
+		<div id="tab-content-5" class="tab-content" style="align-items: flex-start;padding: 0 13px;min-height: 100%;">
 				<div style="display: flex; gap: 20px; flex-wrap: wrap;">
 				
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
@@ -1117,7 +1117,7 @@
 				</div>
 			</div>
 
-			<div id="tab-content-6" class="tab-content" dir="rtl">
+		<div id="tab-content-6" class="tab-content" dir="rtl" style="align-items: flex-start;padding: 0 11px;min-height: 100%;">
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr style="height: 60px;">
 							<td colspan="3">
@@ -3069,7 +3069,7 @@
 
 					caption: "#",
 
-					width: 100,
+					width: 50,
 
 					allowEditing: false // Prevent manual editing
 
@@ -3081,7 +3081,7 @@
 
 					caption: "Item Code",
 
-					width: 200
+					width: 100
 
 				},
 
@@ -3091,7 +3091,7 @@
 
 					caption: "Description",
 
-					width: 550,
+					width: 100,
 
 					editCellTemplate: function (cellElement, cellInfo) {
 
@@ -3283,7 +3283,7 @@
 
 					caption: "Unit Rate Method",
 
-					width: 200,
+					width: 150,
 
 					editCellTemplate: function (cellElement, cellInfo) {
 
@@ -3406,24 +3406,24 @@
 				},
 
 
-				{ dataField: "Qty", caption: "Qty", width: 150 },
+				{ dataField: "Qty", caption: "Qty", width: 50 },
 
-				{ dataField: "UnitPrice", caption: "Unit Price", width: 150 },
+				{ dataField: "UnitPrice", caption: "Unit Price", width: 100 },
 
 				{ dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 180 },
 
-				{ dataField: "Discount", caption: "Discount", width: 150 },
+				{ dataField: "Discount", caption: "Discount", width: 100 },
 
 				{ dataField: "DiscountDetails", caption: "...", width: 50 },
 
-				{ dataField: "Amount", caption: "Amount", width: 150 },
+				{ dataField: "Amount", caption: "Amount", width: 80 },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 				{
 					dataField: "VATPercentage",
 					caption: "VAT%",
-					width: 150,
+					width: 80,
 					editCellTemplate: function (cellElement, cellInfo) {
 						getTaxSlabData().done(function (dropdownData) {
 							$("<div>").appendTo(cellElement).dxDropDownBox({
@@ -3474,9 +3474,9 @@
 
 				{ dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
 
-				{ dataField: "VAT", caption: "VAT", width: 150 },
+				{ dataField: "VAT", caption: "VAT", width: 80 },
 
-				{ dataField: "Total", caption: "Total", width: 150 },
+				{ dataField: "Total", caption: "Total", width: 90 },
 
 				{ dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150, allowEditing: false, visible: false }
 
