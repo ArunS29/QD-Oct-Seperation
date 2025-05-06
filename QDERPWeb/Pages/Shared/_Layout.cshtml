@@ -866,6 +866,7 @@
             cursor: pointer;
             display: flex;
             justify-content: end;
+            background-color: var(--background-color);
         }
 
         /* Fullscreen iframe */
@@ -879,6 +880,20 @@
             gap: 10px;
             align-items: center;
             justify-content: center;
+        }
+        /* Target vertical scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        /* Track (background) */
+        ::-webkit-scrollbar-track {
+            background: var(--hover-bg-color);
+        }
+        /* Thumb (draggable part) */
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--title-background-color);
+            border-radius: 6px;
+            border: 2px solid #f0f0f0;
         }
     </style>
     @RenderSection("Styles", required: false)
@@ -1346,7 +1361,7 @@
         <!-- Main container to hold sidebars and content -->
         <div class="container">
             <!-- Sidebar 1 Section -->
-            <!-- Sidebar Header with Logo -->close
+            <!-- Sidebar Header with Logo -->
 
 
             <div id="sidebar" class="sidebar hidden">
