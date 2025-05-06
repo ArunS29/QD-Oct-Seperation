@@ -440,17 +440,13 @@
 
 
 			<div id="tab-content-1" class="tab-content">
-					<table width="100%" style="font-size:14px; margin:10px 0; direction: rtl; border-spacing: 0;">
-					  <tr>
-						<td style="padding:5px 25px 0px 0px;"><span>Fill Contact Details</span></td>
-					  </tr>
-					</table>
+					
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No*')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date*')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
 								<td>
@@ -465,12 +461,12 @@
 
 																												)
 								</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date*')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
 								<td>
 								@(Html.DevExtreme().DropDownBox()
-																												.Label(new JS("formatMessage('VAT Invoice Type*')"))
+																												.Label(new JS("formatMessage('VAT Invoice Type')"))
 																												.ID("VATInvoiceType")
 																												.DataSource(d => d.WebApi()
 																												.Controller("AccountLedgerMaster")
@@ -491,7 +487,7 @@
 								</td>
 								<td>
 
-								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means*')"))
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')"))
 																												.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeansTypeCode"))
 																												.ID("ddpaymentmeans")
 																												.ShowClearButton(true)
@@ -520,7 +516,7 @@
 							</tr>
 							<tr>
 								<td>
-								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Sub Type*')")).ID("VATInvoiceSubType")
+								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('VAT Invoice Sub Type')")).ID("VATInvoiceSubType")
 																												.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getInvoiceSubTypes").LoadMode(DataSourceLoadMode.Raw).Key("SubType"))
 																												.AcceptCustomValue(true)
 																												.OpenOnFieldClick(false)
@@ -536,7 +532,7 @@
 
 								@(Html.DevExtreme().DropDownBox()
 																												.ID("InvoiceTransactionsCode")
-																												.Label("Invoice Transaction Code*")
+																												.Label("Invoice Transaction Code")
 																												.Value("0200000") // Default selected value
 																												.ValueExpr("ID")
 																												.DisplayExpr("ID")
@@ -679,6 +675,16 @@
 																												.OnKeyDown("onKeyDown")
 																												.ContentTemplate(new TemplateName("ClientNameContentTemplate")))
 								</td>
+							<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
+
+								@(Html.DevExtreme().Button()
+															.ID("btnLink")
+															.Text(new JS("formatMessage('Link')"))
+															.Icon("link")// Display text
+															.StylingMode(ButtonStylingMode.Text)   // Makes it look like a hyperlink
+															.Type(ButtonType.Normal)
+															.OnClick("onLinkClick"))
+							</td>
 							</tr>
 							<tr>
 								<td>
@@ -704,14 +710,14 @@
 																												//.ShowClearButton(true) // Optional: adds a clear (X) button
 																						)
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside))</td>
+							<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").LabelMode(EditorLabelMode.Outside).Width("100%"))</td>
 
 							</tr>
 							<tr>
 
 								<td>
 								@(Html.DevExtreme().DropDownBox()
-																												.Label(new JS("formatMessage('Other ID Type*')"))
+																												.Label(new JS("formatMessage('Other ID Type')"))
 																												.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetVATInvoiceMaster").LoadMode(DataSourceLoadMode.Raw).Key("BuyerIdtypeName"))
 																												.LabelMode(EditorLabelMode.Outside)
 																												.ID("OtherIDType")
@@ -730,13 +736,13 @@
 																												.ContentTemplate(new TemplateName("ClientNameContent"))
 																												)
 								</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID*')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside))</td>
-								<td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Outside))</td>
+							<td colspan="2">
 								@(Html.DevExtreme().DropDownBox()
 																												.ID("ClientAddressDetails")
 																												.Label(new JS("formatMessage('Client Address Details')"))
 																												.ShowClearButton(true)
-																												.Width(300)
+																												.Width("100%")
 																												.LabelMode(EditorLabelMode.Outside)
 																												.DropDownOptions(o => o.Width(650).Height(550))
 																												.OpenOnFieldClick(true)
@@ -875,8 +881,8 @@
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value*')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID*')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
+								<td colspan="3">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Outside).Disabled(true))</td>
 							</tr>
 						</table>
 
@@ -972,47 +978,71 @@
 						</tr>
 					<tr>
 						<td>
-							@(Html.DevExtreme().TextArea()
-																					.Label(new JS("formatMessage('Invoice Notes')"))
-																					.LabelMode(EditorLabelMode.Outside)
-																					.ID("txtInvoiceNotes")
-																					.Value("")
-																					.Height(40)
-																					.Width("100%")
-																					.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+							<div style="display: flex; gap: 4px; align-items: flex-end;">
+								<div style="flex: 1;">
+									@(Html.DevExtreme().TextArea()
+																			.Label(new JS("formatMessage('Invoice Notes')"))
+																			.LabelMode(EditorLabelMode.Outside)
+																			.ID("txtInvoiceNotes")
+																			.Value("")
+																			.Width("100%")
+																			.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+																			)
+								</div>
 
-																					)
-
+								<div style="width: 55px;">
+									@(Html.DevExtreme().Button()
+																			.ID("btnSetDefault")
+																			.Icon("save")
+																			.Hint("Set as default")
+																			.Type(ButtonType.Default)
+																			.StylingMode(ButtonStylingMode.Contained)
+																			.OnClick("onSetDefaultClick")
+																			)
+								</div>
+								<div style="width: 55px;">
+									@(Html.DevExtreme().Button()
+																			.ID("btnClearNotes")
+																			.Icon("clear") // You can use "close" or "clearsquare" if available
+																			.Hint("Clear notes")
+																			.Type(ButtonType.Default)
+																			.StylingMode(ButtonStylingMode.Contained)
+																			.OnClick("function() { $('#txtInvoiceNotes').dxTextArea('instance').option('value', ''); }")
+																			)
+								</div>
+							</div>
 						</td>
 
 
-						<td style="display: flex; align-items: end;">
 
+						<td style="display: flex; align-items: end;gap: 4px;">
 
-
-
-							@(Html.DevExtreme().TextArea()
-																					.Label(new JS("formatMessage('Notes in Arabic')"))
-																					.LabelMode(EditorLabelMode.Outside)
-																					.ID("txtNotesinArabic")
-																					.Value("")
-																					.Height(40)
-																					.Width("100%")
-																					.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-
-
-																					)
 							@(
-																					Html.DevExtreme().Button()
-																					.ID("InvoiceNotesconvertToArabic")
-																					.Width("100")
-																					.Height(50)
-																					.Icon("fas fa-language") // Ensure Font Awesome class is correct
-																					.ElementAttr(new { @class = "input-button" })
-																					.OnClick("function() { convertToArabic(); }")
+														Html.DevExtreme().Button()
+														.ID("InvoiceNotesconvertToArabic")
+														.Width("60")
+														.Height(50)
+														.Icon("fas fa-language") // Ensure Font Awesome class is correct
+														.ElementAttr(new { @class = "input-button" })
+														.OnClick("function() { convertToArabic(); }")
 
-																					)
+														)
+
+
+							@(Html.DevExtreme().TextArea()
+														.Label(new JS("formatMessage('Notes in Arabic')"))
+														.LabelMode(EditorLabelMode.Outside)
+														.ID("txtNotesinArabic")
+														.Value("")
+														.Height(40)
+														.Width("100%")
+														.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+
+
+														)
+
 						</td>
+
 
 
 					</tr>
@@ -1406,7 +1436,7 @@
 					<table  style="width:70%; font-size:14px; margin:10px;" cellpadding="5">
 						<!-- Row 1: Division Dropdown -->
 						<tr>
-								<td>
+							<td colspan="2">
 								@(Html.DevExtreme().DropDownBox()
 																												.Label(new JS("formatMessage('Division')"))
 																												.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
@@ -1429,38 +1459,40 @@
 							</tr>
 
 							<!-- Row 2: Credit Note Submitted On, Sales Person -->
-						<tr >
+						<tr>
 
 
-							<td style="display: flex; align-items: end;">
+						
+							<td colspan="2">
+								<div style="display: flex; align-items: flex-end; gap: 4px; width: 100%;">
+										@(Html.DevExtreme().DropDownBox()
+																				.Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
+																				.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetSalesPerson").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonCode"))
+																				.LabelMode(EditorLabelMode.Outside)
+																				.ID("ddlSalesPerson")
+																				.ShowClearButton(true)
+																				.AcceptCustomValue(true)
+																				.OpenOnFieldClick(false)
+																				.ValueExpr("SalesPersonCode")
+																				.DisplayExpr("SalesPersonName")
+																				.OnInput("dropDownBoxOnInput")
+																				.OnOpened("onOpened")
+																				.DropDownOptions(o => o.Width(1000))
+																				.ContentTemplate(new TemplateName("SalesPersonTemplate"))
+																				.Width("calc(100% - 44px)") // full width minus button space
+																				)
+										@(Html.DevExtreme().Button()
+																				.ID("AddSalesPersonButton")
+																				.Icon("plus")
+																				.Hint("Add Sales Person")
+																				.Width(40)
+																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																				)
+								</div>
+							</td>
+						</tr>
 
-								@(Html.DevExtreme().DropDownBox()
-																										.Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
-																										.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetSalesPerson").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonCode"))
-																										.LabelMode(EditorLabelMode.Outside)
-																										.ID("ddlSalesPerson")
-																										.ShowClearButton(true)
-																										.AcceptCustomValue(true)
-																										.OpenOnFieldClick(false)
-																										.ValueExpr("SalesPersonCode")
-																										.DisplayExpr("SalesPersonName")
-																										.OnInput("dropDownBoxOnInput")
-																										.OnOpened("onOpened")
-																										.DropDownOptions(o => o.Width(1000))
-																										.ContentTemplate(new TemplateName("SalesPersonTemplate"))
-																										.Width("100%")
-																										)
-								@(Html.DevExtreme().Button()
-																										.ID("AddSalesPersonButton")
-																										.Icon("plus")
-																										.Hint("Add Sales Person")
-																										.Width(40)
-																										.ElementAttr("style", "display: flex; justify-content: center; align-items:bottom;")
-
-																										)
-
-								</td>
-							</tr>
+							
 
 
 
@@ -1599,7 +1631,7 @@
 																												.Width("95%")
 																												)
 								</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
+							<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
 							</tr>
 							<tr>
 							@* 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Outside).Width("95%"))</td>
@@ -7833,7 +7865,12 @@
 				iframe.src = url;
 			}, 300);
 		}
-
+	 function onLinkClick() {
+				window.location.href = "https://example.com"; // Or your desired action
+			}
+				function onSetDefaultClick() {
+				DevExpress.ui.dialog.alert("Invoice Notes has been set as default.", "Set as default");
+			}
 
 
 </script>
