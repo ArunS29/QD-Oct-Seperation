@@ -578,6 +578,7 @@
 							.Hint("Add Description")
 							.Width(40)
 							.ElementAttr("style", "margin-top:18px;")
+						  .OnClick("AddModeReq")
 							)
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
@@ -605,6 +606,7 @@
 							.Hint("Add Description")
 							.Width(40)
 							.ElementAttr("style", "margin-top:18px;")
+							.OnClick("AddTypeReq")
 							)
 						</td>
 						<td colspan="2" style="width:100%;">
@@ -663,7 +665,7 @@
 							.Hint("Add Description")
 							.Width(40)
 							.ElementAttr("style", "margin-top:18px;")
-
+							.OnClick("AddProject")
 
 							)
 						</td>
@@ -896,6 +898,7 @@
 												.Hint("Add Description")
 												.Width(40)
 												.ElementAttr("style", "margin-top:18px;")
+																			.OnClick("AddReqUnit")
 												)
 
 											@(Html.DevExtreme().Button()
@@ -1019,6 +1022,7 @@
 							.Hint("Add Sales Person")
 							.Width(40)
 							.ElementAttr("style", "margin-top:25px;")
+							.OnClick("AddPreparedBy")
 							)
 						</div>
 
@@ -1954,7 +1958,7 @@
 
 											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
 
-											window.location.href = url;
+											openModal(url, "");
 
 										},
 
@@ -1978,7 +1982,7 @@
 
 											let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
 
-											window.location.href = url;
+											openModal(url, "");
 
 										},
 
@@ -2108,7 +2112,7 @@
 
 											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
-											window.location.href = url;
+										   openModal(url, "");
 
 										},
 
@@ -2457,7 +2461,7 @@
 
 									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example add page
 
-									window.location.href = url;
+									openModal(url, "");
 
 								},
 
@@ -2481,7 +2485,7 @@
 
 									let url = `/${tenantName}/VAT/VATGoodsandServices`; // Example edit page
 
-									window.location.href = url;
+									openModal(url, "");
 
 								},
 
@@ -2611,7 +2615,7 @@
 
 									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
-									window.location.href = url;
+									openModal(url, "");
 
 								},
 
@@ -5872,8 +5876,34 @@
 			dropDownBox.close(); // Forces it to open on load
 		});
 
+		 function AddPreparedBy(){
+				const url = `/${tenantName}/IMS/Signatories`;
+			  const title = "";
+				  openModal(url, title);
+		  }
 
-
-
-
+		   function AddReqUnit(){
+				const url = `/${tenantName}/IMS/ProjectSubUnits`;
+			  const title = "";
+				  openModal(url, title);
+		  }
+			 function AddModeReq(){
+				const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
+			  const title = "";
+				  openModal(url, title);
+		  }
+			 function AddTypeReq(){
+				const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+			  const title = "";
+				  openModal(url, title);
+		  }
+			   $(function () {
+	$("#ClientRequestMasterForm").dxTextBox({
+	text: formatMessage("Client Request"),
+		readOnly: true,
+		onContentReady: function (e) {
+		$(e.element).addClass("dx-textbox-heading");
+		}
+		});
+	});
 </script>

@@ -157,7 +157,7 @@
 <meta charset="UTF-8">
 <div class="title">
     <div class="header-container">
-        <div id="SupplierMaster" class="no-border-title"></div>
+        <div id="StoreRequest" class="no-border-title"></div>
     </div>
 </div>
 <div class="form-container1">
@@ -297,7 +297,9 @@
                                     .Icon("plus")
                                     .Hint("Add Mode")
                                     .Width(35)
-                                    .ElementAttr("style","justify-content: center"))
+                                    .ElementAttr("style","justify-content: center")
+                                    .OnClick("ModeOfRequest"))
+                                   
                                 </div>
                             </td>
                             <td>
@@ -312,7 +314,9 @@
                                     .Icon("plus")
                                     .Hint("Add Type")
                                     .Width(35)
-                                    .ElementAttr("style","justify-content: center"))
+                                    .ElementAttr("style","justify-content: center")
+                                    .OnClick("TypeOfRequest")
+                                    )
                                 </div>
                             </td>
                             <td>
@@ -569,6 +573,7 @@
                                 .Hint("Add User")
                                 .Width(35)
                                 .ElementAttr("style","justify-content: center")
+                                .OnClick("PreparedBy")
                                 )
                             </div>
                         </td>
@@ -653,20 +658,7 @@
             columns.Add().DataField("LineTotal").Caption("Line Total").Format("currency");
         })
         )
-
-
-
-
-
-
-
-
-
-
-
 </div>
-
-      
 <div class="form-container">
     <div class="footer-buttons">
         <div class="col-md-12">
@@ -688,4 +680,40 @@
         </div>
     </div>
 </div>
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("VATModuleFooter")
+    </div>
+</div>
+<script>
+        function openEntityModal(entity) {
+        const url = `/${tenantName}/IMS/${entity}`;
+        const title = "";
+        openModal(url, title);
+    }
 
+    function PreparedBy() {
+        openEntityModal("Signatories");
+    }
+
+    function AddReqUnit1() {
+        openEntityModal("ProjectSubUnits");
+    }
+
+    function ModeOfRequest() {
+        openEntityModal("QuotationModeOfRequest");
+    }
+
+    function TypeOfRequest() {
+        openEntityModal("QuotationTypeOfRequest");
+    }
+         $(function () {
+    $("#StoreRequest").dxTextBox({
+    text: formatMessage("Store Request"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
+</script>

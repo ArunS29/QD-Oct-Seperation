@@ -2377,9 +2377,22 @@
         " All rights reserved.": " All rights reserved.",
         "Add New Client Request":"Add New Client Request",
         "Add New Store Request":"Add New Store Request",
-        "Add New Project Request":"Add New Project Request"
+        "Add New Project Request": "Add New Project Request",
+        "Type new Quotation Type of Request & Add to the Existing List:": "Type new Quotation Type of Request & Add to the Existing List:",
+        "Client Request":"Client Request",
+        "Store Request":"Store Request",
+        "Project Request": "Project Request",
+        "Unit of Measure": "Unit of Measure",
+        "Goods and Services": "Goods and Services",
     },
     "ar": {
+
+        "Project Request": "طلب مشروع",
+        "Store Request":"طلب المتجر",
+        "Client Request": "طلب العميل",
+        "Unit of Measure": "وحدة القياس",
+        "Goods and Services": "السلع والخدمات",
+        "Type new Quotation Type of Request & Add to the Existing List:":"اكتب نوع عرض الأسعار الجديد للطلب وأضفه إلى القائمة الموجودة:",
         "Create New":"إنشاء جديد",
         "Add New Client Request": "إضافة طلب عميل جديد",
         "Add New Store Request": "طلب إضافة متجر جديد",

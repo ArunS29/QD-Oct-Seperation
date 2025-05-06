@@ -93,6 +93,9 @@
         margin-top: 1em;
     }
 
+    .playIcon {
+        display: none;
+    }
 
 </style>
 <div class="title">
@@ -216,7 +219,6 @@
 
         $(function () {
         $("#QuotationModeofRequest").dxTextBox({
-                width: "600px",
             text: formatMessage("Quotation Mode of Request"),
                 readOnly: true,
                 onContentReady: function (e) {

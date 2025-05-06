@@ -123,13 +123,14 @@
    
 </head>
 <body>
-    <div class="dx-card">
+
+    <div class="title">
+        <div class="header-container">
+            <div id="goodsandServices" class="no-border-input"></div>
+        </div>
+    </div>
 
         <div id="goodsServicesForm">
-            <!-- Your entire form HTML here -->
-     
-        <h3>Goods and Services</h3>
-        <!-- Row 1: Goods Code | Goods Group | Item Part No -->
         <div class="dx-fieldset">
             <div class="dx-field">
                 <table style="width: 1000px;">
@@ -460,10 +461,6 @@
             )
     }
 
-
-
-    </div>
-    
 </body>
 </html>
 <script>
@@ -676,7 +673,15 @@
             }
         });
     }
-
+    $(function () {
+    $("#goodsandServices").dxTextBox({
+    text: formatMessage("Goods and Services"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
     $(document).ready(function () {
         const $form = $("#goodsServicesForm");
 

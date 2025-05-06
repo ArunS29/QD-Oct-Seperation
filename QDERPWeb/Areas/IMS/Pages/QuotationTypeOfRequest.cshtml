@@ -93,11 +93,14 @@
         margin-top: 1em;
     }
 
+    .playIcon {
+        display: none;
+    }
 
 </style>
 <div class="title">
     <div class="header-container">
-        <div id="QuotationTypeofRequest " class="no-border-input"></div>
+        <div id="QuotationTypeofRequest" class="no-border-input"></div>
     </div>
 </div>
 <div class="signatory-form-container">
@@ -225,9 +228,8 @@
         });
 
     $(function () {
-        $("#QuotationTypeofRequest ").dxTextBox({
-            width: "600px",
-            text: formatMessage("Quotation Type of Request"),
+            $("#QuotationTypeofRequest").dxTextBox({
+                text: formatMessage("Quotation Type of Request"),
             readOnly: true,
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");

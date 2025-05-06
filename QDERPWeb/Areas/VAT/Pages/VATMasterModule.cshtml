@@ -90,13 +90,18 @@
 
         .playIcon {
             display:  none;
-
         }
     </style>
    
 </head>
 <body>
-        <h3>Database Master Module:Unit of Measure</h3>
+
+
+    <div class="title">
+        <div class="header-container">
+            <div id="UnitofMeasure" class="no-border-input"></div>
+        </div>
+    </div>
         <!-- Row 1: Type a New UOM & Add to the Existing List: -->
             <div class="dx-field">
                 <table>
@@ -370,5 +375,13 @@
         const grid = $("#dataGrid").dxDataGrid("instance");
         grid.hideColumnChooser(); // just in case it was opened previously
     });
-
+     $(function () {
+    $("#UnitofMeasure").dxTextBox({
+    text: formatMessage("Unit of Measure"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
 </script>
