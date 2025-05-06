@@ -128,7 +128,10 @@
                     <div class="form-label">
                         <label for="AssetLedgerNo">Asset Ledger No</label>
                     </div>
-                    @(Html.DevExtreme().TextBox().ID("txtacctledno").Value("").ReadOnly(true))
+                    @(Html.DevExtreme().TextBox().ID("txtacctledno").Value("").ReadOnly(true).ValidationRules(rules =>
+            {
+                rules.AddRequired().Message("Asset Ledger No is required");
+            }))
                 </div>
 
 
@@ -139,23 +142,20 @@
                         <label for="AssetCategory">Asset Category</label>
                     </div>
                     <div class="form-group-row">
-        @(Html.DevExtreme().SelectBox()
-            .ID("ddassetCategory")
-            .LabelMode(EditorLabelMode.Outside)
-            .ValueExpr("AssetCategoryCode")
-            .DisplayExpr("AssetCategory")
-            .InputAttr("aria-label", "Owner")
-            .DataSource(d => d.WebApi()
-            .Controller("assetview")
-            .LoadAction("GetAssetCategoriesByCode")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("AssetCategory")
-            )
-            .SearchEnabled(true)
-            .ShowClearButton(true)
-            .TabIndex(1)
-            .MinSearchLength(0) // Starts searching after typing 1 character
-            )
+
+                        @(Html.DevExtreme().SelectBox().ID("ddassetCategory")
+                            .LabelMode(EditorLabelMode.Outside).ValueExpr("AssetCategoryCode")
+                            .InputAttr("aria-label", "Owner")
+                            .DisplayExpr("AssetCategory")
+                            .DataSource(d => d.WebApi().Controller("assetview")
+                            .LoadAction("GetAssetCategoriesByCode")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("AssetCategory")).SearchEnabled(true).ShowClearButton(true).TabIndex(1)
+                              .ValidationRules(rules =>
+  {
+      rules.AddRequired().Message("Asset Category is required");
+  })
+                            )
 
                         @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToAssetCategoryView"))
                     </div>
@@ -190,7 +190,10 @@
                         .Format("#,##0")
                         .Step(1)
                         .Width("100%")
-
+                         .ValidationRules(rules =>
+  {
+      rules.AddRequired().Message("Asset Category is required");
+  })
                         )
                 </div>
 
@@ -879,29 +882,47 @@
                     </div>
                 </div>
 
+        
 
+                 <div class="dx-field ledgerResult" style="padding:10px;">
 
-                <div style="padding:10px;">
-                    @(Html.DevExtreme().DataGrid()
-                    .ID("MaintenanceGrid")
-                    .Columns(columns =>
-                    {
-                    columns.Add().Caption("Maintenance Type").DataField("MaintenanceType").DataType(GridColumnDataType.String);
-                    columns.Add().Caption("Maintenance Reading").DataField("MaintenanceReading").DataType(GridColumnDataType.Number);
-                    columns.Add().Caption("Maintenance Scheduled On").DataField("ScheduledOn").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption("Reminder Date").DataField("ReminderDate").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption("Maintenance Done?").DataField("MaintenanceDone").DataType(GridColumnDataType.Boolean);
-                    columns.Add().Caption("Remarks").DataField("Remarks").DataType(GridColumnDataType.String);
-                    columns.Add().Caption("Actions").CellTemplate("deleteTemplate");
-                    })
-                    .Height(250)
-                    .Width("100%")
-                    .DataSource(new object[0])
-                    .RemoteOperations(false)
-                    )
+                        @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20111AssetMaintenanceMaster>()
 
-                </div>
-
+                        .ID("maintenanceGrid")
+                        .RemoteOperations(false)
+                    .DataSource(ds => ds.Mvc()
+                    .Controller("AssetView")
+                    .LoadAction("GetMaintenance"))
+                    .KeyExpr("MaintenanceRefNo")
+                        .Columns(columns =>
+                        {
+                       
+                         columns.AddFor(m => m.MaintenanceRefNo).Caption("Maintenance Id");
+                          columns.AddFor(m => m.MaintenanceTypeId).Caption("Maintenance Type");
+                        columns.AddFor(m => m.MaintenanceReading).Caption("Maintenance Reading");
+                        columns.AddFor(m => m.MaintenanceDate).Caption("Maintenance Scheduled On");
+                        columns.AddFor(m => m.ReminderDate).Caption("Reminder Date");
+                        columns.AddFor(m => m.IsMaintenanceDone).Caption("Maintenance Done?");
+                         
+                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption("ActualMaintenanceDoneOn");
+                        columns.AddFor(m => m.MaintenanceRemarks).Caption("Remarks");
+                      
+                        })
+                        //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.Select))
+                        .AllowColumnReordering(true) // Enable column reordering
+                        .AllowColumnResizing(true)   // Enable column resizing
+                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                        .HeaderFilter(filter => filter.Visible(true))
+                        .Height(250)
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                        .ShowBorders(true)
+                        .Width("100%")
+                    .OnContextMenuPreparing("onContextMenuPreparing")
+                        )
+                    </div>
 
 
 
@@ -1527,7 +1548,13 @@
     const formattedEndDate = formatDate(endDateRaw);
     console.log("Formatted End Date:", formattedEndDate);
     
-
+     const AccountNo = $("#txtacctledno").dxValidator("instance").validate();
+        const AssetCategory = $("#ddassetCategory").dxValidator("instance").validate();
+        const PurchaseAssetValue = $("#PurchasedAssetValue").dxValidator("instance").validate();
+            if (!AccountNo.isValid || !PurchaseAssetValue.isValid  || !AssetCategory.isValid) {
+            DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+            return;
+        }
 
         var updatedAsset = {
             "AssetLedgerNo": $("#txtacctledno").dxTextBox("instance").option("value"),
@@ -1575,6 +1602,12 @@
             success: function (response) {
 
                 alert(response.message || "Asset updated successfully!");
+                     if (window.parent && window.parent.$("#dataGrid").length) {
+                                    let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                                    if (dataGrid) {
+                                        dataGrid.refresh();
+                                    }
+                                }
             },
             error: function (xhr) {
                 console.error("Error Response:", xhr);
@@ -1621,4 +1654,49 @@
         openModal(url, title);
         refreshAssetMaintanenceSelectBox(); 
     }
+
+    function onContextMenuPreparing(e) {
+    if (e.row && e.row.rowType === "data") {
+        e.items = [{
+            text: "Delete",
+            icon: "trash",
+            onItemClick: function () {
+                DevExpress.ui.dialog.confirm(
+                    "You are about to delete the Maintenance Schedule from the database.\nYou cannot revert the changes.\nAre you sure you want to Delete?",
+                    "Confirm Delete"
+                ).done(function (dialogResult) {
+                    if (dialogResult) {
+                        const MaintenanceRefNo = e.row.data.MaintenanceRefNo;
+                        console.log("IDDD222:", e.row.data);
+                        console.log("IDDD:",MaintenanceRefNo);
+                        onDeleteMaintenanceSchedule(MaintenanceRefNo);
+                    }
+                });
+            }
+        }];
+    }
+}
+function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
+    debugger;
+       $.ajax({
+            url: `/api/AssetView/DeleteMaintenanceSchedule?MaintenanceRefNo=${MaintenanceRefNo}`,
+        type: "POST",
+        success: function (res) {
+            if (res.success) {
+                DevExpress.ui.notify(res.message, "success", 3000);
+                setTimeout(function () {
+                    $("#maintenanceGrid").dxDataGrid("instance").refresh();
+                }, 3000);
+            } else {
+                DevExpress.ui.notify(res.message || "Delete failed.", "error", 4000);
+            }
+        },
+        error: function () {
+            DevExpress.ui.notify("Unexpected error while deleting.", "error", 4000);
+        }
+    });
+}
+
+
+
 </script>

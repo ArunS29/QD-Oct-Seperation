@@ -171,13 +171,12 @@ $(function () {
                                     title: 'Duplicate Asset Location',
                                     text: 'This Asset Location already exists. Please choose a different name.',
                                     confirmButtonText: 'OK'
-                                  }).then(() => {
-             // Trigger the cancel action on the DataGrid after alert is closed
-             var dataGrid = $("#gridContainer").dxDataGrid("instance");
-             dataGrid.cancelEditData();  // Cancel the current edit
-         });
-                            }
-                            else if (xhr.status === 500) {
+                                }).then(() => {
+                                    // Trigger the cancel action on the DataGrid after alert is closed
+                                    var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                    dataGrid.cancelEditData();  // Cancel the current edit
+                                });
+                            } else if (xhr.status === 500) {
                                 // Show error alert using SweetAlert
                                 var errorMessage = xhr.status === 500
                                     ? "Server error: Please try again later."
@@ -188,8 +187,7 @@ $(function () {
                                     text: errorMessage,
                                     confirmButtonText: 'OK'
                                 });
-                            }
-                            else {
+                            } else {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error',
@@ -197,16 +195,41 @@ $(function () {
                                     confirmButtonText: 'OK'
                                 });
                             }
-
                         }
                     });
-                }
+                },
+                // remove: function (key) {
+                //     // API request to delete the asset location
+                //     return $.ajax({
+                //         type: "POST",
+                //         url: "/api/Master/DeleteAssetLocation", // Adjust API endpoint for deletion
+                //         data: JSON.stringify({ AssetLocationCode: key }),
+                //         contentType: "application/json",
+                //         success: function () {
+                //             // Show success alert after row is deleted
+                //             Swal.fire({
+                //                 icon: 'info',
+                //                 title: 'Asset Location Deleted',
+                //                 text: 'The asset location has been successfully deleted.',
+                //                 confirmButtonText: 'OK'
+                //             });
+                //         },
+                //         error: function (xhr) {
+                //             Swal.fire({
+                //                 icon: 'error',
+                //                 title: 'Error',
+                //                 text: 'There was an error deleting the asset location.',
+                //                 confirmButtonText: 'OK'
+                //             });
+                //         }
+                //     });
+                // }
             }),
             editing: {
                 mode: "batch", // Enable batch edit mode for multiple row editing
                 allowUpdating: true,  // Allow cell updates
                 allowAdding: false,   // No new rows
-                allowDeleting: false, // Prevent row deletion
+                allowDeleting: true,  // Allow row deletion
                 useIcons: true, // Use icons for save/cancel
                 texts: {
                     saveAll: "Update", // Custom text for save button
@@ -215,7 +238,56 @@ $(function () {
             },
             columns: [
                 { dataField: "AssetLocationCode", caption: "Asset Location Code", width: 100, editorOptions: { readOnly: true } },
-                { dataField: "AssetLocation", caption: "Asset Location" }
+                { dataField: "AssetLocation", caption: "Asset Location" },
+                 {
+                    type: "buttons",
+                    width: 100,
+                    buttons: [
+                        {
+                            icon: "trash",
+                            hint: "Delete",
+                            onClick: function (e) {
+                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                var selectedData = e.row.data;
+                               var AssetLocationCode = selectedData.AssetLocationCode;
+
+                                // Send delete request to the API
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/api/Master/DeleteAssetLocation",
+                                    data: JSON.stringify({ AssetLocationCode: AssetLocationCode }),
+                                    contentType: "application/json",
+                                    success: function (response) {
+                                        if (response.success) {
+                                            dataGrid.refresh(); // Refresh the grid
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Success',
+                                                text: formatMessage(' deleted successfully.'),
+                                                confirmButtonText: 'OK'
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: response.message,
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    },
+                                    error: function (xhr) {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: xhr.responseText,
+                                            confirmButtonText: 'OK'
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                }
             ],
             showBorders: true,
             paging: {
@@ -243,36 +315,20 @@ $(function () {
                         },
                         location: "after"
                     },
-                    {
-                        widget: "dxButton",  // Adding Cancel button
-                        options: {
-                            icon: "close",  // Icon for Cancel button
-                            text: "Cancel",  // Text for Cancel button
-                            onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
-                            },
-                            visible: function () {
-                                // Make Cancel button visible only when editing mode is active
-                                var grid = $("#gridContainer").dxDataGrid("instance");
-                                return grid.option("editing.mode") === "batch" && grid.isEditing();
-                            }
-                        },
-                        location: "after"
-                    },
+                  
                     {
                         widget: "dxButton", // Add the Back button
                         options: {
                             icon: "arrowleft", // You can choose another icon if you'd like
                             text: "Back",
                             onClick: function () {
-                                window.close(); // This closes the current window/tab
+                                window.parent.closeModal(); // This closes the current window/tab
                             }
                         },
                         location: "after"
                     }
                 ]
             },
-
             onRowUpdated: function (e) {
                 // Show SweetAlert when a row is updated
                 Swal.fire({
@@ -300,7 +356,6 @@ $(function () {
                     confirmButtonText: 'OK'
                 });
             },
-
             // Enable virtual scrolling
             scrolling: {
                 mode: "virtual", // Virtual scrolling for better performance
@@ -311,6 +366,7 @@ $(function () {
             width: "100%" // Full width for the grid
         });
     });
+
 
     // Function to Add a New Asset Location
     function addAssetLocation() {

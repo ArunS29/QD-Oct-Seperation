@@ -264,24 +264,14 @@
                         },
                         location: "after"
                     },
-                    {
-                        widget: "dxButton",
-                        options: {
-                            icon: "close",
-                            text: "Cancel",
-                            onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").cancelEditData();
-                            }
-                        },
-                        location: "after"
-                    },
+                
                     {
                         widget: "dxButton", // Add the Back button
                         options: {
                             icon: "arrowleft", // You can choose another icon if you'd like
                             text: "Back",
                             onClick: function () {
-                                window.close(); // This closes the current window/tab
+                                 window.parent.closeModal();// This closes the current window/tab
                             }
                         },
                         location: "after"
@@ -405,5 +395,7 @@ function addAssetCategory() {
                 }
             });
         });
+
+
 
 </script>

@@ -1,9 +1,15 @@
 ﻿var dictionary = {
     "en": {
-
+        "Type new Quotation Mode of Request & Add to the Existing List:": "Type new Quotation Mode of Request & Add to the Existing List:",
+        "Quotation Mode of Request":"Quotation Mode of Request",
         "Terms Category":"Terms Category",
         "Type Of Request":"Type Of Request",
-        "ID":"ID",
+        "ID": "ID",
+        "Project Sub Units": "Project Sub Units",
+        "Type new Project Sub Unit & Add to the Existing List:": "Type new Project Sub Unit & Add to the Existing List:",
+        "Code": "Code",
+        "Project Unit Name": "Project Unit Name",
+        "Quotation Mode of Request":"Quotation Mode of Request",
    
         "Quotation Type of Request":"Quotation Type of Request",
         "Terms Category:":"Terms Category:",
