@@ -591,9 +591,10 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
-                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -635,9 +636,10 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
-                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -679,9 +681,10 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
-                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -722,9 +725,10 @@ namespace QD.ERP.Web.Pages
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
-                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -769,9 +773,10 @@ namespace QD.ERP.Web.Pages
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
-                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -814,9 +819,10 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
-                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -858,9 +864,10 @@ namespace QD.ERP.Web.Pages
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
-                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -903,9 +910,10 @@ namespace QD.ERP.Web.Pages
                 AccountId = accountId;
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
-                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                     .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -1352,7 +1360,8 @@ namespace QD.ERP.Web.Pages
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
-
+            ///Trial
+            
             else if (reportName == "Group")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)
