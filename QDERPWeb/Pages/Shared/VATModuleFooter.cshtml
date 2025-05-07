@@ -524,24 +524,7 @@
             )
     </div>
 
-     <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddReports")
-            .Icon("doc")
-            .Width(50)
-            .Text(new JS("formatMessage('Report')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Tax Report").Icon("file").OnClick("showSubmenu8");
-                items.Add().Text("Inventory Report").Icon("file").OnClick("showSubmenu9");
-             
-            })
-            .OnItemClick("addReportsButton_click")
-            .ShowArrowIcon(false)
-            )
-    </div>
+    
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReport123")
@@ -551,9 +534,7 @@
           @*   .ElementAttr(new { style = "display: none;" }) *@
             .DropDownOptions(options => options.Width(285))
             .Items(items =>
-            {
-@*                 items.Add().Text("Tax Summary Report-Credit Notes").Icon("file");
- *@             
+            {             
                items.Add().Text(new JS("formatMessage('Tax Summary Report-Credit Notes')")).Icon("search");
          
 
@@ -579,7 +560,7 @@
 
 
             })
-            @* .OnItemClick("") *@
+            .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
             )
     </div>

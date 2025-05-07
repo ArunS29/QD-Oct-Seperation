@@ -2935,7 +2935,7 @@
         });
 
 
-               function handleVATClick(selectedText) {
+        function handleVATClick(selectedText) {
             console.log("handleVATClick triggered with:", selectedText);
 
             try {
@@ -2972,7 +2972,7 @@
                     alert("Please select valid From and To dates.");
                     return;
                 }
-
+                
                 // Extract tenant name from URL
                 let pathParts = window.location.pathname.split('/');
                 let tenantName = pathParts[1] || "defaultTenant";
