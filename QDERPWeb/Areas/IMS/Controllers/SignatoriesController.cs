@@ -58,6 +58,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+      
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdateSignatory([FromBody] Tbl90104DocumentSignatory model)
         {
@@ -67,38 +68,17 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     var now = DateTime.Now;
 
-                    var existing = await dbContext.Tbl90104DocumentSignatories
-                        .FirstOrDefaultAsync(x => x.SignatoryId == model.SignatoryId);
+                    // Determine next SignatoryId (auto-increment simulation)
+                    var lastId = await dbContext.Tbl90104DocumentSignatories
+                        .OrderByDescending(x => x.SignatoryId)
+                        .Select(x => x.SignatoryId)
+                        .FirstOrDefaultAsync();
 
-                    if (existing != null)
-                    {
-                        existing.SignatoryName = model.SignatoryName;
-                        existing.SignatoryPosition = model.SignatoryPosition;
-                        existing.SignatoryContact = model.SignatoryContact;
-                        existing.SignatoryEmail = model.SignatoryEmail;
-                        existing.SignatureImage = model.SignatureImage;
-                        existing.SignatureDescription = model.SignatureDescription;
-                        existing.SignatureCode = model.SignatureCode;
-                        existing.SignatoryMobile1 = model.SignatoryMobile1;
-                        existing.SignatoryMobile2 = model.SignatoryMobile2;
-                        existing.SignatoryNameAr = model.SignatoryNameAr;
-                        existing.SignatoryPositionAr = model.SignatoryPositionAr;
-                        existing.IsFinanceManager = model.IsFinanceManager;
-                        existing.UserId = model.UserId;
-                        // No Created/Modified dates in entity? Add if needed
-                    }
-                    else
-                    {
-                        // Assign new SignatoryId
-                        var lastId = await dbContext.Tbl90104DocumentSignatories
-                            .OrderByDescending(x => x.SignatoryId)
-                            .Select(x => x.SignatoryId)
-                            .FirstOrDefaultAsync();
+                    // Ensure lastId is valid and handle case where no records exist
+                    model.SignatoryId = lastId == 0 ? (byte)1 : (byte)(lastId + 1);
 
-                        model.SignatoryId = (byte)(lastId + 1); // Assuming short type
-
-                        dbContext.Tbl90104DocumentSignatories.Add(model);
-                    }
+                    // Add the new signatory
+                    dbContext.Tbl90104DocumentSignatories.Add(model);
 
                     await dbContext.SaveChangesAsync();
 
@@ -113,6 +93,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+
 
     }
 }

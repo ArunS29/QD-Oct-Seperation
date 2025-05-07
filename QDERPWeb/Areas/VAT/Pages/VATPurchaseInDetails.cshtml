@@ -275,11 +275,11 @@
 
 		})
 
-		.Editing(editing => editing
+		@* .Editing(editing => editing
 		.Mode(GridEditMode.Row)
 		.AllowUpdating(true)
 		)
-
+ *@
 		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)

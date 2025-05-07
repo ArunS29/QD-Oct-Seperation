@@ -33,6 +33,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 			_tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
+	
 		[HttpGet]
 		public async Task<ActionResult> GetVatInvoices(string frmDate, string toDate, bool useEffectiveDate)
 		{
@@ -99,6 +100,40 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 						.ToListAsync();
 
 					return Json(vatInvoices);
+				}
+				catch (Exception ex)
+				{
+					return StatusCode(500, $"Internal server error: {ex.Message}");
+				}
+			}
+
+			return Unauthorized(new { message = "Invalid tenant.", success = false });
+		}
+
+		[HttpPost]
+		public async Task<ActionResult> DuplicateVatInvoice(string invoiceNo)
+		{
+			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+			{
+				if (string.IsNullOrWhiteSpace(invoiceNo))
+					return BadRequest("Invoice number is required.");
+
+				try
+				{
+					// Assuming the stored procedure returns a message string (like 'Success' or detailed message)
+					var result = await dbContext
+						.Database
+						.ExecuteSqlInterpolatedAsync($"EXEC sp201_73InsertDuplicatePurchaseBill @InvoiceNo = {invoiceNo}");
+
+					// Optionally: fetch the newly created invoice or confirm if rows affected > 0
+					if (result > 0)
+					{
+						return Json(new { success = true, message = "Purchase Invoice has been successfully added to the database." });
+					}
+					else
+					{
+						return Json(new { success = false, message = "Duplication failed or no invoice was added." });
+					}
 				}
 				catch (Exception ex)
 				{
