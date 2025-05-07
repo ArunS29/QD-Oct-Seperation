@@ -2388,9 +2388,11 @@
         "Project Request": "Project Request",
         "Unit of Measure": "Unit of Measure",
         "Goods and Services": "Goods and Services",
+        "Quotation": "Quotation",
     },
     "ar": {
 
+        "Quotation": "اقتباس",
         "Project Request": "طلب مشروع",
         "Store Request":"طلب المتجر",
         "Client Request": "طلب العميل",

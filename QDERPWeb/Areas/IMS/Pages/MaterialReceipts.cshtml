@@ -119,7 +119,7 @@
 
 <div class="title">
     <div class="header-container">
-        <div id="quotationLineItem" class="no-border-title"></div>
+        <div id="materialReceiptsTitle" class="no-border-title"></div>
     </div>
 </div>
 @* <div class="sathish-container-top"> *@
@@ -547,8 +547,8 @@
     }
 
     $(function () {
-        $("#quotationLineItem").dxTextBox({
-            text: formatMessage("Quotation Line Item"),
+        $("#materialReceiptsTitle").dxTextBox({
+            text: formatMessage("Material Receipts"),
             readOnly: true,
             onContentReady: function (e) {
                 $(e.element).addClass("dx-textbox-heading");
