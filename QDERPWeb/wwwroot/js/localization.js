@@ -1,6 +1,6 @@
 ﻿var dictionary = {
     "en": {
-        
+        "Goods & Services Group:":"Goods & Services Group:",
   "Request/Enquiries Details": "Request/Enquiries Details",
   "Material Request/ Enquiry": "Material Request/ Enquiry",
   "Request No": "Request No",
