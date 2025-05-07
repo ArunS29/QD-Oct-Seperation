@@ -146,10 +146,16 @@
 
                 if (selectedCategory === "insert") {
                     if (confirm("Do you want to open a new template creation page?")) {
-                        window.open("/Pages/TemplateCreate", "_blank");
+                        window.open(
+                            "/Pages/TemplateCreate",
+                            "TemplateWindow",
+                            "width=900,height=700,resizable=yes,scrollbars=yes,status=no,location=no,toolbar=no,menubar=no,left=100,top=100"
+                        );
                     }
                     return;
                 }
+            
+
 
                 if (selectedCategory) {
                     $.ajax({
