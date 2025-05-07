@@ -135,7 +135,7 @@
         "Debit Note No:": "Debit Note No:",
         "Debit Note Date:": "Debit Note Date:",
         "Supplier Invoice No": "Supplier Invoice No",
-        "Invoice Date:*": "Invoice Date:*",
+        "Invoice Date:": "Invoice Date:",
         "Supplier Name Arabic:": "Supplier Name Arabic:",
         "Reference No": "Reference No",
         "Invoice Period": "Invoice Period",
@@ -2391,8 +2391,12 @@
         "Quotation": "Quotation",
     },
     "ar": {
+<<<<<<< Updated upstream
 
         "Quotation": "اقتباس",
+=======
+        "Invoice Date:": "تاريخ الفاتورة:",
+>>>>>>> Stashed changes
         "Project Request": "طلب مشروع",
         "Store Request":"طلب المتجر",
         "Client Request": "طلب العميل",

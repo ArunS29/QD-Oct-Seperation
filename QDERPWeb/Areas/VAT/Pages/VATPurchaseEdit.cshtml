@@ -579,6 +579,16 @@
 																			.AcceptCustomValue(true)
 																			.ContentTemplate(new TemplateName("ClientNameContentTemplate")))
 								</td>
+						<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
+
+							@(Html.DevExtreme().Button()
+														.ID("btnLink")
+														.Text(new JS("formatMessage('Link')"))
+														.Icon("link")// Display text
+														.StylingMode(ButtonStylingMode.Text)   // Makes it look like a hyperlink
+														.Type(ButtonType.Normal)
+														.OnClick("onLinkClick"))
+						</td>
 							</tr>
 
 							<tr>
@@ -602,7 +612,7 @@
 								</td>
 
 								<!-- 13. Supplier Name in Arabic (TextEdit) -->
-								<td>
+								<td colspan="2">
 									@(Html.DevExtreme().TextBox()
 																			.ID("ClientNameArabic")
 																			.Label(new JS("formatMessage('Supplier Name in Arabic')"))
@@ -638,7 +648,7 @@
 								</td>
 
 								<!-- 16. Supplier Address Details (PopContainerEdit) -->
-								<td>
+								<td colspan="2">
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ClientAddressDetails")
 																			.Label(new JS("formatMessage('Supplier Address Details')"))
@@ -782,7 +792,7 @@
 
 							<tr>
 								<!-- 17. Invoice Period (TextEdit) -->
-								<td>
+								<td colspan="2">
 									@(Html.DevExtreme().TextBox()
 																			.ID("InvoiceCounterValue")
 																			.Label(new JS("formatMessage('Invoice Period')"))
@@ -791,7 +801,7 @@
 								</td>
 
 								<!-- 18. Reference No (TextEdit) -->
-								<td colspan="2">
+						<td colspan="2">
 									@(Html.DevExtreme().TextBox()
 																			.ID("UUID")
 																			.Label(new JS("formatMessage('Reference No')"))
@@ -1120,10 +1130,11 @@
 			</div>
 
 		<div id="tab-content-6" class="tab-content" dir="rtl" style="align-items: flex-start;padding: 0 11px;min-height: 100%;">
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<table width="100%" cellpadding="5">
 						<tr style="height: 60px;">
+							
 							<td colspan="3">
-								<div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 10px 0;">						
+								<div style="display: flex; justify-content: flex-end; align-items: center;">						
 
 									<!-- Supplier Arabic Name DropDownBox -->
 									@(Html.DevExtreme().DropDownBox()
@@ -1145,6 +1156,12 @@
 																			.DropDownOptions(o => o.Width(600))
 																			.ContentTemplate(new TemplateName("SupplierArabicTemplate"))
 																			.Width("40%"))
+								</div>
+							</td>
+							<td style="width:10%; vertical-align: bottom;">
+								<div style="display:flex; gap:5px;">
+									@(Html.DevExtreme().Button().ID("AddClient1").Icon("plus").Hint("Add Description").Width(60))
+									@(Html.DevExtreme().Button().ID("EditClient1").Icon("edit").Hint("Edit Description").Width(60))
 								</div>
 							</td>
 						</tr>
@@ -6332,7 +6349,9 @@
 			dropDownBox.close(); // Optional: auto-close the dropdown after selection
 		}
 	}
-
+	 function onLinkClick() {
+			window.location.href = "https://example.com"; // Or your desired action
+		}
 
 </script>
 
