@@ -470,7 +470,6 @@
             SignatoryContact: $("#SignatoryContact").dxTextBox("instance").option("value"),
             SignatoryEmail: $("#SignatoryEmail").dxTextBox("instance").option("value"),
             SignatoryUserId: $("#SignatoryUserId").dxDropDownBox("instance").option("value"),
-            // Add base64 data for images, removing the prefix
             SignatureImage: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
         };
 
@@ -482,6 +481,21 @@
             success: function () {
                 DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
+
+                // Clear form fields
+                $("#SignatoryName").dxTextBox("instance").option("value", "");
+                $("#SignatoryNameArabic").dxTextBox("instance").option("value", "");
+                $("#SignatoryPosition").dxTextBox("instance").option("value", "");
+                $("#SignatoryPositionArabic").dxTextBox("instance").option("value", "");
+                $("#SignatoryContact").dxTextBox("instance").option("value", "");
+                $("#SignatoryEmail").dxTextBox("instance").option("value", "");
+                $("#SignatoryUserId").dxDropDownBox("instance").option("value", null);
+
+                // Clear the base64 image data after save
+                businessCard1Base64 = null;
+
+                // Optionally, reset file uploader (if used)
+                $("#SignatureUploader").dxFileUploader("instance").reset();
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
@@ -491,9 +505,13 @@
 
 
     $("#btnUpdate").on("click", function () {
-        const grid = $("#SignatoryGrid").dxDataGrid("instance");
-        grid.saveEditData(); // 🔥 only triggers on manual click
+        // Trigger the save operation manually
+        addSignatoryToGrid();
+
+        // Optionally, show a success message once the save operation completes
+        DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
     });
+
 
 
     function onSignatoryUpdating(e) {
