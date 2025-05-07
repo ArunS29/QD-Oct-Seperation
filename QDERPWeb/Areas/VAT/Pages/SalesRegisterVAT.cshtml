@@ -150,6 +150,9 @@
 			border-bottom: 1px solid #e0e0e0;
 		}
 
+	.mainContainer {
+			width: 97%; 
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -238,7 +241,7 @@
 		.ElementAttr("class", "mt-4 ml-4") // Adjust margin as needed
 		)
 </div>
-<div class="dx-field ledgerResult">
+<div class="dx-field ledgerResult" style="overflow-x: auto; width: 100%;" >
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
@@ -386,16 +389,12 @@
 			});
 			});
 		})
-
-		@* .Editing(editing => editing
-		.Mode(GridEditMode.Row)
-		.AllowUpdating(true)
-		) *@.Height(680) // <<< fixed height
-		@* .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@ // or .Standard
+		.Height(680) // <<< fixed height
 		.ColumnAutoWidth(true)
+		.Width("100%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
@@ -403,29 +402,10 @@
 		.Paging(p => p.Enabled(false))
 		.Pager(pager => pager.Visible(false))
 		.Grouping(grouping => grouping.AutoExpandAll(true))
-		@* .ColumnAutoWidth(true) *@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
-		.Width("100%")
-		.ColumnAutoWidth(true)
-@* 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.Select))*@ 
-@* 
-		.AllowColumnReordering(true)
-		.AllowColumnResizing(true)
-		.ColumnFixing(fixing => fixing.Enabled(true))
-		.HeaderFilter(filter => filter.Visible(true))
-		.Height(680)
-		.ColumnAutoWidth(true)
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
-
-		.FilterRow(filterRow => filterRow.Visible(false))
-		.Grouping(grouping => grouping.AutoExpandAll(true))
-		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.ShowBorders(true)
-		.Width("100%") *@
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
