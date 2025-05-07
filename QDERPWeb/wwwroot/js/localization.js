@@ -2391,12 +2391,9 @@
         "Quotation": "Quotation",
     },
     "ar": {
-<<<<<<< Updated upstream
 
         "Quotation": "اقتباس",
-=======
         "Invoice Date:": "تاريخ الفاتورة:",
->>>>>>> Stashed changes
         "Project Request": "طلب مشروع",
         "Store Request":"طلب المتجر",
         "Client Request": "طلب العميل",
