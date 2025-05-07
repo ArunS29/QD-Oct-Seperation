@@ -454,7 +454,7 @@
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Outside))</td>
+								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(false).LabelMode(EditorLabelMode.Outside))</td>
 							</tr>
 							<tr>
 								<td>
@@ -1500,20 +1500,17 @@
 
 							<!-- Row 4: Items Returned to Store Dropdown, Reference No Textbox -->
 							<tr style="width: 100%">
-								<td>
-									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Invoice Submitted On:')"))
-																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetItemsReturned").LoadMode(DataSourceLoadMode.Raw).Key("ItemId")) // Replace LoadAction accordingly
-																			.LabelMode(EditorLabelMode.Outside)
-																			.ID("ddlinvoicesubmittedon")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueExpr("ItemId")
-																			.DisplayExpr("ItemName")
-																			.Width("90%")
-																			)
-								</td>
+							<td>
+								@(Html.DevExtreme().DateBox()
+															.ID("ddlinvoicesubmittedon")
+															.Type(DateBoxType.Date)
+															.DisplayFormat("dd-MMM-yyyy")
+															.Label(new JS("formatMessage('Invoice Submitted On:')"))
+															.LabelMode(EditorLabelMode.Outside)
+															.ShowClearButton(true)
+															.Width("90%"))
+							</td>
+
 								<td>
 									<div style="display: flex; align-items: flex-end; gap: 10px;">
 										@(Html.DevExtreme().CheckBox()

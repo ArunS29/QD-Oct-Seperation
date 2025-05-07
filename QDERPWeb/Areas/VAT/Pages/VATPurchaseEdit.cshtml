@@ -426,105 +426,146 @@
 			<div class="card-container">
 					<!-- First Card (Left Side) -->
 				<table width="95%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-							<tr>
-								<!-- 1. Purchase Voucher No (TextEdit) -->
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("InvoiceNo")
-																			.Label(new JS("formatMessage('Purchase Voucher No')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.Disabled(true))
-								</td>
-
-								<!-- 2. Voucher Date (DateEdit) -->
+					<tr>
+						<!-- 1. Purchase Voucher No -->
 						<td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Purchase Voucher No</span>
+								<span style="direction: rtl;">رقم فاتورة الشراء</span>
+								
+							</label>
+							@(Html.DevExtreme().TextBox()
+														.ID("InvoiceNo")
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden)
+														.Disabled(true))
+						</td>
+
+						<!-- 2. Voucher Date -->
+						<td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Voucher Date</span>
+								<span style="direction: rtl;">تاريخ القسيمة</span>
+						
+							</label>
 							@(Html.DevExtreme().DateBox()
 														.ID("InvoiceDate")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
-														.Disabled(false)
-														.Label(new JS("formatMessage('Voucher Date')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.Value(DateTime.Now)
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden))
 						</td>
-							</tr>
+					</tr>
 
-							<tr>
-								<!-- 3. Supplier Invoice No (DropDownBox / ComboBoxEdit) -->
-								<td>
-									@(Html.DevExtreme().DropDownBox()
-																			.ID("SupplierInvoiceNo")
-																			.DataSource(ds => ds.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetSupplierInvoices")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("InvoiceNo"))
-																			.DisplayExpr("InvoiceNo")
-																			.ValueExpr("InvoiceNo")
-																			.Label(new JS("formatMessage('Supplier Invoice No')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.DropDownOptions(d => d.Width(600))
-																			.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate")))
-								</td>
-
-								<!-- 5. Invoice Date (DateEdit) -->
+					<tr>
+						<!-- 3. Supplier Invoice No -->
 						<td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Supplier Invoice No</span>
+								<span style="direction: rtl;">رقم فاتورة المورد</span>
+								
+							</label>
+							@(Html.DevExtreme().DropDownBox()
+														.ID("SupplierInvoiceNo")
+														.DataSource(ds => ds.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetSupplierInvoices")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("InvoiceNo"))
+														.DisplayExpr("InvoiceNo")
+														.ValueExpr("InvoiceNo")
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden)
+														.ShowClearButton(true)
+														.AcceptCustomValue(true)
+														.OpenOnFieldClick(false)
+														.DropDownOptions(d => d.Width(600))
+														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate")))
+						</td>
+
+						<!-- 5. Invoice Date -->
+						<td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Invoice Date</span>
+								<span style="direction: rtl;">تاريخ الفاتورة</span>
+						
+							</label>
 							@(Html.DevExtreme().DateBox()
 														.ID("SupplyDate")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
-														.Label(new JS("formatMessage('Invoice Date')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden))
 						</td>
-							</tr>
+					</tr>
 
-							<tr>
-								<!-- 4. Order No (TextEdit) -->
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("VATInvoiceType")
-																			.Label(new JS("formatMessage('Order No')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.Value("Tax Invoice")
-																			.Disabled(true))
-								</td>
+					<tr>
+						<!-- 4. Order No -->
+						<td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Order No</span>
+								<span style="direction: rtl;">رقم الطلب</span>
+							
+							</label>
+							@(Html.DevExtreme().TextBox()
+														.ID("VATInvoiceType")
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden)
+														.Value("")
+														.Disabled(true))
+						</td>
 
-								<!-- 6. Order Date (DateEdit) -->
-								<td>
-									@(Html.DevExtreme().DateBox()
-																			.ID("OrderDate")
-																			.Label(new JS("formatMessage('Order Date')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.Type(DateBoxType.Date)
-																			.DisplayFormat("dd-MMM-yyyy")
-																			.Value(DateTime.Now))
-								</td>
-							</tr>
+						<!-- 6. Order Date -->
+						<td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Order Date</span>
+								<span style="direction: rtl;">تاريخ الطلب</span>
+							
+							</label>
+							@(Html.DevExtreme().DateBox()
+														.ID("OrderDate")
+														.Type(DateBoxType.Date)
+														.DisplayFormat("dd-MMM-yyyy")
+														.Value(DateTime.Now)
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden))
+						</td>
+					</tr>
 
-							<tr>
-								<!-- 7. Material Receipt (TextEdit) -->
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("MaterialReceipt")
-																			.Label(new JS("formatMessage('Material Receipt')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.Placeholder("Enter material receipt details"))
-								</td>
+					<tr>
+						<!-- 7. Material Receipt -->
+						<td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Material Receipt</span>
+								<span style="direction: rtl;">استلام المواد</span>
+								
+							</label>
+							@(Html.DevExtreme().TextBox()
+														.ID("MaterialReceipt")
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden)
+														.Placeholder(""))
+						</td>
 
-								<!-- 8. Supply Date (DateEdit) -->
-								<td>
-									@(Html.DevExtreme().DateBox()
-																			.ID("SupplyDates")
-																			.Label(new JS("formatMessage('Supply Date')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			.Type(DateBoxType.Date)
-																			.DisplayFormat("dd-MMM-yyyy")
-																			.Value(DateTime.Now))
-								</td>
-							</tr>
-						</table>
+						<!-- 8. Supply Date -->
+						<td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Supply Date</span>
+								<span style="direction: rtl;">تاريخ التوريد</span>
+								
+							</label>
+							@(Html.DevExtreme().DateBox()
+														.ID("SupplyDates")
+														.Type(DateBoxType.Date)
+														.DisplayFormat("dd-MMM-yyyy")
+														.Value(DateTime.Now)
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden))
+						</td>
+					</tr>
+				</table>
+
 
 					<!-- Second Card (Right Side) -->
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
@@ -788,27 +829,32 @@
 								</td>
 							</tr>
 
-							<tr>
-								<!-- 17. Invoice Period (TextEdit) -->
-								<td colspan="2">
-									@(Html.DevExtreme().TextBox()
-																			.ID("InvoiceCounterValue")
-																			.Label(new JS("formatMessage('Invoice Period')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																		)
-								</td>
-
-								<!-- 18. Reference No (TextEdit) -->
+					<tr>
+						<!-- 17. Invoice Period -->
 						<td colspan="2">
-									@(Html.DevExtreme().TextBox()
-																			.ID("UUID")
-																			.Label(new JS("formatMessage('Reference No')"))
-																			.LabelMode(EditorLabelMode.Outside)
-																			)
-								</td>
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Invoice Period</span>
+								<span style="direction: rtl;">فترة الفاتورة</span>
+							</label>
+							@(Html.DevExtreme().TextBox()
+														.ID("InvoiceCounterValue")
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden))
+						</td>
 
-								
-							</tr>
+						<!-- 18. Reference No -->
+						<td colspan="2">
+							<label style="display: flex; justify-content: space-between; width: 100%;">
+								<span>Reference No</span>
+								<span style="direction: rtl;">الرقم المرجعي</span>
+							</label>
+							@(Html.DevExtreme().TextBox()
+														.ID("UUID")
+														.Label("")
+														.LabelMode(EditorLabelMode.Hidden))
+						</td>
+					</tr>
+
 						</table>
 				</div>
 			</div>
