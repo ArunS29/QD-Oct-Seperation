@@ -11,6 +11,14 @@
         padding: 20px;
     }
 
+   
+
+    
+
+    .bold-button {
+        font-weight: 600;
+    }
+
     .form-row {
         display: flex;
         gap: 15px;
@@ -63,9 +71,7 @@
         background-color: #fff;
     }
 
-    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
-        display: none !important;
-    }
+   
 
     .upload {
         display: block;
@@ -364,26 +370,29 @@
 
 
 </div>
+<!-- Footer Buttons -->
+<div class="form-footer d-flex justify-content-end" style="margin-top: 30px; gap: 15px;">
+    @(Html.DevExtreme().Button()
+        .ID("btnUpdate")
+        .Text(new JS("formatMessage('Update')"))
+        .Icon("save")
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Contained)
+        .ElementAttr(new { @class = "update-button" })
+        )
 
-
-<div class="limited-footer">
-    @await Html.PartialAsync("VATModuleFooter")
+    @(Html.DevExtreme().Button()
+        .ID("btnBack")
+        .Text(new JS("formatMessage('Back')"))
+        .Icon("arrowleft")
+        .ElementAttr(new { @class = "bold-button" })
+        )
 </div>
+
+
 <script>
 
-    $(document).ready(function () {
-
-        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-            if (!$(this).find("#btnUpdate,#btnBack").length) {
-
-                $(this).remove();
-
-            }
-
-        });
-
-    });
+  
 
     $(document).on("click", "#btnBack", function () {
         window.history.back();

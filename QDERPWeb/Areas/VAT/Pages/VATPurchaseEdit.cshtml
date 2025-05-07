@@ -443,7 +443,7 @@
 																			.Type(DateBoxType.Date)
 																			.DisplayFormat("dd-MMM-yyyy")
 																			.Value(DateTime.Now)
-																			.Disabled(true)
+																			.Disabled(false)
 																			.Label(new JS("formatMessage('Voucher Date')"))
 																			.LabelMode(EditorLabelMode.Outside))
 								</td>
@@ -466,7 +466,7 @@
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
 																			.OpenOnFieldClick(false)
-																			.DropDownOptions(d => d.Width(400))
+																			.DropDownOptions(d => d.Width(600))
 																			.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate")))
 								</td>
 
@@ -545,7 +545,9 @@
 																			.ValueExpr("AccountId")
 																			.DisplayExpr("AccountId")
 																			.ShowClearButton(true)
-																			.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
+														 // ✅ Width of the editor box
+														.DropDownOptions(d => d.Width(800))
+														.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
 								</td>
 
 								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">

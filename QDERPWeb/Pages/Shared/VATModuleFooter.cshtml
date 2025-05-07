@@ -410,6 +410,18 @@
         .ElementAttr(new { @class = "update-button" }) // Custom CSS class
         )
     </div>
+    <div class="btn-containers">
+
+        @(Html.DevExtreme().Button()
+            .ID("btnUpdate")
+            .Text(new JS("formatMessage('Update')"))
+            .Icon("save") // Icon similar to a floppy/save
+            .Type(ButtonType.Normal)
+            .StylingMode(ButtonStylingMode.Contained)
+            .ElementAttr(new { @class = "update-button" }) // Custom CSS class
+            )
+    </div>
+
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -837,6 +849,16 @@
                         .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                         )
          </div>
+    <div class="btn-containers">
+
+        @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Icon("arrowleft")
+            // .OnClick("onBackButtonClick")
+            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            )
+    </div>
          <div class="btn-containerIvoiceEdit">
         @(Html.DevExtreme().Button()
                         .ID("btnVerify")
