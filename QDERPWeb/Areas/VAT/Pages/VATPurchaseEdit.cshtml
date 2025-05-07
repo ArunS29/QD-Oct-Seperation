@@ -437,16 +437,15 @@
 								</td>
 
 								<!-- 2. Voucher Date (DateEdit) -->
-								<td>
-									@(Html.DevExtreme().DateBox()
-																			.ID("InvoiceDate")
-																			.Type(DateBoxType.Date)
-																			.DisplayFormat("dd-MMM-yyyy")
-																			.Value(DateTime.Now)
-																			.Disabled(false)
-																			.Label(new JS("formatMessage('Voucher Date')"))
-																			.LabelMode(EditorLabelMode.Outside))
-								</td>
+						<td>
+							@(Html.DevExtreme().DateBox()
+														.ID("InvoiceDate")
+														.Type(DateBoxType.Date)
+														.DisplayFormat("dd-MMM-yyyy")
+														.Disabled(false)
+														.Label(new JS("formatMessage('Voucher Date')"))
+														.LabelMode(EditorLabelMode.Outside))
+						</td>
 							</tr>
 
 							<tr>
@@ -471,15 +470,14 @@
 								</td>
 
 								<!-- 5. Invoice Date (DateEdit) -->
-								<td>
-									@(Html.DevExtreme().DateBox()
-																			.ID("SupplyDate")
-																			.Type(DateBoxType.Date)
-																			.DisplayFormat("dd-MMM-yyyy")
-																			.Value(DateTime.Now)
-																			.Label(new JS("formatMessage('Invoice Date')"))
-																			.LabelMode(EditorLabelMode.Outside))
-								</td>
+						<td>
+							@(Html.DevExtreme().DateBox()
+														.ID("SupplyDate")
+														.Type(DateBoxType.Date)
+														.DisplayFormat("dd-MMM-yyyy")
+														.Label(new JS("formatMessage('Invoice Date')"))
+														.LabelMode(EditorLabelMode.Outside))
+						</td>
 							</tr>
 
 							<tr>
