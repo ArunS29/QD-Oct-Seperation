@@ -223,7 +223,7 @@
 			columns.Add().Caption("Purchase Bill Details").Columns(bill =>
 			{
 				bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center).GroupIndex(0);
-             	bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseVoucherDate).Caption("Voucher Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseBillNo).Caption("Bill No").Alignment(HorizontalAlignment.Center);
 				bill.AddFor(m => m.PurchaseBillDate).Caption("Bill Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
@@ -238,22 +238,35 @@
 				item.AddFor(m => m.Gsdescrpition).Caption("Description").Alignment(HorizontalAlignment.Left);
 				item.AddFor(m => m.UnitDesc).Caption("Unit").Alignment(HorizontalAlignment.Center);
 				item.AddFor(m => m.QuantityInvoiced).Caption("Qty").Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.UnitRate).Caption("Unit Rate").Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.LineDiscount).Caption("Discount").Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.LineAmountBeforeDiscount).Caption("Amount Before Discount").Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.TaxAmount).Caption("VAT Amount").Alignment(HorizontalAlignment.Right);
-				item.AddFor(m => m.CalcLineWithTax).Caption("Total Amount").Alignment(HorizontalAlignment.Right);
-			
+
+				item.AddFor(m => m.UnitRate)
+			.Caption("Unit Rate")
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				item.AddFor(m => m.LineDiscount)
+			.Caption("Discount")
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				item.AddFor(m => m.LineAmountBeforeDiscount)
+			.Caption("Amount Before Discount")
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				item.AddFor(m => m.TaxAmount)
+			.Caption("VAT Amount")
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				item.AddFor(m => m.CalcLineWithTax)
+			.Caption("Total Amount")
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 
 			columns.Add().Caption("Goods In Transit").Columns(transit =>
 			{
-				// You can include this if you plan to add GoodsInTransitAmount to your model
-				// transit.AddFor(m => m.GoodsInTransitAmount)
-				//        .Caption("Additional Cost")
-				//        .Alignment(HorizontalAlignment.Right)
-				//        .Format(Format.Currency);
-
 				transit.AddFor(m => m.IsGoodsInTransitAccount)
 			.Caption("GIT Applicable")
 			.Alignment(HorizontalAlignment.Center);
@@ -269,11 +282,9 @@
 				transit.AddFor(m => m.GoodsInTransitPurchaseVoucherNo)
 			.Caption("Linked Purchase Voucher")
 			.Alignment(HorizontalAlignment.Center);
-				
 			});
-
-
 		})
+
 
 		@* .Editing(editing => editing
 		.Mode(GridEditMode.Row)
@@ -293,7 +304,6 @@
 		.ShowRowLines(true)
 		.Width("100%")
 
-
 		.Summary(summary =>
 		{
 			summary.GroupItems(items =>
@@ -302,31 +312,31 @@
 			.Column("Gsdescrpition")
 			.SummaryType(SummaryType.Count)
 			.ShowInGroupFooter(true);
-				@* .CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
 
-				@* items.Add()
-	.Column("QuantityInvoiced")
-	.SummaryType(SummaryType.Sum)
-	.ShowInGroupFooter(true)
-	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-	*@
-				items.Add()
-		.Column("Discount")
-		.SummaryType(SummaryType.Sum)
-		.ShowInGroupFooter(true)
-		.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add().Column("UnitRate")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				items.Add()
-	.Column("VatAmount")
-	.SummaryType(SummaryType.Sum)
-	.ShowInGroupFooter(true)
-	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add().Column("LineDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				items.Add()
-	.Column("Total")
-	.SummaryType(SummaryType.Sum)
-	.ShowInGroupFooter(true)
-	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add().Column("LineAmountBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("TaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("CalcLineWithTax")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 
 			summary.TotalItems(items =>
@@ -334,29 +344,29 @@
 				items.Add()
 			.Column("Gsdescrpition")
 			.SummaryType(SummaryType.Count);
-				@* .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
 
-				@* items.Add()
-	.Column("QuantityInvoiced")
-	.SummaryType(SummaryType.Sum)
-	.CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-	*@
-				items.Add()
-		.Column("Discount")
-		.SummaryType(SummaryType.Sum)
-		.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add().Column("UnitRate")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				items.Add()
-	.Column("VatAmount")
-	.SummaryType(SummaryType.Sum)
-	.CustomizeText(@"function(e) { return   e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add().Column("LineDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-				items.Add()
-	.Column("Total")
-	.SummaryType(SummaryType.Sum)
-	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+				items.Add().Column("LineAmountBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("TaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("CalcLineWithTax")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 		})
+
 
 
 		.StateStoring(stateStoring =>
