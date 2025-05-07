@@ -2146,7 +2146,7 @@
                                     <div class="text">${formatMessage("Finance Dashboard")}</div>
                                 </div>
                                 <div id="financeDashboardSubmenu" class="nested-submenu" style="display: none; margin-left: 30px;">
-                                         <a class="submenu-item" onclick="hideSidebars()" href="/@encryptedTenantName/Finance/Index">
+                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/Finance/Index">
             <i class="fas fa-tachometer-alt"></i>
             <div class="text">${formatMessage("My Dashboard")}</div>
         </a>
@@ -2935,7 +2935,7 @@
         });
 
 
-               function handleVATClick(selectedText) {
+        function handleVATClick(selectedText) {
             console.log("handleVATClick triggered with:", selectedText);
 
             try {
@@ -2972,7 +2972,7 @@
                     alert("Please select valid From and To dates.");
                     return;
                 }
-
+                
                 // Extract tenant name from URL
                 let pathParts = window.location.pathname.split('/');
                 let tenantName = pathParts[1] || "defaultTenant";

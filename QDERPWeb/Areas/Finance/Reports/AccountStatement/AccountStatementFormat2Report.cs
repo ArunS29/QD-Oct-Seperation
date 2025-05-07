@@ -108,25 +108,28 @@ namespace QD.ERP.Web.Reports
         {
             sqlDataSource1.Queries.Clear();
 
-            var storedProcQuery = new StoredProcQuery
-            {
-                Name = "StProAccountLedger",
-                StoredProcName = "StProAccountLedger"
-            };
-
-            storedProcQuery.Parameters.AddRange(new[]
-            {
-                new QueryParameter("@ParamAccountNo", typeof(string), accountId),
-                new QueryParameter("@StartDate", typeof(DateTime), frmDate),
-                new QueryParameter("@EndDate", typeof(DateTime), toDate)
-            });
-
-            sqlDataSource1.Queries.Add(storedProcQuery);
-            sqlDataSource1.Name = "sqlDataSource1";
-
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
                 sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+
+                string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
+                string fullStoredProcName = $"{schemaName}.StProAccountLedger";
+
+                var storedProcQuery = new StoredProcQuery
+                {
+                    Name = "StProAccountLedger",
+                    StoredProcName = fullStoredProcName
+                };
+
+                storedProcQuery.Parameters.AddRange(new[]
+                {
+            new QueryParameter("@ParamAccountNo", typeof(string), accountId),
+            new QueryParameter("@StartDate", typeof(DateTime), frmDate),
+            new QueryParameter("@EndDate", typeof(DateTime), toDate)
+        });
+
+                sqlDataSource1.Queries.Add(storedProcQuery);
+                sqlDataSource1.Name = "sqlDataSource1";
             }
             else
             {
