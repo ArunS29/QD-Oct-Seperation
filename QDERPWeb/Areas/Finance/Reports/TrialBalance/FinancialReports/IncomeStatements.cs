@@ -95,32 +95,37 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 
         private void ConfigureSqlQuery()
         {
-            var storedProcQuery = new StoredProcQuery
-            {
-                Name = "sp20101IncomeStatement",
-                StoredProcName = "sp20101IncomeStatement"
-            };
-
-            storedProcQuery.Parameters.AddRange(new[]
-            {
-                new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), Value = Parameters["StartDate"].Value },
-                new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value },
-                new QueryParameter { Name = "@IsUseEffectiveDate", Type = typeof(bool), Value = Parameters["IsUseEffectiveDate"].Value }
-            });
-
-            sqlDataSource1.Queries.Clear();
-            sqlDataSource1.Queries.Add(storedProcQuery);
-            sqlDataSource1.Name = "sqlDataSource1";
-
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
                 sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+
+                // Use schema from tenant, or default to dbo
+                string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
+                string fullStoredProcName = $"{schemaName}.sp20101IncomeStatement";
+
+                var storedProcQuery = new StoredProcQuery
+                {
+                    Name = "sp20101IncomeStatement",
+                    StoredProcName = fullStoredProcName
+                };
+
+                storedProcQuery.Parameters.AddRange(new[]
+                {
+            new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), Value = Parameters["StartDate"].Value },
+            new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value },
+            new QueryParameter { Name = "@IsUseEffectiveDate", Type = typeof(bool), Value = Parameters["IsUseEffectiveDate"].Value }
+        });
+
+                sqlDataSource1.Queries.Clear();
+                sqlDataSource1.Queries.Add(storedProcQuery);
+                sqlDataSource1.Name = "sqlDataSource1";
             }
             else
             {
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
             }
         }
+
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
         {

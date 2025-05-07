@@ -93,50 +93,62 @@ namespace QD.ERP.Web.Reports
 
         private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
         {
-            var queryParameter1 = new QueryParameter
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                Name = "@ParamAccountNo",
-                Type = typeof(string),
-                ValueInfo = accountId ?? "L00567"
-            };
+                sqlDataSource1.Queries.Clear();
 
-            var queryParameter2 = new QueryParameter
-            {
-                Name = "@StartDate",
-                Type = typeof(DateTime),
-                ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd")
-            };
+                string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
+                string fullStoredProcName = $"{schemaName}.StProAccountLedger";
 
-            var queryParameter3 = new QueryParameter
-            {
-                Name = "@EndDate",
-                Type = typeof(DateTime),
-                ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd")
-            };
+                var queryParameter1 = new QueryParameter
+                {
+                    Name = "@ParamAccountNo",
+                    Type = typeof(string),
+                    ValueInfo = accountId ?? "L00567"
+                };
 
-            var storedProcQuery = new StoredProcQuery
-            {
-                Name = "StProAccountLedger",
-                StoredProcName = "StProAccountLedger"
-            };
+                var queryParameter2 = new QueryParameter
+                {
+                    Name = "@StartDate",
+                    Type = typeof(DateTime),
+                    ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd")
+                };
 
-            storedProcQuery.Parameters.AddRange(new[] { queryParameter1, queryParameter2, queryParameter3 });
+                var queryParameter3 = new QueryParameter
+                {
+                    Name = "@EndDate",
+                    Type = typeof(DateTime),
+                    ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd")
+                };
 
-            sqlDataSource1.Queries.Clear();
-            sqlDataSource1.Queries.Add(storedProcQuery);
-            sqlDataSource1.Name = "sqlDataSource1";
+                var storedProcQuery = new StoredProcQuery
+                {
+                    Name = "StProAccountLedger",
+                    StoredProcName = fullStoredProcName
+                };
 
-            sqlDataSource1.ConnectionParameters = GetConnectionParameters();
+                storedProcQuery.Parameters.AddRange(new[] { queryParameter1, queryParameter2, queryParameter3 });
 
-            try
-            {
-                sqlDataSource1.Fill();
+                sqlDataSource1.Queries.Add(storedProcQuery);
+                sqlDataSource1.Name = "sqlDataSource1";
+
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+
+                try
+                {
+                    sqlDataSource1.Fill();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to fill data source: " + ex.Message, ex);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("Failed to fill data source: " + ex.Message, ex);
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
             }
         }
+
 
         private CustomStringConnectionParameters GetConnectionParameters()
         {
