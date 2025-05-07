@@ -198,6 +198,8 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
+            this.xrLabel146 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel145 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
@@ -2919,15 +2921,17 @@
             // BottomMargin
             // 
             this.BottomMargin.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel145,
+            this.xrLabel146,
             this.pageInfo2});
-            this.BottomMargin.HeightF = 25F;
+            this.BottomMargin.HeightF = 22.81211F;
             this.BottomMargin.Name = "BottomMargin";
             // 
             // pageInfo2
             // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(450F, 0F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(450.0003F, 2.000005F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(450F, 23F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(81.91489F, 13.18263F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.pageInfo2.TextFormatString = "Page {0} of {1}";
@@ -3009,6 +3013,36 @@
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
             // 
+            // xrLabel146
+            // 
+            this.xrLabel146.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel146.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel146.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel146.LocationFloat = new DevExpress.Utils.PointFloat(0F, 4.515822F);
+            this.xrLabel146.Name = "xrLabel146";
+            this.xrLabel146.SizeF = new System.Drawing.SizeF(270.3535F, 18.29628F);
+            this.xrLabel146.StylePriority.UseBorderColor = false;
+            this.xrLabel146.StylePriority.UseFont = false;
+            this.xrLabel146.StylePriority.UseForeColor = false;
+            this.xrLabel146.Text = "Quickdice ERP Solutions";
+            // 
+            // xrLabel145
+            // 
+            this.xrLabel145.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel145.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", " [Parameters.UserName]")});
+            this.xrLabel145.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel145.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel145.LocationFloat = new DevExpress.Utils.PointFloat(704.2427F, 2.000005F);
+            this.xrLabel145.Name = "xrLabel145";
+            this.xrLabel145.SizeF = new System.Drawing.SizeF(342.8535F, 20.66685F);
+            this.xrLabel145.StylePriority.UseBorderColor = false;
+            this.xrLabel145.StylePriority.UseFont = false;
+            this.xrLabel145.StylePriority.UseForeColor = false;
+            this.xrLabel145.StylePriority.UseTextAlignment = false;
+            this.xrLabel145.Text = "Reported By : [Parameters.UserName]";
+            this.xrLabel145.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            // 
             // VATReturnsform
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -3021,7 +3055,7 @@
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 762.5833F, 25F);
+            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 762.5833F, 22.81211F);
             this.PageHeight = 850;
             this.PageWidth = 1100;
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
@@ -3203,5 +3237,7 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel133;
         private DevExpress.XtraReports.UI.XRLabel xrLabel53;
         private DevExpress.XtraReports.UI.XRLabel xrLabel132;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel146;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel145;
     }
 }

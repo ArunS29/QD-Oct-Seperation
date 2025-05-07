@@ -3,14 +3,170 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using DevExpress.XtraReports.UI;
+using DevExpress.XtraPrinting.Drawing;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
 {
 	public partial class DebitNoteView : DevExpress.XtraReports.UI.XtraReport
-	{	
-		public DebitNoteView()
+    {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private bool _isApproved;
+
+        public DebitNoteView(string DebitNoteNo,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressAr,
+            bool isApproved,
+            TenantDbContextHelper tenantDbContextHelper)
+        {
+            _tenantDbContextHelper = tenantDbContextHelper;
+            _isApproved = isApproved;
+
+            InitializeComponent();
+            SetReportParameters(DebitNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+            LoadReportData(DebitNoteNo);
+        }
+
+        public DebitNoteView()
 		{
 			InitializeComponent();
 		}
-	}
+
+        private void SetReportParameters(string DebitNoteNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+        {
+            void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
+            {
+                if (Parameters[name] == null)
+                {
+                    Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+                    {
+                        Name = name,
+                        Type = type,
+                        Value = value,
+                        Visible = false
+                    });
+                }
+                else
+                {
+                    Parameters[name].Value = value;
+                    Parameters[name].Visible = false;
+                }
+            }
+
+            AddOrUpdateParameter("DebitNoteNo", DebitNoteNo, typeof(string));
+            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
+
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+                tenantLabel.Text = tenantName;
+
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
+                companyNameLabel.Text = companyName;
+
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+                addressLabel.Text = companyAddress;
+
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+                companyNameArLabel.Text = companyNameAr;
+
+            if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
+                addressArLabel.Text = companyAddressAr;
+
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+                logoPictureBox.Image = logoImage;
+        }
+
+        private void LoadReportData(string DebitNoteNo)
+        {
+            DataTable dt = GetReportData(DebitNoteNo);
+
+            if (dt.Rows.Count == 0)
+            {
+                this.DataSource = null;
+                CreateNoDataLabel();
+            }
+            else
+            {
+                this.DataSource = dt;
+                this.DataMember = "";
+                SetWatermark();
+            }
+        }
+
+        private DataTable GetReportData(string DebitNoteNo)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                {
+                    string connectionString = tenant.ConnectionString;
+
+                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    {
+                        string query = "SELECT * FROM qry201_602VATInvoiceReport WHERE InvoiceNo = @InvoiceNo";
+
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@InvoiceNo", DebitNoteNo);
+
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            conn.Open();
+                            da.Fill(dt);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("Unable to get tenant context. Please check session and cache.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching report data: {ex.Message}");
+            }
+
+            return dt;
+        }
+
+        private void SetWatermark()
+        {
+            if (!_isApproved)
+            {
+                this.Watermark.Text = "DRAFT COPY";
+                this.Watermark.Font = new Font("Arial", 70, FontStyle.Bold);
+                this.Watermark.ForeColor = Color.FromArgb(80, 173, 216, 230);
+                this.Watermark.TextDirection = DirectionMode.ForwardDiagonal;
+                this.Watermark.ShowBehind = true;
+                this.Watermark.ImageTiling = false;
+                this.Watermark.ImageViewMode = ImageViewMode.Stretch;
+            }
+        }
+
+        private void CreateNoDataLabel()
+        {
+            XRLabel noDataLabel = new XRLabel
+            {
+                Text = "No records found.",
+                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
+                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
+            };
+            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
+        }
+
+        private void ForeignCurrency_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Optional: Add logic if you need to re-check conditions before printing
+        }
+    }
 }

@@ -49,13 +49,13 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
                         Name = name,
                         Type = type,
                         Value = value,
-                        Visible = visible
+                        Visible = false
                     });
                 }
                 else
                 {
                     Parameters[name].Value = value;
-                    Parameters[name].Visible = visible;
+                    Parameters[name].Visible = false;
                 }
             }
 
@@ -93,7 +93,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
             var selectQuery = new CustomSqlQuery()
             {
                 Name = "qry201_723VATonPurchaseAndExpenses",
-                Sql = @"SELECT * qry201_723VATonPurchaseAndExpenses 
+                Sql = @"SELECT * FROM qry201_723VATonPurchaseAndExpenses 
                         WHERE PurchaseVoucherDate BETWEEN @StartDate AND @EndDate"
             };
 

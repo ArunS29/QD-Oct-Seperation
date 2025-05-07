@@ -418,7 +418,7 @@
             this.xrLabel21,
             this.xrLabel20,
             this.xrLabel19});
-            this.Detail.HeightF = 70.83334F;
+            this.Detail.HeightF = 70.54911F;
             this.Detail.Name = "Detail";
             // 
             // xrLabel36
@@ -578,6 +578,7 @@
             this.xrLabel28.StylePriority.UseFont = false;
             this.xrLabel28.StylePriority.UseTextAlignment = false;
             this.xrLabel28.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel28.TextFormatString = "{0:0.00}";
             // 
             // xrLabel27
             // 
@@ -598,6 +599,7 @@
             this.xrLabel27.StylePriority.UseFont = false;
             this.xrLabel27.StylePriority.UseTextAlignment = false;
             this.xrLabel27.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel27.TextFormatString = "{0:0.00}";
             // 
             // xrLabel26
             // 
@@ -618,6 +620,7 @@
             this.xrLabel26.StylePriority.UseFont = false;
             this.xrLabel26.StylePriority.UseTextAlignment = false;
             this.xrLabel26.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel26.TextFormatString = "{0:0.00}";
             // 
             // xrLabel25
             // 
@@ -638,6 +641,7 @@
             this.xrLabel25.StylePriority.UseFont = false;
             this.xrLabel25.StylePriority.UseTextAlignment = false;
             this.xrLabel25.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel25.TextFormatString = "{0:0.00}";
             // 
             // xrLabel24
             // 
@@ -658,6 +662,7 @@
             this.xrLabel24.StylePriority.UseFont = false;
             this.xrLabel24.StylePriority.UseTextAlignment = false;
             this.xrLabel24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel24.TextFormatString = "{0:0.00}";
             // 
             // xrLabel23
             // 
@@ -676,6 +681,7 @@
             this.xrLabel23.StylePriority.UseFont = false;
             this.xrLabel23.StylePriority.UseTextAlignment = false;
             this.xrLabel23.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel23.TextFormatString = "{0:0.00}";
             // 
             // xrLabel22
             // 
@@ -694,6 +700,7 @@
             this.xrLabel22.StylePriority.UseFont = false;
             this.xrLabel22.StylePriority.UseTextAlignment = false;
             this.xrLabel22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel22.TextFormatString = "{0:0.00}";
             // 
             // xrLabel21
             // 
@@ -712,6 +719,7 @@
             this.xrLabel21.StylePriority.UseFont = false;
             this.xrLabel21.StylePriority.UseTextAlignment = false;
             this.xrLabel21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel21.TextFormatString = "{0:0.00}";
             // 
             // xrLabel20
             // 
@@ -730,6 +738,7 @@
             this.xrLabel20.StylePriority.UseFont = false;
             this.xrLabel20.StylePriority.UseTextAlignment = false;
             this.xrLabel20.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel20.TextFormatString = "{0:0.00}";
             // 
             // xrLabel19
             // 
@@ -748,6 +757,7 @@
             this.xrLabel19.StylePriority.UseFont = false;
             this.xrLabel19.StylePriority.UseTextAlignment = false;
             this.xrLabel19.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel19.TextFormatString = "{0:0.00}";
             // 
             // sqlDataSource1
             // 
@@ -1898,7 +1908,7 @@
             this.xrLabel3,
             this.xrLabel2,
             this.xrLabel1});
-            this.GroupHeader1.HeightF = 72.10472F;
+            this.GroupHeader1.HeightF = 71.61111F;
             this.GroupHeader1.Name = "GroupHeader1";
             // 
             // GroupFooter1

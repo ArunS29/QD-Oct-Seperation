@@ -95,8 +95,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
         {
             var selectQuery = new CustomSqlQuery()
             {
-                Name = "qry201_723VATonPurchaseAndExpenses",
-                Sql = @"SELECT * qry201_723VATonPurchaseAndExpenses 
+                Name = "qry201_707VATPurchaseRegisterMainView",
+                Sql = @"SELECT *  FROM qry201_707VATPurchaseRegisterMainView 
                         WHERE PurchaseVoucherDate BETWEEN @StartDate AND @EndDate"
             };
 

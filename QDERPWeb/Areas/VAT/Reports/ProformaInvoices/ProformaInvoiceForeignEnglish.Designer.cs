@@ -303,6 +303,12 @@
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression135 = new DevExpress.DataAccess.Sql.ColumnExpression();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProformaInvoiceForeignEnglish));
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
+            this.xrLabel178 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel170 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel169 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel168 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel167 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLine5 = new DevExpress.XtraReports.UI.XRLine();
             this.xrTable3 = new DevExpress.XtraReports.UI.XRTable();
             this.xrTableRow3 = new DevExpress.XtraReports.UI.XRTableRow();
             this.xrTableCell21 = new DevExpress.XtraReports.UI.XRTableCell();
@@ -317,6 +323,7 @@
             this.xrTableCell30 = new DevExpress.XtraReports.UI.XRTableCell();
             this.xrLabel64 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel3 = new DevExpress.XtraReports.UI.XRLabel();
+            this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel63 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel62 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel61 = new DevExpress.XtraReports.UI.XRLabel();
@@ -347,7 +354,6 @@
             this.xrLabel38 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLine2 = new DevExpress.XtraReports.UI.XRLine();
             this.xrLabel37 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel36 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel35 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel34 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel33 = new DevExpress.XtraReports.UI.XRLabel();
@@ -416,13 +422,7 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
-            this.xrLine5 = new DevExpress.XtraReports.UI.XRLine();
-            this.xrLabel167 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel168 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel169 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel170 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel178 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel36 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
@@ -510,6 +510,84 @@
             this.xrPictureBox2});
             this.TopMargin.HeightF = 1072.5F;
             this.TopMargin.Name = "TopMargin";
+            // 
+            // xrLabel178
+            // 
+            this.xrLabel178.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel178.LocationFloat = new DevExpress.Utils.PointFloat(614.0087F, 1036.501F);
+            this.xrLabel178.Multiline = true;
+            this.xrLabel178.Name = "xrLabel178";
+            this.xrLabel178.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel178.SizeF = new System.Drawing.SizeF(230.4543F, 30.99896F);
+            this.xrLabel178.StylePriority.UseFont = false;
+            this.xrLabel178.StylePriority.UseTextAlignment = false;
+            this.xrLabel178.Text = "مكتب رقم 404 أبراج الأعمال\r\nالجبيل 31951، المملكة العربية السعودية\r\n";
+            this.xrLabel178.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
+            // 
+            // xrLabel170
+            // 
+            this.xrLabel170.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel170.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.xrLabel170.LocationFloat = new DevExpress.Utils.PointFloat(342.5897F, 1046.168F);
+            this.xrLabel170.Multiline = true;
+            this.xrLabel170.Name = "xrLabel170";
+            this.xrLabel170.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel170.SizeF = new System.Drawing.SizeF(182.0863F, 16.33331F);
+            this.xrLabel170.StylePriority.UseFont = false;
+            this.xrLabel170.StylePriority.UseForeColor = false;
+            this.xrLabel170.Text = "www.pulseinfotech.co";
+            // 
+            // xrLabel169
+            // 
+            this.xrLabel169.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel169.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.xrLabel169.LocationFloat = new DevExpress.Utils.PointFloat(342.5897F, 1031.501F);
+            this.xrLabel169.Multiline = true;
+            this.xrLabel169.Name = "xrLabel169";
+            this.xrLabel169.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel169.SizeF = new System.Drawing.SizeF(182.0863F, 14.66669F);
+            this.xrLabel169.StylePriority.UseFont = false;
+            this.xrLabel169.StylePriority.UseForeColor = false;
+            this.xrLabel169.Text = "Email : Info@Pulseinfotech.co";
+            // 
+            // xrLabel168
+            // 
+            this.xrLabel168.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel168.ForeColor = System.Drawing.Color.IndianRed;
+            this.xrLabel168.LocationFloat = new DevExpress.Utils.PointFloat(185.6204F, 1050.501F);
+            this.xrLabel168.Multiline = true;
+            this.xrLabel168.Name = "xrLabel168";
+            this.xrLabel168.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel168.SizeF = new System.Drawing.SizeF(150.833F, 16.66663F);
+            this.xrLabel168.StylePriority.UseFont = false;
+            this.xrLabel168.StylePriority.UseForeColor = false;
+            this.xrLabel168.Text = "050 898 5967| 05 999 4081";
+            // 
+            // xrLabel167
+            // 
+            this.xrLabel167.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrLabel167.LocationFloat = new DevExpress.Utils.PointFloat(11.16664F, 1031.501F);
+            this.xrLabel167.Multiline = true;
+            this.xrLabel167.Name = "xrLabel167";
+            this.xrLabel167.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel167.SizeF = new System.Drawing.SizeF(199.2092F, 40.99902F);
+            this.xrLabel167.StylePriority.UseFont = false;
+            this.xrLabel167.StylePriority.UseTextAlignment = false;
+            this.xrLabel167.Text = "office #404 Business Towers\r\nAI-Jubali 31951 ,Saudi Arabia  \r\n";
+            this.xrLabel167.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            // 
+            // xrLine5
+            // 
+            this.xrLine5.BackColor = System.Drawing.Color.Transparent;
+            this.xrLine5.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLine5.ForeColor = System.Drawing.Color.SteelBlue;
+            this.xrLine5.LineWidth = 2F;
+            this.xrLine5.LocationFloat = new DevExpress.Utils.PointFloat(0F, 1018.668F);
+            this.xrLine5.Name = "xrLine5";
+            this.xrLine5.SizeF = new System.Drawing.SizeF(858.0001F, 8.75F);
+            this.xrLine5.StylePriority.UseBackColor = false;
+            this.xrLine5.StylePriority.UseBorderColor = false;
+            this.xrLine5.StylePriority.UseForeColor = false;
             // 
             // xrTable3
             // 
@@ -652,6 +730,16 @@
             this.xrLabel3.Name = "xrLabel3";
             this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel3.SizeF = new System.Drawing.SizeF(130.2083F, 23F);
+            // 
+            // pageInfo2
+            // 
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(376.3157F, 964.7083F);
+            this.pageInfo2.Name = "pageInfo2";
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(77.37015F, 23F);
+            this.pageInfo2.StyleName = "PageInfo";
+            this.pageInfo2.StylePriority.UseTextAlignment = false;
+            this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.pageInfo2.TextFormatString = "Page {0} of {1}";
             // 
             // xrLabel63
             // 
@@ -1065,15 +1153,6 @@
             this.xrLabel37.Name = "xrLabel37";
             this.xrLabel37.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel37.SizeF = new System.Drawing.SizeF(132.2917F, 23F);
-            // 
-            // xrLabel36
-            // 
-            this.xrLabel36.LocationFloat = new DevExpress.Utils.PointFloat(652.2316F, 668.4999F);
-            this.xrLabel36.Multiline = true;
-            this.xrLabel36.Name = "xrLabel36";
-            this.xrLabel36.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel36.SizeF = new System.Drawing.SizeF(71.875F, 23F);
-            this.xrLabel36.Text = "(SAR)   :";
             // 
             // xrLabel35
             // 
@@ -2469,93 +2548,14 @@
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
             // 
-            // pageInfo2
+            // xrLabel36
             // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(376.3157F, 964.7083F);
-            this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(77.37015F, 23F);
-            this.pageInfo2.StyleName = "PageInfo";
-            this.pageInfo2.StylePriority.UseTextAlignment = false;
-            this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
-            // 
-            // xrLine5
-            // 
-            this.xrLine5.BackColor = System.Drawing.Color.Transparent;
-            this.xrLine5.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLine5.ForeColor = System.Drawing.Color.SteelBlue;
-            this.xrLine5.LineWidth = 2F;
-            this.xrLine5.LocationFloat = new DevExpress.Utils.PointFloat(0F, 1018.668F);
-            this.xrLine5.Name = "xrLine5";
-            this.xrLine5.SizeF = new System.Drawing.SizeF(858.0001F, 8.75F);
-            this.xrLine5.StylePriority.UseBackColor = false;
-            this.xrLine5.StylePriority.UseBorderColor = false;
-            this.xrLine5.StylePriority.UseForeColor = false;
-            // 
-            // xrLabel167
-            // 
-            this.xrLabel167.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
-            this.xrLabel167.LocationFloat = new DevExpress.Utils.PointFloat(11.16664F, 1031.501F);
-            this.xrLabel167.Multiline = true;
-            this.xrLabel167.Name = "xrLabel167";
-            this.xrLabel167.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel167.SizeF = new System.Drawing.SizeF(199.2092F, 40.99902F);
-            this.xrLabel167.StylePriority.UseFont = false;
-            this.xrLabel167.StylePriority.UseTextAlignment = false;
-            this.xrLabel167.Text = "office #404 Business Towers\r\nAI-Jubali 31951 ,Saudi Arabia  \r\n";
-            this.xrLabel167.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
-            // 
-            // xrLabel168
-            // 
-            this.xrLabel168.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel168.ForeColor = System.Drawing.Color.IndianRed;
-            this.xrLabel168.LocationFloat = new DevExpress.Utils.PointFloat(185.6204F, 1050.501F);
-            this.xrLabel168.Multiline = true;
-            this.xrLabel168.Name = "xrLabel168";
-            this.xrLabel168.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel168.SizeF = new System.Drawing.SizeF(150.833F, 16.66663F);
-            this.xrLabel168.StylePriority.UseFont = false;
-            this.xrLabel168.StylePriority.UseForeColor = false;
-            this.xrLabel168.Text = "050 898 5967| 05 999 4081";
-            // 
-            // xrLabel169
-            // 
-            this.xrLabel169.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel169.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.xrLabel169.LocationFloat = new DevExpress.Utils.PointFloat(342.5897F, 1031.501F);
-            this.xrLabel169.Multiline = true;
-            this.xrLabel169.Name = "xrLabel169";
-            this.xrLabel169.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel169.SizeF = new System.Drawing.SizeF(182.0863F, 14.66669F);
-            this.xrLabel169.StylePriority.UseFont = false;
-            this.xrLabel169.StylePriority.UseForeColor = false;
-            this.xrLabel169.Text = "Email : Info@Pulseinfotech.co";
-            // 
-            // xrLabel170
-            // 
-            this.xrLabel170.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel170.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.xrLabel170.LocationFloat = new DevExpress.Utils.PointFloat(342.5897F, 1046.168F);
-            this.xrLabel170.Multiline = true;
-            this.xrLabel170.Name = "xrLabel170";
-            this.xrLabel170.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel170.SizeF = new System.Drawing.SizeF(182.0863F, 16.33331F);
-            this.xrLabel170.StylePriority.UseFont = false;
-            this.xrLabel170.StylePriority.UseForeColor = false;
-            this.xrLabel170.Text = "www.pulseinfotech.co";
-            // 
-            // xrLabel178
-            // 
-            this.xrLabel178.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel178.LocationFloat = new DevExpress.Utils.PointFloat(614.0087F, 1036.501F);
-            this.xrLabel178.Multiline = true;
-            this.xrLabel178.Name = "xrLabel178";
-            this.xrLabel178.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel178.SizeF = new System.Drawing.SizeF(230.4543F, 30.99896F);
-            this.xrLabel178.StylePriority.UseFont = false;
-            this.xrLabel178.StylePriority.UseTextAlignment = false;
-            this.xrLabel178.Text = "مكتب رقم 404 أبراج الأعمال\r\nالجبيل 31951، المملكة العربية السعودية\r\n";
-            this.xrLabel178.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
+            this.xrLabel36.LocationFloat = new DevExpress.Utils.PointFloat(652.2316F, 668.4999F);
+            this.xrLabel36.Multiline = true;
+            this.xrLabel36.Name = "xrLabel36";
+            this.xrLabel36.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel36.SizeF = new System.Drawing.SizeF(71.875F, 23F);
+            this.xrLabel36.Text = "(SAR)   :";
             // 
             // ProformaInvoiceForeignEnglish
             // 
@@ -2659,7 +2659,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel38;
         private DevExpress.XtraReports.UI.XRLine xrLine2;
         private DevExpress.XtraReports.UI.XRLabel xrLabel37;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel36;
         private DevExpress.XtraReports.UI.XRLabel xrLabel35;
         private DevExpress.XtraReports.UI.XRLabel xrLabel49;
         private DevExpress.XtraReports.UI.XRLabel xrLabel51;
@@ -2708,5 +2707,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel169;
         private DevExpress.XtraReports.UI.XRLabel xrLabel170;
         private DevExpress.XtraReports.UI.XRLabel xrLabel178;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel36;
     }
 }

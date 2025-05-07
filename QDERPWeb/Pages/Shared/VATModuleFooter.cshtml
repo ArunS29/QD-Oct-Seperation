@@ -315,10 +315,8 @@
             .Items(items =>
             {
                 items.Add().Text("Preview DebitNote Invoice").Icon("print");
-                
-
             })
-
+            @* .OnItemClick("addPrintButton_click1") *@
             )
 
 
@@ -560,7 +558,7 @@
 
 
             })
-            .OnItemClick("handleReportClick")
+        .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
             )
     </div>
@@ -583,23 +581,24 @@
             )
     </div> *@
 
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddReport")
-            .Icon("doc")
-            .Width(100)
-            .Text(new JS("formatMessage('Report')"))
-            .ElementAttr(new { @class = "report-button" }) // changed here
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Tax Summary Report - Purchases").Icon("file");
-                items.Add().Text("Tax Summary Report").Icon("file");
-                items.Add().Text("VAT Purchase & Expenses Report").Icon("file");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
+    @* <div class="btn-container"> *@
+    @*     @(Html.DevExtreme().DropDownButton() *@
+    @*         .ID("ddReport") *@
+    @*         .Icon("doc") *@
+    @*         .Width(100) *@
+    @*         .Text(new JS("formatMessage('Report')")) *@
+    @*         .ElementAttr(new { @class = "report-button" }) // changed here *@
+    @*         .DropDownOptions(options => options.Width(230)) *@
+    @*         .Items(items => *@
+    @*         { *@
+    @*             items.Add().Text("Tax Summary Report - Purchases").Icon("file"); *@
+    @*             items.Add().Text("Tax Summary Report").Icon("file"); *@
+    @*             items.Add().Text("VAT Purchase & Expenses Report").Icon("file"); *@
+    @*         }) *@
+
+    @*         .ShowArrowIcon(false) *@
+    @*         ) *@
+    @* </div> *@
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -615,28 +614,11 @@
                 items.Add().Text("Tax Summary Report-Purchases(in Arabic)").Icon("file");
                 items.Add().Text("VATPurchase & Expenses Report").Icon("file").OnClick("navigateToPurchase");
             })
-
+            .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
             )
     </div>
-        <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddReports2")
-            .Icon("doc")
-            .Width(100)
-            .Text(new JS("formatMessage('Report')"))
-            .ElementAttr(new { @class = "report-button" }) // changed here
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Tax Summary Report -Purchases").Icon("file");
-                items.Add().Text("Tax Summary Report-Purchases(in Arabic)").Icon("file");
-                items.Add().Text("VATPurchase & Expenses Report").Icon("file").OnClick("navigateToPurchase");
-            })
-
-            .ShowArrowIcon(false)
-            )
-    </div>
+       
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReports4")
@@ -651,7 +633,7 @@
                 items.Add().Text("VAT Summary Report").Icon("file").OnClick("showSubmenu10");
              
             })
-
+            .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
             )
     </div>
@@ -1856,95 +1838,16 @@
         $('#submenuContainer9').hide();
     }
         const reportMappings = {
-                    "Tax Summary Report-Credit Notes":"CreditSummary"
+                    "Tax Summary Report-Credit Notes":"CreditSummary",
+                    "Tax Summary Report -Purchases":"VATPurchasesAndExpReport",
+                    "Tax Summary Report-Purchases(in Arabic)":"TaxSummaryReportPurchaseInArabic",
+                     "Tax Summary Report-Debit Notes":"DebitNoteSummary",
+                             "VAT Returns Form":"VATReturnsform"
+                      
      }
 
 
-     //  function handleReportClick(e){
-     //      const selectedText = e.itemData.text;
-     //     const reportName = reportMappings[selectedText];
-        
-     //     if (reportName) {
-     //         console.log(`Opening report: ${reportName}`);
-
-     //         // Ensure tenantName is defined before using
-     //         if (typeof tenantName === "undefined") {
-     //             console.error("tenantName is not defined.");
-     //             return;
-     //         }
-                 
-     //          window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-     //     } else {
-     //         console.warn('No report mapping found for:', selectedText);
-     //     }
-
-     // }
-
-            //      function handleReportClick(selectedText) {
-            //     console.log("handleVATClick triggered with:", selectedText);
-            //     alert('VAT');
-
-            //     try {
-            //         Get the DateBox instances
-            //             var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-            //         var toDateBox = $("#todateBox").dxDateBox("instance");
-
-            //         if (!frmDateBox || !toDateBox) {
-            //             console.error("DateBox instances not found.");
-            //             alert("Date selection components are missing.");
-            //             return;
-            //         }
-
-            //         Get the date values
-            //         var frmDate = frmDateBox.option("value");
-            //         var toDate = toDateBox.option("value");
-
-            //         Function to format date as D-MMM-YYYY
-            //         function formatDate(date) {
-            //             if (!date) return "";
-            //             let dateObj = new Date(date);
-            //             let day = dateObj.getDate();
-            //             let month = dateObj.toLocaleString('en-US', { month: 'short' });
-            //             let year = dateObj.getFullYear();
-            //             return `${day}-${month}-${year}`;
-            //         }
-
-            //         Format dates
-            //         var frmDateStr = formatDate(frmDate);
-            //         var toDateStr = formatDate(toDate);
-
-            //         Validate dates
-            //         if (!frmDateStr || !toDateStr) {
-            //             alert("Please select valid From and To dates.");
-            //             return;
-            //         }
-
-            //         Extract tenant name from URL
-            //         let pathParts = window.location.pathname.split('/');
-            //         let tenantName = pathParts[1] || "defaultTenant";
-
-                  
-
-            //         Check if selectedText matches any report
-            //         if (reportMappings[selectedText]) {
-            //             let reportName = reportMappings[selectedText];
-            //             console.log(`Redirecting to ${reportName}`);
-
-            //             window.open(
-            //                 `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
-            //                 '_blank',
-            //                 'width=1200,height=800,scrollbars=yes,resizable=yes'
-            //             );
-            //         } else {
-            //             console.warn("No matching report found for:", selectedText);
-            //             alert("No matching report found.");
-            //         }
-            //     } catch (error) {
-            //         console.error("An error occurred:", error);
-            //         alert("Something went wrong. Check console for details.");
-            //     }
-            // }
-
+    
 
                 function handleReportClick(e) {
         const selectedText = e.itemData.text;

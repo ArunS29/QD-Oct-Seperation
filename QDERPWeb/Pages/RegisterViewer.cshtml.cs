@@ -8,8 +8,11 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
+using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
 using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
 using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
+using QD.ERP.Web.Areas.VAT.Reports.VATDebitNote;
+using QD.ERP.Web.Areas.VAT.Reports.VATReturns;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using System;
@@ -57,6 +60,8 @@ namespace QD.ERP.Web.Pages
 
 			// **Fetch Tenant & Company Details**
 			var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+           
+            var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
             var ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyNameShort == tenantName);
 
@@ -64,6 +69,7 @@ namespace QD.ERP.Web.Pages
             var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
             var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
             var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
 
             Image logoImage = null;
             if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
@@ -212,6 +218,18 @@ namespace QD.ERP.Web.Pages
                         break;
                     case "CreditSummary":
                         Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "DebitNoteSummary":
+                        Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "VATPurchasesAndExpReport":
+                        Report = new VATPurchasesAndExpReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "TaxSummaryReportPurchaseInArabic":
+                        Report = new TaxSummaryReportPurchaseInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "VATReturnsform":
+                        Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     default:
                         return NotFound("Cost report not found.");
