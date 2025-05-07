@@ -906,7 +906,8 @@
 						</tr>
 					<tr>
 						<td>
-							
+							<div style="display: flex; gap: 4px; align-items: flex-end;">
+								<div style="flex: 1;">
 									@(Html.DevExtreme().TextArea()
 																			.Label(new JS("formatMessage('Invoice Notes')"))
 																			.LabelMode(EditorLabelMode.Outside)
@@ -915,7 +916,29 @@
 																			.Width("100%")
 																			.Placeholder(new JS("formatMessage('Enter your comments here...')"))
 																			)
-								
+								</div>
+
+								<div style="width: 55px;">
+									@(Html.DevExtreme().Button()
+																			.ID("btnSetDefault")
+																			.Icon("save")
+																			.Hint("Set as default")
+																			.Type(ButtonType.Default)
+																			.StylingMode(ButtonStylingMode.Contained)
+																			.OnClick("onSetDefaultClick")
+																			)
+								</div>
+								<div style="width: 55px;">
+									@(Html.DevExtreme().Button()
+																			.ID("btnClearNotes")
+																			.Icon("clear") // You can use "close" or "clearsquare" if available
+																			.Hint("Clear notes")
+																			.Type(ButtonType.Default)
+																			.StylingMode(ButtonStylingMode.Contained)
+																			.OnClick("function() { $('#txtInvoiceNotes').dxTextArea('instance').option('value', ''); }")
+																			)
+								</div>
+							</div>
 						</td>
 
 
@@ -7350,6 +7373,9 @@ $(function () {
 
 	}
 	
-
+	 
+				function onSetDefaultClick() {
+				DevExpress.ui.dialog.alert("Invoice Notes has been set as default.", "Set as default");
+			}
 </script>
 
