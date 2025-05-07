@@ -101,37 +101,40 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
 			}
 		}
 
-		private void ConfigureSqlDataSource(string voucherType, DateTime frmDate, DateTime toDate)
-		{
-			sqlDataSource1.Queries.Clear();
+        private void ConfigureSqlDataSource(string voucherType, DateTime frmDate, DateTime toDate)
+        {
+            sqlDataSource1.Queries.Clear();
 
-			var storedProcQuery = new StoredProcQuery
-			{
-				Name = "StProAccountLedgerByVoucherType",
-				StoredProcName = "StProAccountLedgerByVoucherType"
-			};
+            // Multi-tenant connection string setup
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            {
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
 
-			storedProcQuery.Parameters.AddRange(new[]
-			{
-				new QueryParameter("@VoucherType", typeof(string), voucherType),
-				new QueryParameter("@StartDate", typeof(DateTime), frmDate),
-				new QueryParameter("@EndDate", typeof(DateTime), toDate)
-			});
+                // Use schema from tenant, or default to dbo
+                string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
+                string fullStoredProcName = $"{schemaName}.StProAccountLedgerByVoucherType";
 
-			sqlDataSource1.Queries.Add(storedProcQuery);
+                var storedProcQuery = new StoredProcQuery
+                {
+                    Name = "StProAccountLedgerByVoucherType",
+                    StoredProcName = fullStoredProcName
+                };
 
-			// Get tenant connection string dynamically
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-			{
-				var connectionString = tenant.ConnectionString;
+                storedProcQuery.Parameters.AddRange(new[]
+                {
+            new QueryParameter("@VoucherType", typeof(string), voucherType),
+            new QueryParameter("@StartDate", typeof(DateTime), frmDate),
+            new QueryParameter("@EndDate", typeof(DateTime), toDate)
+        });
 
-				var connectionParams = new CustomStringConnectionParameters(connectionString);
-				sqlDataSource1.ConnectionParameters = connectionParams;
-			}
-			else
-			{
-				throw new Exception("Unable to get tenant context. Please check session and cache.");
-			}
-		}
-	}
+                sqlDataSource1.Queries.Add(storedProcQuery);
+                sqlDataSource1.Name = "sqlDataSource1";
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+        }
+
+    }
 }

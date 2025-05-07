@@ -119,7 +119,7 @@ namespace QD.ERP.Web.Reports
                 var storedProcQuery = new StoredProcQuery
                 {
                     Name = "StProAccountLedger",
-                    StoredProcName = "StProAccountLedger"
+                    StoredProcName = fullStoredProcName
                 };
 
                 storedProcQuery.Parameters.AddRange(new[]
