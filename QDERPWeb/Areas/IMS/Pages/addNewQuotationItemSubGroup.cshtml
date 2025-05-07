@@ -170,11 +170,14 @@
                 )
         </div>
 
-        <div class="col-md-4">
-            @(Html.DevExtreme().CheckBox()
-                .ID("showPriceDetails")
-                .Text(new JS("formatMessage('Show Price Details')"))
-                )
+        <div class="col-md-4" style="display: flex;align-items: baseline;gap: 30px;">
+            <div id="showPriceDetail" class="no-border-input"></div>
+            <div>
+                @(Html.DevExtreme().Switch()
+                    .Value(true)
+                    .ID("showPriceDetails")
+                    )
+            </div>
         </div>
     </div>
 
@@ -206,6 +209,13 @@
 
 
 <script type="text/javascript">
+    $(function () {
+        $("#showPriceDetail").dxTextBox({
+            text: formatMessage("Show Price Details"),
+            readOnly: true
+
+        });
+    });
     $(function () {
         var updatedRows = []; // To store the updated rows
         var searchPanelVisible = false; // Track the visibility of the search panel
