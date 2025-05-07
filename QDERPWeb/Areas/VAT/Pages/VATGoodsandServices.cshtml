@@ -140,6 +140,7 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("txtGoodsCode7")
                                     .Width("80%")
+                                    .Disabled(true)
                                     .ValidationRules(rules =>
                                     {
                                         rules.AddRequired().Message("Goods Code is required");
@@ -475,8 +476,7 @@
     var GssellingRate = urlParams.get('GssellingRate') ?? '';
     var ReorderQty = urlParams.get('ReorderQty') ?? '';
               // var IsEditflag = urlParams.get('IsEditflag');
-           
-              alert(ItemNo)
+   
                 // IsCurrent=IsEditflag.toString();
 
                 // // console.log("Iseditflag",IsEditflag)

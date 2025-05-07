@@ -4124,30 +4124,19 @@
 
 							});
 
-							// ✅ Add icon with navigation
-
 							$("<div>").dxButton({
-
 								icon: "plus",
-
 								hint: "Add new item",
-
 								onClick: function () {
-
-									// Replace or fetch dynamically
-										
-										    let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
-											let title = "Goods and Services";
-													openModal(url, title);
-									//window.location.href = url;
-
+									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title); // Opens the form in a modal
+									// Or use: window.location.href = url; if navigating directly
 								},
-
 								width: 60,
-
 								height: 30
-
 							}).appendTo($container);
+
 
 							// ✅ Edit icon with navigation
 
@@ -4806,7 +4795,7 @@
 							if (selectedRowData.length > 0) {
 								
 								    ItemNo = selectedRowData[0].Gscode;
-										alert(ItemNo)
+										
 									Gsdescrpition = selectedRowData[0].Gsdescrpition;
 									//ItemNo = selectedRowData[0].GsgroupId;
 									GsdescriptionAr = selectedRowData[0].GsdescriptionAr;
@@ -5092,7 +5081,7 @@
 				if (selectedRowData.length > 0) {
 
 						companyid = selectedRowData[0].CompanyId;
-						alert(selectedRowData[0].SellerOtherIdtype)
+						
 									  $("#OurGroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].SellerGroupVatnumber)
 									  $("#OurVATNo").dxTextBox("instance").option("value",selectedRowData[0].CompanyVatno)
 									   $("#OurCompanyRegisteredName").dxTextBox("instance").option("value",selectedRowData[0].CompanyName)
